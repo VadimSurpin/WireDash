@@ -2295,6 +2295,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Hors de chez vous, l\'app a besoin d\'une adresse distante (par exemple Tailscale). Indiquez-la dans les réglages de connexion de la maison.';
 
   @override
+  String get tipTailscaleIpTitle => 'Utilisez l\'IP Tailscale, pas le nom';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Les noms en .ts.net ne sont souvent pas résolus dans les apps. Ouvrez l\'app Tailscale sur le téléphone, vérifiez qu\'elle est connectée, puis utilisez l\'adresse 100.x.y.z du hub comme hôte distant.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'L\'adresse a-t-elle changé ?';
 
   @override
@@ -2336,6 +2343,13 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Scènes, Affichage mural, programmations et sauvegardes : tout est dans « Aide et guide ».';
+
+  @override
+  String get tipRenameHomeTitle => 'Renommer une maison';
+
+  @override
+  String get tipRenameHomeBody =>
+      'Une maison nommée d\'après son adresse ? Réglages › Maisons, touchez la maison, puis Nom.';
 
   @override
   String get tipWhatYouNeedTitle => 'Ce qu\'il vous faut';

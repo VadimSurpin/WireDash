@@ -2298,6 +2298,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'Poza domem aplikacja potrzebuje adresu zdalnego (na przykład Tailscale). Ustaw go w ustawieniach połączenia domu.';
 
   @override
+  String get tipTailscaleIpTitle => 'Użyj adresu IP Tailscale, nie nazwy';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Nazwy kończące się na .ts.net często nie są rozwiązywane w aplikacjach. Otwórz aplikację Tailscale na telefonie i sprawdź, czy jest połączona. Potem użyj adresu 100.x.y.z huba jako hosta zdalnego.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'Czy adres się zmienił?';
 
   @override
@@ -2339,6 +2346,13 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Sceny, tryb ekranu ściennego, harmonogramy i kopie zapasowe znajdziesz w sekcji „Pomoc i przewodnik”.';
+
+  @override
+  String get tipRenameHomeTitle => 'Zmień nazwę domu';
+
+  @override
+  String get tipRenameHomeBody =>
+      'Dom nazwany od swojego adresu? Ustawienia › Domy, dotknij domu, a potem Nazwa.';
 
   @override
   String get tipWhatYouNeedTitle => 'Czego potrzebujesz';

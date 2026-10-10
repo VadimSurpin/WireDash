@@ -77,6 +77,7 @@ From a setup error, it opens straight to that error's tips; it doesn't ask which
 **Home can't be reached**
 - **Is the hub on?** A power cut or update may have restarted it. Give it a minute after it comes back.
 - **Are you at home?** Away from home, the app needs a remote address (for example Tailscale). Set it in the home's connection settings.
+- **Use the Tailscale IP, not the name.** Names ending in .ts.net often don't resolve inside apps. Open the Tailscale app on the phone and make sure it's connected, then use the hub's 100.x.y.z address as the Remote host.
 - **Did the address change?** After a router restart the hub may get a new address. Reserve its address in your router's app, then update the home.
 
 **Device list missing**
@@ -86,6 +87,7 @@ From a setup error, it opens straight to that error's tips; it doesn't ask which
 **Settings**
 - **Can't connect to my hub.** Same Wi-Fi, broker running, Allow External or Mosquitto listening on the network, then connect by address.
 - **A device shows wrong or doesn't respond.** Check it in Zigbee2MQTT's web page first. If it works there, use Report a problem.
+- **Rename a home.** A home named after its address? Settings › Homes, tap the home, then tap Name.
 - **How do I…** Scenes, Wall display, schedules and backups are in Help & Guide.
 
 **Demo banner**

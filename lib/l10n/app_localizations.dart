@@ -4208,6 +4208,18 @@ abstract class AppLocalizations {
   /// **'Away from home, the app needs a remote address (for example Tailscale). Set it in the home\'s connection settings.'**
   String get tipAwayBody;
 
+  /// No description provided for @tipTailscaleIpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Tailscale IP, not the name'**
+  String get tipTailscaleIpTitle;
+
+  /// No description provided for @tipTailscaleIpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Names ending in .ts.net often don\'t resolve inside apps. Open the Tailscale app on the phone and make sure it\'s connected, then use the hub\'s 100.x.y.z address as the Remote host.'**
+  String get tipTailscaleIpBody;
+
   /// No description provided for @tipHomeAddressChangedTitle.
   ///
   /// In en, this message translates to:
@@ -4279,6 +4291,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scenes, Wall display, schedules and backups are in Help & Guide.'**
   String get tipHowDoIBody;
+
+  /// No description provided for @tipRenameHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename a home'**
+  String get tipRenameHomeTitle;
+
+  /// No description provided for @tipRenameHomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A home named after its address? Settings › Homes, tap the home, then tap Name.'**
+  String get tipRenameHomeBody;
 
   /// No description provided for @tipWhatYouNeedTitle.
   ///

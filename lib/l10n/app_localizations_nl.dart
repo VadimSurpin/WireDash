@@ -2288,6 +2288,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Buitenshuis heeft de app een extern adres nodig (bijvoorbeeld Tailscale). Stel het in bij de verbindingsinstellingen van het huis.';
 
   @override
+  String get tipTailscaleIpTitle => 'Gebruik het Tailscale-IP, niet de naam';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Namen die eindigen op .ts.net worden in apps vaak niet opgelost. Open de Tailscale-app op de telefoon en controleer dat die verbonden is. Gebruik dan het 100.x.y.z-adres van de hub als externe host.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'Is het adres veranderd?';
 
   @override
@@ -2329,6 +2336,13 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Scènes, Wandweergave, schema\'s en back-ups staan in „Help & Handleiding”.';
+
+  @override
+  String get tipRenameHomeTitle => 'Een huis hernoemen';
+
+  @override
+  String get tipRenameHomeBody =>
+      'Een huis dat naar zijn adres heet? Instellingen › Huizen, tik op het huis en dan op Naam.';
 
   @override
   String get tipWhatYouNeedTitle => 'Wat je nodig hebt';

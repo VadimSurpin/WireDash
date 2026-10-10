@@ -2293,6 +2293,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вне дома приложению нужен удалённый адрес (например, Tailscale). Укажите его в настройках подключения дома.';
 
   @override
+  String get tipTailscaleIpTitle => 'Используйте IP Tailscale, а не имя';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Имена, оканчивающиеся на .ts.net, часто не разрешаются внутри приложений. Откройте приложение Tailscale на телефоне и убедитесь, что оно подключено, затем укажите адрес хаба 100.x.y.z как удалённый хост.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'Адрес изменился?';
 
   @override
@@ -2334,6 +2341,13 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Сцены, настенный экран, расписания и резервные копии описаны в разделе «Помощь и руководство».';
+
+  @override
+  String get tipRenameHomeTitle => 'Переименовать дом';
+
+  @override
+  String get tipRenameHomeBody =>
+      'Дом назван по своему адресу? Настройки › Дома, нажмите на дом, затем на Имя.';
 
   @override
   String get tipWhatYouNeedTitle => 'Что понадобится';

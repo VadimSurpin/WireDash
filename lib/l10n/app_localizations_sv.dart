@@ -2279,6 +2279,13 @@ class AppLocalizationsSv extends AppLocalizations {
       'När du är borta behöver appen en extern adress (till exempel Tailscale). Ange den i hemmets anslutningsinställningar.';
 
   @override
+  String get tipTailscaleIpTitle => 'Använd Tailscale-IP:n, inte namnet';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Namn som slutar på .ts.net löses ofta inte upp inuti appar. Öppna Tailscale-appen på telefonen och kontrollera att den är ansluten. Använd sedan hubbens 100.x.y.z-adress som extern värd.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'Har adressen ändrats?';
 
   @override
@@ -2319,6 +2326,13 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Scener, väggskärm, scheman och säkerhetskopior finns i „Hjälp & guide”.';
+
+  @override
+  String get tipRenameHomeTitle => 'Byt namn på ett hem';
+
+  @override
+  String get tipRenameHomeBody =>
+      'Ett hem döpt efter sin adress? Inställningar › Hem, tryck på hemmet och sedan på Namn.';
 
   @override
   String get tipWhatYouNeedTitle => 'Det här behöver du';
