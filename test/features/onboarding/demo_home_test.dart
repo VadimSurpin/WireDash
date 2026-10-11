@@ -39,7 +39,8 @@ void main() {
         ['Lights', 'Switches and covers', 'Sensors']);
     final tiles = await PanelDao(db).getByDashboard(dash.id);
     expect(tiles.where((p) => p.type == PanelType.device), hasLength(8));
-    expect(tiles.where((p) => p.type == PanelType.reading), hasLength(1));
+    expect(tiles.where((p) => p.type == PanelType.reading), hasLength(2),
+        reason: 'the plug power value and the humidity gauge');
     expect(tiles.every((p) => p.sectionId != null), isTrue);
 
     // Every device tile's topic has a demo value, and it reads as current.

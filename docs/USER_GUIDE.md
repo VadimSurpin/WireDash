@@ -81,6 +81,10 @@ topic** (what it sends) and/or a **subscribe topic** (what it reads), with optio
 - **LED indicator** — a colored dot reflecting a value (e.g. contact open/closed).
 - **Node status** — online/offline/unknown of a device or service.
 - **Progress** — a numeric value as a bar with a unit (e.g. battery %).
+- **Reading** — one value from a device or topic, as a large number or, with
+  **Show as › Gauge**, as a half‑arc gauge with a min, max and up to three
+  colour bands (Normal, Good, Attention). Add one from a device's page with
+  the chart icon next to a reading, then long‑press it to switch the style.
 - **Text log** — a running log of messages on a topic.
 
 **Automation:**

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/database/database.dart';
+import '../models/gauge_defaults.dart';
 import '../models/panel_config.dart';
 import '../providers/panel_value_provider.dart';
 import 'device_tile_panel.dart';
+import 'gauge_panel.dart';
 
 /// One numeric value with its unit, large, with the tile name below.
 class ReadingPanel extends ConsumerWidget {
@@ -38,6 +40,37 @@ class ReadingPanel extends ConsumerWidget {
             ? formatReading(value, config.unit)
             : ltr('${value.toStringAsFixed(config.decimals!)}'
                 '${config.unit == null ? '' : ' ${config.unit}'}');
+    final name = Text(
+      panel.name,
+      style: theme.textTheme.bodySmall,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    if (config.style == ReadingStyle.gauge) {
+      // A gauge saved without a range (older config, hand-edited backup)
+      // still draws, on the reading's preset range.
+      final defaults = gaugeDefaults(property: config.jsonPath, unit: config.unit);
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GaugeArc(
+                value: value,
+                min: config.min ?? defaults.min,
+                max: config.max ?? defaults.max,
+                bands: config.bands,
+                label: text,
+              ),
+              const SizedBox(height: 4),
+              name,
+            ],
+          ),
+        ),
+      );
+    }
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -46,12 +79,7 @@ class ReadingPanel extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(text, style: theme.textTheme.headlineMedium),
-            Text(
-              panel.name,
-              style: theme.textTheme.bodySmall,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            name,
           ],
         ),
       ),

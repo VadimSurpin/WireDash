@@ -1698,6 +1698,43 @@ class AppLocalizationsPl extends AppLocalizations {
   String get addTileReadingSubtitle => 'Jedna wartość z urządzenia lub tematu';
 
   @override
+  String get readingShowAs => 'Pokaż jako';
+
+  @override
+  String get readingStyleValue => 'Wartość';
+
+  @override
+  String get readingStyleGauge => 'Wskaźnik';
+
+  @override
+  String get gaugeBands => 'Zakresy kolorów';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Maksymalnie trzy. Zakres, w którym jest wartość, koloruje łuk.';
+
+  @override
+  String get gaugeBandFrom => 'Od';
+
+  @override
+  String get gaugeBandTo => 'Do';
+
+  @override
+  String get gaugeBandAdd => 'Dodaj zakres';
+
+  @override
+  String get gaugeBandRemove => 'Usuń zakres';
+
+  @override
+  String get gaugeToneNormal => 'Normalny';
+
+  @override
+  String get gaugeToneGood => 'Dobry';
+
+  @override
+  String get gaugeToneAttention => 'Uwaga';
+
+  @override
   String get addTileCustom => 'Własny kafelek MQTT';
 
   @override

@@ -1690,6 +1690,43 @@ class AppLocalizationsNl extends AppLocalizations {
   String get addTileReadingSubtitle => 'Eén waarde van een apparaat of topic';
 
   @override
+  String get readingShowAs => 'Weergeven als';
+
+  @override
+  String get readingStyleValue => 'Waarde';
+
+  @override
+  String get readingStyleGauge => 'Meter';
+
+  @override
+  String get gaugeBands => 'Kleurzones';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Maximaal drie. De zone waarin de waarde valt, kleurt de boog.';
+
+  @override
+  String get gaugeBandFrom => 'Van';
+
+  @override
+  String get gaugeBandTo => 'Tot';
+
+  @override
+  String get gaugeBandAdd => 'Zone toevoegen';
+
+  @override
+  String get gaugeBandRemove => 'Zone verwijderen';
+
+  @override
+  String get gaugeToneNormal => 'Normaal';
+
+  @override
+  String get gaugeToneGood => 'Goed';
+
+  @override
+  String get gaugeToneAttention => 'Let op';
+
+  @override
   String get addTileCustom => 'Eigen MQTT-tegel';
 
   @override

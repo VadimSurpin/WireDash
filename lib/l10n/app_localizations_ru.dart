@@ -1694,6 +1694,43 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addTileReadingSubtitle => 'Одно значение с устройства или топика';
 
   @override
+  String get readingShowAs => 'Показывать как';
+
+  @override
+  String get readingStyleValue => 'Значение';
+
+  @override
+  String get readingStyleGauge => 'Шкала';
+
+  @override
+  String get gaugeBands => 'Цветовые диапазоны';
+
+  @override
+  String get gaugeBandsHelper =>
+      'До трёх. Диапазон, в который попадает значение, окрашивает дугу.';
+
+  @override
+  String get gaugeBandFrom => 'От';
+
+  @override
+  String get gaugeBandTo => 'До';
+
+  @override
+  String get gaugeBandAdd => 'Добавить диапазон';
+
+  @override
+  String get gaugeBandRemove => 'Удалить диапазон';
+
+  @override
+  String get gaugeToneNormal => 'Обычный';
+
+  @override
+  String get gaugeToneGood => 'Хорошо';
+
+  @override
+  String get gaugeToneAttention => 'Внимание';
+
+  @override
   String get addTileCustom => 'Своя MQTT-плитка';
 
   @override

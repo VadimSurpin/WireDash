@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show immutable;
+
 import '../../../data/database/tables/panels.dart';
 import '../../devices/device_profile.dart';
 
@@ -553,10 +555,71 @@ class DeviceTileConfig extends PanelConfig {
       );
 }
 
+/// How a reading tile draws its value (docs/design/gauge-2.4.md).
+enum ReadingStyle {
+  /// The value, large, with the name below.
+  value,
+
+  /// A half arc from [ReadingConfig.min] to [ReadingConfig.max] with the
+  /// value in the middle and up to three colour bands.
+  gauge,
+}
+
+/// The colour a gauge band takes, from the theme's state roles: never a
+/// free colour, so the arc stays on-brand in dark mode and Material You.
+enum GaugeTone { normal, good, attention }
+
+/// One colour band on a gauge: [tone] applies to values from [from] up to
+/// and including [to].
+@immutable
+class GaugeBand {
+  const GaugeBand({required this.from, required this.to, required this.tone});
+
+  final double from;
+  final double to;
+  final GaugeTone tone;
+
+  bool contains(num v) => v >= from && v <= to;
+
+  Map<String, dynamic> toJson() =>
+      {'from': from, 'to': to, 'tone': tone.name};
+
+  static GaugeBand? fromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final from = (raw['from'] as num?)?.toDouble();
+    final to = (raw['to'] as num?)?.toDouble();
+    if (from == null || to == null) return null;
+    final tone = GaugeTone.values
+        .firstWhere((t) => t.name == raw['tone'], orElse: () => GaugeTone.normal);
+    return GaugeBand(from: from, to: to, tone: tone);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is GaugeBand &&
+      other.from == from &&
+      other.to == to &&
+      other.tone == tone;
+
+  @override
+  int get hashCode => Object.hash(from, to, tone);
+}
+
+/// A gauge may carry at most this many bands.
+const gaugeMaxBands = 3;
+
 /// A reading tile: one numeric value at [jsonPath] of the subscribed
-/// payload, shown with [unit].
+/// payload, shown with [unit], as a plain value or as a gauge.
 class ReadingConfig extends PanelConfig {
-  const ReadingConfig({this.jsonPath = 'temperature', this.unit, this.decimals});
+  const ReadingConfig({
+    this.jsonPath = 'temperature',
+    this.unit,
+    this.decimals,
+    this.style = ReadingStyle.value,
+    this.min,
+    this.max,
+    this.bands = const [],
+  });
 
   final String jsonPath;
   final String? unit;
@@ -564,16 +627,59 @@ class ReadingConfig extends PanelConfig {
   /// Fraction digits; null shows the value as received, trimmed to one.
   final int? decimals;
 
+  final ReadingStyle style;
+
+  /// The gauge's range. Null until the tile is first shown as a gauge; the
+  /// editor fills them from the device's expose or [gaugeDefaults].
+  final double? min;
+  final double? max;
+
+  /// Up to [gaugeMaxBands] colour bands, in any order; the first that
+  /// contains the value colours the arc.
+  final List<GaugeBand> bands;
+
+  ReadingConfig copyWith({
+    String? jsonPath,
+    String? unit,
+    int? decimals,
+    ReadingStyle? style,
+    double? min,
+    double? max,
+    List<GaugeBand>? bands,
+  }) =>
+      ReadingConfig(
+        jsonPath: jsonPath ?? this.jsonPath,
+        unit: unit ?? this.unit,
+        decimals: decimals ?? this.decimals,
+        style: style ?? this.style,
+        min: min ?? this.min,
+        max: max ?? this.max,
+        bands: bands ?? this.bands,
+      );
+
   @override
   Map<String, dynamic> toJson() => {
         'jsonPath': jsonPath,
         if (unit != null) 'unit': unit,
         if (decimals != null) 'decimals': decimals,
+        if (style != ReadingStyle.value) 'style': style.name,
+        if (min != null) 'min': min,
+        if (max != null) 'max': max,
+        if (bands.isNotEmpty) 'bands': [for (final b in bands) b.toJson()],
       };
 
   static ReadingConfig fromJson(Map<String, dynamic> j) => ReadingConfig(
         jsonPath: j['jsonPath'] as String? ?? 'temperature',
         unit: j['unit'] as String?,
         decimals: (j['decimals'] as num?)?.toInt(),
+        style: ReadingStyle.values.firstWhere((s) => s.name == j['style'],
+            orElse: () => ReadingStyle.value),
+        min: (j['min'] as num?)?.toDouble(),
+        max: (j['max'] as num?)?.toDouble(),
+        bands: [
+          if (j['bands'] is List)
+            for (final b in (j['bands'] as List).take(gaugeMaxBands))
+              if (GaugeBand.fromJson(b) case final band?) band,
+        ],
       );
 }

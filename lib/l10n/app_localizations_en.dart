@@ -1679,6 +1679,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addTileReadingSubtitle => 'One value from a device or topic';
 
   @override
+  String get readingShowAs => 'Show as';
+
+  @override
+  String get readingStyleValue => 'Value';
+
+  @override
+  String get readingStyleGauge => 'Gauge';
+
+  @override
+  String get gaugeBands => 'Color bands';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Up to three. The band the value is in colors the arc.';
+
+  @override
+  String get gaugeBandFrom => 'From';
+
+  @override
+  String get gaugeBandTo => 'To';
+
+  @override
+  String get gaugeBandAdd => 'Add band';
+
+  @override
+  String get gaugeBandRemove => 'Remove band';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Good';
+
+  @override
+  String get gaugeToneAttention => 'Attention';
+
+  @override
   String get addTileCustom => 'Custom MQTT tile';
 
   @override

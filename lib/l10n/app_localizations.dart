@@ -3128,6 +3128,78 @@ abstract class AppLocalizations {
   /// **'One value from a device or topic'**
   String get addTileReadingSubtitle;
 
+  /// No description provided for @readingShowAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Show as'**
+  String get readingShowAs;
+
+  /// No description provided for @readingStyleValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get readingStyleValue;
+
+  /// No description provided for @readingStyleGauge.
+  ///
+  /// In en, this message translates to:
+  /// **'Gauge'**
+  String get readingStyleGauge;
+
+  /// No description provided for @gaugeBands.
+  ///
+  /// In en, this message translates to:
+  /// **'Color bands'**
+  String get gaugeBands;
+
+  /// No description provided for @gaugeBandsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to three. The band the value is in colors the arc.'**
+  String get gaugeBandsHelper;
+
+  /// No description provided for @gaugeBandFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get gaugeBandFrom;
+
+  /// No description provided for @gaugeBandTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get gaugeBandTo;
+
+  /// No description provided for @gaugeBandAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add band'**
+  String get gaugeBandAdd;
+
+  /// No description provided for @gaugeBandRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove band'**
+  String get gaugeBandRemove;
+
+  /// No description provided for @gaugeToneNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get gaugeToneNormal;
+
+  /// No description provided for @gaugeToneGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get gaugeToneGood;
+
+  /// No description provided for @gaugeToneAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention'**
+  String get gaugeToneAttention;
+
   /// No description provided for @addTileCustom.
   ///
   /// In en, this message translates to:

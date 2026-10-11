@@ -78,7 +78,7 @@ Board: [tiles.png](screens/1.12/tiles.png), [color-sheet.png](screens/1.12/color
 | Contact | Small | none | "Open"/"Closed" (`true` = closed); battery | Readings |
 | Motion | Small | none | "Clear"/"Motion" plus the time since the last change, measured from message arrivals | Readings |
 | Leak / smoke | Small | none | Error-container fill and "Leak detected" / "Smoke detected" while alarming | Readings |
-| Reading | Small | none | Large value and unit, with the name below | none |
+| Reading | Small | none | Large value and unit, with the name below; or, from 2.4, a half-arc gauge with colour bands ([gauge-2.4.md](gauge-2.4.md)) | none |
 | Generic | Small | first plain settable binary, if any | Help icon, first readable value | All readable values; config and diagnostic under "More" |
 
 - **Battery** shows in the state line. At 20% or below, or when `battery_low` is set, it is drawn in the error color.
