@@ -18,9 +18,9 @@ MQTT.
 
 <p align="center">
   <img src="store/screenshots/01-dashboard.png" width="220" alt="Dashboard">
-  <img src="store/screenshots/02-connections.png" width="220" alt="Broker connections">
-  <img src="store/screenshots/03-settings.png" width="220" alt="Settings">
-  <img src="store/screenshots/04-hebrew-rtl.png" width="220" alt="Hebrew RTL">
+  <img src="store/screenshots/02-device-controls.png" width="220" alt="Light controls">
+  <img src="store/screenshots/03-alerts.png" width="220" alt="Alerts">
+  <img src="store/screenshots/04-widgets.png" width="220" alt="Home-screen widgets">
 </p>
 
 ## Features
