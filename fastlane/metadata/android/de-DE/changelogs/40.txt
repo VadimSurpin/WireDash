@@ -1,0 +1,1 @@
+ZigDash 2.4.1: Eine Kachel aus dem Tab Szenen oder einer Geräteseite landet jetzt neben der Kachel des Geräts oder im letzten Abschnitt statt oben auf dem Dashboard. Wird ein Zuhause umbenannt, wird auch ein noch danach benanntes Dashboard umbenannt.

@@ -1,0 +1,1 @@
+ZigDash 2.4.1 : une tuile ajoutée depuis l’onglet Scènes ou la page d’un appareil se place désormais à côté de la tuile de l’appareil, ou dans la dernière section, au lieu du haut du tableau de bord. Renommer une maison renomme aussi un tableau de bord qui portait encore son nom.

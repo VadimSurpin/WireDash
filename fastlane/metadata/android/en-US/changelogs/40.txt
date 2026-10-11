@@ -1,0 +1,1 @@
+ZigDash 2.4.1: a tile added from the Scenes tab or a device page now lands next to the device's own tile, or in the last section, instead of at the top of the dashboard. Renaming a Home also renames a dashboard still named after it.

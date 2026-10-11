@@ -9,7 +9,8 @@ import '../../../core/router/routes.dart';
 import '../../../data/database/database.dart';
 import '../../../data/last_known/last_known_store.dart';
 import '../../../data/repositories/connection_repo.dart';
-import '../../devices/devices_providers.dart';
+import '../../../data/repositories/dashboard_repo.dart';
+import '../home_rename.dart';import '../../devices/devices_providers.dart';
 
 /// One home's page in Settings (devices-tablet-1.13.md §6): its name, its
 /// connection, its Zigbee2MQTT base topic, switching to it, and deleting it.
@@ -124,7 +125,8 @@ class HomeSettingsScreen extends ConsumerWidget {
             title: context.l10n.connName, initial: home.name))
         ?.trim();
     if (v == null || v.isEmpty || v.length > 64) return;
-    await ref.read(connectionRepoProvider).rename(home.id, v);
+    await renameHome(ref.read(connectionRepoProvider),
+        ref.read(dashboardRepoProvider), home, v);
   }
 
   Future<void> _editBase(BuildContext context, WidgetRef ref, Connection home,

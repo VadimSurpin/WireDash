@@ -1,0 +1,1 @@
+ZigDash 2.4.1: um bloco adicionado pela aba Cenas ou pela página de um dispositivo agora fica ao lado do bloco do dispositivo, ou na última seção, em vez de no topo do painel. Renomear uma casa também renomeia um painel que ainda tinha o nome dela.

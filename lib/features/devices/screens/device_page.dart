@@ -12,7 +12,8 @@ import '../../../data/database/database.dart';
 import '../../../data/database/tables/panels.dart';
 import '../../../data/repositories/dashboard_repo.dart';
 import '../../../data/repositories/panel_repo.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../../data/repositories/section_repo.dart';
+import '../../dashboards/section_placement.dart';import '../../../l10n/app_localizations.dart';
 import '../../discovery/models/z2m_device.dart';
 import '../../discovery/providers/discovery_provider.dart';
 import '../../panels/screens/add_tile_screen.dart'
@@ -405,7 +406,9 @@ class _DeviceBody extends ConsumerWidget {
           );
     if (target == null || !context.mounted) return;
     final panels = ref.read(panelRepoProvider);
-    final existing = await panels.getByDashboard(target.id);
+    // Next to the device's own tile, or in the last section (2.4.1).
+    final place = await placeAddedTile(panels, ref.read(sectionRepoProvider),
+        target.id, deviceIeee: device.ieeeAddress);
     if (!context.mounted) return;
     final wide = MediaQuery.sizeOf(context).width >= 840;
     await createReadingTile(
@@ -416,7 +419,8 @@ class _DeviceBody extends ConsumerWidget {
       feature: f,
       name: '${device.friendlyName} ${humanizeProperty(f.property).toLowerCase()}',
       size: wide ? PanelWidth.wide : PanelWidth.small,
-      sortOrder: existing.length,
+      sortOrder: place.sortOrder,
+      sectionId: place.sectionId,
     );
     messenger.showSnackBar(
         SnackBar(content: Text(l10n.deviceAddedTo(target.name))));
