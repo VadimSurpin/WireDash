@@ -8,7 +8,7 @@ This is the handoff for in-app support. The decisions were made on 2026-10-10 in
 
 In: the Get help screen and its tips, help links in setup, on the dashboard, on the Devices tab, in Settings and on the demo banner; Support details and how it is sent; the support promise; two opt-in analytics events; the privacy policy and README lines.
 
-Out: live chat, WhatsApp (personal or Business), in-app call booking, and anything that sends data without the user sending it.
+Out: live chat, WhatsApp (personal or Business), in-app call booking, and anything that sends data without the user sending it. A public Telegram group was added in 2.3.1 (see Community below): a link, not a channel the app sends anything through.
 
 ## 1. The support promise
 
