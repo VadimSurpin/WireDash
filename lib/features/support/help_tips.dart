@@ -51,6 +51,7 @@ List<HelpTip> tipsFor(AppLocalizations l, HelpFrom from, SetupErrorKind? error) 
     HelpFrom.homeUnreachable => [
         t(l.tipHubOnTitle, l.tipHubOnBody),
         t(l.tipAwayTitle, l.tipAwayBody),
+        t(l.tipTailscaleIpTitle, l.tipTailscaleIpBody),
         t(l.tipHomeAddressChangedTitle, l.tipHomeAddressChangedBody),
       ],
     HelpFrom.deviceListMissing => [
@@ -60,6 +61,7 @@ List<HelpTip> tipsFor(AppLocalizations l, HelpFrom from, SetupErrorKind? error) 
     HelpFrom.settings => [
         t(l.tipCantConnectTitle, l.tipCantConnectBody),
         t(l.tipDeviceWrongTitle, l.tipDeviceWrongBody),
+        t(l.tipRenameHomeTitle, l.tipRenameHomeBody),
         t(l.tipHowDoITitle, l.tipHowDoIBody),
       ],
     HelpFrom.demo => [

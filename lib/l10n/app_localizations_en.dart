@@ -2276,6 +2276,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Away from home, the app needs a remote address (for example Tailscale). Set it in the home\'s connection settings.';
 
   @override
+  String get tipTailscaleIpTitle => 'Use the Tailscale IP, not the name';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Names ending in .ts.net often don\'t resolve inside apps. Open the Tailscale app on the phone and make sure it\'s connected, then use the hub\'s 100.x.y.z address as the Remote host.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'Did the address change?';
 
   @override
@@ -2316,6 +2323,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Scenes, Wall display, schedules and backups are in Help & Guide.';
+
+  @override
+  String get tipRenameHomeTitle => 'Rename a home';
+
+  @override
+  String get tipRenameHomeBody =>
+      'A home named after its address? Settings › Homes, tap the home, then tap Name.';
 
   @override
   String get tipWhatYouNeedTitle => 'What you need';
@@ -2493,4 +2507,260 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pollNoAnalytics =>
       'Usage data is off, so nothing is sent from here. Tell us with Request a feature instead.';
+
+  @override
+  String alertLeak(Object name) {
+    return '💧 Leak — $name';
+  }
+
+  @override
+  String alertLeakCleared(Object name) {
+    return '✅ $name is dry again';
+  }
+
+  @override
+  String alertSmoke(Object name) {
+    return '🔥 Smoke — $name';
+  }
+
+  @override
+  String alertSmokeCleared(Object name) {
+    return '✅ No more smoke at $name';
+  }
+
+  @override
+  String alertOpened(Object name) {
+    return '🚪 $name opened';
+  }
+
+  @override
+  String alertBattery(Object name, Object value) {
+    return '🔋 Battery low — $name, $value%';
+  }
+
+  @override
+  String get alertTest => 'ZigDash test alert';
+
+  @override
+  String get alertsChannel => 'Alerts';
+
+  @override
+  String get alertsChannelDescription => 'Leaks and smoke';
+
+  @override
+  String get noticesChannel => 'Notices';
+
+  @override
+  String get noticesChannelDescription => 'Doors, windows and batteries';
+
+  @override
+  String get alertsTitle => 'Alerts';
+
+  @override
+  String get alertsStatusOn => 'Alerts are on';
+
+  @override
+  String get alertsStatusPaused =>
+      'Alerts are paused: Node-RED on the hub isn\'t running';
+
+  @override
+  String get alertsStatusNotSetUp => 'Not set up';
+
+  @override
+  String get alertsStatusPhoneOff => 'This phone isn\'t getting notifications';
+
+  @override
+  String get alertsIntro =>
+      'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. Node-RED on your hub watches the devices; ZigDash sets it up.';
+
+  @override
+  String get alertsSetUpHub => 'Set up alerts on the hub';
+
+  @override
+  String get alertsHubInstalled => 'The alerts flow is installed on the hub';
+
+  @override
+  String get alertsHubUpdated => 'The alerts flow on the hub is up to date';
+
+  @override
+  String get alertsHubNeedsLogin =>
+      'Node-RED asks for a login, so import the flow by hand:';
+
+  @override
+  String get alertsHubManualSteps =>
+      'Open Node-RED on the hub, choose Import, paste the copied flow, pick your broker in the broker node, and Deploy.';
+
+  @override
+  String get alertsCopyFlow => 'Copy the flow';
+
+  @override
+  String get alertsFlowCopied => 'Flow copied';
+
+  @override
+  String alertsNoNodeRed(Object host) {
+    return 'Alerts need Node-RED on the hub, and nothing answers on port 1880 at $host. On an SMLIGHT SMHUB, install it under Apps.';
+  }
+
+  @override
+  String get alertsHubFailed => 'Node-RED refused the flow';
+
+  @override
+  String get alertsRecent => 'Recent alerts';
+
+  @override
+  String get alertsRecentNone => 'Nothing yet';
+
+  @override
+  String get alertsYourAlerts => 'Your alerts';
+
+  @override
+  String get alertsAdd => 'Add alert';
+
+  @override
+  String get alertsNotificationsOnThisPhone => 'Notifications on this phone';
+
+  @override
+  String get alertsNoGoogle =>
+      'This phone has no Google services, so ZigDash can\'t receive pushes here.';
+
+  @override
+  String get alertsSendTest => 'Send test notification';
+
+  @override
+  String get alertsTestSent => 'Test sent. It should arrive now.';
+
+  @override
+  String alertsTestFailed(Object status) {
+    return 'The hub couldn\'t send it ($status)';
+  }
+
+  @override
+  String get alertsTestTimedOut =>
+      'No answer from the hub. Is the alerts flow running?';
+
+  @override
+  String get alertsNotConnected => 'Not connected to the hub';
+
+  @override
+  String get alertsTurnOff => 'Turn alerts off';
+
+  @override
+  String get alertsTurnOffBody => 'Alerts stop for every phone of this Home.';
+
+  @override
+  String get alertKindLeak => 'Leak';
+
+  @override
+  String get alertKindSmoke => 'Smoke';
+
+  @override
+  String get alertKindOpened => 'Door or window opened';
+
+  @override
+  String get alertKindBattery => 'Battery low';
+
+  @override
+  String get alertsEditTitle => 'Alert';
+
+  @override
+  String get alertsKind => 'What';
+
+  @override
+  String get alertsDevices => 'Devices';
+
+  @override
+  String get alertsNoDevicesForKind => 'No device of this Home reports that.';
+
+  @override
+  String get alertsHours => 'Only between';
+
+  @override
+  String get alertsHoursAny => 'Any time';
+
+  @override
+  String get alertsHoursFrom => 'From';
+
+  @override
+  String get alertsHoursTo => 'To';
+
+  @override
+  String get alertsThreshold => 'Battery below';
+
+  @override
+  String get alertsDelete => 'Delete alert';
+
+  @override
+  String get alertsNotifyMe => 'Notify me…';
+
+  @override
+  String get alertsWhatLeaves =>
+      'Alerts to ZigDash are encrypted end to end: Google\'s push service carries them but can\'t read them. Nothing else leaves your hub.';
+
+  @override
+  String get alertsRestricted =>
+      'Android may stop ZigDash in the background, so notifications could be late or missed. Allow it to run in the background in Android\'s settings (on Samsung: Battery › Never sleeping apps).';
+
+  @override
+  String get alertsOpenSettings => 'Open Android settings';
+
+  @override
+  String get alertsOff => 'Off';
+
+  @override
+  String get alertsSuggested => 'Suggested alerts';
+
+  @override
+  String alertsSuggestedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices',
+      one: '1 device',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertsTurnOn => 'Turn on';
+
+  @override
+  String get alertsShare => 'Share alerts';
+
+  @override
+  String get alertsShareBody =>
+      'Anyone with this link gets this Home\'s alerts in the ntfy app, with no ZigDash needed. The alert text goes through ntfy.sh unencrypted.';
+
+  @override
+  String get alertsShareLink => 'Link';
+
+  @override
+  String get alertsShareNewLink => 'New link';
+
+  @override
+  String get alertsShareCopied => 'Link copied';
+
+  @override
+  String get alertsShareOff => 'Stop sharing';
+
+  @override
+  String get alertsGetWithNtfy => 'Get notifications with ntfy';
+
+  @override
+  String get alertsPushover => 'Pushover';
+
+  @override
+  String get alertsPushoverBody =>
+      'Smoke and leak alerts repeat until acknowledged. Needs a Pushover account (\$4.99 once after a trial); its keys are kept on your broker.';
+
+  @override
+  String get alertsPushoverUser => 'User key';
+
+  @override
+  String get alertsPushoverToken => 'App token';
+
+  @override
+  String get alertsHideNames => 'Hide device names';
+
+  @override
+  String get alertsNtfyServer => 'ntfy server';
 }

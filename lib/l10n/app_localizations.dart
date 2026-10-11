@@ -4208,6 +4208,18 @@ abstract class AppLocalizations {
   /// **'Away from home, the app needs a remote address (for example Tailscale). Set it in the home\'s connection settings.'**
   String get tipAwayBody;
 
+  /// No description provided for @tipTailscaleIpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the Tailscale IP, not the name'**
+  String get tipTailscaleIpTitle;
+
+  /// No description provided for @tipTailscaleIpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Names ending in .ts.net often don\'t resolve inside apps. Open the Tailscale app on the phone and make sure it\'s connected, then use the hub\'s 100.x.y.z address as the Remote host.'**
+  String get tipTailscaleIpBody;
+
   /// No description provided for @tipHomeAddressChangedTitle.
   ///
   /// In en, this message translates to:
@@ -4279,6 +4291,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scenes, Wall display, schedules and backups are in Help & Guide.'**
   String get tipHowDoIBody;
+
+  /// No description provided for @tipRenameHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename a home'**
+  String get tipRenameHomeTitle;
+
+  /// No description provided for @tipRenameHomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A home named after its address? Settings › Homes, tap the home, then tap Name.'**
+  String get tipRenameHomeBody;
 
   /// No description provided for @tipWhatYouNeedTitle.
   ///
@@ -4579,6 +4603,450 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Usage data is off, so nothing is sent from here. Tell us with Request a feature instead.'**
   String get pollNoAnalytics;
+
+  /// Notification: a leak sensor got wet. {name} is the device's name.
+  ///
+  /// In en, this message translates to:
+  /// **'💧 Leak — {name}'**
+  String alertLeak(Object name);
+
+  /// Notification: the leak sensor is dry again.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ {name} is dry again'**
+  String alertLeakCleared(Object name);
+
+  /// Notification: smoke detected.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 Smoke — {name}'**
+  String alertSmoke(Object name);
+
+  /// Notification: no more smoke.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ No more smoke at {name}'**
+  String alertSmokeCleared(Object name);
+
+  /// Notification: a door or window opened.
+  ///
+  /// In en, this message translates to:
+  /// **'🚪 {name} opened'**
+  String alertOpened(Object name);
+
+  /// Notification: a battery is low; {value} is the percentage.
+  ///
+  /// In en, this message translates to:
+  /// **'🔋 Battery low — {name}, {value}%'**
+  String alertBattery(Object name, Object value);
+
+  /// The test notification's text.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash test alert'**
+  String get alertTest;
+
+  /// Android notification channel for leak and smoke (urgent).
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get alertsChannel;
+
+  /// What the urgent channel carries.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaks and smoke'**
+  String get alertsChannelDescription;
+
+  /// Android notification channel for doors and batteries.
+  ///
+  /// In en, this message translates to:
+  /// **'Notices'**
+  String get noticesChannel;
+
+  /// What the notices channel carries.
+  ///
+  /// In en, this message translates to:
+  /// **'Doors, windows and batteries'**
+  String get noticesChannelDescription;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get alertsTitle;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts are on'**
+  String get alertsStatusOn;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts are paused: Node-RED on the hub isn\'t running'**
+  String get alertsStatusPaused;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set up'**
+  String get alertsStatusNotSetUp;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone isn\'t getting notifications'**
+  String get alertsStatusPhoneOff;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. Node-RED on your hub watches the devices; ZigDash sets it up.'**
+  String get alertsIntro;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up alerts on the hub'**
+  String get alertsSetUpHub;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'The alerts flow is installed on the hub'**
+  String get alertsHubInstalled;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'The alerts flow on the hub is up to date'**
+  String get alertsHubUpdated;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Node-RED asks for a login, so import the flow by hand:'**
+  String get alertsHubNeedsLogin;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Node-RED on the hub, choose Import, paste the copied flow, pick your broker in the broker node, and Deploy.'**
+  String get alertsHubManualSteps;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the flow'**
+  String get alertsCopyFlow;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Flow copied'**
+  String get alertsFlowCopied;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts need Node-RED on the hub, and nothing answers on port 1880 at {host}. On an SMLIGHT SMHUB, install it under Apps.'**
+  String alertsNoNodeRed(Object host);
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Node-RED refused the flow'**
+  String get alertsHubFailed;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent alerts'**
+  String get alertsRecent;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet'**
+  String get alertsRecentNone;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Your alerts'**
+  String get alertsYourAlerts;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Add alert'**
+  String get alertsAdd;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications on this phone'**
+  String get alertsNotificationsOnThisPhone;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone has no Google services, so ZigDash can\'t receive pushes here.'**
+  String get alertsNoGoogle;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Send test notification'**
+  String get alertsSendTest;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Test sent. It should arrive now.'**
+  String get alertsTestSent;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'The hub couldn\'t send it ({status})'**
+  String alertsTestFailed(Object status);
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'No answer from the hub. Is the alerts flow running?'**
+  String get alertsTestTimedOut;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected to the hub'**
+  String get alertsNotConnected;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn alerts off'**
+  String get alertsTurnOff;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts stop for every phone of this Home.'**
+  String get alertsTurnOffBody;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak'**
+  String get alertKindLeak;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoke'**
+  String get alertKindSmoke;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Door or window opened'**
+  String get alertKindOpened;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery low'**
+  String get alertKindBattery;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert'**
+  String get alertsEditTitle;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'What'**
+  String get alertsKind;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get alertsDevices;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'No device of this Home reports that.'**
+  String get alertsNoDevicesForKind;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Only between'**
+  String get alertsHours;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Any time'**
+  String get alertsHoursAny;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get alertsHoursFrom;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get alertsHoursTo;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery below'**
+  String get alertsThreshold;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete alert'**
+  String get alertsDelete;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify me…'**
+  String get alertsNotifyMe;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts to ZigDash are encrypted end to end: Google\'s push service carries them but can\'t read them. Nothing else leaves your hub.'**
+  String get alertsWhatLeaves;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Android may stop ZigDash in the background, so notifications could be late or missed. Allow it to run in the background in Android\'s settings (on Samsung: Battery › Never sleeping apps).'**
+  String get alertsRestricted;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Android settings'**
+  String get alertsOpenSettings;
+
+  /// Alerts screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get alertsOff;
+
+  /// Alerts screen, suggested alerts on first visit.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested alerts'**
+  String get alertsSuggested;
+
+  /// Alerts screen, suggested alerts on first visit.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 device} other{{count} devices}}'**
+  String alertsSuggestedCount(int count);
+
+  /// Alerts screen, suggested alerts on first visit.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get alertsTurnOn;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Share alerts'**
+  String get alertsShare;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone with this link gets this Home\'s alerts in the ntfy app, with no ZigDash needed. The alert text goes through ntfy.sh unencrypted.'**
+  String get alertsShareBody;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get alertsShareLink;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'New link'**
+  String get alertsShareNewLink;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get alertsShareCopied;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get alertsShareOff;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Get notifications with ntfy'**
+  String get alertsGetWithNtfy;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Pushover'**
+  String get alertsPushover;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoke and leak alerts repeat until acknowledged. Needs a Pushover account (\$4.99 once after a trial); its keys are kept on your broker.'**
+  String get alertsPushoverBody;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'User key'**
+  String get alertsPushoverUser;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'App token'**
+  String get alertsPushoverToken;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide device names'**
+  String get alertsHideNames;
+
+  /// Alerts screen: sharing with the household (ntfy) and Pushover.
+  ///
+  /// In en, this message translates to:
+  /// **'ntfy server'**
+  String get alertsNtfyServer;
 }
 
 class _AppLocalizationsDelegate

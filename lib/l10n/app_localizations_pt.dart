@@ -2288,6 +2288,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Fora de casa, o app precisa de um endereço remoto (por exemplo, Tailscale). Defina-o nas configurações de conexão da casa.';
 
   @override
+  String get tipTailscaleIpTitle => 'Use o IP do Tailscale, não o nome';
+
+  @override
+  String get tipTailscaleIpBody =>
+      'Nomes terminados em .ts.net muitas vezes não são resolvidos dentro de apps. Abra o app Tailscale no celular e confira se está conectado; depois use o endereço 100.x.y.z do hub como host remoto.';
+
+  @override
   String get tipHomeAddressChangedTitle => 'O endereço mudou?';
 
   @override
@@ -2329,6 +2336,13 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get tipHowDoIBody =>
       'Cenas, Tela de parede, agendamentos e backups estão em \"Ajuda e guia\".';
+
+  @override
+  String get tipRenameHomeTitle => 'Renomear uma casa';
+
+  @override
+  String get tipRenameHomeBody =>
+      'Uma casa com o nome do endereço? Configurações › Casas, toque na casa e depois em Nome.';
 
   @override
   String get tipWhatYouNeedTitle => 'O que você precisa';
@@ -2506,4 +2520,262 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get pollNoAnalytics =>
       'Os dados de uso estão desativados, então nada é enviado daqui. Conte para nós em Sugerir um recurso.';
+
+  @override
+  String alertLeak(Object name) {
+    return '💧 Vazamento — $name';
+  }
+
+  @override
+  String alertLeakCleared(Object name) {
+    return '✅ $name está seco de novo';
+  }
+
+  @override
+  String alertSmoke(Object name) {
+    return '🔥 Fumaça — $name';
+  }
+
+  @override
+  String alertSmokeCleared(Object name) {
+    return '✅ Sem fumaça em $name';
+  }
+
+  @override
+  String alertOpened(Object name) {
+    return '🚪 $name aberto';
+  }
+
+  @override
+  String alertBattery(Object name, Object value) {
+    return '🔋 Bateria fraca — $name, $value%';
+  }
+
+  @override
+  String get alertTest => 'Notificação de teste do ZigDash';
+
+  @override
+  String get alertsChannel => 'Alertas';
+
+  @override
+  String get alertsChannelDescription => 'Vazamentos e fumaça';
+
+  @override
+  String get noticesChannel => 'Avisos';
+
+  @override
+  String get noticesChannelDescription => 'Portas, janelas e baterias';
+
+  @override
+  String get alertsTitle => 'Alertas';
+
+  @override
+  String get alertsStatusOn => 'Os alertas estão ativos';
+
+  @override
+  String get alertsStatusPaused =>
+      'Alertas pausados: o Node-RED no hub não está rodando';
+
+  @override
+  String get alertsStatusNotSetUp => 'Não configurado';
+
+  @override
+  String get alertsStatusPhoneOff => 'Este celular não recebe notificações';
+
+  @override
+  String get alertsIntro =>
+      'Receba uma notificação neste celular quando houver vazamento, fumaça, uma porta aberta ou bateria fraca, mesmo com o ZigDash fechado. O Node-RED no seu hub vigia os dispositivos; o ZigDash o configura.';
+
+  @override
+  String get alertsSetUpHub => 'Configurar alertas no hub';
+
+  @override
+  String get alertsHubInstalled => 'O fluxo de alertas está instalado no hub';
+
+  @override
+  String get alertsHubUpdated => 'O fluxo de alertas no hub está atualizado';
+
+  @override
+  String get alertsHubNeedsLogin =>
+      'O Node-RED pede login, então importe o fluxo manualmente:';
+
+  @override
+  String get alertsHubManualSteps =>
+      'Abra o Node-RED no hub, escolha Importar, cole o fluxo copiado, escolha seu broker no nó do broker e clique em Deploy.';
+
+  @override
+  String get alertsCopyFlow => 'Copiar o fluxo';
+
+  @override
+  String get alertsFlowCopied => 'Fluxo copiado';
+
+  @override
+  String alertsNoNodeRed(Object host) {
+    return 'Os alertas precisam do Node-RED no hub, e nada responde na porta 1880 em $host. Em um SMLIGHT SMHUB, instale-o em Apps.';
+  }
+
+  @override
+  String get alertsHubFailed => 'O Node-RED recusou o fluxo';
+
+  @override
+  String get alertsRecent => 'Alertas recentes';
+
+  @override
+  String get alertsRecentNone => 'Nada ainda';
+
+  @override
+  String get alertsYourAlerts => 'Seus alertas';
+
+  @override
+  String get alertsAdd => 'Adicionar alerta';
+
+  @override
+  String get alertsNotificationsOnThisPhone => 'Notificações neste celular';
+
+  @override
+  String get alertsNoGoogle =>
+      'Este celular não tem serviços do Google, então o ZigDash não pode receber pushes aqui.';
+
+  @override
+  String get alertsSendTest => 'Enviar notificação de teste';
+
+  @override
+  String get alertsTestSent => 'Teste enviado. Deve chegar agora.';
+
+  @override
+  String alertsTestFailed(Object status) {
+    return 'O hub não conseguiu enviar ($status)';
+  }
+
+  @override
+  String get alertsTestTimedOut =>
+      'Sem resposta do hub. O fluxo de alertas está rodando?';
+
+  @override
+  String get alertsNotConnected => 'Sem conexão com o hub';
+
+  @override
+  String get alertsTurnOff => 'Desligar os alertas';
+
+  @override
+  String get alertsTurnOffBody =>
+      'Os alertas param em todos os celulares desta casa.';
+
+  @override
+  String get alertKindLeak => 'Vazamento';
+
+  @override
+  String get alertKindSmoke => 'Fumaça';
+
+  @override
+  String get alertKindOpened => 'Porta ou janela aberta';
+
+  @override
+  String get alertKindBattery => 'Bateria fraca';
+
+  @override
+  String get alertsEditTitle => 'Alerta';
+
+  @override
+  String get alertsKind => 'O quê';
+
+  @override
+  String get alertsDevices => 'Dispositivos';
+
+  @override
+  String get alertsNoDevicesForKind =>
+      'Nenhum dispositivo desta casa informa isso.';
+
+  @override
+  String get alertsHours => 'Só entre';
+
+  @override
+  String get alertsHoursAny => 'A qualquer hora';
+
+  @override
+  String get alertsHoursFrom => 'De';
+
+  @override
+  String get alertsHoursTo => 'Até';
+
+  @override
+  String get alertsThreshold => 'Bateria abaixo de';
+
+  @override
+  String get alertsDelete => 'Excluir alerta';
+
+  @override
+  String get alertsNotifyMe => 'Me avisar…';
+
+  @override
+  String get alertsWhatLeaves =>
+      'Os alertas para o ZigDash são criptografados de ponta a ponta: o serviço push do Google os transporta, mas não consegue lê-los. Nada mais sai do seu hub.';
+
+  @override
+  String get alertsRestricted =>
+      'O Android pode parar o ZigDash em segundo plano, e as notificações podem atrasar ou se perder. Permita a execução em segundo plano nas configurações do Android (na Samsung: Bateria › Apps que nunca dormem).';
+
+  @override
+  String get alertsOpenSettings => 'Abrir configurações do Android';
+
+  @override
+  String get alertsOff => 'Desligado';
+
+  @override
+  String get alertsSuggested => 'Alertas sugeridos';
+
+  @override
+  String alertsSuggestedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dispositivos',
+      one: '1 dispositivo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertsTurnOn => 'Ativar';
+
+  @override
+  String get alertsShare => 'Compartilhar alertas';
+
+  @override
+  String get alertsShareBody =>
+      'Quem tiver este link recebe os alertas desta casa no app ntfy, sem precisar do ZigDash. O texto do alerta passa pelo ntfy.sh sem criptografia.';
+
+  @override
+  String get alertsShareLink => 'Link';
+
+  @override
+  String get alertsShareNewLink => 'Novo link';
+
+  @override
+  String get alertsShareCopied => 'Link copiado';
+
+  @override
+  String get alertsShareOff => 'Parar de compartilhar';
+
+  @override
+  String get alertsGetWithNtfy => 'Receber notificações com o ntfy';
+
+  @override
+  String get alertsPushover => 'Pushover';
+
+  @override
+  String get alertsPushoverBody =>
+      'Alertas de fumaça e vazamento se repetem até serem confirmados. Precisa de uma conta Pushover (US\$ 4,99 uma vez após o teste); as chaves ficam no seu broker.';
+
+  @override
+  String get alertsPushoverUser => 'Chave de usuário';
+
+  @override
+  String get alertsPushoverToken => 'Token do app';
+
+  @override
+  String get alertsHideNames => 'Ocultar nomes dos dispositivos';
+
+  @override
+  String get alertsNtfyServer => 'Servidor ntfy';
 }
