@@ -371,7 +371,8 @@ class _DeviceBody extends ConsumerWidget {
     if (f.type == 'binary') {
       final on = v == (f.valueOn ?? true);
       return switch (f.property) {
-        'contact' => on ? l10n.deviceClosed : l10n.deviceOpen,
+        // Zigbee2MQTT: contact true means closed, whatever value_on says.
+        'contact' => v == true ? l10n.deviceClosed : l10n.deviceOpen,
         'occupancy' || 'presence' => on ? l10n.deviceMotion : l10n.deviceClear,
         _ => on ? l10n.deviceOn : l10n.deviceOff,
       };

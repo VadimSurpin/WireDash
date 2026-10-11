@@ -1,0 +1,1 @@
+ZigDash 2.3.2: deur- en raamsensoren toonden Open terwijl ze dicht waren op sommige hubs. Opgelost op tegels, apparaatpagina's en widgets. Deur-, lek- en rooksensoren hebben nu eigen pictogrammen in de groepswidget.

@@ -51,6 +51,23 @@ Map<String, Object?> _numeric(String p, {String? unit, String? category}) => {
     };
 
 void main() {
+  group('contact sensors', () {
+    // As Zigbee2MQTT publishes it: open is the "on" state, so value_on is
+    // false, and a closed door reports contact: true.
+    final profile = classifyExposes([
+      {'type': 'binary', 'name': 'contact', 'property': 'contact', 'access': 1,
+        'value_on': false, 'value_off': true},
+      _numeric('battery', unit: '%'),
+    ]);
+
+    test('contact: true is closed, whatever value_on says', () {
+      expect(profile.deviceClass, DeviceClass.contact);
+      expect(DeviceState(profile, const {'contact': true}).alarm, isTrue);
+      expect(DeviceState(profile, const {'contact': false}).alarm, isFalse);
+      expect(DeviceState(profile, const {}).alarm, isNull);
+    });
+  });
+
   group('classifies the captured SMHUB devices', () {
     test('Tuya CK-BL702 bulb is a color light', () {
       final p = classifyExposes(_j(_bulbExposes));

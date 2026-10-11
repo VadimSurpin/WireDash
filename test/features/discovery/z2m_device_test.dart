@@ -67,7 +67,7 @@ const _bridgeDevicesJson = r'''
       "vendor": "Aqara",
       "model": "MCCGQ11LM",
       "exposes": [
-        { "type": "binary",  "property": "contact",     "value_on": true,  "value_off": false },
+        { "type": "binary",  "property": "contact",     "value_on": false, "value_off": true },
         { "type": "numeric", "property": "battery",     "unit": "%"         },
         { "type": "numeric", "property": "linkquality"                       }
       ]
@@ -132,7 +132,8 @@ void main() {
       final sensor = devices.firstWhere((d) => d.friendlyName == 'door_sensor');
       final contact = sensor.exposes.firstWhere((e) => e.property == 'contact');
       expect(contact.type, 'binary');
-      expect(contact.valueOn, 'true'); // boolean true → "true"
+      // Zigbee2MQTT marks open as the "on" state: value_on is false.
+      expect(contact.valueOn, 'false'); // boolean false → "false"
     });
 
     test('parses numeric expose with unit', () {
