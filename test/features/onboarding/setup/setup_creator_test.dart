@@ -21,6 +21,7 @@ import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
+import 'package:zigdash/features/scenes/all_shutters.dart';
 
 class _MemSecure implements SecureStore {
   final _m = <String, String>{};
@@ -228,6 +229,45 @@ void main() {
       expect(byName['plug']!.sectionId, sections[1].id);
       expect(byName['plug']!.width, PanelWidth.small);
       expect(byName['door']!.sectionId, sections[2].id);
+    });
+
+    final cover = {
+      'type': 'cover',
+      'features': [
+        {'type': 'enum', 'name': 'state', 'property': 'state', 'access': 3, 'values': ['OPEN', 'CLOSE', 'STOP']},
+        {'type': 'numeric', 'name': 'position', 'property': 'position', 'access': 7},
+      ],
+    };
+    final blind = device('blind', '0xb1', [cover]);
+    final shutter = device('shutter', '0xb2', [cover]);
+
+    test('two or more shutters add a Close all shutters tile to their section',
+        () async {
+      final result = await creator.create(
+        host: '192.168.68.55',
+        port: 1883,
+        protocol: MqttProtocol.tcp,
+        selected: [pick(plug), pick(blind), pick(shutter)],
+      );
+      final sections = await SectionDao(db).getByDashboard(result.dashboardId);
+      final tiles = await PanelDao(db).getByDashboard(result.dashboardId);
+      final scene = tiles.singleWhere((p) => p.type == PanelType.scene);
+      expect(scene.name, 'Close all shutters');
+      expect(scene.sectionId, sections.single.id);
+      expect(scene.sortOrder, 3, reason: 'after the three device tiles');
+      expect((PanelConfig.decode(scene.type, scene.config) as SceneConfig).sceneId,
+          allShuttersSceneId(ShutterCommand.close));
+    });
+
+    test('one shutter gets no Close all tile', () async {
+      final result = await creator.create(
+        host: '192.168.68.55',
+        port: 1883,
+        protocol: MqttProtocol.tcp,
+        selected: [pick(plug), pick(blind)],
+      );
+      final tiles = await PanelDao(db).getByDashboard(result.dashboardId);
+      expect(tiles.map((p) => p.type), everyElement(PanelType.device));
     });
 
     test('the first home is My Home, the next Home 2', () async {

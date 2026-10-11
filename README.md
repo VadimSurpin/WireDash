@@ -30,6 +30,11 @@ MQTT.
 - **16 panel types** — toggle, button, slider, cover (open/stop/close with
   presets), multi-state, combo, radio, LED indicator, node status, progress,
   text input, text log, scene, schedule, auto-close rule, Z2M discovery.
+- **Readings and gauges** — any sensor value as a tile, as a large number or
+  as a half-arc gauge with a min, max and colour bands for good and attention.
+- **All shutters at once** — Close, Open and Stop all shutters are ready-made
+  scenes in every Home: tap them in the Scenes tab, put one on a dashboard or
+  the home screen, and untick a garage door under Which shutters.
 - **Alerts** — a leak, smoke, a door opened at night or a low battery: Node-RED
   on your hub watches, ZigDash sets it up in one tap, and the notification
   reaches your phone through Google's push, encrypted end to end — no account,

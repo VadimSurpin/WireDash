@@ -138,6 +138,25 @@ Future<void> seedDemoDashboard({
     sectionId: sectionIds[2],
     config: const ReadingConfig(jsonPath: 'power', unit: 'W'),
   );
+  // A gauge on the climate sensor's humidity, so the demo shows one.
+  await panels.create(
+    dashboardId: dashboardId,
+    name: 'Living room humidity',
+    type: PanelType.reading,
+    topic: '',
+    subscribeTopic: '',
+    topicPrefixOverride: _topic('Living room'),
+    sortOrder: order + 1,
+    sectionId: sectionIds[2],
+    config: const ReadingConfig(
+      jsonPath: 'humidity',
+      unit: '%',
+      style: ReadingStyle.gauge,
+      min: 0,
+      max: 100,
+      bands: [GaugeBand(from: 30, to: 60, tone: GaugeTone.good)],
+    ),
+  );
 }
 
 /// The demo's device states, as current values for its tiles, and the

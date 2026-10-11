@@ -14,13 +14,17 @@
 
 **Device tile** — one tile representing a whole device of a known class (color light, light, switch/plug, cover, climate sensor, contact, motion, leak/smoke), stored as one panel of type `device` bound to the device's IEEE address. Tap the icon for the quick action, the body for full controls, long-press to edit. Unknown classes get a generic device tile.
 
-**Reading tile** — a tile showing one numeric value with its unit (temperature, humidity, power).
+**Reading tile** — a tile showing one numeric value with its unit (temperature, humidity, power), shown as a **value** (large number) or as a **gauge** (a half arc from a min to a max, with up to three **colour bands**: Normal, Good or Attention). "Gauge" is a style of the Reading tile, not a tile type.
 
 **Custom MQTT tile** — any of the raw panel types (toggle, slider, multi-state, text log…) configured by topic and payload rather than from a device. The expert path.
 
 **Unassigned device** — a device reported by the bridge that is on no dashboard in its home. Surfaced as a prompt, never added automatically.
 
 **Tile size** — how much of a dashboard row a tile takes: **Small** (one grid column), **Wide** (two columns) or **Full** (the whole row). Columns are 2 on phones, 3 on medium windows, 4 on tablets, so a Small tile stays small on a tablet. Code: `PanelWidth` small/wide/full from 1.12 (before that full/half/third; half and third migrate to Small).
+
+**Scene** — a saved set of device commands the app sends with one tap (lights, plugs, shutter positions). ZigDash's own: captured in the app, stored on the phone. Runs from the Scenes tab, a **scene tile**, a home-screen scene widget or a group widget.
+
+**Built-in scene** — a scene every Home has without creating it: **Close all shutters**, **Open all shutters**, **Stop all shutters**. Holds no device list; when run it commands every **shutter** (Zigbee2MQTT cover) the bridge reports, minus the ones unticked under **Which shutters…** (stored per Home by address). Listed first in the Scenes tab under "All shutters"; cannot be edited or deleted. Code: `all_shutters.dart`, ids `all_shutters:<close|open|stop>`.
 
 **Section** — a titled group of tiles inside a dashboard (e.g. Lights, Sensors). Generated dashboards are sectioned by device type. Tiles with no section render first, without a header; dashboards from before 1.12 start that way.
 

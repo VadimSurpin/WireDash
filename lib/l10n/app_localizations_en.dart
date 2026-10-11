@@ -1239,6 +1239,39 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'All shutters';
+
+  @override
+  String get sceneCloseAllShutters => 'Close all shutters';
+
+  @override
+  String get sceneOpenAllShutters => 'Open all shutters';
+
+  @override
+  String get sceneStopAllShutters => 'Stop all shutters';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count shutters',
+      one: '1 shutter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Which shutters…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Every shutter in this Home is included. Untick any that should stay out, like a garage door.';
+
+  @override
+  String get scenesYours => 'Your scenes';
+
+  @override
   String get panelTypeScene => 'Scene';
 
   @override
@@ -1677,6 +1710,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'One value from a device or topic';
+
+  @override
+  String get readingShowAs => 'Show as';
+
+  @override
+  String get readingStyleValue => 'Value';
+
+  @override
+  String get readingStyleGauge => 'Gauge';
+
+  @override
+  String get gaugeBands => 'Color bands';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Up to three. The band the value is in colors the arc.';
+
+  @override
+  String get gaugeBandFrom => 'From';
+
+  @override
+  String get gaugeBandTo => 'To';
+
+  @override
+  String get gaugeBandAdd => 'Add band';
+
+  @override
+  String get gaugeBandRemove => 'Remove band';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Good';
+
+  @override
+  String get gaugeToneAttention => 'Attention';
 
   @override
   String get addTileCustom => 'Custom MQTT tile';
@@ -2513,6 +2583,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pollThanks => 'Thanks! That helps decide what comes next.';
+
+  @override
+  String get communityCardTitle => 'Join the ZigDash community';
+
+  @override
+  String get communityCardBody =>
+      'Questions, ideas and release news, in a Telegram group with other ZigDash users.';
+
+  @override
+  String get communityCardJoin => 'Join';
+
+  @override
+  String get communityCardNotNow => 'Not now';
 
   @override
   String get pollNoAnalytics =>

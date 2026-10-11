@@ -2342,6 +2342,54 @@ abstract class AppLocalizations {
   /// **'{count} devices'**
   String sceneActionsCount(int count);
 
+  /// No description provided for @scenesAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'All shutters'**
+  String get scenesAllShutters;
+
+  /// No description provided for @sceneCloseAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Close all shutters'**
+  String get sceneCloseAllShutters;
+
+  /// No description provided for @sceneOpenAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Open all shutters'**
+  String get sceneOpenAllShutters;
+
+  /// No description provided for @sceneStopAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop all shutters'**
+  String get sceneStopAllShutters;
+
+  /// No description provided for @sceneShuttersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 shutter} other{{count} shutters}}'**
+  String sceneShuttersCount(int count);
+
+  /// No description provided for @sceneWhichShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Which shutters…'**
+  String get sceneWhichShutters;
+
+  /// No description provided for @sceneWhichShuttersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every shutter in this Home is included. Untick any that should stay out, like a garage door.'**
+  String get sceneWhichShuttersHint;
+
+  /// No description provided for @scenesYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your scenes'**
+  String get scenesYours;
+
   /// No description provided for @panelTypeScene.
   ///
   /// In en, this message translates to:
@@ -3127,6 +3175,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'One value from a device or topic'**
   String get addTileReadingSubtitle;
+
+  /// No description provided for @readingShowAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Show as'**
+  String get readingShowAs;
+
+  /// No description provided for @readingStyleValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get readingStyleValue;
+
+  /// No description provided for @readingStyleGauge.
+  ///
+  /// In en, this message translates to:
+  /// **'Gauge'**
+  String get readingStyleGauge;
+
+  /// No description provided for @gaugeBands.
+  ///
+  /// In en, this message translates to:
+  /// **'Color bands'**
+  String get gaugeBands;
+
+  /// No description provided for @gaugeBandsHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to three. The band the value is in colors the arc.'**
+  String get gaugeBandsHelper;
+
+  /// No description provided for @gaugeBandFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get gaugeBandFrom;
+
+  /// No description provided for @gaugeBandTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get gaugeBandTo;
+
+  /// No description provided for @gaugeBandAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add band'**
+  String get gaugeBandAdd;
+
+  /// No description provided for @gaugeBandRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove band'**
+  String get gaugeBandRemove;
+
+  /// No description provided for @gaugeToneNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get gaugeToneNormal;
+
+  /// No description provided for @gaugeToneGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get gaugeToneGood;
+
+  /// No description provided for @gaugeToneAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention'**
+  String get gaugeToneAttention;
 
   /// No description provided for @addTileCustom.
   ///
@@ -4615,6 +4735,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thanks! That helps decide what comes next.'**
   String get pollThanks;
+
+  /// No description provided for @communityCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the ZigDash community'**
+  String get communityCardTitle;
+
+  /// No description provided for @communityCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions, ideas and release news, in a Telegram group with other ZigDash users.'**
+  String get communityCardBody;
+
+  /// No description provided for @communityCardJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get communityCardJoin;
+
+  /// No description provided for @communityCardNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get communityCardNotNow;
 
   /// Poll card text for people who don't share usage data.
   ///

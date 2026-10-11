@@ -1258,6 +1258,41 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Wszystkie rolety';
+
+  @override
+  String get sceneCloseAllShutters => 'Zamknij wszystkie rolety';
+
+  @override
+  String get sceneOpenAllShutters => 'Otwórz wszystkie rolety';
+
+  @override
+  String get sceneStopAllShutters => 'Zatrzymaj wszystkie rolety';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rolety',
+      many: '$count rolet',
+      few: '$count rolety',
+      one: '1 roleta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Które rolety…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Uwzględnione są wszystkie rolety w tym domu. Odznacz te, które mają zostać pominięte, np. bramę garażową.';
+
+  @override
+  String get scenesYours => 'Twoje sceny';
+
+  @override
   String get panelTypeScene => 'Scena';
 
   @override
@@ -1696,6 +1731,43 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'Jedna wartość z urządzenia lub tematu';
+
+  @override
+  String get readingShowAs => 'Pokaż jako';
+
+  @override
+  String get readingStyleValue => 'Wartość';
+
+  @override
+  String get readingStyleGauge => 'Wskaźnik';
+
+  @override
+  String get gaugeBands => 'Zakresy kolorów';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Maksymalnie trzy. Zakres, w którym jest wartość, koloruje łuk.';
+
+  @override
+  String get gaugeBandFrom => 'Od';
+
+  @override
+  String get gaugeBandTo => 'Do';
+
+  @override
+  String get gaugeBandAdd => 'Dodaj zakres';
+
+  @override
+  String get gaugeBandRemove => 'Usuń zakres';
+
+  @override
+  String get gaugeToneNormal => 'Normalny';
+
+  @override
+  String get gaugeToneGood => 'Dobry';
+
+  @override
+  String get gaugeToneAttention => 'Uwaga';
 
   @override
   String get addTileCustom => 'Własny kafelek MQTT';
@@ -2535,6 +2607,19 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pollThanks => 'Dzięki! To pomaga zdecydować, co dalej.';
+
+  @override
+  String get communityCardTitle => 'Dołącz do społeczności ZigDash';
+
+  @override
+  String get communityCardBody =>
+      'Pytania, pomysły i nowości o wersjach, w grupie na Telegramie z innymi użytkownikami ZigDash.';
+
+  @override
+  String get communityCardJoin => 'Dołącz';
+
+  @override
+  String get communityCardNotNow => 'Nie teraz';
 
   @override
   String get pollNoAnalytics =>

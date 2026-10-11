@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/utils/material_icon.dart';
 import '../../../data/database/database.dart';
-import '../../scenes/models/scene.dart';
 import '../../scenes/scenes_providers.dart';
 import '../models/panel_config.dart';
 
@@ -39,8 +38,7 @@ class ScenePanel extends ConsumerWidget {
 
     Future<void> activate() async {
       final messenger = ScaffoldMessenger.of(context);
-      final actions = SceneAction.decodeList(scene!.actions);
-      final sent = await activateScene(ref, connectionId, actions);
+      final sent = await runScene(ref, connectionId, scene!);
       if (!context.mounted) return;
       messenger.showSnackBar(SnackBar(
         content: Text(sent > 0

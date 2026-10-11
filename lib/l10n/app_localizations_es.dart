@@ -1250,6 +1250,39 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Todas las persianas';
+
+  @override
+  String get sceneCloseAllShutters => 'Cerrar todas las persianas';
+
+  @override
+  String get sceneOpenAllShutters => 'Abrir todas las persianas';
+
+  @override
+  String get sceneStopAllShutters => 'Detener todas las persianas';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count persianas',
+      one: '1 persiana',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Qué persianas…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Se incluyen todas las persianas de esta casa. Desmarca las que deban quedar fuera, como una puerta de garaje.';
+
+  @override
+  String get scenesYours => 'Tus escenas';
+
+  @override
   String get panelTypeScene => 'Escena';
 
   @override
@@ -1688,6 +1721,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'Un valor de un dispositivo o topic';
+
+  @override
+  String get readingShowAs => 'Mostrar como';
+
+  @override
+  String get readingStyleValue => 'Valor';
+
+  @override
+  String get readingStyleGauge => 'Indicador';
+
+  @override
+  String get gaugeBands => 'Franjas de color';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Hasta tres. La franja en la que está el valor colorea el arco.';
+
+  @override
+  String get gaugeBandFrom => 'Desde';
+
+  @override
+  String get gaugeBandTo => 'Hasta';
+
+  @override
+  String get gaugeBandAdd => 'Añadir franja';
+
+  @override
+  String get gaugeBandRemove => 'Quitar franja';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bueno';
+
+  @override
+  String get gaugeToneAttention => 'Atención';
 
   @override
   String get addTileCustom => 'Mosaico MQTT personalizado';
@@ -2525,6 +2595,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pollThanks => '¡Gracias! Eso ayuda a decidir lo siguiente.';
+
+  @override
+  String get communityCardTitle => 'Únete a la comunidad de ZigDash';
+
+  @override
+  String get communityCardBody =>
+      'Preguntas, ideas y novedades de cada versión, en un grupo de Telegram con otros usuarios de ZigDash.';
+
+  @override
+  String get communityCardJoin => 'Unirme';
+
+  @override
+  String get communityCardNotNow => 'Ahora no';
 
   @override
   String get pollNoAnalytics =>

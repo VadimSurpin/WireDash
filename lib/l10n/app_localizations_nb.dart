@@ -1242,6 +1242,39 @@ class AppLocalizationsNb extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Alle persienner';
+
+  @override
+  String get sceneCloseAllShutters => 'Lukk alle persienner';
+
+  @override
+  String get sceneOpenAllShutters => 'Åpne alle persienner';
+
+  @override
+  String get sceneStopAllShutters => 'Stopp alle persienner';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count persienner',
+      one: '1 persienne',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Hvilke persienner…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Alle persienner i dette hjemmet er med. Fjern haken på dem som skal holdes utenfor, som en garasjeport.';
+
+  @override
+  String get scenesYours => 'Dine scener';
+
+  @override
   String get panelTypeScene => 'Scene';
 
   @override
@@ -1679,6 +1712,43 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'Én verdi fra en enhet eller et topic';
+
+  @override
+  String get readingShowAs => 'Vis som';
+
+  @override
+  String get readingStyleValue => 'Verdi';
+
+  @override
+  String get readingStyleGauge => 'Måler';
+
+  @override
+  String get gaugeBands => 'Fargeområder';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Opptil tre. Området verdien ligger i, farger buen.';
+
+  @override
+  String get gaugeBandFrom => 'Fra';
+
+  @override
+  String get gaugeBandTo => 'Til';
+
+  @override
+  String get gaugeBandAdd => 'Legg til område';
+
+  @override
+  String get gaugeBandRemove => 'Fjern område';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bra';
+
+  @override
+  String get gaugeToneAttention => 'Obs';
 
   @override
   String get addTileCustom => 'Egendefinert MQTT-flis';
@@ -2515,6 +2585,19 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get pollThanks => 'Takk! Det hjelper oss å velge hva som kommer.';
+
+  @override
+  String get communityCardTitle => 'Bli med i ZigDash-fellesskapet';
+
+  @override
+  String get communityCardBody =>
+      'Spørsmål, ideer og nyheter om versjoner, i en Telegram-gruppe med andre ZigDash-brukere.';
+
+  @override
+  String get communityCardJoin => 'Bli med';
+
+  @override
+  String get communityCardNotNow => 'Ikke nå';
 
   @override
   String get pollNoAnalytics =>

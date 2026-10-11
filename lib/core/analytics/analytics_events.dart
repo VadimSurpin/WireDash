@@ -121,6 +121,9 @@ enum HelpFrom {
   deviceListMissing,
   settings,
   demo,
+
+  /// The one-time community card on a dashboard (community_opened only).
+  card,
 }
 
 enum ContactVia { email, copy }

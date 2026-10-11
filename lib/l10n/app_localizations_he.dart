@@ -1230,6 +1230,39 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'כל התריסים';
+
+  @override
+  String get sceneCloseAllShutters => 'סגירת כל התריסים';
+
+  @override
+  String get sceneOpenAllShutters => 'פתיחת כל התריסים';
+
+  @override
+  String get sceneStopAllShutters => 'עצירת כל התריסים';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count תריסים',
+      one: 'תריס אחד',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'אילו תריסים…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'כל התריסים בבית הזה כלולים. בטלו את הסימון של מה שצריך להישאר בחוץ, למשל דלת מוסך.';
+
+  @override
+  String get scenesYours => 'הסצנות שלך';
+
+  @override
   String get panelTypeScene => 'סצנה';
 
   @override
@@ -1664,6 +1697,42 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'ערך אחד ממכשיר או מ‑topic';
+
+  @override
+  String get readingShowAs => 'הצגה כ';
+
+  @override
+  String get readingStyleValue => 'ערך';
+
+  @override
+  String get readingStyleGauge => 'מד';
+
+  @override
+  String get gaugeBands => 'טווחי צבע';
+
+  @override
+  String get gaugeBandsHelper => 'עד שלושה. הטווח שבו נמצא הערך צובע את הקשת.';
+
+  @override
+  String get gaugeBandFrom => 'מ';
+
+  @override
+  String get gaugeBandTo => 'עד';
+
+  @override
+  String get gaugeBandAdd => 'הוספת טווח';
+
+  @override
+  String get gaugeBandRemove => 'הסרת טווח';
+
+  @override
+  String get gaugeToneNormal => 'רגיל';
+
+  @override
+  String get gaugeToneGood => 'תקין';
+
+  @override
+  String get gaugeToneAttention => 'שימו לב';
 
   @override
   String get addTileCustom => 'אריח MQTT מותאם';
@@ -2495,6 +2564,19 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get pollThanks => 'תודה! זה עוזר להחליט מה יגיע בהמשך.';
+
+  @override
+  String get communityCardTitle => 'הצטרפו לקהילת ZigDash';
+
+  @override
+  String get communityCardBody =>
+      'שאלות, רעיונות וחדשות על גרסאות, בקבוצת טלגרם עם משתמשי ZigDash אחרים.';
+
+  @override
+  String get communityCardJoin => 'הצטרפות';
+
+  @override
+  String get communityCardNotNow => 'לא עכשיו';
 
   @override
   String get pollNoAnalytics =>

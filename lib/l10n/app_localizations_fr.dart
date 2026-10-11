@@ -1253,6 +1253,39 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Tous les volets';
+
+  @override
+  String get sceneCloseAllShutters => 'Fermer tous les volets';
+
+  @override
+  String get sceneOpenAllShutters => 'Ouvrir tous les volets';
+
+  @override
+  String get sceneStopAllShutters => 'Arrêter tous les volets';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count volets',
+      one: '1 volet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Quels volets…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Tous les volets de cette maison sont inclus. Décochez ceux qui doivent rester à l’écart, comme une porte de garage.';
+
+  @override
+  String get scenesYours => 'Vos scènes';
+
+  @override
   String get panelTypeScene => 'Scène';
 
   @override
@@ -1693,6 +1726,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'Une valeur d’un appareil ou d’un topic';
+
+  @override
+  String get readingShowAs => 'Afficher comme';
+
+  @override
+  String get readingStyleValue => 'Valeur';
+
+  @override
+  String get readingStyleGauge => 'Jauge';
+
+  @override
+  String get gaugeBands => 'Plages de couleur';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Jusqu’à trois. La plage où se trouve la valeur colore l’arc.';
+
+  @override
+  String get gaugeBandFrom => 'De';
+
+  @override
+  String get gaugeBandTo => 'À';
+
+  @override
+  String get gaugeBandAdd => 'Ajouter une plage';
+
+  @override
+  String get gaugeBandRemove => 'Supprimer la plage';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bon';
+
+  @override
+  String get gaugeToneAttention => 'Attention';
 
   @override
   String get addTileCustom => 'Tuile MQTT personnalisée';
@@ -2533,6 +2603,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get pollThanks => 'Merci ! Cela aide à choisir la suite.';
+
+  @override
+  String get communityCardTitle => 'Rejoindre la communauté ZigDash';
+
+  @override
+  String get communityCardBody =>
+      'Questions, idées et nouveautés de chaque version, dans un groupe Telegram avec d\'autres utilisateurs de ZigDash.';
+
+  @override
+  String get communityCardJoin => 'Rejoindre';
+
+  @override
+  String get communityCardNotNow => 'Pas maintenant';
 
   @override
   String get pollNoAnalytics =>

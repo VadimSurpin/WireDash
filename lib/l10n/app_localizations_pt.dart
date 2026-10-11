@@ -1249,6 +1249,39 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Todas as persianas';
+
+  @override
+  String get sceneCloseAllShutters => 'Fechar todas as persianas';
+
+  @override
+  String get sceneOpenAllShutters => 'Abrir todas as persianas';
+
+  @override
+  String get sceneStopAllShutters => 'Parar todas as persianas';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count persianas',
+      one: '1 persiana',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Quais persianas…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Todas as persianas desta casa estão incluídas. Desmarque as que devem ficar de fora, como um portão de garagem.';
+
+  @override
+  String get scenesYours => 'As suas cenas';
+
+  @override
   String get panelTypeScene => 'Cena';
 
   @override
@@ -1687,6 +1720,43 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get addTileReadingSubtitle => 'Um valor de um dispositivo ou tópico';
+
+  @override
+  String get readingShowAs => 'Mostrar como';
+
+  @override
+  String get readingStyleValue => 'Valor';
+
+  @override
+  String get readingStyleGauge => 'Medidor';
+
+  @override
+  String get gaugeBands => 'Faixas de cor';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Até três. A faixa em que o valor está colore o arco.';
+
+  @override
+  String get gaugeBandFrom => 'De';
+
+  @override
+  String get gaugeBandTo => 'Até';
+
+  @override
+  String get gaugeBandAdd => 'Adicionar faixa';
+
+  @override
+  String get gaugeBandRemove => 'Remover faixa';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bom';
+
+  @override
+  String get gaugeToneAttention => 'Atenção';
 
   @override
   String get addTileCustom => 'Bloco MQTT personalizado';
@@ -2526,6 +2596,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get pollThanks => 'Obrigado! Isso ajuda a decidir o que vem a seguir.';
+
+  @override
+  String get communityCardTitle => 'Entre na comunidade ZigDash';
+
+  @override
+  String get communityCardBody =>
+      'Dúvidas, ideias e novidades de cada versão, em um grupo do Telegram com outros usuários do ZigDash.';
+
+  @override
+  String get communityCardJoin => 'Entrar';
+
+  @override
+  String get communityCardNotNow => 'Agora não';
 
   @override
   String get pollNoAnalytics =>

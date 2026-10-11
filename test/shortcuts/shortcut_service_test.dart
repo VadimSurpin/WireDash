@@ -196,6 +196,40 @@ void main() {
     ]);
   });
 
+  test('a Home with a shutter tile offers the built-in All shutters scenes first',
+      () async {
+    await db.into(db.dashboards).insert(DashboardsCompanion.insert(
+        id: 'd', connectionId: 'home', name: 'Home', colorSeed: 0,
+        iconCodepoint: 0, createdAt: t, updatedAt: t));
+    const cover = [
+      {
+        'type': 'cover',
+        'features': [
+          {'type': 'enum', 'name': 'state', 'property': 'state', 'access': 3},
+          {'type': 'numeric', 'name': 'position', 'property': 'position', 'access': 7},
+        ]
+      }
+    ];
+    await service.resyncScenes();
+    expect(jsonDecode(prefs.getString(shortcutScenesKey)!), isEmpty,
+        reason: 'no shutter, no built-ins');
+    await db.into(db.panels).insert(PanelsCompanion.insert(
+        id: 'blind', dashboardId: 'd', name: 'Blind', type: PanelType.device,
+        topic: 'blind', width: PanelWidth.small,
+        config: DeviceTileConfig(profile: classifyExposes(cover)).encode(),
+        createdAt: t, updatedAt: t, deviceIeee: const Value('0xb1')));
+    await db.into(db.scenes).insert(ScenesCompanion.insert(
+        id: 's1', connectionId: 'home', name: 'Evening', iconCodepoint: 0,
+        colorSeed: 0, actions: '[]', createdAt: t, updatedAt: t));
+    await service.writeStrings(lookupAppLocalizations(const Locale('fr')));
+    await service.resyncScenes();
+    final out = jsonDecode(prefs.getString(shortcutScenesKey)!) as List;
+    expect(out.map((o) => o['sceneId']), [
+      'all_shutters:close', 'all_shutters:open', 'all_shutters:stop', 's1',
+    ]);
+    expect(out.first['name'], 'Fermer tous les volets');
+  });
+
   test("a deleted scene's last run is forgotten; devices' states stay",
       () async {
     await db.into(db.scenes).insert(ScenesCompanion.insert(

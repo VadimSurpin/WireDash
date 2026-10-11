@@ -81,6 +81,10 @@ topic** (what it sends) and/or a **subscribe topic** (what it reads), with optio
 - **LED indicator** — a colored dot reflecting a value (e.g. contact open/closed).
 - **Node status** — online/offline/unknown of a device or service.
 - **Progress** — a numeric value as a bar with a unit (e.g. battery %).
+- **Reading** — one value from a device or topic, as a large number or, with
+  **Show as › Gauge**, as a half‑arc gauge with a min, max and up to three
+  colour bands (Normal, Good, Attention). Add one from a device's page with
+  the chart icon next to a reading, then long‑press it to switch the style.
 - **Text log** — a running log of messages on a topic.
 
 **Automation:**
@@ -133,6 +137,16 @@ create the scene. Everything is captured as it is, and you only tick the devices
   shows "Activated …".
 - **Put it on a dashboard:** ⋮ next to the scene → **Add to dashboard**. You get a
   scene tile that runs it with one tap, next to your other tiles.
+
+### All shutters
+
+A Home with shutters gets three scenes ready-made, at the top of the Scenes
+tab: **Close all shutters**, **Open all shutters** and **Stop all shutters**.
+They act on every shutter Zigbee2MQTT knows, including ones you pair later.
+If something should stay out, say a garage door, use ⋮ → **Which shutters…**
+and untick it. **Add to dashboard** or **Add to home screen** work like any
+scene. A new Home set up with two or more shutters gets a **Close all
+shutters** tile in its Switches and covers section.
 
 ### Edit or delete
 
