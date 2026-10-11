@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../onboarding/setup/setup_error_guidance.dart';
+import 'community.dart';
 import 'help_tips.dart';
 import 'support_details.dart';
 import 'support_facts.dart';
@@ -187,6 +188,11 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
                 onPressed: text == null ? null : () => _copy(text),
                 icon: const Icon(Icons.copy),
                 label: Text(l10n.getHelpCopy),
+              ),
+              TextButton.icon(
+                onPressed: () => openCommunity(ref, widget.from),
+                icon: const Icon(Icons.forum_outlined),
+                label: Text(l10n.getHelpCommunity),
               ),
             ],
           ),

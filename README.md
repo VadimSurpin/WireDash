@@ -71,6 +71,9 @@ details (no passwords, addresses or device names), or write to
 giladtamam1@gmail.com. I usually reply within 3 days, in English or Hebrew.
 I'll never ask for your passwords or for remote access.
 
+**Community:** the ZigDash Telegram group, https://t.me/zigdash_app, for questions,
+ideas and release news. **Join the ZigDash community** in Settings opens it.
+
 Feature requests, bug reports, and ideas are welcome too — open a
 [GitHub issue](https://github.com/giladtamam/zigdash/issues).
 Built by a Zigbee2MQTT user, for the Zigbee2MQTT community.

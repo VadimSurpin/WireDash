@@ -152,6 +152,9 @@ void main() {
           {'from': 'setup_error', 'via': 'copy'});
       expect(const SupportContact(HelpFrom.demo, ContactVia.email).name,
           'support_contact');
+      expect(const CommunityOpened(HelpFrom.settings).name, 'community_opened');
+      expect(const CommunityOpened(HelpFrom.homeUnreachable).props,
+          {'from': 'home_unreachable'});
     });
 
     test('buckets', () {

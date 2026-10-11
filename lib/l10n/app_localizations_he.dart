@@ -2112,6 +2112,16 @@ class AppLocalizationsHe extends AppLocalizations {
       'לא מצליחים להפעיל? קודם טיפים, אחר כך פנייה';
 
   @override
+  String get settingsCommunity => 'הצטרפו לקהילת ZigDash';
+
+  @override
+  String get settingsCommunitySubtitle =>
+      'קבוצת טלגרם: שאלות, רעיונות ומה בדרך';
+
+  @override
+  String get getHelpCommunity => 'לשאול בקבוצת הטלגרם';
+
+  @override
   String get demoBannerHelp => 'קבלת עזרה';
 
   @override

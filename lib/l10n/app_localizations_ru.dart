@@ -2143,6 +2143,16 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не получается настроить? Сначала советы, потом связь';
 
   @override
+  String get settingsCommunity => 'Присоединяйтесь к сообществу ZigDash';
+
+  @override
+  String get settingsCommunitySubtitle =>
+      'Группа в Telegram: вопросы, идеи и что дальше';
+
+  @override
+  String get getHelpCommunity => 'Спросить в группе Telegram';
+
+  @override
   String get demoBannerHelp => 'Получить помощь';
 
   @override

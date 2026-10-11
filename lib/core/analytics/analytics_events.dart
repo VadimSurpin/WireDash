@@ -153,6 +153,19 @@ class SupportContact extends AnalyticsEvent {
       {'from': _snake(from.name), 'via': via.name};
 }
 
+/// The Telegram community link was opened, from Settings or Get help.
+class CommunityOpened extends AnalyticsEvent {
+  const CommunityOpened(this.from);
+
+  final HelpFrom from;
+
+  @override
+  String get name => 'community_opened';
+
+  @override
+  Map<String, String> get props => {'from': _snake(from.name)};
+}
+
 /// Where a shortcut lives (docs/design/roadmap-post-2.0.md, 2.1 §7).
 enum ShortcutEventKind {
   tile('tile'),

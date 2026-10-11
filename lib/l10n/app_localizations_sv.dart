@@ -2129,6 +2129,16 @@ class AppLocalizationsSv extends AppLocalizations {
       'Fungerar det inte? Först tips, sedan kontakt';
 
   @override
+  String get settingsCommunity => 'Gå med i ZigDash-communityn';
+
+  @override
+  String get settingsCommunitySubtitle =>
+      'Telegram-grupp: frågor, idéer och vad som kommer';
+
+  @override
+  String get getHelpCommunity => 'Fråga i Telegram-gruppen';
+
+  @override
   String get demoBannerHelp => 'Få hjälp';
 
   @override
