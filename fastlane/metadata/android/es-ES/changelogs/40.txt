@@ -1,0 +1,1 @@
+ZigDash 2.4.1: un mosaico añadido desde la pestaña Escenas o la página de un dispositivo ahora se coloca junto al mosaico del dispositivo o en la última sección, en lugar de arriba del panel. Al renombrar una casa también se renombra un panel que aún lleve su nombre.

@@ -8,6 +8,8 @@ import '../../../data/database/database.dart';
 import '../../../data/database/tables/panels.dart';
 import '../../../data/repositories/dashboard_repo.dart';
 import '../../../data/repositories/panel_repo.dart';
+import '../../../data/repositories/section_repo.dart';
+import '../../dashboards/section_placement.dart';
 import '../../discovery/models/z2m_device.dart';
 import '../../panels/models/panel_config.dart';
 import '../../settings/providers/settings_controller.dart'
@@ -113,14 +115,19 @@ class ScenesScreen extends ConsumerWidget {
       ),
     );
     if (chosen == null) return;
-    await ref.read(panelRepoProvider).create(
-          dashboardId: chosen.id,
-          name: scene.name,
-          type: PanelType.scene,
-          topic: '',
-          width: PanelWidth.small,
-          config: SceneConfig(sceneId: scene.id),
-        );
+    final panels = ref.read(panelRepoProvider);
+    final place =
+        await placeAddedTile(panels, ref.read(sectionRepoProvider), chosen.id);
+    await panels.create(
+      dashboardId: chosen.id,
+      name: scene.name,
+      type: PanelType.scene,
+      topic: '',
+      width: PanelWidth.small,
+      sortOrder: place.sortOrder,
+      sectionId: place.sectionId,
+      config: SceneConfig(sceneId: scene.id),
+    );
     messenger.showSnackBar(
         SnackBar(content: Text(l10n.sceneAddedToDashboard(chosen.name))));
   }

@@ -1,0 +1,1 @@
+ZigDash 2.4.1: en flis lagt til fra Scener-fanen eller en enhetsside havner nå ved siden av enhetens egen flis, eller i siste seksjon, i stedet for øverst på dashbordet. Når du gir et hjem nytt navn, får et dashbord som fortsatt het det samme også nytt navn.

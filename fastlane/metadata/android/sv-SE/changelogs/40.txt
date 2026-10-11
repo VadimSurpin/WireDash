@@ -1,0 +1,1 @@
+ZigDash 2.4.1: en bricka som läggs till från fliken Scener eller en enhetssida hamnar nu bredvid enhetens egen bricka, eller i sista sektionen, i stället för högst upp på instrumentpanelen. När ett hem byter namn byter även en instrumentpanel som fortfarande hette samma sak namn.

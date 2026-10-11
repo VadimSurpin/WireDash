@@ -1,0 +1,1 @@
+ZigDash 2.4.1: kafelek dodany z karty Sceny lub strony urządzenia trafia teraz obok kafelka urządzenia albo do ostatniej sekcji, zamiast na górę pulpitu. Zmiana nazwy domu zmienia też nazwę pulpitu, który wciąż nosił jego nazwę.

@@ -69,6 +69,7 @@ Future<String> createReadingTile(
   required String name,
   PanelWidth size = PanelWidth.small,
   required int sortOrder,
+  String? sectionId,
 }) =>
     panels.create(
       dashboardId: dashboardId,
@@ -79,6 +80,7 @@ Future<String> createReadingTile(
       topicPrefixOverride: '$base/${device.friendlyName}',
       width: size,
       sortOrder: sortOrder,
+      sectionId: sectionId,
       deviceIeee: device.ieeeAddress,
       config: readingConfigFor(feature),
     );
