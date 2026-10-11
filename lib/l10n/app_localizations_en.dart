@@ -2515,6 +2515,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pollThanks => 'Thanks! That helps decide what comes next.';
 
   @override
+  String get communityCardTitle => 'Join the ZigDash community';
+
+  @override
+  String get communityCardBody =>
+      'Questions, ideas and release news, in a Telegram group with other ZigDash users.';
+
+  @override
+  String get communityCardJoin => 'Join';
+
+  @override
+  String get communityCardNotNow => 'Not now';
+
+  @override
   String get pollNoAnalytics =>
       'Usage data is off, so nothing is sent from here. Tell us with Request a feature instead.';
 
