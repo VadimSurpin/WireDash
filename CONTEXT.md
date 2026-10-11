@@ -14,7 +14,7 @@
 
 **Device tile** — one tile representing a whole device of a known class (color light, light, switch/plug, cover, climate sensor, contact, motion, leak/smoke), stored as one panel of type `device` bound to the device's IEEE address. Tap the icon for the quick action, the body for full controls, long-press to edit. Unknown classes get a generic device tile.
 
-**Reading tile** — a tile showing one numeric value with its unit (temperature, humidity, power).
+**Reading tile** — a tile showing one numeric value with its unit (temperature, humidity, power), shown as a **value** (large number) or as a **gauge** (a half arc from a min to a max, with up to three **colour bands**: Normal, Good or Attention). "Gauge" is a style of the Reading tile, not a tile type.
 
 **Custom MQTT tile** — any of the raw panel types (toggle, slider, multi-state, text log…) configured by topic and payload rather than from a device. The expert path.
 

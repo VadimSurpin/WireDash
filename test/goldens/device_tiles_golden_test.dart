@@ -150,10 +150,39 @@ final _panels = [
     updatedAt: _stamp,
     sectionId: 's3',
   ),
+  // 2.4 gauge (gauge-2.4.md): the climate sensor's humidity as a half arc
+  // with a good band, next to the plain value tile.
+  Panel(
+    id: 'humidity',
+    dashboardId: 'd1',
+    name: 'Living room humidity',
+    type: PanelType.reading,
+    topic: '',
+    subscribeTopic: '',
+    topicPrefixOverride: 'zigbee2mqtt/climate',
+    qos: 1,
+    retain: false,
+    width: PanelWidth.small,
+    sortOrder: 100,
+    config: const ReadingConfig(
+      jsonPath: 'humidity',
+      unit: '%',
+      style: ReadingStyle.gauge,
+      min: 0,
+      max: 100,
+      bands: [GaugeBand(from: 30, to: 60, tone: GaugeTone.good)],
+    ).encode(),
+    mergeFlags: 0,
+    createdAt: _stamp,
+    updatedAt: _stamp,
+    sectionId: 's3',
+    deviceIeee: '0xclimate',
+  ),
 ];
 
 Object? _valueFor(PanelStreamKey key) {
   if (key.topic == 'zigbee2mqtt/washer') return key.jsonPath == 'power' ? 1200 : null;
+  if (key.topic == 'zigbee2mqtt/climate' && key.jsonPath == 'humidity') return 48;
   for (final (id, _, _, _, _, state) in _tiles) {
     if (key.topic == 'zigbee2mqtt/$id') return state == null ? null : json.encode(state);
   }

@@ -1681,6 +1681,43 @@ class AppLocalizationsNb extends AppLocalizations {
   String get addTileReadingSubtitle => 'Én verdi fra en enhet eller et topic';
 
   @override
+  String get readingShowAs => 'Vis som';
+
+  @override
+  String get readingStyleValue => 'Verdi';
+
+  @override
+  String get readingStyleGauge => 'Måler';
+
+  @override
+  String get gaugeBands => 'Fargeområder';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Opptil tre. Området verdien ligger i, farger buen.';
+
+  @override
+  String get gaugeBandFrom => 'Fra';
+
+  @override
+  String get gaugeBandTo => 'Til';
+
+  @override
+  String get gaugeBandAdd => 'Legg til område';
+
+  @override
+  String get gaugeBandRemove => 'Fjern område';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bra';
+
+  @override
+  String get gaugeToneAttention => 'Obs';
+
+  @override
   String get addTileCustom => 'Egendefinert MQTT-flis';
 
   @override

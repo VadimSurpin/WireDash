@@ -1,6 +1,7 @@
 import '../../data/database/tables/panels.dart';
 import '../../data/repositories/panel_repo.dart';
 import '../discovery/models/z2m_device.dart';
+import '../panels/models/gauge_defaults.dart';
 import '../panels/models/panel_config.dart';
 import 'device_profile.dart';
 
@@ -79,5 +80,25 @@ Future<String> createReadingTile(
       width: size,
       sortOrder: sortOrder,
       deviceIeee: device.ieeeAddress,
-      config: ReadingConfig(jsonPath: feature.property, unit: feature.unit),
+      config: readingConfigFor(feature),
     );
+
+/// A reading tile's config for [feature]: shown as a value, with the gauge
+/// range and bands already filled from the device's expose (or the preset
+/// for that kind of reading), so switching to Gauge in the editor needs no
+/// typing.
+ReadingConfig readingConfigFor(DeviceFeature feature) {
+  final d = gaugeDefaults(
+    property: feature.property,
+    unit: feature.unit,
+    featureMin: feature.min,
+    featureMax: feature.max,
+  );
+  return ReadingConfig(
+    jsonPath: feature.property,
+    unit: feature.unit,
+    min: d.min,
+    max: d.max,
+    bands: d.bands,
+  );
+}

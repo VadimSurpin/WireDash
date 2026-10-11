@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../devices/device_profile.dart';
 import '../../devices/device_tiles.dart';
 import '../../devices/devices_providers.dart';
@@ -16,6 +17,7 @@ import '../../../mqtt/json_path.dart';
 import '../../../data/repositories/dashboard_repo.dart';
 import '../../../data/repositories/panel_repo.dart';
 import '../../discovery/models/device_panel_suggestion.dart';
+import '../models/gauge_defaults.dart';
 import '../models/panel_config.dart';
 import '../providers/panel_value_provider.dart';
 import '../services/auto_close_config_publisher.dart';
@@ -25,6 +27,32 @@ part 'panel_form_screen.fields.dart';
 part 'panel_form_screen.topics.dart';
 
 enum SliderPreset { brightness, position }
+
+/// Editable row backing one colour band of a gauge reading tile.
+class _BandRow {
+  _BandRow({double? from, double? to, this.tone = GaugeTone.good})
+      : from = TextEditingController(text: _num(from)),
+        to = TextEditingController(text: _num(to));
+
+  final TextEditingController from;
+  final TextEditingController to;
+  GaugeTone tone;
+
+  static String _num(double? v) =>
+      v == null ? '' : (v == v.roundToDouble() ? v.toInt().toString() : '$v');
+
+  GaugeBand? toBand() {
+    final f = double.tryParse(from.text.trim());
+    final t = double.tryParse(to.text.trim());
+    if (f == null || t == null || t < f) return null;
+    return GaugeBand(from: f, to: t, tone: tone);
+  }
+
+  void dispose() {
+    from.dispose();
+    to.dispose();
+  }
+}
 
 /// Editable row backing one entry of a Multi-State / Combo / Radio panel.
 class _OptionRow {
@@ -134,6 +162,10 @@ class _State extends ConsumerState<PanelFormScreen> {
   // Reading fields
   final _readingJsonPath = TextEditingController(text: 'temperature');
   final _readingUnit = TextEditingController();
+  ReadingStyle _readingStyle = ReadingStyle.value;
+  final _readingMin = TextEditingController();
+  final _readingMax = TextEditingController();
+  final List<_BandRow> _bandRows = [];
 
   // Schedule fields
   final _scheduleOpenTime = TextEditingController(text: '07:00');
@@ -388,6 +420,12 @@ class _State extends ConsumerState<PanelFormScreen> {
     } else if (cfg is ReadingConfig) {
       _readingJsonPath.text = cfg.jsonPath;
       _readingUnit.text = cfg.unit ?? '';
+      _readingStyle = cfg.style;
+      _readingMin.text = _BandRow._num(cfg.min);
+      _readingMax.text = _BandRow._num(cfg.max);
+      for (final b in cfg.bands) {
+        _bandRows.add(_BandRow(from: b.from, to: b.to, tone: b.tone));
+      }
     }
     setState(() => _loaded = true);
   }
@@ -551,8 +589,41 @@ class _State extends ConsumerState<PanelFormScreen> {
               ? 'value'
               : _readingJsonPath.text.trim(),
           unit: nullIfBlank(_readingUnit.text),
+          style: _readingStyle,
+          min: double.tryParse(_readingMin.text.trim()),
+          max: double.tryParse(_readingMax.text.trim()),
+          bands: [
+            for (final r in _bandRows)
+              if (r.toBand() case final b?) b,
+          ],
         ),
     };
+  }
+
+  /// Switches the reading tile between a value and a gauge. The first time
+  /// it becomes a gauge with no range yet (a tile from before gauges, or a
+  /// custom-topic reading), the range and bands come from the preset for
+  /// what the reading looks like.
+  void _setReadingStyle(ReadingStyle style) {
+    setState(() {
+      _readingStyle = style;
+      if (style == ReadingStyle.gauge &&
+          double.tryParse(_readingMin.text.trim()) == null &&
+          double.tryParse(_readingMax.text.trim()) == null) {
+        final unit = _readingUnit.text.trim();
+        final d = gaugeDefaults(
+          property: _readingJsonPath.text.trim(),
+          unit: unit.isEmpty ? null : unit,
+        );
+        _readingMin.text = _BandRow._num(d.min);
+        _readingMax.text = _BandRow._num(d.max);
+        if (_bandRows.isEmpty) {
+          for (final b in d.bands) {
+            _bandRows.add(_BandRow(from: b.from, to: b.to, tone: b.tone));
+          }
+        }
+      }
+    });
   }
 
   List<int> _parsePresets(String s) {
@@ -684,11 +755,14 @@ class _State extends ConsumerState<PanelFormScreen> {
       _scheduleOpenPayload, _scheduleClosePayload,
       _autoCloseTriggerPath, _autoCloseTriggerValue,
       _autoCloseClosePayload, _autoCloseDelaySeconds,
-      _readingJsonPath, _readingUnit,
+      _readingJsonPath, _readingUnit, _readingMin, _readingMax,
     ]) {
       c.dispose();
     }
     for (final r in _optionRows) {
+      r.dispose();
+    }
+    for (final r in _bandRows) {
       r.dispose();
     }
     _topic.removeListener(_onTopicChanged);

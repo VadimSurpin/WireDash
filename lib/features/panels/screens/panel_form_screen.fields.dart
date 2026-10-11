@@ -677,6 +677,27 @@ extension _PanelFormFields on _State {
               hintText: '°C',
             ),
           ),
+          const SizedBox(height: 16),
+          Text(l10n.readingShowAs,
+              style: Theme.of(context).textTheme.labelLarge),
+          const SizedBox(height: 8),
+          SegmentedButton<ReadingStyle>(
+            segments: [
+              ButtonSegment(
+                value: ReadingStyle.value,
+                label: Text(l10n.readingStyleValue),
+                icon: const Icon(Icons.text_fields),
+              ),
+              ButtonSegment(
+                value: ReadingStyle.gauge,
+                label: Text(l10n.readingStyleGauge),
+                icon: const Icon(Icons.speed),
+              ),
+            ],
+            selected: {_readingStyle},
+            onSelectionChanged: (s) => _setReadingStyle(s.single),
+          ),
+          if (_readingStyle == ReadingStyle.gauge) ..._gaugeFields(l10n),
         ];
       case PanelType.autoClose:
         return [
@@ -727,6 +748,108 @@ extension _PanelFormFields on _State {
           ),
         ];
     }
+  }
+
+  /// Range and colour bands of a reading tile shown as a gauge.
+  List<Widget> _gaugeFields(AppLocalizations l10n) {
+    String toneLabel(GaugeTone t) => switch (t) {
+          GaugeTone.normal => l10n.gaugeToneNormal,
+          GaugeTone.good => l10n.gaugeToneGood,
+          GaugeTone.attention => l10n.gaugeToneAttention,
+        };
+    return [
+      const SizedBox(height: 12),
+      Row(children: [
+        Expanded(
+          child: TextFormField(
+            controller: _readingMin,
+            keyboardType:
+                const TextInputType.numberWithOptions(decimal: true, signed: true),
+            decoration: InputDecoration(labelText: l10n.panelProgressMin),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: TextFormField(
+            controller: _readingMax,
+            keyboardType:
+                const TextInputType.numberWithOptions(decimal: true, signed: true),
+            decoration: InputDecoration(labelText: l10n.panelProgressMax),
+          ),
+        ),
+      ]),
+      const SizedBox(height: 16),
+      Text(l10n.gaugeBands, style: Theme.of(context).textTheme.titleSmall),
+      Text(
+        l10n.gaugeBandsHelper,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+      ),
+      const SizedBox(height: 8),
+      for (var i = 0; i < _bandRows.length; i++)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _bandRows[i].from,
+                  keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true, signed: true),
+                  decoration: InputDecoration(
+                      labelText: l10n.gaugeBandFrom, isDense: true),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextFormField(
+                  controller: _bandRows[i].to,
+                  keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true, signed: true),
+                  decoration:
+                      InputDecoration(labelText: l10n.gaugeBandTo, isDense: true),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                flex: 2,
+                child: DropdownButtonFormField<GaugeTone>(
+                  initialValue: _bandRows[i].tone,
+                  isDense: true,
+                  decoration: const InputDecoration(isDense: true),
+                  items: [
+                    for (final t in GaugeTone.values)
+                      DropdownMenuItem(value: t, child: Text(toneLabel(t))),
+                  ],
+                  onChanged: (t) => setState(() { // ignore: invalid_use_of_protected_member
+                    if (t != null) _bandRows[i].tone = t;
+                  }),
+                ),
+              ),
+              IconButton(
+                tooltip: l10n.gaugeBandRemove,
+                icon: const Icon(Icons.remove_circle_outline),
+                onPressed: () => setState(() { // ignore: invalid_use_of_protected_member
+                  _bandRows.removeAt(i).dispose();
+                }),
+              ),
+            ],
+          ),
+        ),
+      if (_bandRows.length < gaugeMaxBands)
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton.icon(
+            onPressed: () => setState(() { // ignore: invalid_use_of_protected_member
+              _bandRows.add(_BandRow());
+            }),
+            icon: const Icon(Icons.add),
+            label: Text(l10n.gaugeBandAdd),
+          ),
+        ),
+    ];
   }
 
   List<Widget> _optionsFields() {

@@ -1690,6 +1690,43 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addTileReadingSubtitle => 'Un valor de un dispositivo o topic';
 
   @override
+  String get readingShowAs => 'Mostrar como';
+
+  @override
+  String get readingStyleValue => 'Valor';
+
+  @override
+  String get readingStyleGauge => 'Indicador';
+
+  @override
+  String get gaugeBands => 'Franjas de color';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Hasta tres. La franja en la que está el valor colorea el arco.';
+
+  @override
+  String get gaugeBandFrom => 'Desde';
+
+  @override
+  String get gaugeBandTo => 'Hasta';
+
+  @override
+  String get gaugeBandAdd => 'Añadir franja';
+
+  @override
+  String get gaugeBandRemove => 'Quitar franja';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bueno';
+
+  @override
+  String get gaugeToneAttention => 'Atención';
+
+  @override
   String get addTileCustom => 'Mosaico MQTT personalizado';
 
   @override

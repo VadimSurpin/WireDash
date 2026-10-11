@@ -1682,6 +1682,43 @@ class AppLocalizationsSv extends AppLocalizations {
       'Ett värde från en enhet eller ett topic';
 
   @override
+  String get readingShowAs => 'Visa som';
+
+  @override
+  String get readingStyleValue => 'Värde';
+
+  @override
+  String get readingStyleGauge => 'Mätare';
+
+  @override
+  String get gaugeBands => 'Färgintervall';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Upp till tre. Intervallet som värdet ligger i färgar bågen.';
+
+  @override
+  String get gaugeBandFrom => 'Från';
+
+  @override
+  String get gaugeBandTo => 'Till';
+
+  @override
+  String get gaugeBandAdd => 'Lägg till intervall';
+
+  @override
+  String get gaugeBandRemove => 'Ta bort intervall';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Bra';
+
+  @override
+  String get gaugeToneAttention => 'Obs';
+
+  @override
   String get addTileCustom => 'Egen MQTT-ruta';
 
   @override

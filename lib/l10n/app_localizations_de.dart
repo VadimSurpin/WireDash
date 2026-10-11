@@ -1691,6 +1691,43 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addTileReadingSubtitle => 'Ein Wert von einem Gerät oder Topic';
 
   @override
+  String get readingShowAs => 'Anzeigen als';
+
+  @override
+  String get readingStyleValue => 'Wert';
+
+  @override
+  String get readingStyleGauge => 'Messanzeige';
+
+  @override
+  String get gaugeBands => 'Farbbereiche';
+
+  @override
+  String get gaugeBandsHelper =>
+      'Bis zu drei. Der Bereich, in dem der Wert liegt, färbt den Bogen.';
+
+  @override
+  String get gaugeBandFrom => 'Von';
+
+  @override
+  String get gaugeBandTo => 'Bis';
+
+  @override
+  String get gaugeBandAdd => 'Bereich hinzufügen';
+
+  @override
+  String get gaugeBandRemove => 'Bereich entfernen';
+
+  @override
+  String get gaugeToneNormal => 'Normal';
+
+  @override
+  String get gaugeToneGood => 'Gut';
+
+  @override
+  String get gaugeToneAttention => 'Achtung';
+
+  @override
   String get addTileCustom => 'Eigene MQTT-Kachel';
 
   @override

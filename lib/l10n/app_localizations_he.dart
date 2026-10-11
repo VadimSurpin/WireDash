@@ -1666,6 +1666,42 @@ class AppLocalizationsHe extends AppLocalizations {
   String get addTileReadingSubtitle => 'ערך אחד ממכשיר או מ‑topic';
 
   @override
+  String get readingShowAs => 'הצגה כ';
+
+  @override
+  String get readingStyleValue => 'ערך';
+
+  @override
+  String get readingStyleGauge => 'מד';
+
+  @override
+  String get gaugeBands => 'טווחי צבע';
+
+  @override
+  String get gaugeBandsHelper => 'עד שלושה. הטווח שבו נמצא הערך צובע את הקשת.';
+
+  @override
+  String get gaugeBandFrom => 'מ';
+
+  @override
+  String get gaugeBandTo => 'עד';
+
+  @override
+  String get gaugeBandAdd => 'הוספת טווח';
+
+  @override
+  String get gaugeBandRemove => 'הסרת טווח';
+
+  @override
+  String get gaugeToneNormal => 'רגיל';
+
+  @override
+  String get gaugeToneGood => 'תקין';
+
+  @override
+  String get gaugeToneAttention => 'שימו לב';
+
+  @override
   String get addTileCustom => 'אריח MQTT מותאם';
 
   @override
