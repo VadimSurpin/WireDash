@@ -11,6 +11,10 @@ import '../data/database/tables/shortcuts.dart';
 import '../features/panels/models/panel_config.dart';
 import '../features/settings/providers/settings_controller.dart'
     show sharedPreferencesProvider;
+import 'dart:ui' show Locale;
+
+import '../core/l10n/app_l10n.dart';
+import '../features/scenes/all_shutters.dart';
 import '../l10n/app_localizations.dart';
 import '../features/devices/device_profile.dart';
 import 'shortcut_store.dart';
@@ -142,10 +146,46 @@ class ShortcutService {
     await _prefs.setString(shortcutControlsKey, jsonEncode(out));
   }
 
-  /// Writes the scenes the scene widget's picker offers.
+  /// The app's strings, for the built-in scenes' names: the ones last
+  /// written for the native side, else the chosen language's.
+  AppLocalizations get _l10n {
+    final kept = _strings;
+    if (kept != null) return kept;
+    final code = _prefs.getString('locale');
+    return appL10n(code == null || code.isEmpty ? null : Locale(code));
+  }
+
+  AppLocalizations? _strings;
+
+  /// Whether a Home has a shutter on any dashboard, which is when its
+  /// built-in "All shutters" scenes are worth offering in the widget picker.
+  Future<bool> _hasShutterTile(String connectionId) async {
+    for (final (panel, _) in await DeviceRegistryDao(_db).tilesOfHome(connectionId)) {
+      if (panel.type != PanelType.device) continue;
+      final config = PanelConfig.decode(panel.type, panel.config);
+      if (config is DeviceTileConfig &&
+          config.profile.deviceClass == DeviceClass.cover) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Writes the scenes the scene widget's picker offers: a Home's built-in
+  /// "All shutters" scenes when it has a shutter tile, then its saved ones.
   Future<void> resyncScenes() async {
     final out = <Map<String, Object?>>[];
     for (final conn in await _db.select(_db.connections).get()) {
+      if (await _hasShutterTile(conn.id)) {
+        for (final scene in allShuttersScenes(conn.id, _l10n)) {
+          out.add({
+            'connectionId': conn.id,
+            'home': conn.name,
+            'sceneId': scene.id,
+            'name': scene.name,
+          });
+        }
+      }
       final scenes = await (_db.select(_db.scenes)
             ..where((s) => s.connectionId.equals(conn.id))
             ..orderBy([(s) => OrderingTerm(expression: s.sortOrder)]))
@@ -335,7 +375,12 @@ class ShortcutService {
   }
 
   /// The native side's words, in the app's language.
-  Future<void> writeStrings(AppLocalizations l10n) => _prefs.setString(
+  Future<void> writeStrings(AppLocalizations l10n) {
+    _strings = l10n;
+    return _writeStrings(l10n);
+  }
+
+  Future<void> _writeStrings(AppLocalizations l10n) => _prefs.setString(
       shortcutStringsKey,
       jsonEncode({
         'working': l10n.shortcutWorking,

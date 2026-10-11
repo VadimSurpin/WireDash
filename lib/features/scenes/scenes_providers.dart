@@ -3,11 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:convert';
 
+import '../../core/l10n/app_l10n.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/database/daos/scene_dao.dart';
 import '../../data/database/database.dart';
 import '../../mqtt/providers/mqtt_manager_provider.dart';
+import '../../data/repositories/connection_repo.dart';
+import '../../data/repositories/dashboard_repo.dart';
+import '../devices/device_tiles.dart' show z2mBase;
+import '../devices/devices_providers.dart'
+    show baseTopicOverrideProvider, homeBaseTopicProvider;
 import '../discovery/models/z2m_device.dart';
+import '../discovery/providers/discovery_provider.dart';
+import '../settings/providers/settings_controller.dart';
+import 'all_shutters.dart';
 import 'models/scene.dart';
 import 'scene_capture.dart';
 
@@ -75,10 +84,81 @@ final sceneRepoProvider = Provider<SceneRepo>((ref) {
   return SceneRepo(SceneDao(db));
 });
 
+/// A Home's scenes: the three built-in "All shutters" scenes first
+/// (all_shutters.dart; named in the app's language), then the saved ones.
 final scenesForConnectionProvider =
     StreamProvider.family<List<Scene>, String>((ref, connectionId) {
-  return ref.watch(sceneRepoProvider).watchByConnection(connectionId);
+  final l10n = appL10n(ref.watch(settingsControllerProvider).locale);
+  final builtIn = allShuttersScenes(connectionId, l10n);
+  return ref
+      .watch(sceneRepoProvider)
+      .watchByConnection(connectionId)
+      .map((saved) => [...builtIn, ...saved]);
 });
+
+/// The Home's shutters as the bridge reports them right now, or null while
+/// unknown (not connected, no device list yet).
+final homeShuttersProvider =
+    Provider.autoDispose.family<List<Z2mDevice>?, String>((ref, connectionId) {
+  final base = ref.watch(homeBaseTopicProvider(connectionId));
+  if (base == null) return null;
+  final devices = ref
+      .watch(bridgeDevicesStreamProvider((connectionId: connectionId, base: base)))
+      .valueOrNull;
+  return devices == null ? null : shuttersOf(devices);
+});
+
+/// A scene's actions right now: a saved scene's stored list, or a built-in
+/// resolved against the Home's shutters. Empty when they are unknown, or
+/// when the Home's base topic is not known yet: better "Not connected"
+/// than commands sent under a guessed base.
+Future<List<SceneAction>> resolveSceneActions(
+  WidgetRef ref,
+  String connectionId,
+  Scene scene,
+) async {
+  final command = allShuttersCommand(scene.id);
+  if (command == null) return SceneAction.decodeList(scene.actions);
+  final base = await homeBaseTopic(ref, connectionId);
+  if (base == null) return const [];
+  List<Z2mDevice> devices;
+  try {
+    devices = await ref
+        .read(bridgeDevicesStreamProvider(
+                (connectionId: connectionId, base: base))
+            .future)
+        .timeout(shutterListTimeout);
+  } catch (_) {
+    devices = const [];
+  }
+  final excluded =
+      excludedShutters(ref.read(sharedPreferencesProvider), connectionId);
+  return shutterActions(command, base, devices, excluded);
+}
+
+/// The Home's base topic, waiting for the homes and dashboards to load:
+/// [homeBaseTopicProvider]'s rule, usable from a tap handler where nothing
+/// may be watching that provider.
+Future<String?> homeBaseTopic(WidgetRef ref, String connectionId) async {
+  try {
+    await ref.read(connectionsStreamProvider.future).timeout(shutterListTimeout);
+    final set = ref.read(baseTopicOverrideProvider(connectionId));
+    if (set != null) return set;
+    final first = (await ref
+            .read(dashboardsForConnectionProvider(connectionId).future)
+            .timeout(shutterListTimeout))
+        .firstOrNull;
+    return first == null ? null : z2mBase(first.topicPrefix);
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Runs [scene] as the Scenes tab and the scene tile do. Returns the number
+/// of actions published; 0 when disconnected or, for a built-in, when no
+/// shutter is known or included.
+Future<int> runScene(WidgetRef ref, String connectionId, Scene scene) async =>
+    activateScene(ref, connectionId, await resolveSceneActions(ref, connectionId, scene));
 
 /// Asks each device to report its current state by publishing a Z2M `/get`
 /// request for its gettable+settable properties. Many Z2M setups don't retain

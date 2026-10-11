@@ -1250,6 +1250,39 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Todas las persianas';
+
+  @override
+  String get sceneCloseAllShutters => 'Cerrar todas las persianas';
+
+  @override
+  String get sceneOpenAllShutters => 'Abrir todas las persianas';
+
+  @override
+  String get sceneStopAllShutters => 'Detener todas las persianas';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count persianas',
+      one: '1 persiana',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Qué persianas…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Se incluyen todas las persianas de esta casa. Desmarca las que deban quedar fuera, como una puerta de garaje.';
+
+  @override
+  String get scenesYours => 'Tus escenas';
+
+  @override
   String get panelTypeScene => 'Escena';
 
   @override

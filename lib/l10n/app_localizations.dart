@@ -2342,6 +2342,54 @@ abstract class AppLocalizations {
   /// **'{count} devices'**
   String sceneActionsCount(int count);
 
+  /// No description provided for @scenesAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'All shutters'**
+  String get scenesAllShutters;
+
+  /// No description provided for @sceneCloseAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Close all shutters'**
+  String get sceneCloseAllShutters;
+
+  /// No description provided for @sceneOpenAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Open all shutters'**
+  String get sceneOpenAllShutters;
+
+  /// No description provided for @sceneStopAllShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop all shutters'**
+  String get sceneStopAllShutters;
+
+  /// No description provided for @sceneShuttersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 shutter} other{{count} shutters}}'**
+  String sceneShuttersCount(int count);
+
+  /// No description provided for @sceneWhichShutters.
+  ///
+  /// In en, this message translates to:
+  /// **'Which shutters…'**
+  String get sceneWhichShutters;
+
+  /// No description provided for @sceneWhichShuttersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every shutter in this Home is included. Untick any that should stay out, like a garage door.'**
+  String get sceneWhichShuttersHint;
+
+  /// No description provided for @scenesYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your scenes'**
+  String get scenesYours;
+
   /// No description provided for @panelTypeScene.
   ///
   /// In en, this message translates to:

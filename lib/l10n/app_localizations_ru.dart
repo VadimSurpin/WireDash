@@ -1254,6 +1254,41 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Все рольставни';
+
+  @override
+  String get sceneCloseAllShutters => 'Закрыть все рольставни';
+
+  @override
+  String get sceneOpenAllShutters => 'Открыть все рольставни';
+
+  @override
+  String get sceneStopAllShutters => 'Остановить все рольставни';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count рольставни',
+      many: '$count рольставен',
+      few: '$count рольставни',
+      one: '1 рольставня',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Какие рольставни…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Включены все рольставни этого дома. Снимите отметку с тех, что должны остаться в стороне, например с гаражных ворот.';
+
+  @override
+  String get scenesYours => 'Ваши сцены';
+
+  @override
   String get panelTypeScene => 'Сцена';
 
   @override

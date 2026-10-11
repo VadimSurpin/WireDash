@@ -1230,6 +1230,39 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'כל התריסים';
+
+  @override
+  String get sceneCloseAllShutters => 'סגירת כל התריסים';
+
+  @override
+  String get sceneOpenAllShutters => 'פתיחת כל התריסים';
+
+  @override
+  String get sceneStopAllShutters => 'עצירת כל התריסים';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count תריסים',
+      one: 'תריס אחד',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'אילו תריסים…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'כל התריסים בבית הזה כלולים. בטלו את הסימון של מה שצריך להישאר בחוץ, למשל דלת מוסך.';
+
+  @override
+  String get scenesYours => 'הסצנות שלך';
+
+  @override
   String get panelTypeScene => 'סצנה';
 
   @override

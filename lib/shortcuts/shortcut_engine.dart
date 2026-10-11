@@ -14,12 +14,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/l10n/app_l10n.dart';
 import '../core/storage/secure_storage.dart';
 import '../data/database/daos/connection_dao.dart';
+import '../data/database/daos/dashboard_dao.dart';
 import '../data/database/daos/scene_dao.dart';
 import '../data/database/database.dart';
 import '../features/scenes/models/scene.dart';
 import '../mqtt/broker_config.dart';
 import '../mqtt/mqtt_manager.dart';
 import '../features/devices/device_profile.dart';
+import '../features/devices/device_tiles.dart' show z2mBase;
+import '../features/discovery/models/z2m_device.dart';
+import '../features/scenes/all_shutters.dart';
 import '../features/panels/widgets/device_tile_panel.dart'
     show decodeDeviceState;
 import 'shortcut_commander.dart';
@@ -282,23 +286,69 @@ class ShortcutEngine {
   }
 
   Future<Map<String, Object?>> scene(String connectionId, String sceneId) async {
-    final scene = await SceneDao(await _database).getById(sceneId);
     final mgr = await _manager(connectionId);
-    if (scene == null || mgr == null) return {'outcome': 'removed'};
+    if (mgr == null) return {'outcome': 'removed'};
     final commander = await _commander();
+    final List<SceneAction> actions;
+    final command = allShuttersCommand(sceneId);
+    if (command != null) {
+      // A built-in "All shutters" scene: the Home's covers right now, from
+      // the bridge's retained device list, once the broker is reached (a
+      // fresh engine is still connecting when the tap arrives).
+      if (!await commander.reach(mgr)) {
+        return {'outcome': ShortcutOutcome.unreachable.name};
+      }
+      actions = await _shutterActions(connectionId, command, mgr);
+      if (actions.isEmpty) return {'outcome': ShortcutOutcome.unreachable.name};
+    } else {
+      final scene = await SceneDao(await _database).getById(sceneId);
+      if (scene == null) return {'outcome': 'removed'};
+      actions = SceneAction.decodeList(scene.actions);
+    }
     final prefs = await _prefs;
     // A scene's widget shows its last run like a device's state: "Sent",
     // then "Confirmed" once every device answered.
     final key = shortcutStateKey(connectionId, sceneId);
     Future<void> say(String line) => prefs.setString(key,
         jsonEncode({'line': line, 'at': DateTime.now().millisecondsSinceEpoch}));
-    final outcome = await commander.runScene(
-        mgr, SceneAction.decodeList(scene.actions),
+    final outcome = await commander.runScene(mgr, actions,
         onSent: () => say(commander.l10n.shortcutSceneSent));
     if (outcome == ShortcutOutcome.confirmed) {
       await say(commander.l10n.shortcutSceneConfirmed);
     }
     return {'outcome': outcome.name};
+  }
+
+  /// The Home's Zigbee2MQTT base topic, as the app derives it: the one set
+  /// in Settings, else from the first dashboard's prefix.
+  Future<String> _homeBase(String connectionId) async {
+    final db = await _database;
+    final conn = await ConnectionDao(db).getById(connectionId);
+    final first =
+        (await DashboardDao(db).getByConnection(connectionId)).firstOrNull;
+    return z2mBase(first?.topicPrefix, homeBase: conn?.z2mBaseTopic);
+  }
+
+  /// [command] for every included shutter of the Home, or empty when the
+  /// bridge's device list does not arrive within [shutterListTimeout].
+  Future<List<SceneAction>> _shutterActions(
+      String connectionId, ShutterCommand command, MqttManager mgr) async {
+    final base = await _homeBase(connectionId);
+    final topic = '$base/bridge/devices';
+    List<Z2mDevice> devices;
+    try {
+      final first = await mgr
+          .subscribe(topic)
+          .firstWhere((m) => m.payload.isNotEmpty)
+          .timeout(shutterListTimeout);
+      devices = parseBridgeDevices(first.payload);
+    } catch (_) {
+      devices = const [];
+    } finally {
+      mgr.unsubscribe(topic);
+    }
+    final excluded = excludedShutters(await _prefs, connectionId);
+    return shutterActions(command, base, devices, excluded);
   }
 
   static Map<String, Object?> _decode(String? raw) {

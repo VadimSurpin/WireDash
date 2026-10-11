@@ -22,6 +22,10 @@
 
 **Tile size** — how much of a dashboard row a tile takes: **Small** (one grid column), **Wide** (two columns) or **Full** (the whole row). Columns are 2 on phones, 3 on medium windows, 4 on tablets, so a Small tile stays small on a tablet. Code: `PanelWidth` small/wide/full from 1.12 (before that full/half/third; half and third migrate to Small).
 
+**Scene** — a saved set of device commands the app sends with one tap (lights, plugs, shutter positions). ZigDash's own: captured in the app, stored on the phone. Runs from the Scenes tab, a **scene tile**, a home-screen scene widget or a group widget.
+
+**Built-in scene** — a scene every Home has without creating it: **Close all shutters**, **Open all shutters**, **Stop all shutters**. Holds no device list; when run it commands every **shutter** (Zigbee2MQTT cover) the bridge reports, minus the ones unticked under **Which shutters…** (stored per Home by address). Listed first in the Scenes tab under "All shutters"; cannot be edited or deleted. Code: `all_shutters.dart`, ids `all_shutters:<close|open|stop>`.
+
 **Section** — a titled group of tiles inside a dashboard (e.g. Lights, Sensors). Generated dashboards are sectioned by device type. Tiles with no section render first, without a header; dashboards from before 1.12 start that way.
 
 **Device link** — the IEEE address a tile carries (`panels.deviceIeee`): always on device and reading tiles, optional on custom MQTT tiles. It decides whether a device is on a dashboard.
