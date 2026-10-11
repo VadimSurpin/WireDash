@@ -3950,6 +3950,24 @@ abstract class AppLocalizations {
   /// **'Can\'t get it working? Tips first, then contact'**
   String get settingsGetHelpSubtitle;
 
+  /// No description provided for @settingsCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the ZigDash community'**
+  String get settingsCommunity;
+
+  /// No description provided for @settingsCommunitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Telegram group: questions, ideas and what\'s coming'**
+  String get settingsCommunitySubtitle;
+
+  /// No description provided for @getHelpCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask in the Telegram group'**
+  String get getHelpCommunity;
+
   /// No description provided for @demoBannerHelp.
   ///
   /// In en, this message translates to:

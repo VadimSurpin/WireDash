@@ -2138,6 +2138,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não está funcionando? Primeiro dicas, depois contato';
 
   @override
+  String get settingsCommunity => 'Entre na comunidade ZigDash';
+
+  @override
+  String get settingsCommunitySubtitle =>
+      'Grupo no Telegram: dúvidas, ideias e novidades';
+
+  @override
+  String get getHelpCommunity => 'Perguntar no grupo do Telegram';
+
+  @override
   String get demoBannerHelp => 'Obter ajuda';
 
   @override

@@ -8,7 +8,7 @@ This is the handoff for in-app support. The decisions were made on 2026-10-10 in
 
 In: the Get help screen and its tips, help links in setup, on the dashboard, on the Devices tab, in Settings and on the demo banner; Support details and how it is sent; the support promise; two opt-in analytics events; the privacy policy and README lines.
 
-Out: live chat, WhatsApp (personal or Business), in-app call booking, and anything that sends data without the user sending it.
+Out: live chat, WhatsApp (personal or Business), in-app call booking, and anything that sends data without the user sending it. A public Telegram group was added in 2.3.1 (see Community below): a link, not a channel the app sends anything through.
 
 ## 1. The support promise
 
@@ -32,12 +32,16 @@ Every link opens the one **Get help** screen, telling it where it came from.
 | Manual connect: the connection check failed | the same link under the diagnostics | `manual_connect` |
 | Dashboard: the home can't be reached | in the unreachable state | `home_unreachable` |
 | Devices tab: device list missing | under Restart Zigbee2MQTT | `device_list_missing` |
-| Settings | new **Help & support** group: Help & Guide, **Get help**, Report a problem, Request a feature | `settings` |
+| Settings | new **Help & support** group: Help & Guide, **Get help**, Join the ZigDash community, Report a problem, Request a feature | `settings` |
 | Demo banner | "Need help connecting your hub? Get help" | `demo` |
 
 Not on: scanning and "Checking the connection…" screens (nothing has failed yet), or a device page for a device that is not responding (a Zigbee problem the page already explains).
 
 **Get help** is for "I can't get it working" (a Support request). **Report a problem** stays for bugs to fix.
+
+### Community (2.3.1)
+
+A public Telegram group, **ZigDash** (`https://t.me/zigdash_app`), is where users ask each other, suggest, and hear what's coming; the developer posts releases and answers there. The app links to it from Settings (**Join the ZigDash community**) and from the bottom of Get help (**Ask in the Telegram group**), so a stuck user can ask in public instead of, or before, emailing. Nothing is sent by the app: the link opens Telegram (or the web) and that's all; the only measurement is `community_opened`.
 
 ## 3. The Get help screen
 
@@ -132,6 +136,7 @@ Two new events under [ADR 0006](../adr/0006-opt-in-anonymous-analytics.md), sent
 
 - `help_opened`: `from` (`no_connection`, `setup_error`, `manual_connect`, `home_unreachable`, `device_list_missing`, `settings`, `demo`).
 - `support_contact`: `from`, `via` (`email`, `copy`).
+- `community_opened`: `from` (as `help_opened`; `settings` from the Settings tile).
 
 No event for ticked tips. Success after the first month: support stays within 1–2 hours a week (about 5 emails or fewer), and the share of people who open Get help during setup and then complete setup (`setup_step`) is measured as a baseline to improve on. Each support email gets one Gmail label for its cause; the top labels decide which tips change.
 

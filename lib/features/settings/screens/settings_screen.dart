@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../support/community.dart';
 import '../../support/support_facts.dart' show supportDetailsProvider;
 import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
@@ -189,6 +190,12 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: () => context.push(Routes.getHelpFrom(
                     HelpFrom.settings.name,
                     home: current)),
+              ),
+              ListTile(
+                leading: const Icon(Icons.forum_outlined),
+                title: Text(l10n.settingsCommunity),
+                subtitle: Text(l10n.settingsCommunitySubtitle),
+                onTap: () => openCommunity(ref, HelpFrom.settings),
               ),
               ListTile(
                 leading: const Icon(Icons.bug_report_outlined),

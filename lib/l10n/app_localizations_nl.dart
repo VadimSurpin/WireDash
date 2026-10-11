@@ -2138,6 +2138,16 @@ class AppLocalizationsNl extends AppLocalizations {
       'Lukt het niet? Eerst tips, dan contact';
 
   @override
+  String get settingsCommunity => 'Word lid van de ZigDash-community';
+
+  @override
+  String get settingsCommunitySubtitle =>
+      'Telegram-groep: vragen, ideeën en wat eraan komt';
+
+  @override
+  String get getHelpCommunity => 'Vraag het in de Telegram-groep';
+
+  @override
   String get demoBannerHelp => 'Hulp krijgen';
 
   @override
