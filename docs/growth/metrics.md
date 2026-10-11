@@ -55,3 +55,29 @@ Play Console › Statistics › User acquisition › New users, monthly, all cou
 | **Total** | **316** |
 
 Forecast for the Play "1,000+ downloads" badge: around 2027-01-01 at October's ~8 a day; early December 2026 if the 2.0 launch adds ~150 and the pace reaches ~10 a day. Re-read with the 2026-11-01 table.
+
+## Reading of 2026-10-11 (2.3.1 live, 2.3.2 in review)
+
+Dashboard, last 28 days compared with the 28 before:
+
+| Metric | Value | Change |
+|---|---|---|
+| Device acquisitions | 282 | +432% |
+| Device first opens | 108 | +286% |
+| Monthly active devices | 167 | +391% |
+| Installed audience (Oct 8) | 160 | 98 in late Sep, 32 on Sep 4 |
+
+Pace: about 10 acquisitions a day; 38% of acquisitions open the app; the installed audience grows by roughly 60 a month, about a quarter of acquisitions. Top countries by installed audience: France 17, Russia 16, Germany 14, Israel 14, then the US, Netherlands, UK, Australia, Brazil, Poland.
+
+### One-year estimate (to October 2027), made 2026-10-11
+
+Assumes releases keep coming at the current rhythm and the announcement posts go out. Cumulative installs = Play acquisitions to date (~350) plus the next 12 months.
+
+| Scenario | Monthly acquisitions | Cumulative installs | Installed audience |
+|---|---|---|---|
+| Low: pace stays flat | 300 | ~4,000 | 700–900 |
+| Base: +8% a month (Play Explore + posts + translations) | 300 → 750 | ~6,000 | 1,100–1,400 |
+| High: a Z2M docs listing or a post that lands, +15% a month | 300 → 1,600 | ~9,000 | 2,000–2,500 |
+
+Levers that decide which row: activation (the 38% first-open rate), a mention in the Zigbee2MQTT docs or README, IzzyOnDroid/F-Droid, Russian-speaking channels (Russia is the #2 country with a fresh translation), and ratings count (4 so far). Re-read at the 2026-11-01 table.
+
