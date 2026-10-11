@@ -134,6 +134,16 @@ create the scene. Everything is captured as it is, and you only tick the devices
 - **Put it on a dashboard:** ⋮ next to the scene → **Add to dashboard**. You get a
   scene tile that runs it with one tap, next to your other tiles.
 
+### All shutters
+
+A Home with shutters gets three scenes ready-made, at the top of the Scenes
+tab: **Close all shutters**, **Open all shutters** and **Stop all shutters**.
+They act on every shutter Zigbee2MQTT knows, including ones you pair later.
+If something should stay out, say a garage door, use ⋮ → **Which shutters…**
+and untick it. **Add to dashboard** or **Add to home screen** work like any
+scene. A new Home set up with two or more shutters gets a **Close all
+shutters** tile in its Switches and covers section.
+
 ### Edit or delete
 
 ⋮ next to the scene → **Edit** or **Delete**. Deleting a scene doesn't change your

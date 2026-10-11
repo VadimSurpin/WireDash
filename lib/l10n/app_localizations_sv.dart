@@ -1242,6 +1242,39 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Alla jalusier';
+
+  @override
+  String get sceneCloseAllShutters => 'Stäng alla jalusier';
+
+  @override
+  String get sceneOpenAllShutters => 'Öppna alla jalusier';
+
+  @override
+  String get sceneStopAllShutters => 'Stoppa alla jalusier';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jalusier',
+      one: '1 jalusi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Vilka jalusier…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Alla jalusier i det här hemmet ingår. Avmarkera de som ska lämnas utanför, som en garageport.';
+
+  @override
+  String get scenesYours => 'Dina scener';
+
+  @override
   String get panelTypeScene => 'Scen';
 
   @override

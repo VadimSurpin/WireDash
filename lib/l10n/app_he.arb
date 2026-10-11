@@ -498,6 +498,14 @@
     }
   },
   "sceneActionsCount": "{count} התקנים",
+  "scenesAllShutters": "כל התריסים",
+  "sceneCloseAllShutters": "סגירת כל התריסים",
+  "sceneOpenAllShutters": "פתיחת כל התריסים",
+  "sceneStopAllShutters": "עצירת כל התריסים",
+  "sceneShuttersCount": "{count, plural, =1{תריס אחד} other{{count} תריסים}}",
+  "sceneWhichShutters": "אילו תריסים…",
+  "sceneWhichShuttersHint": "כל התריסים בבית הזה כלולים. בטלו את הסימון של מה שצריך להישאר בחוץ, למשל דלת מוסך.",
+  "scenesYours": "הסצנות שלך",
   "@sceneActionsCount": {
     "placeholders": {
       "count": {

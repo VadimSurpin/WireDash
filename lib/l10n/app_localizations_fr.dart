@@ -1253,6 +1253,39 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Tous les volets';
+
+  @override
+  String get sceneCloseAllShutters => 'Fermer tous les volets';
+
+  @override
+  String get sceneOpenAllShutters => 'Ouvrir tous les volets';
+
+  @override
+  String get sceneStopAllShutters => 'Arrêter tous les volets';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count volets',
+      one: '1 volet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Quels volets…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Tous les volets de cette maison sont inclus. Décochez ceux qui doivent rester à l’écart, comme une porte de garage.';
+
+  @override
+  String get scenesYours => 'Vos scènes';
+
+  @override
   String get panelTypeScene => 'Scène';
 
   @override

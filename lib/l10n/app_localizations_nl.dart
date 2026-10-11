@@ -1249,6 +1249,39 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Alle rolluiken';
+
+  @override
+  String get sceneCloseAllShutters => 'Alle rolluiken sluiten';
+
+  @override
+  String get sceneOpenAllShutters => 'Alle rolluiken openen';
+
+  @override
+  String get sceneStopAllShutters => 'Alle rolluiken stoppen';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rolluiken',
+      one: '1 rolluik',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Welke rolluiken…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Alle rolluiken van dit huis doen mee. Vink uit wat erbuiten moet blijven, zoals een garagedeur.';
+
+  @override
+  String get scenesYours => 'Jouw scènes';
+
+  @override
   String get panelTypeScene => 'Scène';
 
   @override

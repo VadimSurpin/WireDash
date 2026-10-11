@@ -1239,6 +1239,39 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'All shutters';
+
+  @override
+  String get sceneCloseAllShutters => 'Close all shutters';
+
+  @override
+  String get sceneOpenAllShutters => 'Open all shutters';
+
+  @override
+  String get sceneStopAllShutters => 'Stop all shutters';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count shutters',
+      one: '1 shutter',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Which shutters…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Every shutter in this Home is included. Untick any that should stay out, like a garage door.';
+
+  @override
+  String get scenesYours => 'Your scenes';
+
+  @override
   String get panelTypeScene => 'Scene';
 
   @override

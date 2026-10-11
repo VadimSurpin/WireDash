@@ -1250,6 +1250,39 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Alle Rollläden';
+
+  @override
+  String get sceneCloseAllShutters => 'Alle Rollläden schließen';
+
+  @override
+  String get sceneOpenAllShutters => 'Alle Rollläden öffnen';
+
+  @override
+  String get sceneStopAllShutters => 'Alle Rollläden stoppen';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Rollläden',
+      one: '1 Rollladen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Welche Rollläden…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Alle Rollläden dieses Zuhauses sind dabei. Hake ab, was draußen bleiben soll, etwa ein Garagentor.';
+
+  @override
+  String get scenesYours => 'Deine Szenen';
+
+  @override
   String get panelTypeScene => 'Szene';
 
   @override

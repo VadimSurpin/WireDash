@@ -8,6 +8,8 @@ import '../../../data/database/daos/device_registry_dao.dart';
 import '../../../data/repositories/panel_repo.dart';
 import '../../../data/repositories/section_repo.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../scenes/all_shutters.dart';
+import '../../../data/database/tables/panels.dart';
 import '../../devices/device_profile.dart';
 import '../../devices/device_tiles.dart';
 import '../../discovery/models/device_panel_suggestion.dart';
@@ -210,6 +212,8 @@ extension on SetupCreator {
     }
     var count = 0;
     var sectionOrder = 0;
+    String? switchesSection;
+    var shutters = 0;
     for (final group in _Group.values) {
       final rows = groups[group];
       if (rows == null) continue;
@@ -225,14 +229,34 @@ extension on SetupCreator {
               },
               sortOrder: sectionOrder++,
             );
+      if (group == _Group.switches) switchesSection = sectionId;
       for (final row in rows) {
         if (row.device.ieeeAddress == null) {
           await _createSuggested(dashboardId, row.suggestion, count);
         } else {
           await _createDevice(dashboardId, base, row, sectionId, count);
+          if (classifyExposes(row.device.rawExposes).deviceClass ==
+              DeviceClass.cover) {
+            shutters++;
+          }
         }
         count++;
       }
+    }
+    // Two or more shutters: the one button the poll asked for, a tile for
+    // the built-in "Close all shutters" scene (all-shutters-2.4.md).
+    if (shutters >= 2) {
+      await _panels.create(
+        dashboardId: dashboardId,
+        name: _l10n.sceneCloseAllShutters,
+        type: PanelType.scene,
+        topic: '',
+        width: PanelWidth.small,
+        sortOrder: count,
+        sectionId: switchesSection,
+        config: SceneConfig(sceneId: allShuttersSceneId(ShutterCommand.close)),
+      );
+      count++;
     }
     return count;
   }

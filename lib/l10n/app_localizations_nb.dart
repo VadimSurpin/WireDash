@@ -1242,6 +1242,39 @@ class AppLocalizationsNb extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Alle persienner';
+
+  @override
+  String get sceneCloseAllShutters => 'Lukk alle persienner';
+
+  @override
+  String get sceneOpenAllShutters => 'Åpne alle persienner';
+
+  @override
+  String get sceneStopAllShutters => 'Stopp alle persienner';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count persienner',
+      one: '1 persienne',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Hvilke persienner…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Alle persienner i dette hjemmet er med. Fjern haken på dem som skal holdes utenfor, som en garasjeport.';
+
+  @override
+  String get scenesYours => 'Dine scener';
+
+  @override
   String get panelTypeScene => 'Scene';
 
   @override

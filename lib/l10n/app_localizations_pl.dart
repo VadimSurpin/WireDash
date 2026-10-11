@@ -1258,6 +1258,41 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get scenesAllShutters => 'Wszystkie rolety';
+
+  @override
+  String get sceneCloseAllShutters => 'Zamknij wszystkie rolety';
+
+  @override
+  String get sceneOpenAllShutters => 'Otwórz wszystkie rolety';
+
+  @override
+  String get sceneStopAllShutters => 'Zatrzymaj wszystkie rolety';
+
+  @override
+  String sceneShuttersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rolety',
+      many: '$count rolet',
+      few: '$count rolety',
+      one: '1 roleta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sceneWhichShutters => 'Które rolety…';
+
+  @override
+  String get sceneWhichShuttersHint =>
+      'Uwzględnione są wszystkie rolety w tym domu. Odznacz te, które mają zostać pominięte, np. bramę garażową.';
+
+  @override
+  String get scenesYours => 'Twoje sceny';
+
+  @override
   String get panelTypeScene => 'Scena';
 
   @override
