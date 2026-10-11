@@ -44,7 +44,15 @@ class DeviceState {
   /// The alarm/contact/occupancy value; for contact, true means closed.
   bool? get alarm {
     final f = profile.alarm;
-    return f == null ? null : isOn(f);
+    if (f == null) return null;
+    // Zigbee2MQTT reports a closed door as `contact: true` and marks the
+    // expose `value_on: false` (open is its "on"), so the raw value is the
+    // one that means closed; comparing with value_on would invert it.
+    if (profile.deviceClass == DeviceClass.contact) {
+      final v = values[f.property];
+      return v is bool ? v : null;
+    }
+    return isOn(f);
   }
 
   num? reading(DeviceFeature f) {

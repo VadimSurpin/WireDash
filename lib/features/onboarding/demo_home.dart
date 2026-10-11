@@ -79,7 +79,7 @@ final List<_DemoDevice> _devices = [
     exposes: [_numeric('temperature', '°C'), _numeric('humidity', '%'), _battery],
     state: {'temperature': 21.4, 'humidity': 48, 'battery': 87},
   ),
-  (name: 'Front door', group: 2, exposes: [_binary('contact'), _battery], state: {'contact': true, 'battery': 15}),
+  (name: 'Front door', group: 2, exposes: [_binary('contact', on: false, off: true), _battery], state: {'contact': true, 'battery': 15}),
   (name: 'Hallway motion', group: 2, exposes: [_binary('occupancy'), _battery], state: {'occupancy': false, 'battery': 64}),
   (name: 'Laundry leak', group: 2, exposes: [_binary('water_leak'), _battery], state: {'water_leak': false, 'battery': 78}),
 ];

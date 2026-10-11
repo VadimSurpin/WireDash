@@ -31,7 +31,9 @@ object ShortcutPrefs {
             "cover" -> R.drawable.w_ic_cover
             "light", "colorLight" -> R.drawable.w_ic_light
             "switchPlug" -> R.drawable.w_ic_plug
-            "climate", "contact", "motion", "leakSmoke" -> R.drawable.w_ic_sensor
+            "contact" -> R.drawable.w_ic_door
+            "leakSmoke" -> R.drawable.w_ic_drop
+            "climate", "motion" -> R.drawable.w_ic_sensor
             else -> R.drawable.ic_shortcut_tile
         }
     }

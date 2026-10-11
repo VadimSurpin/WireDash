@@ -1,0 +1,1 @@
+ZigDash 2.3.2: los sensores de puertas y ventanas mostraban Abierto cuando estaban cerrados en algunos hubs. Corregido en mosaicos, páginas de dispositivo y widgets. Los sensores de puerta, fuga y humo tienen iconos propios en el widget de grupo.

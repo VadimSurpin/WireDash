@@ -1,0 +1,1 @@
+ZigDash 2.3.2: dörr- och fönstersensorer visade Öppen när de var stängda på vissa hubbar. Rättat på brickor, enhetssidor och widgetar. Dörr-, läckage- och röksensorer har egna ikoner i gruppwidgeten.

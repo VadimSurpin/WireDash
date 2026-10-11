@@ -58,3 +58,5 @@ wayfinder/
 
 # Golden diff output from failed runs (alchemist)
 test/goldens/failures/
+tool/.telegram_bot
+tool/.telegram_offset

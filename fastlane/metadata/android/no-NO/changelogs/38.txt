@@ -1,0 +1,1 @@
+ZigDash 2.3.2: dør- og vindussensorer viste Åpen når de var lukket på noen huber. Rettet på fliser, enhetssider og widgets. Dør-, lekkasje- og røyksensorer har egne ikoner i gruppewidgeten.

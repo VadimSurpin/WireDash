@@ -1,0 +1,1 @@
+ZigDash 2.3.2: sensores de porta e janela mostravam Aberto quando estavam fechados em alguns hubs. Corrigido nos blocos, nas páginas de dispositivo e nos widgets. Sensores de porta, vazamento e fumaça têm ícones próprios no widget de grupo.

@@ -1,0 +1,1 @@
+ZigDash 2.3.2 : les capteurs de porte et de fenêtre affichaient Ouvert alors qu'ils étaient fermés sur certains hubs. Corrigé sur les tuiles, les pages d'appareil et les widgets. Les capteurs de porte, de fuite et de fumée ont leurs propres icônes dans le widget de groupe.
