@@ -2528,6 +2528,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pollThanks => 'Bedankt! Dat helpt kiezen wat er komt.';
 
   @override
+  String get communityCardTitle => 'Word lid van de ZigDash-community';
+
+  @override
+  String get communityCardBody =>
+      'Vragen, ideeën en nieuws over versies, in een Telegram-groep met andere ZigDash-gebruikers.';
+
+  @override
+  String get communityCardJoin => 'Lid worden';
+
+  @override
+  String get communityCardNotNow => 'Niet nu';
+
+  @override
   String get pollNoAnalytics =>
       'Gebruiksgegevens staan uit, dus van hier wordt niets verstuurd. Laat het ons weten via Functie aanvragen.';
 

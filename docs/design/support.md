@@ -43,6 +43,8 @@ Not on: scanning and "Checking the connection…" screens (nothing has failed ye
 
 A public Telegram group, **ZigDash** (`https://t.me/zigdash_app`), is where users ask each other, suggest, and hear what's coming; the developer posts releases and answers there. The app links to it from Settings (**Join the ZigDash community**) and from the bottom of Get help (**Ask in the Telegram group**), so a stuck user can ask in public instead of, or before, emailing. Nothing is sent by the app: the link opens Telegram (or the web) and that's all; the only measurement is `community_opened`.
 
+A one-time **Join the ZigDash community** card (2.4) appears on a real Home's dashboard after five days of use, once the usage-data question and the poll are out of the way, with Join and Not now; either puts it away for good. Same rule as the poll card: one card at a time, never on the demo Home.
+
 ## 3. The Get help screen
 
 Layout A from the prototype (branch `prototype/get-help`, `docs/design/prototypes/get-help-prototype.html`, local only):
@@ -136,7 +138,7 @@ Two new events under [ADR 0006](../adr/0006-opt-in-anonymous-analytics.md), sent
 
 - `help_opened`: `from` (`no_connection`, `setup_error`, `manual_connect`, `home_unreachable`, `device_list_missing`, `settings`, `demo`).
 - `support_contact`: `from`, `via` (`email`, `copy`).
-- `community_opened`: `from` (as `help_opened`; `settings` from the Settings tile).
+- `community_opened`: `from` (as `help_opened`; `settings` from the Settings tile; `card` from the dashboard card).
 
 No event for ticked tips. Success after the first month: support stays within 1–2 hours a week (about 5 emails or fewer), and the share of people who open Get help during setup and then complete setup (`setup_step`) is measured as a baseline to improve on. Each support email gets one Gmail label for its cause; the top labels decide which tips change.
 

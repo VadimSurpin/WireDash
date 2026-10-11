@@ -30,6 +30,7 @@ import '../../onboarding/demo_service.dart' show isDemoConnection;
 import '../../panels/widgets/panel_grid.dart';
 import '../widgets/analytics_consent_card.dart';
 import '../../../alerts/alerts_paused_banner.dart';
+import '../widgets/community_card.dart';
 import '../widgets/poll_card.dart';
 import '../widgets/connection_status_banner.dart';
 
@@ -245,6 +246,7 @@ class _DashboardsTabbed extends ConsumerWidget {
               DemoBanner(connectionId: connectionId),
               AnalyticsConsentCard(connectionId: connectionId),
               PollCard(connectionId: connectionId),
+              CommunityCard(connectionId: connectionId),
               AlertsPausedBanner(connectionId: connectionId),
               ConnectionStatusBanner(
                 status: connectionStatus,

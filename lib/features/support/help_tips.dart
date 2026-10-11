@@ -69,6 +69,11 @@ List<HelpTip> tipsFor(AppLocalizations l, HelpFrom from, SetupErrorKind? error) 
         t(l.tipSetupAtHomeTitle, l.tipSetupAtHomeBody),
         t(l.tipFindSetupTitle, l.tipFindSetupBody),
       ],
+    // The community card never opens Get help; the Settings tips will do.
+    HelpFrom.card => [
+        t(l.tipCantConnectTitle, l.tipCantConnectBody),
+        t(l.tipHowDoITitle, l.tipHowDoIBody),
+      ],
   };
 }
 
@@ -81,4 +86,5 @@ String openedFromLabel(HelpFrom from, SetupErrorKind? error) => switch (from) {
       HelpFrom.deviceListMissing => 'Devices › device list missing',
       HelpFrom.settings => 'Settings',
       HelpFrom.demo => 'Demo',
+      HelpFrom.card => 'Dashboard › community card',
     };

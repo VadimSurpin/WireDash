@@ -2497,6 +2497,19 @@ class AppLocalizationsHe extends AppLocalizations {
   String get pollThanks => 'תודה! זה עוזר להחליט מה יגיע בהמשך.';
 
   @override
+  String get communityCardTitle => 'הצטרפו לקהילת ZigDash';
+
+  @override
+  String get communityCardBody =>
+      'שאלות, רעיונות וחדשות על גרסאות, בקבוצת טלגרם עם משתמשי ZigDash אחרים.';
+
+  @override
+  String get communityCardJoin => 'הצטרפות';
+
+  @override
+  String get communityCardNotNow => 'לא עכשיו';
+
+  @override
   String get pollNoAnalytics =>
       'נתוני השימוש כבויים, לכן שום דבר לא נשלח מכאן. ספרו לנו דרך בקשת תכונה.';
 

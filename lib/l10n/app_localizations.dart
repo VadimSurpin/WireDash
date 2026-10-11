@@ -4616,6 +4616,30 @@ abstract class AppLocalizations {
   /// **'Thanks! That helps decide what comes next.'**
   String get pollThanks;
 
+  /// No description provided for @communityCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the ZigDash community'**
+  String get communityCardTitle;
+
+  /// No description provided for @communityCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions, ideas and release news, in a Telegram group with other ZigDash users.'**
+  String get communityCardBody;
+
+  /// No description provided for @communityCardJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get communityCardJoin;
+
+  /// No description provided for @communityCardNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get communityCardNotNow;
+
   /// Poll card text for people who don't share usage data.
   ///
   /// In en, this message translates to:
