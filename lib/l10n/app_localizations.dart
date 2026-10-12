@@ -2972,6 +2972,156 @@ abstract class AppLocalizations {
   /// **'Try the demo meanwhile'**
   String get setupTryDemoMeanwhile;
 
+  /// No description provided for @setupPlatformQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'While we look: where does Zigbee2MQTT run?'**
+  String get setupPlatformQuestion;
+
+  /// No description provided for @setupPlatformHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant'**
+  String get setupPlatformHa;
+
+  /// No description provided for @setupPlatformSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'SMLIGHT hub'**
+  String get setupPlatformSmlight;
+
+  /// No description provided for @setupPlatformPi.
+  ///
+  /// In en, this message translates to:
+  /// **'Raspberry Pi or Docker'**
+  String get setupPlatformPi;
+
+  /// No description provided for @setupPlatformNotSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure'**
+  String get setupPlatformNotSure;
+
+  /// No description provided for @setupScanProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked {checked} of {total} addresses'**
+  String setupScanProgress(int checked, int total);
+
+  /// No description provided for @setupScanHintHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for Home Assistant and its MQTT broker…'**
+  String get setupScanHintHa;
+
+  /// No description provided for @setupScanHintSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for your SMLIGHT hub…'**
+  String get setupScanHintSmlight;
+
+  /// No description provided for @setupScanHintPi.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for an MQTT broker on your network…'**
+  String get setupScanHintPi;
+
+  /// No description provided for @setupHubSeenHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Found Home Assistant at {host}'**
+  String setupHubSeenHa(String host);
+
+  /// No description provided for @setupHubSeenZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'Found Zigbee2MQTT at {host}'**
+  String setupHubSeenZ2m(String host);
+
+  /// No description provided for @setupHubSeenSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Found your SMLIGHT hub at {host}'**
+  String setupHubSeenSmlight(String host);
+
+  /// No description provided for @setupHubSeenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Still looking for its MQTT broker…'**
+  String get setupHubSeenHint;
+
+  /// No description provided for @setupNoBrokerHaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Found Home Assistant, but no MQTT broker'**
+  String get setupNoBrokerHaTitle;
+
+  /// No description provided for @setupNoBrokerHaBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant is at {host}, but nothing answers on MQTT port 1883. In Home Assistant, open Settings › Add-ons, install and start the Mosquitto broker add-on, then try again.'**
+  String setupNoBrokerHaBody(String host);
+
+  /// No description provided for @setupNoBrokerZ2mTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Found Zigbee2MQTT, but its broker can\'t be reached'**
+  String get setupNoBrokerZ2mTitle;
+
+  /// No description provided for @setupNoBrokerZ2mBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT is at {host}, but its MQTT broker doesn\'t accept connections from your phone. Mosquitto 2 only listens on the hub itself until its config has \'listener 1883\' and \'allow_anonymous true\' (or a login). Restart it, then try again.'**
+  String setupNoBrokerZ2mBody(String host);
+
+  /// No description provided for @setupNoBrokerSmlightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Found your SMLIGHT hub, but MQTT is off'**
+  String get setupNoBrokerSmlightTitle;
+
+  /// No description provided for @setupNoBrokerSmlightBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub is at {host}, but its MQTT broker can\'t be reached. In the hub\'s web UI, open Settings › MQTT, turn on Allow External and check that Zigbee2MQTT is running, then try again.'**
+  String setupNoBrokerSmlightBody(String host);
+
+  /// No description provided for @setupConnectTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to {host}'**
+  String setupConnectTo(String host);
+
+  /// No description provided for @setupNotFoundHa.
+  ///
+  /// In en, this message translates to:
+  /// **'No Home Assistant found on this network. Check that your phone is on the same Wi-Fi as Home Assistant (not a guest network), then try again. If you know its address, enter it manually with port 1883.'**
+  String get setupNotFoundHa;
+
+  /// No description provided for @setupNotFoundSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'No SMLIGHT hub found on this network. Check that the hub is on and your phone is on the same Wi-Fi, then try again. If you know its address, enter it manually with port 1883.'**
+  String get setupNotFoundSmlight;
+
+  /// No description provided for @setupNotFoundPi.
+  ///
+  /// In en, this message translates to:
+  /// **'No MQTT broker found on this network. Check that Mosquitto is running and listening on the network (port 1883), and that your phone is on the same Wi-Fi, then try again.'**
+  String get setupNotFoundPi;
+
+  /// No description provided for @guidedHostYourPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone is {ip}, so the hub is usually {prefix}.…'**
+  String guidedHostYourPhone(String ip, String prefix);
+
+  /// No description provided for @guidedHostHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Using Home Assistant? The host is the address you open Home Assistant with, port 1883.'**
+  String get guidedHostHa;
+
   /// No description provided for @demoBannerText.
   ///
   /// In en, this message translates to:

@@ -1614,6 +1614,108 @@ class AppLocalizationsPt extends AppLocalizations {
   String get setupTryDemoMeanwhile => 'Testar a demo enquanto isso';
 
   @override
+  String get setupPlatformQuestion =>
+      'Enquanto procuramos: onde corre o Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformHa => 'Home Assistant';
+
+  @override
+  String get setupPlatformSmlight => 'Hub SMLIGHT';
+
+  @override
+  String get setupPlatformPi => 'Raspberry Pi ou Docker';
+
+  @override
+  String get setupPlatformNotSure => 'Não sei';
+
+  @override
+  String setupScanProgress(int checked, int total) {
+    return '$checked de $total endereços verificados';
+  }
+
+  @override
+  String get setupScanHintHa =>
+      'À procura do Home Assistant e do seu broker MQTT…';
+
+  @override
+  String get setupScanHintSmlight => 'À procura do seu hub SMLIGHT…';
+
+  @override
+  String get setupScanHintPi => 'À procura de um broker MQTT na sua rede…';
+
+  @override
+  String setupHubSeenHa(String host) {
+    return 'Home Assistant encontrado em $host';
+  }
+
+  @override
+  String setupHubSeenZ2m(String host) {
+    return 'Zigbee2MQTT encontrado em $host';
+  }
+
+  @override
+  String setupHubSeenSmlight(String host) {
+    return 'O seu hub SMLIGHT foi encontrado em $host';
+  }
+
+  @override
+  String get setupHubSeenHint => 'Ainda à procura do seu broker MQTT…';
+
+  @override
+  String get setupNoBrokerHaTitle =>
+      'Home Assistant encontrado, mas sem broker MQTT';
+
+  @override
+  String setupNoBrokerHaBody(String host) {
+    return 'O Home Assistant está em $host, mas nada responde na porta MQTT 1883. No Home Assistant, abra Definições › Add-ons, instale e inicie o add-on Mosquitto broker e tente novamente.';
+  }
+
+  @override
+  String get setupNoBrokerZ2mTitle =>
+      'Zigbee2MQTT encontrado, mas o seu broker não está acessível';
+
+  @override
+  String setupNoBrokerZ2mBody(String host) {
+    return 'O Zigbee2MQTT está em $host, mas o seu broker MQTT não aceita ligações do seu telemóvel. O Mosquitto 2 só escuta no próprio hub até a configuração ter \'listener 1883\' e \'allow_anonymous true\' (ou um login). Reinicie-o e tente novamente.';
+  }
+
+  @override
+  String get setupNoBrokerSmlightTitle =>
+      'Hub SMLIGHT encontrado, mas o MQTT está desligado';
+
+  @override
+  String setupNoBrokerSmlightBody(String host) {
+    return 'O seu hub está em $host, mas o seu broker MQTT não está acessível. Na interface web do hub, abra Settings › MQTT, ative Allow External e verifique que o Zigbee2MQTT está a correr. Depois tente novamente.';
+  }
+
+  @override
+  String setupConnectTo(String host) {
+    return 'Ligar a $host';
+  }
+
+  @override
+  String get setupNotFoundHa =>
+      'Nenhum Home Assistant encontrado nesta rede. Verifique que o seu telemóvel está no mesmo Wi-Fi que o Home Assistant (não uma rede de convidados) e tente novamente. Se souber o endereço, introduza-o manualmente com a porta 1883.';
+
+  @override
+  String get setupNotFoundSmlight =>
+      'Nenhum hub SMLIGHT encontrado nesta rede. Verifique que o hub está ligado e que o seu telemóvel está no mesmo Wi-Fi, e tente novamente. Se souber o endereço, introduza-o manualmente com a porta 1883.';
+
+  @override
+  String get setupNotFoundPi =>
+      'Nenhum broker MQTT encontrado nesta rede. Verifique que o Mosquitto está a correr e a escutar na rede (porta 1883) e que o seu telemóvel está no mesmo Wi-Fi. Depois tente novamente.';
+
+  @override
+  String guidedHostYourPhone(String ip, String prefix) {
+    return 'O seu telemóvel é $ip, por isso o hub costuma começar por $prefix.…';
+  }
+
+  @override
+  String get guidedHostHa =>
+      'Usa o Home Assistant? O host é o endereço com que abre o Home Assistant, porta 1883.';
+
+  @override
   String get demoBannerText => 'Você está no modo demo';
 
   @override

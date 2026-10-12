@@ -30,6 +30,7 @@ Every link opens the one **Get help** screen, telling it where it came from.
 | Setup: "No connection found" | "Still stuck? Get help" under the main button, below the platform tips | `no_connection` |
 | Setup: each error screen (`setupErr*`) | the same link next to Try again | `setup_error` (with the error kind) |
 | Manual connect: the connection check failed | the same link under the diagnostics | `manual_connect` |
+| Manual connect: the form itself (2.5) | the same link under Find brokers, so the address question is answerable before a check | `manual_form` |
 | Dashboard: the home can't be reached | in the unreachable state | `home_unreachable` |
 | Devices tab: device list missing | under Restart Zigbee2MQTT | `device_list_missing` |
 | Settings | new **Help & support** group: Help & Guide, **Get help**, Join the ZigDash community, Report a problem, Request a feature | `settings` |

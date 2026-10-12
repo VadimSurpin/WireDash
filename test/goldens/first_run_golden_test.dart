@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
+import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_candidate.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
@@ -18,10 +20,21 @@ import 'golden_harness.dart';
 // Phase 1 exit criterion (docs/design/phasing.md): goldens for every
 // first-run outcome, in the interim look.
 
+const _haHub = HubFound(
+  kind: HubKind.homeAssistant,
+  host: '192.168.1.20',
+  port: 8123,
+);
 const _hub = SetupCandidate(
-    host: '192.168.68.55', port: 1883, protocol: MqttProtocol.tcp);
+  host: '192.168.68.55',
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+);
 const _other = SetupCandidate(
-    host: '192.168.1.20', port: 1883, protocol: MqttProtocol.tcp);
+  host: '192.168.1.20',
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+);
 
 final _review = SetupReview(
   _hub,
@@ -54,10 +67,21 @@ final _review = SetupReview(
 final _outcomes = <String, SetupState>{
   'welcome': const SetupIdle(),
   'several_found': const SetupScanning([_hub, _other], done: true),
+  // 2.5: progress, the platform question and a hub seen while scanning.
+  'scanning': const SetupScanning(
+    [],
+    progress: (checked: 400, total: 1526),
+    platform: SetupPlatform.homeAssistant,
+    hubs: [_haHub],
+  ),
   'nothing_found': const SetupScanEmpty(),
+  // 2.5: Home Assistant answered but no broker did.
+  'hub_no_broker': const SetupScanEmpty(hubs: [_haHub]),
   'needs_login': const SetupNeedsAuth(_hub),
-  'no_zigbee2mqtt':
-      const SetupFailed(SetupErrorKind.notZigbee2Mqtt, candidate: _hub),
+  'no_zigbee2mqtt': const SetupFailed(
+    SetupErrorKind.notZigbee2Mqtt,
+    candidate: _hub,
+  ),
   'review': _review,
   'saving': SetupCreating(_review),
 };
@@ -76,8 +100,7 @@ class _NoDiagnostics extends ConnectDiagnostics {
     required BrokerConfig config,
     required String password,
     String base = 'zigbee2mqtt',
-  }) =>
-      throw UnimplementedError();
+  }) => throw UnimplementedError();
 }
 
 class _NoStore implements SetupStore {
@@ -85,11 +108,13 @@ class _NoStore implements SetupStore {
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
-List<Override> Function() _overridesFor(SetupState state) => () => [
+List<Override> Function() _overridesFor(SetupState state) =>
+    () => [
       setupStateProvider.overrideWith((ref) => Stream.value(state)),
       setupCoordinatorProvider.overrideWith(
         (ref) => SetupCoordinator(
-          scan: (_) => const Stream.empty(),
+          scan: (_, __) =>
+              ScanRun(events: const Stream.empty(), addHub: (_) {}),
           deviceIp: () async => null,
           diagnostics: _NoDiagnostics(),
           fetchDevices: (_, __, ___) async =>

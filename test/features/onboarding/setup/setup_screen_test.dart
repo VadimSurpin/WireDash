@@ -11,6 +11,8 @@ import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
+import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
+import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
@@ -45,27 +47,27 @@ class _FakeDiagnostics extends ConnectDiagnostics {
     required BrokerConfig config,
     required String password,
     String base = 'zigbee2mqtt',
-  }) async =>
-      reports.removeAt(0);
+  }) async => reports.removeAt(0);
 }
 
 DiagnosticsReport _ok() => const DiagnosticsReport(
-      steps: [],
-      connected: true,
-      candidatesTried: 1,
-      deviceNames: ['lamp'],
-    );
+  steps: [],
+  connected: true,
+  candidatesTried: 1,
+  deviceNames: ['lamp'],
+);
 
 DiagnosticsReport _authFail() => const DiagnosticsReport(
-      steps: [
-        StepResult(
-            step: DiagnosticStep.auth,
-            status: StepStatus.fail,
-            detailKey: 'diagAuthRejected'),
-      ],
-      connected: false,
-      candidatesTried: 1,
-    );
+  steps: [
+    StepResult(
+      step: DiagnosticStep.auth,
+      status: StepStatus.fail,
+      detailKey: 'diagAuthRejected',
+    ),
+  ],
+  connected: false,
+  candidatesTried: 1,
+);
 
 class _FakeStore implements SetupStore {
   @override
@@ -81,9 +83,11 @@ class _FakeStore implements SetupStore {
     int dashboardIcon = 0,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
-  }) async =>
-      SetupResult(
-          connectionId: 'c1', dashboardId: 'd1', panelCount: selected.length);
+  }) async => SetupResult(
+    connectionId: 'c1',
+    dashboardId: 'd1',
+    panelCount: selected.length,
+  );
 }
 
 class _FakeFirstRun implements FirstRun {
@@ -104,17 +108,30 @@ Future<SetupCoordinator> _pump(
   WidgetTester tester, {
   List<DiagnosticsReport>? reports,
   Stream<ProbeResult> Function(String ip)? scan,
-  Z2mFetchResult fetch =
-      const Z2mFetchResult(detected: true, devices: [_lamp]),
+  ScanRunFactory? run,
+  Z2mFetchResult fetch = const Z2mFetchResult(detected: true, devices: [_lamp]),
   Z2mFetchResult Function(String base)? fetchFor,
   Locale? locale,
   _FakeFirstRun? firstRun,
   List<Override> extra = const [],
 }) async {
+  // The setup screens are lists that grew in 2.5 (progress, the platform
+  // question); a tall view keeps every action built and tappable.
+  tester.view.physicalSize = const Size(1200, 3200);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   final coordinator = SetupCoordinator(
-    scan: scan ??
-        (ip) => Stream.fromIterable(
-            [const ProbeResult(host: '192.168.1.10', port: 1883)]),
+    scan:
+        run ??
+        (ip, hubs) => ScanRun(
+          events:
+              (scan ??
+                      (ip) => Stream.fromIterable([
+                        const ProbeResult(host: '192.168.1.10', port: 1883),
+                      ]))(ip)
+                  .map(BrokerFound.new),
+          addHub: (_) {},
+        ),
     deviceIp: () async => '192.168.1.5',
     diagnostics: _FakeDiagnostics(reports ?? [_ok()]),
     fetchDevices: (config, password, base) async =>
@@ -142,7 +159,11 @@ Future<SetupCoordinator> _pump(
             GoRoute(path: '/setup', builder: (_, __) => const SetupScreen()),
             GoRoute(
               path: '/setup/manual',
-              builder: (_, __) => const Text('manual entry'),
+              builder: (_, state) => Text(
+                state.uri.hasQuery
+                    ? 'manual entry ${state.uri.query}'
+                    : 'manual entry',
+              ),
             ),
             GoRoute(
               path: '/connections/:id/dashboards',
@@ -165,8 +186,9 @@ void main() {
     expect(find.text('Enter details manually'), findsOneWidget);
   });
 
-  testWidgets('scanning shows progressive candidates; tapping one verifies',
-      (tester) async {
+  testWidgets('scanning shows progressive candidates; tapping one verifies', (
+    tester,
+  ) async {
     final controller = StreamController<ProbeResult>();
     addTearDown(controller.close);
     final coordinator = await _pump(tester, scan: (_) => controller.stream);
@@ -186,8 +208,103 @@ void main() {
     expect(coordinator.state, isA<SetupReview>());
   });
 
-  testWidgets('no candidates shows tailored guidance and actions',
-      (tester) async {
+  // 2.5: the platform question during the scan, and a hub-aware empty result.
+  testWidgets('the platform chips reach the coordinator while scanning', (
+    tester,
+  ) async {
+    final controller = StreamController<ScanEvent>();
+    addTearDown(controller.close);
+    final added = <HubKind>[];
+    final coordinator = await _pump(
+      tester,
+      run: (_, __) => ScanRun(events: controller.stream, addHub: added.add),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+
+    expect(
+      find.text('While we look: where does Zigbee2MQTT run?'),
+      findsOneWidget,
+    );
+    controller.add(const ScanProgress(400, 1526));
+    await tester.pump();
+    expect(find.text('Checked 400 of 1526 addresses'), findsOneWidget);
+
+    await tester.tap(find.text('SMLIGHT hub'));
+    await tester.pump();
+    expect(coordinator.platform, SetupPlatform.smlight);
+    expect(added, [HubKind.smlight]);
+    expect(find.text('Looking for your SMLIGHT hub…'), findsOneWidget);
+
+    controller.add(
+      const HubSeen(
+        HubFound(kind: HubKind.homeAssistant, host: '192.168.1.20', port: 8123),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('Found Home Assistant at 192.168.1.20'), findsOneWidget);
+  });
+
+  testWidgets('a hub without a broker: the specific fix and a filled-in form', (
+    tester,
+  ) async {
+    const ha = HubFound(
+      kind: HubKind.homeAssistant,
+      host: '192.168.1.20',
+      port: 8123,
+    );
+    await _pump(
+      tester,
+      run: (_, __) => ScanRun(
+        events: Stream.fromIterable(const [HubSeen(ha)]),
+        addHub: (_) {},
+      ),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+
+    expect(
+      find.text('Found Home Assistant, but no MQTT broker'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Mosquitto broker add-on'), findsOneWidget);
+    // Only Home Assistant's guide; no platform question any more.
+    expect(find.textContaining('SMLIGHT'), findsNothing);
+    expect(find.text('Try again'), findsOneWidget);
+
+    await tester.tap(find.text('Connect to 192.168.1.20'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('manual entry host=192.168.1.20&port=1883'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('no candidates with an answer: that platform only', (
+    tester,
+  ) async {
+    final coordinator = await _pump(tester, scan: (_) => const Stream.empty());
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('No connection found'), findsOneWidget);
+
+    await tester.tap(find.text('Raspberry Pi or Docker'));
+    await tester.pump();
+    expect(coordinator.platform, SetupPlatform.piOrDocker);
+    expect(
+      find.textContaining('No MQTT broker found on this network'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Raspberry Pi / Linux: check'), findsOneWidget);
+    expect(find.textContaining('SMLIGHT / SMHUB: open'), findsNothing);
+  });
+
+  testWidgets('no candidates shows tailored guidance and actions', (
+    tester,
+  ) async {
     await _pump(tester, scan: (_) => const Stream.empty());
     await tester.tap(find.text('Find my setup'));
     await tester.pump();
@@ -201,8 +318,9 @@ void main() {
     expect(find.text('Enter details manually'), findsOneWidget);
   });
 
-  testWidgets('anonymous rejection prompts for credentials, preserving host',
-      (tester) async {
+  testWidgets('anonymous rejection prompts for credentials, preserving host', (
+    tester,
+  ) async {
     await _pump(tester, reports: [_authFail(), _ok()]);
     await tester.tap(find.text('Find my setup'));
     await tester.pump();
@@ -215,9 +333,13 @@ void main() {
     expect(find.textContaining('192.168.1.10'), findsOneWidget);
 
     await tester.enterText(
-        find.widgetWithText(TextField, 'Username (optional)').first, 'user');
+      find.widgetWithText(TextField, 'Username (optional)').first,
+      'user',
+    );
     await tester.enterText(
-        find.widgetWithText(TextField, 'Password (optional)').first, 'secret');
+      find.widgetWithText(TextField, 'Password (optional)').first,
+      'secret',
+    );
     await tester.tap(find.text('Enter login'));
     await tester.pump();
     await tester.pump();
@@ -226,8 +348,9 @@ void main() {
     expect(find.textContaining('devices found'), findsOneWidget);
   });
 
-  testWidgets('rejected credentials show the rejected explanation',
-      (tester) async {
+  testWidgets('rejected credentials show the rejected explanation', (
+    tester,
+  ) async {
     await _pump(tester, reports: [_authFail(), _authFail(), _ok()]);
     await tester.tap(find.text('Find my setup'));
     await tester.pump();
@@ -236,9 +359,13 @@ void main() {
     await tester.pump();
     await tester.pump();
     await tester.enterText(
-        find.widgetWithText(TextField, 'Username (optional)').first, 'user');
+      find.widgetWithText(TextField, 'Username (optional)').first,
+      'user',
+    );
     await tester.enterText(
-        find.widgetWithText(TextField, 'Password (optional)').first, 'wrong');
+      find.widgetWithText(TextField, 'Password (optional)').first,
+      'wrong',
+    );
     await tester.tap(find.text('Enter login'));
     await tester.pump();
     await tester.pump();
@@ -246,34 +373,40 @@ void main() {
     expect(find.textContaining('rejected'), findsWidgets);
   });
 
-  testWidgets('review groups devices, preselects recommended, counts selection',
-      (tester) async {
-    await _pump(tester,
+  testWidgets(
+    'review groups devices, preselects recommended, counts selection',
+    (tester) async {
+      await _pump(
+        tester,
         fetch: const Z2mFetchResult(
-            detected: true, devices: [_lamp, _batterySensor, _mystery]));
-    await tester.tap(find.text('Find my setup'));
-    await tester.pump();
-    await tester.pump();
-    // The single broker found is verified without a tap.
-    await tester.pump();
-    await tester.pump();
+          detected: true,
+          devices: [_lamp, _batterySensor, _mystery],
+        ),
+      );
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      await tester.pump();
+      // The single broker found is verified without a tap.
+      await tester.pump();
+      await tester.pump();
 
-    expect(find.textContaining('3 devices found'), findsOneWidget);
-    expect(find.text('lamp'), findsOneWidget);
-    expect(find.text('Other devices'), findsOneWidget);
-    expect(find.text('Unsupported devices'), findsOneWidget);
-    expect(find.text('Create dashboard with 1'), findsOneWidget);
+      expect(find.textContaining('3 devices found'), findsOneWidget);
+      expect(find.text('lamp'), findsOneWidget);
+      expect(find.text('Other devices'), findsOneWidget);
+      expect(find.text('Unsupported devices'), findsOneWidget);
+      expect(find.text('Create dashboard with 1'), findsOneWidget);
 
-    // Unsupported rows are not toggleable.
-    await tester.tap(find.text('mystery_box'));
-    await tester.pump();
-    expect(find.text('Create dashboard with 1'), findsOneWidget);
+      // Unsupported rows are not toggleable.
+      await tester.tap(find.text('mystery_box'));
+      await tester.pump();
+      expect(find.text('Create dashboard with 1'), findsOneWidget);
 
-    // Toggling the battery sensor adds it to the selection.
-    await tester.tap(find.text('battery_sensor'));
-    await tester.pump();
-    expect(find.text('Create dashboard with 2'), findsOneWidget);
-  });
+      // Toggling the battery sensor adds it to the selection.
+      await tester.tap(find.text('battery_sensor'));
+      await tester.pump();
+      expect(find.text('Create dashboard with 2'), findsOneWidget);
+    },
+  );
 
   // First-run decision: no "Creating…" or "ready" screens; selecting
   // devices lands directly on the generated dashboard.
@@ -291,8 +424,9 @@ void main() {
     expect(find.text('Your dashboard is ready'), findsNothing);
   });
 
-  testWidgets('no Zigbee2MQTT: own outcome with base-topic retry and demo',
-      (tester) async {
+  testWidgets('no Zigbee2MQTT: own outcome with base-topic retry and demo', (
+    tester,
+  ) async {
     final firstRun = _FakeFirstRun();
     final coordinator = await _pump(
       tester,
@@ -307,17 +441,23 @@ void main() {
       await tester.pump();
     }
 
-    expect(find.text("Your broker works, but Zigbee2MQTT isn't publishing here"),
-        findsOneWidget);
+    expect(
+      find.text("Your broker works, but Zigbee2MQTT isn't publishing here"),
+      findsOneWidget,
+    );
     expect(find.text('Set up Zigbee2MQTT'), findsOneWidget);
     expect(find.textContaining('SMLIGHT'), findsWidgets);
     // Further down the list, below the new Get help link.
-    expect(find.text('Try the demo meanwhile', skipOffstage: false),
-        findsOneWidget);
+    expect(
+      find.text('Try the demo meanwhile', skipOffstage: false),
+      findsOneWidget,
+    );
     expect(find.text('Still stuck? Get help'), findsOneWidget);
 
     await tester.enterText(
-        find.widgetWithText(TextField, 'Zigbee2MQTT base topic'), 'z2m');
+      find.widgetWithText(TextField, 'Zigbee2MQTT base topic'),
+      'z2m',
+    );
     await tester.tap(find.text('Retry'));
     for (var i = 0; i < 4; i++) {
       await tester.pump();
@@ -326,8 +466,9 @@ void main() {
     expect(coordinator.base, 'z2m');
   });
 
-  testWidgets('the demo is offered where setup cannot finish, and opens it',
-      (tester) async {
+  testWidgets('the demo is offered where setup cannot finish, and opens it', (
+    tester,
+  ) async {
     final firstRun = _FakeFirstRun();
     await _pump(tester, scan: (_) => const Stream.empty(), firstRun: firstRun);
     await tester.tap(find.text('Find my setup'));
@@ -354,8 +495,7 @@ void main() {
     expect(Directionality.of(tester.element(title)), TextDirection.rtl);
   });
 
-  testWidgets('status changes are announced via live regions',
-      (tester) async {
+  testWidgets('status changes are announced via live regions', (tester) async {
     final controller = StreamController<ProbeResult>();
     addTearDown(controller.close);
     await _pump(tester, scan: (_) => controller.stream);
@@ -363,16 +503,19 @@ void main() {
     await tester.tap(find.text('Find my setup'));
     await tester.pump();
 
-    final node =
-        tester.getSemantics(find.bySemanticsLabel('Looking for a connection…'));
+    final node = tester.getSemantics(
+      find.bySemanticsLabel('Looking for a connection…'),
+    );
     expect(node.flagsCollection.isLiveRegion, isTrue);
   });
 
-  testWidgets('device rows expose selected/disabled state to assistive tech',
-      (tester) async {
-    await _pump(tester,
-        fetch: const Z2mFetchResult(
-            detected: true, devices: [_lamp, _mystery]));
+  testWidgets('device rows expose selected/disabled state to assistive tech', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      fetch: const Z2mFetchResult(detected: true, devices: [_lamp, _mystery]),
+    );
     await tester.tap(find.text('Find my setup'));
     await tester.pump();
     await tester.pump();
@@ -383,19 +526,23 @@ void main() {
     // CheckboxListTile derives its semantics (checked state, label,
     // enabled/disabled) from these properties.
     final lamp = tester.widget<CheckboxListTile>(
-        find.widgetWithText(CheckboxListTile, 'lamp'));
+      find.widgetWithText(CheckboxListTile, 'lamp'),
+    );
     expect(lamp.value, isTrue);
     expect(lamp.onChanged, isNotNull);
 
     final mystery = tester.widget<CheckboxListTile>(
-        find.widgetWithText(CheckboxListTile, 'mystery_box'));
+      find.widgetWithText(CheckboxListTile, 'mystery_box'),
+    );
     expect(mystery.value, isFalse);
     expect(mystery.onChanged, isNull); // disabled for screen readers
   });
 
   group('usage data consent on the first screen (ADR 0006)', () {
     Future<(SharedPreferences, _SinkSpy)> analyticsOverrides(
-        List<Override> out, {bool available = true}) async {
+      List<Override> out, {
+      bool available = true,
+    }) async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
       final sink = _SinkSpy();
@@ -407,15 +554,18 @@ void main() {
       return (prefs, sink);
     }
 
-    testWidgets('an unticked box is a no, and nothing is sent',
-        (tester) async {
+    testWidgets('an unticked box is a no, and nothing is sent', (tester) async {
       final extra = <Override>[];
       final (prefs, sink) = await analyticsOverrides(extra);
       await _pump(tester, extra: extra);
-      expect(find.text('Share anonymous usage data to help improve setup'),
-          findsOneWidget);
-      expect(tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
-          isFalse);
+      expect(
+        find.text('Share anonymous usage data to help improve setup'),
+        findsOneWidget,
+      );
+      expect(
+        tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
+        isFalse,
+      );
 
       await tester.tap(find.text('Find my setup'));
       await tester.pump();
@@ -424,8 +574,9 @@ void main() {
       expect(sink.sent, isEmpty);
     });
 
-    testWidgets('ticking it shares the setup steps from the first one',
-        (tester) async {
+    testWidgets('ticking it shares the setup steps from the first one', (
+      tester,
+    ) async {
       final extra = <Override>[];
       final (prefs, sink) = await analyticsOverrides(extra);
       await _pump(tester, extra: extra);
@@ -437,8 +588,10 @@ void main() {
       await tester.pump();
 
       expect(prefs.getBool('analytics_consent'), isTrue);
-      expect(sink.sent.map((e) => e['step']),
-          containsAllInOrder(['started', 'scan_found', 'review']));
+      expect(
+        sink.sent.map((e) => e['step']),
+        containsAllInOrder(['started', 'scan_found', 'review']),
+      );
     });
 
     testWidgets('a build without a key asks nothing', (tester) async {

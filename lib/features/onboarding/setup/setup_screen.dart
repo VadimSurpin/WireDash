@@ -7,6 +7,7 @@ import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../connections/discovery/hub_probe.dart';
 import '../../support/get_help_screen.dart' show GetHelpLink;
 import '../first_run.dart';
 import 'recommendation_policy.dart';
@@ -32,7 +33,11 @@ class SetupScreen extends ConsumerWidget {
     ref.listen(setupStateProvider, (previous, next) {
       final s = next.valueOrNull;
       if (s == null) return;
-      final step = setupStepFor(previous?.valueOrNull, s);
+      final step = setupStepFor(
+        previous?.valueOrNull,
+        s,
+        platform: coordinator.platform,
+      );
       if (step != null) ref.read(analyticsProvider).track(step);
       if (s is SetupComplete) {
         context.go(Routes.homeDashboards(s.result.connectionId));
@@ -42,6 +47,12 @@ class SetupScreen extends ConsumerWidget {
     void manual() {
       ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.manual));
       context.push(Routes.guidedConnect);
+    }
+
+    // Manual entry filled in with a hub the scan found (2.5).
+    void manualTo(HubFound hub) {
+      ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.manual));
+      context.push(Routes.guidedConnectTo(hub.host, 1883));
     }
 
     Future<void> tryDemo() async {
@@ -55,46 +66,50 @@ class SetupScreen extends ConsumerWidget {
       body: SafeArea(
         child: switch (state) {
           SetupIdle() => _Welcome(
-              onFind: coordinator.startScan,
-              onManual: manual,
-            ),
+            onFind: coordinator.startScan,
+            onManual: manual,
+          ),
           SetupScanning() => _Scanning(
-              state: state,
-              onSelect: coordinator.selectCandidate,
-              onManual: manual,
-            ),
+            state: state,
+            onSelect: coordinator.selectCandidate,
+            onPlatform: coordinator.setPlatform,
+            onManual: manual,
+          ),
           SetupScanEmpty() => _ScanEmpty(
-              onRetry: coordinator.retry,
-              onManual: manual,
-              onDemo: tryDemo,
-            ),
+            state: state,
+            onRetry: coordinator.retry,
+            onPlatform: coordinator.setPlatform,
+            onManual: manual,
+            onManualTo: manualTo,
+            onDemo: tryDemo,
+          ),
           SetupVerifying() => const _Verifying(),
           SetupNeedsAuth() => _AuthPrompt(
-              state: state,
-              onSubmit: coordinator.submitCredentials,
-            ),
+            state: state,
+            onSubmit: coordinator.submitCredentials,
+          ),
           SetupFailed(kind: SetupErrorKind.notZigbee2Mqtt) => _NoZigbee2Mqtt(
-              base: coordinator.base,
-              onRetry: coordinator.retryWithBase,
-              onDemo: tryDemo,
-              onManual: manual,
-            ),
+            base: coordinator.base,
+            onRetry: coordinator.retryWithBase,
+            onDemo: tryDemo,
+            onManual: manual,
+          ),
           SetupFailed() => _Failure(
-              state: state,
-              onRetry: coordinator.retry,
-              onManual: manual,
-            ),
+            state: state,
+            onRetry: coordinator.retry,
+            onManual: manual,
+          ),
           SetupReview() => _Review(
-              state: state,
-              onToggle: coordinator.toggleDevice,
-              onCreate: coordinator.createDashboard,
-            ),
+            state: state,
+            onToggle: coordinator.toggleDevice,
+            onCreate: coordinator.createDashboard,
+          ),
           SetupCreating() => _Review(
-              state: state.review,
-              busy: true,
-              onToggle: (_) {},
-              onCreate: () {},
-            ),
+            state: state.review,
+            busy: true,
+            onToggle: (_) {},
+            onCreate: () {},
+          ),
           // Navigation to the dashboard is under way (see ref.listen above).
           SetupComplete() => const SizedBox.shrink(),
         },
@@ -105,32 +120,32 @@ class SetupScreen extends ConsumerWidget {
 
 /// Maps a guidance key from [SetupGuidance] to its localized string.
 String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
-      'setupErrUnreachableTitle' => l10n.setupErrUnreachableTitle,
-      'setupErrUnreachableBody' => l10n.setupErrUnreachableBody,
-      'setupErrUnreachableAction' => l10n.setupErrUnreachableAction,
-      'setupErrPortClosedTitle' => l10n.setupErrPortClosedTitle,
-      'setupErrPortClosedBody' => l10n.setupErrPortClosedBody,
-      'setupErrPortClosedAction' => l10n.setupErrPortClosedAction,
-      'setupErrAuthRequiredTitle' => l10n.setupErrAuthRequiredTitle,
-      'setupErrAuthRequiredBody' => l10n.setupErrAuthRequiredBody,
-      'setupErrAuthRequiredAction' => l10n.setupErrAuthRequiredAction,
-      'setupErrAuthRejectedTitle' => l10n.setupErrAuthRejectedTitle,
-      'setupErrAuthRejectedBody' => l10n.setupErrAuthRejectedBody,
-      'setupErrAuthRejectedAction' => l10n.setupErrAuthRejectedAction,
-      'setupErrNotZ2mTitle' => l10n.setupErrNotZ2mTitle,
-      'setupErrNotZ2mBody' => l10n.setupErrNotZ2mBody,
-      'setupErrNotZ2mAction' => l10n.setupErrNotZ2mAction,
-      'setupErrNoDevicesTitle' => l10n.setupErrNoDevicesTitle,
-      'setupErrNoDevicesBody' => l10n.setupErrNoDevicesBody,
-      'setupErrNoDevicesAction' => l10n.setupErrNoDevicesAction,
-      'setupErrScanFailedTitle' => l10n.setupErrScanFailedTitle,
-      'setupErrScanFailedBody' => l10n.setupErrScanFailedBody,
-      'setupErrScanFailedAction' => l10n.setupErrScanFailedAction,
-      'setupErrSaveFailedTitle' => l10n.setupErrSaveFailedTitle,
-      'setupErrSaveFailedBody' => l10n.setupErrSaveFailedBody,
-      'setupErrSaveFailedAction' => l10n.setupErrSaveFailedAction,
-      _ => l10n.setupErrUnknownAction,
-    };
+  'setupErrUnreachableTitle' => l10n.setupErrUnreachableTitle,
+  'setupErrUnreachableBody' => l10n.setupErrUnreachableBody,
+  'setupErrUnreachableAction' => l10n.setupErrUnreachableAction,
+  'setupErrPortClosedTitle' => l10n.setupErrPortClosedTitle,
+  'setupErrPortClosedBody' => l10n.setupErrPortClosedBody,
+  'setupErrPortClosedAction' => l10n.setupErrPortClosedAction,
+  'setupErrAuthRequiredTitle' => l10n.setupErrAuthRequiredTitle,
+  'setupErrAuthRequiredBody' => l10n.setupErrAuthRequiredBody,
+  'setupErrAuthRequiredAction' => l10n.setupErrAuthRequiredAction,
+  'setupErrAuthRejectedTitle' => l10n.setupErrAuthRejectedTitle,
+  'setupErrAuthRejectedBody' => l10n.setupErrAuthRejectedBody,
+  'setupErrAuthRejectedAction' => l10n.setupErrAuthRejectedAction,
+  'setupErrNotZ2mTitle' => l10n.setupErrNotZ2mTitle,
+  'setupErrNotZ2mBody' => l10n.setupErrNotZ2mBody,
+  'setupErrNotZ2mAction' => l10n.setupErrNotZ2mAction,
+  'setupErrNoDevicesTitle' => l10n.setupErrNoDevicesTitle,
+  'setupErrNoDevicesBody' => l10n.setupErrNoDevicesBody,
+  'setupErrNoDevicesAction' => l10n.setupErrNoDevicesAction,
+  'setupErrScanFailedTitle' => l10n.setupErrScanFailedTitle,
+  'setupErrScanFailedBody' => l10n.setupErrScanFailedBody,
+  'setupErrScanFailedAction' => l10n.setupErrScanFailedAction,
+  'setupErrSaveFailedTitle' => l10n.setupErrSaveFailedTitle,
+  'setupErrSaveFailedBody' => l10n.setupErrSaveFailedBody,
+  'setupErrSaveFailedAction' => l10n.setupErrSaveFailedAction,
+  _ => l10n.setupErrUnknownAction,
+};
 
 /// The first setup screen. With an analytics key in the build and no choice
 /// made yet, it carries the one consent question for new installs: an
@@ -167,12 +182,17 @@ class _WelcomeState extends ConsumerState<_Welcome> {
       padding: const EdgeInsets.all(24),
       children: [
         const SizedBox(height: 32),
-        Icon(Icons.home_outlined,
-            size: 64, color: Theme.of(context).colorScheme.primary),
+        Icon(
+          Icons.home_outlined,
+          size: 64,
+          color: Theme.of(context).colorScheme.primary,
+        ),
         const SizedBox(height: 24),
-        Text(l10n.setupWelcomeBody,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge),
+        Text(
+          l10n.setupWelcomeBody,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         const SizedBox(height: 32),
         FilledButton.icon(
           onPressed: onFind,
@@ -193,8 +213,10 @@ class _WelcomeState extends ConsumerState<_Welcome> {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: TextButton(
-              onPressed: () => launchUrl(usageDataPolicyUrl,
-                  mode: LaunchMode.externalApplication),
+              onPressed: () => launchUrl(
+                usageDataPolicyUrl,
+                mode: LaunchMode.externalApplication,
+              ),
               child: Text(l10n.analyticsWhatsShared),
             ),
           ),
@@ -208,27 +230,64 @@ class _Scanning extends StatelessWidget {
   const _Scanning({
     required this.state,
     required this.onSelect,
+    required this.onPlatform,
     required this.onManual,
   });
   final SetupScanning state;
   final ValueChanged<SetupCandidate> onSelect;
+  final ValueChanged<SetupPlatform?> onPlatform;
   final VoidCallback onManual;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final progress = state.progress;
+    final hint = switch (state.platform) {
+      SetupPlatform.homeAssistant => l10n.setupScanHintHa,
+      SetupPlatform.smlight => l10n.setupScanHintSmlight,
+      SetupPlatform.piOrDocker => l10n.setupScanHintPi,
+      _ => l10n.setupScanningHint,
+    };
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Semantics(
           liveRegion: true,
-          child: Text(l10n.setupScanningTitle,
-              style: Theme.of(context).textTheme.titleMedium),
+          child: Text(
+            l10n.setupScanningTitle,
+            style: theme.textTheme.titleMedium,
+          ),
         ),
         const SizedBox(height: 8),
-        Text(l10n.setupScanningHint,
-            style: Theme.of(context).textTheme.bodyMedium),
+        Text(hint, style: theme.textTheme.bodyMedium),
+        if (!state.done) ...[
+          const SizedBox(height: 16),
+          LinearProgressIndicator(
+            value: progress == null || progress.total == 0
+                ? 0
+                : progress.checked / progress.total,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.setupScanProgress(
+              progress?.checked ?? 0,
+              progress?.total ?? 0,
+            ),
+            style: theme.textTheme.bodySmall,
+          ),
+          const SizedBox(height: 20),
+          _PlatformChips(value: state.platform, onChanged: onPlatform),
+        ],
         const SizedBox(height: 16),
+        for (final h in state.hubs)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.dns_outlined),
+              title: Text(_hubSeen(l10n, h)),
+              subtitle: Text(l10n.setupHubSeenHint),
+            ),
+          ),
         for (final c in state.candidates)
           Card(
             child: ListTile(
@@ -238,12 +297,54 @@ class _Scanning extends StatelessWidget {
               onTap: () => onSelect(c),
             ),
           ),
-        if (!state.done)
-          const Padding(
-            padding: EdgeInsets.all(24),
-            child: Center(child: CircularProgressIndicator()),
-          ),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+      ],
+    );
+  }
+}
+
+String _hubSeen(AppLocalizations l10n, HubFound hub) => switch (hub.kind) {
+  HubKind.homeAssistant => l10n.setupHubSeenHa(hub.host),
+  HubKind.zigbee2mqtt => l10n.setupHubSeenZ2m(hub.host),
+  HubKind.smlight => l10n.setupHubSeenSmlight(hub.host),
+};
+
+/// "Where does Zigbee2MQTT run?", asked while the scan runs and on the empty
+/// result (2.5). Tapping the chosen chip again clears the answer.
+class _PlatformChips extends StatelessWidget {
+  const _PlatformChips({required this.value, required this.onChanged});
+  final SetupPlatform? value;
+  final ValueChanged<SetupPlatform?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final labels = {
+      SetupPlatform.homeAssistant: l10n.setupPlatformHa,
+      SetupPlatform.smlight: l10n.setupPlatformSmlight,
+      SetupPlatform.piOrDocker: l10n.setupPlatformPi,
+      SetupPlatform.notSure: l10n.setupPlatformNotSure,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.setupPlatformQuestion,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            for (final p in SetupPlatform.values)
+              ChoiceChip(
+                label: Text(labels[p]!),
+                selected: value == p,
+                onSelected: (on) => onChanged(on ? p : null),
+              ),
+          ],
+        ),
       ],
     );
   }
@@ -251,39 +352,101 @@ class _Scanning extends StatelessWidget {
 
 class _ScanEmpty extends StatelessWidget {
   const _ScanEmpty({
+    required this.state,
     required this.onRetry,
+    required this.onPlatform,
     required this.onManual,
+    required this.onManualTo,
     required this.onDemo,
   });
+  final SetupScanEmpty state;
   final VoidCallback onRetry;
+  final ValueChanged<SetupPlatform?> onPlatform;
   final VoidCallback onManual;
+  final ValueChanged<HubFound> onManualTo;
   final VoidCallback onDemo;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
+    final hub = state.hub;
+    final platform = state.platform;
+    final (title, body) = hub != null
+        ? switch (hub.kind) {
+            HubKind.homeAssistant => (
+              l10n.setupNoBrokerHaTitle,
+              l10n.setupNoBrokerHaBody(hub.host),
+            ),
+            HubKind.zigbee2mqtt => (
+              l10n.setupNoBrokerZ2mTitle,
+              l10n.setupNoBrokerZ2mBody(hub.host),
+            ),
+            HubKind.smlight => (
+              l10n.setupNoBrokerSmlightTitle,
+              l10n.setupNoBrokerSmlightBody(hub.host),
+            ),
+          }
+        : switch (platform) {
+            SetupPlatform.homeAssistant => (
+              l10n.setupNoCandidatesTitle,
+              l10n.setupNotFoundHa,
+            ),
+            SetupPlatform.smlight => (
+              l10n.setupNoCandidatesTitle,
+              l10n.setupNotFoundSmlight,
+            ),
+            SetupPlatform.piOrDocker => (
+              l10n.setupNoCandidatesTitle,
+              l10n.setupNotFoundPi,
+            ),
+            _ => (l10n.setupNoCandidatesTitle, l10n.setupNoCandidatesBody),
+          };
+    final guideFor = hub != null
+        ? switch (hub.kind) {
+            HubKind.homeAssistant => SetupPlatform.homeAssistant,
+            HubKind.zigbee2mqtt => SetupPlatform.piOrDocker,
+            HubKind.smlight => SetupPlatform.smlight,
+          }
+        : platform;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Semantics(
           liveRegion: true,
-          child: Text(l10n.setupNoCandidatesTitle,
-              style: theme.textTheme.titleMedium),
+          child: Text(title, style: theme.textTheme.titleMedium),
         ),
         const SizedBox(height: 8),
-        Text(l10n.setupNoCandidatesBody, style: theme.textTheme.bodyLarge),
+        Text(body, style: theme.textTheme.bodyLarge),
         const SizedBox(height: 12),
-        const _SetupGuides(),
+        _SetupGuides(only: guideFor),
+        if (hub == null) ...[
+          const SizedBox(height: 12),
+          _PlatformChips(value: platform, onChanged: onPlatform),
+        ],
         const SizedBox(height: 24),
-        FilledButton.icon(
-          onPressed: onRetry,
-          icon: const Icon(Icons.refresh),
-          label: Text(l10n.setupTryAgain),
-        ),
+        if (hub != null) ...[
+          FilledButton.icon(
+            onPressed: () => onManualTo(hub),
+            icon: const Icon(Icons.login),
+            label: Text(l10n.setupConnectTo(hub.host)),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.setupTryAgain),
+          ),
+        ] else
+          FilledButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.setupTryAgain),
+          ),
         GetHelpLink(
-            onPressed: () => context
-                .push(Routes.getHelpFrom(HelpFrom.noConnection.name))),
+          onPressed: () =>
+              context.push(Routes.getHelpFrom(HelpFrom.noConnection.name)),
+        ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
         TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
@@ -331,8 +494,10 @@ class _NoZigbee2MqttState extends State<_NoZigbee2Mqtt> {
           child: Text(l10n.setupNoZ2mTitle, style: theme.textTheme.titleLarge),
         ),
         const SizedBox(height: 8),
-        Text(l10n.setupNoZ2mBody(widget.base),
-            style: theme.textTheme.bodyMedium),
+        Text(
+          l10n.setupNoZ2mBody(widget.base),
+          style: theme.textTheme.bodyMedium,
+        ),
         const SizedBox(height: 24),
         Text(l10n.setupBaseTopicQuestion, style: theme.textTheme.titleSmall),
         const SizedBox(height: 8),
@@ -355,9 +520,13 @@ class _NoZigbee2MqttState extends State<_NoZigbee2Mqtt> {
         Align(
           alignment: AlignmentDirectional.centerStart,
           child: GetHelpLink(
-              onPressed: () => context.push(Routes.getHelpFrom(
-                  HelpFrom.setupError.name,
-                  error: SetupErrorKind.notZigbee2Mqtt.name))),
+            onPressed: () => context.push(
+              Routes.getHelpFrom(
+                HelpFrom.setupError.name,
+                error: SetupErrorKind.notZigbee2Mqtt.name,
+              ),
+            ),
+          ),
         ),
         const SizedBox(height: 16),
         Text(l10n.setupGuidesTitle, style: theme.textTheme.titleSmall),
@@ -369,7 +538,10 @@ class _NoZigbee2MqttState extends State<_NoZigbee2Mqtt> {
           icon: const Icon(Icons.play_circle_outline),
           label: Text(l10n.setupTryDemoMeanwhile),
         ),
-        TextButton(onPressed: widget.onManual, child: Text(l10n.setupManualEntry)),
+        TextButton(
+          onPressed: widget.onManual,
+          child: Text(l10n.setupManualEntry),
+        ),
       ],
     );
   }
@@ -434,8 +606,9 @@ class _AuthPromptState extends State<_AuthPrompt> {
         Text(
           body,
           style: widget.state.rejected
-              ? theme.textTheme.bodyMedium
-                  ?.copyWith(color: theme.colorScheme.error)
+              ? theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                )
               : theme.textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
@@ -459,12 +632,17 @@ class _AuthPromptState extends State<_AuthPrompt> {
           child: Text(l10n.setupErrAuthRequiredAction),
         ),
         GetHelpLink(
-            onPressed: () => context.push(Routes.getHelpFrom(
-                HelpFrom.setupError.name,
-                error: (widget.state.rejected
-                        ? SetupErrorKind.authRejected
-                        : SetupErrorKind.authRequired)
-                    .name))),
+          onPressed: () => context.push(
+            Routes.getHelpFrom(
+              HelpFrom.setupError.name,
+              error:
+                  (widget.state.rejected
+                          ? SetupErrorKind.authRejected
+                          : SetupErrorKind.authRequired)
+                      .name,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -488,8 +666,7 @@ class _Failure extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Icon(Icons.error_outline,
-            size: 48, color: theme.colorScheme.error),
+        Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
         const SizedBox(height: 16),
         Semantics(
           liveRegion: true,
@@ -512,9 +689,13 @@ class _Failure extends StatelessWidget {
           label: Text(_guidanceText(l10n, guidance.actionKey)),
         ),
         GetHelpLink(
-            onPressed: () => context.push(Routes.getHelpFrom(
-                HelpFrom.setupError.name,
-                error: state.kind.name))),
+          onPressed: () => context.push(
+            Routes.getHelpFrom(
+              HelpFrom.setupError.name,
+              error: state.kind.name,
+            ),
+          ),
+        ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
       ],
@@ -541,10 +722,10 @@ class _Review extends StatelessWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final rows = state.rows;
-    final firstOther =
-        rows.indexWhere((r) => r.group == ReviewGroup.other);
-    final firstUnsupported =
-        rows.indexWhere((r) => r.group == ReviewGroup.unsupported);
+    final firstOther = rows.indexWhere((r) => r.group == ReviewGroup.other);
+    final firstUnsupported = rows.indexWhere(
+      (r) => r.group == ReviewGroup.unsupported,
+    );
 
     return Column(
       children: [
@@ -554,13 +735,14 @@ class _Review extends StatelessWidget {
             children: [
               Semantics(
                 liveRegion: true,
-                child: Text(l10n.setupReviewSubtitle(rows.length),
-                    style: theme.textTheme.titleMedium),
+                child: Text(
+                  l10n.setupReviewSubtitle(rows.length),
+                  style: theme.textTheme.titleMedium,
+                ),
               ),
               const SizedBox(height: 8),
               for (var i = 0; i < rows.length; i++) ...[
-                if (i == firstOther)
-                  _GroupHeader(title: l10n.setupGroupOther),
+                if (i == firstOther) _GroupHeader(title: l10n.setupGroupOther),
                 if (i == firstUnsupported)
                   _GroupHeader(title: l10n.setupGroupUnsupported),
                 _DeviceRow(row: rows[i], onToggle: onToggle),
@@ -613,41 +795,53 @@ class _DeviceRow extends StatelessWidget {
     // own `selected: false` and is therefore dead code.
     return CheckboxListTile(
       value: row.selected,
-      onChanged: enabled
-          ? (_) => onToggle(row.device.friendlyName)
-          : null,
+      onChanged: enabled ? (_) => onToggle(row.device.friendlyName) : null,
       title: Text(row.device.friendlyName),
       subtitle: Text(
-        [row.device.vendor, row.device.model]
-            .whereType<String>()
-            .join(' · '),
+        [row.device.vendor, row.device.model].whereType<String>().join(' · '),
       ),
     );
   }
 }
 
 /// Where Zigbee2MQTT usually runs, each opening its setup guide in the
-/// browser. Shown when nothing was found and when Zigbee2MQTT is missing.
+/// browser. Shown when nothing was found and when Zigbee2MQTT is missing;
+/// with [only], just that platform's guide (the user's answer, 2.5).
 class _SetupGuides extends StatelessWidget {
-  const _SetupGuides();
+  const _SetupGuides({this.only});
+  final SetupPlatform? only;
 
   static final _ha = Uri.parse(
-      'https://www.zigbee2mqtt.io/guide/installation/03_ha_addon.html');
-  static final _linux =
-      Uri.parse('https://www.zigbee2mqtt.io/guide/installation/01_linux.html');
-  static final _smlight =
-      Uri.parse('https://smlight.tech/support/manuals/books/smhub');
+    'https://www.zigbee2mqtt.io/guide/installation/03_ha_addon.html',
+  );
+  static final _linux = Uri.parse(
+    'https://www.zigbee2mqtt.io/guide/installation/01_linux.html',
+  );
+  static final _smlight = Uri.parse(
+    'https://smlight.tech/support/manuals/books/smhub',
+  );
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final all = {
+      SetupPlatform.homeAssistant: _GuideLink(
+        text: l10n.setupGuideHa,
+        url: _ha,
+      ),
+      SetupPlatform.piOrDocker: _GuideLink(
+        text: l10n.setupGuidePi,
+        url: _linux,
+      ),
+      SetupPlatform.smlight: _GuideLink(
+        text: l10n.setupGuideSmlight,
+        url: _smlight,
+      ),
+    };
+    final shown = all[only];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _GuideLink(text: l10n.setupGuideHa, url: _ha),
-        _GuideLink(text: l10n.setupGuidePi, url: _linux),
-        _GuideLink(text: l10n.setupGuideSmlight, url: _smlight),
-      ],
+      children: shown != null ? [shown] : all.values.toList(),
     );
   }
 }
@@ -663,8 +857,11 @@ class _GuideLink extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(text, style: theme.textTheme.bodyMedium),
-      trailing: Icon(Icons.open_in_new,
-          size: 20, color: theme.colorScheme.primary),
+      trailing: Icon(
+        Icons.open_in_new,
+        size: 20,
+        color: theme.colorScheme.primary,
+      ),
       onTap: () => launchUrl(url, mode: LaunchMode.externalApplication),
     );
   }

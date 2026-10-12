@@ -47,10 +47,10 @@ PanelType parsePanelTypeToken(String? s) {
 }
 
 SliderPreset? _parseSliderPreset(String? s) => switch (s) {
-      'brightness' => SliderPreset.brightness,
-      'position' => SliderPreset.position,
-      _ => null,
-    };
+  'brightness' => SliderPreset.brightness,
+  'position' => SliderPreset.position,
+  _ => null,
+};
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Read once: the app opens on the last-used home's dashboards.
@@ -69,10 +69,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
     routes: [
       // Retired carousel address; the redirect above always leaves it.
-      GoRoute(
-        path: Routes.onboarding,
-        redirect: (_, __) => Routes.setup,
-      ),
+      GoRoute(path: Routes.onboarding, redirect: (_, __) => Routes.setup),
       // First run and adding a home: outside the navigation shell.
       GoRoute(
         path: Routes.setup,
@@ -80,7 +77,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'manual',
-            pageBuilder: (_, __) => _slideUp(const GuidedConnectScreen()),
+            pageBuilder: (_, state) => _slideUp(
+              GuidedConnectScreen(
+                initialHost: state.uri.queryParameters['host'],
+                initialPort: int.tryParse(
+                  state.uri.queryParameters['port'] ?? '',
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -90,18 +94,23 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/shortcuts/tile/:slot',
-        pageBuilder: (_, state) => _slideUp(ShortcutTilePicker(
-            slot: int.tryParse(state.pathParameters['slot'] ?? '') ?? 1)),
+        pageBuilder: (_, state) => _slideUp(
+          ShortcutTilePicker(
+            slot: int.tryParse(state.pathParameters['slot'] ?? '') ?? 1,
+          ),
+        ),
       ),
       GoRoute(
         path: Routes.getHelp,
         pageBuilder: (_, state) {
           final q = state.uri.queryParameters;
-          return _slideUp(GetHelpScreen(
-            from: HelpFrom.values.asNameMap()[q['from']] ?? HelpFrom.settings,
-            connectionId: q['home'],
-            error: SetupErrorKind.values.asNameMap()[q['error']],
-          ));
+          return _slideUp(
+            GetHelpScreen(
+              from: HelpFrom.values.asNameMap()[q['from']] ?? HelpFrom.settings,
+              connectionId: q['home'],
+              error: SetupErrorKind.values.asNameMap()[q['error']],
+            ),
+          );
         },
       ),
       // One home at a time: Dashboards, Devices and Scenes share the bottom
@@ -116,36 +125,46 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/connections/:id/dashboards',
             pageBuilder: (_, state) => NoTransitionPage(
-                child:
-                    DashboardsScreen(connectionId: state.pathParameters['id']!)),
+              child: DashboardsScreen(
+                connectionId: state.pathParameters['id']!,
+              ),
+            ),
             routes: [
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: 'form',
-                pageBuilder: (_, state) => _slideUp(DashboardFormScreen(
-                  connectionId: state.pathParameters['id']!,
-                )),
+                pageBuilder: (_, state) => _slideUp(
+                  DashboardFormScreen(
+                    connectionId: state.pathParameters['id']!,
+                  ),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: ':dashboardId/edit',
-                pageBuilder: (_, state) => _slideUp(DashboardFormScreen(
-                  connectionId: state.pathParameters['id']!,
-                  dashboardId: state.pathParameters['dashboardId'],
-                )),
+                pageBuilder: (_, state) => _slideUp(
+                  DashboardFormScreen(
+                    connectionId: state.pathParameters['id']!,
+                    dashboardId: state.pathParameters['dashboardId'],
+                  ),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: ':dashboardId/panels/new',
-                pageBuilder: (_, state) => _slideUp(PanelFormScreen(
-                  connectionId: state.pathParameters['id']!,
-                  dashboardId: state.pathParameters['dashboardId']!,
-                  initialType:
-                      parsePanelTypeToken(state.uri.queryParameters['type']),
-                  initialSliderPreset:
-                      _parseSliderPreset(state.uri.queryParameters['preset']),
-                  suggestion: state.extra as PanelSuggestion?,
-                )),
+                pageBuilder: (_, state) => _slideUp(
+                  PanelFormScreen(
+                    connectionId: state.pathParameters['id']!,
+                    dashboardId: state.pathParameters['dashboardId']!,
+                    initialType: parsePanelTypeToken(
+                      state.uri.queryParameters['type'],
+                    ),
+                    initialSliderPreset: _parseSliderPreset(
+                      state.uri.queryParameters['preset'],
+                    ),
+                    suggestion: state.extra as PanelSuggestion?,
+                  ),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: rootKey,
@@ -153,38 +172,49 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (_, state) {
                   final connectionId = state.pathParameters['id']!;
                   final dashboardId = state.pathParameters['dashboardId']!;
-                  return _slideUp(AddTileScreen(
-                    connectionId: connectionId,
-                    dashboardId: dashboardId,
-                    onCustomTile: (context) => openCustomTilePicker(context,
-                        connectionId: connectionId, dashboardId: dashboardId),
-                  ));
+                  return _slideUp(
+                    AddTileScreen(
+                      connectionId: connectionId,
+                      dashboardId: dashboardId,
+                      onCustomTile: (context) => openCustomTilePicker(
+                        context,
+                        connectionId: connectionId,
+                        dashboardId: dashboardId,
+                      ),
+                    ),
+                  );
                 },
               ),
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: ':dashboardId/discover',
-                pageBuilder: (_, state) => _slideUp(DevicePickerScreen(
-                  connectionId: state.pathParameters['id']!,
-                  dashboardId: state.pathParameters['dashboardId']!,
-                )),
+                pageBuilder: (_, state) => _slideUp(
+                  DevicePickerScreen(
+                    connectionId: state.pathParameters['id']!,
+                    dashboardId: state.pathParameters['dashboardId']!,
+                  ),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: ':dashboardId/panels/:panelId/edit',
-                pageBuilder: (_, state) => _slideUp(PanelFormScreen(
-                  connectionId: state.pathParameters['id']!,
-                  dashboardId: state.pathParameters['dashboardId']!,
-                  panelId: state.pathParameters['panelId'],
-                )),
+                pageBuilder: (_, state) => _slideUp(
+                  PanelFormScreen(
+                    connectionId: state.pathParameters['id']!,
+                    dashboardId: state.pathParameters['dashboardId']!,
+                    panelId: state.pathParameters['panelId'],
+                  ),
+                ),
               ),
             ],
           ),
           GoRoute(
             path: Routes.devices,
             pageBuilder: (_, state) => NoTransitionPage(
-                child: DevicesDestination(
-                    connectionId: state.pathParameters['id']!)),
+              child: DevicesDestination(
+                connectionId: state.pathParameters['id']!,
+              ),
+            ),
             routes: [
               GoRoute(
                 parentNavigatorKey: rootKey,
@@ -199,35 +229,34 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: Routes.scenes,
             pageBuilder: (_, state) => NoTransitionPage(
-                child: ScenesDestination(
-                    connectionId: state.pathParameters['id']!)),
+              child: ScenesDestination(
+                connectionId: state.pathParameters['id']!,
+              ),
+            ),
             routes: [
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: 'new',
                 pageBuilder: (_, state) => _slideUp(
-                    SceneFormScreen(connectionId: state.pathParameters['id']!)),
+                  SceneFormScreen(connectionId: state.pathParameters['id']!),
+                ),
               ),
               GoRoute(
                 parentNavigatorKey: rootKey,
                 path: ':sceneId/edit',
-                pageBuilder: (_, state) => _slideUp(SceneFormScreen(
-                  connectionId: state.pathParameters['id']!,
-                  sceneId: state.pathParameters['sceneId'],
-                )),
+                pageBuilder: (_, state) => _slideUp(
+                  SceneFormScreen(
+                    connectionId: state.pathParameters['id']!,
+                    sceneId: state.pathParameters['sceneId'],
+                  ),
+                ),
               ),
             ],
           ),
         ],
       ),
-      GoRoute(
-        path: Routes.start,
-        builder: (_, __) => const HomeStartScreen(),
-      ),
-      GoRoute(
-        path: Routes.dashboards,
-        redirect: (_, __) => Routes.start,
-      ),
+      GoRoute(path: Routes.start, builder: (_, __) => const HomeStartScreen()),
+      GoRoute(path: Routes.dashboards, redirect: (_, __) => Routes.start),
       // Homes are managed in Settings from 1.13; the old list's address
       // opens it. The connection form keeps its addresses.
       GoRoute(
@@ -241,8 +270,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: ':id/edit',
-            pageBuilder: (_, state) => _slideUp(ConnectionFormScreen(
-                connectionId: state.pathParameters['id'])),
+            pageBuilder: (_, state) => _slideUp(
+              ConnectionFormScreen(connectionId: state.pathParameters['id']),
+            ),
           ),
         ],
       ),
@@ -250,14 +280,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.settings,
         pageBuilder: (_, __) => _slideUp(const SettingsScreen()),
         routes: [
-          GoRoute(
-            path: 'language',
-            builder: (_, __) => const LanguageScreen(),
-          ),
+          GoRoute(path: 'language', builder: (_, __) => const LanguageScreen()),
           GoRoute(
             path: 'home/:id',
-            builder: (_, state) => HomeSettingsScreen(
-                connectionId: state.pathParameters['id']!),
+            builder: (_, state) =>
+                HomeSettingsScreen(connectionId: state.pathParameters['id']!),
             routes: [
               GoRoute(
                 path: 'alerts',
@@ -267,10 +294,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: ':alertId',
                     builder: (_, state) => AlertEditorScreen(
-                        connectionId: state.pathParameters['id']!,
-                        alertId: state.pathParameters['alertId']!,
-                        kind: state.uri.queryParameters['kind'],
-                        ieee: state.uri.queryParameters['ieee']),
+                      connectionId: state.pathParameters['id']!,
+                      alertId: state.pathParameters['alertId']!,
+                      kind: state.uri.queryParameters['kind'],
+                      ieee: state.uri.queryParameters['ieee'],
+                    ),
                   ),
                 ],
               ),
@@ -283,19 +311,16 @@ final routerProvider = Provider<GoRouter>((ref) {
 });
 
 Page<dynamic> _slideUp(Widget child) => CustomTransitionPage(
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-          SlideTransition(
+  child: child,
+  transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+      SlideTransition(
         position: Tween<Offset>(
           begin: const Offset(0, 0.05),
           end: Offset.zero,
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOut,
-        )),
+        ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
         child: FadeTransition(
           opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
           child: child,
         ),
       ),
-    );
+);

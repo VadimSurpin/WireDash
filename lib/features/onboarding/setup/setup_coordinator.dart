@@ -3,6 +3,8 @@ import 'dart:async';
 import '../../../mqtt/broker_config.dart';
 import '../../connections/diagnostics/connect_diagnostics.dart';
 import '../../connections/discovery/broker_probe.dart';
+import '../../connections/discovery/broker_scan_service.dart';
+import '../../connections/discovery/hub_probe.dart';
 import '../../discovery/models/z2m_device.dart';
 import 'recommendation_policy.dart';
 import 'setup_candidate.dart';
@@ -21,9 +23,34 @@ class Z2mFetchResult {
 }
 
 typedef DeviceIpProvider = Future<String?> Function();
-typedef ScanStreamFactory = Stream<ProbeResult> Function(String deviceIp);
-typedef DeviceListFetcher = Future<Z2mFetchResult> Function(
-    BrokerConfig config, String password, String base);
+
+/// Starts a scan; [hubs] are the hub kinds to look for when the phone's /24
+/// has no broker (the user's platform answer adds the SMLIGHT pass).
+typedef ScanRunFactory = ScanRun Function(String deviceIp, Set<HubKind> hubs);
+
+/// Where the user says Zigbee2MQTT runs, asked while the scan runs (2.5).
+/// Not an answer and [notSure] both mean the plain scan; the others add a
+/// pass or change what the empty result says.
+enum SetupPlatform { homeAssistant, smlight, piOrDocker, notSure }
+
+/// The hub kinds a platform answer makes the scan look for, on top of the
+/// default ones (Home Assistant and the Zigbee2MQTT frontend).
+Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
+  ...BrokerScanService.defaultHubs,
+  if (platform == SetupPlatform.smlight) HubKind.smlight,
+};
+
+/// How far a scan has come, for the progress bar.
+typedef ScanProgressValue = ({int checked, int total});
+
+/// What a finished scan tried, for the empty result's analytics.
+typedef ScanTried = ({bool widened, int hostsTried});
+typedef DeviceListFetcher =
+    Future<Z2mFetchResult> Function(
+      BrokerConfig config,
+      String password,
+      String base,
+    );
 
 // --- States ---------------------------------------------------------------
 
@@ -37,16 +64,48 @@ class SetupIdle extends SetupState {
 }
 
 /// Scanning the local network; [candidates] grow progressively and [done]
-/// flips true when the scan completes.
+/// flips true when the scan completes. [hubs] are the hubs seen so far,
+/// [progress] how far the scan is, [platform] the user's answer.
 class SetupScanning extends SetupState {
-  const SetupScanning(this.candidates, {this.done = false});
+  const SetupScanning(
+    this.candidates, {
+    this.done = false,
+    this.hubs = const [],
+    this.progress,
+    this.platform,
+  });
   final List<SetupCandidate> candidates;
   final bool done;
+  final List<HubFound> hubs;
+  final ScanProgressValue? progress;
+  final SetupPlatform? platform;
 }
 
-/// The scan finished without a single usable candidate.
+/// The scan finished without a single usable candidate. [hubs] are the hubs
+/// it saw instead, [platform] the user's answer, [tried] what it covered and
+/// [deviceIp] the phone's address, for the result screen and its analytics.
 class SetupScanEmpty extends SetupState {
-  const SetupScanEmpty();
+  const SetupScanEmpty({
+    this.hubs = const [],
+    this.platform,
+    this.tried,
+    this.deviceIp,
+  });
+  final List<HubFound> hubs;
+  final SetupPlatform? platform;
+  final ScanTried? tried;
+  final String? deviceIp;
+
+  /// The hub the result speaks about: Home Assistant first (it hosts the
+  /// broker), then the Zigbee2MQTT frontend, then an SMLIGHT hub.
+  HubFound? get hub {
+    for (final kind in HubKind.values) {
+      for (final h in hubs) {
+        if (h.kind == kind) return h;
+      }
+    }
+    return null;
+  }
 }
 
 /// Running the diagnostic ladder against [candidate].
@@ -107,21 +166,21 @@ class SetupComplete extends SetupState {
 /// returns to a safe initial state.
 class SetupCoordinator {
   SetupCoordinator({
-    required ScanStreamFactory scan,
+    required ScanRunFactory scan,
     required DeviceIpProvider deviceIp,
     required ConnectDiagnostics diagnostics,
     required DeviceListFetcher fetchDevices,
     required SetupStore creator,
     String base = 'zigbee2mqtt',
     this.onCreated,
-  })  : _base = base,
-        _scan = scan,
-        _deviceIp = deviceIp,
-        _diagnostics = diagnostics,
-        _fetchDevices = fetchDevices,
-        _creator = creator;
+  }) : _base = base,
+       _scan = scan,
+       _deviceIp = deviceIp,
+       _diagnostics = diagnostics,
+       _fetchDevices = fetchDevices,
+       _creator = creator;
 
-  final ScanStreamFactory _scan;
+  final ScanRunFactory _scan;
   final DeviceIpProvider _deviceIp;
   final ConnectDiagnostics _diagnostics;
   final DeviceListFetcher _fetchDevices;
@@ -139,7 +198,9 @@ class SetupCoordinator {
   final _states = StreamController<SetupState>.broadcast();
   SetupState _state = const SetupIdle();
 
-  StreamSubscription<ProbeResult>? _scanSub;
+  StreamSubscription<ScanEvent>? _scanSub;
+  ScanRun? _run;
+  SetupPlatform? _platform;
   String? _username;
   String? _password;
   List<ReviewRow>? _rows;
@@ -147,6 +208,9 @@ class SetupCoordinator {
 
   SetupState get state => _state;
   Stream<SetupState> get states => _states.stream;
+
+  /// The user's platform answer, kept for the session.
+  SetupPlatform? get platform => _platform;
 
   void _emit(SetupState s) {
     _state = s;
@@ -158,7 +222,7 @@ class SetupCoordinator {
   Future<void> startScan() async {
     final op = ++_op;
     _cancelScan();
-    _emit(const SetupScanning([]));
+    _emit(SetupScanning(const [], platform: _platform));
     final ip = await _deviceIp();
     if (op != _op) return;
     if (ip == null) {
@@ -166,28 +230,98 @@ class SetupCoordinator {
       return;
     }
     final buffer = <ProbeResult>[];
-    _scanSub = _scan(ip).listen(
-      (probe) {
+    final hubs = <HubFound>[];
+    ScanProgressValue? progress;
+    ScanTried? tried;
+    final run = _scan(ip, hubsForPlatform(_platform));
+    _run = run;
+    void emitScanning({bool done = false}) => _emit(
+      SetupScanning(
+        mergeCandidates(buffer),
+        done: done,
+        hubs: List.unmodifiable(hubs),
+        progress: progress,
+        platform: _platform,
+      ),
+    );
+    _scanSub = run.events.listen(
+      (event) {
         if (_state is! SetupScanning) return;
-        buffer.add(probe);
-        _emit(SetupScanning(mergeCandidates(buffer)));
+        switch (event) {
+          case BrokerFound(:final broker):
+            buffer.add(broker);
+            emitScanning();
+          case HubSeen(:final hub):
+            hubs.add(hub);
+            emitScanning();
+          case ScanProgress(:final checked, :final total):
+            progress = (checked: checked, total: total);
+            // Coarse steps keep the UI from rebuilding a thousand times.
+            if (checked == total || checked % 16 == 0) emitScanning();
+          case ScanTriedEvent(:final widened, :final hostsTried):
+            tried = (widened: widened, hostsTried: hostsTried);
+        }
       },
       onDone: () {
         if (_state is! SetupScanning) return;
         final merged = mergeCandidates(buffer);
         if (merged.isEmpty) {
-          _emit(const SetupScanEmpty());
+          _emit(
+            SetupScanEmpty(
+              hubs: List.unmodifiable(hubs),
+              platform: _platform,
+              tried: tried,
+              deviceIp: ip,
+            ),
+          );
         } else if (merged.length == 1) {
           // One broker found: continue without asking the user to pick it.
           unawaited(_verify(merged.single));
         } else {
-          _emit(SetupScanning(merged, done: true));
+          emitScanning(done: true);
         }
       },
       onError: (_) {
-        if (_state is SetupScanning) _emit(const SetupScanEmpty());
+        if (_state is SetupScanning) {
+          _emit(
+            SetupScanEmpty(
+              hubs: List.unmodifiable(hubs),
+              platform: _platform,
+              deviceIp: ip,
+            ),
+          );
+        }
       },
     );
+  }
+
+  /// The user's answer to "where does Zigbee2MQTT run?". While scanning, an
+  /// SMLIGHT answer adds that pass to the running scan; on the empty result
+  /// the answer retags it (Try again scans with it).
+  void setPlatform(SetupPlatform? platform) {
+    _platform = platform;
+    final s = _state;
+    if (s is SetupScanning) {
+      if (platform == SetupPlatform.smlight) _run?.addHub(HubKind.smlight);
+      _emit(
+        SetupScanning(
+          s.candidates,
+          done: s.done,
+          hubs: s.hubs,
+          progress: s.progress,
+          platform: platform,
+        ),
+      );
+    } else if (s is SetupScanEmpty) {
+      _emit(
+        SetupScanEmpty(
+          hubs: s.hubs,
+          platform: platform,
+          tried: s.tried,
+          deviceIp: s.deviceIp,
+        ),
+      );
+    }
   }
 
   Future<void> selectCandidate(SetupCandidate candidate) async {
@@ -244,8 +378,13 @@ class SetupCoordinator {
       _emit(SetupComplete(result));
     } catch (_) {
       if (op != _op) return;
-      _emit(SetupFailed(SetupErrorKind.saveFailed,
-          candidate: candidate, failedAtCreation: true));
+      _emit(
+        SetupFailed(
+          SetupErrorKind.saveFailed,
+          candidate: candidate,
+          failedAtCreation: true,
+        ),
+      );
     }
   }
 
@@ -284,6 +423,7 @@ class SetupCoordinator {
     _username = null;
     _password = null;
     _rows = null;
+    _platform = null;
     _emit(const SetupIdle());
   }
 
@@ -299,17 +439,18 @@ class SetupCoordinator {
   void _cancelScan() {
     unawaited(_scanSub?.cancel());
     _scanSub = null;
+    _run = null;
   }
 
   // --- Internals ---
 
   SetupCandidate? get _candidate => switch (_state) {
-        SetupVerifying(:final candidate) => candidate,
-        SetupNeedsAuth(:final candidate) => candidate,
-        SetupFailed(:final candidate) => candidate,
-        SetupReview(:final candidate) => candidate,
-        _ => null,
-      };
+    SetupVerifying(:final candidate) => candidate,
+    SetupNeedsAuth(:final candidate) => candidate,
+    SetupFailed(:final candidate) => candidate,
+    SetupReview(:final candidate) => candidate,
+    _ => null,
+  };
 
   Future<void> _verify(SetupCandidate candidate) async {
     if (candidate.needsAuth && _username == null) {
@@ -328,7 +469,10 @@ class SetupCoordinator {
     final DiagnosticsReport report;
     try {
       report = await _diagnostics.run(
-          config: config, password: _password ?? '', base: base);
+        config: config,
+        password: _password ?? '',
+        base: base,
+      );
     } catch (_) {
       if (op != _op) return;
       _emit(SetupFailed(SetupErrorKind.unknown, candidate: candidate));

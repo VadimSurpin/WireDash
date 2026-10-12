@@ -10,6 +10,7 @@ import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/features/dashboards/widgets/analytics_consent_card.dart';
 import 'package:zigdash/features/onboarding/demo_service.dart';
 import 'package:zigdash/features/onboarding/setup/setup_analytics.dart';
+import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_error_guidance.dart';
@@ -17,34 +18,39 @@ import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 
 Connection _home(String host) => Connection(
-      id: 'c1',
-      name: 'Home',
-      host: host,
-      port: 1883,
-      protocol: MqttProtocol.tcp,
-      keepAliveSeconds: 60,
-      autoConnect: true,
-      createdAt: DateTime(2026),
-      updatedAt: DateTime(2026),
-    );
+  id: 'c1',
+  name: 'Home',
+  host: host,
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+  keepAliveSeconds: 60,
+  autoConnect: true,
+  createdAt: DateTime(2026),
+  updatedAt: DateTime(2026),
+);
 
-Future<SharedPreferences> _card(WidgetTester tester,
-    {required String host, Map<String, Object> prefs = const {}}) async {
+Future<SharedPreferences> _card(
+  WidgetTester tester, {
+  required String host,
+  Map<String, Object> prefs = const {},
+}) async {
   SharedPreferences.setMockInitialValues(prefs);
   final p = await SharedPreferences.getInstance();
-  await tester.pumpWidget(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(p),
-      analyticsAvailableProvider.overrideWithValue(true),
-      analyticsSinkProvider.overrideWithValue(_NullSink()),
-      connectionByIdProvider.overrideWith((ref, _) async => _home(host)),
-    ],
-    child: const MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: AnalyticsConsentCard(connectionId: 'c1')),
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(p),
+        analyticsAvailableProvider.overrideWithValue(true),
+        analyticsSinkProvider.overrideWithValue(_NullSink()),
+        connectionByIdProvider.overrideWith((ref, _) async => _home(host)),
+      ],
+      child: const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: AnalyticsConsentCard(connectionId: 'c1')),
+      ),
     ),
-  ));
+  );
   await tester.pump();
   return p;
 }
@@ -60,8 +66,9 @@ class _NullSink implements AnalyticsSink {
 
 void main() {
   group("the upgraders' card", () {
-    testWidgets('asks once on a real home and records the answer',
-        (tester) async {
+    testWidgets('asks once on a real home and records the answer', (
+      tester,
+    ) async {
       final prefs = await _card(tester, host: '192.168.1.2');
       expect(find.text('Help improve ZigDash?'), findsOneWidget);
       await tester.tap(find.text('Share'));
@@ -84,8 +91,11 @@ void main() {
     });
 
     testWidgets('never once answered', (tester) async {
-      await _card(tester,
-          host: '192.168.1.2', prefs: {'analytics_consent': false});
+      await _card(
+        tester,
+        host: '192.168.1.2',
+        prefs: {'analytics_consent': false},
+      );
       expect(find.text('Help improve ZigDash?'), findsNothing);
     });
   });
@@ -93,24 +103,78 @@ void main() {
   group('setup steps', () {
     const scanning = SetupScanning([]);
     test('the funnel', () {
-      expect(setupStepFor(const SetupIdle(), scanning)?.props,
-          {'step': 'started'});
-      expect(setupStepFor(scanning, const SetupScanning([], done: true)), isNull,
-          reason: 'more scan results are not a step');
-      expect(setupStepFor(scanning, const SetupScanEmpty())?.props,
-          {'step': 'scan_empty'});
+      expect(setupStepFor(const SetupIdle(), scanning)?.props, {
+        'step': 'started',
+      });
       expect(
-          setupStepFor(null,
-                  const SetupFailed(SetupErrorKind.authRequired))
-              ?.props,
-          {'step': 'failed', 'error': 'auth_required'});
+        setupStepFor(scanning, const SetupScanning([], done: true)),
+        isNull,
+        reason: 'more scan results are not a step',
+      );
+      expect(setupStepFor(scanning, const SetupScanEmpty())?.props, {
+        'step': 'scan_empty',
+        'hub': 'none',
+      });
       expect(
-          setupStepFor(
-                  null,
-                  const SetupComplete(SetupResult(
-                      connectionId: 'c', dashboardId: 'd', panelCount: 12)))
-              ?.props,
-          {'step': 'complete', 'devices': '6-20'});
+        setupStepFor(
+          null,
+          const SetupFailed(SetupErrorKind.authRequired),
+        )?.props,
+        {'step': 'failed', 'error': 'auth_required'},
+      );
+      expect(
+        setupStepFor(
+          null,
+          const SetupComplete(
+            SetupResult(connectionId: 'c', dashboardId: 'd', panelCount: 12),
+          ),
+        )?.props,
+        {'step': 'complete', 'devices': '6-20'},
+      );
+    });
+
+    // 2.5: an empty scan says what it saw, in kinds and buckets only.
+    test('an empty scan reports the platform answer and what it found', () {
+      const empty = SetupScanEmpty(
+        hubs: [
+          HubFound(kind: HubKind.zigbee2mqtt, host: '192.168.1.30', port: 8080),
+          HubFound(
+            kind: HubKind.homeAssistant,
+            host: '192.168.1.20',
+            port: 8123,
+          ),
+        ],
+        platform: SetupPlatform.homeAssistant,
+        tried: (widened: true, hostsTried: 1018),
+        deviceIp: '192.168.1.37',
+      );
+      final props = setupStepFor(scanning, empty)!.props;
+      expect(props, {
+        'step': 'scan_empty',
+        'platform': 'home_assistant',
+        'hub': 'home_assistant',
+        'hosts': '254-1020',
+        'widened': 'yes',
+        'subnet': '192.168',
+      });
+      expect(
+        props.values.any((v) => v.contains('192.168.1')),
+        isFalse,
+        reason: 'never an address',
+      );
+      // The answer given during the scan also tags the steps after it.
+      expect(
+        setupStepFor(
+          scanning,
+          const SetupScanEmpty(),
+          platform: SetupPlatform.notSure,
+        )!.props['platform'],
+        'not_sure',
+      );
+      expect(subnetShape('10.0.0.5'), '10');
+      expect(subnetShape('172.20.1.1'), '172.16');
+      expect(subnetShape('8.8.8.8'), 'other');
+      expect(subnetShape(null), isNull);
     });
   });
 

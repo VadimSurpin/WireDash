@@ -35,14 +35,18 @@ class AppStarted extends AnalyticsEvent {
 
   @override
   Map<String, String> get props => {
-        'form': form.name,
-        'theme': theme.name,
-        'material_you': materialYou ? 'on' : 'off',
-        'homes': bucket(homes, const [0, 1], top: '2+'),
-        'tiles': bucket(tiles, const [0], ranges: const [(1, 10), (11, 30)],
-            top: '31+'),
-        'demo': demo ? 'yes' : 'no',
-      };
+    'form': form.name,
+    'theme': theme.name,
+    'material_you': materialYou ? 'on' : 'off',
+    'homes': bucket(homes, const [0, 1], top: '2+'),
+    'tiles': bucket(
+      tiles,
+      const [0],
+      ranges: const [(1, 10), (11, 30)],
+      top: '31+',
+    ),
+    'demo': demo ? 'yes' : 'no',
+  };
 }
 
 enum SetupStepKind {
@@ -58,9 +62,22 @@ enum SetupStepKind {
   demo,
 }
 
-/// Each step of first-run setup: where people get stuck.
+/// Each step of first-run setup: where people get stuck. An empty scan
+/// (2.5) also says what the scan saw: the user's platform answer, the hub
+/// kind it found (or none), how many hosts it tried, whether it widened to
+/// the /22, and the shape of the phone's subnet. Kinds and buckets only;
+/// never an address.
 class SetupStep extends AnalyticsEvent {
-  const SetupStep(this.step, {this.error, this.devices});
+  const SetupStep(
+    this.step, {
+    this.error,
+    this.devices,
+    this.platform,
+    this.hub,
+    this.hostsTried,
+    this.widened,
+    this.subnet,
+  });
 
   final SetupStepKind step;
 
@@ -70,17 +87,44 @@ class SetupStep extends AnalyticsEvent {
   /// Devices found, at review and complete.
   final int? devices;
 
+  /// The user's answer to where Zigbee2MQTT runs, once given.
+  final Enum? platform;
+
+  /// The hub kind an empty scan found; null on an empty scan means none.
+  final Enum? hub;
+  final int? hostsTried;
+  final bool? widened;
+
+  /// '192.168', '10', '172.16' or 'other'.
+  final String? subnet;
+
   @override
   String get name => 'setup_step';
 
   @override
   Map<String, String> get props => {
-        'step': _snake(step.name),
-        if (error != null) 'error': _snake(error!.name),
-        if (devices != null)
-          'devices': bucket(devices!, const [0],
-              ranges: const [(1, 5), (6, 20)], top: '21+'),
-      };
+    'step': _snake(step.name),
+    if (error != null) 'error': _snake(error!.name),
+    if (devices != null)
+      'devices': bucket(
+        devices!,
+        const [0],
+        ranges: const [(1, 5), (6, 20)],
+        top: '21+',
+      ),
+    if (platform != null) 'platform': _snake(platform!.name),
+    if (step == SetupStepKind.scanEmpty)
+      'hub': hub == null ? 'none' : _snake(hub!.name),
+    if (hostsTried != null)
+      'hosts': bucket(
+        hostsTried!,
+        const [0],
+        ranges: const [(1, 253), (254, 1020)],
+        top: '1021+',
+      ),
+    if (widened != null) 'widened': widened! ? 'yes' : 'no',
+    if (subnet != null) 'subnet': subnet!,
+  };
 }
 
 enum Feature {
@@ -107,9 +151,9 @@ class FeatureUsed extends AnalyticsEvent {
 
   @override
   Map<String, String> get props => {
-        'feature': _snake(feature.name),
-        if (tile != null) 'tile': _snake(tile!.name),
-      };
+    'feature': _snake(feature.name),
+    if (tile != null) 'tile': _snake(tile!.name),
+  };
 }
 
 /// Where Get help was opened from (docs/design/support.md §2).
@@ -117,6 +161,9 @@ enum HelpFrom {
   noConnection,
   setupError,
   manualConnect,
+
+  /// The manual entry form itself, before any check ran (2.5).
+  manualForm,
   homeUnreachable,
   deviceListMissing,
   settings,
@@ -152,8 +199,7 @@ class SupportContact extends AnalyticsEvent {
   String get name => 'support_contact';
 
   @override
-  Map<String, String> get props =>
-      {'from': _snake(from.name), 'via': via.name};
+  Map<String, String> get props => {'from': _snake(from.name), 'via': via.name};
 }
 
 /// The Telegram community link was opened, from Settings or Get help.
@@ -280,8 +326,12 @@ class PollAnswer extends AnalyticsEvent {
 
 /// [n] as a coarse label: an exact value from [exact], a "lo-hi" range from
 /// [ranges], else [top].
-String bucket(int n,
-    List<int> exact, {List<(int, int)> ranges = const [], required String top}) {
+String bucket(
+  int n,
+  List<int> exact, {
+  List<(int, int)> ranges = const [],
+  required String top,
+}) {
   if (exact.contains(n)) return '$n';
   for (final (lo, hi) in ranges) {
     if (n >= lo && n <= hi) return '$lo-$hi';
@@ -289,5 +339,5 @@ String bucket(int n,
   return top;
 }
 
-String _snake(String camel) => camel.replaceAllMapped(
-    RegExp('[A-Z]'), (m) => '_${m[0]!.toLowerCase()}');
+String _snake(String camel) =>
+    camel.replaceAllMapped(RegExp('[A-Z]'), (m) => '_${m[0]!.toLowerCase()}');

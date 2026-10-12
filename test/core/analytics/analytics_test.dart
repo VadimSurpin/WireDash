@@ -31,16 +31,20 @@ class _FakeSink implements AnalyticsSink {
   }
 }
 
-Future<(ProviderContainer, _FakeSink)> _container(
-    {Map<String, Object> prefs = const {}, bool available = true}) async {
+Future<(ProviderContainer, _FakeSink)> _container({
+  Map<String, Object> prefs = const {},
+  bool available = true,
+}) async {
   SharedPreferences.setMockInitialValues(prefs);
   final p = await SharedPreferences.getInstance();
   final sink = _FakeSink();
-  final c = ProviderContainer(overrides: [
-    sharedPreferencesProvider.overrideWithValue(p),
-    analyticsSinkProvider.overrideWithValue(sink),
-    analyticsAvailableProvider.overrideWithValue(available),
-  ]);
+  final c = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(p),
+      analyticsSinkProvider.overrideWithValue(sink),
+      analyticsAvailableProvider.overrideWithValue(available),
+    ],
+  );
   addTearDown(c.dispose);
   return (c, sink);
 }
@@ -66,28 +70,33 @@ void main() {
       expect(sink.sent, isEmpty);
     });
 
-    test('opting in starts sending; opting out stops it and drops the queue',
-        () async {
-      final (c, sink) = await _container();
-      await c.read(analyticsConsentProvider.notifier).set(true);
-      c.read(analyticsProvider).track(_setupStarted);
-      expect(sink.running, isTrue);
-      expect(sink.sent.single.$1, 'setup_step');
+    test(
+      'opting in starts sending; opting out stops it and drops the queue',
+      () async {
+        final (c, sink) = await _container();
+        await c.read(analyticsConsentProvider.notifier).set(true);
+        c.read(analyticsProvider).track(_setupStarted);
+        expect(sink.running, isTrue);
+        expect(sink.sent.single.$1, 'setup_step');
 
-      await c.read(analyticsConsentProvider.notifier).set(false);
-      final analytics = c.read(analyticsProvider);
-      expect(sink.running, isFalse);
-      expect(sink.sent, isEmpty);
-      analytics.track(_setupStarted);
-      expect(sink.sent, isEmpty);
-      expect(
+        await c.read(analyticsConsentProvider.notifier).set(false);
+        final analytics = c.read(analyticsProvider);
+        expect(sink.running, isFalse);
+        expect(sink.sent, isEmpty);
+        analytics.track(_setupStarted);
+        expect(sink.sent, isEmpty);
+        expect(
           (await SharedPreferences.getInstance()).getBool('analytics_consent'),
-          isFalse);
-    });
+          isFalse,
+        );
+      },
+    );
 
     test('a build without a key sends nothing even with consent', () async {
       final (c, sink) = await _container(
-          prefs: {'analytics_consent': true}, available: false);
+        prefs: {'analytics_consent': true},
+        available: false,
+      );
       c.read(analyticsProvider).track(_setupStarted);
       expect(sink.starts, 0);
       expect(sink.sent, isEmpty);
@@ -101,12 +110,13 @@ void main() {
   group('events carry only enum names and buckets', () {
     test('app_started', () {
       const e = AppStarted(
-          form: FormFactor.tablet,
-          theme: ThemeChoice.dark,
-          materialYou: false,
-          homes: 3,
-          tiles: 14,
-          demo: false);
+        form: FormFactor.tablet,
+        theme: ThemeChoice.dark,
+        materialYou: false,
+        homes: 3,
+        tiles: 14,
+        demo: false,
+      );
       expect(e.props, {
         'form': 'tablet',
         'theme': 'dark',
@@ -119,14 +129,20 @@ void main() {
 
     test('setup_step with an error and a device count', () {
       expect(
-          const SetupStep(SetupStepKind.failed,
-                  error: SetupErrorKind.notZigbee2Mqtt)
-              .props,
-          {'step': 'failed', 'error': 'not_zigbee2_mqtt'});
-      expect(const SetupStep(SetupStepKind.review, devices: 7).props,
-          {'step': 'review', 'devices': '6-20'});
-      expect(const SetupStep(SetupStepKind.scanEmpty).props,
-          {'step': 'scan_empty'});
+        const SetupStep(
+          SetupStepKind.failed,
+          error: SetupErrorKind.notZigbee2Mqtt,
+        ).props,
+        {'step': 'failed', 'error': 'not_zigbee2_mqtt'},
+      );
+      expect(const SetupStep(SetupStepKind.review, devices: 7).props, {
+        'step': 'review',
+        'devices': '6-20',
+      });
+      expect(const SetupStep(SetupStepKind.scanEmpty).props, {
+        'step': 'scan_empty',
+        'hub': 'none',
+      });
     });
 
     test('feature_used once per session, except tiles added', () async {
@@ -144,22 +160,30 @@ void main() {
     });
 
     test('help_opened and support_contact', () {
-      expect(const HelpOpened(HelpFrom.noConnection).props,
-          {'from': 'no_connection'});
+      expect(const HelpOpened(HelpFrom.noConnection).props, {
+        'from': 'no_connection',
+      });
       expect(const HelpOpened(HelpFrom.deviceListMissing).name, 'help_opened');
+      expect(const SupportContact(HelpFrom.setupError, ContactVia.copy).props, {
+        'from': 'setup_error',
+        'via': 'copy',
+      });
       expect(
-          const SupportContact(HelpFrom.setupError, ContactVia.copy).props,
-          {'from': 'setup_error', 'via': 'copy'});
-      expect(const SupportContact(HelpFrom.demo, ContactVia.email).name,
-          'support_contact');
+        const SupportContact(HelpFrom.demo, ContactVia.email).name,
+        'support_contact',
+      );
       expect(const CommunityOpened(HelpFrom.settings).name, 'community_opened');
-      expect(const CommunityOpened(HelpFrom.homeUnreachable).props,
-          {'from': 'home_unreachable'});
+      expect(const CommunityOpened(HelpFrom.homeUnreachable).props, {
+        'from': 'home_unreachable',
+      });
     });
 
     test('buckets', () {
       expect(bucket(0, const [0], ranges: const [(1, 10)], top: '11+'), '0');
-      expect(bucket(10, const [0], ranges: const [(1, 10)], top: '11+'), '1-10');
+      expect(
+        bucket(10, const [0], ranges: const [(1, 10)], top: '11+'),
+        '1-10',
+      );
       expect(bucket(11, const [0], ranges: const [(1, 10)], top: '11+'), '11+');
     });
   });

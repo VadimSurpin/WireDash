@@ -44,6 +44,10 @@
 
 **First run** — from install until the user has a home or has chosen the demo. During first run the app shows only setup (and its manual entry and help). It ends when setup, manual entry or the connection form saves a real home, or when the user tries the demo. Code: `needsOnboarding` / `FirstRun`.
 
+**Platform answer** — what the user says when setup asks where Zigbee2MQTT runs: Home Assistant, an SMLIGHT hub, a Raspberry Pi or Docker, or not sure. Asked while the scan runs and on its empty result, never required. It shapes what the scan looks for and what the empty result says, and is kept for the setup session only.
+
+**Hub found** — a machine the scan recognised by its web page while looking for a broker: Home Assistant, the Zigbee2MQTT frontend, or an SMLIGHT hub. Not a broker: the empty result names it and says what is missing on it.
+
 **Demo mode** — a sample connection and dashboard with no real broker, marked as demo on screen and removed when real setup completes.
 
 **Last-known value** — a tile's most recent received value, kept on the phone across restarts, shown when the value is not fresh (broker unreachable, or not yet reported since connecting) and marked stale with its age. Never leaves the device, not even in Android backups.

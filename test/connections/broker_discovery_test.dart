@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
 import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
+import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/connections/discovery/subnet.dart';
 
 /// Fake prober: returns hits for a fixed set of `host:port`, and tracks the
@@ -25,6 +26,20 @@ class _FakeProber implements HostProber {
       return ProbeResult(host: host, port: port, needsAuth: hits[key]!);
     }
     return null;
+  }
+}
+
+/// Fake hub prober: answers with a kind for a fixed set of `host:port`.
+class _FakeHubs implements HubProber {
+  _FakeHubs(this.hits);
+  final Map<String, HubKind> hits;
+  final probed = <String>[];
+
+  @override
+  Future<HubKind?> probe(String host, int port) async {
+    probed.add('$host:$port');
+    await Future<void>.delayed(const Duration(milliseconds: 1));
+    return hits['$host:$port'];
   }
 }
 
@@ -78,11 +93,19 @@ void main() {
     test('auth-related refusals → true', () {
       expect(mqttConnackToAuth(MqttConnectReturnCode.notAuthorized), isTrue);
       expect(
-          mqttConnackToAuth(MqttConnectReturnCode.badUsernameOrPassword), isTrue);
+        mqttConnackToAuth(MqttConnectReturnCode.badUsernameOrPassword),
+        isTrue,
+      );
     });
     test('accepted / unrelated → false', () {
-      expect(mqttConnackToAuth(MqttConnectReturnCode.connectionAccepted), isFalse);
-      expect(mqttConnackToAuth(MqttConnectReturnCode.brokerUnavailable), isFalse);
+      expect(
+        mqttConnackToAuth(MqttConnectReturnCode.connectionAccepted),
+        isFalse,
+      );
+      expect(
+        mqttConnackToAuth(MqttConnectReturnCode.brokerUnavailable),
+        isFalse,
+      );
     });
   });
 
@@ -96,18 +119,27 @@ void main() {
 
       final results = await service.scan('192.168.7.42').toList();
 
-      expect(results.map((r) => r.host).toSet(),
-          {'192.168.7.210', '192.168.7.50'});
-      expect(results.firstWhere((r) => r.host == '192.168.7.50').needsAuth,
-          isTrue);
-      expect(results.firstWhere((r) => r.host == '192.168.7.210').needsAuth,
-          isFalse);
+      expect(results.map((r) => r.host).toSet(), {
+        '192.168.7.210',
+        '192.168.7.50',
+      });
+      expect(
+        results.firstWhere((r) => r.host == '192.168.7.50').needsAuth,
+        isTrue,
+      );
+      expect(
+        results.firstWhere((r) => r.host == '192.168.7.210').needsAuth,
+        isFalse,
+      );
     });
 
     test('respects the concurrency cap', () async {
       final prober = _FakeProber({});
-      final service =
-          BrokerScanService(prober: prober, ports: const [1883], concurrency: 8);
+      final service = BrokerScanService(
+        prober: prober,
+        ports: const [1883],
+        concurrency: 8,
+      );
       await service.scan('192.168.7.42').toList();
       expect(prober.maxActive, lessThanOrEqualTo(8));
       expect(prober.maxActive, greaterThan(1)); // actually ran in parallel
@@ -130,8 +162,9 @@ void main() {
     test('reports what it tried, once', () async {
       final stats = <ScanStats>[];
       final service = BrokerScanService(
-          prober: _FakeProber({'192.168.68.55:1883': false}),
-          ports: const [1883, 8883]);
+        prober: _FakeProber({'192.168.68.55:1883': false}),
+        ports: const [1883, 8883],
+      );
       await service.scan('192.168.69.10', onDone: stats.add).toList();
       expect(stats, hasLength(1));
       expect(stats.single.widened, isTrue);
@@ -141,18 +174,140 @@ void main() {
       expect(stats.single.hostsTried, greaterThan(1000));
 
       stats.clear();
-      await BrokerScanService(prober: _FakeProber({}), ports: const [1883])
-          .scan('8.8.8.8', onDone: stats.add)
-          .toList();
+      await BrokerScanService(
+        prober: _FakeProber({}),
+        ports: const [1883],
+      ).scan('8.8.8.8', onDone: stats.add).toList();
       // A public address has no wider /22 to try.
-      expect(stats.single,
-          (widened: false, hostsTried: 253, brokersFound: 0));
+      expect(stats.single, (widened: false, hostsTried: 253, brokersFound: 0));
     });
 
     test('no brokers found → empty, still closes', () async {
       final service = BrokerScanService(
-          prober: _FakeProber({}), ports: const [1883]);
+        prober: _FakeProber({}),
+        ports: const [1883],
+      );
       expect(await service.scan('192.168.7.42').toList(), isEmpty);
+    });
+  });
+
+  group('hubKindOfPage', () {
+    test('knows the three web pages, whatever the case', () {
+      expect(
+        hubKindOfPage('<title>Home Assistant</title>'),
+        HubKind.homeAssistant,
+      );
+      expect(hubKindOfPage('<title>Zigbee2MQTT</title>'), HubKind.zigbee2mqtt);
+      expect(hubKindOfPage('SLZB-06 web UI'), HubKind.smlight);
+      expect(hubKindOfPage('<title>Printer</title>'), isNull);
+    });
+  });
+
+  // 2.5: the empty result says what was found, so the scan looks for hubs
+  // when the broker pass of the /24 comes up empty.
+  group('BrokerScanService.run', () {
+    test('no broker on the /24 → hubs on the /24, then the /22', () async {
+      final hubs = _FakeHubs({'192.168.7.20:8123': HubKind.homeAssistant});
+      final prober = _FakeProber({});
+      final service = BrokerScanService(
+        prober: prober,
+        hubProber: hubs,
+        ports: const [1883],
+      );
+      final events = await service.run('192.168.7.42').events.toList();
+      final seen = events.whereType<HubSeen>().map((e) => e.hub).toList();
+      expect(seen, [
+        const HubFound(
+          kind: HubKind.homeAssistant,
+          host: '192.168.7.20',
+          port: 8123,
+        ),
+      ]);
+      // Home Assistant and the Zigbee2MQTT frontend on every /24 host; no
+      // SMLIGHT pass unless asked; never the /22.
+      expect(hubs.probed.where((p) => p.endsWith(':8123')), hasLength(253));
+      expect(hubs.probed.where((p) => p.endsWith(':8080')), hasLength(253));
+      expect(hubs.probed.any((p) => p.endsWith(':80')), isFalse);
+      expect(hubs.probed.every((p) => p.startsWith('192.168.7.')), isTrue);
+      expect(
+        prober.probed.any((h) => h.startsWith('192.168.4.')),
+        isTrue,
+        reason: 'the wider pass still runs',
+      );
+    });
+
+    test('a broker on the /24 → no hub pass at all', () async {
+      final hubs = _FakeHubs({'192.168.7.20:8123': HubKind.homeAssistant});
+      final service = BrokerScanService(
+        prober: _FakeProber({'192.168.7.210:1883': false}),
+        hubProber: hubs,
+        ports: const [1883],
+      );
+      final events = await service.run('192.168.7.42').events.toList();
+      expect(events.whereType<BrokerFound>(), hasLength(1));
+      expect(events.whereType<HubSeen>(), isEmpty);
+      expect(hubs.probed, isEmpty);
+    });
+
+    test('the SMLIGHT pass runs only when added, also mid-scan', () async {
+      final hubs = _FakeHubs({'192.168.7.30:80': HubKind.smlight});
+      final service = BrokerScanService(
+        prober: _FakeProber({}),
+        hubProber: hubs,
+        ports: const [1883],
+      );
+      final run = service.run('192.168.7.42');
+      final events = <ScanEvent>[];
+      final done = run.events.listen(events.add).asFuture<void>();
+      run.addHub(HubKind.smlight);
+      await done;
+      expect(events.whereType<HubSeen>().map((e) => e.hub.kind), [
+        HubKind.smlight,
+      ]);
+      expect(hubs.probed.where((p) => p.endsWith(':80')), hasLength(253));
+
+      final again = _FakeHubs({'192.168.7.30:80': HubKind.smlight});
+      final noAsk = BrokerScanService(
+        prober: _FakeProber({}),
+        hubProber: again,
+        ports: const [1883],
+      );
+      await noAsk.run('192.168.7.42').events.toList();
+      expect(again.probed.any((p) => p.endsWith(':80')), isFalse);
+    });
+
+    test('progress never goes backwards and ends at the total', () async {
+      final service = BrokerScanService(
+        prober: _FakeProber({}),
+        hubProber: _FakeHubs({}),
+        ports: const [1883],
+      );
+      final progress = (await service.run('192.168.7.42').events.toList())
+          .whereType<ScanProgress>()
+          .toList();
+      for (var i = 1; i < progress.length; i++) {
+        expect(
+          progress[i].checked,
+          greaterThanOrEqualTo(progress[i - 1].checked),
+        );
+        expect(progress[i].total, progress[i - 1].total);
+      }
+      expect(progress.last.checked, progress.last.total);
+      // 253 brokers + 2 × 253 hubs + 767 wider (blocks 4, 5 and 6 minus .0).
+      expect(progress.last.total, 253 + 506 + 767);
+    });
+
+    test('scan() is brokers only: no hub probes, same stats', () async {
+      final hubs = _FakeHubs({'192.168.7.20:8123': HubKind.homeAssistant});
+      final stats = <ScanStats>[];
+      final service = BrokerScanService(
+        prober: _FakeProber({}),
+        hubProber: hubs,
+        ports: const [1883],
+      );
+      await service.scan('8.8.8.8', onDone: stats.add).toList();
+      expect(hubs.probed, isEmpty);
+      expect(stats.single, (widened: false, hostsTried: 253, brokersFound: 0));
     });
   });
 }

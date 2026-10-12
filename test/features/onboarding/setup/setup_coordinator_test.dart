@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
+import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
+import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_candidate.dart';
@@ -40,23 +42,23 @@ class _FakeDiagnostics extends ConnectDiagnostics {
 }
 
 DiagnosticsReport ok() => const DiagnosticsReport(
-      steps: [
-        StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
-        StepResult(step: DiagnosticStep.tcp, status: StepStatus.pass),
-        StepResult(step: DiagnosticStep.connack, status: StepStatus.pass),
-        StepResult(step: DiagnosticStep.auth, status: StepStatus.pass),
-        StepResult(step: DiagnosticStep.devices, status: StepStatus.pass),
-      ],
-      connected: true,
-      candidatesTried: 1,
-      deviceNames: ['lamp'],
-    );
+  steps: [
+    StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
+    StepResult(step: DiagnosticStep.tcp, status: StepStatus.pass),
+    StepResult(step: DiagnosticStep.connack, status: StepStatus.pass),
+    StepResult(step: DiagnosticStep.auth, status: StepStatus.pass),
+    StepResult(step: DiagnosticStep.devices, status: StepStatus.pass),
+  ],
+  connected: true,
+  candidatesTried: 1,
+  deviceNames: ['lamp'],
+);
 
 DiagnosticsReport failAt(DiagnosticStep step, String key) => DiagnosticsReport(
-      steps: [StepResult(step: step, status: StepStatus.fail, detailKey: key)],
-      connected: false,
-      candidatesTried: 1,
-    );
+  steps: [StepResult(step: step, status: StepStatus.fail, detailKey: key)],
+  connected: false,
+  candidatesTried: 1,
+);
 
 class _FakeCreator implements SetupStore {
   var calls = 0;
@@ -87,20 +89,33 @@ class _FakeCreator implements SetupStore {
   }
 }
 
+/// A scan run that only ever reports brokers, for the fakes below.
+ScanRun brokersOnly(Stream<ProbeResult> brokers) =>
+    ScanRun(events: brokers.map(BrokerFound.new), addHub: (_) {});
+
 class _Harness {
   _Harness({
     List<DiagnosticsReport>? reports,
     Stream<ProbeResult> Function(String ip)? scan,
-    Z2mFetchResult fetch = const Z2mFetchResult(detected: true, devices: [_lamp, _plug]),
+    ScanRunFactory? run,
+    Z2mFetchResult fetch = const Z2mFetchResult(
+      detected: true,
+      devices: [_lamp, _plug],
+    ),
     Z2mFetchResult Function(String base)? fetchFor,
     Future<void> Function(SetupResult result)? onCreated,
     String? ip = '192.168.1.5',
-  })  : diagnostics = _FakeDiagnostics(reports ?? [ok()]),
-        creator = _FakeCreator() {
+  }) : diagnostics = _FakeDiagnostics(reports ?? [ok()]),
+       creator = _FakeCreator() {
     coordinator = SetupCoordinator(
-      scan: scan ??
-          (ip) => Stream.fromIterable(
-              [const ProbeResult(host: '192.168.1.10', port: 1883)]),
+      scan:
+          run ??
+          (ip, hubs) => brokersOnly(
+            (scan ??
+                (ip) => Stream.fromIterable([
+                  const ProbeResult(host: '192.168.1.10', port: 1883),
+                ]))(ip),
+          ),
       deviceIp: () async => ip,
       diagnostics: diagnostics,
       fetchDevices: (config, password, base) async {
@@ -148,8 +163,7 @@ void main() {
     });
 
     // First-run decision: one broker found → continue without a tap.
-    test('exactly one broker found → continues to review on its own',
-        () async {
+    test('exactly one broker found → continues to review on its own', () async {
       final h = _Harness();
       await h.coordinator.startScan();
       await Future<void>.delayed(Duration.zero);
@@ -176,12 +190,14 @@ void main() {
 
     test('retry from empty scan rescans', () async {
       var n = 0;
-      final h = _Harness(scan: (_) {
-        n++;
-        return n == 1
-            ? const Stream.empty()
-            : Stream.value(const ProbeResult(host: '10.0.0.1', port: 1883));
-      });
+      final h = _Harness(
+        scan: (_) {
+          n++;
+          return n == 1
+              ? const Stream.empty()
+              : Stream.value(const ProbeResult(host: '10.0.0.1', port: 1883));
+        },
+      );
       await h.coordinator.startScan();
       await Future<void>.delayed(Duration.zero);
       expect(h.coordinator.state, isA<SetupScanEmpty>());
@@ -191,6 +207,89 @@ void main() {
       // The rescan found the one broker and continued with it.
       expect(n, 2);
       expect(h.coordinator.state, isA<SetupReview>());
+    });
+
+    // 2.5: the platform answer, hubs seen and progress ride on the states.
+    test('hubs, progress and the platform answer reach the states', () async {
+      final controller = StreamController<ScanEvent>();
+      final added = <HubKind>[];
+      final h = _Harness(
+        run: (_, hubs) => ScanRun(events: controller.stream, addHub: added.add),
+      );
+      unawaited(h.coordinator.startScan());
+      await Future<void>.delayed(Duration.zero);
+
+      controller.add(const ScanProgress(16, 1526));
+      await Future<void>.delayed(Duration.zero);
+      var s = h.coordinator.state as SetupScanning;
+      expect(s.progress, (checked: 16, total: 1526));
+
+      h.coordinator.setPlatform(SetupPlatform.smlight);
+      expect(added, [HubKind.smlight], reason: 'the SMLIGHT pass is added');
+      expect(
+        (h.coordinator.state as SetupScanning).platform,
+        SetupPlatform.smlight,
+      );
+
+      const ha = HubFound(
+        kind: HubKind.homeAssistant,
+        host: '192.168.1.20',
+        port: 8123,
+      );
+      controller.add(const HubSeen(ha));
+      await Future<void>.delayed(Duration.zero);
+      s = h.coordinator.state as SetupScanning;
+      expect(s.hubs, [ha]);
+
+      controller.add(const ScanTriedEvent(widened: true, hostsTried: 1018));
+      await controller.close();
+      await Future<void>.delayed(Duration.zero);
+      final empty = h.coordinator.state as SetupScanEmpty;
+      expect(empty.hubs, [ha]);
+      expect(empty.hub, ha);
+      expect(empty.platform, SetupPlatform.smlight);
+      expect(empty.tried, (widened: true, hostsTried: 1018));
+      expect(empty.deviceIp, '192.168.1.5');
+
+      // On the empty result the answer retags; Try again scans with it.
+      h.coordinator.setPlatform(SetupPlatform.homeAssistant);
+      expect(
+        (h.coordinator.state as SetupScanEmpty).platform,
+        SetupPlatform.homeAssistant,
+      );
+      expect((h.coordinator.state as SetupScanEmpty).hubs, [ha]);
+    });
+
+    test(
+      'the SMLIGHT answer is part of the next scan; cancel forgets it',
+      () async {
+        final asked = <Set<HubKind>>[];
+        final h = _Harness(
+          run: (_, hubs) {
+            asked.add(hubs);
+            return ScanRun(events: const Stream.empty(), addHub: (_) {});
+          },
+        );
+        await h.coordinator.startScan();
+        await Future<void>.delayed(Duration.zero);
+        h.coordinator.setPlatform(SetupPlatform.smlight);
+        await h.coordinator.retry();
+        await Future<void>.delayed(Duration.zero);
+        expect(asked, [
+          {HubKind.homeAssistant, HubKind.zigbee2mqtt},
+          {HubKind.homeAssistant, HubKind.zigbee2mqtt, HubKind.smlight},
+        ]);
+        await h.coordinator.cancel();
+        expect(h.coordinator.platform, isNull);
+      },
+    );
+
+    test('the hub the result speaks about: Home Assistant first', () {
+      const z2m = HubFound(kind: HubKind.zigbee2mqtt, host: 'a', port: 8080);
+      const ha = HubFound(kind: HubKind.homeAssistant, host: 'b', port: 8123);
+      expect(const SetupScanEmpty(hubs: [z2m, ha]).hub, ha);
+      expect(const SetupScanEmpty(hubs: [z2m]).hub, z2m);
+      expect(const SetupScanEmpty().hub, isNull);
     });
 
     test('cancel during scan returns to idle and stops the scan', () async {
@@ -206,7 +305,10 @@ void main() {
 
   group('verification', () {
     const candidate = SetupCandidate(
-        host: '192.168.1.10', port: 1883, protocol: MqttProtocol.tcp);
+      host: '192.168.1.10',
+      port: 1883,
+      protocol: MqttProtocol.tcp,
+    );
 
     test('connected with devices → review with preselected rows', () async {
       final h = _Harness();
@@ -219,7 +321,9 @@ void main() {
     });
 
     test('anonymous rejected → needsAuth, preserving the candidate', () async {
-      final h = _Harness(reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected'), ok()]);
+      final h = _Harness(
+        reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected'), ok()],
+      );
       await h.coordinator.selectCandidate(candidate);
       final s = h.coordinator.state;
       expect(s, isA<SetupNeedsAuth>());
@@ -229,27 +333,39 @@ void main() {
 
     test('candidate flagged needsAuth asks before verifying', () async {
       final h = _Harness();
-      await h.coordinator.selectCandidate(const SetupCandidate(
-          host: 'h', port: 1883, protocol: MqttProtocol.tcp, needsAuth: true));
+      await h.coordinator.selectCandidate(
+        const SetupCandidate(
+          host: 'h',
+          port: 1883,
+          protocol: MqttProtocol.tcp,
+          needsAuth: true,
+        ),
+      );
       expect(h.coordinator.state, isA<SetupNeedsAuth>());
       expect(h.diagnostics.calls, isEmpty);
     });
 
-    test('submitting credentials verifies with them and reaches review',
-        () async {
-      final h = _Harness(reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected'), ok()]);
-      await h.coordinator.selectCandidate(candidate);
-      await h.coordinator.submitCredentials('user', 'secret');
-      expect(h.coordinator.state, isA<SetupReview>());
-      expect(h.diagnostics.calls.last.username, 'user');
-      expect(h.diagnostics.calls.last.password, 'secret');
-    });
+    test(
+      'submitting credentials verifies with them and reaches review',
+      () async {
+        final h = _Harness(
+          reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected'), ok()],
+        );
+        await h.coordinator.selectCandidate(candidate);
+        await h.coordinator.submitCredentials('user', 'secret');
+        expect(h.coordinator.state, isA<SetupReview>());
+        expect(h.diagnostics.calls.last.username, 'user');
+        expect(h.diagnostics.calls.last.password, 'secret');
+      },
+    );
 
     test('rejected credentials → needsAuth(rejected: true)', () async {
-      final h = _Harness(reports: [
-        failAt(DiagnosticStep.auth, 'diagAuthRejected'),
-        failAt(DiagnosticStep.auth, 'diagAuthRejected'),
-      ]);
+      final h = _Harness(
+        reports: [
+          failAt(DiagnosticStep.auth, 'diagAuthRejected'),
+          failAt(DiagnosticStep.auth, 'diagAuthRejected'),
+        ],
+      );
       await h.coordinator.selectCandidate(candidate);
       await h.coordinator.submitCredentials('user', 'wrong');
       final s = h.coordinator.state;
@@ -257,63 +373,80 @@ void main() {
       expect((s as SetupNeedsAuth).rejected, isTrue);
     });
 
-    test('tcp failure → SetupFailed(hostUnreachable-ish), retry re-verifies',
-        () async {
-      final h = _Harness(reports: [failAt(DiagnosticStep.tcp, 'diagTcpFail'), ok()]);
-      await h.coordinator.selectCandidate(candidate);
-      var s = h.coordinator.state;
-      expect(s, isA<SetupFailed>());
-      expect((s as SetupFailed).kind, SetupErrorKind.portClosed);
+    test(
+      'tcp failure → SetupFailed(hostUnreachable-ish), retry re-verifies',
+      () async {
+        final h = _Harness(
+          reports: [failAt(DiagnosticStep.tcp, 'diagTcpFail'), ok()],
+        );
+        await h.coordinator.selectCandidate(candidate);
+        var s = h.coordinator.state;
+        expect(s, isA<SetupFailed>());
+        expect((s as SetupFailed).kind, SetupErrorKind.portClosed);
 
-      await h.coordinator.retry();
-      expect(h.coordinator.state, isA<SetupReview>());
-      expect(h.diagnostics.calls, hasLength(2));
-    });
+        await h.coordinator.retry();
+        expect(h.coordinator.state, isA<SetupReview>());
+        expect(h.diagnostics.calls, hasLength(2));
+      },
+    );
 
     test('MQTT without Zigbee2MQTT topics → notZigbee2Mqtt', () async {
       final h = _Harness(
-          fetch: const Z2mFetchResult(detected: false, devices: []));
+        fetch: const Z2mFetchResult(detected: false, devices: []),
+      );
       await h.coordinator.selectCandidate(candidate);
-      expect((h.coordinator.state as SetupFailed).kind,
-          SetupErrorKind.notZigbee2Mqtt);
+      expect(
+        (h.coordinator.state as SetupFailed).kind,
+        SetupErrorKind.notZigbee2Mqtt,
+      );
     });
 
     // First-run decision: "Your broker works, but Zigbee2MQTT isn't
     // publishing here" offers a base-topic check with a one-tap retry.
-    test('no Zigbee2MQTT → retry with another base topic reaches review',
-        () async {
-      final h = _Harness(
-        reports: [ok(), ok()],
-        fetchFor: (base) => base == 'z2m'
-            ? const Z2mFetchResult(detected: true, devices: [_lamp])
-            : const Z2mFetchResult(detected: false, devices: []),
-      );
-      await h.coordinator.startScan();
-      await Future<void>.delayed(Duration.zero);
-      await Future<void>.delayed(Duration.zero);
-      expect((h.coordinator.state as SetupFailed).kind,
-          SetupErrorKind.notZigbee2Mqtt);
+    test(
+      'no Zigbee2MQTT → retry with another base topic reaches review',
+      () async {
+        final h = _Harness(
+          reports: [ok(), ok()],
+          fetchFor: (base) => base == 'z2m'
+              ? const Z2mFetchResult(detected: true, devices: [_lamp])
+              : const Z2mFetchResult(detected: false, devices: []),
+        );
+        await h.coordinator.startScan();
+        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
+        expect(
+          (h.coordinator.state as SetupFailed).kind,
+          SetupErrorKind.notZigbee2Mqtt,
+        );
 
-      await h.coordinator.retryWithBase(' z2m ');
+        await h.coordinator.retryWithBase(' z2m ');
 
-      expect(h.fetchedBases, ['zigbee2mqtt', 'z2m']);
-      expect(h.coordinator.state, isA<SetupReview>());
-      await h.coordinator.createDashboard();
-      expect(h.creator.lastBase, 'z2m');
-    });
+        expect(h.fetchedBases, ['zigbee2mqtt', 'z2m']);
+        expect(h.coordinator.state, isA<SetupReview>());
+        await h.coordinator.createDashboard();
+        expect(h.creator.lastBase, 'z2m');
+      },
+    );
 
     test('Zigbee2MQTT detected but no devices → noDevices', () async {
       final h = _Harness(
-          fetch: const Z2mFetchResult(detected: true, devices: []));
+        fetch: const Z2mFetchResult(detected: true, devices: []),
+      );
       await h.coordinator.selectCandidate(candidate);
       expect(
-          (h.coordinator.state as SetupFailed).kind, SetupErrorKind.noDevices);
+        (h.coordinator.state as SetupFailed).kind,
+        SetupErrorKind.noDevices,
+      );
     });
   });
 
   group('review and creation', () {
     const candidate = SetupCandidate(
-        host: '192.168.1.10', port: 1883, protocol: MqttProtocol.tcp);
+      host: '192.168.1.10',
+      port: 1883,
+      protocol: MqttProtocol.tcp,
+    );
 
     Future<_Harness> inReview() async {
       final h = _Harness();
@@ -325,8 +458,10 @@ void main() {
       final h = await inReview();
       h.coordinator.toggleDevice('lamp');
       final s = h.coordinator.state as SetupReview;
-      expect(s.rows.firstWhere((r) => r.device.friendlyName == 'lamp').selected,
-          isFalse);
+      expect(
+        s.rows.firstWhere((r) => r.device.friendlyName == 'lamp').selected,
+        isFalse,
+      );
       expect(s.selectedCount, 1);
     });
 
@@ -351,8 +486,10 @@ void main() {
       await h.coordinator.createDashboard();
 
       final creating = states.whereType<SetupCreating>().single;
-      expect(creating.review.rows.map((r) => r.device.friendlyName),
-          containsAll(['lamp', 'plug']));
+      expect(
+        creating.review.rows.map((r) => r.device.friendlyName),
+        containsAll(['lamp', 'plug']),
+      );
     });
 
     test('a successful setup runs the completion hook once', () async {
@@ -367,34 +504,42 @@ void main() {
       expect(seen.single.dashboardId, 'd1');
     });
 
-    test('a failing completion hook does not undo a successful setup',
-        () async {
-      final h = _Harness(onCreated: (_) async => throw StateError('prefs'));
-      await h.coordinator.startScan();
-      await Future<void>.delayed(Duration.zero);
-      await Future<void>.delayed(Duration.zero);
-      await h.coordinator.createDashboard();
+    test(
+      'a failing completion hook does not undo a successful setup',
+      () async {
+        final h = _Harness(onCreated: (_) async => throw StateError('prefs'));
+        await h.coordinator.startScan();
+        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
+        await h.coordinator.createDashboard();
 
-      expect(h.coordinator.state, isA<SetupComplete>());
-    });
+        expect(h.coordinator.state, isA<SetupComplete>());
+      },
+    );
 
-    test('save failure → SetupFailed(saveFailed), retry resumes at creation',
-        () async {
-      final h = await inReview();
-      h.creator.error = StateError('disk full');
-      await h.coordinator.createDashboard();
-      expect((h.coordinator.state as SetupFailed).kind,
-          SetupErrorKind.saveFailed);
+    test(
+      'save failure → SetupFailed(saveFailed), retry resumes at creation',
+      () async {
+        final h = await inReview();
+        h.creator.error = StateError('disk full');
+        await h.coordinator.createDashboard();
+        expect(
+          (h.coordinator.state as SetupFailed).kind,
+          SetupErrorKind.saveFailed,
+        );
 
-      h.creator.error = null;
-      await h.coordinator.retry();
-      expect(h.coordinator.state, isA<SetupComplete>());
-      // The retry went straight to creation — no extra ladder run.
-      expect(h.diagnostics.calls, hasLength(1));
-    });
+        h.creator.error = null;
+        await h.coordinator.retry();
+        expect(h.coordinator.state, isA<SetupComplete>());
+        // The retry went straight to creation — no extra ladder run.
+        expect(h.diagnostics.calls, hasLength(1));
+      },
+    );
 
     test('credentials entered during setup reach the creator', () async {
-      final h = _Harness(reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected'), ok()]);
+      final h = _Harness(
+        reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected'), ok()],
+      );
       await h.coordinator.selectCandidate(candidate);
       await h.coordinator.submitCredentials('user', 'secret');
       await h.coordinator.createDashboard();

@@ -1591,6 +1591,105 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupTryDemoMeanwhile => 'בינתיים לנסות את ההדגמה';
 
   @override
+  String get setupPlatformQuestion => 'בזמן החיפוש: איפה Zigbee2MQTT פועל?';
+
+  @override
+  String get setupPlatformHa => 'Home Assistant';
+
+  @override
+  String get setupPlatformSmlight => 'רכזת SMLIGHT';
+
+  @override
+  String get setupPlatformPi => 'Raspberry Pi או Docker';
+
+  @override
+  String get setupPlatformNotSure => 'לא בטוח';
+
+  @override
+  String setupScanProgress(int checked, int total) {
+    return 'נבדקו $checked מתוך $total כתובות';
+  }
+
+  @override
+  String get setupScanHintHa =>
+      'מחפשים את Home Assistant ואת ה-MQTT broker שלו…';
+
+  @override
+  String get setupScanHintSmlight => 'מחפשים את רכזת ה-SMLIGHT שלכם…';
+
+  @override
+  String get setupScanHintPi => 'מחפשים MQTT broker ברשת שלכם…';
+
+  @override
+  String setupHubSeenHa(String host) {
+    return 'נמצא Home Assistant בכתובת $host';
+  }
+
+  @override
+  String setupHubSeenZ2m(String host) {
+    return 'נמצא Zigbee2MQTT בכתובת $host';
+  }
+
+  @override
+  String setupHubSeenSmlight(String host) {
+    return 'נמצאה רכזת SMLIGHT בכתובת $host';
+  }
+
+  @override
+  String get setupHubSeenHint => 'עדיין מחפשים את ה-MQTT broker שלו…';
+
+  @override
+  String get setupNoBrokerHaTitle => 'נמצא Home Assistant, אבל אין MQTT broker';
+
+  @override
+  String setupNoBrokerHaBody(String host) {
+    return 'Home Assistant נמצא בכתובת $host, אבל שום דבר לא עונה בפורט MQTT 1883. ב-Home Assistant פתחו הגדרות › תוספים, התקינו והפעילו את התוסף Mosquitto broker ונסו שוב.';
+  }
+
+  @override
+  String get setupNoBrokerZ2mTitle =>
+      'נמצא Zigbee2MQTT, אבל אי אפשר להגיע ל-broker שלו';
+
+  @override
+  String setupNoBrokerZ2mBody(String host) {
+    return 'Zigbee2MQTT נמצא בכתובת $host, אבל ה-MQTT broker שלו לא מקבל חיבורים מהטלפון. Mosquitto 2 מאזין רק ברכזת עצמה עד שבקובץ ההגדרות יופיעו \'listener 1883\' ו-\'allow_anonymous true\' (או פרטי התחברות). הפעילו אותו מחדש ונסו שוב.';
+  }
+
+  @override
+  String get setupNoBrokerSmlightTitle => 'נמצאה רכזת SMLIGHT, אבל MQTT כבוי';
+
+  @override
+  String setupNoBrokerSmlightBody(String host) {
+    return 'הרכזת נמצאת בכתובת $host, אבל אי אפשר להגיע ל-MQTT broker שלה. בממשק הווב של הרכזת פתחו Settings › MQTT, הפעילו Allow External ובדקו ש-Zigbee2MQTT פועל. אחר כך נסו שוב.';
+  }
+
+  @override
+  String setupConnectTo(String host) {
+    return 'התחברות אל $host';
+  }
+
+  @override
+  String get setupNotFoundHa =>
+      'לא נמצא Home Assistant ברשת הזו. בדקו שהטלפון מחובר לאותו Wi-Fi כמו Home Assistant (לא רשת אורחים) ונסו שוב. אם הכתובת ידועה לכם, הזינו אותה ידנית עם פורט 1883.';
+
+  @override
+  String get setupNotFoundSmlight =>
+      'לא נמצאה רכזת SMLIGHT ברשת הזו. בדקו שהרכזת דולקת ושהטלפון מחובר לאותו Wi-Fi ונסו שוב. אם הכתובת ידועה לכם, הזינו אותה ידנית עם פורט 1883.';
+
+  @override
+  String get setupNotFoundPi =>
+      'לא נמצא MQTT broker ברשת הזו. בדקו ש-Mosquitto פועל ומאזין ברשת (פורט 1883) ושהטלפון מחובר לאותו Wi-Fi. אחר כך נסו שוב.';
+
+  @override
+  String guidedHostYourPhone(String ip, String prefix) {
+    return 'הטלפון שלכם הוא $ip, אז הרכזת מתחילה בדרך כלל ב-$prefix.…';
+  }
+
+  @override
+  String get guidedHostHa =>
+      'משתמשים ב-Home Assistant? המארח הוא הכתובת שבה אתם פותחים את Home Assistant, פורט 1883.';
+
+  @override
   String get demoBannerText => 'את/ה במצב הדגמה';
 
   @override
