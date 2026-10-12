@@ -582,7 +582,7 @@
   "setupNotFoundHa": "Ingen Home Assistant hittades i det här nätverket. Kontrollera att telefonen är på samma Wi-Fi som Home Assistant (inte ett gästnätverk) och försök igen. Om du vet adressen, ange den manuellt med port 1883.",
   "setupNotFoundSmlight": "Ingen SMLIGHT-hubb hittades i det här nätverket. Kontrollera att hubben är på och att telefonen är på samma Wi-Fi, och försök igen. Om du vet adressen, ange den manuellt med port 1883.",
   "setupNotFoundPi": "Ingen MQTT-broker hittades i det här nätverket. Kontrollera att Mosquitto kör och lyssnar på nätverket (port 1883) och att telefonen är på samma Wi-Fi. Försök sedan igen.",
-  "guidedHostYourPhone": "Din telefon är {ip}, så hubben börjar oftast med {prefix}.…",
+  "guidedHostYourPhone": "Din telefon är {ip}, så hubben börjar oftast med {prefix}.",
   "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
   "guidedHostHa": "Använder du Home Assistant? Värden är adressen du öppnar Home Assistant med, port 1883.",
   "demoBannerText": "Du är i demoläge",

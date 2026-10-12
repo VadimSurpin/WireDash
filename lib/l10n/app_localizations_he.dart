@@ -1682,7 +1682,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {
-    return 'הטלפון שלכם הוא $ip, אז הרכזת מתחילה בדרך כלל ב-$prefix.…';
+    return 'הטלפון שלכם הוא $ip, אז הרכזת מתחילה בדרך כלל ב-$prefix.';
   }
 
   @override

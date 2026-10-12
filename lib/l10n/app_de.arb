@@ -582,7 +582,7 @@
   "setupNotFoundHa": "Kein Home Assistant in diesem Netzwerk gefunden. Prüfe, ob dein Handy im selben WLAN wie Home Assistant ist (kein Gast-WLAN), und versuche es erneut. Wenn du die Adresse kennst, gib sie manuell ein, mit Port 1883.",
   "setupNotFoundSmlight": "Kein SMLIGHT-Hub in diesem Netzwerk gefunden. Prüfe, ob der Hub eingeschaltet und dein Handy im selben WLAN ist, und versuche es erneut. Wenn du die Adresse kennst, gib sie manuell ein, mit Port 1883.",
   "setupNotFoundPi": "Kein MQTT-Broker in diesem Netzwerk gefunden. Prüfe, ob Mosquitto läuft und im Netzwerk lauscht (Port 1883) und ob dein Handy im selben WLAN ist. Dann versuche es erneut.",
-  "guidedHostYourPhone": "Dein Handy hat {ip}, der Hub beginnt also meist mit {prefix}.…",
+  "guidedHostYourPhone": "Dein Handy hat {ip}, der Hub beginnt also meist mit {prefix}.",
   "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
   "guidedHostHa": "Nutzt du Home Assistant? Der Host ist die Adresse, mit der du Home Assistant öffnest, Port 1883.",
   "demoBannerText": "Du bist im Demomodus",

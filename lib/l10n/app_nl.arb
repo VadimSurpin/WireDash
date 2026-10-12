@@ -582,7 +582,7 @@
   "setupNotFoundHa": "Geen Home Assistant gevonden in dit netwerk. Controleer of je telefoon op dezelfde wifi zit als Home Assistant (geen gastnetwerk) en probeer het opnieuw. Ken je het adres, vul het dan handmatig in met poort 1883.",
   "setupNotFoundSmlight": "Geen SMLIGHT-hub gevonden in dit netwerk. Controleer of de hub aanstaat en je telefoon op dezelfde wifi zit, en probeer het opnieuw. Ken je het adres, vul het dan handmatig in met poort 1883.",
   "setupNotFoundPi": "Geen MQTT-broker gevonden in dit netwerk. Controleer of Mosquitto draait en op het netwerk luistert (poort 1883) en of je telefoon op dezelfde wifi zit. Probeer het daarna opnieuw.",
-  "guidedHostYourPhone": "Je telefoon is {ip}, dus de hub begint meestal met {prefix}.…",
+  "guidedHostYourPhone": "Je telefoon is {ip}, dus de hub begint meestal met {prefix}.",
   "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
   "guidedHostHa": "Gebruik je Home Assistant? De host is het adres waarmee je Home Assistant opent, poort 1883.",
   "demoBannerText": "Je zit in demomodus",

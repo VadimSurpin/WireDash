@@ -1709,7 +1709,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {
-    return 'Dein Handy hat $ip, der Hub beginnt also meist mit $prefix.…';
+    return 'Dein Handy hat $ip, der Hub beginnt also meist mit $prefix.';
   }
 
   @override

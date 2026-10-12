@@ -542,7 +542,7 @@
   "setupNotFoundHa": "Nenhum Home Assistant encontrado nesta rede. Verifique que o seu telemóvel está no mesmo Wi-Fi que o Home Assistant (não uma rede de convidados) e tente novamente. Se souber o endereço, introduza-o manualmente com a porta 1883.",
   "setupNotFoundSmlight": "Nenhum hub SMLIGHT encontrado nesta rede. Verifique que o hub está ligado e que o seu telemóvel está no mesmo Wi-Fi, e tente novamente. Se souber o endereço, introduza-o manualmente com a porta 1883.",
   "setupNotFoundPi": "Nenhum broker MQTT encontrado nesta rede. Verifique que o Mosquitto está a correr e a escutar na rede (porta 1883) e que o seu telemóvel está no mesmo Wi-Fi. Depois tente novamente.",
-  "guidedHostYourPhone": "O seu telemóvel é {ip}, por isso o hub costuma começar por {prefix}.…",
+  "guidedHostYourPhone": "O seu telemóvel é {ip}, por isso o hub costuma começar por {prefix}.",
   "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
   "guidedHostHa": "Usa o Home Assistant? O host é o endereço com que abre o Home Assistant, porta 1883.",
   "demoBannerText": "Você está no modo demo",

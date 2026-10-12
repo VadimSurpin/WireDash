@@ -1713,7 +1713,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {
-    return 'Ваш телефон — $ip, значит адрес хаба обычно начинается с $prefix.…';
+    return 'Ваш телефон — $ip, значит адрес хаба обычно начинается с $prefix.';
   }
 
   @override

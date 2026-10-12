@@ -1699,7 +1699,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {
-    return 'Telefonen din er $ip, så huben begynner vanligvis med $prefix.…';
+    return 'Telefonen din er $ip, så huben begynner vanligvis med $prefix.';
   }
 
   @override

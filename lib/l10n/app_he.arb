@@ -651,7 +651,7 @@
   "setupNotFoundHa": "לא נמצא Home Assistant ברשת הזו. בדקו שהטלפון מחובר לאותו Wi-Fi כמו Home Assistant (לא רשת אורחים) ונסו שוב. אם הכתובת ידועה לכם, הזינו אותה ידנית עם פורט 1883.",
   "setupNotFoundSmlight": "לא נמצאה רכזת SMLIGHT ברשת הזו. בדקו שהרכזת דולקת ושהטלפון מחובר לאותו Wi-Fi ונסו שוב. אם הכתובת ידועה לכם, הזינו אותה ידנית עם פורט 1883.",
   "setupNotFoundPi": "לא נמצא MQTT broker ברשת הזו. בדקו ש-Mosquitto פועל ומאזין ברשת (פורט 1883) ושהטלפון מחובר לאותו Wi-Fi. אחר כך נסו שוב.",
-  "guidedHostYourPhone": "הטלפון שלכם הוא {ip}, אז הרכזת מתחילה בדרך כלל ב-{prefix}.…",
+  "guidedHostYourPhone": "הטלפון שלכם הוא {ip}, אז הרכזת מתחילה בדרך כלל ב-{prefix}.",
   "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
   "guidedHostHa": "משתמשים ב-Home Assistant? המארח הוא הכתובת שבה אתם פותחים את Home Assistant, פורט 1883.",
   "demoBannerText": "את/ה במצב הדגמה",

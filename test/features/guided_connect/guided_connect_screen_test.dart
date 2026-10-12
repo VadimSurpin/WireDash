@@ -236,7 +236,7 @@ void main() {
     expect(find.text('localhost'), findsNothing);
     expect(
       find.text(
-        'Your phone is 192.168.1.37, so the hub is usually 192.168.1.…',
+        'Your phone is 192.168.1.37, so the hub usually starts with 192.168.1.',
       ),
       findsOneWidget,
     );

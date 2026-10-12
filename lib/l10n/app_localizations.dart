@@ -3113,7 +3113,7 @@ abstract class AppLocalizations {
   /// No description provided for @guidedHostYourPhone.
   ///
   /// In en, this message translates to:
-  /// **'Your phone is {ip}, so the hub is usually {prefix}.…'**
+  /// **'Your phone is {ip}, so the hub usually starts with {prefix}.'**
   String guidedHostYourPhone(String ip, String prefix);
 
   /// No description provided for @guidedHostHa.
