@@ -21,6 +21,8 @@ Future<void> showWallDisplaySheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Over the navigation bar too, not inside the home shell's body.
+    useRootNavigator: true,
     builder: (_) =>
         WallDisplaySheet(connectionId: connectionId, dashboard: dashboard),
   );
