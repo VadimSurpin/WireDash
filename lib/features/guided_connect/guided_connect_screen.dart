@@ -17,6 +17,8 @@ import '../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../mqtt/mqtt_status.dart';
 import '../connections/diagnostics/connect_diagnostics.dart';
 import '../connections/diagnostics/connect_diagnostics_provider.dart';
+import '../connections/discovery/broker_scan_providers.dart';
+import '../connections/discovery/subnet.dart';
 import '../connections/screens/broker_scan_sheet.dart';
 import '../connections/widgets/broker_fields.dart';
 import '../connections/widgets/diagnostics_ladder_view.dart';
@@ -37,8 +39,13 @@ enum _Phase { form, running, failed, success }
 
 /// The guided-connect wizard (v1.9): Z2M preset → diagnostic ladder →
 /// "Found N devices" success moment. Auto-saves the connection on success.
+/// [initialHost] and [initialPort] fill the form in (2.5: a hub the scan
+/// found but whose broker didn't answer).
 class GuidedConnectScreen extends ConsumerStatefulWidget {
-  const GuidedConnectScreen({super.key});
+  const GuidedConnectScreen({super.key, this.initialHost, this.initialPort});
+
+  final String? initialHost;
+  final int? initialPort;
 
   @override
   ConsumerState<GuidedConnectScreen> createState() =>
@@ -47,8 +54,10 @@ class GuidedConnectScreen extends ConsumerStatefulWidget {
 
 class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _host = TextEditingController(text: 'localhost');
-  final _port = TextEditingController(text: '1883');
+  late final _host = TextEditingController(text: widget.initialHost ?? '');
+  late final _port = TextEditingController(
+    text: '${widget.initialPort ?? 1883}',
+  );
   final _base = TextEditingController(text: 'zigbee2mqtt');
   final _username = TextEditingController();
   final _password = TextEditingController();
@@ -197,8 +206,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       // The provider is autoDispose: listen while reading, or it is disposed
       // (unsubscribing) before the retained list arrives.
       final args = (connectionId: connectionId, base: base);
-      final keepAlive =
-          ref.listenManual(discoveredDevicesProvider(args), (_, _) {});
+      final keepAlive = ref.listenManual(
+        discoveredDevicesProvider(args),
+        (_, _) {},
+      );
       final List<Z2mDevice> devices;
       try {
         devices = await ref.read(discoveredDevicesProvider(args).future);
@@ -302,6 +313,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
               ),
             ],
           ),
+          const _HostHints(),
           const SizedBox(height: 12),
           TextFormField(
             controller: _base,
@@ -328,6 +340,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
             icon: const Icon(Icons.wifi_find, size: 18),
             label: Text(l10n.connFindBrokers),
             onPressed: _findBrokers,
+          ),
+          GetHelpLink(
+            onPressed: () =>
+                context.push(Routes.getHelpFrom(HelpFrom.manualForm.name)),
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
@@ -397,8 +413,9 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
           ],
         ),
         GetHelpLink(
-            onPressed: () => context
-                .push(Routes.getHelpFrom(HelpFrom.manualConnect.name))),
+          onPressed: () =>
+              context.push(Routes.getHelpFrom(HelpFrom.manualConnect.name)),
+        ),
       ],
     );
   }
@@ -472,6 +489,31 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
           label: Text(l10n.continueToDashboard),
         ),
       ],
+    );
+  }
+}
+
+/// Where to find the address (2.5): the phone's own address says what the
+/// hub's usually starts with, and Home Assistant users already know theirs.
+class _HostHints extends ConsumerWidget {
+  const _HostHints();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final style = Theme.of(context).textTheme.bodySmall;
+    final ip = ref.watch(deviceIpProvider).valueOrNull;
+    final prefix = ip == null ? null : subnetBaseFromIp(ip);
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (ip != null && prefix != null)
+            Text(l10n.guidedHostYourPhone(ip, prefix), style: style),
+          Text(l10n.guidedHostHa, style: style),
+        ],
+      ),
     );
   }
 }

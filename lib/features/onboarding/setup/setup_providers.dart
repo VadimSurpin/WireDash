@@ -28,13 +28,18 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
   // The interface the scan runs on, kept only as a kind (Wi-Fi, Ethernet).
   String? network;
   final coordinator = SetupCoordinator(
-    scan: (ip) => scanner.scan(ip,
-        onDone: (st) => support.recordScan(ScanSummary(
-              widened: st.widened,
-              hostsTried: st.hostsTried,
-              brokersFound: st.brokersFound,
-              network: network,
-            ))),
+    scan: (ip, hubs) => scanner.run(
+      ip,
+      hubs: hubs,
+      onDone: (st) => support.recordScan(
+        ScanSummary(
+          widened: st.widened,
+          hostsTried: st.hostsTried,
+          brokersFound: st.brokersFound,
+          network: network,
+        ),
+      ),
+    ),
     deviceIp: () async {
       final home = await homeIpv4();
       network = networkOfInterface(home?.name);
@@ -57,7 +62,8 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
     if (s is SetupFailed) support.recordFailure(failureKindFromSetup(s.kind));
     if (s is SetupNeedsAuth) {
       support.recordFailure(
-          s.rejected ? FailureKind.loginRejected : FailureKind.loginRequired);
+        s.rejected ? FailureKind.loginRejected : FailureKind.loginRequired,
+      );
     }
   });
   ref.onDispose(failures.cancel);

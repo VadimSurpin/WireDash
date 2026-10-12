@@ -1604,6 +1604,107 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupTryDemoMeanwhile => 'Try the demo meanwhile';
 
   @override
+  String get setupPlatformQuestion =>
+      'While we look: where does Zigbee2MQTT run?';
+
+  @override
+  String get setupPlatformHa => 'Home Assistant';
+
+  @override
+  String get setupPlatformSmlight => 'SMLIGHT hub';
+
+  @override
+  String get setupPlatformPi => 'Raspberry Pi or Docker';
+
+  @override
+  String get setupPlatformNotSure => 'Not sure';
+
+  @override
+  String setupScanProgress(int checked, int total) {
+    return 'Checked $checked of $total addresses';
+  }
+
+  @override
+  String get setupScanHintHa =>
+      'Looking for Home Assistant and its MQTT broker…';
+
+  @override
+  String get setupScanHintSmlight => 'Looking for your SMLIGHT hub…';
+
+  @override
+  String get setupScanHintPi => 'Looking for an MQTT broker on your network…';
+
+  @override
+  String setupHubSeenHa(String host) {
+    return 'Found Home Assistant at $host';
+  }
+
+  @override
+  String setupHubSeenZ2m(String host) {
+    return 'Found Zigbee2MQTT at $host';
+  }
+
+  @override
+  String setupHubSeenSmlight(String host) {
+    return 'Found your SMLIGHT hub at $host';
+  }
+
+  @override
+  String get setupHubSeenHint => 'Still looking for its MQTT broker…';
+
+  @override
+  String get setupNoBrokerHaTitle => 'Found Home Assistant, but no MQTT broker';
+
+  @override
+  String setupNoBrokerHaBody(String host) {
+    return 'Home Assistant is at $host, but nothing answers on MQTT port 1883. In Home Assistant, open Settings › Add-ons, install and start the Mosquitto broker add-on, then try again.';
+  }
+
+  @override
+  String get setupNoBrokerZ2mTitle =>
+      'Found Zigbee2MQTT, but its broker can\'t be reached';
+
+  @override
+  String setupNoBrokerZ2mBody(String host) {
+    return 'Zigbee2MQTT is at $host, but its MQTT broker doesn\'t accept connections from your phone. Mosquitto 2 only listens on the hub itself until its config has \'listener 1883\' and \'allow_anonymous true\' (or a login). Restart it, then try again.';
+  }
+
+  @override
+  String get setupNoBrokerSmlightTitle =>
+      'Found your SMLIGHT hub, but MQTT is off';
+
+  @override
+  String setupNoBrokerSmlightBody(String host) {
+    return 'Your hub is at $host, but its MQTT broker can\'t be reached. In the hub\'s web UI, open Settings › MQTT, turn on Allow External and check that Zigbee2MQTT is running, then try again.';
+  }
+
+  @override
+  String setupConnectTo(String host) {
+    return 'Connect to $host';
+  }
+
+  @override
+  String get setupNotFoundHa =>
+      'No Home Assistant found on this network. Check that your phone is on the same Wi-Fi as Home Assistant (not a guest network), then try again. If you know its address, enter it manually with port 1883.';
+
+  @override
+  String get setupNotFoundSmlight =>
+      'No SMLIGHT hub found on this network. Check that the hub is on and your phone is on the same Wi-Fi, then try again. If you know its address, enter it manually with port 1883.';
+
+  @override
+  String get setupNotFoundPi =>
+      'No MQTT broker found on this network. Check that Mosquitto is running and listening on the network (port 1883), and that your phone is on the same Wi-Fi, then try again.';
+
+  @override
+  String guidedHostYourPhone(String ip, String prefix) {
+    return 'Your phone is $ip, so the hub usually starts with $prefix.';
+  }
+
+  @override
+  String get guidedHostHa =>
+      'Using Home Assistant? The host is the address you open Home Assistant with, port 1883.';
+
+  @override
   String get demoBannerText => 'You\'re in demo mode';
 
   @override
@@ -2137,7 +2238,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonymous usage data only if you opt in.';
+      'Anonymous usage data. Turn it off with the switch above.';
 
   @override
   String get dashDefaultName => 'Home';

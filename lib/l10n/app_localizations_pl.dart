@@ -1625,6 +1625,107 @@ class AppLocalizationsPl extends AppLocalizations {
   String get setupTryDemoMeanwhile => 'W międzyczasie wypróbuj demo';
 
   @override
+  String get setupPlatformQuestion =>
+      'W trakcie szukania: gdzie działa Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformHa => 'Home Assistant';
+
+  @override
+  String get setupPlatformSmlight => 'Hub SMLIGHT';
+
+  @override
+  String get setupPlatformPi => 'Raspberry Pi lub Docker';
+
+  @override
+  String get setupPlatformNotSure => 'Nie wiem';
+
+  @override
+  String setupScanProgress(int checked, int total) {
+    return 'Sprawdzono $checked z $total adresów';
+  }
+
+  @override
+  String get setupScanHintHa => 'Szukam Home Assistant i jego brokera MQTT…';
+
+  @override
+  String get setupScanHintSmlight => 'Szukam Twojego huba SMLIGHT…';
+
+  @override
+  String get setupScanHintPi => 'Szukam brokera MQTT w Twojej sieci…';
+
+  @override
+  String setupHubSeenHa(String host) {
+    return 'Znaleziono Home Assistant pod adresem $host';
+  }
+
+  @override
+  String setupHubSeenZ2m(String host) {
+    return 'Znaleziono Zigbee2MQTT pod adresem $host';
+  }
+
+  @override
+  String setupHubSeenSmlight(String host) {
+    return 'Znaleziono Twój hub SMLIGHT pod adresem $host';
+  }
+
+  @override
+  String get setupHubSeenHint => 'Wciąż szukam jego brokera MQTT…';
+
+  @override
+  String get setupNoBrokerHaTitle =>
+      'Znaleziono Home Assistant, ale brak brokera MQTT';
+
+  @override
+  String setupNoBrokerHaBody(String host) {
+    return 'Home Assistant jest pod adresem $host, ale nic nie odpowiada na porcie MQTT 1883. W Home Assistant otwórz Ustawienia › Dodatki, zainstaluj i uruchom dodatek Mosquitto broker, a potem spróbuj ponownie.';
+  }
+
+  @override
+  String get setupNoBrokerZ2mTitle =>
+      'Znaleziono Zigbee2MQTT, ale jego broker jest nieosiągalny';
+
+  @override
+  String setupNoBrokerZ2mBody(String host) {
+    return 'Zigbee2MQTT jest pod adresem $host, ale jego broker MQTT nie przyjmuje połączeń z Twojego telefonu. Mosquitto 2 nasłuchuje tylko na samym hubie, dopóki w konfiguracji nie ma \'listener 1883\' i \'allow_anonymous true\' (lub loginu). Uruchom go ponownie i spróbuj jeszcze raz.';
+  }
+
+  @override
+  String get setupNoBrokerSmlightTitle =>
+      'Znaleziono hub SMLIGHT, ale MQTT jest wyłączone';
+
+  @override
+  String setupNoBrokerSmlightBody(String host) {
+    return 'Twój hub jest pod adresem $host, ale jego broker MQTT jest nieosiągalny. W interfejsie webowym huba otwórz Settings › MQTT, włącz Allow External i sprawdź, czy Zigbee2MQTT działa. Potem spróbuj ponownie.';
+  }
+
+  @override
+  String setupConnectTo(String host) {
+    return 'Połącz z $host';
+  }
+
+  @override
+  String get setupNotFoundHa =>
+      'Nie znaleziono Home Assistant w tej sieci. Sprawdź, czy telefon jest w tej samej sieci Wi-Fi co Home Assistant (nie w sieci dla gości), i spróbuj ponownie. Jeśli znasz adres, wpisz go ręcznie z portem 1883.';
+
+  @override
+  String get setupNotFoundSmlight =>
+      'Nie znaleziono huba SMLIGHT w tej sieci. Sprawdź, czy hub jest włączony i czy telefon jest w tej samej sieci Wi-Fi, i spróbuj ponownie. Jeśli znasz adres, wpisz go ręcznie z portem 1883.';
+
+  @override
+  String get setupNotFoundPi =>
+      'Nie znaleziono brokera MQTT w tej sieci. Sprawdź, czy Mosquitto działa i nasłuchuje w sieci (port 1883) oraz czy telefon jest w tej samej sieci Wi-Fi. Potem spróbuj ponownie.';
+
+  @override
+  String guidedHostYourPhone(String ip, String prefix) {
+    return 'Twój telefon ma $ip, więc hub zwykle zaczyna się od $prefix.';
+  }
+
+  @override
+  String get guidedHostHa =>
+      'Używasz Home Assistant? Host to adres, pod którym otwierasz Home Assistant, port 1883.';
+
+  @override
   String get demoBannerText => 'Jesteś w trybie demo';
 
   @override
@@ -2161,7 +2262,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonimowe dane o użyciu tylko za Twoją zgodą.';
+      'Anonimowe dane o użyciu. Wyłącz je przełącznikiem powyżej.';
 
   @override
   String get dashDefaultName => 'Dom';

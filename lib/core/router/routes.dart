@@ -7,6 +7,12 @@ class Routes {
   // Setup and its manual entry sit outside the navigation shell.
   static const setup = '/setup';
   static const guidedConnect = '/setup/manual';
+
+  /// Manual entry with the host and port filled in (a hub the scan found).
+  static String guidedConnectTo(String host, int port) => Uri(
+    path: guidedConnect,
+    queryParameters: {'host': host, 'port': '$port'},
+  ).toString();
   static const connectionEdit = '/connections/:id/edit';
   static const dashboards = '/dashboards';
   static const settings = '/settings';
@@ -30,13 +36,16 @@ class Routes {
 
   /// Get help, opened [from] a place (an `HelpFrom` name), for a home or a
   /// setup error (a `SetupErrorKind` name) when there is one.
-  static String getHelpFrom(String from, {String? home, String? error}) =>
-      Uri(path: getHelp, queryParameters: {
-        'from': from,
-        if (home != null) 'home': home,
-        if (error != null) 'error': error,
-      }).toString();
-  static const deviceDiscovery = '/connections/:id/dashboards/:dashboardId/discover';
+  static String getHelpFrom(String from, {String? home, String? error}) => Uri(
+    path: getHelp,
+    queryParameters: {
+      'from': from,
+      if (home != null) 'home': home,
+      if (error != null) 'error': error,
+    },
+  ).toString();
+  static const deviceDiscovery =
+      '/connections/:id/dashboards/:dashboardId/discover';
   static const devices = '/connections/:id/devices';
   static const scenes = '/connections/:id/scenes';
 

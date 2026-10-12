@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.3.1 is published (replaces the policy published with ZigDash 2.3)
+**Effective date:** the day ZigDash 2.5 is published (replaces the policy published with ZigDash 2.3.1)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -12,10 +12,11 @@ ZigDash does **not** collect or share personal data. Your broker settings,
 passwords, devices, topics and their values stay on your device. There is no
 advertising and no user account, and the developer runs no server of their own.
 
-Only if you **opt in**, ZigDash sends a short list of **anonymous usage
+Unless you **opt out**, ZigDash sends a short list of **anonymous usage
 events** (which setup steps fail, which features get used) to Aptabase, an
-analytics service hosted in the EU. It is off unless you turn it on, and you
-can turn it off at any time. See [Anonymous usage data](#anonymous-usage-data).
+analytics service hosted in the EU. New installs see the choice on the first
+setup screen before anything is sent, and you can turn it off at any time. See
+[Anonymous usage data](#anonymous-usage-data).
 
 ## Data stored on your device
 
@@ -59,7 +60,7 @@ device and your broker. The developer neither operates an intermediary server
 nor receives any of this traffic.
 
 The app requests the **INTERNET** permission to connect to your broker and,
-only if you opt in, to send the anonymous usage events described below. On
+unless you opt out, to send the anonymous usage events described below. On
 Android 17 it also asks for the **local network** permission, which Android
 requires for talking to a hub on your home network.
 
@@ -90,12 +91,14 @@ When you do:
 
 ## Anonymous usage data
 
-**Off unless you opt in.** New installs are asked once, with an unticked box on
-the first setup screen. People who installed an earlier version are asked once,
-on their dashboard. You can change your answer in **Settings › About › Share
-anonymous usage data**. Turning it off deletes any events not yet sent and
-stops sending immediately. Builds without an analytics key (for example F-Droid
-builds, or one you build yourself) send nothing at all.
+**On unless you opt out.** New installs see the choice once, as a ticked box
+on the first setup screen; untick it to say no. Nothing is sent before you move
+past that screen. People who installed an earlier version are asked once, on
+their dashboard, and nothing is sent until they answer. You can change your
+answer in **Settings › About › Share anonymous usage data**. Turning it off
+deletes any events not yet sent and stops sending immediately. Builds without
+an analytics key (for example F-Droid builds, or one you build yourself) send
+nothing at all.
 
 **Where it goes.** [Aptabase](https://aptabase.com/legal/privacy), EU region.
 Data stays in the EU and is kept for up to 5 years.
@@ -114,7 +117,7 @@ never from anything you typed or anything your broker sent.
 | Event | When | Values |
 |---|---|---|
 | `app_started` | Once each time the app starts | phone or tablet; theme (system, light, dark); Material You on or off; number of homes (0, 1, 2+); number of tiles (0, 1–10, 11–30, 31+); demo or not |
-| `setup_step` | Each step of first-run setup | the step (started, scan found, scan empty, needs login, login rejected, failed, review, complete, manual, demo); the type of setup error, if any; number of devices found (0, 1–5, 6–20, 21+) |
+| `setup_step` | Each step of first-run setup | the step (started, scan found, scan empty, needs login, login rejected, failed, review, complete, manual, demo); the type of setup error, if any; number of devices found (0, 1–5, 6–20, 21+); from 2.5, your answer to where Zigbee2MQTT runs, if you gave one (Home Assistant, SMLIGHT hub, Raspberry Pi or Docker, not sure); and for an empty scan, the kind of hub it saw instead (Home Assistant, Zigbee2MQTT frontend, SMLIGHT hub, or none), how many addresses it tried (0, 1–253, 254–1020, 1021+), whether it widened to the surrounding network, and which private range your phone is in (192.168, 10, 172.16, other) |
 | `feature_used` | The first use of a feature in a session | Devices tab, device page, Scenes, Edit mode, Wall display, or tile added (with the kind of tile, such as "light" or "toggle") |
 | `help_opened` | Get help was opened | where from: no connection found, a setup error, manual connect, home can't be reached, device list missing, Settings, or the demo |
 | `support_contact` | A support request was started from Get help | where from (as above); email or copy |

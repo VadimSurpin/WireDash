@@ -35,5 +35,5 @@ CELULAR E TABLET
 • Backup dos painéis em arquivo .json.
 
 PRIVACIDADE
-• Sem anúncios e sem conta. Dados de uso anônimos só se você permitir.
+• Sem anúncios e sem conta. Dados de uso anônimos, que você pode desativar quando quiser.
 • Seus dados ficam no seu dispositivo e no seu broker. Código aberto (MIT).

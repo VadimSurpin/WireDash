@@ -1616,6 +1616,107 @@ class AppLocalizationsDe extends AppLocalizations {
   String get setupTryDemoMeanwhile => 'Solange die Demo ausprobieren';
 
   @override
+  String get setupPlatformQuestion =>
+      'Während wir suchen: Wo läuft Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformHa => 'Home Assistant';
+
+  @override
+  String get setupPlatformSmlight => 'SMLIGHT-Hub';
+
+  @override
+  String get setupPlatformPi => 'Raspberry Pi oder Docker';
+
+  @override
+  String get setupPlatformNotSure => 'Weiß nicht';
+
+  @override
+  String setupScanProgress(int checked, int total) {
+    return '$checked von $total Adressen geprüft';
+  }
+
+  @override
+  String get setupScanHintHa => 'Suche Home Assistant und seinen MQTT-Broker…';
+
+  @override
+  String get setupScanHintSmlight => 'Suche deinen SMLIGHT-Hub…';
+
+  @override
+  String get setupScanHintPi => 'Suche einen MQTT-Broker in deinem Netzwerk…';
+
+  @override
+  String setupHubSeenHa(String host) {
+    return 'Home Assistant unter $host gefunden';
+  }
+
+  @override
+  String setupHubSeenZ2m(String host) {
+    return 'Zigbee2MQTT unter $host gefunden';
+  }
+
+  @override
+  String setupHubSeenSmlight(String host) {
+    return 'Deinen SMLIGHT-Hub unter $host gefunden';
+  }
+
+  @override
+  String get setupHubSeenHint => 'Suche noch seinen MQTT-Broker…';
+
+  @override
+  String get setupNoBrokerHaTitle =>
+      'Home Assistant gefunden, aber kein MQTT-Broker';
+
+  @override
+  String setupNoBrokerHaBody(String host) {
+    return 'Home Assistant läuft unter $host, aber auf MQTT-Port 1883 antwortet nichts. Öffne in Home Assistant Einstellungen › Add-ons, installiere und starte das Mosquitto-Broker-Add-on und versuche es dann erneut.';
+  }
+
+  @override
+  String get setupNoBrokerZ2mTitle =>
+      'Zigbee2MQTT gefunden, aber sein Broker ist nicht erreichbar';
+
+  @override
+  String setupNoBrokerZ2mBody(String host) {
+    return 'Zigbee2MQTT läuft unter $host, aber sein MQTT-Broker nimmt keine Verbindungen von deinem Handy an. Mosquitto 2 hört nur auf dem Hub selbst, bis in seiner Konfiguration \'listener 1883\' und \'allow_anonymous true\' (oder ein Login) stehen. Starte ihn neu und versuche es dann erneut.';
+  }
+
+  @override
+  String get setupNoBrokerSmlightTitle =>
+      'SMLIGHT-Hub gefunden, aber MQTT ist aus';
+
+  @override
+  String setupNoBrokerSmlightBody(String host) {
+    return 'Dein Hub läuft unter $host, aber sein MQTT-Broker ist nicht erreichbar. Öffne in der Web-Oberfläche des Hubs Settings › MQTT, schalte Allow External ein und prüfe, dass Zigbee2MQTT läuft. Dann versuche es erneut.';
+  }
+
+  @override
+  String setupConnectTo(String host) {
+    return 'Mit $host verbinden';
+  }
+
+  @override
+  String get setupNotFoundHa =>
+      'Kein Home Assistant in diesem Netzwerk gefunden. Prüfe, ob dein Handy im selben WLAN wie Home Assistant ist (kein Gast-WLAN), und versuche es erneut. Wenn du die Adresse kennst, gib sie manuell ein, mit Port 1883.';
+
+  @override
+  String get setupNotFoundSmlight =>
+      'Kein SMLIGHT-Hub in diesem Netzwerk gefunden. Prüfe, ob der Hub eingeschaltet und dein Handy im selben WLAN ist, und versuche es erneut. Wenn du die Adresse kennst, gib sie manuell ein, mit Port 1883.';
+
+  @override
+  String get setupNotFoundPi =>
+      'Kein MQTT-Broker in diesem Netzwerk gefunden. Prüfe, ob Mosquitto läuft und im Netzwerk lauscht (Port 1883) und ob dein Handy im selben WLAN ist. Dann versuche es erneut.';
+
+  @override
+  String guidedHostYourPhone(String ip, String prefix) {
+    return 'Dein Handy hat $ip, der Hub beginnt also meist mit $prefix.';
+  }
+
+  @override
+  String get guidedHostHa =>
+      'Nutzt du Home Assistant? Der Host ist die Adresse, mit der du Home Assistant öffnest, Port 1883.';
+
+  @override
   String get demoBannerText => 'Du bist im Demomodus';
 
   @override
@@ -2149,7 +2250,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonyme Nutzungsdaten nur mit deiner Zustimmung.';
+      'Anonyme Nutzungsdaten. Mit dem Schalter oben abschaltbar.';
 
   @override
   String get dashDefaultName => 'Zuhause';

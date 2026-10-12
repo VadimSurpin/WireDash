@@ -35,5 +35,5 @@ TELEFON I TABLET
 • Kopia zapasowa dashboardów do pliku .json.
 
 PRYWATNOŚĆ
-• Bez reklam i konta. Anonimowe dane o użyciu tylko za Twoją zgodą.
+• Bez reklam i konta. Anonimowe dane o użyciu, które możesz wyłączyć w każdej chwili.
 • Twoje dane zostają na urządzeniu i Twoim brokerze. Otwarty kod (MIT).

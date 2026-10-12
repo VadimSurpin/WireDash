@@ -49,6 +49,10 @@ MQTT.
   device as a card with brightness and position sliders; home-screen widgets
   show one device, run a scene, or hold a group of up to five devices and
   three scenes.
+- **A first run that helps** — while ZigDash scans, say where Zigbee2MQTT runs
+  (Home Assistant, SMLIGHT hub, Pi or Docker). If no broker answers, the scan
+  looks for Home Assistant or the Zigbee2MQTT page, names what it found, says
+  the one step that is missing and fills in the address for you.
 - **Any MQTT broker** — TCP, SSL/TLS, WebSocket, WSS. Broker auto-scan on the
   LAN, username/password in hardware-backed secure storage, automatic
   exponential-backoff reconnect, multiple brokers with instant switching.
@@ -59,8 +63,8 @@ MQTT.
   German, Spanish, Dutch, Swedish, Norwegian, Russian, Polish, Portuguese,
   Hebrew) with full RTL, responsive panel
   grid, dashboard lock, JSON backup/restore.
-- **Private** — no ads, no account. Anonymous usage data only if you opt in;
-  builds without an analytics key (F-Droid, your own) send nothing at all.
+- **Private** — no ads, no account. Anonymous usage data you can turn off at
+  any time; builds without an analytics key (F-Droid, your own) send nothing at all.
   Data lives on your device and your broker.
 
 ## Install

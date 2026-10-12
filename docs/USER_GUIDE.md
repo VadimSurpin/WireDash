@@ -31,6 +31,13 @@ The hierarchy is: **Broker → Dashboards → Panels**.
 
 ## 2. Connecting to a broker
 
+### First run: Find my setup
+
+On a new install, tap **Find my setup**. ZigDash scans your Wi-Fi for an MQTT broker, checks it speaks Zigbee2MQTT, and builds your first dashboard from the devices it finds. While it scans you can say where Zigbee2MQTT runs (Home Assistant, an SMLIGHT hub, a Raspberry Pi or Docker, or Not sure); it's optional, and it makes the result more specific.
+
+If no broker answers, ZigDash also looks for Home Assistant, the Zigbee2MQTT frontend and (if you said so) your SMLIGHT hub, and tells you what it found and what's missing: for example "Found Home Assistant, but no MQTT broker", with the add-on to start. **Connect to <address>** opens manual entry with the address filled in. Nothing found at all? Check your phone is on the same Wi-Fi as the hub, then try again, or enter the address yourself: the manual form shows your phone's own address so you know what the hub's usually starts with.
+
+
 1. Open the **Brokers** tab → tap **Add broker**.
 2. Fill in:
    - **Name** — any label (e.g. "Home").
@@ -258,10 +265,10 @@ layout to right‑to‑left.
 No. ZigDash stores everything **on your device** (settings/dashboards in a local
 database, passwords in the OS secure keystore) and talks **only** to the broker you
 configure. Your broker password, devices, topics and values never leave the phone.
-There are no ads and no account. If you opt in (on the first setup screen, or in
-Settings › About), ZigDash also sends anonymous usage data: which setup steps
-fail and which features get used. You can turn it off any time; the privacy
-policy lists exactly what is sent.
+There are no ads and no account. Unless you opt out (on the first setup screen,
+or in Settings › About), ZigDash also sends anonymous usage data: which setup
+steps fail and which features get used. You can turn it off any time; the
+privacy policy lists exactly what is sent.
 
 **Q: Does the schedule run when my phone is off?**
 Yes — schedules are executed by your always‑on hub (e.g. Node‑RED), not the phone.

@@ -14,6 +14,7 @@ import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics_provider.dart';
+import 'package:zigdash/features/connections/discovery/broker_scan_providers.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
 import 'package:zigdash/features/guided_connect/guided_connect_screen.dart';
@@ -58,15 +59,15 @@ class _FakeDiagnostics extends ConnectDiagnostics {
 
 class _StubManager extends MqttManager {
   _StubManager()
-      : super(
-          config: const BrokerConfig(
-            id: 'x',
-            host: 'h',
-            port: 1883,
-            protocol: MqttProtocol.tcp,
-          ),
-          password: '',
-        );
+    : super(
+        config: const BrokerConfig(
+          id: 'x',
+          host: 'h',
+          port: 1883,
+          protocol: MqttProtocol.tcp,
+        ),
+        password: '',
+      );
 
   final publishedTopics = <String>[];
 
@@ -83,65 +84,67 @@ class _StubManager extends MqttManager {
 }
 
 DiagnosticsReport _failedReport() => const DiagnosticsReport(
-      steps: [
-        StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
-        StepResult(step: DiagnosticStep.tcp, status: StepStatus.pass),
-        StepResult(
-          step: DiagnosticStep.connack,
-          status: StepStatus.fail,
-          detailKey: 'diagConnackFail',
-        ),
-      ],
-      connected: false,
-      candidatesTried: 1,
-    );
+  steps: [
+    StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
+    StepResult(step: DiagnosticStep.tcp, status: StepStatus.pass),
+    StepResult(
+      step: DiagnosticStep.connack,
+      status: StepStatus.fail,
+      detailKey: 'diagConnackFail',
+    ),
+  ],
+  connected: false,
+  candidatesTried: 1,
+);
 
 /// The two devices behind [_successReport], as Zigbee2MQTT publishes them
 /// on `bridge/devices`, parsed by the app's own parser.
 final _devicesOverride = discoveredDevicesProvider.overrideWith(
-  (ref, args) async => parseBridgeDevices(jsonEncode([
-    for (final (name, ieee) in [('office_light', '0x01'), ('lamp', '0x02')])
-      {
-        'friendly_name': name,
-        'ieee_address': ieee,
-        'type': 'Router',
-        'supported': true,
-        'definition': {
-          'model': 'LED1545G12',
-          'vendor': 'IKEA',
-          'exposes': [
-            {
-              'type': 'light',
-              'features': [
-                {
-                  'type': 'binary',
-                  'name': 'state',
-                  'property': 'state',
-                  'access': 7,
-                  'value_on': 'ON',
-                  'value_off': 'OFF',
-                },
-              ],
-            },
-          ],
+  (ref, args) async => parseBridgeDevices(
+    jsonEncode([
+      for (final (name, ieee) in [('office_light', '0x01'), ('lamp', '0x02')])
+        {
+          'friendly_name': name,
+          'ieee_address': ieee,
+          'type': 'Router',
+          'supported': true,
+          'definition': {
+            'model': 'LED1545G12',
+            'vendor': 'IKEA',
+            'exposes': [
+              {
+                'type': 'light',
+                'features': [
+                  {
+                    'type': 'binary',
+                    'name': 'state',
+                    'property': 'state',
+                    'access': 7,
+                    'value_on': 'ON',
+                    'value_off': 'OFF',
+                  },
+                ],
+              },
+            ],
+          },
         },
-      },
-  ])),
+    ]),
+  ),
 );
 
 DiagnosticsReport _successReport({int count = 2}) => DiagnosticsReport(
-      steps: [
-        for (final s in DiagnosticStep.values)
-          StepResult(
-            step: s,
-            status: StepStatus.pass,
-            deviceCount: s == DiagnosticStep.devices ? count : null,
-          ),
-      ],
-      connected: true,
-      candidatesTried: 1,
-      deviceNames: count > 0 ? ['office_light', 'lamp'] : const [],
-    );
+  steps: [
+    for (final s in DiagnosticStep.values)
+      StepResult(
+        step: s,
+        status: StepStatus.pass,
+        deviceCount: s == DiagnosticStep.devices ? count : null,
+      ),
+  ],
+  connected: true,
+  candidatesTried: 1,
+  deviceNames: count > 0 ? ['office_light', 'lamp'] : const [],
+);
 
 class _RecordingFirstRun implements FirstRun {
   final finished = <String>[];
@@ -153,19 +156,29 @@ class _RecordingFirstRun implements FirstRun {
 
 var _firstRun = _RecordingFirstRun();
 
+/// The form grew in 2.5 (hints, Get help); a tall view keeps every control
+/// built and tappable.
+void _tall(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1200, 3200);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
+}
+
 GoRouter _router() => GoRouter(
-      initialLocation: Routes.guidedConnect,
-      routes: [
-        GoRoute(
-          path: Routes.guidedConnect,
-          builder: (_, __) => const GuidedConnectScreen(),
-        ),
-        GoRoute(
-          path: '/connections/:id/dashboards',
-          builder: (_, __) => const Scaffold(body: Text('STUB_DASHBOARDS')),
-        ),
-      ],
-    );
+  initialLocation: Routes.guidedConnect,
+  routes: [
+    GoRoute(
+      path: Routes.guidedConnect,
+      // The ladder tests run against a filled-in host (2.5: the form
+      // itself starts empty; see 'starts empty, with hints').
+      builder: (_, __) => const GuidedConnectScreen(initialHost: 'localhost'),
+    ),
+    GoRoute(
+      path: '/connections/:id/dashboards',
+      builder: (_, __) => const Scaffold(body: Text('STUB_DASHBOARDS')),
+    ),
+  ],
+);
 
 Widget _wrap({
   required AppDatabase db,
@@ -183,6 +196,7 @@ Widget _wrap({
     ),
     connectDiagnosticsProvider.overrideWithValue(diagnostics),
     firstRunProvider.overrideWithValue(_firstRun),
+    deviceIpProvider.overrideWith((ref) async => '192.168.1.37'),
     ...extraOverrides.values,
   ];
   return ProviderScope(
@@ -198,7 +212,66 @@ Widget _wrap({
 void main() {
   setUp(() => _firstRun = _RecordingFirstRun());
 
+  // 2.5: an empty host, with where to find it, instead of "localhost".
+  testWidgets('starts empty, with hints on where the address is', (
+    tester,
+  ) async {
+    _tall(tester);
+    final db = AppDatabase.test(NativeDatabase.memory());
+    addTearDown(db.close);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(db),
+          deviceIpProvider.overrideWith((ref) async => '192.168.1.37'),
+        ],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: GuidedConnectScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('localhost'), findsNothing);
+    expect(
+      find.text(
+        'Your phone is 192.168.1.37, so the hub usually starts with 192.168.1.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Using Home Assistant?'), findsOneWidget);
+    expect(find.text('Still stuck? Get help'), findsOneWidget);
+
+    await tester.tap(find.text('Test & connect'));
+    await tester.pumpAndSettle();
+    expect(find.text('Required'), findsWidgets);
+  });
+
+  testWidgets('a hub the scan found arrives filled in', (tester) async {
+    _tall(tester);
+    final db = AppDatabase.test(NativeDatabase.memory());
+    addTearDown(db.close);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [appDatabaseProvider.overrideWithValue(db)],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: GuidedConnectScreen(
+            initialHost: '192.168.1.20',
+            initialPort: 1883,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('192.168.1.20'), findsOneWidget);
+    expect(find.text('1883'), findsOneWidget);
+  });
+
   testWidgets('preset pre-fills host, port and base topic', (tester) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_successReport()]);
@@ -215,6 +288,7 @@ void main() {
   });
 
   testWidgets('empty host blocks the run and shows validation', (tester) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_successReport()]);
@@ -222,7 +296,10 @@ void main() {
     await tester.pumpWidget(_wrap(db: db, diagnostics: fake));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.widgetWithText(TextFormField, 'Local host'), '');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Local host'),
+      '',
+    );
     await tester.tap(find.text('Test & connect'));
     await tester.pumpAndSettle();
 
@@ -230,8 +307,10 @@ void main() {
     expect(fake.calls, 0);
   });
 
-  testWidgets('failed ladder shows the failing step, detail and actions',
-      (tester) async {
+  testWidgets('failed ladder shows the failing step, detail and actions', (
+    tester,
+  ) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_failedReport()]);
@@ -256,8 +335,8 @@ void main() {
     expect(find.text('localhost'), findsOneWidget);
   });
 
-  testWidgets('retry re-runs the ladder and can reach success',
-      (tester) async {
+  testWidgets('retry re-runs the ladder and can reach success', (tester) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_failedReport(), _successReport()]);
@@ -276,16 +355,21 @@ void main() {
     expect(fake.calls, 2);
   });
 
-  testWidgets('success saves the connection and shows device names',
-      (tester) async {
+  testWidgets('success saves the connection and shows device names', (
+    tester,
+  ) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_successReport()]);
 
-    await tester.pumpWidget(_wrap(
+    await tester.pumpWidget(
+      _wrap(
         db: db,
         diagnostics: fake,
-        extraOverrides: {'devices': _devicesOverride}));
+        extraOverrides: {'devices': _devicesOverride},
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Test & connect'));
@@ -315,20 +399,25 @@ void main() {
     await tester.pump();
   });
 
-  testWidgets('continue still opens the home when devices cannot be read',
-      (tester) async {
+  testWidgets('continue still opens the home when devices cannot be read', (
+    tester,
+  ) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_successReport()]);
 
-    await tester.pumpWidget(_wrap(
-      db: db,
-      diagnostics: fake,
-      extraOverrides: {
-        'devices': discoveredDevicesProvider
-            .overrideWith((ref, args) async => throw StateError('offline')),
-      },
-    ));
+    await tester.pumpWidget(
+      _wrap(
+        db: db,
+        diagnostics: fake,
+        extraOverrides: {
+          'devices': discoveredDevicesProvider.overrideWith(
+            (ref, args) async => throw StateError('offline'),
+          ),
+        },
+      ),
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text('Test & connect'));
     await tester.pumpAndSettle();
@@ -341,16 +430,16 @@ void main() {
     await tester.pump();
   });
 
-  testWidgets('zero devices flags the state and offers pairing',
-      (tester) async {
+  testWidgets('zero devices flags the state and offers pairing', (
+    tester,
+  ) async {
+    _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
     final fake = _FakeDiagnostics([_successReport(count: 0)]);
     final stubManager = _StubManager();
     final overrides = <Override>[
-      mqttManagerProvider.overrideWith(
-        (ref, id) async => stubManager,
-      ),
+      mqttManagerProvider.overrideWith((ref, id) async => stubManager),
       connectionStatusProvider.overrideWith(
         (ref, id) => Stream.value(MqttStatus.connected),
       ),
@@ -378,6 +467,11 @@ void main() {
       stubManager.publishedTopics,
       contains('zigbee2mqtt/bridge/request/permit_join'),
     );
-    expect(find.text('Pairing is enabled. Press the pairing button on your device to join it.'), findsOneWidget);
+    expect(
+      find.text(
+        'Pairing is enabled. Press the pairing button on your device to join it.',
+      ),
+      findsOneWidget,
+    );
   });
 }
