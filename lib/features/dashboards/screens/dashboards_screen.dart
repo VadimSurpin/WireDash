@@ -669,11 +669,7 @@ class _DashboardMenu extends ConsumerWidget {
       },
       itemBuilder: (_) => [
         if (current != null)
-          CheckedPopupMenuItem(
-            value: 'wall',
-            checked: ref.read(wallDisplayProvider(current!().id)),
-            child: Text(l10n.dashWallDisplay),
-          ),
+          PopupMenuItem(value: 'wall', child: Text(l10n.dashWallDisplay)),
         PopupMenuItem(
           value: 'addDashboard',
           child: Text(l10n.dashAddDashboard),

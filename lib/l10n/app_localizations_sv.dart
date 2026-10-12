@@ -2205,13 +2205,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get dashWallDisplay => 'Väggskärm';
 
   @override
-  String get dashWallDisplayOn =>
-      'Väggvisning på: skärmen förblir på och fälten döljs efter 10 sekunder utan beröring. Tryck för att visa dem igen.';
-
-  @override
-  String get dashWallDisplayOff => 'Väggvisning av.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'Dela anonym användningsdata för att förbättra installationen';
 

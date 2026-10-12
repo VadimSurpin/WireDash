@@ -2220,13 +2220,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dashWallDisplay => 'Настенный экран';
 
   @override
-  String get dashWallDisplayOn =>
-      'Настенный дисплей включён: экран не гаснет, а панели скрываются через 10 секунд без касаний. Коснитесь, чтобы вернуть их.';
-
-  @override
-  String get dashWallDisplayOff => 'Настенный дисплей выключен.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'Отправлять анонимные данные об использовании для улучшения настройки';
 

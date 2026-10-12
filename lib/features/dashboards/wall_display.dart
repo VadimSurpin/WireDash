@@ -160,12 +160,14 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   bool _dimmed = false;
   bool _pinned = false;
 
-  bool get _wall =>
-      widget.active && ref.read(wallDisplayProvider(widget.dashboardId));
+  /// Kiosk is app-wide: swiping to a sibling dashboard stays in it, with
+  /// the kiosk dashboard's Wall display settings governing the whole time.
+  bool get _kiosk => widget.active && ref.read(kioskProvider).on;
 
-  bool get _kiosk =>
-      widget.active &&
-      ref.read(kioskProvider).dashboardId == widget.dashboardId;
+  String get _settingsId =>
+      ref.read(kioskProvider).dashboardId ?? widget.dashboardId;
+
+  bool get _wall => widget.active && ref.read(wallDisplayProvider(_settingsId));
 
   /// Fullscreen and Dim apply to a wall display and to a kiosk alike.
   bool get _ambient => _wall || _kiosk;
@@ -193,7 +195,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
       screen.keepOn(wake).ignore();
     }
     final fullscreen =
-        _ambient && ref.read(wallFullscreenProvider(widget.dashboardId));
+        _ambient && ref.read(wallFullscreenProvider(_settingsId));
     if (fullscreen != _fullscreenOn) {
       _fullscreenOn = fullscreen;
       screen.fullscreen(fullscreen).ignore();
@@ -225,9 +227,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         }
       });
     }
-    final minutes = _ambient
-        ? ref.read(wallDimProvider(widget.dashboardId))
-        : 0;
+    final minutes = _ambient ? ref.read(wallDimProvider(_settingsId)) : 0;
     if (minutes > 0) {
       _dimTimer = Timer(Duration(minutes: minutes), () {
         if (!mounted || !_ambient) return;

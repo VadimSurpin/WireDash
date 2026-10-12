@@ -66,10 +66,11 @@ class _Sink implements AnalyticsSink {
 
 class _Wake extends ScreenWake {
   final lockCalls = <bool>[];
+  final fullscreenCalls = <bool>[];
   @override
   Future<void> keepOn(bool on) async {}
   @override
-  Future<void> fullscreen(bool on) async {}
+  Future<void> fullscreen(bool on) async => fullscreenCalls.add(on);
   @override
   Future<void> dim(bool on) async {}
   @override
@@ -253,9 +254,19 @@ void main() {
       'kiosk_connection': 'c1',
       'kiosk_dashboard': 'd1',
       'kiosk_os_pinning': true,
+      'wall_fullscreen_d1': true,
     });
     await pump(tester);
     expect(wake.lockCalls, [true]);
+    expect(wake.fullscreenCalls, [true]);
+
+    // A sibling dashboard is allowed, and stays pinned and fullscreen.
+    await tester.tap(find.text('Garden'));
+    await tester.pumpAndSettle();
+    expect(wake.lockCalls, [true], reason: 'kiosk is app-wide');
+    expect(wake.fullscreenCalls, [true]);
+    expect(find.byIcon(Icons.edit_outlined), findsNothing);
+
     await tester.longPress(find.text('My Home'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Leave'));

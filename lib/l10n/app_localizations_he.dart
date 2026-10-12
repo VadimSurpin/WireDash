@@ -2186,13 +2186,6 @@ class AppLocalizationsHe extends AppLocalizations {
   String get dashWallDisplay => 'תצוגת קיר';
 
   @override
-  String get dashWallDisplayOn =>
-      'תצוגת קיר פעילה: המסך נשאר דולק, והסרגלים נעלמים אחרי 10 שניות בלי מגע. הקשה מחזירה אותם.';
-
-  @override
-  String get dashWallDisplayOff => 'תצוגת קיר כבויה.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'שיתוף נתוני שימוש אנונימיים לשיפור ההגדרה';
 

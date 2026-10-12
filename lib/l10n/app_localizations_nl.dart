@@ -2214,13 +2214,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dashWallDisplay => 'Wandweergave';
 
   @override
-  String get dashWallDisplayOn =>
-      'Wandweergave aan: het scherm blijft aan en de balken verdwijnen na 10 seconden zonder aanraking. Tik om ze terug te halen.';
-
-  @override
-  String get dashWallDisplayOff => 'Wandweergave uit.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'Anonieme gebruiksgegevens delen om de installatie te verbeteren';
 

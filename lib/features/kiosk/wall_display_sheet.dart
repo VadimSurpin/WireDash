@@ -204,8 +204,12 @@ class WallDisplaySheet extends ConsumerWidget {
 Future<bool> leaveKiosk(BuildContext context, WidgetRef ref) async {
   final l10n = context.l10n;
   final kiosk = ref.read(kioskProvider.notifier);
+  // The store itself, not the cached flag: right after launch the flag is
+  // still being read, and this is the lock.
+  final hasPin = await ref.read(kioskPinStoreProvider).read() != null;
+  if (!context.mounted) return false;
   bool ok;
-  if (ref.read(kioskProvider).hasPin) {
+  if (hasPin) {
     ok = await askKioskPin(context, kiosk.checkPin);
   } else {
     ok =
