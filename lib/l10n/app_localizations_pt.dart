@@ -2250,7 +2250,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Dados de uso anônimos só se você permitir.';
+      'Dados de uso anônimos. Desative no botão acima.';
 
   @override
   String get dashDefaultName => 'Casa';

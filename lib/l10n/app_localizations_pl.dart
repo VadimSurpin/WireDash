@@ -2262,7 +2262,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonimowe dane o użyciu tylko za Twoją zgodą.';
+      'Anonimowe dane o użyciu. Wyłącz je przełącznikiem powyżej.';
 
   @override
   String get dashDefaultName => 'Dom';

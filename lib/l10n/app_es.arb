@@ -749,7 +749,7 @@
   "analyticsNoThanks": "No, gracias",
   "settingsAnalytics": "Compartir datos de uso anónimos",
   "settingsAnalyticsSubtitle": "Pasos de configuración y funciones usadas. Nunca tus dispositivos, topics ni tu broker.",
-  "settingsPrivacySubtitleOptIn": "Datos de uso anónimos, solo si lo aceptas.",
+  "settingsPrivacySubtitleOptIn": "Datos de uso anónimos. Desactívalos con el interruptor de arriba.",
   "dashDefaultName": "Casa",
   "dashExportSaveFile": "Guardar archivo",
   "dashExportSaved": "Copia guardada",

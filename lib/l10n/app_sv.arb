@@ -749,7 +749,7 @@
   "analyticsNoThanks": "Nej tack",
   "settingsAnalytics": "Dela anonym användningsdata",
   "settingsAnalyticsSubtitle": "Installationssteg och använda funktioner. Aldrig dina enheter, topics eller din broker.",
-  "settingsPrivacySubtitleOptIn": "Anonym användningsdata bara om du väljer det.",
+  "settingsPrivacySubtitleOptIn": "Anonym användningsdata. Stäng av med reglaget ovan.",
   "dashDefaultName": "Hem",
   "dashExportSaveFile": "Spara fil",
   "dashExportSaved": "Säkerhetskopian sparades",

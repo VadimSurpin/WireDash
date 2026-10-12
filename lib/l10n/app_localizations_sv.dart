@@ -2241,7 +2241,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonym användningsdata bara om du väljer det.';
+      'Anonym användningsdata. Stäng av med reglaget ovan.';
 
   @override
   String get dashDefaultName => 'Hem';

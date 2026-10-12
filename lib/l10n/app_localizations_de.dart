@@ -2250,7 +2250,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonyme Nutzungsdaten nur mit deiner Zustimmung.';
+      'Anonyme Nutzungsdaten. Mit dem Schalter oben abschaltbar.';
 
   @override
   String get dashDefaultName => 'Zuhause';

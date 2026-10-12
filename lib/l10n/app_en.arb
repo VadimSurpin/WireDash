@@ -762,7 +762,7 @@
   "analyticsNoThanks": "No thanks",
   "settingsAnalytics": "Share anonymous usage data",
   "settingsAnalyticsSubtitle": "Setup steps and features used. Never your devices, topics or broker.",
-  "settingsPrivacySubtitleOptIn": "Anonymous usage data only if you opt in.",
+  "settingsPrivacySubtitleOptIn": "Anonymous usage data. Turn it off with the switch above.",
   "dashDefaultName": "Home",
   "dashExportSaveFile": "Save file",
   "dashExportSaved": "Backup saved",

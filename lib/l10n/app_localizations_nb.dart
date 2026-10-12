@@ -2241,7 +2241,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonyme bruksdata bare hvis du velger det.';
+      'Anonyme bruksdata. Slå av med bryteren over.';
 
   @override
   String get dashDefaultName => 'Hjem';

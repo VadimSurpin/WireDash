@@ -148,8 +148,8 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
 };
 
 /// The first setup screen. With an analytics key in the build and no choice
-/// made yet, it carries the one consent question for new installs: an
-/// unticked box, recorded either way when the user moves on (ADR 0006).
+/// made yet, it carries the one usage-data question for new installs: a box
+/// ticked by default (ADR 0007), recorded either way when the user moves on.
 class _Welcome extends ConsumerStatefulWidget {
   const _Welcome({required this.onFind, required this.onManual});
   final VoidCallback onFind;
@@ -160,7 +160,7 @@ class _Welcome extends ConsumerStatefulWidget {
 }
 
 class _WelcomeState extends ConsumerState<_Welcome> {
-  bool _share = false;
+  bool _share = true;
 
   bool get _asking =>
       ref.watch(analyticsAvailableProvider) &&

@@ -4109,7 +4109,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPrivacySubtitleOptIn.
   ///
   /// In en, this message translates to:
-  /// **'Anonymous usage data only if you opt in.'**
+  /// **'Anonymous usage data. Turn it off with the switch above.'**
   String get settingsPrivacySubtitleOptIn;
 
   /// No description provided for @dashDefaultName.

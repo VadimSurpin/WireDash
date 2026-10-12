@@ -40,7 +40,7 @@ SOIGNÉ : TÉLÉPHONE ET TABLETTE
 • Grille de panneaux réactive, verrouillage du dashboard, sauvegarde/restauration en JSON portable, scènes.
 
 100 % PRIVÉ. SANS CLOUD.
-• Pas de pub. Pas de compte. Données d'utilisation anonymes uniquement si vous l'acceptez.
+• Pas de pub. Pas de compte. Données d'utilisation anonymes, désactivables à tout moment.
 • Vos données restent sur votre appareil et votre broker MQTT, nulle part ailleurs.
 • Open source (MIT). Le code est public et auditable.
 

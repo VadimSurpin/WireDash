@@ -2250,7 +2250,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Anonieme gebruiksgegevens alleen als je daarvoor kiest.';
+      'Anonieme gebruiksgegevens. Zet ze uit met de schakelaar hierboven.';
 
   @override
   String get dashDefaultName => 'Thuis';

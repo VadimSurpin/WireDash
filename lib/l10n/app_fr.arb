@@ -674,7 +674,7 @@
   "analyticsNoThanks": "Non merci",
   "settingsAnalytics": "Partager des données d'utilisation anonymes",
   "settingsAnalyticsSubtitle": "Étapes de configuration et fonctions utilisées. Jamais vos appareils, topics ou broker.",
-  "settingsPrivacySubtitleOptIn": "Données d'utilisation anonymes, uniquement si vous l'acceptez.",
+  "settingsPrivacySubtitleOptIn": "Données d'utilisation anonymes. Désactivez-les avec l'interrupteur ci-dessus.",
   "dashDefaultName": "Maison",
   "dashExportSaveFile": "Enregistrer le fichier",
   "dashExportSaved": "Sauvegarde enregistrée",

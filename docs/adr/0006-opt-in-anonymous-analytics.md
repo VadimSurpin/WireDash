@@ -1,5 +1,7 @@
 # Anonymous usage data, only with consent
 
+**Amended** by [ADR 0007](0007-usage-data-on-by-default.md) on 2026-10-12: from 2.5 the box on the first setup screen is ticked by default. Every other rule here stands.
+
 Until 2.0, ZigDash collected nothing ("no telemetry"). From 2.0 it can send a short list of anonymous usage events, only after the user opts in. The default is off. A build without an analytics key, such as an F-Droid build, contains no analytics at all.
 
 Play Console shows how many people install and keep ZigDash, but not where first-run setup fails or which features get used. Those are the questions that decide what to build next, and the user base is too small to answer them by asking in forums.

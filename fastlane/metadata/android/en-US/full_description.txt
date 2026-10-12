@@ -56,7 +56,7 @@ Requires a running Zigbee2MQTT and an MQTT broker on your network. No Zigbee2MQT
    ━━━━━━━━━━━━━━━━━━━━━━
 
    100% PRIVATE. NO CLOUD.
-   • No ads. No account. Anonymous usage data only if you opt in.
+   • No ads. No account. Anonymous usage data, which you can turn off any time.
    • Your data lives on your device and your MQTT broker — nowhere else.
    • Open source (MIT). The code is public and auditable.
 

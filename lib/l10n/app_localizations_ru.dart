@@ -2256,7 +2256,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsPrivacySubtitleOptIn =>
-      'Анонимные данные — только с вашего согласия.';
+      'Анонимные данные об использовании. Отключите переключателем выше.';
 
   @override
   String get dashDefaultName => 'Дом';

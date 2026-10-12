@@ -744,7 +744,7 @@
   "analyticsNoThanks": "Нет, спасибо",
   "settingsAnalytics": "Анонимные данные об использовании",
   "settingsAnalyticsSubtitle": "Шаги настройки и используемые функции. Никогда — ваши устройства, топики или брокер.",
-  "settingsPrivacySubtitleOptIn": "Анонимные данные — только с вашего согласия.",
+  "settingsPrivacySubtitleOptIn": "Анонимные данные об использовании. Отключите переключателем выше.",
   "dashDefaultName": "Дом",
   "dashExportSaveFile": "Сохранить файл",
   "dashExportSaved": "Резервная копия сохранена",

@@ -538,7 +538,7 @@ void main() {
     expect(mystery.onChanged, isNull); // disabled for screen readers
   });
 
-  group('usage data consent on the first screen (ADR 0006)', () {
+  group('usage data on the first screen (ADR 0007)', () {
     Future<(SharedPreferences, _SinkSpy)> analyticsOverrides(
       List<Override> out, {
       bool available = true,
@@ -554,7 +554,8 @@ void main() {
       return (prefs, sink);
     }
 
-    testWidgets('an unticked box is a no, and nothing is sent', (tester) async {
+    testWidgets('the box is ticked by default and moving on shares the '
+        'setup steps from the first one', (tester) async {
       final extra = <Override>[];
       final (prefs, sink) = await analyticsOverrides(extra);
       await _pump(tester, extra: extra);
@@ -564,24 +565,10 @@ void main() {
       );
       expect(
         tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
-        isFalse,
+        isTrue,
       );
+      expect(sink.sent, isEmpty, reason: 'nothing before the user moves on');
 
-      await tester.tap(find.text('Find my setup'));
-      await tester.pump();
-      await tester.pump();
-      expect(prefs.getBool('analytics_consent'), isFalse);
-      expect(sink.sent, isEmpty);
-    });
-
-    testWidgets('ticking it shares the setup steps from the first one', (
-      tester,
-    ) async {
-      final extra = <Override>[];
-      final (prefs, sink) = await analyticsOverrides(extra);
-      await _pump(tester, extra: extra);
-      await tester.tap(find.byType(CheckboxListTile));
-      await tester.pump();
       await tester.tap(find.text('Find my setup'));
       await tester.pump();
       await tester.pump();
@@ -592,6 +579,23 @@ void main() {
         sink.sent.map((e) => e['step']),
         containsAllInOrder(['started', 'scan_found', 'review']),
       );
+    });
+
+    testWidgets('unticking it is a no, and nothing is sent', (tester) async {
+      final extra = <Override>[];
+      final (prefs, sink) = await analyticsOverrides(extra);
+      await _pump(tester, extra: extra);
+      await tester.tap(find.byType(CheckboxListTile));
+      await tester.pump();
+      expect(
+        tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
+        isFalse,
+      );
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      await tester.pump();
+      expect(prefs.getBool('analytics_consent'), isFalse);
+      expect(sink.sent, isEmpty);
     });
 
     testWidgets('a build without a key asks nothing', (tester) async {
