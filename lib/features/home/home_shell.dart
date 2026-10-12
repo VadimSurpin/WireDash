@@ -13,6 +13,7 @@ import '../../data/repositories/section_repo.dart';
 import '../dashboards/edit_mode.dart';
 import '../devices/device_registry.dart';
 import '../dashboards/wall_display.dart';
+import '../kiosk/kiosk.dart';
 import '../devices/devices_providers.dart';
 import '../panels/widgets/edit_grid.dart' show askSectionName;
 
@@ -57,7 +58,8 @@ class HomeShell extends ConsumerWidget {
     ].join(', ');
     // Edit mode belongs to a dashboard of this home that still exists.
     final editingId = ref.watch(editModeProvider);
-    final editing = editingId != null &&
+    final editing =
+        editingId != null &&
             ref
                     .watch(dashboardsForConnectionProvider(connectionId))
                     .valueOrNull
@@ -66,17 +68,20 @@ class HomeShell extends ConsumerWidget {
         ? editingId
         : null;
     final selected = indexOf(location);
-    // A wall display hides the navigation until the screen is touched.
-    final chromeHidden = ref.watch(wallChromeHiddenProvider) && selected == 0;
+    // A wall display hides the navigation until the screen is touched; a
+    // kiosk has none at all (the router keeps it on the dashboards).
+    final chromeHidden =
+        (ref.watch(wallChromeHiddenProvider) && selected == 0) ||
+        ref.watch(kioskProvider).on;
     void go(int i) => context.go(switch (i) {
-          1 => Routes.homeDevices(connectionId),
-          2 => Routes.homeScenes(connectionId),
-          _ => Routes.homeDashboards(connectionId),
-        });
+      1 => Routes.homeDevices(connectionId),
+      2 => Routes.homeScenes(connectionId),
+      _ => Routes.homeDashboards(connectionId),
+    });
     Widget devicesIcon(IconData icon, {bool active = false}) => Badge(
-          isLabelVisible: dot,
-          child: SignalIcon(icon, active: active),
-        );
+      isLabelVisible: dot,
+      child: SignalIcon(icon, active: active),
+    );
 
     // Medium and expanded windows: a navigation rail, which stays in Edit
     // mode (Add tile and Add section move into the Edit header).
@@ -94,7 +99,10 @@ class HomeShell extends ConsumerWidget {
               destinations: [
                 NavigationRailDestination(
                   icon: const SignalIcon(Symbols.dashboard),
-                  selectedIcon: const SignalIcon(Symbols.dashboard, active: true),
+                  selectedIcon: const SignalIcon(
+                    Symbols.dashboard,
+                    active: true,
+                  ),
                   label: Text(l10n.navDashboards),
                 ),
                 NavigationRailDestination(
@@ -109,7 +117,10 @@ class HomeShell extends ConsumerWidget {
                 ),
                 NavigationRailDestination(
                   icon: const SignalIcon(Symbols.autoAwesome),
-                  selectedIcon: const SignalIcon(Symbols.autoAwesome, active: true),
+                  selectedIcon: const SignalIcon(
+                    Symbols.autoAwesome,
+                    active: true,
+                  ),
                   label: Text(l10n.navScenes),
                 ),
               ],
@@ -130,28 +141,34 @@ class HomeShell extends ConsumerWidget {
       bottomNavigationBar: editing != null && selected == 0
           ? _EditBar(connectionId: connectionId, dashboardId: editing)
           : NavigationBar(
-        selectedIndex: selected,
-        onDestinationSelected: go,
-        destinations: [
-          NavigationDestination(
-            icon: const SignalIcon(Symbols.dashboard),
-            selectedIcon: const SignalIcon(Symbols.dashboard, active: true),
-            label: l10n.navDashboards,
-          ),
-          NavigationDestination(
-            icon: devicesIcon(Symbols.devicesOther),
-            selectedIcon: devicesIcon(Symbols.devicesOther, active: true),
-            label: l10n.navDevices,
-            tooltip: dot ? '${l10n.navDevices}, $dotReason' : null,
-          ),
-          NavigationDestination(
-            icon: const SignalIcon(Symbols.autoAwesome),
-            selectedIcon: const SignalIcon(Symbols.autoAwesome, active: true),
-            label: l10n.navScenes,
-          ),
-        ],
+              selectedIndex: selected,
+              onDestinationSelected: go,
+              destinations: [
+                NavigationDestination(
+                  icon: const SignalIcon(Symbols.dashboard),
+                  selectedIcon: const SignalIcon(
+                    Symbols.dashboard,
+                    active: true,
+                  ),
+                  label: l10n.navDashboards,
+                ),
+                NavigationDestination(
+                  icon: devicesIcon(Symbols.devicesOther),
+                  selectedIcon: devicesIcon(Symbols.devicesOther, active: true),
+                  label: l10n.navDevices,
+                  tooltip: dot ? '${l10n.navDevices}, $dotReason' : null,
+                ),
+                NavigationDestination(
+                  icon: const SignalIcon(Symbols.autoAwesome),
+                  selectedIcon: const SignalIcon(
+                    Symbols.autoAwesome,
+                    active: true,
+                  ),
+                  label: l10n.navScenes,
+                ),
+              ],
             ),
-          );
+    );
   }
 }
 
@@ -172,7 +189,8 @@ class _EditBar extends ConsumerWidget {
               icon: const Icon(Icons.add),
               label: Text(l10n.dashAddTile),
               onPressed: () => context.push(
-                  '/connections/$connectionId/dashboards/$dashboardId/add'),
+                '/connections/$connectionId/dashboards/$dashboardId/add',
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -191,7 +209,10 @@ class _EditBar extends ConsumerWidget {
 
 /// Asks for a name and appends a section to [dashboardId].
 Future<void> addSection(
-    BuildContext context, WidgetRef ref, String dashboardId) async {
+  BuildContext context,
+  WidgetRef ref,
+  String dashboardId,
+) async {
   final name = await askSectionName(context);
   if (name == null) return;
   final repo = ref.read(sectionRepoProvider);
@@ -209,12 +230,10 @@ class HomeTitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homes =
-        ref.watch(connectionsStreamProvider).valueOrNull ?? const <Connection>[];
+        ref.watch(connectionsStreamProvider).valueOrNull ??
+        const <Connection>[];
     final current = homes.where((c) => c.id == connectionId).firstOrNull;
-    final name = Text(
-      current?.name ?? '',
-      overflow: TextOverflow.ellipsis,
-    );
+    final name = Text(current?.name ?? '', overflow: TextOverflow.ellipsis);
     if (homes.length < 2) return name;
     return PopupMenuButton<String>(
       tooltip: context.l10n.homeSwitch,
@@ -237,7 +256,8 @@ class HomeTitle extends ConsumerWidget {
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Icon(
-                  h.id == connectionId ? Icons.home : Icons.home_outlined),
+                h.id == connectionId ? Icons.home : Icons.home_outlined,
+              ),
               title: Text(h.name),
               trailing: h.id == connectionId ? const Icon(Icons.check) : null,
             ),
@@ -277,10 +297,10 @@ class SettingsAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IconButton(
-        tooltip: context.l10n.navSettings,
-        icon: const Icon(Icons.settings_outlined),
-        onPressed: () => context.push(Routes.settings),
-      );
+    tooltip: context.l10n.navSettings,
+    icon: const Icon(Icons.settings_outlined),
+    onPressed: () => context.push(Routes.settings),
+  );
 }
 
 /// Opens the first home when none is remembered, or setup when there are
@@ -294,9 +314,9 @@ class HomeStartScreen extends ConsumerWidget {
     if (homes != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
-        context.go(homes.isEmpty
-            ? Routes.setup
-            : Routes.homeDashboards(homes.first.id));
+        context.go(
+          homes.isEmpty ? Routes.setup : Routes.homeDashboards(homes.first.id),
+        );
       });
     }
     return const Scaffold(body: Center(child: CircularProgressIndicator()));

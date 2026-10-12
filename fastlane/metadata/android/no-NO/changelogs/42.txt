@@ -1,0 +1,1 @@
+ZigDash 2.6: kioskmodus. Åpne ⋮ › Veggvisning på et dashbord: skjermen på og linjene skjult, fullskjerm, demping etter noen minutter, og kiosklåsen slik at bare dette hjemmets dashbord og kontrollene deres er tilgjengelige. Angi en 4-sifret PIN for å avslutte, og fest eventuelt ZigDash med Androids skjermfesting. En kiosk kommer tilbake etter omstart.

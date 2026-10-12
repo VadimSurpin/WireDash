@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/theme/dashboard_accent.dart';import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/dashboard_accent.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../data/database/database.dart';
@@ -9,6 +10,7 @@ import '../../../data/repositories/panel_repo.dart';
 import '../../../data/repositories/section_repo.dart';
 import '../../dashboards/edit_mode.dart';
 import '../models/grid_layout.dart';
+import '../../kiosk/kiosk.dart';
 import 'edit_grid.dart';
 import 'panel_tile.dart';
 
@@ -30,6 +32,8 @@ class PanelGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final panelsAsync = ref.watch(panelsForDashboardProvider(dashboard.id));
     final editing = ref.watch(editModeProvider) == dashboard.id;
+    // In kiosk a tile's long-press does nothing, as under the Edit lock.
+    final kiosk = ref.watch(kioskProvider).on;
 
     return panelsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -62,8 +66,8 @@ class PanelGrid extends ConsumerWidget {
             ),
           );
         }
-        final sections = ref.watch(sectionsForDashboardProvider(dashboard.id))
-                .value ??
+        final sections =
+            ref.watch(sectionsForDashboardProvider(dashboard.id)).value ??
             const <Section>[];
         final grid = LayoutBuilder(
           builder: (ctx, constraints) {
@@ -84,7 +88,7 @@ class PanelGrid extends ConsumerWidget {
                 dashboardId: dashboard.id,
                 topicPrefix: dashboard.topicPrefix,
                 panel: p,
-                locked: dashboard.locked,
+                locked: dashboard.locked || kiosk,
               );
               return editing
                   ? EditableTile(
@@ -105,11 +109,15 @@ class PanelGrid extends ConsumerWidget {
             ];
             void addTiles(List<Panel> tiles) {
               for (final row in packRows(tiles, (p) => p.width, columns)) {
-                children.add(_GridRow(
-                  columnWidth: columnWidth,
-                  minHeight: minHeight,
-                  cells: [for (final c in row) (child: tile(c.tile), span: c.span)],
-                ));
+                children.add(
+                  _GridRow(
+                    columnWidth: columnWidth,
+                    minHeight: minHeight,
+                    cells: [
+                      for (final c in row) (child: tile(c.tile), span: c.span),
+                    ],
+                  ),
+                );
               }
             }
 
@@ -123,14 +131,16 @@ class PanelGrid extends ConsumerWidget {
                 for (final p in rows)
                   if (p.sectionId == section.id) p,
               ];
-              children.add(editing
-                  ? EditableSectionHeader(
-                      key: ValueKey(section.id),
-                      connectionId: connectionId,
-                      section: section,
-                      sections: sections,
-                    )
-                  : _SectionHeader(name: section.name));
+              children.add(
+                editing
+                    ? EditableSectionHeader(
+                        key: ValueKey(section.id),
+                        connectionId: connectionId,
+                        section: section,
+                        sections: sections,
+                      )
+                    : _SectionHeader(name: section.name),
+              );
               addTiles(tiles);
             }
             return SingleChildScrollView(
@@ -199,9 +209,12 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 16, 8, 4),
       child: Semantics(
         header: true,
-        child: Text(sectionLabelText(context, name),
-            style: sectionLabelStyle(context)
-                .copyWith(color: DashboardAccent.of(context))),
+        child: Text(
+          sectionLabelText(context, name),
+          style: sectionLabelStyle(
+            context,
+          ).copyWith(color: DashboardAccent.of(context)),
+        ),
       ),
     );
   }

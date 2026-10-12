@@ -156,6 +156,34 @@ class FeatureUsed extends AnalyticsEvent {
   };
 }
 
+/// Kiosk lock turned on (kiosk-2.6.md), with which options were chosen:
+/// a PIN, Android screen pinning, and the dim delay as one of its fixed
+/// choices. Sent as `feature_used` with feature `kiosk`.
+class KioskStarted extends AnalyticsEvent {
+  const KioskStarted({
+    required this.pin,
+    required this.osPinning,
+    required this.dimMinutes,
+  });
+
+  final bool pin;
+  final bool osPinning;
+
+  /// 0 for off, else one of the fixed choices (1, 5, 15).
+  final int dimMinutes;
+
+  @override
+  String get name => 'feature_used';
+
+  @override
+  Map<String, String> get props => {
+    'feature': 'kiosk',
+    'lock': pin ? 'pin' : 'none',
+    'os_pin': osPinning ? 'yes' : 'no',
+    'dim': dimMinutes == 0 ? 'off' : '${dimMinutes}m',
+  };
+}
+
 /// Where Get help was opened from (docs/design/support.md §2).
 enum HelpFrom {
   noConnection,

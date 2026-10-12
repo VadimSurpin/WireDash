@@ -439,11 +439,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashFormIcon => 'Ícone';
 
   @override
-  String get dashFormLock => 'Bloquear';
+  String get dashFormLock => 'Bloqueio de edição';
 
   @override
-  String get dashFormLockSubtitle =>
-      'Oculta as opções de edição enquanto bloqueado';
+  String get dashFormLockSubtitle => 'Oculta Editar neste painel';
 
   @override
   String get dashFormDelete => 'Excluir painel';
@@ -2215,13 +2214,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashWallDisplay => 'Tela de parede';
 
   @override
-  String get dashWallDisplayOn =>
-      'Tela de parede ativada: a tela fica ligada e as barras somem após 10 segundos sem toque. Toque para trazê-las de volta.';
-
-  @override
-  String get dashWallDisplayOff => 'Tela de parede desativada.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'Compartilhar dados de uso anônimos para melhorar a configuração';
 
@@ -2973,4 +2965,107 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'Servidor ntfy';
+
+  @override
+  String get wallSheetTitle => 'Tela de parede';
+
+  @override
+  String get wallSheetSubtitle => 'Para um tablet na parede.';
+
+  @override
+  String get wallKeepOn => 'Manter a tela ligada e ocultar as barras';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'Elas voltam ao tocar e somem de novo após 10 segundos.';
+
+  @override
+  String get wallFullscreen => 'Tela cheia';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Oculta também as barras de status e de navegação do Android.';
+
+  @override
+  String get wallDimAfter => 'Escurecer após';
+
+  @override
+  String get wallDimOff => 'Desligado';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get kioskLock => 'Bloqueio de quiosque';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Só os painéis desta casa e seus controles continuam acessíveis. Segure o título para sair.';
+
+  @override
+  String get kioskPin => 'PIN';
+
+  @override
+  String get kioskPinSet => 'Definir';
+
+  @override
+  String get kioskPinNotSet => 'Não definido';
+
+  @override
+  String get kioskPinChange => 'Alterar';
+
+  @override
+  String get kioskPinRemove => 'Remover';
+
+  @override
+  String get kioskPinSetTitle => 'Definir um PIN';
+
+  @override
+  String get kioskPinEnterTitle => 'Digite o PIN';
+
+  @override
+  String get kioskPinHint => '4 dígitos';
+
+  @override
+  String get kioskPinConfirmHint => 'De novo';
+
+  @override
+  String get kioskPinMismatch => 'Os dois PINs são diferentes.';
+
+  @override
+  String get kioskPinWrong => 'PIN incorreto.';
+
+  @override
+  String get kioskPinForgot => 'Esqueceu o PIN?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'Um PIN esquecido só pode ser redefinido apagando os dados do ZigDash nas configurações do Android, o que remove esta casa a menos que você tenha um backup. Exporte um antes de definir o PIN.';
+
+  @override
+  String get kioskExportBackup => 'Exportar backup';
+
+  @override
+  String get kioskOsPin => 'Fixar o ZigDash também no Android';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'O Android bloqueia o botão Início e os apps recentes até o ZigDash ser desafixado. Um tablet sem tela de bloqueio desafixa com um gesto, então isto não é o bloqueio.';
+
+  @override
+  String get kioskOn => 'Quiosque ligado. Segure o título para sair.';
+
+  @override
+  String get kioskLeaveTitle => 'Sair do quiosque?';
+
+  @override
+  String get kioskLeave => 'Sair';
+
+  @override
+  String get kioskStay => 'Ficar';
+
+  @override
+  String get a11yKioskLeave => 'Segure para sair do quiosque';
 }

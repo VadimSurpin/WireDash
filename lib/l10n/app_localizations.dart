@@ -893,13 +893,13 @@ abstract class AppLocalizations {
   /// No description provided for @dashFormLock.
   ///
   /// In en, this message translates to:
-  /// **'Lock'**
+  /// **'Edit lock'**
   String get dashFormLock;
 
   /// No description provided for @dashFormLockSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Hide edit affordances while locked'**
+  /// **'Hides Edit for this dashboard'**
   String get dashFormLockSubtitle;
 
   /// No description provided for @dashFormDelete.
@@ -4046,18 +4046,6 @@ abstract class AppLocalizations {
   /// **'Wall display'**
   String get dashWallDisplay;
 
-  /// No description provided for @dashWallDisplayOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Wall display on: the screen stays on, and the bars hide after 10 seconds without a touch. Tap to bring them back.'**
-  String get dashWallDisplayOn;
-
-  /// No description provided for @dashWallDisplayOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Wall display off.'**
-  String get dashWallDisplayOff;
-
   /// No description provided for @analyticsSetupCheckbox.
   ///
   /// In en, this message translates to:
@@ -5359,6 +5347,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ntfy server'**
   String get alertsNtfyServer;
+
+  /// No description provided for @wallSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wall display'**
+  String get wallSheetTitle;
+
+  /// No description provided for @wallSheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For a tablet on the wall.'**
+  String get wallSheetSubtitle;
+
+  /// No description provided for @wallKeepOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the screen on and hide the bars'**
+  String get wallKeepOn;
+
+  /// No description provided for @wallKeepOnSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'They come back with a touch and hide again after 10 seconds.'**
+  String get wallKeepOnSubtitle;
+
+  /// No description provided for @wallFullscreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Fullscreen'**
+  String get wallFullscreen;
+
+  /// No description provided for @wallFullscreenSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hides Android\'s status and navigation bars too.'**
+  String get wallFullscreenSubtitle;
+
+  /// No description provided for @wallDimAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Dim after'**
+  String get wallDimAfter;
+
+  /// No description provided for @wallDimOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get wallDimOff;
+
+  /// No description provided for @wallDimMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String wallDimMinutes(Object minutes);
+
+  /// No description provided for @kioskLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk lock'**
+  String get kioskLock;
+
+  /// No description provided for @kioskLockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this Home\'s dashboards and their controls stay reachable. Long-press the title to leave.'**
+  String get kioskLockSubtitle;
+
+  /// No description provided for @kioskPin.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN'**
+  String get kioskPin;
+
+  /// No description provided for @kioskPinSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get kioskPinSet;
+
+  /// No description provided for @kioskPinNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get kioskPinNotSet;
+
+  /// No description provided for @kioskPinChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get kioskPinChange;
+
+  /// No description provided for @kioskPinRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get kioskPinRemove;
+
+  /// No description provided for @kioskPinSetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a PIN'**
+  String get kioskPinSetTitle;
+
+  /// No description provided for @kioskPinEnterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the PIN'**
+  String get kioskPinEnterTitle;
+
+  /// No description provided for @kioskPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'4 digits'**
+  String get kioskPinHint;
+
+  /// No description provided for @kioskPinConfirmHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Again'**
+  String get kioskPinConfirmHint;
+
+  /// No description provided for @kioskPinMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The two PINs differ.'**
+  String get kioskPinMismatch;
+
+  /// No description provided for @kioskPinWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong PIN.'**
+  String get kioskPinWrong;
+
+  /// No description provided for @kioskPinForgot.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot the PIN?'**
+  String get kioskPinForgot;
+
+  /// No description provided for @kioskPinForgotBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A forgotten PIN can only be reset by clearing ZigDash\'s data in Android\'s settings, which removes this Home unless you have a backup. Export one before setting a PIN.'**
+  String get kioskPinForgotBody;
+
+  /// No description provided for @kioskExportBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get kioskExportBackup;
+
+  /// No description provided for @kioskOsPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Also pin ZigDash on Android'**
+  String get kioskOsPin;
+
+  /// No description provided for @kioskOsPinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Android blocks Home and recent apps until ZigDash is unpinned. A tablet without a lock screen unpins with a gesture, so this is not the lock.'**
+  String get kioskOsPinSubtitle;
+
+  /// No description provided for @kioskOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Kiosk on. Long-press the title to leave.'**
+  String get kioskOn;
+
+  /// No description provided for @kioskLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave kiosk?'**
+  String get kioskLeaveTitle;
+
+  /// No description provided for @kioskLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get kioskLeave;
+
+  /// No description provided for @kioskStay.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get kioskStay;
+
+  /// No description provided for @a11yKioskLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press to leave kiosk'**
+  String get a11yKioskLeave;
 }
 
 class _AppLocalizationsDelegate

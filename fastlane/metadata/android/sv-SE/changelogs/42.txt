@@ -1,0 +1,1 @@
+ZigDash 2.6: kioskläge. Öppna ⋮ › Väggvisning på en panel: skärmen tänd och fälten dolda, helskärm, dämpning efter några minuter och kiosklåset så att bara det här hemmets paneler och deras reglage går att nå. Ange en 4-siffrig PIN för att avsluta och fäst ZigDash med Androids skärmfästning om du vill. En kiosk kommer tillbaka efter omstart.

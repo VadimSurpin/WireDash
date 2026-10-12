@@ -7,8 +7,20 @@ import 'package:zigdash/features/settings/providers/settings_controller.dart';
 
 class _Wake extends ScreenWake {
   final calls = <bool>[];
+  final fullscreenCalls = <bool>[];
+  final dimCalls = <bool>[];
+  final lockCalls = <bool>[];
   @override
   Future<void> keepOn(bool on) async => calls.add(on);
+  @override
+  Future<void> fullscreen(bool on) async => fullscreenCalls.add(on);
+  @override
+  Future<void> dim(bool on) async => dimCalls.add(on);
+  @override
+  Future<bool> lockTask(bool on) async {
+    lockCalls.add(on);
+    return true;
+  }
 }
 
 void main() {
@@ -22,29 +34,30 @@ void main() {
   });
 
   Widget app({bool active = true, String id = 'd1'}) => ProviderScope(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          screenWakeProvider.overrideWithValue(wake),
-        ],
-        child: MaterialApp(
-          home: Consumer(
-            builder: (context, ref, _) => WallDisplayScope(
-              dashboardId: id,
-              active: active,
-              child: Scaffold(
-                body: Center(
-                  child: Text(ref.watch(wallChromeHiddenProvider)
-                      ? 'hidden'
-                      : 'shown'),
-                ),
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      screenWakeProvider.overrideWithValue(wake),
+    ],
+    child: MaterialApp(
+      home: Consumer(
+        builder: (context, ref, _) => WallDisplayScope(
+          dashboardId: id,
+          active: active,
+          child: Scaffold(
+            body: Center(
+              child: Text(
+                ref.watch(wallChromeHiddenProvider) ? 'hidden' : 'shown',
               ),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 
-  testWidgets('keeps the screen on and hides the chrome after 10 s',
-      (tester) async {
+  testWidgets('keeps the screen on and hides the chrome after 10 s', (
+    tester,
+  ) async {
     await tester.pumpWidget(app());
     await tester.pump();
     expect(wake.calls, [true]);
@@ -55,11 +68,71 @@ void main() {
 
     await tester.tap(find.text('hidden'));
     await tester.pump();
-    expect(find.text('shown'), findsOneWidget, reason: 'a touch brings it back');
+    expect(
+      find.text('shown'),
+      findsOneWidget,
+      reason: 'a touch brings it back',
+    );
 
     await tester.pumpWidget(const SizedBox());
     await tester.pump();
     expect(wake.calls.last, isFalse, reason: 'leaving lets the screen sleep');
+  });
+
+  group('fullscreen, dim and OS pinning (kiosk-2.6.md)', () {
+    testWidgets('fullscreen and dim follow a wall display', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'wall_display_d1': true,
+        'wall_fullscreen_d1': true,
+        'wall_dim_d1': 5,
+      });
+      prefs = await SharedPreferences.getInstance();
+      await tester.pumpWidget(app());
+      await tester.pump();
+      expect(wake.fullscreenCalls, [true]);
+      expect(wake.dimCalls, isEmpty);
+
+      await tester.pump(const Duration(minutes: 5, seconds: 1));
+      expect(wake.dimCalls, [true], reason: 'dims after 5 min untouched');
+
+      await tester.tap(find.byType(Text));
+      await tester.pump();
+      expect(wake.dimCalls, [true, false], reason: 'a touch undims');
+
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+      expect(wake.fullscreenCalls.last, isFalse, reason: 'leaving restores');
+      expect(wake.lockCalls, isEmpty, reason: 'no kiosk: no OS pinning');
+    });
+
+    testWidgets('a kiosk without wall display still gets fullscreen and dim, '
+        'and OS pinning when chosen', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'kiosk_connection': 'c1',
+        'kiosk_dashboard': 'd1',
+        'kiosk_os_pinning': true,
+        'wall_fullscreen_d1': true,
+        'wall_dim_d1': 1,
+      });
+      prefs = await SharedPreferences.getInstance();
+      await tester.pumpWidget(app());
+      await tester.pump();
+      expect(wake.calls, isEmpty, reason: 'keep-on is its own switch');
+      expect(wake.fullscreenCalls, [true]);
+      expect(wake.lockCalls, [true]);
+      await tester.pump(const Duration(minutes: 1, seconds: 1));
+      expect(wake.dimCalls, [true]);
+      expect(
+        find.text('shown'),
+        findsOneWidget,
+        reason: 'the chrome timer belongs to wall display, not kiosk',
+      );
+
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+      expect(wake.lockCalls, [true, false], reason: 'leaving unpins');
+      expect(wake.dimCalls, [true, false]);
+    });
   });
 
   testWidgets('off by default, and never in Edit mode', (tester) async {

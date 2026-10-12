@@ -439,11 +439,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get dashFormIcon => 'Ikon';
 
   @override
-  String get dashFormLock => 'Lås';
+  String get dashFormLock => 'Redigeringslås';
 
   @override
-  String get dashFormLockSubtitle =>
-      'Skjul redigeringsfunksjoner mens den er låst';
+  String get dashFormLockSubtitle => 'Skjuler Rediger for dette dashbordet';
 
   @override
   String get dashFormDelete => 'Slett dashbord';
@@ -2206,13 +2205,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get dashWallDisplay => 'Veggskjerm';
 
   @override
-  String get dashWallDisplayOn =>
-      'Veggvisning på: skjermen holdes på, og feltene skjules etter 10 sekunder uten berøring. Trykk for å hente dem tilbake.';
-
-  @override
-  String get dashWallDisplayOff => 'Veggvisning av.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'Del anonyme bruksdata for å forbedre oppsettet';
 
@@ -2960,4 +2952,107 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'ntfy-server';
+
+  @override
+  String get wallSheetTitle => 'Veggvisning';
+
+  @override
+  String get wallSheetSubtitle => 'For et nettbrett på veggen.';
+
+  @override
+  String get wallKeepOn => 'Hold skjermen på og skjul linjene';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'De kommer tilbake ved berøring og skjules igjen etter 10 sekunder.';
+
+  @override
+  String get wallFullscreen => 'Fullskjerm';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Skjuler også Androids status- og navigasjonslinje.';
+
+  @override
+  String get wallDimAfter => 'Demp etter';
+
+  @override
+  String get wallDimOff => 'Av';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get kioskLock => 'Kiosklås';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Bare dette hjemmets dashbord og kontrollene deres er tilgjengelige. Hold inne tittelen for å avslutte.';
+
+  @override
+  String get kioskPin => 'PIN';
+
+  @override
+  String get kioskPinSet => 'Angi';
+
+  @override
+  String get kioskPinNotSet => 'Ikke angitt';
+
+  @override
+  String get kioskPinChange => 'Endre';
+
+  @override
+  String get kioskPinRemove => 'Fjern';
+
+  @override
+  String get kioskPinSetTitle => 'Angi en PIN';
+
+  @override
+  String get kioskPinEnterTitle => 'Skriv inn PIN';
+
+  @override
+  String get kioskPinHint => '4 sifre';
+
+  @override
+  String get kioskPinConfirmHint => 'En gang til';
+
+  @override
+  String get kioskPinMismatch => 'De to PIN-kodene er ulike.';
+
+  @override
+  String get kioskPinWrong => 'Feil PIN.';
+
+  @override
+  String get kioskPinForgot => 'Glemt PIN?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'En glemt PIN kan bare nullstilles ved å slette ZigDash-dataene i Android-innstillingene, noe som fjerner dette hjemmet med mindre du har en sikkerhetskopi. Eksporter én før du angir en PIN.';
+
+  @override
+  String get kioskExportBackup => 'Eksporter sikkerhetskopi';
+
+  @override
+  String get kioskOsPin => 'Fest også ZigDash i Android';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android blokkerer Hjem og nylige apper til ZigDash løsnes. Et nettbrett uten låseskjerm løsner med en bevegelse, så dette er ikke låsen.';
+
+  @override
+  String get kioskOn => 'Kiosk på. Hold inne tittelen for å avslutte.';
+
+  @override
+  String get kioskLeaveTitle => 'Avslutte kiosk?';
+
+  @override
+  String get kioskLeave => 'Avslutt';
+
+  @override
+  String get kioskStay => 'Bli';
+
+  @override
+  String get a11yKioskLeave => 'Hold inne for å avslutte kiosk';
 }

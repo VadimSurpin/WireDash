@@ -438,10 +438,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashFormIcon => 'Icon';
 
   @override
-  String get dashFormLock => 'Lock';
+  String get dashFormLock => 'Edit lock';
 
   @override
-  String get dashFormLockSubtitle => 'Hide edit affordances while locked';
+  String get dashFormLockSubtitle => 'Hides Edit for this dashboard';
 
   @override
   String get dashFormDelete => 'Delete dashboard';
@@ -2203,13 +2203,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashWallDisplay => 'Wall display';
 
   @override
-  String get dashWallDisplayOn =>
-      'Wall display on: the screen stays on, and the bars hide after 10 seconds without a touch. Tap to bring them back.';
-
-  @override
-  String get dashWallDisplayOff => 'Wall display off.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'Share anonymous usage data to help improve setup';
 
@@ -2957,4 +2950,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'ntfy server';
+
+  @override
+  String get wallSheetTitle => 'Wall display';
+
+  @override
+  String get wallSheetSubtitle => 'For a tablet on the wall.';
+
+  @override
+  String get wallKeepOn => 'Keep the screen on and hide the bars';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'They come back with a touch and hide again after 10 seconds.';
+
+  @override
+  String get wallFullscreen => 'Fullscreen';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Hides Android\'s status and navigation bars too.';
+
+  @override
+  String get wallDimAfter => 'Dim after';
+
+  @override
+  String get wallDimOff => 'Off';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get kioskLock => 'Kiosk lock';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Only this Home\'s dashboards and their controls stay reachable. Long-press the title to leave.';
+
+  @override
+  String get kioskPin => 'PIN';
+
+  @override
+  String get kioskPinSet => 'Set';
+
+  @override
+  String get kioskPinNotSet => 'Not set';
+
+  @override
+  String get kioskPinChange => 'Change';
+
+  @override
+  String get kioskPinRemove => 'Remove';
+
+  @override
+  String get kioskPinSetTitle => 'Set a PIN';
+
+  @override
+  String get kioskPinEnterTitle => 'Enter the PIN';
+
+  @override
+  String get kioskPinHint => '4 digits';
+
+  @override
+  String get kioskPinConfirmHint => 'Again';
+
+  @override
+  String get kioskPinMismatch => 'The two PINs differ.';
+
+  @override
+  String get kioskPinWrong => 'Wrong PIN.';
+
+  @override
+  String get kioskPinForgot => 'Forgot the PIN?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'A forgotten PIN can only be reset by clearing ZigDash\'s data in Android\'s settings, which removes this Home unless you have a backup. Export one before setting a PIN.';
+
+  @override
+  String get kioskExportBackup => 'Export backup';
+
+  @override
+  String get kioskOsPin => 'Also pin ZigDash on Android';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android blocks Home and recent apps until ZigDash is unpinned. A tablet without a lock screen unpins with a gesture, so this is not the lock.';
+
+  @override
+  String get kioskOn => 'Kiosk on. Long-press the title to leave.';
+
+  @override
+  String get kioskLeaveTitle => 'Leave kiosk?';
+
+  @override
+  String get kioskLeave => 'Leave';
+
+  @override
+  String get kioskStay => 'Stay';
+
+  @override
+  String get a11yKioskLeave => 'Long-press to leave kiosk';
 }

@@ -40,6 +40,12 @@
 
 **Edit mode** — the one mode in which a dashboard is rearranged: tiles show a grip and an edit badge, controls are inert, and changes save as they happen.
 
+**Edit lock** — a dashboard's own switch (in its form) that hides Edit for it: no edit button, no long-press on tiles. Protects a finished dashboard from stray edits; not a guest lock. Code: `dashboards.locked`.
+
+**Wall display** — a dashboard's settings for a tablet on the wall, in its ⋮ menu: keep the screen on and hide the bars (they return with a touch and hide again after 10 seconds), **Fullscreen** (Android's bars hide too), **Dim after** a chosen number of minutes without a touch, and the Kiosk lock. Stored on this device per dashboard. From 2.0; the lock, Fullscreen and Dim from 2.6.
+
+**Kiosk lock** — the Wall display option that pins one dashboard's Home on screen for guests: only that Home's dashboards and their tiles and device sheets stay reachable, every other address goes back, and the system back does nothing. Left by a long-press on the title, which asks for the **kiosk PIN** when one is set (four digits, one per device, no bypass: a forgotten PIN means clearing the app's data). **Android screen pinning** is an optional extra that also blocks Home and recent apps; it is not the lock, because a tablet without a lock screen unpins with a gesture. Code: `KioskState`, `kioskRedirect`.
+
 **Generated dashboard** — a dashboard created from discovered devices during setup, then editable like any other.
 
 **First run** — from install until the user has a home or has chosen the demo. During first run the app shows only setup (and its manual entry and help). It ends when setup, manual entry or the connection form saves a real home, or when the user tries the demo. Code: `needsOnboarding` / `FirstRun`.

@@ -32,6 +32,22 @@ class MainActivity : FlutterActivity() {
                     call.argument<String>("name") ?: ""))
                 "generateVapidKeys" -> result.success(generateVapidKeys())
                 "timeZoneId" -> result.success(java.util.TimeZone.getDefault().id)
+                // Wall display / kiosk (kiosk-2.6.md): dim this window, and
+                // Android screen pinning. Brightness -1 = the system's.
+                "setBrightness" -> {
+                    val value = (call.argument<Double>("value") ?: -1.0).toFloat()
+                    window.attributes = window.attributes.apply { screenBrightness = value }
+                    result.success(null)
+                }
+                "lockTask" -> {
+                    try {
+                        if (call.argument<Boolean>("on") == true) startLockTask() else stopLockTask()
+                        result.success(true)
+                    } catch (_: Exception) {
+                        // Not allowed here (e.g. a managed device): nothing to pin.
+                        result.success(false)
+                    }
+                }
                 // Alerts: a background-restricted app gets no pushes (alerts-2.3.md).
                 "isBackgroundRestricted" -> result.success(
                     Build.VERSION.SDK_INT >= 28 &&

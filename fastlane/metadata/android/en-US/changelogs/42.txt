@@ -1,0 +1,1 @@
+ZigDash 2.6: kiosk mode. Open ⋮ › Wall display on a dashboard: keep the screen on and hide the bars, go fullscreen, dim after a few minutes, and turn on the Kiosk lock so only this Home's dashboards and their controls stay reachable. Set a 4-digit PIN to leave, and optionally pin ZigDash with Android's screen pinning. A kiosk comes back after a reboot.

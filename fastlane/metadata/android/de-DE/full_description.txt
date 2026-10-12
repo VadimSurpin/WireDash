@@ -36,7 +36,7 @@ AUTOMATISIERUNG – LÄUFT AUCH BEI AUSGESCHALTETEM HANDY
 
 AUSGEREIFT – HANDY UND TABLET
 • Material 3 mit hellem, dunklem und System-Design; Material You Dynamic Color ab Android 12.
-• Handy und Tablet, Hoch- und Querformat, ideal als Wand-Dashboard für die Hausautomation.
+• Handy und Tablet, Hoch- und Querformat. Kiosk-Modus fürs Wandtablet: Vollbild, Abdunkeln, PIN-Sperre.
 • Verfügbar auf Deutsch, Englisch, Französisch, Spanisch, Niederländisch, Schwedisch, Norwegisch, Russisch, Polnisch, Portugiesisch und Hebräisch, mit automatischem RTL.
 • Responsives Panel-Raster, Dashboard-Sperre, Backup/Wiederherstellung als portables JSON, Szenen.
 

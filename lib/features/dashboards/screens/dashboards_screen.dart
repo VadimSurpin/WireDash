@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/dashboard_accent.dart';
 import '../wall_display.dart';
 import '../../../core/theme/signal_colors.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,6 +28,9 @@ import '../../onboarding/demo_banner.dart';
 import '../../onboarding/demo_service.dart' show isDemoConnection;
 import '../../panels/widgets/panel_grid.dart';
 import '../widgets/analytics_consent_card.dart';
+import '../../kiosk/kiosk.dart';
+import '../../kiosk/wall_display_sheet.dart';
+import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
 import '../widgets/community_card.dart';
 import '../widgets/poll_card.dart';
@@ -44,17 +46,19 @@ class DashboardsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final connectionAsync = ref.watch(connectionByIdProvider(connectionId));
-    final dashboardsAsync =
-        ref.watch(dashboardsForConnectionProvider(connectionId));
+    final dashboardsAsync = ref.watch(
+      dashboardsForConnectionProvider(connectionId),
+    );
     final connectionStatus =
         ref.watch(connectionStatusProvider(connectionId)).valueOrNull ??
-            MqttStatus.connecting;
+        MqttStatus.connecting;
 
     // Link tiles to devices and follow renames while this home is open.
     final base = ref.watch(homeBaseTopicProvider(connectionId));
     if (base != null) {
-      ref.watch(homeDeviceSyncProvider(
-          (connectionId: connectionId, base: base)));
+      ref.watch(
+        homeDeviceSyncProvider((connectionId: connectionId, base: base)),
+      );
     }
 
     final connectionName = connectionAsync.maybeWhen(
@@ -86,10 +90,14 @@ class DashboardsScreen extends ConsumerWidget {
                 ConnectionStatusBanner(
                   status: connectionStatus,
                   onReconnect: () => _reconnectNow(context, ref, connectionId),
-                  onSettings: () => context.push('/connections/$connectionId/edit'),
-                  onGetHelp: () => context.push(Routes.getHelpFrom(
+                  onSettings: () =>
+                      context.push('/connections/$connectionId/edit'),
+                  onGetHelp: () => context.push(
+                    Routes.getHelpFrom(
                       HelpFrom.homeUnreachable.name,
-                      home: connectionId)),
+                      home: connectionId,
+                    ),
+                  ),
                 ),
                 AnalyticsConsentCard(connectionId: connectionId),
                 const Expanded(child: _EmptyState()),
@@ -136,165 +144,210 @@ class _DashboardsTabbed extends ConsumerWidget {
     return DefaultTabController(
       length: dashboards.length,
       initialIndex: initial < 0 ? 0 : initial,
-      child: Builder(builder: (tabCtx) {
-        final l10n = context.l10n;
-        final editingId = ref.watch(editModeProvider);
-        final editing = dashboards.where((d) => d.id == editingId).firstOrNull;
-        final edit = ref.read(editModeProvider.notifier);
-        Dashboard current() =>
-            dashboards[DefaultTabController.of(tabCtx).index];
-        final wide = WindowClass.of(context).hasRail;
-        // The demo has no broker and stays quiet about it (demo_home.dart).
-        final demo = isDemoConnection(
-            ref.watch(connectionByIdProvider(connectionId)).valueOrNull?.host);
-        final chromeHidden = ref.watch(wallChromeHiddenProvider);
-        return AnimatedBuilder(
-          animation: DefaultTabController.of(tabCtx),
-          builder: (_, child) => WallDisplayScope(
-            dashboardId: current().id,
-            active: editing == null,
-            child: child!,
-          ),
-          child: PopScope(
-          // System back leaves Edit mode first.
-          canPop: editing == null,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) edit.exit();
-          },
-          child: Scaffold(
-          appBar: chromeHidden && editing == null
-              ? null
-              : editing != null
-              ? AppBar(
-                  automaticallyImplyLeading: false,
-                  title: Text(l10n.editEditing),
-                  actions: [
-                    // With a rail there is no bottom bar: add from here.
-                    if (wide) ...[
-                      TextButton.icon(
-                        icon: const Icon(Icons.add),
-                        label: Text(l10n.dashAddTile),
-                        onPressed: () => tabCtx.push(
-                            '/connections/$connectionId/dashboards/'
-                            '${editing.id}/add'),
+      child: Builder(
+        builder: (tabCtx) {
+          final l10n = context.l10n;
+          final editingId = ref.watch(editModeProvider);
+          final editing = dashboards
+              .where((d) => d.id == editingId)
+              .firstOrNull;
+          final edit = ref.read(editModeProvider.notifier);
+          Dashboard current() =>
+              dashboards[DefaultTabController.of(tabCtx).index];
+          final wide = WindowClass.of(context).hasRail;
+          // The demo has no broker and stays quiet about it (demo_home.dart).
+          final demo = isDemoConnection(
+            ref.watch(connectionByIdProvider(connectionId)).valueOrNull?.host,
+          );
+          final chromeHidden = ref.watch(wallChromeHiddenProvider);
+          // Kiosk (kiosk-2.6.md): a title to long-press, tabs, tiles; no more.
+          final kiosk = ref.watch(kioskProvider).on;
+          return AnimatedBuilder(
+            animation: DefaultTabController.of(tabCtx),
+            builder: (_, child) => WallDisplayScope(
+              dashboardId: current().id,
+              active: editing == null,
+              child: child!,
+            ),
+            child: PopScope(
+              // System back leaves Edit mode first.
+              canPop: editing == null && !kiosk,
+              onPopInvokedWithResult: (didPop, _) {
+                if (!didPop && editing != null) edit.exit();
+              },
+              child: Scaffold(
+                appBar: chromeHidden && editing == null
+                    ? null
+                    : editing != null
+                    ? AppBar(
+                        automaticallyImplyLeading: false,
+                        title: Text(l10n.editEditing),
+                        actions: [
+                          // With a rail there is no bottom bar: add from here.
+                          if (wide) ...[
+                            TextButton.icon(
+                              icon: const Icon(Icons.add),
+                              label: Text(l10n.dashAddTile),
+                              onPressed: () => tabCtx.push(
+                                '/connections/$connectionId/dashboards/'
+                                '${editing.id}/add',
+                              ),
+                            ),
+                            TextButton.icon(
+                              icon: const Icon(Icons.segment),
+                              label: Text(l10n.editAddSection),
+                              onPressed: () =>
+                                  addSection(tabCtx, ref, editing.id),
+                            ),
+                          ],
+                          TextButton.icon(
+                            icon: const Icon(Icons.tune),
+                            label: Text(l10n.editDashboard),
+                            onPressed: () => tabCtx.push(
+                              '/connections/$connectionId/dashboards/'
+                              '${editing.id}/edit',
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(end: 8),
+                            child: FilledButton(
+                              onPressed: edit.exit,
+                              child: Text(l10n.editDone),
+                            ),
+                          ),
+                        ],
+                      )
+                    : AppBar(
+                        title: kiosk
+                            ? Semantics(
+                                onLongPressHint: l10n.a11yKioskLeave,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onLongPress: () => leaveKiosk(tabCtx, ref),
+                                  child: Text(
+                                    connectionName,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              )
+                            : HomeTitle(connectionId: connectionId),
+                        actions: kiosk
+                            ? const []
+                            : [
+                                if (wide && !demo)
+                                  _StatusChip(status: connectionStatus),
+                                IconButton(
+                                  icon: const Icon(Icons.edit_outlined),
+                                  tooltip: l10n.dashEditDashboard,
+                                  onPressed: () {
+                                    final d = current();
+                                    if (!d.locked) edit.enter(d.id);
+                                  },
+                                ),
+                                const SettingsAction(),
+                                _DashboardMenu(
+                                  connectionId: connectionId,
+                                  current: current,
+                                ),
+                              ],
+                        bottom: dashboards.length < 2 || editing != null
+                            ? null
+                            : wide
+                            ? _DashboardChips(
+                                dashboards: dashboards,
+                                onPick: (i) => store
+                                    .rememberDashboard(
+                                      connectionId,
+                                      dashboards[i].id,
+                                    )
+                                    .ignore(),
+                              )
+                            : TabBar(
+                                isScrollable: dashboards.length > 3,
+                                onTap: (i) => store
+                                    .rememberDashboard(
+                                      connectionId,
+                                      dashboards[i].id,
+                                    )
+                                    .ignore(),
+                                tabs: dashboards.map((d) {
+                                  return Tab(
+                                    icon: Icon(materialIcon(d.iconCodepoint)),
+                                    text: d.name,
+                                  );
+                                }).toList(),
+                              ),
                       ),
-                      TextButton.icon(
-                        icon: const Icon(Icons.segment),
-                        label: Text(l10n.editAddSection),
-                        onPressed: () => addSection(tabCtx, ref, editing.id),
-                      ),
+                body: Column(
+                  children: [
+                    ReviewPromptTrigger(connectionId: connectionId),
+                    RememberHome(connectionId: connectionId),
+                    DemoBanner(connectionId: connectionId),
+                    if (!kiosk) ...[
+                      AnalyticsConsentCard(connectionId: connectionId),
+                      PollCard(connectionId: connectionId),
+                      CommunityCard(connectionId: connectionId),
                     ],
-                    TextButton.icon(
-                      icon: const Icon(Icons.tune),
-                      label: Text(l10n.editDashboard),
-                      onPressed: () => tabCtx.push(
-                          '/connections/$connectionId/dashboards/'
-                          '${editing.id}/edit'),
+                    AlertsPausedBanner(connectionId: connectionId),
+                    ConnectionStatusBanner(
+                      status: connectionStatus,
+                      onReconnect: () =>
+                          _reconnectNow(tabCtx, ref, connectionId),
+                      onSettings: () =>
+                          tabCtx.push('/connections/$connectionId/edit'),
+                      onGetHelp: () => tabCtx.push(
+                        Routes.getHelpFrom(
+                          HelpFrom.homeUnreachable.name,
+                          home: connectionId,
+                        ),
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 8),
-                      child: FilledButton(
-                        onPressed: edit.exit,
-                        child: Text(l10n.editDone),
+                    Expanded(
+                      child: TabBarView(
+                        // Edit mode works on one dashboard: no swiping away.
+                        physics: editing != null
+                            ? const NeverScrollableScrollPhysics()
+                            : null,
+                        children: dashboards.map((d) {
+                          // The dashboard's colour is an accent only (Signal).
+                          final base = Theme.of(tabCtx);
+                          final dashboardTheme = base.copyWith(
+                            extensions: [
+                              ...base.extensions.values,
+                              DashboardAccent.fromSeed(
+                                d.colorSeed,
+                                base.brightness,
+                              ),
+                            ],
+                          );
+                          return Theme(
+                            data: dashboardTheme,
+                            child: PanelGrid(
+                              connectionId: connectionId,
+                              dashboard: d,
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
-                )
-              : AppBar(
-            title: HomeTitle(connectionId: connectionId),
-            actions: [
-              if (wide && !demo) _StatusChip(status: connectionStatus),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                tooltip: l10n.dashEditDashboard,
-                onPressed: () {
-                  final d = current();
-                  if (!d.locked) edit.enter(d.id);
-                },
-              ),
-              const SettingsAction(),
-              _DashboardMenu(connectionId: connectionId, current: current),
-            ],
-            bottom: dashboards.length < 2 || editing != null
-                ? null
-                : wide
-                    ? _DashboardChips(
-                        dashboards: dashboards,
-                        onPick: (i) => store
-                            .rememberDashboard(connectionId, dashboards[i].id)
-                            .ignore(),
-                      )
-                    : TabBar(
-              isScrollable: dashboards.length > 3,
-              onTap: (i) => store
-                  .rememberDashboard(connectionId, dashboards[i].id)
-                  .ignore(),
-              tabs: dashboards.map((d) {
-                return Tab(
-                  icon: Icon(
-                    materialIcon(d.iconCodepoint),
-                  ),
-                  text: d.name,
-                );
-              }).toList(),
-            ),
-          ),
-          body: Column(
-            children: [
-              ReviewPromptTrigger(connectionId: connectionId),
-              RememberHome(connectionId: connectionId),
-              DemoBanner(connectionId: connectionId),
-              AnalyticsConsentCard(connectionId: connectionId),
-              PollCard(connectionId: connectionId),
-              CommunityCard(connectionId: connectionId),
-              AlertsPausedBanner(connectionId: connectionId),
-              ConnectionStatusBanner(
-                status: connectionStatus,
-                onReconnect: () => _reconnectNow(tabCtx, ref, connectionId),
-                onSettings: () => tabCtx.push('/connections/$connectionId/edit'),
-                onGetHelp: () => tabCtx.push(Routes.getHelpFrom(
-                    HelpFrom.homeUnreachable.name,
-                    home: connectionId)),
-              ),
-              Expanded(
-                child: TabBarView(
-                  // Edit mode works on one dashboard: no swiping away.
-                  physics: editing != null
-                      ? const NeverScrollableScrollPhysics()
-                      : null,
-                  children: dashboards.map((d) {
-                    // The dashboard's colour is an accent only (Signal).
-                    final base = Theme.of(tabCtx);
-                    final dashboardTheme = base.copyWith(extensions: [
-                      ...base.extensions.values,
-                      DashboardAccent.fromSeed(d.colorSeed, base.brightness),
-                    ]);
-                    return Theme(
-                      data: dashboardTheme,
-                      child: PanelGrid(
-                        connectionId: connectionId,
-                        dashboard: d,
+                ),
+                // In Edit mode the bottom bar offers Add tile and Add section.
+                floatingActionButton: editing != null || chromeHidden || kiosk
+                    ? null
+                    : FloatingActionButton.extended(
+                        onPressed: () => tabCtx.push(
+                          '/connections/$connectionId/dashboards/'
+                          '${current().id}/add',
+                        ),
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.dashAddTile),
                       ),
-                    );
-                  }).toList(),
-                ),
               ),
-            ],
-          ),
-          // In Edit mode the bottom bar offers Add tile and Add section.
-          floatingActionButton: editing != null || chromeHidden
-              ? null
-              : FloatingActionButton.extended(
-                  onPressed: () => tabCtx.push(
-                      '/connections/$connectionId/dashboards/'
-                      '${current().id}/add'),
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.dashAddTile),
-                ),
-          ),
-        ),
-        );
-      }),
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -317,28 +370,28 @@ class _DashboardChips extends StatelessWidget implements PreferredSizeWidget {
       builder: (context, _) => Align(
         alignment: AlignmentDirectional.centerStart,
         child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-        child: Row(
-          children: [
-            for (final (i, d) in dashboards.indexed)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(end: 8),
-                child: ChoiceChip(
-                  avatar: controller.index == i
-                      ? null
-                      : Icon(materialIcon(d.iconCodepoint), size: 18),
-                  label: Text(d.name),
-                  selected: controller.index == i,
-                  onSelected: (_) {
-                    controller.animateTo(i);
-                    onPick(i);
-                  },
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          child: Row(
+            children: [
+              for (final (i, d) in dashboards.indexed)
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 8),
+                  child: ChoiceChip(
+                    avatar: controller.index == i
+                        ? null
+                        : Icon(materialIcon(d.iconCodepoint), size: 18),
+                    label: Text(d.name),
+                    selected: controller.index == i,
+                    onSelected: (_) {
+                      controller.animateTo(i);
+                      onPick(i);
+                    },
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -370,9 +423,12 @@ class _StatusChip extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          Text(homeStatusLabel(status, context.l10n),
-              style: theme.textTheme.labelLarge
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          Text(
+            homeStatusLabel(status, context.l10n),
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -390,9 +446,9 @@ Future<void> _reconnectNow(
     manager.reconnectNow();
   } catch (_) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(failureMessage)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(failureMessage)));
   }
 }
 
@@ -430,8 +486,11 @@ class _EmptyState extends StatelessWidget {
 
 /// The Custom MQTT tile type list, opened from Add tile. The chosen type's
 /// form replaces Add tile, so saving returns to the dashboard.
-Future<void> openCustomTilePicker(BuildContext context,
-    {required String connectionId, required String dashboardId}) async {
+Future<void> openCustomTilePicker(
+  BuildContext context, {
+  required String connectionId,
+  required String dashboardId,
+}) async {
   final type = await showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
@@ -443,14 +502,20 @@ Future<void> openCustomTilePicker(BuildContext context,
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(sheetCtx.l10n.panelPickerTitle,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w600)),
+              child: Text(
+                sheetCtx.l10n.panelPickerTitle,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-              child: Text(sheetCtx.l10n.panelPickerSectionControl,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(
+                sheetCtx.l10n.panelPickerSectionControl,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.toggle_on),
@@ -521,11 +586,16 @@ Future<void> openCustomTilePicker(BuildContext context,
             const Divider(),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: Text(sheetCtx.l10n.panelPickerSectionState,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(
+                sheetCtx.l10n.panelPickerSectionState,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
             ListTile(
-              leading: Icon(Icons.circle, color: SignalColors.of(sheetCtx).onHealthy),
+              leading: Icon(
+                Icons.circle,
+                color: SignalColors.of(sheetCtx).onHealthy,
+              ),
               title: Text(sheetCtx.l10n.panelPickerLedTitle),
               subtitle: Text(sheetCtx.l10n.panelPickerLedSubtitle),
               onTap: () => Navigator.pop(sheetCtx, 'led'),
@@ -588,94 +658,28 @@ class _DashboardMenu extends ConsumerWidget {
           case 'addHome':
             context.push(Routes.setup);
           case 'export':
-            _export(context, ref);
+            showExportDashboardsDialog(context, ref, connectionId);
           case 'import':
             _import(context, ref);
           case 'wall':
             final d = current?.call();
             if (d == null) break;
-            ref.read(wallDisplayProvider(d.id).notifier).toggle();
-            // Nothing changes on screen for 10 s, so say what will happen.
-            final on = ref.read(wallDisplayProvider(d.id));
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(
-                content: Text(
-                    on ? l10n.dashWallDisplayOn : l10n.dashWallDisplayOff),
-              ));
+            showWallDisplaySheet(context, connectionId, d);
         }
       },
       itemBuilder: (_) => [
         if (current != null)
-          CheckedPopupMenuItem(
-            value: 'wall',
-            checked: ref.read(wallDisplayProvider(current!().id)),
-            child: Text(l10n.dashWallDisplay),
-          ),
-        PopupMenuItem(value: 'addDashboard', child: Text(l10n.dashAddDashboard)),
+          PopupMenuItem(value: 'wall', child: Text(l10n.dashWallDisplay)),
+        PopupMenuItem(
+          value: 'addDashboard',
+          child: Text(l10n.dashAddDashboard),
+        ),
         if (homes < 2)
           PopupMenuItem(value: 'addHome', child: Text(l10n.homeAdd)),
         const PopupMenuDivider(),
         PopupMenuItem(value: 'export', child: Text(l10n.dashExportMenu)),
         PopupMenuItem(value: 'import', child: Text(l10n.dashImportMenu)),
       ],
-    );
-  }
-
-  Future<void> _export(BuildContext context, WidgetRef ref) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final l10n = context.l10n;
-    final json =
-        await ref.read(backupServiceProvider).exportConnection(connectionId);
-    if (!context.mounted) return;
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.dashExportTitle),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: SelectableText(
-              json,
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.dashExportClose),
-          ),
-          TextButton.icon(
-            icon: const Icon(Icons.copy),
-            label: Text(l10n.dashExportCopy),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: json));
-              if (ctx.mounted) Navigator.pop(ctx);
-              messenger.showSnackBar(
-                SnackBar(content: Text(l10n.dashExportCopied)),
-              );
-            },
-          ),
-          // A .json file through Android's file picker: Drive, Downloads, a
-          // USB stick (asked for in a Play review).
-          FilledButton.icon(
-            icon: const Icon(Icons.save_alt),
-            label: Text(l10n.dashExportSaveFile),
-            onPressed: () async {
-              final home =
-                  ref.read(connectionByIdProvider(connectionId)).valueOrNull;
-              final saved = await ref.read(backupFilesProvider).save(
-                  backupFileName(home?.name ?? '', DateTime.now()), json);
-              if (!saved) return;
-              if (ctx.mounted) Navigator.pop(ctx);
-              messenger.showSnackBar(
-                SnackBar(content: Text(l10n.dashExportSaved)),
-              );
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -710,7 +714,8 @@ class _DashboardMenu extends ConsumerWidget {
                 if (text != null) controller.text = text;
               } on FormatException {
                 messenger.showSnackBar(
-                    SnackBar(content: Text(l10n.dashImportFileUnreadable)));
+                  SnackBar(content: Text(l10n.dashImportFileUnreadable)),
+                );
               }
             },
           ),
@@ -734,10 +739,10 @@ class _DashboardMenu extends ConsumerWidget {
       );
     } catch (e) {
       messenger.showSnackBar(
-          SnackBar(content: Text(l10n.dashImportFailed(e.toString()))));
+        SnackBar(content: Text(l10n.dashImportFailed(e.toString()))),
+      );
     } finally {
       controller.dispose();
     }
   }
 }
-

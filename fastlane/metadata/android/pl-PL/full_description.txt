@@ -31,6 +31,7 @@ AUTOMATYZACJA BEZ TELEFONU
 
 TELEFON I TABLET
 • Ciemny motyw na tablecie ściennym, tryb „Wyświetlacz ścienny”, Material You.
+• Tryb kiosku na tablet ścienny: pełny ekran, przyciemnianie, blokada PIN.
 • Języki: polski, angielski, niemiecki, francuski, hiszpański, rosyjski, portugalski, niderlandzki, szwedzki, norweski i hebrajski.
 • Kopia zapasowa dashboardów do pliku .json.
 

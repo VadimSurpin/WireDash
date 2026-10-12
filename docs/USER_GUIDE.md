@@ -270,6 +270,17 @@ or in Settings › About), ZigDash also sends anonymous usage data: which setup
 steps fail and which features get used. You can turn it off any time; the
 privacy policy lists exactly what is sent.
 
+**Q: Can I put ZigDash on a tablet on the wall, locked for guests?**
+Yes. On the dashboard, open ⋮ › **Wall display**. *Keep the screen on and hide
+the bars* is the plain wall mode. *Fullscreen* hides Android's bars too, and
+*Dim after* dims the screen after a few minutes without a touch. *Kiosk lock*
+pins this Home on screen: only its dashboards and their tiles stay reachable,
+and nothing else in the app can be opened. To leave, long-press the title; set
+a 4-digit PIN first if guests shouldn't be able to. There is no way around a
+forgotten PIN except clearing ZigDash's data, so export a backup before setting
+one. *Also pin ZigDash on Android* adds Android's own screen pinning, which
+blocks the Home button and recent apps too.
+
 **Q: Does the schedule run when my phone is off?**
 Yes — schedules are executed by your always‑on hub (e.g. Node‑RED), not the phone.
 The phone only publishes the schedule configuration. (Requires the companion

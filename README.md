@@ -63,6 +63,9 @@ MQTT.
   German, Spanish, Dutch, Swedish, Norwegian, Russian, Polish, Portuguese,
   Hebrew) with full RTL, responsive panel
   grid, dashboard lock, JSON backup/restore.
+- **Kiosk mode** — a tablet on the wall: keep the screen on, hide the bars,
+  go fullscreen, dim after a few minutes, and a Kiosk lock with a PIN that
+  keeps guests on the dashboards. Optional Android screen pinning on top.
 - **Private** — no ads, no account. Anonymous usage data you can turn off at
   any time; builds without an analytics key (F-Droid, your own) send nothing at all.
   Data lives on your device and your broker.

@@ -433,10 +433,10 @@ class AppLocalizationsHe extends AppLocalizations {
   String get dashFormIcon => 'אייקון';
 
   @override
-  String get dashFormLock => 'נעילה';
+  String get dashFormLock => 'נעילת עריכה';
 
   @override
-  String get dashFormLockSubtitle => 'הסתרת פקדי עריכה בזמן נעילה';
+  String get dashFormLockSubtitle => 'מסתיר את העריכה בלוח הזה';
 
   @override
   String get dashFormDelete => 'מחיקת לוח';
@@ -2186,13 +2186,6 @@ class AppLocalizationsHe extends AppLocalizations {
   String get dashWallDisplay => 'תצוגת קיר';
 
   @override
-  String get dashWallDisplayOn =>
-      'תצוגת קיר פעילה: המסך נשאר דולק, והסרגלים נעלמים אחרי 10 שניות בלי מגע. הקשה מחזירה אותם.';
-
-  @override
-  String get dashWallDisplayOff => 'תצוגת קיר כבויה.';
-
-  @override
   String get analyticsSetupCheckbox =>
       'שיתוף נתוני שימוש אנונימיים לשיפור ההגדרה';
 
@@ -2934,4 +2927,107 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'שרת ntfy';
+
+  @override
+  String get wallSheetTitle => 'תצוגת קיר';
+
+  @override
+  String get wallSheetSubtitle => 'לטאבלט על הקיר.';
+
+  @override
+  String get wallKeepOn => 'להשאיר את המסך דולק ולהסתיר את הסרגלים';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'הם חוזרים בנגיעה ונעלמים שוב אחרי 10 שניות.';
+
+  @override
+  String get wallFullscreen => 'מסך מלא';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'מסתיר גם את סרגלי המצב והניווט של אנדרואיד.';
+
+  @override
+  String get wallDimAfter => 'עמעום אחרי';
+
+  @override
+  String get wallDimOff => 'כבוי';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes דק׳';
+  }
+
+  @override
+  String get kioskLock => 'נעילת קיוסק';
+
+  @override
+  String get kioskLockSubtitle =>
+      'רק לוחות הבית הזה והפקדים שלהם נשארים זמינים. לחיצה ארוכה על הכותרת כדי לצאת.';
+
+  @override
+  String get kioskPin => 'קוד PIN';
+
+  @override
+  String get kioskPinSet => 'הגדרה';
+
+  @override
+  String get kioskPinNotSet => 'לא הוגדר';
+
+  @override
+  String get kioskPinChange => 'שינוי';
+
+  @override
+  String get kioskPinRemove => 'הסרה';
+
+  @override
+  String get kioskPinSetTitle => 'הגדרת קוד PIN';
+
+  @override
+  String get kioskPinEnterTitle => 'הזנת קוד PIN';
+
+  @override
+  String get kioskPinHint => '4 ספרות';
+
+  @override
+  String get kioskPinConfirmHint => 'שוב';
+
+  @override
+  String get kioskPinMismatch => 'שני הקודים שונים.';
+
+  @override
+  String get kioskPinWrong => 'קוד שגוי.';
+
+  @override
+  String get kioskPinForgot => 'שכחתם את הקוד?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'קוד שנשכח אפשר לאפס רק במחיקת הנתונים של ZigDash בהגדרות אנדרואיד, וזה מסיר את הבית הזה אלא אם יש לכם גיבוי. ייצאו גיבוי לפני הגדרת קוד.';
+
+  @override
+  String get kioskExportBackup => 'ייצוא גיבוי';
+
+  @override
+  String get kioskOsPin => 'להצמיד את ZigDash גם באנדרואיד';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'אנדרואיד חוסם את כפתור הבית והאפליקציות האחרונות עד לביטול ההצמדה של ZigDash. טאבלט בלי מסך נעילה מבטל את ההצמדה במחווה, כך שזו לא הנעילה.';
+
+  @override
+  String get kioskOn => 'קיוסק פעיל. לחיצה ארוכה על הכותרת כדי לצאת.';
+
+  @override
+  String get kioskLeaveTitle => 'לצאת מהקיוסק?';
+
+  @override
+  String get kioskLeave => 'יציאה';
+
+  @override
+  String get kioskStay => 'להישאר';
+
+  @override
+  String get a11yKioskLeave => 'לחיצה ארוכה כדי לצאת מהקיוסק';
 }
