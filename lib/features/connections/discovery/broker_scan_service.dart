@@ -40,7 +40,7 @@ class BrokerScanService {
     required this.prober,
     HubProber? hubProber,
     this.ports = const [1883, 8883],
-    this.concurrency = 32,
+    this.concurrency = 48,
   }) : hubProber = hubProber ?? const _NoHubs();
 
   final HostProber prober;
