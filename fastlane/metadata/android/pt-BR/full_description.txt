@@ -30,7 +30,7 @@ AUTOMAÇÃO SEM O CELULAR
 • Agendamentos e regras de desligamento automático rodam no seu hub (Node-RED), mesmo com o celular desligado.
 
 CELULAR E TABLET
-• Tema escuro no tablet de parede, modo "Tela de parede", Material You.
+• Tema escuro no tablet de parede, modo quiosque (tela cheia, escurecimento, PIN), Material You.
 • Idiomas: português, inglês, espanhol, francês, alemão, russo, polonês, holandês, sueco, norueguês e hebraico.
 • Backup dos painéis em arquivo .json.
 

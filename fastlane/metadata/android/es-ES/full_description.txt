@@ -37,7 +37,7 @@ AUTOMATIZACIÓN QUE FUNCIONA CON EL MÓVIL APAGADO
 
 PULIDO PARA MÓVIL Y TABLET
 • Material 3 con tema claro, oscuro y del sistema; color dinámico Material You en Android 12+.
-• Móvil y tablet, vertical y horizontal: ideal como panel domótico de pared.
+• Móvil y tablet, vertical y horizontal. Modo quiosco para la tablet de pared: pantalla completa, atenuación y PIN.
 • Disponible en español, inglés, francés, alemán, neerlandés, sueco, noruego, ruso, polaco, portugués y hebreo, con RTL automático.
 • Cuadrícula adaptable, bloqueo del panel, copia de seguridad y restauración en JSON portable, escenas.
 

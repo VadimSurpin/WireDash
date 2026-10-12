@@ -1,0 +1,1 @@
+ZigDash 2.6: tryb kiosku. Na pulpicie otwórz ⋮ › Wyświetlacz ścienny: ekran włączony i ukryte paski, pełny ekran, przyciemnianie po kilku minutach oraz blokada kiosku, by dostępne były tylko pulpity tego domu i ich sterowanie. Ustaw 4-cyfrowy PIN do wyjścia i opcjonalnie przypnij ZigDash przypinaniem ekranu Androida. Kiosk wraca po ponownym uruchomieniu.

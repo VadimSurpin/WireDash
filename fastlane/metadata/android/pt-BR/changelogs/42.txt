@@ -1,0 +1,1 @@
+ZigDash 2.6: modo quiosque. Em um painel, abra ⋮ › Tela de parede: tela ligada e barras ocultas, tela cheia, escurecimento após alguns minutos e o bloqueio de quiosque para que só os painéis desta casa e seus controles continuem acessíveis. Defina um PIN de 4 dígitos para sair e, se quiser, fixe o ZigDash com a fixação de tela do Android. O quiosque volta após reiniciar.
