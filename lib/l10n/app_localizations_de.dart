@@ -442,11 +442,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dashFormIcon => 'Symbol';
 
   @override
-  String get dashFormLock => 'Sperren';
+  String get dashFormLock => 'Bearbeitungssperre';
 
   @override
   String get dashFormLockSubtitle =>
-      'Bearbeitungsfunktionen bei gesperrtem Dashboard ausblenden';
+      'Blendet Bearbeiten für dieses Dashboard aus';
 
   @override
   String get dashFormDelete => 'Dashboard löschen';
@@ -2975,4 +2975,107 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'ntfy-Server';
+
+  @override
+  String get wallSheetTitle => 'Wandanzeige';
+
+  @override
+  String get wallSheetSubtitle => 'Für ein Tablet an der Wand.';
+
+  @override
+  String get wallKeepOn => 'Bildschirm an lassen und Leisten ausblenden';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'Sie kommen bei Berührung zurück und verschwinden nach 10 Sekunden wieder.';
+
+  @override
+  String get wallFullscreen => 'Vollbild';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Blendet auch Androids Status- und Navigationsleiste aus.';
+
+  @override
+  String get wallDimAfter => 'Abdunkeln nach';
+
+  @override
+  String get wallDimOff => 'Aus';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes Min.';
+  }
+
+  @override
+  String get kioskLock => 'Kiosk-Sperre';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Nur die Dashboards dieses Zuhauses und ihre Bedienelemente bleiben erreichbar. Titel lange drücken, um zu beenden.';
+
+  @override
+  String get kioskPin => 'PIN';
+
+  @override
+  String get kioskPinSet => 'Festlegen';
+
+  @override
+  String get kioskPinNotSet => 'Nicht festgelegt';
+
+  @override
+  String get kioskPinChange => 'Ändern';
+
+  @override
+  String get kioskPinRemove => 'Entfernen';
+
+  @override
+  String get kioskPinSetTitle => 'PIN festlegen';
+
+  @override
+  String get kioskPinEnterTitle => 'PIN eingeben';
+
+  @override
+  String get kioskPinHint => '4 Ziffern';
+
+  @override
+  String get kioskPinConfirmHint => 'Noch einmal';
+
+  @override
+  String get kioskPinMismatch => 'Die beiden PINs sind verschieden.';
+
+  @override
+  String get kioskPinWrong => 'Falsche PIN.';
+
+  @override
+  String get kioskPinForgot => 'PIN vergessen?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'Eine vergessene PIN lässt sich nur zurücksetzen, indem du die Daten von ZigDash in den Android-Einstellungen löschst. Das entfernt dieses Zuhause, sofern du kein Backup hast. Exportiere eines, bevor du eine PIN festlegst.';
+
+  @override
+  String get kioskExportBackup => 'Backup exportieren';
+
+  @override
+  String get kioskOsPin => 'ZigDash auch in Android anheften';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android blockiert Home und die letzten Apps, bis ZigDash gelöst wird. Ein Tablet ohne Sperrbildschirm löst es mit einer Geste, also ist das nicht die Sperre.';
+
+  @override
+  String get kioskOn => 'Kiosk an. Titel lange drücken, um zu beenden.';
+
+  @override
+  String get kioskLeaveTitle => 'Kiosk beenden?';
+
+  @override
+  String get kioskLeave => 'Beenden';
+
+  @override
+  String get kioskStay => 'Bleiben';
+
+  @override
+  String get a11yKioskLeave => 'Lange drücken, um den Kiosk zu beenden';
 }

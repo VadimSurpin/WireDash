@@ -440,11 +440,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dashFormIcon => 'Значок';
 
   @override
-  String get dashFormLock => 'Блокировка';
+  String get dashFormLock => 'Блокировка редактирования';
 
   @override
-  String get dashFormLockSubtitle =>
-      'Скрывать элементы редактирования при блокировке';
+  String get dashFormLockSubtitle => 'Скрывает «Изменить» для этой панели';
 
   @override
   String get dashFormDelete => 'Удалить дашборд';
@@ -2979,4 +2978,107 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'Сервер ntfy';
+
+  @override
+  String get wallSheetTitle => 'Настенный экран';
+
+  @override
+  String get wallSheetSubtitle => 'Для планшета на стене.';
+
+  @override
+  String get wallKeepOn => 'Не гасить экран и скрывать панели';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'Они возвращаются при касании и снова скрываются через 10 секунд.';
+
+  @override
+  String get wallFullscreen => 'Во весь экран';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Скрывает и строку состояния, и панель навигации Android.';
+
+  @override
+  String get wallDimAfter => 'Затемнять через';
+
+  @override
+  String get wallDimOff => 'Выкл.';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes мин';
+  }
+
+  @override
+  String get kioskLock => 'Режим киоска';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Доступны только панели этого дома и их элементы управления. Удерживайте заголовок, чтобы выйти.';
+
+  @override
+  String get kioskPin => 'PIN-код';
+
+  @override
+  String get kioskPinSet => 'Задать';
+
+  @override
+  String get kioskPinNotSet => 'Не задан';
+
+  @override
+  String get kioskPinChange => 'Изменить';
+
+  @override
+  String get kioskPinRemove => 'Удалить';
+
+  @override
+  String get kioskPinSetTitle => 'Задать PIN-код';
+
+  @override
+  String get kioskPinEnterTitle => 'Введите PIN-код';
+
+  @override
+  String get kioskPinHint => '4 цифры';
+
+  @override
+  String get kioskPinConfirmHint => 'Ещё раз';
+
+  @override
+  String get kioskPinMismatch => 'PIN-коды не совпадают.';
+
+  @override
+  String get kioskPinWrong => 'Неверный PIN-код.';
+
+  @override
+  String get kioskPinForgot => 'Забыли PIN-код?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'Забытый PIN-код можно сбросить только очисткой данных ZigDash в настройках Android, а это удалит этот дом, если нет резервной копии. Экспортируйте её, прежде чем задавать PIN-код.';
+
+  @override
+  String get kioskExportBackup => 'Экспорт резервной копии';
+
+  @override
+  String get kioskOsPin => 'Также закрепить ZigDash в Android';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android блокирует кнопку «Домой» и недавние приложения, пока ZigDash не откреплён. Планшет без экрана блокировки открепляется жестом, так что это не замок.';
+
+  @override
+  String get kioskOn => 'Киоск включён. Удерживайте заголовок, чтобы выйти.';
+
+  @override
+  String get kioskLeaveTitle => 'Выйти из киоска?';
+
+  @override
+  String get kioskLeave => 'Выйти';
+
+  @override
+  String get kioskStay => 'Остаться';
+
+  @override
+  String get a11yKioskLeave => 'Удерживайте, чтобы выйти из киоска';
 }

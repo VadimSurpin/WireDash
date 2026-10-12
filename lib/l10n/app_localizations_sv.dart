@@ -438,11 +438,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get dashFormIcon => 'Ikon';
 
   @override
-  String get dashFormLock => 'Lås';
+  String get dashFormLock => 'Redigeringslås';
 
   @override
-  String get dashFormLockSubtitle =>
-      'Dölj redigeringsfunktioner medan den är låst';
+  String get dashFormLockSubtitle => 'Döljer Redigera för den här panelen';
 
   @override
   String get dashFormDelete => 'Ta bort dashboard';
@@ -2962,4 +2961,107 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'ntfy-server';
+
+  @override
+  String get wallSheetTitle => 'Väggvisning';
+
+  @override
+  String get wallSheetSubtitle => 'För en surfplatta på väggen.';
+
+  @override
+  String get wallKeepOn => 'Håll skärmen tänd och dölj fälten';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'De kommer tillbaka vid beröring och döljs igen efter 10 sekunder.';
+
+  @override
+  String get wallFullscreen => 'Helskärm';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Döljer även Androids status- och navigeringsfält.';
+
+  @override
+  String get wallDimAfter => 'Dämpa efter';
+
+  @override
+  String get wallDimOff => 'Av';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get kioskLock => 'Kiosklås';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Bara det här hemmets paneler och deras reglage går att nå. Håll in titeln för att avsluta.';
+
+  @override
+  String get kioskPin => 'PIN';
+
+  @override
+  String get kioskPinSet => 'Ange';
+
+  @override
+  String get kioskPinNotSet => 'Inte angiven';
+
+  @override
+  String get kioskPinChange => 'Ändra';
+
+  @override
+  String get kioskPinRemove => 'Ta bort';
+
+  @override
+  String get kioskPinSetTitle => 'Ange en PIN';
+
+  @override
+  String get kioskPinEnterTitle => 'Ange PIN';
+
+  @override
+  String get kioskPinHint => '4 siffror';
+
+  @override
+  String get kioskPinConfirmHint => 'En gång till';
+
+  @override
+  String get kioskPinMismatch => 'De två PIN-koderna skiljer sig.';
+
+  @override
+  String get kioskPinWrong => 'Fel PIN.';
+
+  @override
+  String get kioskPinForgot => 'Glömt PIN?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'En glömd PIN kan bara återställas genom att rensa ZigDashs data i Androids inställningar, vilket tar bort det här hemmet om du inte har en säkerhetskopia. Exportera en innan du anger en PIN.';
+
+  @override
+  String get kioskExportBackup => 'Exportera säkerhetskopia';
+
+  @override
+  String get kioskOsPin => 'Fäst även ZigDash i Android';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android spärrar Hem och senaste appar tills ZigDash lossas. En surfplatta utan låsskärm lossar med en gest, så det här är inte låset.';
+
+  @override
+  String get kioskOn => 'Kiosk på. Håll in titeln för att avsluta.';
+
+  @override
+  String get kioskLeaveTitle => 'Avsluta kiosk?';
+
+  @override
+  String get kioskLeave => 'Avsluta';
+
+  @override
+  String get kioskStay => 'Stanna';
+
+  @override
+  String get a11yKioskLeave => 'Håll in för att avsluta kiosk';
 }

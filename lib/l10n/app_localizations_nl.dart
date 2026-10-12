@@ -439,11 +439,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dashFormIcon => 'Pictogram';
 
   @override
-  String get dashFormLock => 'Vergrendelen';
+  String get dashFormLock => 'Bewerkvergrendeling';
 
   @override
-  String get dashFormLockSubtitle =>
-      'Bewerkopties verbergen zolang vergrendeld';
+  String get dashFormLockSubtitle => 'Verbergt Bewerken voor dit dashboard';
 
   @override
   String get dashFormDelete => 'Dashboard verwijderen';
@@ -2972,4 +2971,107 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'ntfy-server';
+
+  @override
+  String get wallSheetTitle => 'Wandweergave';
+
+  @override
+  String get wallSheetSubtitle => 'Voor een tablet aan de muur.';
+
+  @override
+  String get wallKeepOn => 'Scherm aan houden en balken verbergen';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'Ze komen terug bij een aanraking en verdwijnen na 10 seconden weer.';
+
+  @override
+  String get wallFullscreen => 'Volledig scherm';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Verbergt ook de status- en navigatiebalk van Android.';
+
+  @override
+  String get wallDimAfter => 'Dimmen na';
+
+  @override
+  String get wallDimOff => 'Uit';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get kioskLock => 'Kioskvergrendeling';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Alleen de dashboards van dit huis en hun bediening blijven bereikbaar. Houd de titel ingedrukt om te stoppen.';
+
+  @override
+  String get kioskPin => 'Pincode';
+
+  @override
+  String get kioskPinSet => 'Instellen';
+
+  @override
+  String get kioskPinNotSet => 'Niet ingesteld';
+
+  @override
+  String get kioskPinChange => 'Wijzigen';
+
+  @override
+  String get kioskPinRemove => 'Verwijderen';
+
+  @override
+  String get kioskPinSetTitle => 'Pincode instellen';
+
+  @override
+  String get kioskPinEnterTitle => 'Pincode invoeren';
+
+  @override
+  String get kioskPinHint => '4 cijfers';
+
+  @override
+  String get kioskPinConfirmHint => 'Nog eens';
+
+  @override
+  String get kioskPinMismatch => 'De twee pincodes verschillen.';
+
+  @override
+  String get kioskPinWrong => 'Verkeerde pincode.';
+
+  @override
+  String get kioskPinForgot => 'Pincode vergeten?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'Een vergeten pincode kun je alleen herstellen door de gegevens van ZigDash te wissen in de Android-instellingen, wat dit huis verwijdert tenzij je een back-up hebt. Exporteer er een voordat je een pincode instelt.';
+
+  @override
+  String get kioskExportBackup => 'Back-up exporteren';
+
+  @override
+  String get kioskOsPin => 'ZigDash ook vastzetten in Android';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android blokkeert Home en recente apps tot ZigDash wordt losgemaakt. Een tablet zonder vergrendelscherm maakt het los met een gebaar, dus dit is niet de vergrendeling.';
+
+  @override
+  String get kioskOn => 'Kiosk aan. Houd de titel ingedrukt om te stoppen.';
+
+  @override
+  String get kioskLeaveTitle => 'Kiosk verlaten?';
+
+  @override
+  String get kioskLeave => 'Verlaten';
+
+  @override
+  String get kioskStay => 'Blijven';
+
+  @override
+  String get a11yKioskLeave => 'Ingedrukt houden om de kiosk te verlaten';
 }

@@ -27,6 +27,7 @@ import '../analytics/analytics_events.dart' show HelpFrom;
 import '../../features/settings/screens/home_settings_screen.dart';
 import '../../features/settings/screens/language_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
+import '../../features/kiosk/kiosk.dart';
 import 'first_run_redirect.dart';
 import 'last_dashboard_store.dart';
 import 'routes.dart';
@@ -62,11 +63,17 @@ final routerProvider = Provider<GoRouter>((ref) {
     // First run lives in the router (not in MaterialApp's builder) so its
     // screens can navigate with context.go — an InheritedGoRouter is only
     // available below the Router.
-    redirect: (context, state) => firstRunRedirect(
-      needsSetup: ref.read(onboardingProvider).needsOnboarding,
-      location: state.matchedLocation,
-      startLocation: ref.read(lastDashboardStoreProvider).startLocation,
-    ),
+    redirect: (context, state) =>
+        firstRunRedirect(
+          needsSetup: ref.read(onboardingProvider).needsOnboarding,
+          location: state.matchedLocation,
+          startLocation: ref.read(lastDashboardStoreProvider).startLocation,
+        ) ??
+        // Kiosk (kiosk-2.6.md): nothing leaves the pinned Home's dashboards.
+        kioskRedirect(
+          kiosk: ref.read(kioskProvider),
+          location: state.matchedLocation,
+        ),
     routes: [
       // Retired carousel address; the redirect above always leaves it.
       GoRoute(path: Routes.onboarding, redirect: (_, __) => Routes.setup),

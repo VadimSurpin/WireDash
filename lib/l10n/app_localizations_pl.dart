@@ -443,10 +443,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dashFormIcon => 'Ikona';
 
   @override
-  String get dashFormLock => 'Zablokuj';
+  String get dashFormLock => 'Blokada edycji';
 
   @override
-  String get dashFormLockSubtitle => 'Ukryj opcje edycji, gdy zablokowany';
+  String get dashFormLockSubtitle => 'Ukrywa Edytuj dla tego pulpitu';
 
   @override
   String get dashFormDelete => 'Usuń dashboard';
@@ -2985,4 +2985,107 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get alertsNtfyServer => 'Serwer ntfy';
+
+  @override
+  String get wallSheetTitle => 'Wyświetlacz ścienny';
+
+  @override
+  String get wallSheetSubtitle => 'Dla tabletu na ścianie.';
+
+  @override
+  String get wallKeepOn => 'Nie wygaszaj ekranu i ukryj paski';
+
+  @override
+  String get wallKeepOnSubtitle =>
+      'Wracają po dotknięciu i znikają znów po 10 sekundach.';
+
+  @override
+  String get wallFullscreen => 'Pełny ekran';
+
+  @override
+  String get wallFullscreenSubtitle =>
+      'Ukrywa też paski stanu i nawigacji Androida.';
+
+  @override
+  String get wallDimAfter => 'Przyciemnij po';
+
+  @override
+  String get wallDimOff => 'Wył.';
+
+  @override
+  String wallDimMinutes(Object minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get kioskLock => 'Blokada kiosku';
+
+  @override
+  String get kioskLockSubtitle =>
+      'Dostępne są tylko pulpity tego domu i ich sterowanie. Przytrzymaj tytuł, aby wyjść.';
+
+  @override
+  String get kioskPin => 'PIN';
+
+  @override
+  String get kioskPinSet => 'Ustaw';
+
+  @override
+  String get kioskPinNotSet => 'Nie ustawiono';
+
+  @override
+  String get kioskPinChange => 'Zmień';
+
+  @override
+  String get kioskPinRemove => 'Usuń';
+
+  @override
+  String get kioskPinSetTitle => 'Ustaw PIN';
+
+  @override
+  String get kioskPinEnterTitle => 'Wpisz PIN';
+
+  @override
+  String get kioskPinHint => '4 cyfry';
+
+  @override
+  String get kioskPinConfirmHint => 'Jeszcze raz';
+
+  @override
+  String get kioskPinMismatch => 'Oba kody PIN się różnią.';
+
+  @override
+  String get kioskPinWrong => 'Błędny PIN.';
+
+  @override
+  String get kioskPinForgot => 'Nie pamiętasz PIN-u?';
+
+  @override
+  String get kioskPinForgotBody =>
+      'Zapomniany PIN można zresetować tylko przez wyczyszczenie danych ZigDash w ustawieniach Androida, co usuwa ten dom, chyba że masz kopię zapasową. Wyeksportuj ją przed ustawieniem PIN-u.';
+
+  @override
+  String get kioskExportBackup => 'Eksportuj kopię';
+
+  @override
+  String get kioskOsPin => 'Przypnij też ZigDash w Androidzie';
+
+  @override
+  String get kioskOsPinSubtitle =>
+      'Android blokuje przycisk Home i ostatnie aplikacje, dopóki ZigDash nie zostanie odpięty. Tablet bez ekranu blokady odpina gestem, więc to nie jest blokada.';
+
+  @override
+  String get kioskOn => 'Kiosk włączony. Przytrzymaj tytuł, aby wyjść.';
+
+  @override
+  String get kioskLeaveTitle => 'Wyjść z kiosku?';
+
+  @override
+  String get kioskLeave => 'Wyjdź';
+
+  @override
+  String get kioskStay => 'Zostań';
+
+  @override
+  String get a11yKioskLeave => 'Przytrzymaj, aby wyjść z kiosku';
 }

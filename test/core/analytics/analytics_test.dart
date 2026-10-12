@@ -127,6 +127,17 @@ void main() {
       });
     });
 
+    test('kiosk started: feature_used with the chosen options', () {
+      expect(
+        const KioskStarted(pin: true, osPinning: false, dimMinutes: 5).props,
+        {'feature': 'kiosk', 'lock': 'pin', 'os_pin': 'no', 'dim': '5m'},
+      );
+      expect(
+        const KioskStarted(pin: false, osPinning: true, dimMinutes: 0).props,
+        {'feature': 'kiosk', 'lock': 'none', 'os_pin': 'yes', 'dim': 'off'},
+      );
+    });
+
     test('setup_step with an error and a device count', () {
       expect(
         const SetupStep(

@@ -19,9 +19,12 @@ class SecureStore {
 
 /// The password store as the app configures it; also used by the headless
 /// shortcut engine, which has no Riverpod container.
-SecureStore createSecureStore() => SecureStore(const FlutterSecureStorage(
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    ));
+SecureStore createSecureStore() => SecureStore(
+  const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  ),
+);
 
-final secureStorageProvider =
-    Provider<SecureStore>((ref) => createSecureStore());
+final secureStorageProvider = Provider<SecureStore>(
+  (ref) => createSecureStore(),
+);
