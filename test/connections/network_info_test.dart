@@ -50,10 +50,20 @@ void main() {
 
   test('pickHomeAddress keeps the interface name', () {
     expect(
-        pickHomeAddress([
-          (name: 'p2p-wlan0-0', ip: '192.168.49.1'),
-          (name: 'wlan0', ip: '192.168.68.57'),
-        ]),
-        (name: 'wlan0', ip: '192.168.68.57'));
+      pickHomeAddress([
+        (name: 'p2p-wlan0-0', ip: '192.168.49.1'),
+        (name: 'wlan0', ip: '192.168.68.57'),
+      ]),
+      (name: 'wlan0', ip: '192.168.68.57'),
+    );
+  });
+
+  // 2.6.2: a VPN up during the scan is a diagnostic on the empty result.
+  test('hasVpnInterface knows tunnel interfaces', () {
+    expect(hasVpnInterface(['wlan0', 'tun0']), isTrue);
+    expect(hasVpnInterface(['wlan0', 'utun3']), isTrue);
+    expect(hasVpnInterface(['en0', 'wg0']), isTrue);
+    expect(hasVpnInterface(['wlan0', 'p2p-wlan0-0', 'rmnet0']), isFalse);
+    expect(hasVpnInterface(const []), isFalse);
   });
 }

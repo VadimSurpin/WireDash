@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:zigdash/features/connections/discovery/address_check.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
 import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
@@ -105,6 +106,8 @@ class _Harness {
     Z2mFetchResult Function(String base)? fetchFor,
     Future<void> Function(SetupResult result)? onCreated,
     String? ip = '192.168.1.5',
+    AddressChecker? checkAddress,
+    NetworkFactsProvider? networkFacts,
   }) : diagnostics = _FakeDiagnostics(reports ?? [ok()]),
        creator = _FakeCreator() {
     coordinator = SetupCoordinator(
@@ -124,6 +127,8 @@ class _Harness {
       },
       creator: creator,
       onCreated: onCreated,
+      checkAddress: checkAddress,
+      networkFacts: networkFacts,
     );
   }
 
@@ -241,14 +246,16 @@ void main() {
       s = h.coordinator.state as SetupScanning;
       expect(s.hubs, [ha]);
 
-      controller.add(const ScanTriedEvent(widened: true, hostsTried: 1018));
+      controller.add(
+        const ScanTriedEvent(widened: true, hostsTried: 1018, aliveHosts: 3),
+      );
       await controller.close();
       await Future<void>.delayed(Duration.zero);
       final empty = h.coordinator.state as SetupScanEmpty;
       expect(empty.hubs, [ha]);
       expect(empty.hub, ha);
       expect(empty.platform, SetupPlatform.smlight);
-      expect(empty.tried, (widened: true, hostsTried: 1018));
+      expect(empty.tried, (widened: true, hostsTried: 1018, aliveHosts: 3));
       expect(empty.deviceIp, '192.168.1.5');
 
       // On the empty result the answer retags; Try again scans with it.
@@ -544,6 +551,178 @@ void main() {
       await h.coordinator.submitCredentials('user', 'secret');
       await h.coordinator.createDashboard();
       expect(h.creator.calls, 1);
+    });
+  });
+
+  // 2.6.2: the address check on the empty result.
+  group('checkAddress', () {
+    const broker = ProbeResult(host: '192.168.1.20', port: 1883);
+    const ha = HubFound(
+      kind: HubKind.homeAssistant,
+      host: '192.168.1.20',
+      port: 8123,
+    );
+
+    Future<_Harness> empty({
+      AddressChecker? checkAddress,
+      NetworkFactsProvider? networkFacts,
+    }) async {
+      final h = _Harness(
+        scan: (_) => const Stream.empty(),
+        checkAddress: checkAddress,
+        networkFacts: networkFacts,
+      );
+      await h.coordinator.startScan();
+      await Future<void>.delayed(Duration.zero);
+      expect(h.coordinator.state, isA<SetupScanEmpty>());
+      return h;
+    }
+
+    test('a broker at the address is verified like a scanned one', () async {
+      final asked = <(String, int?)>[];
+      final h = await empty(
+        checkAddress: (host, port) async {
+          asked.add((host, port));
+          return const AddressCheckResult(
+            AddressOutcome.broker,
+            broker: broker,
+          );
+        },
+      );
+      final states = <SetupState>[];
+      final sub = h.coordinator.states.listen(states.add);
+      await h.coordinator.checkAddress(
+        ' http://HomeAssistant.local:8123/lovelace ',
+      );
+      await Future<void>.delayed(Duration.zero);
+      await sub.cancel();
+      // The typed text is reduced to a host and the port it came with.
+      expect(asked, [('homeassistant.local', 8123)]);
+      expect(
+        states.first,
+        isA<SetupScanEmpty>().having((s) => s.address, 'address', (
+          status: AddressCheckStatus.checking,
+          host: 'homeassistant.local',
+        )),
+      );
+      expect(states, contains(isA<SetupVerifying>()));
+      expect(h.coordinator.state, isA<SetupReview>());
+    });
+
+    test('a broker that wants a login goes to the login step', () async {
+      final h = await empty(
+        checkAddress: (host, port) async => const AddressCheckResult(
+          AddressOutcome.broker,
+          broker: ProbeResult(
+            host: '192.168.1.20',
+            port: 1883,
+            needsAuth: true,
+          ),
+        ),
+      );
+      h.coordinator.setPlatform(SetupPlatform.homeAssistant);
+      final states = <SetupState>[];
+      final sub = h.coordinator.states.listen(states.add);
+      await h.coordinator.checkAddress('192.168.1.20');
+      await Future<void>.delayed(Duration.zero); // let the last event land
+      await sub.cancel();
+      // Through a verifying state, so the check counts as found first.
+      expect(states.map((s) => s.runtimeType).toList(), [
+        SetupScanEmpty,
+        SetupVerifying,
+        SetupNeedsAuth,
+      ]);
+      final s = h.coordinator.state as SetupNeedsAuth;
+      expect(s.candidate.host, '192.168.1.20');
+      expect(s.platform, SetupPlatform.homeAssistant);
+    });
+
+    test('a hub page without a broker becomes the hub result', () async {
+      final h = await empty(
+        checkAddress: (host, port) async =>
+            const AddressCheckResult(AddressOutcome.hub, hub: ha),
+      );
+      h.coordinator.setPlatform(SetupPlatform.homeAssistant);
+      await h.coordinator.checkAddress('192.168.1.20');
+      final s = h.coordinator.state as SetupScanEmpty;
+      expect(s.hub, ha);
+      expect(s.platform, SetupPlatform.homeAssistant);
+      expect(s.address, (status: AddressCheckStatus.hub, host: '192.168.1.20'));
+    });
+
+    test('nothing, not resolved and not local stay on the field', () async {
+      for (final (outcome, status) in [
+        (AddressOutcome.nothing, AddressCheckStatus.nothing),
+        (AddressOutcome.notResolved, AddressCheckStatus.notResolved),
+        (AddressOutcome.notLocal, AddressCheckStatus.notLocal),
+      ]) {
+        final h = await empty(
+          checkAddress: (host, port) async => AddressCheckResult(outcome),
+        );
+        await h.coordinator.checkAddress('hub.example');
+        final s = h.coordinator.state as SetupScanEmpty;
+        expect(s.hubs, isEmpty);
+        expect(s.address, (status: status, host: 'hub.example'));
+      }
+    });
+
+    test('blank input is invalid without asking the checker', () async {
+      var calls = 0;
+      final h = await empty(
+        checkAddress: (host, port) async {
+          calls++;
+          return const AddressCheckResult.nothing();
+        },
+      );
+      await h.coordinator.checkAddress('   ');
+      expect(calls, 0);
+      expect((h.coordinator.state as SetupScanEmpty).address, (
+        status: AddressCheckStatus.invalid,
+        host: '',
+      ));
+    });
+
+    test('a checker that throws, or none at all, reports nothing', () async {
+      final h = await empty(checkAddress: (host, port) async => throw 'boom');
+      await h.coordinator.checkAddress('192.168.1.2');
+      expect(
+        (h.coordinator.state as SetupScanEmpty).address?.status,
+        AddressCheckStatus.nothing,
+      );
+      final web = await empty();
+      await web.coordinator.checkAddress('192.168.1.2');
+      expect(
+        (web.coordinator.state as SetupScanEmpty).address?.status,
+        AddressCheckStatus.nothing,
+      );
+    });
+
+    test('Try again clears the check; the chips keep it', () async {
+      final h = await empty(
+        checkAddress: (host, port) async => const AddressCheckResult.nothing(),
+      );
+      await h.coordinator.checkAddress('192.168.1.2');
+      h.coordinator.setPlatform(SetupPlatform.smlight);
+      expect(
+        (h.coordinator.state as SetupScanEmpty).address?.status,
+        AddressCheckStatus.nothing,
+      );
+      await h.coordinator.retry();
+      await Future<void>.delayed(Duration.zero);
+      expect((h.coordinator.state as SetupScanEmpty).address, isNull);
+    });
+
+    test('the network facts ride on the empty result', () async {
+      final h = await empty(
+        networkFacts: () async => (kind: 'Wi-Fi', vpn: true),
+      );
+      expect((h.coordinator.state as SetupScanEmpty).network, (
+        kind: 'Wi-Fi',
+        vpn: true,
+      ));
+      // Facts that fail to load never stop the scan.
+      final h2 = await empty(networkFacts: () async => throw 'no');
+      expect((h2.coordinator.state as SetupScanEmpty).network, isNull);
     });
   });
 }

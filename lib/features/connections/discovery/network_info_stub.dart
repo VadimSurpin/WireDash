@@ -2,3 +2,5 @@
 Future<String?> wifiIpv4() async => null;
 
 Future<({String name, String ip})?> homeIpv4() async => null;
+
+Future<bool> vpnActive() async => false;

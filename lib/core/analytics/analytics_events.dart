@@ -60,12 +60,17 @@ enum SetupStepKind {
   complete,
   manual,
   demo,
+
+  /// The address check on the empty result (2.6.2), with its [SetupStep.result].
+  address,
 }
 
 /// Each step of first-run setup: where people get stuck. An empty scan
 /// (2.5) also says what the scan saw: the user's platform answer, the hub
 /// kind it found (or none), how many hosts it tried, whether it widened to
-/// the /22, and the shape of the phone's subnet. Kinds and buckets only;
+/// the /22, and the shape of the phone's subnet; from 2.6.2 also how many
+/// hosts answered at all, whether a VPN was up and the kind of network. The
+/// address check (2.6.2) reports only its outcome. Kinds and buckets only;
 /// never an address.
 class SetupStep extends AnalyticsEvent {
   const SetupStep(
@@ -77,12 +82,29 @@ class SetupStep extends AnalyticsEvent {
     this.hostsTried,
     this.widened,
     this.subnet,
+    this.aliveHosts,
+    this.vpn,
+    this.network,
+    this.result,
   });
 
   final SetupStepKind step;
 
   /// The setup error kind's name, when [step] is failed.
   final Enum? error;
+
+  /// How many scanned hosts answered at all, on an empty scan.
+  final int? aliveHosts;
+
+  /// Whether a VPN interface was up during the scan.
+  final bool? vpn;
+
+  /// 'Wi-Fi', 'Ethernet' or 'other', as Support details names the interface.
+  final String? network;
+
+  /// The address check's outcome (an [AddressOutcome]), when [step] is
+  /// address.
+  final Enum? result;
 
   /// Devices found, at review and complete.
   final int? devices;
@@ -124,6 +146,23 @@ class SetupStep extends AnalyticsEvent {
       ),
     if (widened != null) 'widened': widened! ? 'yes' : 'no',
     if (subnet != null) 'subnet': subnet!,
+    if (aliveHosts != null)
+      'alive': bucket(
+        aliveHosts!,
+        const [0],
+        ranges: const [(1, 5), (6, 20)],
+        top: '21+',
+      ),
+    if (vpn != null) 'vpn': vpn! ? 'yes' : 'no',
+    if (network != null) 'net': networkLabel(network!),
+    if (result != null) 'result': _snake(result!.name),
+  };
+
+  /// The interface kind as a fixed label: wifi, ethernet or other.
+  static String networkLabel(String kind) => switch (kind) {
+    'Wi-Fi' => 'wifi',
+    'Ethernet' => 'ethernet',
+    _ => 'other',
   };
 }
 

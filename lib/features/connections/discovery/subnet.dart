@@ -21,7 +21,7 @@ String? subnetBaseFromIp(String ip) {
 /// ranges are widened. Returns empty when [deviceIp] is malformed or public.
 List<String> widerCandidateHosts(String deviceIp) {
   final base = subnetBaseFromIp(deviceIp);
-  if (base == null || !_isPrivate(deviceIp)) return const [];
+  if (base == null || !isPrivateIpv4(deviceIp)) return const [];
   final parts = base.split('.').map(int.parse).toList();
   final first = parts[2] & ~3; // start of the aligned /22
   return [
@@ -33,7 +33,9 @@ List<String> widerCandidateHosts(String deviceIp) {
   ];
 }
 
-bool _isPrivate(String ip) {
+/// True for the private IPv4 ranges a home network uses (192.168/16, 10/8,
+/// 172.16/12): the only addresses setup will scan or check.
+bool isPrivateIpv4(String ip) {
   if (ip.startsWith('192.168.') || ip.startsWith('10.')) return true;
   if (ip.startsWith('172.')) {
     final second = int.tryParse(ip.split('.')[1]) ?? 0;

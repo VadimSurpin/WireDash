@@ -3119,13 +3119,13 @@ abstract class AppLocalizations {
   /// No description provided for @setupNotFoundHa.
   ///
   /// In en, this message translates to:
-  /// **'No Home Assistant found on this network. Check that your phone is on the same Wi-Fi as Home Assistant (not a guest network), then try again. If you know its address, enter it manually with port 1883.'**
+  /// **'No Home Assistant found on this network. Check that your phone is on the same Wi-Fi as Home Assistant (not a guest network), then try again. If you know its address, enter it below.'**
   String get setupNotFoundHa;
 
   /// No description provided for @setupNotFoundSmlight.
   ///
   /// In en, this message translates to:
-  /// **'No SMLIGHT hub found on this network. Check that the hub is on and your phone is on the same Wi-Fi, then try again. If you know its address, enter it manually with port 1883.'**
+  /// **'No SMLIGHT hub found on this network. Check that the hub is on and your phone is on the same Wi-Fi, then try again. If you know its address, enter it below.'**
   String get setupNotFoundSmlight;
 
   /// No description provided for @setupNotFoundPi.
@@ -3133,6 +3133,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No MQTT broker found on this network. Check that Mosquitto is running and listening on the network (port 1883), and that your phone is on the same Wi-Fi, then try again.'**
   String get setupNotFoundPi;
+
+  /// Setup, empty result: the address check field (setup-help-2.5.md, 2.6.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Where do you open Home Assistant?'**
+  String get setupAddressQuestionHa;
+
+  /// No description provided for @setupAddressQuestionSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your SMLIGHT hub\'s address?'**
+  String get setupAddressQuestionSmlight;
+
+  /// No description provided for @setupAddressQuestionPi.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the address of the machine running Mosquitto?'**
+  String get setupAddressQuestionPi;
+
+  /// No description provided for @setupAddressQuestionAny.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the address of your hub, or of the machine running Zigbee2MQTT?'**
+  String get setupAddressQuestionAny;
+
+  /// No description provided for @setupAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An address like 192.168.1.20, a name, or the link from your browser'**
+  String get setupAddressHint;
+
+  /// No description provided for @setupAddressCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check this address'**
+  String get setupAddressCheck;
+
+  /// No description provided for @setupAddressNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered at {host}. Check the address, and that your phone is on the same Wi-Fi as it.'**
+  String setupAddressNothing(String host);
+
+  /// No description provided for @setupAddressNotResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'{host} could not be looked up. Names ending in .local often fail on Android; try the IP address instead. Home Assistant shows it under Settings › System › Network.'**
+  String setupAddressNotResolved(String host);
+
+  /// No description provided for @setupAddressNotLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'{host} is not on your home network. Use the address that works on your Wi-Fi, not a remote link such as Nabu Casa or DuckDNS.'**
+  String setupAddressNotLocal(String host);
+
+  /// No description provided for @setupAddressInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an address first.'**
+  String get setupAddressInvalid;
 
   /// No description provided for @guidedHostYourPhone.
   ///

@@ -146,8 +146,9 @@ void main() {
           ),
         ],
         platform: SetupPlatform.homeAssistant,
-        tried: (widened: true, hostsTried: 1018),
+        tried: (widened: true, hostsTried: 1018, aliveHosts: 7),
         deviceIp: '192.168.1.37',
+        network: (kind: 'Wi-Fi', vpn: true),
       );
       final props = setupStepFor(scanning, empty)!.props;
       expect(props, {
@@ -157,6 +158,9 @@ void main() {
         'hosts': '254-1020',
         'widened': 'yes',
         'subnet': '192.168',
+        'alive': '6-20',
+        'vpn': 'yes',
+        'net': 'wifi',
       });
       expect(
         props.values.any((v) => v.contains('192.168.1')),
@@ -176,6 +180,86 @@ void main() {
       expect(subnetShape('172.20.1.1'), '172.16');
       expect(subnetShape('8.8.8.8'), 'other');
       expect(subnetShape(null), isNull);
+    });
+
+    // 2.6.2: the address check reports its outcome, never the address.
+    test('the address check reports only its outcome', () {
+      const empty = SetupScanEmpty(platform: SetupPlatform.homeAssistant);
+      expect(
+        setupStepFor(
+          empty,
+          const SetupScanEmpty(
+            platform: SetupPlatform.homeAssistant,
+            address: (status: AddressCheckStatus.checking, host: 'ha.local'),
+          ),
+        ),
+        isNull,
+        reason: 'still running',
+      );
+      final notResolved = setupStepFor(
+        empty,
+        const SetupScanEmpty(
+          platform: SetupPlatform.homeAssistant,
+          address: (status: AddressCheckStatus.notResolved, host: 'ha.local'),
+        ),
+      )!;
+      expect(notResolved.props, {
+        'step': 'address',
+        'result': 'not_resolved',
+        'platform': 'home_assistant',
+      });
+      expect(
+        notResolved.props.values.any((v) => v.contains('ha.local')),
+        isFalse,
+      );
+      const hub = SetupCandidate(
+        host: '192.168.1.20',
+        port: 1883,
+        protocol: MqttProtocol.tcp,
+      );
+      expect(setupStepFor(empty, const SetupVerifying(hub))!.props, {
+        'step': 'address',
+        'result': 'broker',
+      });
+      // A broker that wants a login: found, then the login step.
+      expect(
+        setupStepFor(
+          const SetupVerifying(hub),
+          const SetupNeedsAuth(hub),
+        )!.props['step'],
+        'needs_login',
+      );
+      // A chip tap re-emits the same check: counted once.
+      const nothing = SetupScanEmpty(
+        address: (status: AddressCheckStatus.nothing, host: 'ha.local'),
+      );
+      expect(setupStepFor(empty, nothing)!.props['result'], 'nothing');
+      expect(
+        setupStepFor(
+          nothing,
+          const SetupScanEmpty(
+            platform: SetupPlatform.smlight,
+            address: (status: AddressCheckStatus.nothing, host: 'ha.local'),
+          ),
+        ),
+        isNull,
+      );
+      expect(
+        setupStepFor(
+          empty,
+          const SetupScanEmpty(
+            hubs: [
+              HubFound(
+                kind: HubKind.homeAssistant,
+                host: '192.168.1.20',
+                port: 8123,
+              ),
+            ],
+            address: (status: AddressCheckStatus.hub, host: '192.168.1.20'),
+          ),
+        )!.props,
+        {'step': 'address', 'result': 'hub'},
+      );
     });
 
     // 2.6.1: a login prompt carries the platform answer, so a user who

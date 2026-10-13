@@ -117,7 +117,7 @@ never from anything you typed or anything your broker sent.
 | Event | When | Values |
 |---|---|---|
 | `app_started` | Once each time the app starts | phone or tablet; theme (system, light, dark); Material You on or off; number of homes (0, 1, 2+); number of tiles (0, 1–10, 11–30, 31+); demo or not |
-| `setup_step` | Each step of first-run setup | the step (started, scan found, scan empty, needs login, login rejected, failed, review, complete, manual, demo); the type of setup error, if any; number of devices found (0, 1–5, 6–20, 21+); from 2.5, your answer to where Zigbee2MQTT runs, if you gave one (Home Assistant, SMLIGHT hub, Raspberry Pi or Docker, not sure); and for an empty scan, the kind of hub it saw instead (Home Assistant, Zigbee2MQTT frontend, SMLIGHT hub, or none), how many addresses it tried (0, 1–253, 254–1020, 1021+), whether it widened to the surrounding network, and which private range your phone is in (192.168, 10, 172.16, other) |
+| `setup_step` | Each step of first-run setup | the step (started, scan found, scan empty, needs login, login rejected, failed, review, complete, manual, demo); the type of setup error, if any; number of devices found (0, 1–5, 6–20, 21+); from 2.5, your answer to where Zigbee2MQTT runs, if you gave one (Home Assistant, SMLIGHT hub, Raspberry Pi or Docker, not sure); and for an empty scan, the kind of hub it saw instead (Home Assistant, Zigbee2MQTT frontend, SMLIGHT hub, or none), how many addresses it tried (0, 1–253, 254–1020, 1021+), whether it widened to the surrounding network, and which private range your phone is in (192.168, 10, 172.16, other); from 2.6.2, also how many addresses answered at all (0, 1–5, 6–20, 21+), whether a VPN was on, and the kind of network (Wi-Fi, Ethernet, other); and for the address check (the address you type on the empty result), only its outcome: a broker found, a hub page found, nothing answered, the name could not be looked up, not a home address, or nothing typed |
 | `feature_used` | The first use of a feature in a session | Devices tab, device page, Scenes, Edit mode, Wall display, tile added (with the kind of tile, such as "light" or "toggle"), or kiosk (with whether a PIN is set, whether Android screen pinning is on, and the dim delay as one of off, 1, 5 or 15 minutes) |
 | `help_opened` | Get help was opened | where from: no connection found, a setup error, manual connect, home can't be reached, device list missing, Settings, or the demo |
 | `support_contact` | A support request was started from Get help | where from (as above); email or copy |
@@ -128,7 +128,7 @@ never from anything you typed or anything your broker sent.
 | `alerts_setup` | A step of setting alerts up | the step (flow installed, flow installed by hand, no Node-RED, phone registered, no Google services, test sent, test failed); the channel (push, ntfy, Pushover) |
 | `alert_added` | An alert was added | its kind: leak, smoke, door or window opened, or battery low |
 
-**Never sent:** broker addresses, ports, usernames or passwords; MQTT topics or
+**Never sent:** broker addresses, ports, usernames or passwords; the address you type into setup; MQTT topics or
 messages; device names or addresses; home or dashboard names; device states or
 values; error messages.
 

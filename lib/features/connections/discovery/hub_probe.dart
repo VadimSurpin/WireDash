@@ -88,10 +88,16 @@ class ScanProgress extends ScanEvent {
 }
 
 /// What the scan covered, sent once just before the stream closes (never on
-/// cancel): whether it widened to the /22 and how many hosts it tried for
-/// brokers. Counts only; no address.
+/// cancel): whether it widened to the /22, how many hosts it tried for
+/// brokers and how many of those answered at all (2.6.2). Counts only; no
+/// address.
 class ScanTriedEvent extends ScanEvent {
-  const ScanTriedEvent({required this.widened, required this.hostsTried});
+  const ScanTriedEvent({
+    required this.widened,
+    required this.hostsTried,
+    this.aliveHosts = 0,
+  });
   final bool widened;
   final int hostsTried;
+  final int aliveHosts;
 }
