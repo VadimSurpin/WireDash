@@ -1,0 +1,1 @@
+ZigDash 2.6.3: een kleine correctie van de anonieme gebruikstellingen. Na een lege scan telde een tik op een platformchip de scan opnieuw; nu telt die één keer. Op het scherm verandert niets.

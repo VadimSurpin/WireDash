@@ -1,0 +1,1 @@
+ZigDash 2.6.3 : une petite correction des comptages d'usage anonymes. Après une recherche vide, toucher une puce de plateforme recomptait la recherche ; elle est maintenant comptée une seule fois. Rien ne change à l'écran.

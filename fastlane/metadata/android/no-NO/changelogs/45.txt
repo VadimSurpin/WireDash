@@ -1,0 +1,1 @@
+ZigDash 2.6.3: en liten rettelse i de anonyme brukstallene. Etter et tomt søk telte et trykk på en plattformbrikke søket på nytt; nå telles det én gang. Ingenting endres på skjermen.
