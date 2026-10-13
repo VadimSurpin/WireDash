@@ -26,10 +26,22 @@ class ProbeResult {
   String toString() => 'ProbeResult($host:$port, needsAuth=$needsAuth)';
 }
 
+/// One probe's full outcome: the broker, if the port spoke MQTT, and whether
+/// the host answered at all. [alive] is true when the TCP connect succeeded
+/// or was refused (something is there), false when it timed out, and null
+/// when the prober cannot tell.
+typedef HostProbe = ({ProbeResult? broker, bool? alive});
+
 /// Probes a single host:port; returns a [ProbeResult] when it's an MQTT broker,
 /// or null otherwise. Implementations must never throw.
 abstract class HostProber {
   Future<ProbeResult?> probe(String host, int port);
+
+  /// [probe], also saying whether the host was alive (2.6.2, for the empty
+  /// scan's diagnostics). Probers that cannot tell leave [HostProbe.alive]
+  /// null.
+  Future<HostProbe> probeHost(String host, int port) async =>
+      (broker: await probe(host, port), alive: null);
 }
 
 /// Maps an MQTT CONNACK return code to whether the broker requires auth.

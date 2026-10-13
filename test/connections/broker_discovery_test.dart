@@ -7,7 +7,7 @@ import 'package:zigdash/features/connections/discovery/subnet.dart';
 
 /// Fake prober: returns hits for a fixed set of `host:port`, and tracks the
 /// peak number of concurrent probe calls so we can assert the cap.
-class _FakeProber implements HostProber {
+class _FakeProber extends HostProber {
   _FakeProber(this.hits);
   final Map<String, bool> hits; // "host:port" -> needsAuth
   final probed = <String>{};
@@ -27,6 +27,19 @@ class _FakeProber implements HostProber {
     }
     return null;
   }
+}
+
+/// Fake prober that finds no broker but knows which hosts are alive.
+class _AliveProber extends HostProber {
+  _AliveProber(this.alive);
+  final Set<String> alive;
+
+  @override
+  Future<ProbeResult?> probe(String host, int port) async => null;
+
+  @override
+  Future<HostProbe> probeHost(String host, int port) async =>
+      (broker: null, alive: alive.contains(host));
 }
 
 /// Fake hub prober: answers with a kind for a fixed set of `host:port`.
@@ -179,7 +192,30 @@ void main() {
         ports: const [1883],
       ).scan('8.8.8.8', onDone: stats.add).toList();
       // A public address has no wider /22 to try.
-      expect(stats.single, (widened: false, hostsTried: 253, brokersFound: 0));
+      expect(stats.single, (
+        widened: false,
+        hostsTried: 253,
+        brokersFound: 0,
+        aliveHosts: 0,
+      ));
+    });
+
+    // 2.6.2: hosts that answered at all, for the empty scan's diagnostics.
+    test('counts the hosts that answered, once each', () async {
+      final service = BrokerScanService(
+        prober: _AliveProber({'192.168.7.1', '192.168.7.20'}),
+        ports: const [1883, 8883],
+      );
+      final stats = <ScanStats>[];
+      final events = await service
+          .run('192.168.7.42', hubs: const {}, onDone: stats.add)
+          .events
+          .toList();
+      expect(stats.single.aliveHosts, 2);
+      expect(stats.single.brokersFound, 0);
+      final tried = events.whereType<ScanTriedEvent>().single;
+      expect(tried.aliveHosts, 2);
+      expect(tried.widened, isTrue);
     });
 
     test('no brokers found → empty, still closes', () async {
@@ -307,7 +343,12 @@ void main() {
       );
       await service.scan('8.8.8.8', onDone: stats.add).toList();
       expect(hubs.probed, isEmpty);
-      expect(stats.single, (widened: false, hostsTried: 253, brokersFound: 0));
+      expect(stats.single, (
+        widened: false,
+        hostsTried: 253,
+        brokersFound: 0,
+        aliveHosts: 0,
+      ));
     });
   });
 }

@@ -1686,15 +1686,54 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get setupNotFoundHa =>
-      'לא נמצא Home Assistant ברשת הזו. בדקו שהטלפון מחובר לאותו Wi-Fi כמו Home Assistant (לא רשת אורחים) ונסו שוב. אם הכתובת ידועה לכם, הזינו אותה ידנית עם פורט 1883.';
+      'לא נמצא Home Assistant ברשת הזו. ודאו שהטלפון מחובר לאותה רשת Wi-Fi כמו Home Assistant (לא רשת אורחים), ונסו שוב. אם אתם יודעים את הכתובת, הזינו אותה למטה.';
 
   @override
   String get setupNotFoundSmlight =>
-      'לא נמצאה רכזת SMLIGHT ברשת הזו. בדקו שהרכזת דולקת ושהטלפון מחובר לאותו Wi-Fi ונסו שוב. אם הכתובת ידועה לכם, הזינו אותה ידנית עם פורט 1883.';
+      'לא נמצא hub של SMLIGHT ברשת הזו. ודאו שה‑hub דולק ושהטלפון מחובר לאותה רשת Wi-Fi, ונסו שוב. אם אתם יודעים את הכתובת, הזינו אותה למטה.';
 
   @override
   String get setupNotFoundPi =>
       'לא נמצא MQTT broker ברשת הזו. בדקו ש-Mosquitto פועל ומאזין ברשת (פורט 1883) ושהטלפון מחובר לאותו Wi-Fi. אחר כך נסו שוב.';
+
+  @override
+  String get setupAddressQuestionHa => 'איפה אתם פותחים את Home Assistant?';
+
+  @override
+  String get setupAddressQuestionSmlight =>
+      'מה הכתובת של ה‑hub של SMLIGHT שלכם?';
+
+  @override
+  String get setupAddressQuestionPi => 'מה הכתובת של המחשב שמריץ את Mosquitto?';
+
+  @override
+  String get setupAddressQuestionAny =>
+      'מה הכתובת של ה‑hub שלכם, או של המחשב שמריץ את Zigbee2MQTT?';
+
+  @override
+  String get setupAddressHint =>
+      'כתובת כמו 192.168.1.20, שם, או הקישור מהדפדפן שלכם';
+
+  @override
+  String get setupAddressCheck => 'לבדוק את הכתובת הזו';
+
+  @override
+  String setupAddressNothing(String host) {
+    return 'שום דבר לא ענה בכתובת $host. בדקו את הכתובת, ושהטלפון מחובר לאותה רשת Wi-Fi.';
+  }
+
+  @override
+  String setupAddressNotResolved(String host) {
+    return 'לא ניתן היה לפענח את $host. שמות שמסתיימים ב‑.local נכשלים לעיתים קרובות באנדרואיד; נסו את כתובת ה‑IP במקום. Home Assistant מציג אותה תחת הגדרות › מערכת › רשת.';
+  }
+
+  @override
+  String setupAddressNotLocal(String host) {
+    return '$host אינו ברשת הביתית שלכם. השתמשו בכתובת שעובדת ב‑Wi-Fi שלכם, לא בקישור מרוחק כמו Nabu Casa או DuckDNS.';
+  }
+
+  @override
+  String get setupAddressInvalid => 'קודם הזינו כתובת.';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

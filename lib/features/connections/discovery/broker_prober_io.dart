@@ -21,15 +21,33 @@ class SocketMqttProber implements HostProber {
   final int mqttTimeoutMs;
 
   @override
-  Future<ProbeResult?> probe(String host, int port) async {
-    // 1) Fast TCP pre-check — most hosts refuse instantly.
+  Future<ProbeResult?> probe(String host, int port) async =>
+      (await probeHost(host, port)).broker;
+
+  @override
+  Future<HostProbe> probeHost(String host, int port) async {
+    // 1) Fast TCP pre-check — most hosts refuse instantly. A refusal still
+    //    means a machine is there; only a timeout means nothing answered.
     try {
       final sock = await Socket.connect(host, port, timeout: tcpTimeout);
       sock.destroy();
+    } on SocketException catch (e) {
+      return (broker: null, alive: isConnectionRefused(e));
     } catch (_) {
-      return null;
+      return (broker: null, alive: false);
     }
+    return (broker: await _confirmMqtt(host, port), alive: true);
+  }
 
+  /// A TCP RST rather than silence: errno 111 (Linux, Android), 61 (macOS,
+  /// iOS) or 10061 (Windows), or the message the platform attaches to it.
+  static bool isConnectionRefused(SocketException e) {
+    const codes = {111, 61, 10061};
+    if (codes.contains(e.osError?.errorCode)) return true;
+    return (e.osError?.message ?? e.message).toLowerCase().contains('refused');
+  }
+
+  Future<ProbeResult?> _confirmMqtt(String host, int port) async {
     // 2) MQTT confirm.
     final client = MqttServerClient.withPort(host, '', port)
       ..logging(on: false)
@@ -38,7 +56,8 @@ class SocketMqttProber implements HostProber {
       ..connectTimeoutPeriod = mqttTimeoutMs
       ..autoReconnect = false;
     if (client.secure) client.onBadCertificate = (Object? _) => true;
-    final id = 'zigdash-scan-${DateTime.now().microsecondsSinceEpoch & 0xffffff}';
+    final id =
+        'zigdash-scan-${DateTime.now().microsecondsSinceEpoch & 0xffffff}';
     client.connectionMessage = mc.MqttConnectMessage()
         .withClientIdentifier(id)
         .startClean();
@@ -54,14 +73,17 @@ class SocketMqttProber implements HostProber {
       client.disconnect();
     } catch (_) {}
 
-    final spokeMqtt = state == mc.MqttConnectionState.connected ||
+    final spokeMqtt =
+        state == mc.MqttConnectionState.connected ||
         (code != null && code != mc.MqttConnectReturnCode.noneSpecified);
     if (!spokeMqtt) return null; // port open but not an MQTT broker
 
     return ProbeResult(
       host: host,
       port: port,
-      needsAuth: mqttConnackToAuth(code ?? mc.MqttConnectReturnCode.connectionAccepted),
+      needsAuth: mqttConnackToAuth(
+        code ?? mc.MqttConnectReturnCode.connectionAccepted,
+      ),
     );
   }
 }

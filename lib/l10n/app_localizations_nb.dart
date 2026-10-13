@@ -1702,15 +1702,55 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get setupNotFoundHa =>
-      'Fant ingen Home Assistant på dette nettverket. Sjekk at telefonen er på samme Wi-Fi som Home Assistant (ikke et gjestenett), og prøv igjen. Kjenner du adressen, skriv den inn manuelt med port 1883.';
+      'Fant ingen Home Assistant på dette nettverket. Sjekk at telefonen er på samme Wi-Fi som Home Assistant (ikke et gjestenett), og prøv igjen. Vet du adressen, skriv den inn nedenfor.';
 
   @override
   String get setupNotFoundSmlight =>
-      'Fant ingen SMLIGHT-hub på dette nettverket. Sjekk at huben er på og at telefonen er på samme Wi-Fi, og prøv igjen. Kjenner du adressen, skriv den inn manuelt med port 1883.';
+      'Fant ingen SMLIGHT-hub på dette nettverket. Sjekk at huben er på og at telefonen er på samme Wi-Fi, og prøv igjen. Vet du adressen, skriv den inn nedenfor.';
 
   @override
   String get setupNotFoundPi =>
       'Fant ingen MQTT-broker på dette nettverket. Sjekk at Mosquitto kjører og lytter på nettverket (port 1883), og at telefonen er på samme Wi-Fi. Prøv så igjen.';
+
+  @override
+  String get setupAddressQuestionHa => 'Hvor åpner du Home Assistant?';
+
+  @override
+  String get setupAddressQuestionSmlight =>
+      'Hva er adressen til SMLIGHT-huben din?';
+
+  @override
+  String get setupAddressQuestionPi =>
+      'Hva er adressen til maskinen som kjører Mosquitto?';
+
+  @override
+  String get setupAddressQuestionAny =>
+      'Hva er adressen til huben din, eller til maskinen som kjører Zigbee2MQTT?';
+
+  @override
+  String get setupAddressHint =>
+      'En adresse som 192.168.1.20, et navn eller lenken fra nettleseren din';
+
+  @override
+  String get setupAddressCheck => 'Sjekk denne adressen';
+
+  @override
+  String setupAddressNothing(String host) {
+    return 'Ingenting svarte på $host. Sjekk adressen, og at telefonen er på samme Wi-Fi.';
+  }
+
+  @override
+  String setupAddressNotResolved(String host) {
+    return '$host kunne ikke slås opp. Navn som slutter på .local feiler ofte på Android; prøv IP-adressen i stedet. Home Assistant viser den under Innstillinger › System › Nettverk.';
+  }
+
+  @override
+  String setupAddressNotLocal(String host) {
+    return '$host er ikke på hjemmenettet ditt. Bruk adressen som virker på Wi-Fi-en din, ikke en fjernlenke som Nabu Casa eller DuckDNS.';
+  }
+
+  @override
+  String get setupAddressInvalid => 'Skriv inn en adresse først.';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

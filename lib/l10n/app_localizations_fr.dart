@@ -1717,15 +1717,55 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get setupNotFoundHa =>
-      'Aucun Home Assistant trouvé sur ce réseau. Vérifiez que votre téléphone est sur le même Wi-Fi que Home Assistant (pas un réseau invité), puis réessayez. Si vous connaissez son adresse, saisissez-la manuellement avec le port 1883.';
+      'Aucun Home Assistant trouvé sur ce réseau. Vérifiez que votre téléphone est sur le même Wi-Fi que Home Assistant (pas un réseau invité), puis réessayez. Si vous connaissez son adresse, saisissez-la ci-dessous.';
 
   @override
   String get setupNotFoundSmlight =>
-      'Aucun hub SMLIGHT trouvé sur ce réseau. Vérifiez que le hub est allumé et que votre téléphone est sur le même Wi-Fi, puis réessayez. Si vous connaissez son adresse, saisissez-la manuellement avec le port 1883.';
+      'Aucun hub SMLIGHT trouvé sur ce réseau. Vérifiez que le hub est allumé et que votre téléphone est sur le même Wi-Fi, puis réessayez. Si vous connaissez son adresse, saisissez-la ci-dessous.';
 
   @override
   String get setupNotFoundPi =>
       'Aucun broker MQTT trouvé sur ce réseau. Vérifiez que Mosquitto fonctionne et écoute sur le réseau (port 1883) et que votre téléphone est sur le même Wi-Fi. Puis réessayez.';
+
+  @override
+  String get setupAddressQuestionHa => 'Où ouvrez-vous Home Assistant ?';
+
+  @override
+  String get setupAddressQuestionSmlight =>
+      'Quelle est l\'adresse de votre hub SMLIGHT ?';
+
+  @override
+  String get setupAddressQuestionPi =>
+      'Quelle est l\'adresse de la machine qui fait tourner Mosquitto ?';
+
+  @override
+  String get setupAddressQuestionAny =>
+      'Quelle est l\'adresse de votre hub, ou de la machine qui fait tourner Zigbee2MQTT ?';
+
+  @override
+  String get setupAddressHint =>
+      'Une adresse comme 192.168.1.20, un nom, ou le lien de votre navigateur';
+
+  @override
+  String get setupAddressCheck => 'Vérifier cette adresse';
+
+  @override
+  String setupAddressNothing(String host) {
+    return 'Rien n\'a répondu à $host. Vérifiez l\'adresse, et que votre téléphone est sur le même Wi-Fi.';
+  }
+
+  @override
+  String setupAddressNotResolved(String host) {
+    return 'Impossible de résoudre $host. Les noms en .local échouent souvent sur Android ; essayez l\'adresse IP. Home Assistant l\'affiche dans Paramètres › Système › Réseau.';
+  }
+
+  @override
+  String setupAddressNotLocal(String host) {
+    return '$host n\'est pas sur votre réseau domestique. Utilisez l\'adresse qui fonctionne sur votre Wi-Fi, pas un lien distant comme Nabu Casa ou DuckDNS.';
+  }
+
+  @override
+  String get setupAddressInvalid => 'Saisissez d\'abord une adresse.';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

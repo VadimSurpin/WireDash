@@ -9,6 +9,7 @@ import '../../../data/repositories/panel_repo.dart';
 import '../../../data/repositories/section_repo.dart';
 import '../../settings/providers/settings_controller.dart';
 import '../../connections/diagnostics/connect_diagnostics_provider.dart';
+import '../../connections/discovery/address_checker.dart';
 import '../../connections/discovery/broker_scan_providers.dart';
 import '../../connections/discovery/network_info.dart';
 import '../../support/support_details.dart';
@@ -45,6 +46,11 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
       network = networkOfInterface(home?.name);
       return home?.ip;
     },
+    networkFacts: () async => (kind: network, vpn: await vpnActive()),
+    checkAddress: createAddressChecker(
+      prober: scanner.prober,
+      hubProber: scanner.hubProber,
+    ),
     diagnostics: ref.watch(connectDiagnosticsProvider),
     fetchDevices: fetcher.fetch,
     creator: SetupCreator(

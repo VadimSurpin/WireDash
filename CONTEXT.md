@@ -54,6 +54,8 @@
 
 **Hub found** — a machine the scan recognised by its web page while looking for a broker: Home Assistant, the Zigbee2MQTT frontend, or an SMLIGHT hub. Not a broker: the empty result names it and says what is missing on it.
 
+**Address check** — on an empty result, the address the user types for their hub (an IP, a name, or the link from their browser), which setup checks for a broker and a hub page on that one machine. Offered whenever no hub was found, worded by the platform answer. The address stays on the phone; only the outcome is counted.
+
 **Demo mode** — a sample connection and dashboard with no real broker, marked as demo on screen and removed when real setup completes.
 
 **Last-known value** — a tile's most recent received value, kept on the phone across restarts, shown when the value is not fresh (broker unreachable, or not yet reported since connecting) and marked stale with its age. Never leaves the device, not even in Android backups.

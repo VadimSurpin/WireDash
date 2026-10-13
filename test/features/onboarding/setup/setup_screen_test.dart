@@ -10,6 +10,7 @@ import 'package:zigdash/features/onboarding/first_run.dart';
 import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:zigdash/features/connections/discovery/address_check.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
 import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
@@ -114,6 +115,7 @@ Future<SetupCoordinator> _pump(
   Locale? locale,
   _FakeFirstRun? firstRun,
   List<Override> extra = const [],
+  AddressChecker? checkAddress,
 }) async {
   // The setup screens are lists that grew in 2.5 (progress, the platform
   // question); a tall view keeps every action built and tappable.
@@ -137,6 +139,7 @@ Future<SetupCoordinator> _pump(
     fetchDevices: (config, password, base) async =>
         fetchFor?.call(base) ?? fetch,
     creator: _FakeStore(),
+    checkAddress: checkAddress,
   );
   addTearDown(coordinator.dispose);
   await tester.pumpWidget(
@@ -300,6 +303,112 @@ void main() {
     );
     expect(find.textContaining('Raspberry Pi / Linux: check'), findsOneWidget);
     expect(find.textContaining('SMLIGHT / SMHUB: open'), findsNothing);
+  });
+
+  // 2.6.2: the address check. The scanner guesses subnets; the user knows
+  // the address, so the empty result asks for it.
+  testWidgets('the empty result asks for the address, by platform', (
+    tester,
+  ) async {
+    await _pump(tester, scan: (_) => const Stream.empty());
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    expect(
+      find.text(
+        'What is the address of your hub, or of the machine running Zigbee2MQTT?',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Home Assistant').first);
+    await tester.pump();
+    expect(find.text('Where do you open Home Assistant?'), findsOneWidget);
+    expect(find.textContaining('enter it below'), findsOneWidget);
+    expect(find.text('Check this address'), findsOneWidget);
+  });
+
+  testWidgets('a broker at the typed address goes on to the devices', (
+    tester,
+  ) async {
+    final asked = <String>[];
+    final coordinator = await _pump(
+      tester,
+      scan: (_) => const Stream.empty(),
+      checkAddress: (host, port) async {
+        asked.add(host);
+        return const AddressCheckResult(
+          AddressOutcome.broker,
+          broker: ProbeResult(host: '192.168.1.20', port: 1883),
+        );
+      },
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'homeassistant.local');
+    await tester.tap(find.text('Check this address'));
+    // Check, verify, fetch: a few turns of the event loop.
+    for (var i = 0; i < 6; i++) {
+      await tester.pump();
+    }
+    expect(asked, ['homeassistant.local']);
+    expect(coordinator.state, isA<SetupReview>());
+    expect(find.text('Create dashboard with 1'), findsOneWidget);
+  });
+
+  testWidgets('nothing at the typed address is said on the field', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      scan: (_) => const Stream.empty(),
+      checkAddress: (host, port) async =>
+          const AddressCheckResult(AddressOutcome.notResolved),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'homeassistant.local');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    await tester.pump();
+    expect(
+      find.textContaining('homeassistant.local could not be looked up'),
+      findsOneWidget,
+    );
+    // The field and the rest of the result are still there.
+    expect(find.text('Check this address'), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+  });
+
+  testWidgets('a hub page at the typed address: the hub result', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      scan: (_) => const Stream.empty(),
+      checkAddress: (host, port) async => const AddressCheckResult(
+        AddressOutcome.hub,
+        hub: HubFound(
+          kind: HubKind.homeAssistant,
+          host: '192.168.1.20',
+          port: 8123,
+        ),
+      ),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), '192.168.1.20');
+    await tester.tap(find.text('Check this address'));
+    await tester.pump();
+    await tester.pump();
+    expect(
+      find.text('Found Home Assistant, but no MQTT broker'),
+      findsOneWidget,
+    );
+    expect(find.text('Connect to 192.168.1.20'), findsOneWidget);
+    expect(find.text('Check this address'), findsNothing);
   });
 
   testWidgets('no candidates shows tailored guidance and actions', (

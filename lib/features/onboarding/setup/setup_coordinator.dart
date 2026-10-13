@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../../../mqtt/broker_config.dart';
 import '../../connections/diagnostics/connect_diagnostics.dart';
+import '../../connections/discovery/address_check.dart';
 import '../../connections/discovery/broker_probe.dart';
 import '../../connections/discovery/broker_scan_service.dart';
 import '../../connections/discovery/hub_probe.dart';
@@ -43,8 +44,30 @@ Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
 /// How far a scan has come, for the progress bar.
 typedef ScanProgressValue = ({int checked, int total});
 
-/// What a finished scan tried, for the empty result's analytics.
-typedef ScanTried = ({bool widened, int hostsTried});
+/// What a finished scan tried, for the empty result's analytics: whether it
+/// widened, how many hosts it tried and how many answered at all (2.6.2).
+typedef ScanTried = ({bool widened, int hostsTried, int aliveHosts});
+
+/// The network the scan ran on, for the empty result's analytics (2.6.2):
+/// the interface kind as Support details names it ("Wi-Fi", "Ethernet",
+/// "other") and whether a VPN was up. Never an address.
+typedef NetworkFacts = ({String? kind, bool vpn});
+typedef NetworkFactsProvider = Future<NetworkFacts> Function();
+
+/// How the address check (2.6.2) is going on the empty result, and the host
+/// it was given, for the message. A broker outcome leaves this state (setup
+/// verifies the broker); a hub outcome is also recorded in
+/// [SetupScanEmpty.hubs].
+enum AddressCheckStatus {
+  checking,
+  hub,
+  nothing,
+  notResolved,
+  notLocal,
+  invalid,
+}
+
+typedef AddressCheckState = ({AddressCheckStatus status, String host});
 typedef DeviceListFetcher =
     Future<Z2mFetchResult> Function(
       BrokerConfig config,
@@ -82,19 +105,39 @@ class SetupScanning extends SetupState {
 }
 
 /// The scan finished without a single usable candidate. [hubs] are the hubs
-/// it saw instead, [platform] the user's answer, [tried] what it covered and
-/// [deviceIp] the phone's address, for the result screen and its analytics.
+/// it saw instead, [platform] the user's answer, [tried] what it covered,
+/// [deviceIp] the phone's address and [network] what it ran on, for the
+/// result screen and its analytics. [address] is the address check's state
+/// once the user typed one (2.6.2).
 class SetupScanEmpty extends SetupState {
   const SetupScanEmpty({
     this.hubs = const [],
     this.platform,
     this.tried,
     this.deviceIp,
+    this.network,
+    this.address,
   });
   final List<HubFound> hubs;
   final SetupPlatform? platform;
   final ScanTried? tried;
   final String? deviceIp;
+  final NetworkFacts? network;
+  final AddressCheckState? address;
+
+  SetupScanEmpty copyWith({
+    List<HubFound>? hubs,
+    SetupPlatform? platform,
+    AddressCheckState? address,
+    bool clearAddress = false,
+  }) => SetupScanEmpty(
+    hubs: hubs ?? this.hubs,
+    platform: platform ?? this.platform,
+    tried: tried,
+    deviceIp: deviceIp,
+    network: network,
+    address: clearAddress ? null : (address ?? this.address),
+  );
 
   /// The hub the result speaks about: Home Assistant first (it hosts the
   /// broker), then the Zigbee2MQTT frontend, then an SMLIGHT hub.
@@ -174,6 +217,8 @@ class SetupCoordinator {
     required ConnectDiagnostics diagnostics,
     required DeviceListFetcher fetchDevices,
     required SetupStore creator,
+    AddressChecker? checkAddress,
+    NetworkFactsProvider? networkFacts,
     String base = 'zigbee2mqtt',
     this.onCreated,
   }) : _base = base,
@@ -181,13 +226,20 @@ class SetupCoordinator {
        _deviceIp = deviceIp,
        _diagnostics = diagnostics,
        _fetchDevices = fetchDevices,
-       _creator = creator;
+       _creator = creator,
+       _checkAddress = checkAddress,
+       _networkFacts = networkFacts;
 
   final ScanRunFactory _scan;
   final DeviceIpProvider _deviceIp;
   final ConnectDiagnostics _diagnostics;
   final DeviceListFetcher _fetchDevices;
   final SetupStore _creator;
+
+  /// The address check (2.6.2); null where the platform cannot probe (web),
+  /// and then [checkAddress] reports nothing found.
+  final AddressChecker? _checkAddress;
+  final NetworkFactsProvider? _networkFacts;
 
   /// Runs once after a successful setup, before [SetupComplete] is emitted
   /// (the app clears demo mode, finishes first run and remembers the new
@@ -232,6 +284,13 @@ class SetupCoordinator {
       _emit(const SetupFailed(SetupErrorKind.scanFailed));
       return;
     }
+    NetworkFacts? network;
+    try {
+      network = await _networkFacts?.call();
+    } catch (_) {
+      // Diagnostics only; the scan runs without them.
+    }
+    if (op != _op) return;
     final buffer = <ProbeResult>[];
     final hubs = <HubFound>[];
     ScanProgressValue? progress;
@@ -261,8 +320,16 @@ class SetupCoordinator {
             progress = (checked: checked, total: total);
             // Coarse steps keep the UI from rebuilding a thousand times.
             if (checked == total || checked % 16 == 0) emitScanning();
-          case ScanTriedEvent(:final widened, :final hostsTried):
-            tried = (widened: widened, hostsTried: hostsTried);
+          case ScanTriedEvent(
+            :final widened,
+            :final hostsTried,
+            :final aliveHosts,
+          ):
+            tried = (
+              widened: widened,
+              hostsTried: hostsTried,
+              aliveHosts: aliveHosts,
+            );
         }
       },
       onDone: () {
@@ -275,6 +342,7 @@ class SetupCoordinator {
               platform: _platform,
               tried: tried,
               deviceIp: ip,
+              network: network,
             ),
           );
         } else if (merged.length == 1) {
@@ -291,6 +359,7 @@ class SetupCoordinator {
               hubs: List.unmodifiable(hubs),
               platform: _platform,
               deviceIp: ip,
+              network: network,
             ),
           );
         }
@@ -316,14 +385,83 @@ class SetupCoordinator {
         ),
       );
     } else if (s is SetupScanEmpty) {
+      // Not copyWith: deselecting a chip sets the answer back to null.
       _emit(
         SetupScanEmpty(
           hubs: s.hubs,
           platform: platform,
           tried: s.tried,
           deviceIp: s.deviceIp,
+          network: s.network,
+          address: s.address,
         ),
       );
+    }
+  }
+
+  /// The address check (2.6.2): from the empty result, check the one
+  /// machine the user named. A broker there goes straight to verification
+  /// (and the login step if it asks); a hub page without a broker becomes
+  /// the "found X, but no broker" result; anything else is said on the
+  /// field. The typed address never leaves the coordinator.
+  Future<void> checkAddress(String input) async {
+    final s = _state;
+    if (s is! SetupScanEmpty) return;
+    final parsed = hostFromAddressInput(input);
+    if (parsed == null) {
+      _emit(
+        s.copyWith(address: (status: AddressCheckStatus.invalid, host: '')),
+      );
+      return;
+    }
+    final op = ++_op;
+    _emit(
+      s.copyWith(
+        address: (status: AddressCheckStatus.checking, host: parsed.host),
+      ),
+    );
+    AddressCheckResult result;
+    try {
+      result =
+          await _checkAddress?.call(parsed.host, parsed.port) ??
+          const AddressCheckResult.nothing();
+    } catch (_) {
+      result = const AddressCheckResult.nothing();
+    }
+    if (op != _op || _state is! SetupScanEmpty) return;
+    final current = _state as SetupScanEmpty;
+    switch (result.outcome) {
+      case AddressOutcome.broker:
+        final candidate = SetupCandidate.fromProbe(result.broker!);
+        // Leave the empty result through a verifying state even when the
+        // broker asks for a login first, so the check is counted as found
+        // before the login step is.
+        _emit(SetupVerifying(candidate));
+        await _verify(candidate);
+      case AddressOutcome.hub:
+        _emit(
+          current.copyWith(
+            hubs: [result.hub!],
+            address: (status: AddressCheckStatus.hub, host: parsed.host),
+          ),
+        );
+      case AddressOutcome.nothing:
+      case AddressOutcome.notResolved:
+      case AddressOutcome.notLocal:
+      case AddressOutcome.invalid:
+        _emit(
+          current.copyWith(
+            address: (
+              status: switch (result.outcome) {
+                AddressOutcome.notResolved => AddressCheckStatus.notResolved,
+                AddressOutcome.notLocal => AddressCheckStatus.notLocal,
+                AddressOutcome.invalid => AddressCheckStatus.invalid,
+                _ => AddressCheckStatus.nothing,
+              },
+              host: parsed.host,
+            ),
+          ),
+        );
     }
   }
 

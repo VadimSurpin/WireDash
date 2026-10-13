@@ -80,6 +80,7 @@ class SetupScreen extends ConsumerWidget {
             state: state,
             onRetry: coordinator.retry,
             onPlatform: coordinator.setPlatform,
+            onCheckAddress: coordinator.checkAddress,
             onManual: manual,
             onManualTo: manualTo,
             onDemo: tryDemo,
@@ -357,12 +358,14 @@ class _ScanEmpty extends StatelessWidget {
     required this.onRetry,
     required this.onPlatform,
     required this.onManual,
+    required this.onCheckAddress,
     required this.onManualTo,
     required this.onDemo,
   });
   final SetupScanEmpty state;
   final VoidCallback onRetry;
   final ValueChanged<SetupPlatform?> onPlatform;
+  final ValueChanged<String> onCheckAddress;
   final VoidCallback onManual;
   final ValueChanged<HubFound> onManualTo;
   final VoidCallback onDemo;
@@ -424,6 +427,12 @@ class _ScanEmpty extends StatelessWidget {
         if (hub == null) ...[
           const SizedBox(height: 12),
           _PlatformChips(value: platform, onChanged: onPlatform),
+          const SizedBox(height: 20),
+          _AddressField(
+            platform: platform,
+            check: state.address,
+            onCheck: onCheckAddress,
+          ),
         ],
         const SizedBox(height: 24),
         if (hub != null) ...[
@@ -452,6 +461,91 @@ class _ScanEmpty extends StatelessWidget {
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
         TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
+      ],
+    );
+  }
+}
+
+/// The address check (2.6.2): "where do you open Home Assistant?" (or the
+/// hub's address, by the platform answer), a field for whatever the user
+/// types, and the outcome under it. The scanner guesses subnets; the user
+/// knows the address.
+class _AddressField extends StatefulWidget {
+  const _AddressField({
+    required this.platform,
+    required this.check,
+    required this.onCheck,
+  });
+  final SetupPlatform? platform;
+  final AddressCheckState? check;
+  final ValueChanged<String> onCheck;
+
+  @override
+  State<_AddressField> createState() => _AddressFieldState();
+}
+
+class _AddressFieldState extends State<_AddressField> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final check = widget.check;
+    final checking = check?.status == AddressCheckStatus.checking;
+    final question = switch (widget.platform) {
+      SetupPlatform.homeAssistant => l10n.setupAddressQuestionHa,
+      SetupPlatform.smlight => l10n.setupAddressQuestionSmlight,
+      SetupPlatform.piOrDocker => l10n.setupAddressQuestionPi,
+      _ => l10n.setupAddressQuestionAny,
+    };
+    final String? outcome = switch (check?.status) {
+      AddressCheckStatus.nothing => l10n.setupAddressNothing(check!.host),
+      AddressCheckStatus.notResolved => l10n.setupAddressNotResolved(
+        check!.host,
+      ),
+      AddressCheckStatus.notLocal => l10n.setupAddressNotLocal(check!.host),
+      AddressCheckStatus.invalid => l10n.setupAddressInvalid,
+      _ => null,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(question, style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _controller,
+          enabled: !checking,
+          keyboardType: TextInputType.url,
+          autocorrect: false,
+          decoration: InputDecoration(
+            hintText: l10n.setupAddressHint,
+            hintMaxLines: 2,
+            errorText: outcome,
+            errorMaxLines: 4,
+          ),
+          onSubmitted: widget.onCheck,
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: FilledButton.tonalIcon(
+            onPressed: checking ? null : () => widget.onCheck(_controller.text),
+            icon: checking
+                ? const SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.travel_explore),
+            label: Text(l10n.setupAddressCheck),
+          ),
+        ),
       ],
     );
   }

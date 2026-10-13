@@ -1716,15 +1716,55 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get setupNotFoundHa =>
-      'Home Assistant в этой сети не найден. Проверьте, что телефон подключён к той же сети Wi-Fi, что и Home Assistant (не к гостевой), и попробуйте снова. Если вы знаете адрес, введите его вручную с портом 1883.';
+      'Home Assistant в этой сети не найден. Проверьте, что телефон в той же сети Wi-Fi, что и Home Assistant (не гостевой), и попробуйте снова. Если знаете адрес, введите его ниже.';
 
   @override
   String get setupNotFoundSmlight =>
-      'Хаб SMLIGHT в этой сети не найден. Проверьте, что хаб включён и телефон подключён к той же сети Wi-Fi, и попробуйте снова. Если вы знаете адрес, введите его вручную с портом 1883.';
+      'Хаб SMLIGHT в этой сети не найден. Проверьте, что хаб включён и телефон в той же сети Wi-Fi, и попробуйте снова. Если знаете адрес, введите его ниже.';
 
   @override
   String get setupNotFoundPi =>
       'MQTT-брокер в этой сети не найден. Проверьте, что Mosquitto запущен и слушает сеть (порт 1883), а телефон подключён к той же сети Wi-Fi. Затем попробуйте снова.';
+
+  @override
+  String get setupAddressQuestionHa => 'Где вы открываете Home Assistant?';
+
+  @override
+  String get setupAddressQuestionSmlight =>
+      'Какой адрес у вашего хаба SMLIGHT?';
+
+  @override
+  String get setupAddressQuestionPi =>
+      'Какой адрес у машины, на которой работает Mosquitto?';
+
+  @override
+  String get setupAddressQuestionAny =>
+      'Какой адрес у вашего хаба или машины, на которой работает Zigbee2MQTT?';
+
+  @override
+  String get setupAddressHint =>
+      'Адрес вроде 192.168.1.20, имя или ссылка из браузера';
+
+  @override
+  String get setupAddressCheck => 'Проверить этот адрес';
+
+  @override
+  String setupAddressNothing(String host) {
+    return 'По адресу $host никто не ответил. Проверьте адрес и что телефон в той же сети Wi-Fi.';
+  }
+
+  @override
+  String setupAddressNotResolved(String host) {
+    return 'Не удалось разрешить $host. Имена на .local часто не работают в Android; попробуйте IP-адрес. Home Assistant показывает его в Настройки › Система › Сеть.';
+  }
+
+  @override
+  String setupAddressNotLocal(String host) {
+    return '$host не в вашей домашней сети. Используйте адрес, который работает в вашем Wi-Fi, а не удалённую ссылку вроде Nabu Casa или DuckDNS.';
+  }
+
+  @override
+  String get setupAddressInvalid => 'Сначала введите адрес.';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

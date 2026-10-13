@@ -13,12 +13,36 @@ Future<({String name, String ip})?> homeIpv4() async {
     );
     return pickHomeAddress([
       for (final iface in interfaces)
-        for (final addr in iface.addresses) (name: iface.name, ip: addr.address),
+        for (final addr in iface.addresses)
+          (name: iface.name, ip: addr.address),
     ]);
   } catch (_) {
     return null;
   }
 }
+
+/// Whether a VPN is up: a tunnel interface exists next to the home one. A VPN
+/// often routes or blocks local traffic, so an empty scan under one is a
+/// different problem (2.6.2 diagnostics). Never throws.
+Future<bool> vpnActive() async {
+  try {
+    final interfaces = await NetworkInterface.list(includeLoopback: false);
+    return hasVpnInterface([for (final i in interfaces) i.name]);
+  } catch (_) {
+    return false;
+  }
+}
+
+/// True when any of [names] is a tunnel interface (`tun0`, `ppp0`, `ipsec0`,
+/// `wg0`, `utun2`).
+bool hasVpnInterface(Iterable<String> names) => names.any(
+  (n) =>
+      n.startsWith('tun') ||
+      n.startsWith('utun') ||
+      n.startsWith('ppp') ||
+      n.startsWith('ipsec') ||
+      n.startsWith('wg'),
+);
 
 /// Picks the address to scan from the phone's IPv4 interfaces.
 ///
@@ -34,7 +58,8 @@ String? pickHomeIpv4(List<({String name, String ip})> addresses) =>
 /// [pickHomeIpv4], keeping the interface name (for Support details' network
 /// kind; the name itself is never shown).
 ({String name, String ip})? pickHomeAddress(
-    List<({String name, String ip})> addresses) {
+  List<({String name, String ip})> addresses,
+) {
   final usable = [
     for (final a in addresses)
       if (!_isExcluded(a.name)) a,
@@ -55,8 +80,20 @@ bool _isHomeInterface(String name) =>
 
 bool _isExcluded(String name) {
   const prefixes = [
-    'p2p', 'rmnet', 'ccmni', 'pdp', 'v4-rmnet', 'tun', 'ppp', 'ipsec',
-    'dummy', 'swlan', 'ap', 'rndis', 'bt-pan', 'aware',
+    'p2p',
+    'rmnet',
+    'ccmni',
+    'pdp',
+    'v4-rmnet',
+    'tun',
+    'ppp',
+    'ipsec',
+    'dummy',
+    'swlan',
+    'ap',
+    'rndis',
+    'bt-pan',
+    'aware',
   ];
   return name.contains('p2p') || prefixes.any(name.startsWith);
 }

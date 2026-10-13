@@ -1,10 +1,13 @@
 import '../../../core/analytics/analytics_events.dart';
+import '../../connections/discovery/address_check.dart';
 import 'setup_coordinator.dart';
 
 /// The `setup_step` event for a setup state change, or null when the change
 /// is not a step (more candidates arriving, say). Recorded only with
 /// consent (ADR 0006). [platform] is the user's answer so far; an empty scan
-/// also reports what it saw (2.5).
+/// also reports what it saw (2.5), and the address check its outcome
+/// (2.6.2): a broker found leaves the empty result for verification, the
+/// other outcomes stay on it.
 SetupStep? setupStepFor(
   SetupState? previous,
   SetupState next, {
@@ -17,13 +20,40 @@ SetupStep? setupStepFor(
     SetupStepKind.scanFound,
     platform: platform,
   ),
-  SetupScanEmpty(:final tried, :final deviceIp) => SetupStep(
+  SetupVerifying() when previous is SetupScanEmpty => SetupStep(
+    SetupStepKind.address,
+    result: AddressOutcome.broker,
+    platform: platform,
+  ),
+  // The check is running: nothing to count yet.
+  SetupScanEmpty(address: (status: AddressCheckStatus.checking, host: _)) =>
+    null,
+  // A chip tap re-emits the empty result with the same check: count once.
+  SetupScanEmpty(address: final a?)
+      when previous is SetupScanEmpty && previous.address == a =>
+    null,
+  SetupScanEmpty(address: (:final status, host: _)) => SetupStep(
+    SetupStepKind.address,
+    result: switch (status) {
+      AddressCheckStatus.hub => AddressOutcome.hub,
+      AddressCheckStatus.notResolved => AddressOutcome.notResolved,
+      AddressCheckStatus.notLocal => AddressOutcome.notLocal,
+      AddressCheckStatus.invalid => AddressOutcome.invalid,
+      AddressCheckStatus.checking ||
+      AddressCheckStatus.nothing => AddressOutcome.nothing,
+    },
+    platform: next.platform ?? platform,
+  ),
+  SetupScanEmpty(:final tried, :final deviceIp, :final network) => SetupStep(
     SetupStepKind.scanEmpty,
     platform: next.platform ?? platform,
     hub: next.hub?.kind,
     hostsTried: tried?.hostsTried,
     widened: tried?.widened,
     subnet: subnetShape(deviceIp),
+    aliveHosts: tried?.aliveHosts,
+    vpn: network?.vpn,
+    network: network?.kind,
   ),
   SetupNeedsAuth(:final rejected) => SetupStep(
     rejected ? SetupStepKind.loginRejected : SetupStepKind.needsLogin,

@@ -84,6 +84,30 @@ vaguest screen in the app into one instruction.
   the prompt left it in six seconds, twice; the fix was one tap away in Get
   help, which they never opened.
 
+- Address check (2.6.2): the empty result without a hub asks for the
+  address the user already knows ("Where do you open Home Assistant?",
+  or the hub's / Mosquitto machine's address by the platform answer, or
+  either for Not sure) and checks that one machine: a name is resolved to
+  an IPv4 address (names like `homeassistant.local` often fail on Android,
+  and the message says to use the IP instead), a public address is refused
+  (a Nabu Casa or DuckDNS link is not the home network), then ports 1883
+  and 8883 are probed for a broker and 8123, 8080 and 80 (or the port the
+  user typed) for a hub page, at the same time. A broker goes straight to
+  verification and the login step; a hub page without one becomes the
+  "found X, but no broker" result with its Connect to button; nothing,
+  not resolved and not local are said on the field. Try again clears the
+  check; the chips keep it. The typed address never leaves the phone.
+  Reason: five of a week's nine new users were lost at an empty scan with
+  no hub found, three of them after answering Home Assistant; the scanner
+  guesses subnets, the user knows the address.
+- Scan diagnostics (2.6.2): the `scan_empty` step also carries how many
+  probed hosts answered at all (a TCP connect that succeeded or was
+  refused; a timeout is silence) as a bucket (0, 1-5, 6-20, 21+), whether a
+  VPN interface was up, and the kind of network (Wi-Fi, Ethernet, other),
+  so "nothing on this /24" can be told from "an isolated or wrong network".
+  The `address` step carries only its outcome (broker, hub, nothing,
+  not_resolved, not_local, invalid).
+
 ## Code
 
 - `lib/features/connections/discovery/hub_probe.dart`: `HubKind`,
@@ -108,3 +132,15 @@ vaguest screen in the app into one instruction.
   `setup_coordinator_test.dart`, `setup_screen_test.dart`,
   `guided_connect_screen_test.dart`, `analytics_ui_test.dart`; goldens
   `first_run_scanning` and `first_run_hub_no_broker`.
+- 2.6.2: `address_check.dart` (`AddressOutcome`, `AddressCheckResult`,
+  `AddressChecker`, `hostFromAddressInput`), `address_checker_io.dart` /
+  `_stub.dart` / `address_checker.dart` (`createAddressChecker`);
+  `HostProber.probeHost` and `SocketMqttProber.isConnectionRefused`
+  (alive hosts), `ScanTriedEvent.aliveHosts`, `ScanStats.aliveHosts`;
+  `network_info_io.dart` `vpnActive` / `hasVpnInterface`; the
+  coordinator's `checkAddress`, `AddressCheckStatus`, `NetworkFacts`,
+  `SetupScanEmpty.address` / `.network`; `SetupStepKind.address` and the
+  `alive`, `vpn`, `net`, `result` properties; `_AddressField` on the
+  screen; strings `setupAddress*`, 11 ARBs. Tests:
+  `test/connections/address_check_test.dart` plus the files above; golden
+  `first_run_nothing_found` shows the field.

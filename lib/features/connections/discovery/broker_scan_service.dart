@@ -5,7 +5,14 @@ import 'hub_probe.dart';
 import 'subnet.dart';
 
 /// What a finished (or cancelled) scan tried, for Support details.
-typedef ScanStats = ({bool widened, int hostsTried, int brokersFound});
+/// [aliveHosts] is how many probed hosts answered at all (connected or
+/// refused), the difference between an empty network and a hub elsewhere.
+typedef ScanStats = ({
+  bool widened,
+  int hostsTried,
+  int brokersFound,
+  int aliveHosts,
+});
 
 /// A scan in progress: its [events], and a way to add the answer-gated hub
 /// pass while it runs. Cancelling the [events] subscription stops it.
@@ -130,6 +137,7 @@ class _Engine {
   late int _total;
   final _seen = <String>{};
   final _hubsSeen = <String>{};
+  final _alive = <String>{};
   var _index = 0;
   var _active = 0;
   var _checked = 0;
@@ -167,6 +175,7 @@ class _Engine {
       widened: _widened,
       hostsTried: _brokerTasksDone ~/ service.ports.length,
       brokersFound: _seen.length,
+      aliveHosts: _alive.length,
     ));
   }
 
@@ -195,6 +204,7 @@ class _Engine {
       ScanTriedEvent(
         widened: _widened,
         hostsTried: _brokerTasksDone ~/ service.ports.length,
+        aliveHosts: _alive.length,
       ),
     );
     _controller.close();
@@ -223,9 +233,13 @@ class _Engine {
   Future<void> _probe(_Task task) async {
     switch (task) {
       case _BrokerTask():
-        final res = await service.prober.probe(task.host, task.port);
-        if (res != null && !_cancelled && _seen.add(res.key)) {
-          _controller.add(BrokerFound(res));
+        final (:broker, :alive) = await service.prober.probeHost(
+          task.host,
+          task.port,
+        );
+        if (alive == true) _alive.add(task.host);
+        if (broker != null && !_cancelled && _seen.add(broker.key)) {
+          _controller.add(BrokerFound(broker));
         }
       case _HubTask():
         final kind = await service.hubProber.probe(task.host, task.port);
