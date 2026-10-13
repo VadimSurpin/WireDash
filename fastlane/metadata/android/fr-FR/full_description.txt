@@ -45,9 +45,11 @@ SOIGNÉ : TÉLÉPHONE ET TABLETTE
 • Open source (MIT). Le code est public et auditable.
 
 POUR QUI ?
-Vous faites tourner Zigbee2MQTT avec votre propre broker (Mosquitto sur un Raspberry Pi, SMLIGHT SMHUB…), peut-être à côté de Home Assistant, et vous voulez un contrôle rapide depuis le téléphone ou une tablette murale sans ouvrir l'interface web de Zigbee2MQTT. Lassé des applis dépendantes du cloud, du verrouillage constructeur et de la collecte de données ? ZigDash est fait pour vous.
+Vous faites tourner Zigbee2MQTT avec votre propre broker, peut-être à côté de Home Assistant, et vous voulez un contrôle rapide depuis le téléphone ou une tablette murale sans ouvrir l'interface web de Zigbee2MQTT. Lassé des applis dépendantes du cloud, du verrouillage constructeur et de la collecte de données ? ZigDash est fait pour vous.
 
 CE QU'IL VOUS FAUT
 • Une installation Zigbee2MQTT avec un broker MQTT sur votre réseau local.
 • Tailscale (facultatif) pour l'accès à distance hors de chez vous.
 • Node-RED (facultatif) pour l'automatisation côté hub.
+
+Questions et idées : groupe Telegram t.me/zigdash_app

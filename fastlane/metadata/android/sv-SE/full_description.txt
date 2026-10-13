@@ -49,9 +49,11 @@ GENOMARBETAD – MOBIL OCH SURFPLATTA
 • Öppen källkod (MIT). Koden är offentlig och granskningsbar.
 
 VEM ÄR DET HÄR FÖR?
-Du kör Zigbee2MQTT med egen broker (Mosquitto på en Raspberry Pi, SMLIGHT SMHUB …), kanske tillsammans med Home Assistant, och vill ha snabb styrning från mobilen eller en väggplatta utan att öppna Zigbee2MQTT:s webbgränssnitt. Trött på molnberoende appar, leverantörslåsning och datainsamling? ZigDash är för dig.
+Du kör Zigbee2MQTT med egen broker, kanske tillsammans med Home Assistant, och vill ha snabb styrning från mobilen eller en väggplatta utan att öppna Zigbee2MQTT:s webbgränssnitt. Trött på molnberoende appar, leverantörslåsning och datainsamling? ZigDash är för dig.
 
 DET HÄR BEHÖVER DU
 • En Zigbee2MQTT-installation med en MQTT-broker i ditt lokala nätverk.
 • Tailscale (valfritt) för fjärråtkomst utanför hemmet.
 • Node-RED (valfritt) för automation på hubben.
+
+Frågor och idéer: Telegram-grupp t.me/zigdash_app

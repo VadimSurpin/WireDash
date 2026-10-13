@@ -75,6 +75,14 @@ vaguest screen in the app into one instruction.
   backwards; a scan that ends early just stops.
 - Support details' last-scan line is unchanged (hosts tried, widened,
   brokers found, interface kind).
+- Login step (2.6.1): the prompt says it wants the MQTT login, not the hub's
+  web password, and where that login comes from: one line for the platform
+  the user named (Home Assistant user for the Mosquitto add-on, Mosquitto's
+  password file on a Pi or Docker, Settings › MQTT on an SMLIGHT hub), all
+  three when they didn't answer. The `needs_login` and `login_rejected`
+  steps carry the platform answer like the others. Reason: a user who hit
+  the prompt left it in six seconds, twice; the fix was one tap away in Get
+  help, which they never opened.
 
 ## Code
 

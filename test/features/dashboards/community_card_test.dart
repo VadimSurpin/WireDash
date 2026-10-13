@@ -24,35 +24,40 @@ class _Sink implements AnalyticsSink {
 }
 
 Connection _home(String host) => Connection(
-      id: 'c1',
-      name: 'Home',
-      host: host,
-      port: 1883,
-      protocol: MqttProtocol.tcp,
-      keepAliveSeconds: 60,
-      autoConnect: true,
-      createdAt: DateTime(2026),
-      updatedAt: DateTime(2026),
-    );
+  id: 'c1',
+  name: 'Home',
+  host: host,
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+  keepAliveSeconds: 60,
+  autoConnect: true,
+  createdAt: DateTime(2026),
+  updatedAt: DateTime(2026),
+);
 
-Future<(SharedPreferences, _Sink)> _card(WidgetTester tester,
-    {Map<String, Object> prefs = const {}, String host = '192.168.1.2'}) async {
+Future<(SharedPreferences, _Sink)> _card(
+  WidgetTester tester, {
+  Map<String, Object> prefs = const {},
+  String host = '192.168.1.2',
+}) async {
   SharedPreferences.setMockInitialValues(prefs);
   final p = await SharedPreferences.getInstance();
   final sink = _Sink();
-  await tester.pumpWidget(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(p),
-      analyticsAvailableProvider.overrideWithValue(true),
-      analyticsSinkProvider.overrideWithValue(sink),
-      connectionByIdProvider.overrideWith((ref, _) async => _home(host)),
-    ],
-    child: const MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: CommunityCard(connectionId: 'c1')),
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(p),
+        analyticsAvailableProvider.overrideWithValue(true),
+        analyticsSinkProvider.overrideWithValue(sink),
+        connectionByIdProvider.overrideWith((ref, _) async => _home(host)),
+      ],
+      child: const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: CommunityCard(connectionId: 'c1')),
+      ),
     ),
-  ));
+  );
   await tester.pumpAndSettle();
   return (p, sink);
 }
@@ -65,8 +70,9 @@ void main() {
     pollDoneKey: '1',
   };
 
-  testWidgets('shown on the fifth day once the poll is done; Join opens the group',
-      (tester) async {
+  testWidgets('shown once the poll is done; Join opens the group', (
+    tester,
+  ) async {
     Uri? opened;
     openCommunityLink = (url) async {
       opened = url;
@@ -82,14 +88,26 @@ void main() {
     expect(prefs.getString(communityCardDoneKey), '1');
   });
 
-  testWidgets('not before the fifth day', (tester) async {
-    await _card(tester, prefs: {...ready, 'review_sessions': 4});
+  testWidgets('not before the second day', (tester) async {
+    await _card(tester, prefs: {...ready, 'review_sessions': 1});
     expect(find.text(title), findsNothing);
   });
 
-  testWidgets('waits for the poll card', (tester) async {
-    await _card(tester,
-        prefs: {'analytics_consent': true, 'review_sessions': 9});
+  testWidgets('from the second day, before the poll is due (2.6.1)', (
+    tester,
+  ) async {
+    await _card(
+      tester,
+      prefs: {'analytics_consent': true, 'review_sessions': 2},
+    );
+    expect(find.text(title), findsOneWidget);
+  });
+
+  testWidgets('steps aside while the poll card is showing', (tester) async {
+    await _card(
+      tester,
+      prefs: {'analytics_consent': true, 'review_sessions': 9},
+    );
     expect(find.text(title), findsNothing);
   });
 

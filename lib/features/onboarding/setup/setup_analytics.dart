@@ -27,6 +27,7 @@ SetupStep? setupStepFor(
   ),
   SetupNeedsAuth(:final rejected) => SetupStep(
     rejected ? SetupStepKind.loginRejected : SetupStepKind.needsLogin,
+    platform: next.platform ?? platform,
   ),
   SetupFailed(:final kind) => SetupStep(SetupStepKind.failed, error: kind),
   SetupReview(:final rows) when previous is! SetupReview => SetupStep(

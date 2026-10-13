@@ -9,20 +9,21 @@ import '../../onboarding/demo_service.dart' show isDemoConnection;
 import '../../settings/providers/settings_controller.dart'
     show sharedPreferencesProvider;
 import '../../support/community.dart';
-import 'poll_card.dart' show pollDoneKey;
+import 'poll_card.dart' show pollAfterDays, pollDoneKey;
 
 /// "1" once the card was tapped or put away: it is shown only once.
 const communityCardDoneKey = 'community_card_done';
 
-/// Days on a connected dashboard before the card is shown.
-const communityCardAfterDays = 5;
+/// Days on a connected dashboard before the card is shown: the second day,
+/// so a new user hears about the group while setup is fresh (2.6.1).
+const communityCardAfterDays = 2;
 
 /// "Join the ZigDash community" (docs/design/support.md, Community): a
 /// one-time card on a real Home's dashboard once the app was used on
-/// [communityCardAfterDays] days and the poll card is out of the way, so
-/// the cards never stack. Join opens the Telegram group; Not now puts the
-/// card away for good. Nothing is sent but the optional
-/// `community_opened` event.
+/// [communityCardAfterDays] days. It steps aside while the usage-data
+/// question or the poll card is showing, so the cards never stack. Join
+/// opens the Telegram group; Not now puts the card away for good. Nothing
+/// is sent but the optional `community_opened` event.
 class CommunityCard extends ConsumerStatefulWidget {
   const CommunityCard({super.key, required this.connectionId});
 
@@ -37,7 +38,9 @@ class _CommunityCardState extends ConsumerState<CommunityCard> {
 
   Future<void> _finish() async {
     setState(() => _done = true);
-    await ref.read(sharedPreferencesProvider).setString(communityCardDoneKey, '1');
+    await ref
+        .read(sharedPreferencesProvider)
+        .setString(communityCardDoneKey, '1');
   }
 
   @override
@@ -45,8 +48,10 @@ class _CommunityCardState extends ConsumerState<CommunityCard> {
     final prefs = ref.watch(sharedPreferencesProvider);
     final consent = ref.watch(analyticsConsentProvider);
     final available = ref.watch(analyticsAvailableProvider);
-    final host =
-        ref.watch(connectionByIdProvider(widget.connectionId)).valueOrNull?.host;
+    final host = ref
+        .watch(connectionByIdProvider(widget.connectionId))
+        .valueOrNull
+        ?.host;
     final days = prefs.getInt(ReviewPromptController.kSessions) ?? 0;
     if (_done ||
         prefs.getString(communityCardDoneKey) != null ||
@@ -55,7 +60,7 @@ class _CommunityCardState extends ConsumerState<CommunityCard> {
         isDemoConnection(host) ||
         // The usage-data question and the poll come first; one card at a time.
         (available && consent == AnalyticsConsent.unasked) ||
-        prefs.getString(pollDoneKey) == null) {
+        (days >= pollAfterDays && prefs.getString(pollDoneKey) == null)) {
       return const SizedBox.shrink();
     }
     final l10n = context.l10n;
@@ -72,16 +77,20 @@ class _CommunityCardState extends ConsumerState<CommunityCard> {
                 const Icon(Icons.forum_outlined),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(l10n.communityCardTitle,
-                      style: theme.textTheme.titleMedium),
+                  child: Text(
+                    l10n.communityCardTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
-              child: Text(l10n.communityCardBody,
-                  style: theme.textTheme.bodyMedium),
+              child: Text(
+                l10n.communityCardBody,
+                style: theme.textTheme.bodyMedium,
+              ),
             ),
             const SizedBox(height: 4),
             Wrap(
@@ -89,7 +98,9 @@ class _CommunityCardState extends ConsumerState<CommunityCard> {
               spacing: 8,
               children: [
                 TextButton(
-                    onPressed: _finish, child: Text(l10n.communityCardNotNow)),
+                  onPressed: _finish,
+                  child: Text(l10n.communityCardNotNow),
+                ),
                 FilledButton(
                   onPressed: () {
                     _finish();

@@ -117,10 +117,13 @@ class SetupVerifying extends SetupState {
 /// The broker requires credentials. [rejected] is true when credentials were
 /// already tried and refused — the UI shows "wrong password" guidance instead
 /// of the first-time prompt.
+/// The broker refused anonymous access. [platform] is the user's answer so
+/// far, so the prompt can say where that platform keeps its MQTT login.
 class SetupNeedsAuth extends SetupState {
-  const SetupNeedsAuth(this.candidate, {this.rejected = false});
+  const SetupNeedsAuth(this.candidate, {this.rejected = false, this.platform});
   final SetupCandidate candidate;
   final bool rejected;
+  final SetupPlatform? platform;
 }
 
 /// A categorized failure. [failedAtCreation] marks save failures: retry then
@@ -454,7 +457,7 @@ class SetupCoordinator {
 
   Future<void> _verify(SetupCandidate candidate) async {
     if (candidate.needsAuth && _username == null) {
-      _emit(SetupNeedsAuth(candidate));
+      _emit(SetupNeedsAuth(candidate, platform: _platform));
       return;
     }
     final op = ++_op;
@@ -484,7 +487,13 @@ class SetupCoordinator {
       final kind = mapLadderFailure(report);
       if (kind == SetupErrorKind.authRejected) {
         // No credentials yet → first-time prompt; tried already → rejected.
-        _emit(SetupNeedsAuth(candidate, rejected: _username != null));
+        _emit(
+          SetupNeedsAuth(
+            candidate,
+            rejected: _username != null,
+            platform: _platform,
+          ),
+        );
         return;
       }
       _emit(SetupFailed(kind, candidate: candidate));

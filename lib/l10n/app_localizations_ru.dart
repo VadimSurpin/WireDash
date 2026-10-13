@@ -1478,6 +1478,22 @@ class AppLocalizationsRu extends AppLocalizations {
       'Имя пользователя или пароль отклонены. Проверьте их и повторите попытку.';
 
   @override
+  String get setupAuthWhich =>
+      'Это логин MQTT, а не пароль от веб-страницы вашего хаба.';
+
+  @override
+  String get setupAuthHintHa =>
+      'Home Assistant: используйте пользователя Home Assistant. Обычно для MQTT создают отдельного в Настройки › Люди › Пользователи, и дополнение Mosquitto его принимает.';
+
+  @override
+  String get setupAuthHintPi =>
+      'Raspberry Pi или Docker: пользователь и пароль из файла паролей Mosquitto, те же, что в configuration.yaml Zigbee2MQTT в разделе mqtt.';
+
+  @override
+  String get setupAuthHintSmlight =>
+      'SMLIGHT: логин, показанный на веб-странице хаба в Settings › MQTT.';
+
+  @override
   String get setupVerifyingTitle => 'Проверка подключения…';
 
   @override

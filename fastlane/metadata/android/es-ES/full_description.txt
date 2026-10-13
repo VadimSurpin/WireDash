@@ -47,9 +47,11 @@ PULIDO PARA MÓVIL Y TABLET
 • Código abierto (MIT). El código es público y auditable.
 
 ¿PARA QUIÉN ES?
-Usas Zigbee2MQTT con tu propio bróker (Mosquitto en una Raspberry Pi, SMLIGHT SMHUB…), quizá junto a Home Assistant, y quieres control rápido desde el móvil o una tablet de pared sin abrir la web de Zigbee2MQTT. ¿Harto de apps dependientes de la nube, del bloqueo de fabricante y de la recolección de datos? ZigDash es para ti.
+Usas Zigbee2MQTT con tu propio bróker, quizá junto a Home Assistant, y quieres control rápido desde el móvil o una tablet de pared sin abrir la web de Zigbee2MQTT. ¿Harto de apps dependientes de la nube, del bloqueo de fabricante y de la recolección de datos? ZigDash es para ti.
 
 QUÉ NECESITAS
 • Una instalación de Zigbee2MQTT con un bróker MQTT en tu red local.
 • Tailscale (opcional) para acceso remoto fuera de casa.
 • Node-RED (opcional) para automatización en el hub.
+
+Preguntas e ideas: grupo de Telegram t.me/zigdash_app
