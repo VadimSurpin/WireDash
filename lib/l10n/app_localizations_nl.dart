@@ -1471,6 +1471,22 @@ class AppLocalizationsNl extends AppLocalizations {
       'De gebruikersnaam of het wachtwoord is geweigerd. Controleer ze en probeer het opnieuw.';
 
   @override
+  String get setupAuthWhich =>
+      'Dit is de MQTT-login, niet het wachtwoord van de webpagina van je hub.';
+
+  @override
+  String get setupAuthHintHa =>
+      'Home Assistant: gebruik een Home Assistant-gebruiker. De meesten maken er een speciaal voor MQTT aan onder Instellingen › Personen › Gebruikers, en de Mosquitto-add-on accepteert die.';
+
+  @override
+  String get setupAuthHintPi =>
+      'Raspberry Pi of Docker: de gebruiker en het wachtwoord uit het wachtwoordbestand van Mosquitto, dezelfde als in configuration.yaml van Zigbee2MQTT onder mqtt.';
+
+  @override
+  String get setupAuthHintSmlight =>
+      'SMLIGHT: de login op de webpagina van de hub onder Settings › MQTT.';
+
+  @override
   String get setupVerifyingTitle => 'Verbinding controleren…';
 
   @override

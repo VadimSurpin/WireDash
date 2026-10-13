@@ -38,3 +38,5 @@ TELEFON I TABLET
 PRYWATNOŚĆ
 • Bez reklam i konta. Anonimowe dane o użyciu, które możesz wyłączyć w każdej chwili.
 • Twoje dane zostają na urządzeniu i Twoim brokerze. Otwarty kod (MIT).
+
+Pytania i pomysły: grupa Telegram t.me/zigdash_app

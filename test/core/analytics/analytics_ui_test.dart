@@ -10,6 +10,7 @@ import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/features/dashboards/widgets/analytics_consent_card.dart';
 import 'package:zigdash/features/onboarding/demo_service.dart';
 import 'package:zigdash/features/onboarding/setup/setup_analytics.dart';
+import 'package:zigdash/features/onboarding/setup/setup_candidate.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
@@ -175,6 +176,34 @@ void main() {
       expect(subnetShape('172.20.1.1'), '172.16');
       expect(subnetShape('8.8.8.8'), 'other');
       expect(subnetShape(null), isNull);
+    });
+
+    // 2.6.1: a login prompt carries the platform answer, so a user who
+    // leaves there can be read against the hint they were shown.
+    test('the login steps report the platform answer', () {
+      const hub = SetupCandidate(
+        host: '192.168.1.10',
+        port: 1883,
+        protocol: MqttProtocol.tcp,
+      );
+      expect(
+        setupStepFor(
+          null,
+          const SetupNeedsAuth(hub, platform: SetupPlatform.homeAssistant),
+        )!.props,
+        {'step': 'needs_login', 'platform': 'home_assistant'},
+      );
+      expect(
+        setupStepFor(
+          null,
+          const SetupNeedsAuth(hub, rejected: true),
+          platform: SetupPlatform.piOrDocker,
+        )!.props,
+        {'step': 'login_rejected', 'platform': 'pi_or_docker'},
+      );
+      expect(setupStepFor(null, const SetupNeedsAuth(hub))!.props, {
+        'step': 'needs_login',
+      });
     });
   });
 

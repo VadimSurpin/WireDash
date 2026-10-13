@@ -47,9 +47,11 @@ VERZORGD – TELEFOON EN TABLET
 • Open source (MIT). De code is openbaar en controleerbaar.
 
 VOOR WIE IS DIT?
-Je draait Zigbee2MQTT met je eigen broker (Mosquitto op een Raspberry Pi, SMLIGHT SMHUB…), misschien naast Home Assistant, en wilt snelle bediening vanaf je telefoon of een wandtablet zonder de Zigbee2MQTT-webinterface te openen. Klaar met cloudafhankelijke apps, vendor lock-in en dataverzameling? ZigDash is voor jou.
+Je draait Zigbee2MQTT met je eigen broker, misschien naast Home Assistant, en wilt snelle bediening vanaf je telefoon of een wandtablet zonder de Zigbee2MQTT-webinterface te openen. Klaar met cloudafhankelijke apps, vendor lock-in en dataverzameling? ZigDash is voor jou.
 
 WAT JE NODIG HEBT
 • Een Zigbee2MQTT-installatie met een MQTT-broker op je lokale netwerk.
 • Tailscale (optioneel) voor toegang op afstand buitenshuis.
 • Node-RED (optioneel) voor automatisering op de hub.
+
+Vragen en ideeën: Telegram-groep t.me/zigdash_app

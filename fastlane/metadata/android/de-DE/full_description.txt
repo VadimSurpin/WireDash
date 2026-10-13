@@ -46,9 +46,11 @@ AUSGEREIFT – HANDY UND TABLET
 • Open Source (MIT). Der Code ist öffentlich und prüfbar.
 
 FÜR WEN IST DAS?
-Du betreibst Zigbee2MQTT mit eigenem Broker (Mosquitto auf einem Raspberry Pi, SMLIGHT SMHUB …), vielleicht neben Home Assistant, und willst schnelle Steuerung vom Handy oder Wandtablet, ohne die Zigbee2MQTT-Weboberfläche zu öffnen. Genug von Cloud-Zwang, Herstellerbindung und Datensammelei? Dann ist ZigDash für dich.
+Du betreibst Zigbee2MQTT mit eigenem Broker, vielleicht neben Home Assistant, und willst schnelle Steuerung vom Handy oder Wandtablet, ohne die Zigbee2MQTT-Weboberfläche zu öffnen. Genug von Cloud-Zwang, Herstellerbindung und Datensammelei? Dann ist ZigDash für dich.
 
 WAS DU BRAUCHST
 • Ein Zigbee2MQTT-Setup mit MQTT-Broker in deinem lokalen Netzwerk.
 • Tailscale (optional) für Fernzugriff von unterwegs.
 • Node-RED (optional) für Automatisierung auf dem Hub.
+
+Fragen und Ideen: Telegram-Gruppe t.me/zigdash_app

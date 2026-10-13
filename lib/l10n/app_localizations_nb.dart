@@ -1462,6 +1462,22 @@ class AppLocalizationsNb extends AppLocalizations {
       'Brukernavnet eller passordet ble avvist. Sjekk dem og prøv igjen.';
 
   @override
+  String get setupAuthWhich =>
+      'Dette er MQTT-innloggingen, ikke passordet til hubens nettside.';
+
+  @override
+  String get setupAuthHintHa =>
+      'Home Assistant: bruk en Home Assistant-bruker. De fleste lager en egen for MQTT under Innstillinger › Personer › Brukere, og Mosquitto-tillegget godtar den.';
+
+  @override
+  String get setupAuthHintPi =>
+      'Raspberry Pi eller Docker: brukeren og passordet fra Mosquittos passordfil, de samme som i configuration.yaml til Zigbee2MQTT under mqtt.';
+
+  @override
+  String get setupAuthHintSmlight =>
+      'SMLIGHT: innloggingen som vises på hubens nettside under Settings › MQTT.';
+
+  @override
   String get setupVerifyingTitle => 'Sjekker tilkoblingen…';
 
   @override

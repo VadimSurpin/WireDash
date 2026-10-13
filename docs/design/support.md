@@ -44,7 +44,9 @@ Not on: scanning and "Checking the connection…" screens (nothing has failed ye
 
 A public Telegram group, **ZigDash** (`https://t.me/zigdash_app`), is where users ask each other, suggest, and hear what's coming; the developer posts releases and answers there. The app links to it from Settings (**Join the ZigDash community**) and from the bottom of Get help (**Ask in the Telegram group**), so a stuck user can ask in public instead of, or before, emailing. Nothing is sent by the app: the link opens Telegram (or the web) and that's all; the only measurement is `community_opened`.
 
-A one-time **Join the ZigDash community** card (2.4) appears on a real Home's dashboard after five days of use, once the usage-data question and the poll are out of the way, with Join and Not now; either puts it away for good. Same rule as the poll card: one card at a time, never on the demo Home.
+A one-time **Join the ZigDash community** card (2.4) appears on a real Home's dashboard with Join and Not now; either puts it away for good. Since 2.6.1 it shows from the second day of use (it waited for the fifth day and for the poll before), and steps aside while the usage-data question or the poll card is showing. Same rule as the poll card: one card at a time, never on the demo Home.
+
+Since 2.6.1 every screen where setup is stuck (no connection found, no Zigbee2MQTT on the broker, the login prompt, a failed check) also carries **Ask in the Telegram group** under its Get help link, measured as `community_opened` with the same `from` as that link. The Play listing names the group too.
 
 ## 3. The Get help screen
 

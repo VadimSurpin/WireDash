@@ -331,6 +331,14 @@ void main() {
 
     expect(find.text('This broker needs a login'), findsOneWidget);
     expect(find.textContaining('192.168.1.10'), findsOneWidget);
+    // No platform answer: which login it is, and where each platform keeps it.
+    expect(find.textContaining('not the password of your hub'), findsOneWidget);
+    expect(find.textContaining('Home Assistant: use a'), findsOneWidget);
+    expect(
+      find.textContaining('Raspberry Pi or Docker: the user'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('SMLIGHT: the login'), findsOneWidget);
 
     await tester.enterText(
       find.widgetWithText(TextField, 'Username (optional)').first,
@@ -346,6 +354,24 @@ void main() {
 
     expect(find.text('Your devices'), findsNothing); // subtitle, not title
     expect(find.textContaining('devices found'), findsOneWidget);
+  });
+
+  testWidgets('the login prompt names only the platform the user chose', (
+    tester,
+  ) async {
+    final coordinator = await _pump(tester, reports: [_authFail(), _ok()]);
+    coordinator.setPlatform(SetupPlatform.homeAssistant);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('This broker needs a login'), findsOneWidget);
+    expect(find.textContaining('not the password of your hub'), findsOneWidget);
+    expect(find.textContaining('Home Assistant: use a'), findsOneWidget);
+    expect(find.textContaining('Raspberry Pi or Docker'), findsNothing);
+    expect(find.textContaining('SMLIGHT: the login'), findsNothing);
   });
 
   testWidgets('rejected credentials show the rejected explanation', (

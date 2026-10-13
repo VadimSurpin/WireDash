@@ -8,6 +8,7 @@ import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../connections/discovery/hub_probe.dart';
+import '../../support/community.dart' show CommunityLink;
 import '../../support/get_help_screen.dart' show GetHelpLink;
 import '../first_run.dart';
 import 'recommendation_policy.dart';
@@ -447,6 +448,7 @@ class _ScanEmpty extends StatelessWidget {
           onPressed: () =>
               context.push(Routes.getHelpFrom(HelpFrom.noConnection.name)),
         ),
+        const CommunityLink(from: HelpFrom.noConnection),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
         TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
@@ -527,6 +529,10 @@ class _NoZigbee2MqttState extends State<_NoZigbee2Mqtt> {
               ),
             ),
           ),
+        ),
+        const Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: CommunityLink(from: HelpFrom.setupError),
         ),
         const SizedBox(height: 16),
         Text(l10n.setupGuidesTitle, style: theme.textTheme.titleSmall),
@@ -611,6 +617,8 @@ class _AuthPromptState extends State<_AuthPrompt> {
                 )
               : theme.textTheme.bodyMedium,
         ),
+        const SizedBox(height: 12),
+        _LoginHint(platform: widget.state.platform),
         const SizedBox(height: 16),
         TextField(
           controller: _username,
@@ -643,6 +651,43 @@ class _AuthPromptState extends State<_AuthPrompt> {
             ),
           ),
         ),
+        const CommunityLink(from: HelpFrom.setupError),
+      ],
+    );
+  }
+}
+
+/// Where the MQTT login lives, so nobody types their hub's web password
+/// here (setup-help-2.5.md, login step). One line for the platform the user
+/// named; all three when they didn't.
+class _LoginHint extends StatelessWidget {
+  const _LoginHint({required this.platform});
+  final SetupPlatform? platform;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final style = Theme.of(context).textTheme.bodySmall?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
+    final lines = switch (platform) {
+      SetupPlatform.homeAssistant => [l10n.setupAuthHintHa],
+      SetupPlatform.piOrDocker => [l10n.setupAuthHintPi],
+      SetupPlatform.smlight => [l10n.setupAuthHintSmlight],
+      SetupPlatform.notSure || null => [
+        l10n.setupAuthHintHa,
+        l10n.setupAuthHintPi,
+        l10n.setupAuthHintSmlight,
+      ],
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.setupAuthWhich, style: style),
+        for (final line in lines) ...[
+          const SizedBox(height: 4),
+          Text(line, style: style),
+        ],
       ],
     );
   }
@@ -696,6 +741,7 @@ class _Failure extends StatelessWidget {
             ),
           ),
         ),
+        const CommunityLink(from: HelpFrom.setupError),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
       ],

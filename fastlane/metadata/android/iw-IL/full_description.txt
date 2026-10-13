@@ -57,3 +57,5 @@ ZigDash הוא דשבורד MQTT שנבנה במיוחד ל‑Zigbee2MQTT: הו�
 • התקנת Zigbee2MQTT עם broker של MQTT ברשת המקומית.
 • Tailscale (אופציונלי) לגישה מרחוק מחוץ לבית.
 • Node-RED (אופציונלי) לאוטומציה בצד ההאב.
+
+שאלות ורעיונות: קבוצת הטלגרם t.me/zigdash_app

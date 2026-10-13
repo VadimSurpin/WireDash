@@ -1450,6 +1450,22 @@ class AppLocalizationsHe extends AppLocalizations {
       'שם המשתמש או הסיסמה נדחו. בדקו ונסו שוב.';
 
   @override
+  String get setupAuthWhich =>
+      'זו ההתחברות ל‑MQTT, לא הסיסמה של דף הווב של ה‑hub.';
+
+  @override
+  String get setupAuthHintHa =>
+      'Home Assistant: השתמשו במשתמש של Home Assistant. רוב האנשים יוצרים אחד רק ל‑MQTT תחת הגדרות › אנשים › משתמשים, והתוסף Mosquitto מקבל אותו.';
+
+  @override
+  String get setupAuthHintPi =>
+      'Raspberry Pi או Docker: שם המשתמש והסיסמה מקובץ הסיסמאות של Mosquitto, אותם ערכים שב‑configuration.yaml של Zigbee2MQTT תחת mqtt.';
+
+  @override
+  String get setupAuthHintSmlight =>
+      'SMLIGHT: ההתחברות שמופיעה בדף הווב של ה‑hub תחת Settings › MQTT.';
+
+  @override
   String get setupVerifyingTitle => 'בודק את החיבור…';
 
   @override

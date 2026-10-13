@@ -1,0 +1,1 @@
+ZigDash 2.6.1: help on the login step. When a broker asks for a login, the screen now says it wants the MQTT login, not your hub's web password, and where to find it on Home Assistant, a Raspberry Pi or Docker, and SMLIGHT hubs. Stuck in setup? Every setup screen now has "Ask in the Telegram group" next to Get help, and the Join the community card appears on your second day.

@@ -2720,6 +2720,30 @@ abstract class AppLocalizations {
   /// **'The username or password was rejected. Check them and try again.'**
   String get setupAuthRejectedBody;
 
+  /// Setup, login step: where the MQTT login comes from (setup-help-2.5.md).
+  ///
+  /// In en, this message translates to:
+  /// **'This is the MQTT login, not the password of your hub\'s web page.'**
+  String get setupAuthWhich;
+
+  /// No description provided for @setupAuthHintHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant: use a Home Assistant user. Most people create one just for MQTT under Settings › People › Users, and the Mosquitto add-on accepts it.'**
+  String get setupAuthHintHa;
+
+  /// No description provided for @setupAuthHintPi.
+  ///
+  /// In en, this message translates to:
+  /// **'Raspberry Pi or Docker: the user and password from Mosquitto\'s password file, the same ones in Zigbee2MQTT\'s configuration.yaml under mqtt.'**
+  String get setupAuthHintPi;
+
+  /// No description provided for @setupAuthHintSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'SMLIGHT: the login shown on the hub\'s web page under Settings › MQTT.'**
+  String get setupAuthHintSmlight;
+
   /// No description provided for @setupVerifyingTitle.
   ///
   /// In en, this message translates to:

@@ -37,3 +37,5 @@ CELULAR E TABLET
 PRIVACIDADE
 • Sem anúncios e sem conta. Dados de uso anônimos, que você pode desativar quando quiser.
 • Seus dados ficam no seu dispositivo e no seu broker. Código aberto (MIT).
+
+Dúvidas e ideias: grupo no Telegram t.me/zigdash_app

@@ -1483,6 +1483,21 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nazwa użytkownika lub hasło zostały odrzucone. Sprawdź je i spróbuj ponownie.';
 
   @override
+  String get setupAuthWhich => 'To login MQTT, a nie hasło do strony WWW huba.';
+
+  @override
+  String get setupAuthHintHa =>
+      'Home Assistant: użyj użytkownika Home Assistant. Większość tworzy osobnego dla MQTT w Ustawienia › Osoby › Użytkownicy, a dodatek Mosquitto go akceptuje.';
+
+  @override
+  String get setupAuthHintPi =>
+      'Raspberry Pi lub Docker: użytkownik i hasło z pliku haseł Mosquitto, te same co w configuration.yaml Zigbee2MQTT w sekcji mqtt.';
+
+  @override
+  String get setupAuthHintSmlight =>
+      'SMLIGHT: login widoczny na stronie WWW huba w Settings › MQTT.';
+
+  @override
   String get setupVerifyingTitle => 'Sprawdzanie połączenia…';
 
   @override
