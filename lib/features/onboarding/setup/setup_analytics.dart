@@ -44,6 +44,9 @@ SetupStep? setupStepFor(
     },
     platform: next.platform ?? platform,
   ),
+  // A chip tap on the empty result re-emits it with the answer. The scan was
+  // counted when it ended; the answer rides on the steps after it (2.6.3).
+  SetupScanEmpty() when previous is SetupScanEmpty => null,
   SetupScanEmpty(:final tried, :final deviceIp, :final network) => SetupStep(
     SetupStepKind.scanEmpty,
     platform: next.platform ?? platform,
