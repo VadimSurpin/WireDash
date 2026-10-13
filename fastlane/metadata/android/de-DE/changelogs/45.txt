@@ -1,0 +1,1 @@
+ZigDash 2.6.3: eine kleine Korrektur der anonymen Nutzungszahlen. Nach einer leeren Suche zählte ein Tipp auf einen Plattform-Chip die Suche erneut; jetzt zählt sie einmal. Am Bildschirm ändert sich nichts.

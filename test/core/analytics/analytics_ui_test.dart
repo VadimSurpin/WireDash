@@ -182,6 +182,30 @@ void main() {
       expect(subnetShape(null), isNull);
     });
 
+    // 2.6.3: the empty result is counted once; chip taps re-emit it but
+    // don't re-send it (they tripled the 2.6.2 diagnostics).
+    test('a chip tap on the empty result does not re-send scan_empty', () {
+      const scanning = SetupScanning([]);
+      const empty = SetupScanEmpty(
+        tried: (widened: true, hostsTried: 1018, aliveHosts: 2),
+        deviceIp: '192.168.1.37',
+      );
+      expect(setupStepFor(scanning, empty)!.props['step'], 'scan_empty');
+      expect(
+        setupStepFor(
+          empty,
+          const SetupScanEmpty(
+            platform: SetupPlatform.homeAssistant,
+            tried: (widened: true, hostsTried: 1018, aliveHosts: 2),
+            deviceIp: '192.168.1.37',
+          ),
+        ),
+        isNull,
+      );
+      // A rescan ends in a fresh empty result, counted again.
+      expect(setupStepFor(scanning, empty)!.props['step'], 'scan_empty');
+    });
+
     // 2.6.2: the address check reports its outcome, never the address.
     test('the address check reports only its outcome', () {
       const empty = SetupScanEmpty(platform: SetupPlatform.homeAssistant);

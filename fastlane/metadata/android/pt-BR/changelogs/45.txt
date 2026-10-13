@@ -1,0 +1,1 @@
+ZigDash 2.6.3: uma pequena correção nas contagens anônimas de uso. Após uma busca vazia, tocar em um chip de plataforma contava a busca de novo; agora conta uma vez. Nada muda na tela.

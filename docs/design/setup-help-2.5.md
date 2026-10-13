@@ -108,6 +108,12 @@ vaguest screen in the app into one instruction.
   The `address` step carries only its outcome (broker, hub, nothing,
   not_resolved, not_local, invalid).
 
+- Counted once (2.6.3): a chip tap on the empty result re-emits the state
+  with the answer but no longer re-sends `scan_empty`; the answer rides on
+  the steps after it (scan found, needs login, review, complete) and on the
+  next empty result after Try again. Reason: the first 2.6.2 session sent
+  the diagnostics three times for one scan, once per chip tap.
+
 ## Code
 
 - `lib/features/connections/discovery/hub_probe.dart`: `HubKind`,
