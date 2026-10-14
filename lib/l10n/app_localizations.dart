@@ -422,6 +422,12 @@ abstract class AppLocalizations {
   /// **'1–65535'**
   String get connPortRange;
 
+  /// No description provided for @connUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get connUsername;
+
   /// No description provided for @connUsernameOptional.
   ///
   /// In en, this message translates to:

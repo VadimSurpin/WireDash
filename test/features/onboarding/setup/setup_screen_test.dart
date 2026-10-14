@@ -411,6 +411,48 @@ void main() {
     expect(find.text('Check this address'), findsNothing);
   });
 
+  // 2.6.4: the address question leads the empty result; Check is primary.
+  testWidgets('the empty result leads with the address check', (tester) async {
+    await _pump(tester, scan: (_) => const Stream.empty());
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    final check = find.widgetWithText(FilledButton, 'Check this address');
+    final retry = find.widgetWithText(OutlinedButton, 'Try again');
+    expect(check, findsOneWidget);
+    expect(retry, findsOneWidget);
+    // Above the chips, above Try again.
+    final question = tester.getTopLeft(
+      find.text(
+        'What is the address of your hub, or of the machine running Zigbee2MQTT?',
+      ),
+    );
+    expect(question.dy, lessThan(tester.getTopLeft(find.text('Not sure')).dy));
+    expect(tester.getTopLeft(check).dy, lessThan(tester.getTopLeft(retry).dy));
+  });
+
+  // 2.6.4: Enter login waits for a username; the broker refused anonymous
+  // access, so an empty one would only show the prompt again.
+  testWidgets('the login prompt waits for a username', (tester) async {
+    await _pump(
+      tester,
+      scan: (_) => Stream.value(
+        const ProbeResult(host: '192.168.1.10', port: 1883, needsAuth: true),
+      ),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('Username'), findsOneWidget);
+    expect(find.text('Username (optional)'), findsNothing);
+    final button = find.widgetWithText(FilledButton, 'Enter login');
+    expect(tester.widget<FilledButton>(button).onPressed, isNull);
+    await tester.enterText(find.widgetWithText(TextField, 'Username'), 'mqtt');
+    await tester.pump();
+    expect(tester.widget<FilledButton>(button).onPressed, isNotNull);
+  });
+
   testWidgets('no candidates shows tailored guidance and actions', (
     tester,
   ) async {
@@ -450,7 +492,7 @@ void main() {
     expect(find.textContaining('SMLIGHT: the login'), findsOneWidget);
 
     await tester.enterText(
-      find.widgetWithText(TextField, 'Username (optional)').first,
+      find.widgetWithText(TextField, 'Username').first,
       'user',
     );
     await tester.enterText(
@@ -494,7 +536,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     await tester.enterText(
-      find.widgetWithText(TextField, 'Username (optional)').first,
+      find.widgetWithText(TextField, 'Username').first,
       'user',
     );
     await tester.enterText(

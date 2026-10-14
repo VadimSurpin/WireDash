@@ -60,6 +60,7 @@
   "connRemoteHostHint": "Se usa cuando el host local no es accesible. Prefiere la IP de Tailscale del hub, p. ej. 100.x.y.z",
   "connPort": "Puerto",
   "connPortRange": "1–65535",
+  "connUsername": "Usuario",
   "connUsernameOptional": "Usuario (opcional)",
   "connPasswordOptional": "Contraseña (opcional)",
   "connPasswordKeepHint": "Déjalo vacío para conservar la existente",

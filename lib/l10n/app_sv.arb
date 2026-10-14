@@ -60,6 +60,7 @@
   "connRemoteHostHint": "Används när den lokala värden inte kan nås. Föredra hubbens Tailscale-IP, t.ex. 100.x.y.z",
   "connPort": "Port",
   "connPortRange": "1–65535",
+  "connUsername": "Användarnamn",
   "connUsernameOptional": "Användarnamn (valfritt)",
   "connPasswordOptional": "Lösenord (valfritt)",
   "connPasswordKeepHint": "Lämna tomt för att behålla befintligt",

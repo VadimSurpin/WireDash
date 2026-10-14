@@ -114,6 +114,16 @@ vaguest screen in the app into one instruction.
   next empty result after Try again. Reason: the first 2.6.2 session sent
   the diagnostics three times for one scan, once per chip tap.
 
+- Address first (2.6.4): on an empty result without a hub, the address
+  question and its Check button come before the platform chips, Check is
+  the filled (primary) button and Try again the outlined one. Reason: in
+  the first day of 2.6.2, five users across seven sessions saw the field
+  under the chips; one tapped Check with nothing typed, none typed an
+  address, and every one of them went on to the manual form, which asks
+  for the same thing. The login prompt's username is no longer labelled
+  optional (the broker refused anonymous access, so it isn't) and Enter
+  login waits for one: a user tapped it eight times on an empty field.
+
 ## Code
 
 - `lib/features/connections/discovery/hub_probe.dart`: `HubKind`,

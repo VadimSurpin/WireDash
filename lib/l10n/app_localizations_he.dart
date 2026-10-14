@@ -176,6 +176,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get connPortRange => '1–65535';
 
   @override
+  String get connUsername => 'שם משתמש';
+
+  @override
   String get connUsernameOptional => 'שם משתמש (לא חובה)';
 
   @override

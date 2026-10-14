@@ -177,6 +177,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get connPortRange => '1–65535';
 
   @override
+  String get connUsername => 'Brukernavn';
+
+  @override
   String get connUsernameOptional => 'Brukernavn (valgfritt)';
 
   @override

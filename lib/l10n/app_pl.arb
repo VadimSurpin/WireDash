@@ -54,6 +54,7 @@
   "connRemoteHostHint": "Używany, gdy host lokalny jest nieosiągalny. Najlepiej adres IP huba w Tailscale, np. 100.x.y.z",
   "connPort": "Port",
   "connPortRange": "1–65535",
+  "connUsername": "Nazwa użytkownika",
   "connUsernameOptional": "Nazwa użytkownika (opcjonalnie)",
   "connPasswordOptional": "Hasło (opcjonalnie)",
   "connPasswordKeepHint": "Pozostaw puste, aby zachować obecne",

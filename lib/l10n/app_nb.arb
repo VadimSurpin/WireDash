@@ -60,6 +60,7 @@
   "connRemoteHostHint": "Brukes når den lokale verten ikke kan nås. Foretrekk hubens Tailscale-IP, f.eks. 100.x.y.z",
   "connPort": "Port",
   "connPortRange": "1–65535",
+  "connUsername": "Brukernavn",
   "connUsernameOptional": "Brukernavn (valgfritt)",
   "connPasswordOptional": "Passord (valgfritt)",
   "connPasswordKeepHint": "La stå tomt for å beholde eksisterende",

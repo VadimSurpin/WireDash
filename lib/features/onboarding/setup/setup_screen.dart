@@ -424,15 +424,18 @@ class _ScanEmpty extends StatelessWidget {
         Text(body, style: theme.textTheme.bodyLarge),
         const SizedBox(height: 12),
         _SetupGuides(only: guideFor),
+        // No hub found: the address question comes first and its Check is
+        // the primary action (2.6.4: five users saw it under the chips and
+        // none typed into it); the chips and Try again follow.
         if (hub == null) ...[
-          const SizedBox(height: 12),
-          _PlatformChips(value: platform, onChanged: onPlatform),
           const SizedBox(height: 20),
           _AddressField(
             platform: platform,
             check: state.address,
             onCheck: onCheckAddress,
           ),
+          const SizedBox(height: 20),
+          _PlatformChips(value: platform, onChanged: onPlatform),
         ],
         const SizedBox(height: 24),
         if (hub != null) ...[
@@ -442,17 +445,12 @@ class _ScanEmpty extends StatelessWidget {
             label: Text(l10n.setupConnectTo(hub.host)),
           ),
           const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
-            label: Text(l10n.setupTryAgain),
-          ),
-        ] else
-          FilledButton.icon(
-            onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
-            label: Text(l10n.setupTryAgain),
-          ),
+        ],
+        OutlinedButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh),
+          label: Text(l10n.setupTryAgain),
+        ),
         GetHelpLink(
           onPressed: () =>
               context.push(Routes.getHelpFrom(HelpFrom.noConnection.name)),
@@ -532,19 +530,16 @@ class _AddressFieldState extends State<_AddressField> {
           ),
           onSubmitted: widget.onCheck,
         ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: AlignmentDirectional.centerEnd,
-          child: FilledButton.tonalIcon(
-            onPressed: checking ? null : () => widget.onCheck(_controller.text),
-            icon: checking
-                ? const SizedBox.square(
-                    dimension: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.travel_explore),
-            label: Text(l10n.setupAddressCheck),
-          ),
+        const SizedBox(height: 12),
+        FilledButton.icon(
+          onPressed: checking ? null : () => widget.onCheck(_controller.text),
+          icon: checking
+              ? const SizedBox.square(
+                  dimension: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.travel_explore),
+          label: Text(l10n.setupAddressCheck),
         ),
       ],
     );
@@ -688,6 +683,12 @@ class _AuthPromptState extends State<_AuthPrompt> {
     super.dispose();
   }
 
+  void _submit() {
+    final username = _username.text.trim();
+    if (username.isEmpty) return;
+    widget.onSubmit(username, _password.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -714,24 +715,28 @@ class _AuthPromptState extends State<_AuthPrompt> {
         const SizedBox(height: 12),
         _LoginHint(platform: widget.state.platform),
         const SizedBox(height: 16),
+        // The broker refused anonymous access, so the username is not
+        // optional here: the button waits for one (2.6.4; a user tapped it
+        // eight times on an empty field before typing).
         TextField(
           controller: _username,
           autofocus: true,
-          decoration: InputDecoration(labelText: l10n.connUsernameOptional),
+          decoration: InputDecoration(labelText: l10n.connUsername),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _password,
           obscureText: true,
           decoration: InputDecoration(labelText: l10n.connPasswordOptional),
-          onSubmitted: (_) =>
-              widget.onSubmit(_username.text.trim(), _password.text),
+          onSubmitted: (_) => _submit(),
         ),
         const SizedBox(height: 24),
-        FilledButton(
-          onPressed: () =>
-              widget.onSubmit(_username.text.trim(), _password.text),
-          child: Text(l10n.setupErrAuthRequiredAction),
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: _username,
+          builder: (context, value, _) => FilledButton(
+            onPressed: value.text.trim().isEmpty ? null : _submit,
+            child: Text(l10n.setupErrAuthRequiredAction),
+          ),
         ),
         GetHelpLink(
           onPressed: () => context.push(

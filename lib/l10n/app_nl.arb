@@ -60,6 +60,7 @@
   "connRemoteHostHint": "Wordt gebruikt wanneer de lokale host niet bereikbaar is. Gebruik bij voorkeur het Tailscale-IP van de hub, bijv. 100.x.y.z",
   "connPort": "Poort",
   "connPortRange": "1–65535",
+  "connUsername": "Gebruikersnaam",
   "connUsernameOptional": "Gebruikersnaam (optioneel)",
   "connPasswordOptional": "Wachtwoord (optioneel)",
   "connPasswordKeepHint": "Leeg laten om het bestaande te behouden",

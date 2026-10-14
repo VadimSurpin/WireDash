@@ -68,6 +68,7 @@
   "connRemoteHostHint": "בשימוש כשהמארח המקומי אינו זמין. עדיף כתובת ה-Tailscale של הרכזת, למשל 100.x.y.z",
   "connPort": "פורט",
   "connPortRange": "1–65535",
+  "connUsername": "שם משתמש",
   "connUsernameOptional": "שם משתמש (לא חובה)",
   "connPasswordOptional": "סיסמה (לא חובה)",
   "connPasswordKeepHint": "השאר ריק כדי לשמור את הקיימת",

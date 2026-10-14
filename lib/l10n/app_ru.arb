@@ -54,6 +54,7 @@
   "connRemoteHostHint": "Используется, если локальный хост недоступен. Лучше указать Tailscale-IP хаба, например 100.x.y.z",
   "connPort": "Порт",
   "connPortRange": "1–65535",
+  "connUsername": "Имя пользователя",
   "connUsernameOptional": "Имя пользователя (необязательно)",
   "connPasswordOptional": "Пароль (необязательно)",
   "connPasswordKeepHint": "Оставьте пустым, чтобы не менять",
