@@ -1,1 +1,1 @@
-For ditt Zigbee2MQTT (påkrevd): et dashbord som bygger seg selv. Ingen sky.
+Krever Zigbee2MQTT. Dashbord som bygger seg selv. Mobil, veggnettbrett, kiosk.

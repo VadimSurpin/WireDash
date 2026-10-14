@@ -1,1 +1,1 @@
-Dla Twojego Zigbee2MQTT (wymagane): dashboard, który buduje się sam. Bez chmury.
+Wymaga Zigbee2MQTT. Dashboard buduje się sam. Telefon, tablet ścienny, kiosk.

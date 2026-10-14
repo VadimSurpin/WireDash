@@ -1,1 +1,1 @@
-For your Zigbee2MQTT setup (required): a dashboard that builds itself. No cloud.
+Needs Zigbee2MQTT. Dashboard that builds itself. Phone, wall tablet, kiosk mode.

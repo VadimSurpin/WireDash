@@ -1,1 +1,1 @@
-Pour votre Zigbee2MQTT (requis) : un dashboard qui se construit seul.
+Requiert Zigbee2MQTT. Dashboard qui se construit seul. Tablette murale, kiosque.

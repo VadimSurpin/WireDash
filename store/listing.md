@@ -8,10 +8,9 @@ the hook + primary keywords (the fold is what Play's NLP indexes hardest).
 ZigDash: Zigbee2MQTT Dashboard
 
 ## Short description (max 80)
-MQTT dashboard for Zigbee2MQTT — auto-discovers devices. No ads, open source.
+Needs Zigbee2MQTT. Dashboard that builds itself. Phone, wall tablet, kiosk mode.
 
-(Zero-flag variant if Play's "price or promotion" nag matters:
-"MQTT dashboard for Zigbee2MQTT — auto-discovers devices. Open source." — 69 chars)
+(2026-10-14: leads with the Zigbee2MQTT requirement since Oct 6 to cut installs that never open; 'wall tablet' and 'kiosk mode' added for Play Explore and search. Translations in fastlane/metadata/android/*/short_description.txt.)
 
 ## Full description (max 4000)
 
