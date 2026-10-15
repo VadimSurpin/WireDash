@@ -528,18 +528,27 @@ class _AddressFieldState extends State<_AddressField> {
             errorText: outcome,
             errorMaxLines: 4,
           ),
-          onSubmitted: widget.onCheck,
+          // Every address-field user in the 2.6.4 data tapped Check on an
+          // empty field first; an empty submit does nothing now.
+          onSubmitted: (text) {
+            if (text.trim().isNotEmpty) widget.onCheck(text);
+          },
         ),
         const SizedBox(height: 12),
-        FilledButton.icon(
-          onPressed: checking ? null : () => widget.onCheck(_controller.text),
-          icon: checking
-              ? const SizedBox.square(
-                  dimension: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.travel_explore),
-          label: Text(l10n.setupAddressCheck),
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: _controller,
+          builder: (context, value, _) => FilledButton.icon(
+            onPressed: checking || value.text.trim().isEmpty
+                ? null
+                : () => widget.onCheck(_controller.text),
+            icon: checking
+                ? const SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.travel_explore),
+            label: Text(l10n.setupAddressCheck),
+          ),
         ),
       ],
     );

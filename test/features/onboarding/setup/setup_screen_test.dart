@@ -346,6 +346,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     await tester.enterText(find.byType(TextField), 'homeassistant.local');
+    await tester.pump();
     await tester.tap(find.text('Check this address'));
     // Check, verify, fetch: a few turns of the event loop.
     for (var i = 0; i < 6; i++) {
@@ -400,6 +401,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     await tester.enterText(find.byType(TextField), '192.168.1.20');
+    await tester.pump();
     await tester.tap(find.text('Check this address'));
     await tester.pump();
     await tester.pump();
@@ -429,6 +431,25 @@ void main() {
     );
     expect(question.dy, lessThan(tester.getTopLeft(find.text('Not sure')).dy));
     expect(tester.getTopLeft(check).dy, lessThan(tester.getTopLeft(retry).dy));
+  });
+
+  // 2.6.6: every address-field user tapped Check on an empty field first, so
+  // Check waits for text, like the login button waits for a username.
+  testWidgets('Check is disabled until an address is typed', (tester) async {
+    await _pump(tester, scan: (_) => const Stream.empty());
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    FilledButton check() => tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Check this address'),
+    );
+    expect(check().onPressed, isNull);
+    await tester.enterText(find.byType(TextField).first, '   ');
+    await tester.pump();
+    expect(check().onPressed, isNull, reason: 'spaces are not an address');
+    await tester.enterText(find.byType(TextField).first, 'homeassistant.local');
+    await tester.pump();
+    expect(check().onPressed, isNotNull);
   });
 
   // 2.6.4: Enter login waits for a username; the broker refused anonymous

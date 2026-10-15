@@ -98,7 +98,7 @@ void main() {
   });
 
   test(
-    'does not request or record when the platform flow is unavailable',
+    'does not request when the platform flow is unavailable, but stamps the day',
     () async {
       final (c, launcher, _, prefs) = await _setup(
         initial: {
@@ -110,7 +110,12 @@ void main() {
       );
       expect(await c.recordSuccessfulSession(), isFalse);
       expect(launcher.requests, 0);
-      expect(prefs.getString(ReviewPromptController.kLastPromptDay), isNull);
+      // Stamped so the cooldown applies: `unavailable` is reported once per
+      // 90 days, not on every successful day.
+      expect(
+        prefs.getString(ReviewPromptController.kLastPromptDay),
+        '2026-09-01',
+      );
     },
   );
 

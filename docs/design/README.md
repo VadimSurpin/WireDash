@@ -48,7 +48,7 @@ People who find the listing install the app, but few come back. The redesign is 
 - **End of setup.** A device review list ("choose what goes on your first dashboard") leads straight to the generated dashboard. The "Creating…" and "ready" screens are dropped.
 - **Returning users** open the last-used dashboard of the current home.
 - **Demo mode** stays marked with a "Connect your home" bar. Completing real setup deletes the demo connection.
-- **Successful session** is a calendar day on which a command got a confirming state update. It feeds the local review prompt: from 2.6.5 the prompt asks on the second such day (was the fourth, which produced no visible rating in three weeks) and sends a `review_prompt` usage event so Aptabase shows whether it fires.
+- **Successful session** is a calendar day on which a command got a confirming state update. It feeds the local review prompt: from 2.6.5 the prompt asks on the second such day (was the fourth, which produced no visible rating in three weeks) and sends a `review_prompt` usage event so Aptabase shows whether it fires. From 2.6.6 a device without the Play review flow also starts the 90-day cooldown, so it reports `unavailable` once, not daily.
 
 ### Adding tiles
 

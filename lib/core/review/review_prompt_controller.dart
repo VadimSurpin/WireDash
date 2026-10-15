@@ -69,6 +69,10 @@ class ReviewPromptController {
       );
       if (!eligible) return false;
       if (!await _launcher.isAvailable()) {
+        // Stamp the day anyway: without it an install with no Play review
+        // flow (GitHub, F-Droid) stays eligible and reports `unavailable` on
+        // every successful day. Now it reports once per cooldown.
+        await _prefs.setString(kLastPromptDay, todayKey);
         _analytics?.track(const ReviewPrompted(ReviewPromptResult.unavailable));
         return false;
       }
