@@ -47,6 +47,11 @@ void main() {
         isFalse);
     expect(LastKnownStore.keeps(_m('zigbee2mqtt/lamp/set', '{}', now)), isFalse);
     expect(LastKnownStore.keeps(_m('zigbee2mqtt/lamp/get', '{}', now)), isFalse);
+    expect(
+        LastKnownStore.keeps(
+            _m('zigdash/history/0xa1/temperature/2026-10-15', '{}', now)),
+        isFalse,
+        reason: 'day records are read fresh, never cached');
     expect(LastKnownStore.keeps(_m('t', 'x' * 20000, now)), isFalse);
     expect(LastKnownStore.keeps(_m('zigbee2mqtt/lamp', '{}', now)), isTrue);
   });

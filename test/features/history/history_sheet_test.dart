@@ -5,17 +5,25 @@ import 'package:zigdash/features/history/history_chart.dart';
 import 'package:zigdash/features/history/history_record.dart';
 import 'package:zigdash/features/history/history_service.dart';
 import 'package:zigdash/features/history/history_sheet.dart';
+import 'package:zigdash/features/kiosk/kiosk.dart';
 import 'package:zigdash/features/pro/pro.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 
 final _now = DateTime(2026, 10, 15, 12);
 
+class _KioskOn extends KioskController {
+  @override
+  KioskState build() => const KioskState(connectionId: 'c1', dashboardId: 'd1');
+}
+
 Widget _app({
   required bool? online,
   Map<String, List<HistoryPoint>> days = const {},
   ProStatus pro = ProStatus.unlocked,
+  bool kiosk = false,
 }) => ProviderScope(
   overrides: [
+    if (kiosk) kioskProvider.overrideWith(_KioskOn.new),
     proStatusProvider.overrideWithValue(pro),
     historyRecorderOnlineProvider.overrideWith(
       (ref, _) => online == null ? const Stream.empty() : Stream.value(online),
@@ -95,5 +103,18 @@ void main() {
     await tester.pump();
     expect(find.textContaining('ZigDash Pro'), findsOneWidget);
     expect(find.text('Unlock'), findsOneWidget);
+  });
+
+  testWidgets('kiosk guests see the locked sample but no Unlock', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(online: true, days: _today, pro: ProStatus.locked, kiosk: true),
+    );
+    await tester.pump();
+    await tester.tap(find.text('7 days'));
+    await tester.pump();
+    expect(find.textContaining('ZigDash Pro'), findsOneWidget);
+    expect(find.text('Unlock'), findsNothing);
   });
 }

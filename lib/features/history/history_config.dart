@@ -73,7 +73,9 @@ List<HistoryReading> historyReadingsOf(Iterable<Panel> tiles) {
   void add(Panel tile, String path, String? unit) {
     final ieee = tile.deviceIeee;
     final topic = tile.topicPrefixOverride;
-    if (ieee == null || topic == null || topic.isEmpty) return;
+    if (ieee == null || topic == null || topic.isEmpty || path.isEmpty) {
+      return;
+    }
     if (!seen.add('$ieee/${historyAttr(path)}')) return;
     out.add(HistoryReading(ieee: ieee, path: path, topic: topic, unit: unit));
   }
@@ -112,3 +114,48 @@ String encodeHistoryConfig({
   'keepDays': historyKeepDays,
   'readings': [for (final r in readings) r.toJson()],
 });
+
+/// The readings in a retained config payload; empty for none or a broken one.
+List<HistoryReading> decodeHistoryReadings(String payload) {
+  if (payload.trim().isEmpty) return const [];
+  try {
+    final j = jsonDecode(payload);
+    if (j is! Map || j['readings'] is! List) return const [];
+    return [
+      for (final r in j['readings'] as List)
+        if (r is Map &&
+            r['ieee'] is String &&
+            r['path'] is String &&
+            r['topic'] is String)
+          HistoryReading(
+            ieee: r['ieee'] as String,
+            path: r['path'] as String,
+            topic: r['topic'] as String,
+            unit: (r['unit'] as String?)?.isEmpty ?? true
+                ? null
+                : r['unit'] as String,
+          ),
+    ];
+  } on FormatException {
+    return const [];
+  }
+}
+
+/// What to record when several phones share a Home: the readings already
+/// on the broker, then this phone's new ones, at most [historyMaxReadings].
+/// Phones only ever add, so two phones with different dashboards converge
+/// instead of overwriting each other. A reading whose topic changed (a
+/// renamed device) takes this phone's topic.
+List<HistoryReading> mergeHistoryReadings(
+  List<HistoryReading> retained,
+  List<HistoryReading> mine,
+) {
+  String key(HistoryReading r) => '${r.ieee}/${r.attr}';
+  final byKey = {for (final r in mine) key(r): r};
+  final out = <HistoryReading>[for (final r in retained) byKey[key(r)] ?? r];
+  final seen = {for (final r in out) key(r)};
+  for (final r in mine) {
+    if (seen.add(key(r))) out.add(r);
+  }
+  return out.take(historyMaxReadings).toList();
+}

@@ -66,8 +66,10 @@ class HistoryService {
   Future<String?> hostOf(String connectionId) async =>
       (await _connections.getById(connectionId))?.host;
 
-  /// The config payload for the Home as its dashboards are now.
-  Future<String?> configFor(String connectionId) async {
+  /// The config payload for the Home as its dashboards are now, merged
+  /// with the readings already recorded for it ([retained], the payload on
+  /// the broker) so phones with different dashboards don't undo each other.
+  Future<String?> configFor(String connectionId, {String retained = ''}) async {
     final conn = await _connections.getById(connectionId);
     if (conn == null) return null;
     final tiles = await DeviceRegistryDao(_db).tilesOfHome(connectionId);
@@ -83,17 +85,26 @@ class HistoryService {
       home: conn.name,
       base: conn.z2mBaseTopic ?? 'zigbee2mqtt',
       timeZone: zone ?? 'UTC',
-      readings: historyReadingsOf([for (final (tile, _) in tiles) tile]),
+      readings: mergeHistoryReadings(
+        decodeHistoryReadings(retained),
+        historyReadingsOf([for (final (tile, _) in tiles) tile]),
+      ),
     );
   }
 
-  /// Publishes the config retained when it differs from [current] (the
-  /// retained copy on the broker). False when not connected.
+  /// Publishes the config retained when its readings differ from those in
+  /// [current] (the retained copy on the broker). Only readings count: two
+  /// phones in different time zones must not flip the config back and forth.
+  /// False when not connected.
   Future<bool> publishConfig(String connectionId, {String? current}) async {
-    final payload = await configFor(connectionId);
+    final payload = await configFor(connectionId, retained: current ?? '');
     final mgr = await _managerOf(connectionId);
     if (payload == null || mgr == null || !mgr.isConnected) return false;
-    if (payload == current) return true;
+    if (current != null &&
+        current.isNotEmpty &&
+        _sameReadings(payload, current)) {
+      return true;
+    }
     mgr.publish(
       historyConfigTopic,
       payload,
@@ -178,3 +189,12 @@ final historyDaysProvider = StreamProvider.autoDispose
       yield const {};
       yield* controller.stream;
     });
+
+bool _sameReadings(String a, String b) {
+  final x = decodeHistoryReadings(a), y = decodeHistoryReadings(b);
+  if (x.length != y.length) return false;
+  for (var i = 0; i < x.length; i++) {
+    if (x[i] != y[i]) return false;
+  }
+  return true;
+}

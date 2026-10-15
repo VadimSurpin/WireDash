@@ -40,6 +40,9 @@ class LastKnownStore {
   /// Whether a message is a tile value worth keeping: not Zigbee2MQTT's
   /// bridge metadata, not our own commands echoed back, not huge.
   static bool keeps(MqttRxMessage m) =>
+      // History's day records (2.7) are read fresh from the broker each
+      // time; caching them would push device values out of this store.
+      !m.topic.startsWith('zigdash/history/') &&
       !m.topic.contains('/bridge/') &&
       !m.topic.endsWith('/bridge') &&
       !m.topic.endsWith('/set') &&

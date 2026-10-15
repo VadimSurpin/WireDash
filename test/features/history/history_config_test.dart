@@ -179,4 +179,41 @@ void main() {
       },
     ]);
   });
+
+  test('two phones with different dashboards converge', () {
+    const a = HistoryReading(ieee: '0xa', path: 'temperature', topic: 'z/A');
+    const b = HistoryReading(ieee: '0xb', path: 'power', topic: 'z/B');
+    const c = HistoryReading(ieee: '0xc', path: 'humidity', topic: 'z/C');
+    String enc(List<HistoryReading> r) => encodeHistoryConfig(
+      home: 'H',
+      base: 'zigbee2mqtt',
+      timeZone: 'UTC',
+      readings: r,
+    );
+    // The tablet shows a and b; the phone shows b and c.
+    var retained = enc(mergeHistoryReadings(const [], const [a, b]));
+    retained = enc(
+      mergeHistoryReadings(decodeHistoryReadings(retained), const [b, c]),
+    );
+    final again = mergeHistoryReadings(decodeHistoryReadings(retained), const [
+      a,
+      b,
+    ]);
+    expect(again, const [a, b, c], reason: 'nothing to undo');
+    expect(
+      mergeHistoryReadings(decodeHistoryReadings(retained), const [b, c]),
+      const [a, b, c],
+    );
+  });
+
+  test('a renamed device takes the new topic', () {
+    const old = HistoryReading(ieee: '0xa', path: 'power', topic: 'z/Old');
+    const renamed = HistoryReading(ieee: '0xa', path: 'power', topic: 'z/New');
+    expect(mergeHistoryReadings(const [old], const [renamed]), const [renamed]);
+  });
+
+  test('a broken retained config reads as none', () {
+    expect(decodeHistoryReadings('not json'), isEmpty);
+    expect(decodeHistoryReadings(''), isEmpty);
+  });
 }

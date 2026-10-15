@@ -12,6 +12,7 @@ import '../../core/l10n/l10n_ext.dart';
 import '../../core/theme/signal_colors.dart';
 import '../../l10n/app_localizations.dart';
 import '../panels/widgets/device_tile_panel.dart' show formatReading;
+import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
 import 'history_chart.dart';
 import 'history_record.dart';
@@ -452,6 +453,9 @@ class _UnlockButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Kiosk guests (a child at the wall tablet) never reach Play's
+    // purchase sheet: the sample stays, Unlock goes.
+    if (ref.watch(kioskProvider).on) return const SizedBox.shrink();
     final buy = ref.watch(proPurchaseProvider);
     return FilledButton(
       onPressed: buy,
