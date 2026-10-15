@@ -1,0 +1,170 @@
+package com.giladtamam.zigdash
+
+import android.app.Activity
+import android.os.Handler
+import android.os.Looper
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.MethodChannel
+
+/**
+ * ZigDash Pro through Google Play Billing (docs/design/history-2.7.md), in
+ * the Play build only: the foss build has a stub and no billing library.
+ *
+ * Channel "zigdash/billing":
+ *  - status -> "unlocked" | "locked" | "pending" | "unavailable"
+ *  - buy    -> the status after Play's purchase sheet closes
+ *
+ * Nothing is stored by ZigDash: Play's own purchase record is the truth, and
+ * a purchase restores on a new device by asking Play again.
+ */
+class ProBilling(private val activity: Activity, messenger: BinaryMessenger) :
+    PurchasesUpdatedListener {
+
+    private val main = Handler(Looper.getMainLooper())
+    private var pendingBuy: MethodChannel.Result? = null
+
+    private val client: BillingClient = BillingClient.newBuilder(activity)
+        .setListener(this)
+        .enablePendingPurchases(
+            PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
+        )
+        .enableAutoServiceReconnection()
+        .build()
+
+    init {
+        MethodChannel(messenger, CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "status" -> status { reply(result, it) }
+                "buy" -> buy(result)
+                else -> result.notImplemented()
+            }
+        }
+    }
+
+    private fun reply(result: MethodChannel.Result, value: String) =
+        main.post { result.success(value) }
+
+    private fun connected(block: (Boolean) -> Unit) {
+        if (client.isReady) {
+            block(true)
+            return
+        }
+        client.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(r: BillingResult) =
+                block(r.responseCode == BillingClient.BillingResponseCode.OK)
+
+            override fun onBillingServiceDisconnected() {}
+        })
+    }
+
+    private fun product(block: (ProductDetails?) -> Unit) {
+        val params = QueryProductDetailsParams.newBuilder().setProductList(
+            listOf(
+                QueryProductDetailsParams.Product.newBuilder()
+                    .setProductId(PRODUCT)
+                    .setProductType(BillingClient.ProductType.INAPP)
+                    .build()
+            )
+        ).build()
+        client.queryProductDetailsAsync(params) { r, details ->
+            block(
+                if (r.responseCode == BillingClient.BillingResponseCode.OK)
+                    details.productDetailsList.firstOrNull()
+                else null
+            )
+        }
+    }
+
+    /** Owned (and acknowledged), pending, or for sale. */
+    private fun status(done: (String) -> Unit) = connected { ok ->
+        if (!ok) {
+            done("unavailable")
+            return@connected
+        }
+        client.queryPurchasesAsync(
+            QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP).build()
+        ) { r, purchases ->
+            if (r.responseCode != BillingClient.BillingResponseCode.OK) {
+                done("unavailable")
+                return@queryPurchasesAsync
+            }
+            val own = purchases.filter { PRODUCT in it.products }
+            own.forEach(::acknowledge)
+            when {
+                own.any { it.purchaseState == Purchase.PurchaseState.PURCHASED } ->
+                    done("unlocked")
+                own.any { it.purchaseState == Purchase.PurchaseState.PENDING } ->
+                    done("pending")
+                else -> product { done(if (it == null) "unavailable" else "locked") }
+            }
+        }
+    }
+
+    private fun buy(result: MethodChannel.Result) = connected { ok ->
+        if (!ok) {
+            reply(result, "unavailable")
+            return@connected
+        }
+        product { details ->
+            if (details == null) {
+                reply(result, "unavailable")
+                return@product
+            }
+            main.post {
+                pendingBuy?.success("locked")
+                pendingBuy = result
+                val params = BillingFlowParams.newBuilder().setProductDetailsParamsList(
+                    listOf(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(details).build()
+                    )
+                ).build()
+                val r = client.launchBillingFlow(activity, params)
+                if (r.responseCode != BillingClient.BillingResponseCode.OK) {
+                    pendingBuy = null
+                    result.success("locked")
+                }
+            }
+        }
+    }
+
+    override fun onPurchasesUpdated(r: BillingResult, purchases: MutableList<Purchase>?) {
+        purchases?.filter { PRODUCT in it.products }?.forEach(::acknowledge)
+        // Ask Play for the outcome rather than trusting the callback alone.
+        status { s ->
+            main.post {
+                pendingBuy?.success(s)
+                pendingBuy = null
+            }
+        }
+    }
+
+    /** A purchase not acknowledged within three days is refunded by Play. */
+    private fun acknowledge(p: Purchase) {
+        if (p.purchaseState != Purchase.PurchaseState.PURCHASED || p.isAcknowledged) return
+        client.acknowledgePurchase(
+            AcknowledgePurchaseParams.newBuilder().setPurchaseToken(p.purchaseToken).build()
+        ) { }
+    }
+
+    companion object {
+        const val CHANNEL = "zigdash/billing"
+        const val PRODUCT = "zigdash_pro"
+
+        fun register(activity: Activity, messenger: BinaryMessenger) {
+            ProBilling(activity, messenger)
+        }
+    }
+}

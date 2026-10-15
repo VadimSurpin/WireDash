@@ -10,7 +10,7 @@
 #
 # Usage:
 #   tool/build_release.sh apk     # -> build/app/outputs/flutter-apk/app-release.apk
-#   tool/build_release.sh bundle  # -> build/app/outputs/bundle/release/app-release.aab (Play Store)
+#   tool/build_release.sh bundle  # -> build/app/outputs/bundle/playRelease/app-play-release.aab (Play Store)
 #   tool/build_release.sh github  # -> build/github-release/zigdash-<version>-<abi>.apk
 #                                 #    per-ABI APKs for GitHub releases and IzzyOnDroid;
 #                                 #    always WITHOUT the analytics key (ADR 0006)
@@ -26,20 +26,26 @@ if [[ -z "$KEY" && -f tool/.analytics_key ]]; then KEY="$(tr -d '[:space:]' < to
 DEFINES=()
 if [[ -n "$KEY" ]]; then DEFINES+=(--dart-define=ZIGDASH_ANALYTICS_KEY="$KEY"); else echo "note: no analytics key, building without analytics"; fi
 
+# The Play build carries billing for ZigDash Pro (history-2.7.md). Pro shows
+# only once ZIGDASH_PRO_LIVE=1 (the payments profile and product exist).
+PLAY=(--dart-define=ZIGDASH_FLAVOR=play)
+if [[ "${ZIGDASH_PRO_LIVE:-}" == 1 ]]; then PLAY+=(--dart-define=ZIGDASH_PRO_LIVE=true); fi
+
 TARGET="${1:-apk}"
 if [[ "$TARGET" == github ]]; then
   # Builds outside Play never contain the analytics key, so they can't send data.
-  tool/flutter build apk --release --split-per-abi --no-tree-shake-icons
+  tool/flutter build apk --release --split-per-abi --no-tree-shake-icons \
+    --flavor foss --dart-define=ZIGDASH_FLAVOR=foss
   VERSION="$(sed -n 's/^version: \([^+]*\).*/\1/p' pubspec.yaml)"
   OUT=build/github-release; rm -rf "$OUT"; mkdir -p "$OUT"
   for abi in arm64-v8a armeabi-v7a x86_64; do
-    cp "build/app/outputs/flutter-apk/app-$abi-release.apk" "$OUT/zigdash-$VERSION-$abi.apk"
+    cp "build/app/outputs/flutter-apk/app-$abi-foss-release.apk" "$OUT/zigdash-$VERSION-$abi.apk"
   done
   (cd "$OUT" && shasum -a 256 *.apk > SHA256SUMS)
   ls -la "$OUT"; exit 0
 fi
 case "$TARGET" in
-  apk)    tool/flutter build apk --release --no-tree-shake-icons "${DEFINES[@]}" ;;
-  bundle) tool/flutter build appbundle --release --no-tree-shake-icons "${DEFINES[@]}" ;;
+  apk)    tool/flutter build apk --release --no-tree-shake-icons --flavor play "${PLAY[@]}" "${DEFINES[@]}" ;;
+  bundle) tool/flutter build appbundle --release --no-tree-shake-icons --flavor play "${PLAY[@]}" "${DEFINES[@]}" ;;
   *) echo "usage: $0 [apk|bundle|github]"; exit 2 ;;
 esac

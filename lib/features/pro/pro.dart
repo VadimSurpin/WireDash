@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show VoidCallback;
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// ZigDash Pro (docs/design/history-2.7.md): a one-time purchase on Google
@@ -8,16 +8,19 @@ enum ProStatus {
   /// Everything is open: a build outside Play, or Pro was bought.
   unlocked,
 
-  /// Pro can be bought and isn't yet: Pro views show the locked sample.
+  /// Pro can be bought and isn't yet (or a payment is still pending): Pro
+  /// views show the locked sample.
   locked,
 
-  /// Pro isn't offered in this build yet: Pro views are hidden entirely,
-  /// so nobody is shown something they can't get.
+  /// Pro isn't offered here: not live yet, no Play on the device, or the
+  /// product can't be found. Pro views are hidden entirely, so nobody is
+  /// shown something they can't get.
   unavailable,
 }
 
 /// Which build this is: `foss` (GitHub, IzzyOnDroid, F-Droid: no billing,
-/// everything unlocked) or `play`. Set by tool/build_release.sh.
+/// everything unlocked) or `play`. Set by tool/build_release.sh together
+/// with the Android flavor of the same name.
 const proFlavor = String.fromEnvironment(
   'ZIGDASH_FLAVOR',
   defaultValue: 'foss',
@@ -27,14 +30,51 @@ const proFlavor = String.fromEnvironment(
 /// product exist). Until then Pro views are hidden in the Play build.
 const proLive = bool.fromEnvironment('ZIGDASH_PRO_LIVE');
 
-/// This build's Pro status. The Play build's purchase state is wired in with
-/// billing; until then a Play build without [proLive] is [ProStatus.unavailable].
+const _billing = MethodChannel('zigdash/billing');
+
+ProStatus _parse(Object? s) => switch (s) {
+  'unlocked' => ProStatus.unlocked,
+  'locked' || 'pending' => ProStatus.locked,
+  _ => ProStatus.unavailable,
+};
+
+/// Play's answer: asked once at start, and again after a purchase.
+class ProBilling extends Notifier<ProStatus> {
+  @override
+  ProStatus build() {
+    _ask('status');
+    return ProStatus.unavailable;
+  }
+
+  Future<void> _ask(String method) async {
+    try {
+      state = _parse(await _billing.invokeMethod<String>(method));
+    } on PlatformException {
+      state = ProStatus.unavailable;
+    } on MissingPluginException {
+      state = ProStatus.unavailable;
+    }
+  }
+
+  /// Opens Play's purchase sheet; the status follows what Play says after.
+  Future<void> buy() => _ask('buy');
+}
+
+final proBillingProvider = NotifierProvider<ProBilling, ProStatus>(
+  ProBilling.new,
+);
+
+/// This build's Pro status.
 final proStatusProvider = Provider<ProStatus>((ref) {
   if (proFlavor != 'play') return ProStatus.unlocked;
   if (!proLive) return ProStatus.unavailable;
-  return ProStatus.locked;
+  return ref.watch(proBillingProvider);
 });
 
-/// Starts buying Pro; null when this build can't (outside Play, or before
-/// billing is live), which disables Unlock.
-final proPurchaseProvider = Provider<VoidCallback?>((ref) => null);
+/// Starts buying Pro; null when this build can't (outside Play, before Pro
+/// is live, or once it's bought), which disables Unlock.
+final proPurchaseProvider = Provider<VoidCallback?>((ref) {
+  if (proFlavor != 'play' || !proLive) return null;
+  if (ref.watch(proStatusProvider) != ProStatus.locked) return null;
+  return () => ref.read(proBillingProvider.notifier).buy();
+});

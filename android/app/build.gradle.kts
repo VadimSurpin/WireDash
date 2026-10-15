@@ -53,6 +53,16 @@ android {
         versionName = flutter.versionName
     }
 
+    // One app, two builds (docs/design/history-2.7.md, Pro): "play" carries
+    // Google Play Billing for ZigDash Pro; "foss" (GitHub, IzzyOnDroid,
+    // F-Droid) has no billing library and everything unlocked. Same
+    // applicationId and version; the default flavor is set in pubspec.yaml.
+    flavorDimensions += "store"
+    productFlavors {
+        create("play") { dimension = "store" }
+        create("foss") { dimension = "store" }
+    }
+
     signingConfigs {
         create("release") {
             val storeFilePath = keystoreProperties["storeFile"] as String?
@@ -91,6 +101,8 @@ dependencies {
     // distributor: no Firebase project, no second app (alerts-2.3.md).
     implementation("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // ZigDash Pro, Play build only. Play requires Billing Library 8+.
+    "playImplementation"("com.android.billingclient:billing-ktx:8.0.0")
 }
 
 kotlin {

@@ -90,6 +90,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # The foss build unless --flavor play (android/app/build.gradle.kts).
+  default-flavor: foss
   generate: true
   assets:
     - docs/USER_GUIDE.md
