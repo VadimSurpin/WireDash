@@ -979,5 +979,8 @@
   "proTitle": "ZigDash Pro",
   "proAbout": "Histórico de 7 e 30 dias. Uma compra única.",
   "proUnlocked": "Desbloqueado. Obrigado por apoiar o ZigDash.",
-  "historyNotRecorded": "Só são gravados os números que aparecem num painel. Adicione este como bloco para começar o histórico."
+  "historyNotRecorded": "Só são gravados os números que aparecem num painel. Adicione este como bloco para começar o histórico.",
+  "historyNeedsPassword": "Mais um passo: seu broker pede login. Abra o Node-RED em {host}:1880, clique duas vezes em \"ZigDash history broker\", digite a senha MQTT na aba Security e clique em Deploy. O ZigDash nunca envia sua senha ao hub.",
+  "historyNotConnected": "O gravador está instalado mas não se conectou ao broker. Se o broker pede login, digite a senha no nó \"ZigDash history broker\" do Node-RED e clique em Deploy.",
+  "historyPersistence": "O histórico fica no seu broker. Se você roda o Mosquitto por conta própria, confira se a configuração tem \"persistence true\", senão o histórico se perde quando o broker reinicia."
 }

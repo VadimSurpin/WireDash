@@ -61,6 +61,9 @@ void main() {
             (ref, _) => Stream.value(true),
           ),
           historyDaysProvider.overrideWith((ref, _) => Stream.value(_days)),
+          historyRetainedConfigProvider.overrideWith(
+            (ref, _) => Stream.value(''),
+          ),
         ],
         screen: _sheet,
       ),

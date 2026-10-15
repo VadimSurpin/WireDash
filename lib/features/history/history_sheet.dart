@@ -178,8 +178,20 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
                 .valueOrNull ??
             '',
       ).any((r) => r.ieee == widget.ieee && r.attr == historyAttr(widget.path));
+      // A config on the broker but no heartbeat: installed, never
+      // connected. Most often a broker login Node-RED doesn't have yet.
+      final installed =
+          (ref
+                      .watch(historyRetainedConfigProvider(widget.connectionId))
+                      .valueOrNull ??
+                  '')
+              .isNotEmpty;
       body = online != true
-          ? _SetupCard(busy: _busy, onSetUp: () => _install(l10n))
+          ? _SetupCard(
+              busy: _busy,
+              notConnected: installed,
+              onSetUp: () => _install(l10n),
+            )
           : _Note(text: recorded ? l10n.historyEmpty : l10n.historyNotRecorded);
     } else {
       body = Column(
@@ -287,9 +299,27 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
                 ? HistorySetupResult.installed
                 : HistorySetupResult.updated,
           );
-          messenger.showSnackBar(
-            SnackBar(content: Text(l10n.historyInstalled)),
-          );
+          if (await service.brokerHasLogin(widget.connectionId)) {
+            final host = await service.hostOf(widget.connectionId) ?? '';
+            if (!mounted) return;
+            await showDialog<void>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(l10n.historyInstalled),
+                content: Text(l10n.historyNeedsPassword(host)),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            messenger.showSnackBar(
+              SnackBar(content: Text(l10n.historyInstalled)),
+            );
+          }
         case NodeRedInstall.needsLogin:
           _track(HistorySetupResult.manual);
           await _manualSteps(l10n);
@@ -359,9 +389,16 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
 
 /// No recorder yet: what it is, and the one-tap install.
 class _SetupCard extends StatelessWidget {
-  const _SetupCard({required this.busy, required this.onSetUp});
+  const _SetupCard({
+    required this.busy,
+    required this.onSetUp,
+    this.notConnected = false,
+  });
 
   final bool busy;
+
+  /// The recorder was installed but never came online.
+  final bool notConnected;
   final VoidCallback onSetUp;
 
   @override
@@ -377,7 +414,17 @@ class _SetupCard extends StatelessWidget {
           children: [
             Text(l10n.historySetupTitle, style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
-            Text(l10n.historySetupBody, style: theme.textTheme.bodyMedium),
+            Text(
+              notConnected ? l10n.historyNotConnected : l10n.historySetupBody,
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.historyPersistence,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: busy ? null : onSetUp,

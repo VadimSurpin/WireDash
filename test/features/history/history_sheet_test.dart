@@ -136,4 +136,23 @@ void main() {
     );
     expect(find.textContaining('No values yet'), findsNothing);
   });
+
+  testWidgets('installed but never online: names the broker login', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(online: null));
+    await tester.pump();
+    expect(
+      find.textContaining("hasn't connected to your broker"),
+      findsOneWidget,
+    );
+    expect(find.textContaining('persistence true'), findsOneWidget);
+  });
+
+  testWidgets('nothing installed: the plain set-up card', (tester) async {
+    await tester.pumpWidget(_app(online: null, retained: ''));
+    await tester.pump();
+    expect(find.textContaining('ZigDash has no server'), findsOneWidget);
+    expect(find.textContaining("hasn't connected"), findsNothing);
+  });
 }

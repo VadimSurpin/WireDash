@@ -62,6 +62,13 @@ class HistoryService {
     ]);
   }
 
+  /// Whether the Home's broker uses a login: the recorder then needs the
+  /// password typed into Node-RED, which ZigDash never sends.
+  Future<bool> brokerHasLogin(String connectionId) async {
+    final u = (await _connections.getById(connectionId))?.username;
+    return u != null && u.isNotEmpty;
+  }
+
   /// The Home's broker address, for messages.
   Future<String?> hostOf(String connectionId) async =>
       (await _connections.getById(connectionId))?.host;

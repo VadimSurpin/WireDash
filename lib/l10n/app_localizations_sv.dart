@@ -3175,4 +3175,17 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get historyNotRecorded =>
       'Bara siffror som visas på en instrumentpanel spelas in. Lägg till den här som en ruta för att starta historiken.';
+
+  @override
+  String historyNeedsPassword(String host) {
+    return 'Ett steg till: din broker kräver inloggning. Öppna Node-RED på $host:1880, dubbelklicka på ”ZigDash history broker”, skriv MQTT-lösenordet på fliken Security och klicka på Deploy. ZigDash skickar aldrig ditt lösenord till hubben.';
+  }
+
+  @override
+  String get historyNotConnected =>
+      'Inspelaren är installerad men har inte anslutit till din broker. Kräver brokern inloggning, skriv dess lösenord i Node-RED-noden ”ZigDash history broker” och klicka på Deploy.';
+
+  @override
+  String get historyPersistence =>
+      'Historiken finns på din broker. Kör du Mosquitto själv, se till att konfigurationen har \"persistence true\", annars försvinner historiken när brokern startar om.';
 }

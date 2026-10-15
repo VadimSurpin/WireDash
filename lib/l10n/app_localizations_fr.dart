@@ -3194,4 +3194,17 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get historyNotRecorded =>
       'Seules les valeurs affichées sur un tableau de bord sont enregistrées. Ajoutez celle-ci en tuile pour démarrer son historique.';
+
+  @override
+  String historyNeedsPassword(String host) {
+    return 'Encore une étape : votre broker demande un identifiant. Ouvrez Node-RED sur $host:1880, double-cliquez sur « ZigDash history broker », saisissez le mot de passe MQTT dans l\'onglet Security, puis Deploy. ZigDash n\'envoie jamais votre mot de passe au hub.';
+  }
+
+  @override
+  String get historyNotConnected =>
+      'L\'enregistreur est installé mais ne s\'est pas connecté à votre broker. Si le broker demande un identifiant, saisissez son mot de passe dans le nœud « ZigDash history broker » de Node-RED, puis Deploy.';
+
+  @override
+  String get historyPersistence =>
+      'L\'historique est stocké sur votre broker. Si vous gérez Mosquitto vous-même, vérifiez que sa configuration contient \"persistence true\", sinon l\'historique est perdu au redémarrage du broker.';
 }

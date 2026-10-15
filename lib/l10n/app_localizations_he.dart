@@ -3146,4 +3146,17 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get historyNotRecorded =>
       'מוקלטים רק מספרים שמוצגים בלוח בקרה. הוסיפו את הערך הזה כאריח כדי להתחיל את ההיסטוריה שלו.';
+
+  @override
+  String historyNeedsPassword(String host) {
+    return 'עוד צעד אחד: ה-broker דורש התחברות. פתחו את Node-RED בכתובת $host:1880, לחצו פעמיים על \"ZigDash history broker\", הקלידו את סיסמת ה-MQTT בלשונית Security ולחצו Deploy. ZigDash אף פעם לא שולח את הסיסמה ל-hub.';
+  }
+
+  @override
+  String get historyNotConnected =>
+      'המקליט מותקן אבל לא התחבר ל-broker. אם ה-broker דורש התחברות, הקלידו את הסיסמה שלו ב-node בשם \"ZigDash history broker\" ב-Node-RED ולחצו Deploy.';
+
+  @override
+  String get historyPersistence =>
+      'ההיסטוריה נשמרת ב-broker. אם אתם מריצים Mosquitto בעצמכם, ודאו שבהגדרות שלו יש \"persistence true\", אחרת ההיסטוריה תימחק כשה-broker יופעל מחדש.';
 }

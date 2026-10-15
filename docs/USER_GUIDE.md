@@ -212,7 +212,34 @@ device's secure storage) — re‑enter them after importing.
 
 ---
 
-## 10. FAQ
+## 10. History
+
+Tap a reading tile, or **History** in a device's sheet or on its device page,
+to see the last 24 hours as a graph: the line is the 15‑minute average, the
+band the minimum and maximum. Touch the graph to read a value. 7 and 30 days
+are part of ZigDash Pro in the Google Play version (unlocked in the GitHub,
+IzzyOnDroid and F‑Droid versions).
+
+ZigDash has no server, so a small **Node‑RED** flow on your hub records the
+numbers shown on your dashboards and keeps 30 days on your own broker. You
+need Node‑RED next to your broker:
+- **SMLIGHT SMHUB:** install Node‑RED under the hub's Apps.
+- **Home Assistant OS:** install the Node‑RED add‑on. It asks for Home
+  Assistant's login, so ZigDash copies the flow instead: in Node‑RED choose
+  Import, paste, Deploy.
+- **Raspberry Pi or Docker:** install Node‑RED (port 1880).
+
+Then open any history and tap **Set up on the hub**. If your broker needs a
+login, open Node‑RED at `<hub>:1880`, double‑click **ZigDash history
+broker**, type the MQTT password on its Security tab and Deploy (ZigDash never
+sends your password to the hub).
+
+History is stored as retained messages on your broker. If you run Mosquitto
+yourself, set `persistence true` in its config, or history is lost when the
+broker restarts. Only numbers shown on a dashboard are recorded: add a reading
+as a tile to record it.
+
+## 11. FAQ
 
 **Q: The broker shows "Connecting" forever / "Error". What do I check?**
 - Is the **host/port** right and reachable from the phone's current network? (At home, the phone must be on the same Wi‑Fi/LAN as the broker.)

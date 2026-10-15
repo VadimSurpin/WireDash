@@ -5725,6 +5725,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only numbers shown on a dashboard are recorded. Add this one as a tile to start its history.'**
   String get historyNotRecorded;
+
+  /// No description provided for @historyNeedsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'One more step: your broker asks for a login. Open Node-RED at {host}:1880, double-click \"ZigDash history broker\", type the MQTT password on its Security tab, then Deploy. ZigDash never sends your password to the hub.'**
+  String historyNeedsPassword(String host);
+
+  /// No description provided for @historyNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'The recorder is installed but hasn\'t connected to your broker. If the broker needs a login, enter its password in Node-RED\'s \"ZigDash history broker\" node and Deploy.'**
+  String get historyNotConnected;
+
+  /// No description provided for @historyPersistence.
+  ///
+  /// In en, this message translates to:
+  /// **'History lives on your broker. If you run Mosquitto yourself, make sure its config has \"persistence true\", or history is lost when the broker restarts.'**
+  String get historyPersistence;
 }
 
 class _AppLocalizationsDelegate
