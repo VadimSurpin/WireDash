@@ -173,6 +173,9 @@ enum Feature {
   editMode,
   wallDisplay,
   tileAdded,
+
+  /// A history sheet or the device page's History card was opened (2.7).
+  history,
 }
 
 /// The first use of a feature in a session.
@@ -409,6 +412,39 @@ class ReviewPrompted extends AnalyticsEvent {
 
   @override
   Map<String, String> get props => {'result': result.name};
+}
+
+/// What setting up the history recorder ended in (2.7).
+enum HistorySetupResult { installed, updated, manual, noNodeRed, failed }
+
+/// The history recorder was set up from a history sheet.
+class HistorySetup extends AnalyticsEvent {
+  const HistorySetup(this.result);
+
+  final HistorySetupResult result;
+
+  @override
+  String get name => 'history_setup';
+
+  @override
+  Map<String, String> get props => {'result': _snake(result.name)};
+}
+
+/// A step of ZigDash Pro in the Play build (2.7): a locked view was shown,
+/// Unlock was tapped, or Play reported Pro unlocked afterwards. Nothing
+/// about the payment.
+enum ProStep { lockedShown, unlockTapped, unlocked }
+
+class ProEvent extends AnalyticsEvent {
+  const ProEvent(this.step);
+
+  final ProStep step;
+
+  @override
+  String get name => 'pro';
+
+  @override
+  Map<String, String> get props => {'step': _snake(step.name)};
 }
 
 /// [n] as a coarse label: an exact value from [exact], a "lo-hi" range from
