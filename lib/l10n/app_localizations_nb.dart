@@ -2743,19 +2743,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get pollThanks => 'Takk! Det hjelper oss å velge hva som kommer.';
 
   @override
-  String get communityCardTitle => 'Bli med i ZigDash-fellesskapet';
-
-  @override
-  String get communityCardBody =>
-      'Spørsmål, ideer og nyheter om versjoner, i en Telegram-gruppe med andre ZigDash-brukere.';
-
-  @override
-  String get communityCardJoin => 'Bli med';
-
-  @override
-  String get communityCardNotNow => 'Ikke nå';
-
-  @override
   String get pollNoAnalytics =>
       'Bruksdata er av, så ingenting sendes herfra. Fortell oss heller via Foreslå en funksjon.';
 

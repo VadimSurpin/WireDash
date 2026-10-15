@@ -32,7 +32,6 @@ import '../../kiosk/kiosk.dart';
 import '../../kiosk/wall_display_sheet.dart';
 import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
-import '../widgets/community_card.dart';
 import '../widgets/poll_card.dart';
 import '../widgets/connection_status_banner.dart';
 
@@ -286,7 +285,6 @@ class _DashboardsTabbed extends ConsumerWidget {
                     if (!kiosk) ...[
                       AnalyticsConsentCard(connectionId: connectionId),
                       PollCard(connectionId: connectionId),
-                      CommunityCard(connectionId: connectionId),
                     ],
                     AlertsPausedBanner(connectionId: connectionId),
                     ConnectionStatusBanner(
