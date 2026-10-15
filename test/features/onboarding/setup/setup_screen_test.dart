@@ -273,10 +273,19 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('Mosquitto broker add-on'), findsOneWidget);
+    // 2.6.6: ZHA users are told why, and the demo is a button.
+    expect(find.textContaining('(ZHA)'), findsOneWidget);
+    expect(find.widgetWithText(OutlinedButton, 'Try demo'), findsOneWidget);
     // Only Home Assistant's guide; no platform question any more.
     expect(find.textContaining('SMLIGHT'), findsNothing);
-    expect(find.text('Try again'), findsOneWidget);
+    // Nothing answers on 1883, so Try again leads, not Connect to.
+    expect(find.widgetWithText(FilledButton, 'Try again'), findsOneWidget);
+    expect(
+      find.widgetWithText(TextButton, 'Connect to 192.168.1.20'),
+      findsOneWidget,
+    );
 
+    await tester.ensureVisible(find.text('Connect to 192.168.1.20'));
     await tester.tap(find.text('Connect to 192.168.1.20'));
     await tester.pumpAndSettle();
     expect(

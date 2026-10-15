@@ -1690,6 +1690,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get setupNoBrokerHaZha =>
+      '¿Usas el Zigbee propio de Home Assistant (ZHA) en lugar de Zigbee2MQTT? ZigDash solo funciona con Zigbee2MQTT, así que no ve los dispositivos de ZHA. La demo muestra lo que tendrías.';
+
+  @override
   String get setupNoBrokerZ2mTitle =>
       'Zigbee2MQTT encontrado, pero su broker no es accesible';
 

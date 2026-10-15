@@ -3092,6 +3092,12 @@ abstract class AppLocalizations {
   /// **'Home Assistant is at {host}, but nothing answers on MQTT port 1883. In Home Assistant, open Settings › Add-ons, install and start the Mosquitto broker add-on, then try again.'**
   String setupNoBrokerHaBody(String host);
 
+  /// No description provided for @setupNoBrokerHaZha.
+  ///
+  /// In en, this message translates to:
+  /// **'Using Home Assistant\'s own Zigbee (ZHA) instead of Zigbee2MQTT? ZigDash works only with Zigbee2MQTT, so it can\'t see ZHA devices. The demo shows what you\'d get.'**
+  String get setupNoBrokerHaZha;
+
   /// No description provided for @setupNoBrokerZ2mTitle.
   ///
   /// In en, this message translates to:

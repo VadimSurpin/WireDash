@@ -376,6 +376,7 @@ class _ScanEmpty extends StatelessWidget {
     final theme = Theme.of(context);
     final hub = state.hub;
     final platform = state.platform;
+    final haHub = hub?.kind == HubKind.homeAssistant;
     final (title, body) = hub != null
         ? switch (hub.kind) {
             HubKind.homeAssistant => (
@@ -422,6 +423,13 @@ class _ScanEmpty extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(body, style: theme.textTheme.bodyLarge),
+        // 2.6.6: two of the first users to reach this screen left within
+        // seconds of it. Many Home Assistant users run ZHA, not Zigbee2MQTT,
+        // and no broker will ever answer for them; say so, and offer the demo.
+        if (haHub) ...[
+          const SizedBox(height: 12),
+          Text(l10n.setupNoBrokerHaZha, style: theme.textTheme.bodyMedium),
+        ],
         const SizedBox(height: 12),
         _SetupGuides(only: guideFor),
         // No hub found: the address question comes first and its Check is
@@ -438,27 +446,51 @@ class _ScanEmpty extends StatelessWidget {
           _PlatformChips(value: platform, onChanged: onPlatform),
         ],
         const SizedBox(height: 24),
-        if (hub != null) ...[
+        // Home Assistant with nothing on port 1883: connecting to it again
+        // cannot work, so Try again (after installing Mosquitto) leads and
+        // the demo sits right under it for ZHA users.
+        if (haHub) ...[
           FilledButton.icon(
-            onPressed: () => onManualTo(hub),
-            icon: const Icon(Icons.login),
-            label: Text(l10n.setupConnectTo(hub.host)),
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.setupTryAgain),
           ),
           const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: onDemo,
+            icon: const Icon(Icons.play_circle_outline),
+            label: Text(l10n.onboardingDemo),
+          ),
+        ] else ...[
+          if (hub != null) ...[
+            FilledButton.icon(
+              onPressed: () => onManualTo(hub),
+              icon: const Icon(Icons.login),
+              label: Text(l10n.setupConnectTo(hub.host)),
+            ),
+            const SizedBox(height: 8),
+          ],
+          OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.setupTryAgain),
+          ),
         ],
-        OutlinedButton.icon(
-          onPressed: onRetry,
-          icon: const Icon(Icons.refresh),
-          label: Text(l10n.setupTryAgain),
-        ),
         GetHelpLink(
           onPressed: () =>
               context.push(Routes.getHelpFrom(HelpFrom.noConnection.name)),
         ),
         const CommunityLink(from: HelpFrom.noConnection),
         const SizedBox(height: 8),
-        TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
-        TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
+        if (haHub)
+          TextButton(
+            onPressed: () => onManualTo(hub),
+            child: Text(l10n.setupConnectTo(hub!.host)),
+          )
+        else ...[
+          TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+          TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
+        ],
       ],
     );
   }
