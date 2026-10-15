@@ -421,6 +421,12 @@ class _ScanEmpty extends StatelessWidget {
           liveRegion: true,
           child: Text(title, style: theme.textTheme.titleMedium),
         ),
+        // 2.6.7: a VPN on the phone hides the home network from the scan.
+        // One 2.6.4 user scanned with a VPN up, found nothing and left.
+        if (state.network?.vpn ?? false) ...[
+          const SizedBox(height: 12),
+          _VpnHint(text: l10n.setupVpnHint),
+        ],
         const SizedBox(height: 8),
         Text(body, style: theme.textTheme.bodyLarge),
         // 2.6.6: two of the first users to reach this screen left within
@@ -492,6 +498,39 @@ class _ScanEmpty extends StatelessWidget {
           TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
         ],
       ],
+    );
+  }
+}
+
+/// The VPN note on the empty result: tinted so it reads before the body.
+class _VpnHint extends StatelessWidget {
+  const _VpnHint({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: scheme.tertiaryContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.vpn_lock, color: scheme.onTertiaryContainer),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: scheme.onTertiaryContainer,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

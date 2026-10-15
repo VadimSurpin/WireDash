@@ -1695,6 +1695,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Gebruik je de ingebouwde Zigbee van Home Assistant (ZHA) in plaats van Zigbee2MQTT? ZigDash werkt alleen met Zigbee2MQTT en ziet ZHA-apparaten dus niet. De demo laat zien wat je zou krijgen.';
 
   @override
+  String get setupVpnHint =>
+      'Er staat een VPN aan, en die kan je thuisnetwerk voor de scan verbergen. Ben je thuis, zet de VPN dan uit en tik op Opnieuw proberen.';
+
+  @override
   String get setupNoBrokerZ2mTitle =>
       'Zigbee2MQTT gevonden, maar zijn broker is niet bereikbaar';
 

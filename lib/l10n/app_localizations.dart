@@ -3098,6 +3098,12 @@ abstract class AppLocalizations {
   /// **'Using Home Assistant\'s own Zigbee (ZHA) instead of Zigbee2MQTT? ZigDash works only with Zigbee2MQTT, so it can\'t see ZHA devices. The demo shows what you\'d get.'**
   String get setupNoBrokerHaZha;
 
+  /// No description provided for @setupVpnHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A VPN is on, and it can hide your home network from the scan. If you\'re at home, turn the VPN off and tap Try again.'**
+  String get setupVpnHint;
+
   /// No description provided for @setupNoBrokerZ2mTitle.
   ///
   /// In en, this message translates to:

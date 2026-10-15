@@ -116,6 +116,7 @@ Future<SetupCoordinator> _pump(
   _FakeFirstRun? firstRun,
   List<Override> extra = const [],
   AddressChecker? checkAddress,
+  bool vpn = false,
 }) async {
   // The setup screens are lists that grew in 2.5 (progress, the platform
   // question); a tall view keeps every action built and tappable.
@@ -140,6 +141,7 @@ Future<SetupCoordinator> _pump(
         fetchFor?.call(base) ?? fetch,
     creator: _FakeStore(),
     checkAddress: checkAddress,
+    networkFacts: () async => (kind: 'wifi', vpn: vpn),
   );
   addTearDown(coordinator.dispose);
   await tester.pumpWidget(
@@ -440,6 +442,26 @@ void main() {
     );
     expect(question.dy, lessThan(tester.getTopLeft(find.text('Not sure')).dy));
     expect(tester.getTopLeft(check).dy, lessThan(tester.getTopLeft(retry).dy));
+  });
+
+  // 2.6.7: a VPN hides the home network from the scan; say so on the
+  // empty result, and only then.
+  testWidgets('the empty result names a VPN when one is on', (tester) async {
+    await _pump(tester, scan: (_) => const Stream.empty(), vpn: true);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    expect(find.textContaining('A VPN is on'), findsOneWidget);
+  });
+
+  testWidgets('no VPN, no VPN note', (tester) async {
+    await _pump(tester, scan: (_) => const Stream.empty());
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    expect(find.textContaining('A VPN is on'), findsNothing);
   });
 
   // 2.6.6: every address-field user tapped Check on an empty field first, so
