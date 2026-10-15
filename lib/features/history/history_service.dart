@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +41,30 @@ class HistoryService {
     }
     return r;
   }
+
+  /// The recorder as Node-RED's Import wants it, with the Home's broker and
+  /// base topic filled in: for hubs where Node-RED asks for a login.
+  Future<String?> importJson(String connectionId, String flowJson) async {
+    final conn = await _connections.getById(connectionId);
+    if (conn == null) return null;
+    final tab = NodeRedInstaller.tabFor(
+      flowJson,
+      brokerHost: conn.host,
+      brokerPort: conn.port,
+      username: conn.username,
+      baseTopic: conn.z2mBaseTopic ?? 'zigbee2mqtt',
+    );
+    const id = 'zigdash_history_tab';
+    return const JsonEncoder.withIndent(' ').convert([
+      {'id': id, 'type': 'tab', 'label': tab['label'], 'info': tab['info']},
+      for (final n in tab['configs'] as List) n,
+      for (final n in tab['nodes'] as List) {...n as Map, 'z': id},
+    ]);
+  }
+
+  /// The Home's broker address, for messages.
+  Future<String?> hostOf(String connectionId) async =>
+      (await _connections.getById(connectionId))?.host;
 
   /// The config payload for the Home as its dashboards are now.
   Future<String?> configFor(String connectionId) async {

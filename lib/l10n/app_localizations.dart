@@ -5617,6 +5617,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Long-press to leave kiosk'**
   String get a11yKioskLeave;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get historyTitle;
+
+  /// No description provided for @historyRangeDay.
+  ///
+  /// In en, this message translates to:
+  /// **'24 hours'**
+  String get historyRangeDay;
+
+  /// No description provided for @historyRangeWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'7 days'**
+  String get historyRangeWeek;
+
+  /// No description provided for @historyRangeMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'30 days'**
+  String get historyRangeMonth;
+
+  /// No description provided for @historySetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record history on your hub'**
+  String get historySetupTitle;
+
+  /// No description provided for @historySetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
+  String get historySetupBody;
+
+  /// No description provided for @historySetupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up on the hub'**
+  String get historySetupAction;
+
+  /// No description provided for @historyInstalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording. The first values appear within 15 minutes.'**
+  String get historyInstalled;
+
+  /// No description provided for @historyNoNodeRed.
+  ///
+  /// In en, this message translates to:
+  /// **'History needs Node-RED on the hub, and nothing answers on port 1880 at {host}. On an SMLIGHT SMHUB, install it under Apps.'**
+  String historyNoNodeRed(String host);
+
+  /// No description provided for @historyRecordingSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording since {date}'**
+  String historyRecordingSince(String date);
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No values yet. The recorder saves every 15 minutes.'**
+  String get historyEmpty;
+
+  /// No description provided for @historyRecorderOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'The recorder on the hub isn\'t answering, so recent values may be missing.'**
+  String get historyRecorderOffline;
+
+  /// No description provided for @historyLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Longer history is part of ZigDash Pro, a one-time purchase.'**
+  String get historyLocked;
+
+  /// No description provided for @historyUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get historyUnlock;
 }
 
 class _AppLocalizationsDelegate

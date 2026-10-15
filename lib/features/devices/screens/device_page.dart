@@ -13,7 +13,8 @@ import '../../../data/database/tables/panels.dart';
 import '../../../data/repositories/dashboard_repo.dart';
 import '../../../data/repositories/panel_repo.dart';
 import '../../../data/repositories/section_repo.dart';
-import '../../dashboards/section_placement.dart';import '../../../l10n/app_localizations.dart';
+import '../../dashboards/section_placement.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../discovery/models/z2m_device.dart';
 import '../../discovery/providers/discovery_provider.dart';
 import '../../panels/screens/add_tile_screen.dart'
@@ -22,8 +23,7 @@ import '../../panels/widgets/device_sheet.dart'
     show DeviceControls, humanizeProperty;
 import '../../panels/widgets/device_tile_panel.dart'
     show deviceClassIcon, formatReading, ltr;
-import '../../panels/widgets/panel_reliability_frame.dart'
-    show formatValueAge;
+import '../../panels/widgets/panel_reliability_frame.dart' show formatValueAge;
 import '../device_health.dart';
 import '../../../alerts/alert_editor_screen.dart' show alertKindFor;
 import '../device_profile.dart';
@@ -33,15 +33,20 @@ import '../device_tiles.dart';
 import '../devices_providers.dart';
 import '../z2m_bridge.dart';
 import '../../panels/models/panel_config.dart';
+import '../../history/history_sheet.dart';
 import '../../../shortcuts/add_tile_button.dart';
 import 'devices_screen.dart' show deviceHealthLine;
 
 /// Tiles of a home that show one device, with dashboard and section.
-final deviceTilesProvider = StreamProvider.autoDispose.family<
-    List<(Panel, Dashboard, Section?)>,
-    ({String connectionId, String ieee})>((ref, key) =>
-    DeviceRegistryDao(ref.watch(appDatabaseProvider))
-        .watchTilesOfDevice(key.connectionId, key.ieee));
+final deviceTilesProvider = StreamProvider.autoDispose
+    .family<
+      List<(Panel, Dashboard, Section?)>,
+      ({String connectionId, String ieee})
+    >(
+      (ref, key) => DeviceRegistryDao(
+        ref.watch(appDatabaseProvider),
+      ).watchTilesOfDevice(key.connectionId, key.ieee),
+    );
 
 /// The page for one device (devices-tablet-1.13.md §4): its controls,
 /// readings, health, and the dashboards it is on. Addressed by IEEE so it
@@ -76,7 +81,11 @@ class _DevicePageState extends ConsumerState<DevicePage> {
   }
 
   /// Renames the device in Zigbee2MQTT; tiles follow (device registry).
-  Future<void> _rename(BuildContext context, String base, String current) async {
+  Future<void> _rename(
+    BuildContext context,
+    String base,
+    String current,
+  ) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final controller = TextEditingController(text: current);
@@ -92,36 +101,49 @@ class _DevicePageState extends ConsumerState<DevicePage> {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-              child: Text(l10n.deviceRename)),
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text(l10n.deviceRename),
+          ),
         ],
       ),
     );
     controller.dispose();
     if (to == null || to.isEmpty || to == current) return;
-    final error = await renameDevice(ref, widget.connectionId, base,
-        from: current, to: to);
-    messenger.showSnackBar(SnackBar(
-        content: Text(error == null
-            ? l10n.deviceRenamed(to)
-            : l10n.deviceRenameFailed(
-                error.isEmpty ? l10n.deviceRenameNoAnswer : error))));
+    final error = await renameDevice(
+      ref,
+      widget.connectionId,
+      base,
+      from: current,
+      to: to,
+    );
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          error == null
+              ? l10n.deviceRenamed(to)
+              : l10n.deviceRenameFailed(
+                  error.isEmpty ? l10n.deviceRenameNoAnswer : error,
+                ),
+        ),
+      ),
+    );
   }
 
   /// Opening the page is seeing the device: its low battery stops lighting
   /// the Devices dot.
-  void _acknowledge() => DeviceRegistryDao(ref.read(appDatabaseProvider))
-      .acknowledgeBattery(widget.connectionId, widget.ieee)
-      .ignore();
+  void _acknowledge() => DeviceRegistryDao(
+    ref.read(appDatabaseProvider),
+  ).acknowledgeBattery(widget.connectionId, widget.ieee).ignore();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final base = ref.watch(homeBaseTopicProvider(widget.connectionId)) ??
-        'zigbee2mqtt';
+    final base =
+        ref.watch(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
     final args = (connectionId: widget.connectionId, base: base);
     final devices = ref.watch(bridgeDevicesStreamProvider(args));
     final device = devices.valueOrNull
@@ -132,14 +154,18 @@ class _DevicePageState extends ConsumerState<DevicePage> {
         .valueOrNull
         ?.where((h) => h.device.ieeeAddress == widget.ieee)
         .firstOrNull;
-    final tiles = ref
-            .watch(deviceTilesProvider(
-                (connectionId: widget.connectionId, ieee: widget.ieee)))
+    final tiles =
+        ref
+            .watch(
+              deviceTilesProvider((
+                connectionId: widget.connectionId,
+                ieee: widget.ieee,
+              )),
+            )
             .valueOrNull ??
         const [];
-    final title = device?.friendlyName ??
-        tiles.firstOrNull?.$1.name ??
-        widget.ieee;
+    final title =
+        device?.friendlyName ?? tiles.firstOrNull?.$1.name ?? widget.ieee;
 
     final Widget body;
     if (device == null) {
@@ -153,9 +179,10 @@ class _DevicePageState extends ConsumerState<DevicePage> {
                   child: Text(l10n.deviceGone),
                 ),
                 _DashboardsCard(
-                    connectionId: widget.connectionId,
-                    device: null,
-                    tiles: tiles),
+                  connectionId: widget.connectionId,
+                  device: null,
+                  tiles: tiles,
+                ),
               ],
             );
     } else {
@@ -184,18 +211,22 @@ class _DevicePageState extends ConsumerState<DevicePage> {
             connectionId: widget.connectionId,
             ieee: widget.ieee,
             name: title,
-            canTile: tileable)
+            canTile: tileable,
+          )
         : null;
     // Notify me… (alerts-2.3.md): a device that reports a leak, smoke, a
     // contact or a battery can have an alert.
-    final alertKind = device == null ? null : alertKindFor(classifyExposes(device.rawExposes));
+    final alertKind = device == null
+        ? null
+        : alertKindFor(classifyExposes(device.rawExposes));
     final notifyMe = alertKind == null || !AddShortcutButton.available
         ? null
         : IconButton(
             icon: const Icon(Icons.notifications_outlined),
             tooltip: l10n.alertsNotifyMe,
             onPressed: () => context.push(
-                Routes.homeAlertFor(widget.connectionId, alertKind, widget.ieee)),
+              Routes.homeAlertFor(widget.connectionId, alertKind, widget.ieee),
+            ),
           );
     final rename = device == null
         ? null
@@ -214,9 +245,11 @@ class _DevicePageState extends ConsumerState<DevicePage> {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(title,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      semanticsLabel: title),
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    semanticsLabel: title,
+                  ),
                 ),
                 ?rename,
                 ?notifyMe,
@@ -229,8 +262,12 @@ class _DevicePageState extends ConsumerState<DevicePage> {
       );
     }
     return Scaffold(
-        appBar: AppBar(title: Text(title), actions: [?rename, ?notifyMe, ?addTile]),
-        body: body);
+      appBar: AppBar(
+        title: Text(title),
+        actions: [?rename, ?notifyMe, ?addTile],
+      ),
+      body: body,
+    );
   }
 }
 
@@ -273,28 +310,34 @@ class _DeviceBody extends ConsumerWidget {
                 backgroundColor: on
                     ? SignalColors.of(context).active
                     : scheme.surfaceContainerHighest,
-                foregroundColor:
-                    on ? SignalColors.of(context).onActive : scheme.onSurface,
+                foregroundColor: on
+                    ? SignalColors.of(context).onActive
+                    : scheme.onSurface,
                 child: SignalIcon(
-                    deviceClassIcon(profile.deviceClass, alarm: state.alarm),
-                    active: on,
-                    size: 30),
+                  deviceClassIcon(profile.deviceClass, alarm: state.alarm),
+                  active: on,
+                  size: 30,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(deviceHealthLine(context, health, state),
-                        style: theme.textTheme.titleMedium?.copyWith(
-                            color: health.needsAttention ? scheme.error : null)),
+                    Text(
+                      deviceHealthLine(context, health, state),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: health.needsAttention ? scheme.error : null,
+                      ),
+                    ),
                     Text(
                       [
                         ?deviceModelLabel(device),
                         deviceClassLabel(profile.deviceClass, l10n),
                       ].join(' · '),
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: scheme.onSurfaceVariant),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -335,9 +378,28 @@ class _DeviceBody extends ConsumerWidget {
                 ),
             ],
           ),
+        // 2.7: the history of the device's numbers, one at a time.
+        if (device.ieeeAddress != null &&
+            readings.any((f) => f.type == 'numeric'))
+          _Card(
+            title: l10n.historyTitle,
+            children: [
+              _DeviceHistory(
+                connectionId: connectionId,
+                ieee: device.ieeeAddress!,
+                readings: [
+                  for (final f in readings)
+                    if (f.type == 'numeric') f,
+                ],
+              ),
+            ],
+          ),
         _HealthCard(connectionId: connectionId, base: base, health: health),
         _DashboardsCard(
-            connectionId: connectionId, device: device, tiles: tiles),
+          connectionId: connectionId,
+          device: device,
+          tiles: tiles,
+        ),
       ],
     );
   }
@@ -382,7 +444,10 @@ class _DeviceBody extends ConsumerWidget {
   }
 
   Future<void> _addReading(
-      BuildContext context, WidgetRef ref, DeviceFeature f) async {
+    BuildContext context,
+    WidgetRef ref,
+    DeviceFeature f,
+  ) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final dashboards = await ref
@@ -407,8 +472,12 @@ class _DeviceBody extends ConsumerWidget {
     if (target == null || !context.mounted) return;
     final panels = ref.read(panelRepoProvider);
     // Next to the device's own tile, or in the last section (2.4.1).
-    final place = await placeAddedTile(panels, ref.read(sectionRepoProvider),
-        target.id, deviceIeee: device.ieeeAddress);
+    final place = await placeAddedTile(
+      panels,
+      ref.read(sectionRepoProvider),
+      target.id,
+      deviceIeee: device.ieeeAddress,
+    );
     if (!context.mounted) return;
     final wide = MediaQuery.sizeOf(context).width >= 840;
     await createReadingTile(
@@ -417,19 +486,24 @@ class _DeviceBody extends ConsumerWidget {
       base: base,
       device: device,
       feature: f,
-      name: '${device.friendlyName} ${humanizeProperty(f.property).toLowerCase()}',
+      name:
+          '${device.friendlyName} ${humanizeProperty(f.property).toLowerCase()}',
       size: wide ? PanelWidth.wide : PanelWidth.small,
       sortOrder: place.sortOrder,
       sectionId: place.sectionId,
     );
     messenger.showSnackBar(
-        SnackBar(content: Text(l10n.deviceAddedTo(target.name))));
+      SnackBar(content: Text(l10n.deviceAddedTo(target.name))),
+    );
   }
-
 }
 
 class _Card extends StatelessWidget {
-  const _Card({required this.title, required this.children, this.alert = false});
+  const _Card({
+    required this.title,
+    required this.children,
+    this.alert = false,
+  });
 
   final String title;
   final List<Widget> children;
@@ -455,9 +529,12 @@ class _Card extends StatelessWidget {
             children: [
               Semantics(
                 header: true,
-                child: Text(title,
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(color: scheme.onSurfaceVariant)),
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
               ),
               const SizedBox(height: 4),
               ...children,
@@ -465,6 +542,62 @@ class _Card extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The device page's History card: chips pick the reading, the graph is
+/// the history sheet's, without its margins.
+class _DeviceHistory extends StatefulWidget {
+  const _DeviceHistory({
+    required this.connectionId,
+    required this.ieee,
+    required this.readings,
+  });
+
+  final String connectionId;
+  final String ieee;
+  final List<DeviceFeature> readings;
+
+  @override
+  State<_DeviceHistory> createState() => _DeviceHistoryState();
+}
+
+class _DeviceHistoryState extends State<_DeviceHistory> {
+  int _i = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final i = _i < widget.readings.length ? _i : 0;
+    final f = widget.readings[i];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (widget.readings.length > 1) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              for (var j = 0; j < widget.readings.length; j++)
+                ChoiceChip(
+                  label: Text(humanizeProperty(widget.readings[j].property)),
+                  selected: j == i,
+                  onSelected: (_) => setState(() => _i = j),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ],
+        HistorySheet(
+          key: ValueKey(f.property),
+          connectionId: widget.connectionId,
+          ieee: widget.ieee,
+          path: f.property,
+          title: humanizeProperty(f.property),
+          unit: f.unit,
+          padding: EdgeInsets.zero,
+        ),
+      ],
     );
   }
 }
@@ -496,9 +629,12 @@ class _ReadingRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(value, style: theme.textTheme.headlineMedium),
-                      Text(label,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant)),
+                      Text(
+                        label,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                     ],
                   )
                 : Row(
@@ -535,9 +671,14 @@ class _HealthCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
-    final config = ref
-            .watch(availabilityConfigProvider(
-                (connectionId: connectionId, base: base)))
+    final config =
+        ref
+            .watch(
+              availabilityConfigProvider((
+                connectionId: connectionId,
+                base: base,
+              )),
+            )
             .valueOrNull ??
         AvailabilityConfig.unknown;
     final b = health.battery;
@@ -545,24 +686,27 @@ class _HealthCard extends ConsumerWidget {
     final at = health.lastHeard;
     final source = health.device.powerSource;
     Widget row(String k, String v, {Color? color, IconData? icon}) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(children: [
-            if (icon != null) ...[
-              Icon(icon, size: 20, color: color),
-              const SizedBox(width: 6),
-            ],
-            Expanded(child: Text(k)),
-            Flexible(
-              child: Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: Text(v,
-                    textAlign: TextAlign.end,
-                    style:
-                        TextStyle(color: color ?? scheme.onSurfaceVariant)),
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 20, color: color),
+            const SizedBox(width: 6),
+          ],
+          Expanded(child: Text(k)),
+          Flexible(
+            child: Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: Text(
+                v,
+                textAlign: TextAlign.end,
+                style: TextStyle(color: color ?? scheme.onSurfaceVariant),
               ),
             ),
-          ]),
-        );
+          ),
+        ],
+      ),
+    );
     return _Card(
       title: l10n.deviceHealthTitle,
       alert: health.needsAttention,
@@ -582,21 +726,27 @@ class _HealthCard extends ConsumerWidget {
             '${health.weakLink ? l10n.deviceLinkWeak : l10n.deviceLinkGood} · ${ltr('$lq')}',
           ),
         if (source != null)
-          row(l10n.devicePowerSource,
-              source.toLowerCase().startsWith('battery')
-                  ? l10n.devicePowerBattery
-                  : l10n.devicePowerMains),
-        row(l10n.deviceLastHeard,
-            at == null ? l10n.deviceNoReport : formatValueAge(context, at, DateTime.now())),
+          row(
+            l10n.devicePowerSource,
+            source.toLowerCase().startsWith('battery')
+                ? l10n.devicePowerBattery
+                : l10n.devicePowerMains,
+          ),
+        row(
+          l10n.deviceLastHeard,
+          at == null
+              ? l10n.deviceNoReport
+              : formatValueAge(context, at, DateTime.now()),
+        ),
         row(
           l10n.deviceAvailability,
           !config.tracks(health.device.ieeeAddress)
               ? l10n.deviceAvailabilityOff
               : health.online == null
-                  ? '—'
-                  : health.online!
-                      ? l10n.devicesOnline
-                      : l10n.devicesOffline,
+              ? '—'
+              : health.online!
+              ? l10n.devicesOnline
+              : l10n.devicesOffline,
           color: health.offline ? scheme.error : null,
         ),
       ],
@@ -619,7 +769,8 @@ class _DashboardsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final d = device;
-    final isNew = d != null &&
+    final isNew =
+        d != null &&
         (ref.watch(unassignedDevicesProvider(connectionId)).valueOrNull ??
                 const <Z2mDevice>[])
             .any((x) => x.ieeeAddress == d.ieeeAddress);
@@ -654,8 +805,11 @@ class _DashboardsCard extends ConsumerWidget {
               FilledButton.tonalIcon(
                 icon: const Icon(Icons.add),
                 label: Text(l10n.deviceAddToDashboard),
-                onPressed: () => showAddDeviceSheet(context,
-                    connectionId: connectionId, device: d),
+                onPressed: () => showAddDeviceSheet(
+                  context,
+                  connectionId: connectionId,
+                  device: d,
+                ),
               ),
               if (isNew)
                 TextButton(

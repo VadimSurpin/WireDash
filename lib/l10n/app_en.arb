@@ -1123,5 +1123,21 @@
   "kioskLeaveTitle": "Leave kiosk?",
   "kioskLeave": "Leave",
   "kioskStay": "Stay",
-  "a11yKioskLeave": "Long-press to leave kiosk"
+  "a11yKioskLeave": "Long-press to leave kiosk",
+  "historyTitle": "History",
+  "historyRangeDay": "24 hours",
+  "historyRangeWeek": "7 days",
+  "historyRangeMonth": "30 days",
+  "historySetupTitle": "Record history on your hub",
+  "historySetupBody": "ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.",
+  "historySetupAction": "Set up on the hub",
+  "historyInstalled": "Recording. The first values appear within 15 minutes.",
+  "historyNoNodeRed": "History needs Node-RED on the hub, and nothing answers on port 1880 at {host}. On an SMLIGHT SMHUB, install it under Apps.",
+  "@historyNoNodeRed": {"placeholders": {"host": {"type": "String"}}},
+  "historyRecordingSince": "Recording since {date}",
+  "@historyRecordingSince": {"placeholders": {"date": {"type": "String"}}},
+  "historyEmpty": "No values yet. The recorder saves every 15 minutes.",
+  "historyRecorderOffline": "The recorder on the hub isn't answering, so recent values may be missing.",
+  "historyLocked": "Longer history is part of ZigDash Pro, a one-time purchase.",
+  "historyUnlock": "Unlock"
 }

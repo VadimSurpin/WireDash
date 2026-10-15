@@ -11,6 +11,8 @@ import '../../kiosk/kiosk.dart';
 import '../models/panel_config.dart';
 import '../providers/panel_value_provider.dart';
 import 'device_tile_panel.dart';
+import '../../history/history_config.dart' show historyShownOnDeviceTile;
+import '../../history/history_sheet.dart';
 
 /// Preset colours offered for colour lights (warm first, as on the board).
 const deviceColorPresets = [
@@ -118,6 +120,26 @@ class DeviceSheet extends ConsumerWidget {
             profile: profile,
             state: state,
           ),
+          // 2.7: the history of what the tile shows (kiosk guests too).
+          if (ieee != null)
+            for (final f in historyShownOnDeviceTile(profile))
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  icon: const Icon(Icons.timeline),
+                  label: Text(
+                    '${l10n.historyTitle} · ${humanizeProperty(f.property)}',
+                  ),
+                  onPressed: () => showHistorySheet(
+                    context,
+                    connectionId: connectionId,
+                    ieee: ieee,
+                    path: f.property,
+                    title: '${panel.name} · ${humanizeProperty(f.property)}',
+                    unit: f.unit,
+                  ),
+                ),
+              ),
         ],
       ),
     );

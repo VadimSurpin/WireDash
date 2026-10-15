@@ -62,16 +62,21 @@ Widget _app({List<Z2mDevice> devices = const [_door], String ieee = '0x03'}) {
 void main() {
   testWidgets('card titles are headings; low battery and readings shown',
       (tester) async {
+    // 2.7 added the History card; a tall view keeps every card built.
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(_app());
     await tester.pump();
     await tester.pump();
 
-    for (final title in ['Readings', 'Health', 'On dashboards']) {
+    for (final title in ['Readings', 'History', 'Health', 'On dashboards']) {
       final node = tester.getSemantics(find.text(title));
       expect(node.getSemanticsData().flagsCollection.isHeader, isTrue,
           reason: '$title is announced as a heading');
     }
-    expect(find.text('Device temperature'), findsOneWidget);
+    expect(find.text('Device temperature'), findsWidgets,
+        reason: 'in Readings and in the History card');
     expect(find.textContaining('Battery low'), findsWidgets);
     expect(find.text('Off in Zigbee2MQTT'), findsOneWidget);
     expect(find.text('Dismiss'), findsOneWidget, reason: 'a new device');

@@ -3083,4 +3083,55 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get a11yKioskLeave => 'לחיצה ארוכה כדי לצאת מהקיוסק';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get historyRangeDay => '24 hours';
+
+  @override
+  String get historyRangeWeek => '7 days';
+
+  @override
+  String get historyRangeMonth => '30 days';
+
+  @override
+  String get historySetupTitle => 'Record history on your hub';
+
+  @override
+  String get historySetupBody =>
+      'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.';
+
+  @override
+  String get historySetupAction => 'Set up on the hub';
+
+  @override
+  String get historyInstalled =>
+      'Recording. The first values appear within 15 minutes.';
+
+  @override
+  String historyNoNodeRed(String host) {
+    return 'History needs Node-RED on the hub, and nothing answers on port 1880 at $host. On an SMLIGHT SMHUB, install it under Apps.';
+  }
+
+  @override
+  String historyRecordingSince(String date) {
+    return 'Recording since $date';
+  }
+
+  @override
+  String get historyEmpty =>
+      'No values yet. The recorder saves every 15 minutes.';
+
+  @override
+  String get historyRecorderOffline =>
+      'The recorder on the hub isn\'t answering, so recent values may be missing.';
+
+  @override
+  String get historyLocked =>
+      'Longer history is part of ZigDash Pro, a one-time purchase.';
+
+  @override
+  String get historyUnlock => 'Unlock';
 }
