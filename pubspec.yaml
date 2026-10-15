@@ -94,6 +94,7 @@ flutter:
   assets:
     - docs/USER_GUIDE.md
     - node-red/alerts-flow.json
+    - node-red/history-flow.json
     - assets/fonts/licenses/
   # Signal type (docs/design/signal-2.0.md §2): bundled subsets, cut by
   # tool/fonts/build_fonts.py. Never fetched at runtime.

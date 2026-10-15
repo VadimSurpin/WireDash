@@ -22,27 +22,53 @@ enum NodeRedInstall {
   failed,
 }
 
-/// Installs the alerts flow on the hub through Node-RED's admin API, with
-/// the Home's broker and base topic filled in. Node-RED is looked for at
-/// the broker's address on port 1880 (SMHUB's default).
+/// Installs a ZigDash flow on the hub through Node-RED's admin API, with
+/// the Home's broker and base topic filled in: the alerts flow by default,
+/// the history recorder with [NodeRedInstaller.history] (2.7). Node-RED is
+/// looked for at the broker's address on port 1880 (SMHUB's default).
 class NodeRedInstaller {
   NodeRedInstaller({
     required this.host,
     this.port = 1880,
     HttpClient? client,
     Future<String> Function()? flowJson,
-  })  : _client = client ?? HttpClient(),
-        _flowJson = flowJson ?? (() => rootBundle.loadString(flowAsset));
+    this.asset = flowAsset,
+    this.label = tabLabel,
+  }) : _client = client ?? HttpClient(),
+       _flowJson = flowJson ?? (() => rootBundle.loadString(asset));
+
+  /// The history recorder (docs/design/history-2.7.md).
+  NodeRedInstaller.history({
+    required String host,
+    int port = 1880,
+    HttpClient? client,
+    Future<String> Function()? flowJson,
+  }) : this(
+         host: host,
+         port: port,
+         client: client,
+         flowJson: flowJson,
+         asset: historyFlowAsset,
+         label: historyTabLabel,
+       );
 
   static const flowAsset = 'node-red/alerts-flow.json';
   static const tabLabel = 'ZigDash alerts';
+  static const historyFlowAsset = 'node-red/history-flow.json';
+  static const historyTabLabel = 'ZigDash history';
+
+  /// The bundled flow file and the Node-RED tab label it installs as; an
+  /// existing tab with this label is replaced, not duplicated.
+  final String asset;
+  final String label;
 
   final String host;
   final int port;
   final HttpClient _client;
   final Future<String> Function() _flowJson;
 
-  Uri _url(String path) => Uri(scheme: 'http', host: host, port: port, path: path);
+  Uri _url(String path) =>
+      Uri(scheme: 'http', host: host, port: port, path: path);
 
   /// The tab as Node-RED's `/flow` API wants it: the flow's nodes with the
   /// broker's address, port and username and the base topic filled in, and
@@ -99,16 +125,18 @@ class NodeRedInstaller {
       return NodeRedInstall.notInstalled;
     }
     if (settings == null) return NodeRedInstall.needsLogin;
-    final tab = tabFor(await _flowJson(),
-        brokerHost: brokerHost,
-        brokerPort: brokerPort,
-        username: username,
-        baseTopic: baseTopic);
+    final tab = tabFor(
+      await _flowJson(),
+      brokerHost: brokerHost,
+      brokerPort: brokerPort,
+      username: username,
+      baseTopic: baseTopic,
+    );
     try {
       final flows = await _getJson('/flows', apiV2: true);
       final existing = (flows?['flows'] as List?)
           ?.cast<Map<String, dynamic>>()
-          .where((n) => n['type'] == 'tab' && n['label'] == tabLabel)
+          .where((n) => n['type'] == 'tab' && n['label'] == label)
           .firstOrNull;
       if (existing != null) {
         final id = existing['id'] as String;
@@ -125,8 +153,13 @@ class NodeRedInstaller {
   }
 
   /// GET as JSON; null when Node-RED asks for a login.
-  Future<Map<String, dynamic>?> _getJson(String path, {bool apiV2 = false}) async {
-    final req = await _client.getUrl(_url(path)).timeout(const Duration(seconds: 6));
+  Future<Map<String, dynamic>?> _getJson(
+    String path, {
+    bool apiV2 = false,
+  }) async {
+    final req = await _client
+        .getUrl(_url(path))
+        .timeout(const Duration(seconds: 6));
     if (apiV2) req.headers.set('Node-RED-API-Version', 'v2');
     final res = await req.close().timeout(const Duration(seconds: 10));
     final body = await utf8.decodeStream(res);
@@ -136,8 +169,14 @@ class NodeRedInstaller {
     return j is Map ? Map<String, dynamic>.from(j) : {'flows': j};
   }
 
-  Future<int> _send(String method, String path, Map<String, Object?> body) async {
-    final req = await _client.openUrl(method, _url(path)).timeout(const Duration(seconds: 6));
+  Future<int> _send(
+    String method,
+    String path,
+    Map<String, Object?> body,
+  ) async {
+    final req = await _client
+        .openUrl(method, _url(path))
+        .timeout(const Duration(seconds: 6));
     req.headers.contentType = ContentType.json;
     req.write(jsonEncode(body));
     final res = await req.close().timeout(const Duration(seconds: 20));
