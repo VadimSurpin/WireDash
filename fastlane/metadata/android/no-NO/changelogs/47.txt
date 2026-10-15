@@ -1,0 +1,1 @@
+ZigDash 2.6.5: en liten endring i spørsmålet «Vurder denne appen». Det vises nå når en enhet du styrer har svart på kommandoene dine på to forskjellige dager (før ventet den på fire, og kom nesten aldri så langt). Google viser dialogen høyst nå og da, og du kan lukke den. Hvis anonyme bruksdata er på, registrerer appen at den spurte, aldri hva du svarte.

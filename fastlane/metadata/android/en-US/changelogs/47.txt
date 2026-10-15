@@ -1,0 +1,1 @@
+ZigDash 2.6.5: a small change to the "rate this app" prompt. It now appears once a device you control has answered your commands on two different days (it used to wait for four, and almost never got there). Google shows the dialog at most once in a while, and you can dismiss it. If anonymous usage data is on, the app records that it asked, never how you answered.

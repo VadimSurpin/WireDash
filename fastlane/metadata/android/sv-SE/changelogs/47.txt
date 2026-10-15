@@ -1,0 +1,1 @@
+ZigDash 2.6.5: en liten ändring av frågan ”Betygsätt appen”. Den visas nu när en enhet du styr har svarat på dina kommandon två olika dagar (förut väntade den på fyra och kom nästan aldrig dit). Google visar dialogen högst då och då, och du kan stänga den. Om anonyma användningsdata är på registrerar appen att den frågade, aldrig vad du svarade.
