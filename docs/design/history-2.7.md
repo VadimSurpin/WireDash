@@ -170,3 +170,12 @@ Known gaps, not fixed in 2.7:
 - `store/PRIVACY.md` needs its effective date set to 2.7 at the cut, and
   the GitLab copy synced.
 
+## Shipping decision (2026-10-15, the user)
+
+2.7 ships with Pro hidden: the Play build carries the billing code (so the
+product `zigdash_pro` can be created) but is built without
+`ZIGDASH_PRO_LIVE`, so the Play version offers the 24-hour view only and no
+Pro row; GitHub, IzzyOnDroid and F-Droid builds have every view. Pro turns on
+with 2.8, together with the wall-tablet pack, at 7.99 EUR: longer history
+alone was too thin for that price.
+
