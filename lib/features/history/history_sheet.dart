@@ -77,7 +77,12 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final signal = theme.extension<SignalColors>();
-    final accent = signal?.active ?? theme.colorScheme.primary;
+    final active = signal?.active ?? theme.colorScheme.primary;
+    // On the light ground Signal's amber is a fill colour, too pale for a
+    // 2-pixel line: darken it toward the ink. Dark mode keeps it as is.
+    final accent = theme.brightness == Brightness.light
+        ? Color.lerp(active, theme.colorScheme.onSurface, 0.45)!
+        : active;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final now = (widget.now ?? DateTime.now)();
     final pro = ref.watch(proStatusProvider);
@@ -175,25 +180,22 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
         children: [
           Text(widget.title, style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                shown == null ? '–' : value(shown.avg),
-                style: theme.textTheme.displaySmall,
-              ),
-              const SizedBox(width: 12),
-              if (_scrub != null)
-                Flexible(
-                  child: Text(
+          Text(
+            shown == null ? '–' : value(shown.avg),
+            style: theme.textTheme.displaySmall,
+          ),
+          // The time under the finger while scrubbing; the line keeps its
+          // height so the graph doesn't jump.
+          SizedBox(
+            height: 20,
+            child: _scrub == null
+                ? null
+                : Text(
                     scrubTime(_scrub!.at),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                ),
-            ],
           ),
           const SizedBox(height: 12),
           if (ranges.length > 1) ...[
