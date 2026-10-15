@@ -77,3 +77,11 @@
 **Recent alerts** — the last 20 alerts that fired, kept on the hub, shown at the top of the Alerts screen so a missed notification is still seen.
 
 **Alerts paused** — the state when the hub's alert flow has not reported in for over a minute (Node-RED stopped or not installed): no alert can fire, and the app says so on the Alerts screen and the dashboard.
+
+**History** — the recorded values of a reading tile over time, drawn as a graph in its history sheet and on the device page. Views: 24 hours (free), 7 and 30 days (Pro). From 2.7.
+
+**Recorder** — the "ZigDash history" Node-RED flow on the hub that records every reading tile's values into day records. Installed by the app like the alerts flow. From 2.7.
+
+**Day record** — one retained MQTT message per reading per day on the user's broker, holding that day's 15-minute averages, minimums and maximums. Kept 30 days.
+
+**Pro** — the one-time in-app purchase on Google Play that unlocks depth features, starting with the 7- and 30-day history views. Builds outside Play have everything unlocked. Nothing that was free moves into Pro.

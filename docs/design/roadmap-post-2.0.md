@@ -14,7 +14,7 @@ The releases after 2.0, in order, decided on 2026-10-08 to 2026-10-10 in the "Po
 | **2.4** | Gauge: a reading tile shown as a half arc with colour bands ([gauge-2.4.md](gauge-2.4.md)). The one-time "Join the ZigDash community" dashboard card. A "close all" action for a dashboard's covers (from the poll). | Split from history on 2026-10-11 (user): three small finished things ship now; the gauge is asked for in rival-app reviews (IoT MQTT Panel, 2026-10-10 scrape) and needs no hub work. |
 | **2.5** | Setup help: the scan asks where Zigbee2MQTT runs, looks for Home Assistant, the Zigbee2MQTT frontend or an SMLIGHT hub when no broker answers, and says what it found and what is missing, with manual entry filled in ([setup-help-2.5.md](setup-help-2.5.md)). | Moved in front of history on 2026-10-12 (user): every opted-in new install so far stalled on an empty scan; nothing else measured loses users. |
 | **2.6** | Kiosk mode: Wall display grows a Kiosk lock (PIN, optional Android screen pinning), Fullscreen and Dim ([kiosk-2.6.md](kiosk-2.6.md)). | Moved in front of history on 2026-10-12 (user). Medium demand, mostly lock and fullscreen. |
-| **2.7** | History graphs (temperature, humidity, power over a day or a week). | Medium demand; needs a recorder, which Node-RED on the hub provides. |
+| **2.7** | History graphs (24 hours free; 7 and 30 days in the one-time Pro unlock) ([history-2.7.md](history-2.7.md)). | Medium demand; needs a recorder, which Node-RED on the hub provides. |
 | Later, if asked | Zigbee groups, firmware (OTA) updates, Zigbee network map. | Low demand; all possible over Zigbee2MQTT 2.x MQTT. |
 | Dropped | Voice (needs Home Assistant's Assist), energy dashboard (low demand, only after history), conditional tiles (no demand). | |
 
@@ -26,7 +26,7 @@ The releases after 2.0, in order, decided on 2026-10-08 to 2026-10-10 in the "Po
 - **2.3 Local-network permission.** At targetSdk 37, LAN connections need `ACCESS_LOCAL_NETWORK`; without it, connecting to the broker times out. Setup explains the permission before asking.
 - **2.4 Gauge.** Specced in [gauge-2.4.md](gauge-2.4.md) (2026-10-11). Not a new tile type: a style of the Reading tile, with a min, max and up to three colour bands drawn from the theme's state roles (Good, Attention), defaults from the device's expose or a preset per reading. Rival reviews ask for color gradients on gauges and for a plain value display; one tile with two styles covers both. No hub work.
 - **2.6 Kiosk.** Specced in [kiosk-2.6.md](kiosk-2.6.md) (2026-10-12). One feature: the Wall display sheet with the Kiosk lock (in-app PIN, Android screen pinning as an extra), Fullscreen and Dim. A router redirect keeps a kiosk on its Home's dashboards.
-- **2.7 History.** Zigbee2MQTT keeps no history, so a Node-RED flow on the hub records chosen readings; the app draws them. Retention and storage size are decided when it starts. A gauge may later open the reading's history.
+- **2.7 History.** Zigbee2MQTT keeps no history, so a Node-RED flow on the hub records chosen readings; the app draws them. Decided 2026-10-15 ([history-2.7.md](history-2.7.md)): retained day records on the broker, kept 30 days; every reading tile is recorded; a tap on a reading tile opens its history.
 
 ## 2.1 build spec: shortcuts
 
