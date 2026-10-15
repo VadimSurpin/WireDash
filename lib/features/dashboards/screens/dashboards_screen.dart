@@ -10,6 +10,7 @@ import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/utils/window_class.dart';
 import '../../settings/screens/settings_screen.dart' show homeStatusLabel;
 import '../../../core/review/review_prompt_trigger.dart';
+import '../../history/history_sync.dart';
 import '../../../core/router/last_dashboard_store.dart';
 import '../../../core/router/routes.dart';
 import '../../../core/utils/material_icon.dart';
@@ -280,6 +281,7 @@ class _DashboardsTabbed extends ConsumerWidget {
                 body: Column(
                   children: [
                     ReviewPromptTrigger(connectionId: connectionId),
+                    HistorySync(connectionId: connectionId),
                     RememberHome(connectionId: connectionId),
                     DemoBanner(connectionId: connectionId),
                     if (!kiosk) ...[
