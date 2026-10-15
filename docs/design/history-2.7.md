@@ -154,3 +154,19 @@ Left before the cut:
   `ZIGDASH_PRO_LIVE=1`.
 - The user's OK on the new privacy policy sections and the store text.
 
+Fixed after review the same night: phones merge the reading list instead
+of overwriting it (two phones with different dashboards converge); kiosk
+guests see the locked sample without Unlock; day records are never put in
+the last-known cache; release builds checked (the Play bundle carries the
+billing code, the GitHub APKs none; the bundle is now at
+`build/app/outputs/bundle/playRelease/app-play-release.aab`).
+
+Known gaps, not fixed in 2.7:
+- A reading removed from every dashboard stays in the list (phones only
+  add) and keeps being recorded; its records age out after it's dropped
+  past the 50 cap. A "Recorded readings" list to remove them may come later.
+- A history sheet left open across midnight keeps the old day until it is
+  reopened.
+- `store/PRIVACY.md` needs its effective date set to 2.7 at the cut, and
+  the GitLab copy synced.
+
