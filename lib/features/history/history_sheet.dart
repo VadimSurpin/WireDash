@@ -11,6 +11,7 @@ import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/theme/signal_colors.dart';
 import '../../l10n/app_localizations.dart';
+import '../panels/providers/panel_value_provider.dart';
 import '../panels/widgets/device_tile_panel.dart' show formatReading;
 import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
@@ -27,6 +28,7 @@ Future<void> showHistorySheet(
   required String path,
   required String title,
   String? unit,
+  String? topic,
 }) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
@@ -38,6 +40,7 @@ Future<void> showHistorySheet(
     path: path,
     title: title,
     unit: unit,
+    topic: topic,
   ),
 );
 
@@ -49,6 +52,7 @@ class HistorySheet extends ConsumerStatefulWidget {
     required this.path,
     required this.title,
     this.unit,
+    this.topic,
     this.now,
     this.padding = const EdgeInsets.fromLTRB(16, 0, 16, 24),
   });
@@ -61,6 +65,10 @@ class HistorySheet extends ConsumerStatefulWidget {
   final String path;
   final String title;
   final String? unit;
+
+  /// The device's state topic: the big number is its live value, like the
+  /// tile's (decision 9). Without it, the newest recorded point.
+  final String? topic;
 
   /// The clock, for tests.
   final DateTime Function()? now;
@@ -139,7 +147,23 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
       HistoryRange.week => DateFormat.MEd(locale).add_Hm().format(t),
       HistoryRange.month => DateFormat.MMMEd(locale).format(t),
     };
-    final shown = _scrub ?? (series.isEmpty ? null : series.last);
+    final topic = widget.topic;
+    final live = topic == null
+        ? null
+        : ref
+              .watch(
+                panelValueProvider(
+                  PanelStreamKey(
+                    connectionId: widget.connectionId,
+                    topic: topic,
+                    jsonPath: widget.path,
+                  ),
+                ),
+              )
+              .valueOrNull;
+    final liveValue = live is num ? live.toDouble() : double.tryParse('$live');
+    final double? shownValue =
+        _scrub?.avg ?? liveValue ?? (series.isEmpty ? null : series.last.avg);
 
     final Widget body;
     if (locked) {
@@ -194,7 +218,7 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
           Text(widget.title, style: theme.textTheme.titleMedium),
           const SizedBox(height: 4),
           Text(
-            shown == null ? '–' : value(shown.avg),
+            shownValue == null ? '–' : value(shownValue),
             style: theme.textTheme.displaySmall,
           ),
           // The time under the finger while scrubbing; the line keeps its

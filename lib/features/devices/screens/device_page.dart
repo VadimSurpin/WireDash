@@ -387,6 +387,7 @@ class _DeviceBody extends ConsumerWidget {
               _DeviceHistory(
                 connectionId: connectionId,
                 ieee: device.ieeeAddress!,
+                topic: '$base/${device.friendlyName}',
                 readings: [
                   for (final f in readings)
                     if (f.type == 'numeric') f,
@@ -552,11 +553,13 @@ class _DeviceHistory extends StatefulWidget {
   const _DeviceHistory({
     required this.connectionId,
     required this.ieee,
+    required this.topic,
     required this.readings,
   });
 
   final String connectionId;
   final String ieee;
+  final String topic;
   final List<DeviceFeature> readings;
 
   @override
@@ -595,6 +598,7 @@ class _DeviceHistoryState extends State<_DeviceHistory> {
           path: f.property,
           title: humanizeProperty(f.property),
           unit: f.unit,
+          topic: widget.topic,
           padding: EdgeInsets.zero,
         ),
       ],

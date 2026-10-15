@@ -58,6 +58,7 @@ class ReadingPanel extends ConsumerWidget {
             path: config.jsonPath,
             title: panel.name,
             unit: config.unit,
+            topic: subscribeTopic,
           );
     final name = Text(
       panel.name,

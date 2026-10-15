@@ -137,6 +137,7 @@ class DeviceSheet extends ConsumerWidget {
                     path: f.property,
                     title: '${panel.name} · ${humanizeProperty(f.property)}',
                     unit: f.unit,
+                    topic: subscribeTopic,
                   ),
                 ),
               ),

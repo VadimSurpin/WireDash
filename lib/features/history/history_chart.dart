@@ -138,7 +138,9 @@ class HistoryPainter extends CustomPainter {
       hi += 1;
     }
     final pad = (hi - lo) * 0.08;
-    lo -= pad;
+    // A reading that never goes below zero (power, humidity) keeps its
+    // axis at zero instead of padding into negative numbers.
+    lo = lo >= 0 && lo - pad < 0 ? 0 : lo - pad;
     hi += pad;
 
     final hiLabel = _text(formatValue(hi));
