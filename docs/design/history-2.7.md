@@ -137,3 +137,20 @@ history views are new depth.
 6. Pro: flavors, `proProvider`, Play Billing in `play`, the locked view.
 7. Strings in 11 languages, privacy policy (the recorder sends nothing off
    the broker; Play receives the purchase), store text, goldens.
+
+## Status (2026-10-15, end of day)
+
+Steps 1 to 7 are built on `feat/history-2.7` with tests (826 passing) and
+goldens. Added while building: usage events `feature_used` history,
+`history_setup` and `pro` (privacy policy lists them); the light theme's
+line is darkened toward the ink for contrast.
+
+Left before the cut:
+- A run on the real hub: install the recorder on the SMHUB, watch day
+  records arrive, open the sheet on the phone. Needs the user's go to
+  install the flow there.
+- Pro goes live only after the Play payments profile exists and the
+  product `zigdash_pro` (7.99 EUR) is created; then build with
+  `ZIGDASH_PRO_LIVE=1`.
+- The user's OK on the new privacy policy sections and the store text.
+
