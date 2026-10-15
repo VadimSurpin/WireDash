@@ -391,6 +391,26 @@ class PollAnswer extends AnalyticsEvent {
   Map<String, String> get props => {'choice': choice.wire};
 }
 
+/// What happened when the review prompt policy allowed a request:
+/// Play's in-app review dialog was requested, or the review flow was not
+/// available on the device (not installed from Play, no Play Services).
+enum ReviewPromptResult { requested, unavailable }
+
+/// The local review prompt policy was satisfied (review_prompt_policy.dart).
+/// Google gives no signal whether the dialog was then shown or answered, so
+/// this is the only way to know the prompt fires at all.
+class ReviewPrompted extends AnalyticsEvent {
+  const ReviewPrompted(this.result);
+
+  final ReviewPromptResult result;
+
+  @override
+  String get name => 'review_prompt';
+
+  @override
+  Map<String, String> get props => {'result': result.name};
+}
+
 /// [n] as a coarse label: an exact value from [exact], a "lo-hi" range from
 /// [ranges], else [top].
 String bucket(

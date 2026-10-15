@@ -127,6 +127,7 @@ never from anything you typed or anything your broker sent.
 | `poll_answer` | The one-time "What should ZigDash do next?" card was answered | notifications, history graphs, kiosk mode or Zigbee groups |
 | `alerts_setup` | A step of setting alerts up | the step (flow installed, flow installed by hand, no Node-RED, phone registered, no Google services, test sent, test failed); the channel (push, ntfy, Pushover) |
 | `alert_added` | An alert was added | its kind: leak, smoke, door or window opened, or battery low |
+| `review_prompt` | From 2.6.5: the app asked Google Play to show its "rate this app" dialog (after a device you control has answered on two different days) | whether the dialog was requested, or could not be because the Play review flow is not available on the device. Nothing about whether you rated, or what |
 
 **Never sent:** broker addresses, ports, usernames or passwords; the address you type into setup; MQTT topics or
 messages; device names or addresses; home or dashboard names; device states or

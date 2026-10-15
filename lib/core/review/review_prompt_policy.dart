@@ -5,17 +5,19 @@
 /// [ReviewPromptController]).
 class ReviewPromptPolicy {
   const ReviewPromptPolicy({
-    this.minSessions = 4,
-    this.minAge = const Duration(days: 3),
+    this.minSessions = 2,
+    this.minAge = const Duration(days: 1),
     this.cooldown = const Duration(days: 90),
   });
 
-  /// Distinct days on which the user reached a connected dashboard before we
-  /// ask. Four is enough to know the app actually works for them.
+  /// Distinct days on which a command the user sent was confirmed by the
+  /// device before we ask. One day proves the setup works; coming back on a
+  /// second day proves they kept it. Was four days (2026-09 to 2026-10),
+  /// which produced no visible rating in three weeks of production.
   final int minSessions;
 
-  /// Minimum time since the first successful session. Stops a burst of
-  /// same-week sessions from prompting someone still evaluating the app.
+  /// Minimum time since the first successful session. With [minSessions] at
+  /// two this only rules out a same-day double count across midnight.
   final Duration minAge;
 
   /// Minimum gap between review requests. Google gives no signal whether the

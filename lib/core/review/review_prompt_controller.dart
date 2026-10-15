@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/settings/providers/settings_controller.dart';
+import '../analytics/analytics.dart';
 import 'review_launcher.dart';
 import 'review_prompt_policy.dart';
 
@@ -9,18 +10,23 @@ import 'review_prompt_policy.dart';
 /// dashboard) and asks for a Play review once [ReviewPromptPolicy] allows it.
 ///
 /// Privacy: everything lives in local SharedPreferences at calendar-day
-/// granularity. Four keys, no per-session timestamps, no network calls. The
-/// automatic path never opens the store listing; if the platform flow is
-/// unavailable it silently does nothing.
+/// granularity. Four keys, no per-session timestamps. The only network call
+/// is the `review_prompt` usage event, sent through [Analytics] (so only with
+/// consent) when the policy is met: it says whether the dialog was requested
+/// or the review flow was unavailable, nothing else. The automatic path never
+/// opens the store listing; if the platform flow is unavailable it does
+/// nothing visible.
 class ReviewPromptController {
   ReviewPromptController({
     required SharedPreferences prefs,
     required ReviewLauncher launcher,
+    Analytics? analytics,
     this.policy = const ReviewPromptPolicy(),
     DateTime Function()? now,
-  })  : _prefs = prefs,
-        _launcher = launcher,
-        _now = now ?? DateTime.now;
+  }) : _prefs = prefs,
+       _launcher = launcher,
+       _analytics = analytics,
+       _now = now ?? DateTime.now;
 
   static const kSessions = 'review_sessions';
   static const kFirstSessionDay = 'review_first_session_day';
@@ -29,6 +35,7 @@ class ReviewPromptController {
 
   final SharedPreferences _prefs;
   final ReviewLauncher _launcher;
+  final Analytics? _analytics;
   final ReviewPromptPolicy policy;
   final DateTime Function() _now;
 
@@ -61,10 +68,14 @@ class ReviewPromptController {
         today: today,
       );
       if (!eligible) return false;
-      if (!await _launcher.isAvailable()) return false;
+      if (!await _launcher.isAvailable()) {
+        _analytics?.track(const ReviewPrompted(ReviewPromptResult.unavailable));
+        return false;
+      }
 
       await _launcher.requestReview();
       await _prefs.setString(kLastPromptDay, todayKey);
+      _analytics?.track(const ReviewPrompted(ReviewPromptResult.requested));
       return true;
     } finally {
       _inFlight = false;
@@ -94,5 +105,6 @@ final reviewPromptControllerProvider = Provider<ReviewPromptController>(
   (ref) => ReviewPromptController(
     prefs: ref.watch(sharedPreferencesProvider),
     launcher: ref.watch(reviewLauncherProvider),
+    analytics: ref.watch(analyticsProvider),
   ),
 );

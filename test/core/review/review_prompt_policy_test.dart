@@ -17,10 +17,10 @@ void main() {
     );
   });
 
-  test('needs minSessions distinct sessions', () {
+  test('needs minSessions distinct sessions (two)', () {
     expect(
       policy.shouldPrompt(
-        sessions: 3,
+        sessions: 1,
         firstSessionDay: day0,
         lastPromptDay: null,
         today: day0.add(const Duration(days: 30)),
@@ -29,7 +29,7 @@ void main() {
     );
     expect(
       policy.shouldPrompt(
-        sessions: 4,
+        sessions: 2,
         firstSessionDay: day0,
         lastPromptDay: null,
         today: day0.add(const Duration(days: 30)),
@@ -38,26 +38,29 @@ void main() {
     );
   });
 
-  test('needs minAge since the first session even with enough sessions', () {
-    expect(
-      policy.shouldPrompt(
-        sessions: 4,
-        firstSessionDay: day0,
-        lastPromptDay: null,
-        today: day0.add(const Duration(days: 2)),
-      ),
-      isFalse,
-    );
-    expect(
-      policy.shouldPrompt(
-        sessions: 4,
-        firstSessionDay: day0,
-        lastPromptDay: null,
-        today: day0.add(const Duration(days: 3)),
-      ),
-      isTrue,
-    );
-  });
+  test(
+    'needs minAge (a day) since the first session even with enough sessions',
+    () {
+      expect(
+        policy.shouldPrompt(
+          sessions: 2,
+          firstSessionDay: day0,
+          lastPromptDay: null,
+          today: day0,
+        ),
+        isFalse,
+      );
+      expect(
+        policy.shouldPrompt(
+          sessions: 2,
+          firstSessionDay: day0,
+          lastPromptDay: null,
+          today: day0.add(const Duration(days: 1)),
+        ),
+        isTrue,
+      );
+    },
+  );
 
   test('respects the cooldown after a prompt', () {
     final prompted = day0.add(const Duration(days: 10));
