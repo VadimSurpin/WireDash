@@ -1,1 +1,1 @@
-För ditt Zigbee2MQTT (krävs): en dashboard som bygger sig själv. Inget moln.
+Kräver Zigbee2MQTT. Dashboard som bygger sig själv. Mobil, väggplatta, kiosk.

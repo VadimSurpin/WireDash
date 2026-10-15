@@ -1,1 +1,1 @@
-Voor je Zigbee2MQTT (vereist): een dashboard dat zichzelf bouwt. Geen cloud.
+Vereist Zigbee2MQTT. Dashboard dat zichzelf bouwt. Telefoon, wandtablet, kiosk.

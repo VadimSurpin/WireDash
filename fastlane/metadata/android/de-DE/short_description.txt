@@ -1,1 +1,1 @@
-Für dein Zigbee2MQTT (erforderlich): ein Dashboard, das sich selbst baut.
+Braucht Zigbee2MQTT. Dashboard, das sich selbst baut. Handy, Wandtablet, Kiosk.
