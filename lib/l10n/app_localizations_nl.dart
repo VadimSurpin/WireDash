@@ -3182,4 +3182,8 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proUnlocked => 'Ontgrendeld. Bedankt dat je ZigDash steunt.';
+
+  @override
+  String get historyNotRecorded =>
+      'Alleen getallen die op een dashboard staan worden opgenomen. Voeg deze toe als tegel om de geschiedenis te starten.';
 }

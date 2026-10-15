@@ -1013,5 +1013,6 @@
   "historyUnlock": "Odblokuj",
   "proTitle": "ZigDash Pro",
   "proAbout": "Historia z 7 i 30 dni. Jednorazowy zakup.",
-  "proUnlocked": "Odblokowane. Dziękujemy za wspieranie ZigDash."
+  "proUnlocked": "Odblokowane. Dziękujemy za wspieranie ZigDash.",
+  "historyNotRecorded": "Zapisywane są tylko liczby widoczne na pulpicie. Dodaj tę wartość jako kafelek, aby zacząć jej historię."
 }

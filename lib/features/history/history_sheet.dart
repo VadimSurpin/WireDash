@@ -16,6 +16,7 @@ import '../panels/widgets/device_tile_panel.dart' show formatReading;
 import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
 import 'history_chart.dart';
+import 'history_config.dart' show decodeHistoryReadings;
 import 'history_record.dart';
 import 'history_service.dart';
 
@@ -169,9 +170,17 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     if (locked) {
       body = _LockedSample(accent: accent, label: theme.textTheme.labelSmall!);
     } else if (series.isEmpty) {
-      body = online == true
-          ? _Note(text: l10n.historyEmpty)
-          : _SetupCard(busy: _busy, onSetUp: () => _install(l10n));
+      // A running recorder that doesn't have this reading on its list will
+      // never fill the graph: say why instead of "no values yet".
+      final recorded = decodeHistoryReadings(
+        ref
+                .watch(historyRetainedConfigProvider(widget.connectionId))
+                .valueOrNull ??
+            '',
+      ).any((r) => r.ieee == widget.ieee && r.attr == historyAttr(widget.path));
+      body = online != true
+          ? _SetupCard(busy: _busy, onSetUp: () => _install(l10n))
+          : _Note(text: recorded ? l10n.historyEmpty : l10n.historyNotRecorded);
     } else {
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

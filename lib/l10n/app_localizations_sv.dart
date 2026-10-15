@@ -3171,4 +3171,8 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get proUnlocked => 'Upplåst. Tack för att du stöder ZigDash.';
+
+  @override
+  String get historyNotRecorded =>
+      'Bara siffror som visas på en instrumentpanel spelas in. Lägg till den här som en ruta för att starta historiken.';
 }

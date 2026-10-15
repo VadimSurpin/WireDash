@@ -3188,4 +3188,8 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get proUnlocked => 'Открыто. Спасибо, что поддерживаете ZigDash.';
+
+  @override
+  String get historyNotRecorded =>
+      'Записываются только числа, показанные на панели. Добавьте это значение плиткой, чтобы начать его историю.';
 }

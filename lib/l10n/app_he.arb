@@ -1087,5 +1087,6 @@
   "historyUnlock": "פתיחה",
   "proTitle": "ZigDash Pro",
   "proAbout": "היסטוריה של 7 ו-30 יום. רכישה חד-פעמית.",
-  "proUnlocked": "פתוח. תודה שאתם תומכים ב-ZigDash."
+  "proUnlocked": "פתוח. תודה שאתם תומכים ב-ZigDash.",
+  "historyNotRecorded": "מוקלטים רק מספרים שמוצגים בלוח בקרה. הוסיפו את הערך הזה כאריח כדי להתחיל את ההיסטוריה שלו."
 }

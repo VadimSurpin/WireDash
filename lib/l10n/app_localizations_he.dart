@@ -3142,4 +3142,8 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get proUnlocked => 'פתוח. תודה שאתם תומכים ב-ZigDash.';
+
+  @override
+  String get historyNotRecorded =>
+      'מוקלטים רק מספרים שמוצגים בלוח בקרה. הוסיפו את הערך הזה כאריח כדי להתחיל את ההיסטוריה שלו.';
 }

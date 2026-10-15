@@ -3186,4 +3186,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get proUnlocked =>
       'Freigeschaltet. Danke, dass du ZigDash unterstützt.';
+
+  @override
+  String get historyNotRecorded =>
+      'Aufgezeichnet werden nur Zahlen, die auf einem Dashboard stehen. Füge diesen Wert als Kachel hinzu, um seinen Verlauf zu starten.';
 }

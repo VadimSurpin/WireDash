@@ -1018,5 +1018,6 @@
   "historyUnlock": "Ontgrendelen",
   "proTitle": "ZigDash Pro",
   "proAbout": "Geschiedenis over 7 en 30 dagen. Een eenmalige aankoop.",
-  "proUnlocked": "Ontgrendeld. Bedankt dat je ZigDash steunt."
+  "proUnlocked": "Ontgrendeld. Bedankt dat je ZigDash steunt.",
+  "historyNotRecorded": "Alleen getallen die op een dashboard staan worden opgenomen. Voeg deze toe als tegel om de geschiedenis te starten."
 }

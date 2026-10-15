@@ -11,6 +11,9 @@ import 'package:zigdash/l10n/app_localizations.dart';
 
 final _now = DateTime(2026, 10, 15, 12);
 
+const _recordingThis =
+    '{"readings":[{"ieee":"0xa1","attr":"temperature","topic":"z/x","path":"temperature"}]}';
+
 class _KioskOn extends KioskController {
   @override
   KioskState build() => const KioskState(connectionId: 'c1', dashboardId: 'd1');
@@ -21,6 +24,7 @@ Widget _app({
   Map<String, List<HistoryPoint>> days = const {},
   ProStatus pro = ProStatus.unlocked,
   bool kiosk = false,
+  String retained = _recordingThis,
 }) => ProviderScope(
   overrides: [
     if (kiosk) kioskProvider.overrideWith(_KioskOn.new),
@@ -29,6 +33,9 @@ Widget _app({
       (ref, _) => online == null ? const Stream.empty() : Stream.value(online),
     ),
     historyDaysProvider.overrideWith((ref, _) => Stream.value(days)),
+    historyRetainedConfigProvider.overrideWith(
+      (ref, _) => Stream.value(retained),
+    ),
   ],
   child: MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -116,5 +123,17 @@ void main() {
     await tester.pump();
     expect(find.textContaining('ZigDash Pro'), findsOneWidget);
     expect(find.text('Unlock'), findsNothing);
+  });
+
+  testWidgets('a reading the recorder skips says how to record it', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(online: true, retained: '{"readings":[]}'));
+    await tester.pump();
+    expect(
+      find.textContaining('Only numbers shown on a dashboard'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('No values yet'), findsNothing);
   });
 }

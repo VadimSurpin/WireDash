@@ -1018,5 +1018,6 @@
   "historyUnlock": "Lås upp",
   "proTitle": "ZigDash Pro",
   "proAbout": "Historik för 7 och 30 dagar. Ett engångsköp.",
-  "proUnlocked": "Upplåst. Tack för att du stöder ZigDash."
+  "proUnlocked": "Upplåst. Tack för att du stöder ZigDash.",
+  "historyNotRecorded": "Bara siffror som visas på en instrumentpanel spelas in. Lägg till den här som en ruta för att starta historiken."
 }

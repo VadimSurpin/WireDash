@@ -5719,6 +5719,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlocked. Thank you for supporting ZigDash.'**
   String get proUnlocked;
+
+  /// No description provided for @historyNotRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Only numbers shown on a dashboard are recorded. Add this one as a tile to start its history.'**
+  String get historyNotRecorded;
 }
 
 class _AppLocalizationsDelegate

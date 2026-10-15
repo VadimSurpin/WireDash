@@ -3182,4 +3182,8 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get proUnlocked => 'Desbloqueado. Obrigado por apoiar o ZigDash.';
+
+  @override
+  String get historyNotRecorded =>
+      'Só são gravados os números que aparecem num painel. Adicione este como bloco para começar o histórico.';
 }

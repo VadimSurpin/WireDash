@@ -978,5 +978,6 @@
   "historyUnlock": "Desbloquear",
   "proTitle": "ZigDash Pro",
   "proAbout": "Histórico de 7 e 30 dias. Uma compra única.",
-  "proUnlocked": "Desbloqueado. Obrigado por apoiar o ZigDash."
+  "proUnlocked": "Desbloqueado. Obrigado por apoiar o ZigDash.",
+  "historyNotRecorded": "Só são gravados os números que aparecem num painel. Adicione este como bloco para começar o histórico."
 }

@@ -1018,5 +1018,6 @@
   "historyUnlock": "Freischalten",
   "proTitle": "ZigDash Pro",
   "proAbout": "Verlauf über 7 und 30 Tage. Ein einmaliger Kauf.",
-  "proUnlocked": "Freigeschaltet. Danke, dass du ZigDash unterstützt."
+  "proUnlocked": "Freigeschaltet. Danke, dass du ZigDash unterstützt.",
+  "historyNotRecorded": "Aufgezeichnet werden nur Zahlen, die auf einem Dashboard stehen. Füge diesen Wert als Kachel hinzu, um seinen Verlauf zu starten."
 }

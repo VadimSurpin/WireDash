@@ -3169,4 +3169,8 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get proUnlocked => 'Låst opp. Takk for at du støtter ZigDash.';
+
+  @override
+  String get historyNotRecorded =>
+      'Bare tall som vises på et dashbord tas opp. Legg til denne som en flis for å starte historikken.';
 }

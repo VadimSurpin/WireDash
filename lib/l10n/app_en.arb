@@ -1142,5 +1142,6 @@
   "historyUnlock": "Unlock",
   "proTitle": "ZigDash Pro",
   "proAbout": "7- and 30-day history. A one-time purchase.",
-  "proUnlocked": "Unlocked. Thank you for supporting ZigDash."
+  "proUnlocked": "Unlocked. Thank you for supporting ZigDash.",
+  "historyNotRecorded": "Only numbers shown on a dashboard are recorded. Add this one as a tile to start its history."
 }

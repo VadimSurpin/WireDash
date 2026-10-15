@@ -3190,4 +3190,8 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get proUnlocked => 'Débloqué. Merci de soutenir ZigDash.';
+
+  @override
+  String get historyNotRecorded =>
+      'Seules les valeurs affichées sur un tableau de bord sont enregistrées. Ajoutez celle-ci en tuile pour démarrer son historique.';
 }
