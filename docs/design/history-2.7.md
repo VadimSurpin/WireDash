@@ -33,10 +33,14 @@ history views are new depth.
    holds that day's 15-minute buckets; Mosquitto already persists retained
    messages to disk. No files, databases or add-ons on the hub, and the
    phone records nothing.
-3. **Every reading tile is recorded, automatically.** The app sends the
-   recorder the list of numeric readings shown by reading tiles (and their
-   gauge style) on the Home's dashboards, at most 50. Adding or removing a
-   tile updates the list. No per-tile switch.
+3. **Every number the dashboards show is recorded, automatically.** The
+   app sends the recorder the list of numeric readings on the Home's
+   dashboards, at most 50. Adding or removing a tile updates the list. No
+   per-tile switch. First-run setup makes device tiles, not reading tiles,
+   so "reading tile" here means both: a reading tile's value, and the
+   numbers a device tile shows (a climate sensor's temperature and
+   humidity, any other device's first reading, such as a plug's power).
+   Clarified while building, 2026-10-15.
 4. **Views: 24 hours, 7 days, 30 days. Kept for 30 days.** At midnight
    (the Home's time zone) the recorder clears the day that fell out of the
    window.
