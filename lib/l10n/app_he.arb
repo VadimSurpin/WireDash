@@ -1070,5 +1070,22 @@
   "kioskLeaveTitle": "לצאת מהקיוסק?",
   "kioskLeave": "יציאה",
   "kioskStay": "להישאר",
-  "a11yKioskLeave": "לחיצה ארוכה כדי לצאת מהקיוסק"
+  "a11yKioskLeave": "לחיצה ארוכה כדי לצאת מהקיוסק",
+  "historyTitle": "היסטוריה",
+  "historyRangeDay": "24 שעות",
+  "historyRangeWeek": "7 ימים",
+  "historyRangeMonth": "30 יום",
+  "historySetupTitle": "הקליטו היסטוריה ב-hub",
+  "historySetupBody": "ל-ZigDash אין שרת, לכן flow קטן של Node-RED ב-hub שומר כל 15 דקות את המספרים שבלוחות הבקרה. הוא שומר 30 יום, ב-broker שלכם.",
+  "historySetupAction": "התקנה ב-hub",
+  "historyInstalled": "ההקלטה התחילה. הערכים הראשונים יופיעו תוך 15 דקות.",
+  "historyNoNodeRed": "ההיסטוריה צריכה Node-RED ב-hub, ושום דבר לא עונה בפורט 1880 בכתובת {host}. ב-SMLIGHT SMHUB מתקינים אותו תחת Apps.",
+  "historyRecordingSince": "מוקלט מאז {date}",
+  "historyEmpty": "אין עדיין ערכים. המקליט שומר כל 15 דקות.",
+  "historyRecorderOffline": "המקליט ב-hub לא עונה, כך שייתכן שחסרים ערכים אחרונים.",
+  "historyLocked": "היסטוריה ארוכה יותר היא חלק מ-ZigDash Pro, רכישה חד-פעמית.",
+  "historyUnlock": "פתיחה",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "היסטוריה של 7 ו-30 יום. רכישה חד-פעמית.",
+  "proUnlocked": "פתוח. תודה שאתם תומכים ב-ZigDash."
 }

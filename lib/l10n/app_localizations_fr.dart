@@ -3132,53 +3132,62 @@ class AppLocalizationsFr extends AppLocalizations {
   String get a11yKioskLeave => 'Appui long pour quitter le kiosque';
 
   @override
-  String get historyTitle => 'History';
+  String get historyTitle => 'Historique';
 
   @override
-  String get historyRangeDay => '24 hours';
+  String get historyRangeDay => '24 heures';
 
   @override
-  String get historyRangeWeek => '7 days';
+  String get historyRangeWeek => '7 jours';
 
   @override
-  String get historyRangeMonth => '30 days';
+  String get historyRangeMonth => '30 jours';
 
   @override
-  String get historySetupTitle => 'Record history on your hub';
+  String get historySetupTitle => 'Enregistrer l\'historique sur votre hub';
 
   @override
   String get historySetupBody =>
-      'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.';
+      'ZigDash n\'a pas de serveur : un petit flux Node-RED sur votre hub enregistre toutes les 15 minutes les valeurs de vos tableaux de bord. Il garde 30 jours, sur votre propre broker.';
 
   @override
-  String get historySetupAction => 'Set up on the hub';
+  String get historySetupAction => 'Installer sur le hub';
 
   @override
   String get historyInstalled =>
-      'Recording. The first values appear within 15 minutes.';
+      'Enregistrement lancé. Les premières valeurs arrivent sous 15 minutes.';
 
   @override
   String historyNoNodeRed(String host) {
-    return 'History needs Node-RED on the hub, and nothing answers on port 1880 at $host. On an SMLIGHT SMHUB, install it under Apps.';
+    return 'L\'historique a besoin de Node-RED sur le hub, et rien ne répond sur le port 1880 de $host. Sur un SMLIGHT SMHUB, installez-le dans Apps.';
   }
 
   @override
   String historyRecordingSince(String date) {
-    return 'Recording since $date';
+    return 'Enregistré depuis le $date';
   }
 
   @override
   String get historyEmpty =>
-      'No values yet. The recorder saves every 15 minutes.';
+      'Pas encore de valeurs. L\'enregistreur sauvegarde toutes les 15 minutes.';
 
   @override
   String get historyRecorderOffline =>
-      'The recorder on the hub isn\'t answering, so recent values may be missing.';
+      'L\'enregistreur du hub ne répond pas, des valeurs récentes peuvent manquer.';
 
   @override
   String get historyLocked =>
-      'Longer history is part of ZigDash Pro, a one-time purchase.';
+      'L\'historique plus long fait partie de ZigDash Pro, un achat unique.';
 
   @override
-  String get historyUnlock => 'Unlock';
+  String get historyUnlock => 'Débloquer';
+
+  @override
+  String get proTitle => 'ZigDash Pro';
+
+  @override
+  String get proAbout => 'Historique sur 7 et 30 jours. Un achat unique.';
+
+  @override
+  String get proUnlocked => 'Débloqué. Merci de soutenir ZigDash.';
 }

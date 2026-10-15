@@ -148,6 +148,25 @@ If you create a "schedule" panel, ZigDash publishes the automation configuration
 as a retained MQTT message to your own broker, where a flow you run (e.g. on
 Node-RED) executes it. This data also stays within your own infrastructure.
 
+## History (from 2.7)
+
+If you set up history, ZigDash installs a "ZigDash history" flow in Node-RED on
+your own hub and publishes, as a retained MQTT message on your own broker, the
+list of readings shown on your dashboards (device addresses, state topics,
+value names and units) and your phone's time zone. The flow records those
+values every 15 minutes as retained messages on your broker and deletes them
+after 30 days. Nothing of it leaves your network: no copy is sent to the
+developer or anyone else.
+
+## ZigDash Pro (from 2.7)
+
+ZigDash Pro is an optional one-time purchase in the Google Play version.
+Google Play handles the payment under Google's privacy policy; ZigDash never
+sees your payment details and stores nothing about the purchase on your device
+or anywhere else: the app asks Google Play whether Pro was bought. Versions
+from GitHub, IzzyOnDroid and F-Droid contain no billing code and have Pro
+unlocked.
+
 ## Children
 
 ZigDash is a utility app and is not directed at children.

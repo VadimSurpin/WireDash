@@ -1139,5 +1139,8 @@
   "historyEmpty": "No values yet. The recorder saves every 15 minutes.",
   "historyRecorderOffline": "The recorder on the hub isn't answering, so recent values may be missing.",
   "historyLocked": "Longer history is part of ZigDash Pro, a one-time purchase.",
-  "historyUnlock": "Unlock"
+  "historyUnlock": "Unlock",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "7- and 30-day history. A one-time purchase.",
+  "proUnlocked": "Unlocked. Thank you for supporting ZigDash."
 }

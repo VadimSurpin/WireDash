@@ -3158,4 +3158,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyUnlock => 'Unlock';
+
+  @override
+  String get proTitle => 'ZigDash Pro';
+
+  @override
+  String get proAbout => '7- and 30-day history. A one-time purchase.';
+
+  @override
+  String get proUnlocked => 'Unlocked. Thank you for supporting ZigDash.';
 }

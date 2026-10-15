@@ -1001,5 +1001,22 @@
   "kioskLeaveTitle": "¿Salir del quiosco?",
   "kioskLeave": "Salir",
   "kioskStay": "Quedarse",
-  "a11yKioskLeave": "Mantén pulsado para salir del quiosco"
+  "a11yKioskLeave": "Mantén pulsado para salir del quiosco",
+  "historyTitle": "Historial",
+  "historyRangeDay": "24 horas",
+  "historyRangeWeek": "7 días",
+  "historyRangeMonth": "30 días",
+  "historySetupTitle": "Guarda el historial en tu hub",
+  "historySetupBody": "ZigDash no tiene servidor, así que un pequeño flujo de Node-RED en tu hub guarda cada 15 minutos los números de tus paneles. Conserva 30 días, en tu propio bróker.",
+  "historySetupAction": "Configurar en el hub",
+  "historyInstalled": "Grabando. Los primeros valores aparecen en menos de 15 minutos.",
+  "historyNoNodeRed": "El historial necesita Node-RED en el hub, y nada responde en el puerto 1880 de {host}. En un SMLIGHT SMHUB, instálalo en Apps.",
+  "historyRecordingSince": "Grabando desde {date}",
+  "historyEmpty": "Aún no hay valores. El grabador guarda cada 15 minutos.",
+  "historyRecorderOffline": "El grabador del hub no responde, así que pueden faltar valores recientes.",
+  "historyLocked": "El historial más largo forma parte de ZigDash Pro, una compra única.",
+  "historyUnlock": "Desbloquear",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "Historial de 7 y 30 días. Una compra única.",
+  "proUnlocked": "Desbloqueado. Gracias por apoyar ZigDash."
 }

@@ -1001,5 +1001,22 @@
   "kioskLeaveTitle": "Kiosk beenden?",
   "kioskLeave": "Beenden",
   "kioskStay": "Bleiben",
-  "a11yKioskLeave": "Lange drücken, um den Kiosk zu beenden"
+  "a11yKioskLeave": "Lange drücken, um den Kiosk zu beenden",
+  "historyTitle": "Verlauf",
+  "historyRangeDay": "24 Stunden",
+  "historyRangeWeek": "7 Tage",
+  "historyRangeMonth": "30 Tage",
+  "historySetupTitle": "Verlauf auf deinem Hub aufzeichnen",
+  "historySetupBody": "ZigDash hat keinen Server, deshalb zeichnet ein kleiner Node-RED-Flow auf deinem Hub alle 15 Minuten die Zahlen deiner Dashboards auf. Er behält 30 Tage, auf deinem eigenen Broker.",
+  "historySetupAction": "Auf dem Hub einrichten",
+  "historyInstalled": "Aufzeichnung läuft. Die ersten Werte erscheinen innerhalb von 15 Minuten.",
+  "historyNoNodeRed": "Der Verlauf braucht Node-RED auf dem Hub, und unter {host} antwortet nichts auf Port 1880. Auf einem SMLIGHT SMHUB installierst du es unter Apps.",
+  "historyRecordingSince": "Aufzeichnung seit {date}",
+  "historyEmpty": "Noch keine Werte. Der Recorder speichert alle 15 Minuten.",
+  "historyRecorderOffline": "Der Recorder auf dem Hub antwortet nicht, daher können neuere Werte fehlen.",
+  "historyLocked": "Längerer Verlauf ist Teil von ZigDash Pro, einem einmaligen Kauf.",
+  "historyUnlock": "Freischalten",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "Verlauf über 7 und 30 Tage. Ein einmaliger Kauf.",
+  "proUnlocked": "Freigeschaltet. Danke, dass du ZigDash unterstützt."
 }

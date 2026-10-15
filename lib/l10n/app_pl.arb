@@ -996,5 +996,22 @@
   "kioskLeaveTitle": "Wyjść z kiosku?",
   "kioskLeave": "Wyjdź",
   "kioskStay": "Zostań",
-  "a11yKioskLeave": "Przytrzymaj, aby wyjść z kiosku"
+  "a11yKioskLeave": "Przytrzymaj, aby wyjść z kiosku",
+  "historyTitle": "Historia",
+  "historyRangeDay": "24 godziny",
+  "historyRangeWeek": "7 dni",
+  "historyRangeMonth": "30 dni",
+  "historySetupTitle": "Zapisuj historię na hubie",
+  "historySetupBody": "ZigDash nie ma serwera, więc mały przepływ Node-RED na hubie co 15 minut zapisuje liczby z twoich pulpitów. Przechowuje 30 dni, na twoim własnym brokerze.",
+  "historySetupAction": "Skonfiguruj na hubie",
+  "historyInstalled": "Nagrywanie trwa. Pierwsze wartości pojawią się w ciągu 15 minut.",
+  "historyNoNodeRed": "Historia wymaga Node-RED na hubie, a na porcie 1880 pod adresem {host} nic nie odpowiada. Na SMLIGHT SMHUB zainstaluj go w Apps.",
+  "historyRecordingSince": "Zapisywane od {date}",
+  "historyEmpty": "Brak wartości. Rejestrator zapisuje co 15 minut.",
+  "historyRecorderOffline": "Rejestrator na hubie nie odpowiada, więc może brakować ostatnich wartości.",
+  "historyLocked": "Dłuższa historia jest częścią ZigDash Pro, jednorazowego zakupu.",
+  "historyUnlock": "Odblokuj",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "Historia z 7 i 30 dni. Jednorazowy zakup.",
+  "proUnlocked": "Odblokowane. Dziękujemy za wspieranie ZigDash."
 }

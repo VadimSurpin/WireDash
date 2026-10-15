@@ -5701,6 +5701,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock'**
   String get historyUnlock;
+
+  /// No description provided for @proTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash Pro'**
+  String get proTitle;
+
+  /// No description provided for @proAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'7- and 30-day history. A one-time purchase.'**
+  String get proAbout;
+
+  /// No description provided for @proUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked. Thank you for supporting ZigDash.'**
+  String get proUnlocked;
 }
 
 class _AppLocalizationsDelegate

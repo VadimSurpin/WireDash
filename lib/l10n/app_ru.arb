@@ -996,5 +996,22 @@
   "kioskLeaveTitle": "Выйти из киоска?",
   "kioskLeave": "Выйти",
   "kioskStay": "Остаться",
-  "a11yKioskLeave": "Удерживайте, чтобы выйти из киоска"
+  "a11yKioskLeave": "Удерживайте, чтобы выйти из киоска",
+  "historyTitle": "История",
+  "historyRangeDay": "24 часа",
+  "historyRangeWeek": "7 дней",
+  "historyRangeMonth": "30 дней",
+  "historySetupTitle": "Записывать историю на хабе",
+  "historySetupBody": "У ZigDash нет сервера, поэтому небольшой поток Node-RED на хабе каждые 15 минут записывает числа с ваших панелей. Он хранит 30 дней на вашем собственном брокере.",
+  "historySetupAction": "Настроить на хабе",
+  "historyInstalled": "Запись идёт. Первые значения появятся в течение 15 минут.",
+  "historyNoNodeRed": "Для истории нужен Node-RED на хабе, а на порту 1880 по адресу {host} никто не отвечает. На SMLIGHT SMHUB установите его в разделе Apps.",
+  "historyRecordingSince": "Запись с {date}",
+  "historyEmpty": "Значений пока нет. Запись сохраняется каждые 15 минут.",
+  "historyRecorderOffline": "Запись на хабе не отвечает, поэтому последних значений может не быть.",
+  "historyLocked": "Более длинная история входит в ZigDash Pro — разовую покупку.",
+  "historyUnlock": "Открыть",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "История за 7 и 30 дней. Разовая покупка.",
+  "proUnlocked": "Открыто. Спасибо, что поддерживаете ZigDash."
 }

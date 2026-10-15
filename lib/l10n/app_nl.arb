@@ -1001,5 +1001,22 @@
   "kioskLeaveTitle": "Kiosk verlaten?",
   "kioskLeave": "Verlaten",
   "kioskStay": "Blijven",
-  "a11yKioskLeave": "Ingedrukt houden om de kiosk te verlaten"
+  "a11yKioskLeave": "Ingedrukt houden om de kiosk te verlaten",
+  "historyTitle": "Geschiedenis",
+  "historyRangeDay": "24 uur",
+  "historyRangeWeek": "7 dagen",
+  "historyRangeMonth": "30 dagen",
+  "historySetupTitle": "Geschiedenis opnemen op je hub",
+  "historySetupBody": "ZigDash heeft geen server, dus een kleine Node-RED-flow op je hub legt elke 15 minuten de getallen van je dashboards vast. Hij bewaart 30 dagen, op je eigen broker.",
+  "historySetupAction": "Instellen op de hub",
+  "historyInstalled": "Opname loopt. De eerste waarden verschijnen binnen 15 minuten.",
+  "historyNoNodeRed": "Geschiedenis heeft Node-RED op de hub nodig, en op poort 1880 van {host} antwoordt niets. Op een SMLIGHT SMHUB installeer je het onder Apps.",
+  "historyRecordingSince": "Opgenomen sinds {date}",
+  "historyEmpty": "Nog geen waarden. De recorder slaat elke 15 minuten op.",
+  "historyRecorderOffline": "De recorder op de hub antwoordt niet, dus recente waarden kunnen ontbreken.",
+  "historyLocked": "Langere geschiedenis hoort bij ZigDash Pro, een eenmalige aankoop.",
+  "historyUnlock": "Ontgrendelen",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "Geschiedenis over 7 en 30 dagen. Een eenmalige aankoop.",
+  "proUnlocked": "Ontgrendeld. Bedankt dat je ZigDash steunt."
 }

@@ -3085,53 +3085,61 @@ class AppLocalizationsHe extends AppLocalizations {
   String get a11yKioskLeave => 'לחיצה ארוכה כדי לצאת מהקיוסק';
 
   @override
-  String get historyTitle => 'History';
+  String get historyTitle => 'היסטוריה';
 
   @override
-  String get historyRangeDay => '24 hours';
+  String get historyRangeDay => '24 שעות';
 
   @override
-  String get historyRangeWeek => '7 days';
+  String get historyRangeWeek => '7 ימים';
 
   @override
-  String get historyRangeMonth => '30 days';
+  String get historyRangeMonth => '30 יום';
 
   @override
-  String get historySetupTitle => 'Record history on your hub';
+  String get historySetupTitle => 'הקליטו היסטוריה ב-hub';
 
   @override
   String get historySetupBody =>
-      'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.';
+      'ל-ZigDash אין שרת, לכן flow קטן של Node-RED ב-hub שומר כל 15 דקות את המספרים שבלוחות הבקרה. הוא שומר 30 יום, ב-broker שלכם.';
 
   @override
-  String get historySetupAction => 'Set up on the hub';
+  String get historySetupAction => 'התקנה ב-hub';
 
   @override
   String get historyInstalled =>
-      'Recording. The first values appear within 15 minutes.';
+      'ההקלטה התחילה. הערכים הראשונים יופיעו תוך 15 דקות.';
 
   @override
   String historyNoNodeRed(String host) {
-    return 'History needs Node-RED on the hub, and nothing answers on port 1880 at $host. On an SMLIGHT SMHUB, install it under Apps.';
+    return 'ההיסטוריה צריכה Node-RED ב-hub, ושום דבר לא עונה בפורט 1880 בכתובת $host. ב-SMLIGHT SMHUB מתקינים אותו תחת Apps.';
   }
 
   @override
   String historyRecordingSince(String date) {
-    return 'Recording since $date';
+    return 'מוקלט מאז $date';
   }
 
   @override
-  String get historyEmpty =>
-      'No values yet. The recorder saves every 15 minutes.';
+  String get historyEmpty => 'אין עדיין ערכים. המקליט שומר כל 15 דקות.';
 
   @override
   String get historyRecorderOffline =>
-      'The recorder on the hub isn\'t answering, so recent values may be missing.';
+      'המקליט ב-hub לא עונה, כך שייתכן שחסרים ערכים אחרונים.';
 
   @override
   String get historyLocked =>
-      'Longer history is part of ZigDash Pro, a one-time purchase.';
+      'היסטוריה ארוכה יותר היא חלק מ-ZigDash Pro, רכישה חד-פעמית.';
 
   @override
-  String get historyUnlock => 'Unlock';
+  String get historyUnlock => 'פתיחה';
+
+  @override
+  String get proTitle => 'ZigDash Pro';
+
+  @override
+  String get proAbout => 'היסטוריה של 7 ו-30 יום. רכישה חד-פעמית.';
+
+  @override
+  String get proUnlocked => 'פתוח. תודה שאתם תומכים ב-ZigDash.';
 }

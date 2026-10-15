@@ -1001,5 +1001,22 @@
   "kioskLeaveTitle": "Avsluta kiosk?",
   "kioskLeave": "Avsluta",
   "kioskStay": "Stanna",
-  "a11yKioskLeave": "Håll in för att avsluta kiosk"
+  "a11yKioskLeave": "Håll in för att avsluta kiosk",
+  "historyTitle": "Historik",
+  "historyRangeDay": "24 timmar",
+  "historyRangeWeek": "7 dagar",
+  "historyRangeMonth": "30 dagar",
+  "historySetupTitle": "Spela in historik på hubben",
+  "historySetupBody": "ZigDash har ingen server, så ett litet Node-RED-flöde på hubben sparar siffrorna på dina instrumentpaneler var 15:e minut. Det behåller 30 dagar, på din egen broker.",
+  "historySetupAction": "Ställ in på hubben",
+  "historyInstalled": "Inspelning pågår. De första värdena syns inom 15 minuter.",
+  "historyNoNodeRed": "Historik kräver Node-RED på hubben, och inget svarar på port 1880 på {host}. På en SMLIGHT SMHUB installerar du det under Apps.",
+  "historyRecordingSince": "Inspelat sedan {date}",
+  "historyEmpty": "Inga värden än. Inspelaren sparar var 15:e minut.",
+  "historyRecorderOffline": "Inspelaren på hubben svarar inte, så nya värden kan saknas.",
+  "historyLocked": "Längre historik ingår i ZigDash Pro, ett engångsköp.",
+  "historyUnlock": "Lås upp",
+  "proTitle": "ZigDash Pro",
+  "proAbout": "Historik för 7 och 30 dagar. Ett engångsköp.",
+  "proUnlocked": "Upplåst. Tack för att du stöder ZigDash."
 }
