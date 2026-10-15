@@ -1,7 +1,7 @@
 # ZigDash 2.7: history graphs and Pro (build spec, in progress)
 
-Decided with the user on 2026-10-15, round 1 of the design round: six
-questions, every recommendation taken. Words follow
+Decided with the user on 2026-10-15 in two question rounds (ten
+questions), every recommendation taken. Words follow
 [CONTEXT.md](../../CONTEXT.md); new words: **History**, **Recorder**,
 **Day record**, **Pro**. Research behind Pro:
 [docs/growth/monetization-2026-10.md](../growth/monetization-2026-10.md)
@@ -106,7 +106,29 @@ history views are new depth.
 - No ads, no nag: Pro is mentioned only on the locked views and in
   Settings › About.
 
-## Open: round 2
+## Decisions (round 2, 2026-10-15, every recommendation taken)
 
-To decide with the user next: the name and price of Pro, what a locked
-view shows, the graph's look, and whether Pro gets a supporter extra.
+7. **ZigDash Pro, 7.99 EUR,** Google converting per country. Just under
+   IoT MQTT Panel Pro (£8.49) and Fully Kiosk PLUS (8.90 EUR).
+8. **A locked view shows a blurred sample graph** (made-up data, never the
+   user's), one line ("Longer history is part of ZigDash Pro, a one-time
+   purchase") and an Unlock button. No watermark over real data, no lock-only
+   tab.
+9. **The graph:** a line of the 15-minute averages over a shaded band from
+   minimum to maximum, in the Signal amber; touching it shows the time and
+   value under the finger; the current value is large above it, like the
+   tile.
+10. **No supporter extras in 2.7.** Pro carries history only; extras (icon,
+    accent) may come with wall-tablet depth in 2.8.
+
+## Build order
+
+1. Recorder flow: JS sources, build script, test harness, bundled JSON.
+2. Installer: generalise `NodeRedInstaller` to install a named tab from a
+   bundled asset; history uses it.
+3. Config: the reading list from the Home's dashboards, published retained.
+4. Reading side: day-record parsing, providers per view, gaps.
+5. History sheet and the graph painter; tap on reading tiles; device page.
+6. Pro: flavors, `proProvider`, Play Billing in `play`, the locked view.
+7. Strings in 11 languages, privacy policy (the recorder sends nothing off
+   the broker; Play receives the purchase), store text, goldens.
