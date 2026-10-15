@@ -8,9 +8,11 @@
 #   tool/store/capture.sh phone en        one form, one locale
 #   STORE_ROOT=/tmp/shots tool/store/...  write somewhere other than fastlane
 #
-# Output: $STORE_ROOT/<play locale>/images/{phoneScreenshots,tenInchScreenshots}
-# (default STORE_ROOT is fastlane/metadata/android). Capture once, after the
-# golden review: the spec changes store screenshots a single time, at 2.0.
+# Output: $STORE_ROOT/<play locale>/{phoneScreenshots,tenInchScreenshots}
+# (default STORE_ROOT is store/captures: the raw captures). The Play images
+# are composed from them by tool/store/captions.sh, which writes to fastlane.
+# Capture once, after the golden review: the spec changes store screenshots a
+# single time, at 2.0.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$root"
@@ -20,7 +22,7 @@ adb="$sdk/platform-tools/adb"
 emulator="$sdk/emulator/emulator"
 avdmanager="$sdk/cmdline-tools/latest/bin/avdmanager"
 image="system-images;android-36;google_apis;arm64-v8a"
-store_root="${STORE_ROOT:-$root/fastlane/metadata/android}"
+store_root="${STORE_ROOT:-$root/store/captures}"
 app_id="com.giladtamam.zigdash"
 
 forms=(phone tablet)
@@ -95,7 +97,7 @@ for form in "${forms[@]}"; do
   ensure_avd "$form"
   boot "$form"
   for locale in "${locales[@]}"; do
-    out="$store_root/$(play_locale "$locale")/images/$(shots_dir "$form")"
+    out="$store_root/$(play_locale "$locale")/$(shots_dir "$form")"
     echo "== $form $locale -> $out"
     "$adb" -s "$serial" uninstall "$app_id" >/dev/null 2>&1 || true
     STORE_OUT="$out" tool/flutter drive -d "$serial" \

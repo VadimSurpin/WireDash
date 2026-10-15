@@ -100,12 +100,29 @@ zigbee controller, zigbee control, zigbee dashboard, zigbee panel, tasmota,
 esp32, esp8266, sonoff, shelly, local, privacy, offline, no cloud, open source,
 material you, material 3, hebrew, עברית
 
-## Screenshots (ticket 06 shot-list — 5 captioned + he-IL set)
-1. Auto-discovered device grid — "Your Zigbee devices, zero setup"
-2. Device control detail (cover/dimmer in action)
-3. Hub automation — "Runs even when your phone is off"
-4. Material You theme variants
-5. Tablet wall-panel layout (also upload to 7"/10" tablet slots)
+## Screenshots (captioned, 2026-10-15)
+
+Five phone shots per locale, 1080x1920, composed by `tool/store/captions.py`
+from the raw emulator captures in `store/captures/<locale>/` (made by
+`tool/store/capture.sh`). Each is a headline, a sub-line and the capture in
+a device frame, in the app's fonts; the headline is what survives at search
+card size. The first four are what a Play search card shows.
+
+1. `01-dashboard` (light) — "Your Zigbee devices, zero setup" / needs Zigbee2MQTT and an MQTT broker.
+2. `02-wall-tablet` (dark, the 10-inch capture) — "Made for the wall tablet" / kiosk mode.
+3. `03-no-cloud` (dark) — "No cloud. No account. No ads." / free and open source.
+4. `04-controls` (light, device sheet) — "Every control, one tap away".
+5. `05-home-assistant` (light, devices list) — "Works beside Home Assistant".
+
+The two raw tablet captures go to the 10-inch slots unchanged. Translations
+of the captions live in the script (11 locales). An alerts shot would need a
+new capture (the integration test has none); the README's alerts image is
+English only.
+
+Why: on 2026-10-15 the Play search card for "zigbee2mqtt dashboard" showed
+four near-identical raw light-theme captures with unreadable text and no
+rating row (too few ratings), so nothing on the card said what the app needs
+or does. Captions put the requirement and the wall-tablet use on the card.
 
 ## Contact email
 giladtamam1@gmail.com
