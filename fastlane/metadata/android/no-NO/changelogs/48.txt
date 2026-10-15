@@ -1,0 +1,1 @@
+ZigDash 2.6.6: oppsettshjelp fra ekte økter. Finner søket Home Assistant, men ingen MQTT-broker, forklarer skjermen nå at ZigDash trenger Zigbee2MQTT og ikke ser ZHA-enheter, med demoen ett trykk unna. Sjekk er av til du skriver en adresse. Spørsmålet «Vurder appen» kommer nå etter to dager med styring som virker, ikke fire. Fellesskapskortet er borte fra dashbordet.
