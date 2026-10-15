@@ -59,9 +59,10 @@ history views are new depth.
 - **Config, app to recorder:** `zigdash/history/config`, retained, QoS 1,
   one per Home, last writer wins (like `zigdash/alerts/config`):
   `{"v":1, "home":"…", "base":"zigbee2mqtt", "timeZone":"Europe/Berlin",
-  "keepDays":30, "readings":[{"key":"<ieee>.<attribute>",
+  "keepDays":30, "readings":[{"ieee":"0x…", "attr":"temperature",
   "topic":"zigbee2mqtt/<friendly name>", "path":"temperature",
-  "unit":"°C"}]}`. Empty payload stops recording (records stay until they
+  "unit":"°C"}]}`. `path` may be dotted for nested values; `attr` is the
+  path with anything but letters, digits, `_` and `-` replaced by `_`. Empty payload stops recording (records stay until they
   age out).
 - **Day record, recorder to app:**
   `zigdash/history/<ieee>/<attribute>/<YYYY-MM-DD>`, retained, QoS 1:
