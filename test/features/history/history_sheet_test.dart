@@ -66,7 +66,7 @@ void main() {
     await tester.pumpWidget(_app(online: true, days: _today));
     await tester.pump();
     expect(find.byType(HistoryChart), findsOneWidget);
-    expect(find.text('⁦22°C⁩'), findsOneWidget);
+    expect(find.text('\u206622°C\u2069'), findsOneWidget);
     expect(find.textContaining('Recording since'), findsOneWidget);
     expect(find.text('7 days'), findsOneWidget, reason: 'outside Play');
   });
