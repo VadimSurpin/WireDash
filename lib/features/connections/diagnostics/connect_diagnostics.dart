@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 
+import '../../../core/analytics/analytics_events.dart' show ManualTestResult;
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/client_factory.dart';
 import '../../../mqtt/endpoint.dart';
@@ -54,7 +55,8 @@ class DiagnosticsReport {
 }
 
 typedef HostLookup = Future<List<String>> Function(String host);
-typedef TcpProbe = Future<void> Function(String host, int port, Duration timeout);
+typedef TcpProbe =
+    Future<void> Function(String host, int port, Duration timeout);
 
 /// Runs the guided-connect diagnostic ladder: resolve → tcp → connack → auth
 /// → devices, one candidate at a time ([endpointCandidates] order), reporting
@@ -71,9 +73,9 @@ class ConnectDiagnostics {
     HostLookup? hostLookup,
     TcpProbe? tcpProbe,
     this.deviceWindow = const Duration(seconds: 3),
-  })  : _clientFactory = clientFactory ?? buildMqttClient,
-        _hostLookup = hostLookup ?? defaultHostLookup,
-        _tcpProbe = tcpProbe ?? defaultTcpProbe;
+  }) : _clientFactory = clientFactory ?? buildMqttClient,
+       _hostLookup = hostLookup ?? defaultHostLookup,
+       _tcpProbe = tcpProbe ?? defaultTcpProbe;
 
   final MqttClientFactory _clientFactory;
   final HostLookup _hostLookup;
@@ -123,13 +125,29 @@ class ConnectDiagnostics {
     // --- resolve ---
     try {
       await _hostLookup(cand.host).timeout(budget);
-      steps.add(StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass));
+      steps.add(
+        StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
+      );
     } on UnsupportedError {
-      steps.add(StepResult(step: DiagnosticStep.resolve, status: StepStatus.skipped));
+      steps.add(
+        StepResult(step: DiagnosticStep.resolve, status: StepStatus.skipped),
+      );
     } on TimeoutException {
-      steps.add(StepResult(step: DiagnosticStep.resolve, status: StepStatus.fail, detailKey: 'diagResolveTimeout'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.resolve,
+          status: StepStatus.fail,
+          detailKey: 'diagResolveTimeout',
+        ),
+      );
     } catch (_) {
-      steps.add(StepResult(step: DiagnosticStep.resolve, status: StepStatus.fail, detailKey: 'diagResolveFail'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.resolve,
+          status: StepStatus.fail,
+          detailKey: 'diagResolveFail',
+        ),
+      );
     }
     if (steps.last.status == StepStatus.fail) return _aborted(steps);
 
@@ -138,11 +156,25 @@ class ConnectDiagnostics {
       await _tcpProbe(cand.host, config.port, budget);
       steps.add(StepResult(step: DiagnosticStep.tcp, status: StepStatus.pass));
     } on UnsupportedError {
-      steps.add(StepResult(step: DiagnosticStep.tcp, status: StepStatus.skipped));
+      steps.add(
+        StepResult(step: DiagnosticStep.tcp, status: StepStatus.skipped),
+      );
     } on TimeoutException {
-      steps.add(StepResult(step: DiagnosticStep.tcp, status: StepStatus.fail, detailKey: 'diagTcpTimeout'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.tcp,
+          status: StepStatus.fail,
+          detailKey: 'diagTcpTimeout',
+        ),
+      );
     } catch (_) {
-      steps.add(StepResult(step: DiagnosticStep.tcp, status: StepStatus.fail, detailKey: 'diagTcpFail'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.tcp,
+          status: StepStatus.fail,
+          detailKey: 'diagTcpFail',
+        ),
+      );
     }
     if (steps.last.status == StepStatus.fail) return _aborted(steps);
 
@@ -154,9 +186,13 @@ class ConnectDiagnostics {
     } on UnsupportedError {
       // e.g. TCP requested on web — the browser cannot open raw sockets.
       steps
-        ..add(StepResult(step: DiagnosticStep.connack, status: StepStatus.skipped))
+        ..add(
+          StepResult(step: DiagnosticStep.connack, status: StepStatus.skipped),
+        )
         ..add(StepResult(step: DiagnosticStep.auth, status: StepStatus.skipped))
-        ..add(StepResult(step: DiagnosticStep.devices, status: StepStatus.skipped));
+        ..add(
+          StepResult(step: DiagnosticStep.devices, status: StepStatus.skipped),
+        );
       return _aborted(steps);
     }
 
@@ -170,9 +206,13 @@ class ConnectDiagnostics {
     } on UnsupportedError {
       _dispose(client);
       steps
-        ..add(StepResult(step: DiagnosticStep.connack, status: StepStatus.skipped))
+        ..add(
+          StepResult(step: DiagnosticStep.connack, status: StepStatus.skipped),
+        )
         ..add(StepResult(step: DiagnosticStep.auth, status: StepStatus.skipped))
-        ..add(StepResult(step: DiagnosticStep.devices, status: StepStatus.skipped));
+        ..add(
+          StepResult(step: DiagnosticStep.devices, status: StepStatus.skipped),
+        );
       return _aborted(steps);
     } on TimeoutException {
       // No CONNACK within budget — fall through to the fail below.
@@ -182,13 +222,22 @@ class ConnectDiagnostics {
     }
     final status = client.connectionStatus;
     final code = status?.returnCode;
-    answered = status?.state == mc.MqttConnectionState.connected || code != null;
+    answered =
+        status?.state == mc.MqttConnectionState.connected || code != null;
     if (!answered) {
       _dispose(client);
-      steps.add(StepResult(step: DiagnosticStep.connack, status: StepStatus.fail, detailKey: 'diagConnackFail'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.connack,
+          status: StepStatus.fail,
+          detailKey: 'diagConnackFail',
+        ),
+      );
       return _aborted(steps);
     }
-    steps.add(StepResult(step: DiagnosticStep.connack, status: StepStatus.pass));
+    steps.add(
+      StepResult(step: DiagnosticStep.connack, status: StepStatus.pass),
+    );
 
     // --- auth (from the CONNACK return code) ---
     final connected = status?.state == mc.MqttConnectionState.connected;
@@ -200,11 +249,23 @@ class ConnectDiagnostics {
     } else if (code == mc.MqttConnectReturnCode.badUsernameOrPassword ||
         code == mc.MqttConnectReturnCode.notAuthorized) {
       _dispose(client);
-      steps.add(StepResult(step: DiagnosticStep.auth, status: StepStatus.fail, detailKey: 'diagAuthRejected'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.auth,
+          status: StepStatus.fail,
+          detailKey: 'diagAuthRejected',
+        ),
+      );
       return _aborted(steps);
     } else {
       _dispose(client);
-      steps.add(StepResult(step: DiagnosticStep.auth, status: StepStatus.fail, detailKey: 'diagAuthRefused'));
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.auth,
+          status: StepStatus.fail,
+          detailKey: 'diagAuthRefused',
+        ),
+      );
       return _aborted(steps);
     }
 
@@ -225,10 +286,12 @@ class ConnectDiagnostics {
           if (topic.length <= base.length + 1) continue;
           final rest = topic.substring(base.length + 1);
           if (rest == 'bridge/devices') {
-            final payload =
-                mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message);
+            final payload = mc.MqttPublishPayload.bytesToStringAsString(
+              pub.payload.message,
+            );
             for (final device in parseBridgeDevices(payload)) {
-              if (device.friendlyName.isNotEmpty) names.add(device.friendlyName);
+              if (device.friendlyName.isNotEmpty)
+                names.add(device.friendlyName);
               shown[device.friendlyName] = device.displayName;
             }
             continue;
@@ -248,11 +311,13 @@ class ConnectDiagnostics {
       unawaited(sub?.cancel());
       _dispose(client);
     }
-    steps.add(StepResult(
-      step: DiagnosticStep.devices,
-      status: StepStatus.pass,
-      deviceCount: names.length,
-    ));
+    steps.add(
+      StepResult(
+        step: DiagnosticStep.devices,
+        status: StepStatus.pass,
+        deviceCount: names.length,
+      ),
+    );
     final sorted = [for (final n in names) shown[n] ?? n]..sort();
     return DiagnosticsReport(
       steps: steps,
@@ -262,11 +327,8 @@ class ConnectDiagnostics {
     );
   }
 
-  DiagnosticsReport _aborted(List<StepResult> steps) => DiagnosticsReport(
-        steps: steps,
-        connected: false,
-        candidatesTried: 1,
-      );
+  DiagnosticsReport _aborted(List<StepResult> steps) =>
+      DiagnosticsReport(steps: steps, connected: false, candidatesTried: 1);
 
   void _configure(mc.MqttClient client, Duration budget, String clientId) {
     client.logging(on: false);
@@ -288,4 +350,20 @@ class ConnectDiagnostics {
       // Best-effort teardown of a probe client.
     }
   }
+}
+
+/// How a ladder run ends, for analytics: connected, or its first failed
+/// step (2.7.2).
+ManualTestResult manualTestResult(DiagnosticsReport report) {
+  if (report.connected) return ManualTestResult.connected;
+  final failed = report.steps
+      .where((s) => s.status == StepStatus.fail)
+      .map((s) => s.step)
+      .firstOrNull;
+  return switch (failed) {
+    DiagnosticStep.resolve => ManualTestResult.resolve,
+    DiagnosticStep.tcp || null => ManualTestResult.tcp,
+    DiagnosticStep.connack => ManualTestResult.connack,
+    DiagnosticStep.auth || DiagnosticStep.devices => ManualTestResult.auth,
+  };
 }

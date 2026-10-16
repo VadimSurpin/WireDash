@@ -156,6 +156,32 @@ void main() {
       });
     });
 
+    // 2.7.2: the broker form's Test & connect, without the address.
+    test('setup_step manual_test: the outcome, devices and tidied', () {
+      expect(
+        const SetupStep(
+          SetupStepKind.manualTest,
+          result: ManualTestResult.auth,
+          tidied: false,
+        ).props,
+        {'step': 'manual_test', 'result': 'auth', 'tidied': 'no'},
+      );
+      expect(
+        const SetupStep(
+          SetupStepKind.manualTest,
+          result: ManualTestResult.connected,
+          devices: 3,
+          tidied: true,
+        ).props,
+        {
+          'step': 'manual_test',
+          'result': 'connected',
+          'devices': '1-5',
+          'tidied': 'yes',
+        },
+      );
+    });
+
     test('feature_used once per session, except tiles added', () async {
       final (c, sink) = await _container(prefs: {'analytics_consent': true});
       final a = c.read(analyticsProvider);

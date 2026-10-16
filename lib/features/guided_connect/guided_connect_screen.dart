@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../support/support_details.dart';
 import '../support/get_help_screen.dart' show GetHelpLink;
 import '../support/support_log.dart';
-import '../../core/analytics/analytics_events.dart' show HelpFrom;
+import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/router/routes.dart';
 import '../../data/database/tables/connections.dart';
@@ -102,9 +102,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   Future<void> _start() async {
     // The form is only mounted in the form phase (retry runs from the failed
     // phase, where there is no form to validate).
+    var tidied = false;
     if (_phase == _Phase.form) {
       setState(
-        () => tidyBrokerAddress(
+        () => tidied = tidyBrokerAddress(
           host: _host,
           port: _port,
           protocol: _protocol,
@@ -150,6 +151,18 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     if (!report.connected) {
       ref.read(supportLogProvider).recordFailure(failureKindFromLadder(report));
     }
+    // 2.7.2: where the broker form loses people. A user spent three minutes
+    // here and all we knew was that the form had opened.
+    ref
+        .read(analyticsProvider)
+        .track(
+          SetupStep(
+            SetupStepKind.manualTest,
+            result: manualTestResult(report),
+            devices: report.connected ? report.deviceNames.length : null,
+            tidied: tidied,
+          ),
+        );
 
     if (report.connected) {
       // Auto-save per the spec: on success the connection saves with

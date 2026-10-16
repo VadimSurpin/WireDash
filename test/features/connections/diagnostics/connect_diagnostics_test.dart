@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
+import 'package:zigdash/core/analytics/analytics_events.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
@@ -25,12 +26,14 @@ enum _ConnectBehavior {
 
 class _FakeClient extends mc.MqttClient {
   _FakeClient(String server, this.behavior)
-      : super.withPort(server, 'cid', 1883);
+    : super.withPort(server, 'cid', 1883);
 
   final _ConnectBehavior behavior;
   final _status = mc.MqttClientConnectionStatus();
   final _updates =
-      StreamController<List<mc.MqttReceivedMessage<mc.MqttMessage>>>.broadcast();
+      StreamController<
+        List<mc.MqttReceivedMessage<mc.MqttMessage>>
+      >.broadcast();
 
   final subscribedTopics = <String>[];
   bool disconnectedCalled = false;
@@ -57,9 +60,10 @@ class _FakeClient extends mc.MqttClient {
       // Faithful to mqtt_client: after a failed connect with no CONNACK
       // (refused / hang) the handler's status is null; a CONNACK refusal
       // (authRejected) leaves the return code readable.
-      (behavior == _ConnectBehavior.refused || behavior == _ConnectBehavior.hang)
-          ? null
-          : _status;
+      (behavior == _ConnectBehavior.refused ||
+          behavior == _ConnectBehavior.hang)
+      ? null
+      : _status;
 
   @override
   Stream<List<mc.MqttReceivedMessage<mc.MqttMessage>>>? get updates =>
@@ -94,12 +98,12 @@ void main() {
   const base = 'zigbee2mqtt';
 
   BrokerConfig config({String? remote}) => BrokerConfig(
-        id: 'conn-1',
-        host: host,
-        port: 1883,
-        protocol: MqttProtocol.tcp,
-        remoteHost: remote,
-      );
+    id: 'conn-1',
+    host: host,
+    port: 1883,
+    protocol: MqttProtocol.tcp,
+    remoteHost: remote,
+  );
 
   Future<List<String>> okLookup(String h) async => <String>[h];
   Future<void> okProbe(String h, int p, Duration t) async {}
@@ -141,7 +145,8 @@ void main() {
         );
 
         DiagnosticsReport? report;
-        d.run(config: config(), password: '', base: base)
+        d
+            .run(config: config(), password: '', base: base)
             .then((r) => report = r);
 
         // Let the ladder reach the devices window (listener attached, SUBSCRIBE
@@ -164,11 +169,13 @@ void main() {
 
         expect(report, isNotNull);
         expect(report!.connected, isTrue);
-        expect(
-          report!.steps.map((s) => s.step),
-          [DiagnosticStep.resolve, DiagnosticStep.tcp, DiagnosticStep.connack,
-           DiagnosticStep.auth, DiagnosticStep.devices],
-        );
+        expect(report!.steps.map((s) => s.step), [
+          DiagnosticStep.resolve,
+          DiagnosticStep.tcp,
+          DiagnosticStep.connack,
+          DiagnosticStep.auth,
+          DiagnosticStep.devices,
+        ]);
         for (final s in report!.steps) {
           expect(s.status, StepStatus.pass, reason: 'step ${s.step}');
         }
@@ -179,7 +186,10 @@ void main() {
           containsAll(['office_light', 'lamp', 'garage_sensor', 'living_plug']),
         );
         expect(report!.candidatesTried, 1);
-        expect(client.subscribedTopics, containsAll(['$base/#', '$base/bridge/devices']));
+        expect(
+          client.subscribedTopics,
+          containsAll(['$base/#', '$base/bridge/devices']),
+        );
       });
     });
 
@@ -193,7 +203,8 @@ void main() {
           deviceWindow: const Duration(seconds: 3),
         );
         DiagnosticsReport? report;
-        d.run(config: config(), password: '', base: base)
+        d
+            .run(config: config(), password: '', base: base)
             .then((r) => report = r);
         async.flushMicrotasks();
         // All three devices are silent (no live state topics at all).
@@ -217,7 +228,8 @@ void main() {
       fakeAsync((async) {
         final d = diagnostics();
         DiagnosticsReport? report;
-        d.run(config: config(), password: '', base: base)
+        d
+            .run(config: config(), password: '', base: base)
             .then((r) => report = r);
         async.elapse(const Duration(seconds: 3));
         expect(report!.connected, isTrue);
@@ -355,7 +367,11 @@ void main() {
           builtHosts: builtHosts,
         );
         DiagnosticsReport? report;
-        d.run(config: config(remote: remoteHost), password: '')
+        d
+            .run(
+              config: config(remote: remoteHost),
+              password: '',
+            )
             .then((r) => report = r);
         async.elapse(const Duration(seconds: 3));
 
@@ -369,7 +385,11 @@ void main() {
       fakeAsync((async) {
         final d = diagnostics(behavior: _ConnectBehavior.refused);
         DiagnosticsReport? report;
-        d.run(config: config(remote: remoteHost), password: '')
+        d
+            .run(
+              config: config(remote: remoteHost),
+              password: '',
+            )
             .then((r) => report = r);
         async.flushMicrotasks();
 
@@ -378,6 +398,50 @@ void main() {
         // Steps belong to the last (remote) candidate.
         expect(report!.steps[2].status, StepStatus.fail);
       });
+    });
+  });
+
+  // 2.7.2: the analytics outcome of a ladder run.
+  group('manualTestResult', () {
+    DiagnosticsReport failedAt(DiagnosticStep step) => DiagnosticsReport(
+      steps: [
+        for (final s in DiagnosticStep.values)
+          if (s.index < step.index)
+            StepResult(step: s, status: StepStatus.pass)
+          else if (s == step)
+            StepResult(step: s, status: StepStatus.fail),
+      ],
+      connected: false,
+      candidatesTried: 1,
+    );
+
+    test('connected, or the first failed step', () {
+      expect(
+        manualTestResult(
+          const DiagnosticsReport(
+            steps: [],
+            connected: true,
+            candidatesTried: 1,
+          ),
+        ),
+        ManualTestResult.connected,
+      );
+      expect(
+        manualTestResult(failedAt(DiagnosticStep.resolve)),
+        ManualTestResult.resolve,
+      );
+      expect(
+        manualTestResult(failedAt(DiagnosticStep.tcp)),
+        ManualTestResult.tcp,
+      );
+      expect(
+        manualTestResult(failedAt(DiagnosticStep.connack)),
+        ManualTestResult.connack,
+      );
+      expect(
+        manualTestResult(failedAt(DiagnosticStep.auth)),
+        ManualTestResult.auth,
+      );
     });
   });
 }
