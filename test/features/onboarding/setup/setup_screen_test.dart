@@ -556,7 +556,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Your devices'), findsNothing); // subtitle, not title
-    expect(find.textContaining('devices found'), findsOneWidget);
+    expect(find.textContaining('1 device found.'), findsOneWidget);
   });
 
   testWidgets('the login prompt names only the platform the user chose', (
