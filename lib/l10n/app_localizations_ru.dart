@@ -1735,6 +1735,27 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get setupZ2mAsking => 'Спрашиваем Zigbee2MQTT, где его брокер…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'Ваш брокер принимает подключения только со своей машины';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'Zigbee2MQTT использует $server, и с вашего телефона там никто не отвечает. Mosquitto 2 так работает по умолчанию. Добавьте эти две строки в mosquitto.conf, перезапустите Mosquitto и попробуйте снова:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'Нужен логин вместо открытого доступа? Используйте password_file вместо allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'Zigbee2MQTT использует брокер по адресу $server, но он не ответил вашему телефону. Проверьте, что брокер запущен и телефон в той же сети.';
+  }
+
+  @override
   String setupConnectTo(String host) {
     return 'Подключиться к $host';
   }

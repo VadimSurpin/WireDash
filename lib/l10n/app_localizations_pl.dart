@@ -1740,6 +1740,27 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get setupZ2mAsking => 'Pytamy Zigbee2MQTT, gdzie jest jego broker…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'Twój broker przyjmuje połączenia tylko z własnego komputera';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'Zigbee2MQTT używa $server, a z twojego telefonu nic tam nie odpowiada. Mosquitto 2 tak działa domyślnie. Dodaj te dwie linie do mosquitto.conf, uruchom ponownie Mosquitto i spróbuj jeszcze raz:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'Wolisz logowanie zamiast otwartego dostępu? Użyj password_file zamiast allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'Zigbee2MQTT używa brokera pod adresem $server, ale nie odpowiedział twojemu telefonowi. Sprawdź, czy broker działa i czy telefon jest w tej samej sieci.';
+  }
+
+  @override
   String setupConnectTo(String host) {
     return 'Połącz z $host';
   }

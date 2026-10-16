@@ -290,8 +290,8 @@ class ConnectDiagnostics {
               pub.payload.message,
             );
             for (final device in parseBridgeDevices(payload)) {
-              if (device.friendlyName.isNotEmpty)
-                names.add(device.friendlyName);
+              if (device.friendlyName.isEmpty) continue;
+              names.add(device.friendlyName);
               shown[device.friendlyName] = device.displayName;
             }
             continue;

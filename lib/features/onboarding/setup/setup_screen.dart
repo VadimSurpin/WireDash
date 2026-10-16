@@ -8,6 +8,7 @@ import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../connections/discovery/hub_probe.dart';
+import '../../panels/widgets/device_tile_panel.dart' show ltr;
 import '../../support/community.dart' show CommunityLink;
 import '../../support/get_help_screen.dart' show GetHelpLink;
 import '../first_run.dart';
@@ -451,13 +452,21 @@ class _ScanEmpty extends StatelessWidget {
           _VpnHint(text: l10n.setupVpnHint),
         ],
         const SizedBox(height: 8),
-        Text(body, style: theme.textTheme.bodyLarge),
+        // Once Zigbee2MQTT has said where its broker is (2.7.2), its answer
+        // replaces the general guess.
+        if (state.z2m?.status != Z2mAnswerStatus.localOnly &&
+            state.z2m?.status != Z2mAnswerStatus.unreachable)
+          Text(body, style: theme.textTheme.bodyLarge),
         // 2.6.6: two of the first users to reach this screen left within
         // seconds of it. Many Home Assistant users run ZHA, not Zigbee2MQTT,
         // and no broker will ever answer for them; say so, and offer the demo.
         if (haHub) ...[
           const SizedBox(height: 12),
           Text(l10n.setupNoBrokerHaZha, style: theme.textTheme.bodyMedium),
+        ],
+        if (state.z2m case final z?) ...[
+          const SizedBox(height: 12),
+          _Z2mAnswerNote(answer: z),
         ],
         const SizedBox(height: 12),
         _SetupGuides(only: guideFor),
@@ -522,6 +531,85 @@ class _ScanEmpty extends StatelessWidget {
         ],
       ],
     );
+  }
+}
+
+/// What Zigbee2MQTT's web page said about its broker (2.7.2): asking, a
+/// broker that listens only on its own machine (with the lines that open
+/// it), or one that did not answer where Zigbee2MQTT uses it.
+class _Z2mAnswerNote extends StatelessWidget {
+  const _Z2mAnswerNote({required this.answer});
+  final Z2mAnswer answer;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final server = ltr(answer.server);
+    return switch (answer.status) {
+      Z2mAnswerStatus.asking => Row(
+        children: [
+          const SizedBox.square(
+            dimension: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(l10n.setupZ2mAsking, style: theme.textTheme.bodyMedium),
+          ),
+        ],
+      ),
+      Z2mAnswerStatus.localOnly => Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: scheme.tertiaryContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.setupZ2mLocalOnlyTitle,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: scheme.onTertiaryContainer,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.setupZ2mLocalOnlyBody(server),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: scheme.onTertiaryContainer,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: SelectableText(
+                'listener 1883\nallow_anonymous true',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: scheme.onTertiaryContainer,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.setupZ2mLocalOnlyNote,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: scheme.onTertiaryContainer,
+              ),
+            ),
+          ],
+        ),
+      ),
+      Z2mAnswerStatus.unreachable => Text(
+        l10n.setupZ2mUnreachable(server),
+        style: theme.textTheme.bodyMedium,
+      ),
+      Z2mAnswerStatus.broker ||
+      Z2mAnswerStatus.noAnswer => const SizedBox.shrink(),
+    };
   }
 }
 
@@ -776,7 +864,10 @@ class _AuthPrompt extends StatefulWidget {
 }
 
 class _AuthPromptState extends State<_AuthPrompt> {
-  final _username = TextEditingController();
+  // Zigbee2MQTT's own username, when its web page said (2.7.2).
+  late final _username = TextEditingController(
+    text: widget.state.suggestedUser ?? '',
+  );
   final _password = TextEditingController();
 
   @override

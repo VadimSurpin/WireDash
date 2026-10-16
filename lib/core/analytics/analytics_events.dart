@@ -67,6 +67,10 @@ enum SetupStepKind {
   /// Test & connect on the broker form (2.7.2), with its
   /// [SetupStep.result]: connected, or the first step that failed.
   manualTest,
+
+  /// Zigbee2MQTT's web page asked where its broker is (2.7.2), with its
+  /// [SetupStep.result]: broker, local_only, unreachable or no_answer.
+  z2mAsked,
 }
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the

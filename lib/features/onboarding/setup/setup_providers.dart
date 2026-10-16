@@ -12,6 +12,8 @@ import '../../connections/diagnostics/connect_diagnostics_provider.dart';
 import '../../connections/discovery/address_checker.dart';
 import '../../connections/discovery/broker_scan_providers.dart';
 import '../../connections/discovery/hub_probe.dart';
+import '../../connections/discovery/z2m_frontend.dart';
+import '../../connections/discovery/z2m_frontend_fetch.dart';
 import '../../connections/discovery/network_info.dart';
 import '../../support/support_details.dart';
 import '../../support/support_log.dart';
@@ -49,6 +51,11 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
     },
     networkFacts: () async => (kind: network, vpn: await vpnActive()),
     identifyHub: (host) => identifyHost(scanner.hubProber, host),
+    askZ2m: (host, port) async => z2mBrokerSetting(
+      await fetchZ2mMqttConfig(host, port),
+      frontendHost: host,
+    ),
+    probeBroker: scanner.prober.probe,
     checkAddress: createAddressChecker(
       prober: scanner.prober,
       hubProber: scanner.hubProber,

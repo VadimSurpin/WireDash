@@ -16,6 +16,24 @@ SetupStep? setupStepFor(
   SetupScanning() when previous is! SetupScanning => const SetupStep(
     SetupStepKind.started,
   ),
+  // 2.7.2: Zigbee2MQTT's web page was asked where its broker is.
+  SetupVerifying()
+      when previous is SetupScanEmpty &&
+          previous.z2m?.status == Z2mAnswerStatus.asking =>
+    SetupStep(
+      SetupStepKind.z2mAsked,
+      result: Z2mAnswerStatus.broker,
+      platform: platform,
+    ),
+  SetupScanEmpty(z2m: (status: Z2mAnswerStatus.asking, server: _)) => null,
+  SetupScanEmpty(z2m: (:final status, server: _))
+      when previous is SetupScanEmpty &&
+          previous.z2m?.status == Z2mAnswerStatus.asking =>
+    SetupStep(
+      SetupStepKind.z2mAsked,
+      result: status,
+      platform: next.platform ?? platform,
+    ),
   SetupVerifying() when previous is SetupScanning => SetupStep(
     SetupStepKind.scanFound,
     platform: platform,
