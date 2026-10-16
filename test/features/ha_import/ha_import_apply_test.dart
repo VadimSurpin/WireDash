@@ -28,16 +28,6 @@ final _kitchen = _sensor('0xa4c13828d7b8e8a1');
 final _bedroom = _sensor('0xa4c13863521bcd41');
 
 // The user's Home Assistant after the 2026-10-16 test setup.
-const _plan = ImportPlan(
-  dashboards: [
-    ImportDashboard(
-      floor: 'Ground floor',
-      rooms: [ImportRoom(name: 'Kitchen', devices: [])],
-    ),
-  ],
-  zhaDevices: 0,
-);
-
 ImportPlan _realPlan() => ImportPlan(
   dashboards: [
     ImportDashboard(
@@ -222,9 +212,57 @@ void main() {
   );
 
   test('empty rooms make no dashboard', () async {
-    final r = await apply(_plan);
+    final r = await apply(
+      const ImportPlan(
+        dashboards: [
+          ImportDashboard(
+            floor: 'Ground floor',
+            rooms: [ImportRoom(name: 'Kitchen', devices: [])],
+          ),
+        ],
+        zhaDevices: 0,
+      ),
+    );
     expect(r.dashboardIds, isEmpty);
   });
+
+  test(
+    'a tile named after the device\'s earlier name is renamed too',
+    () async {
+      // Setup named the tile by the address; the device has since been
+      // renamed in Zigbee2MQTT, before the tiles caught up.
+      final renamedInZ2m = Z2mDevice(
+        friendlyName: 'Hall',
+        type: 'EndDevice',
+        ieeeAddress: '0xa4c13836276df66f',
+        description: 'Motion sensor',
+      );
+      final r = await apply(
+        ImportPlan(
+          dashboards: [
+            ImportDashboard(
+              floor: null,
+              rooms: [
+                ImportRoom(
+                  name: 'Living Room',
+                  devices: [
+                    ImportedDevice(
+                      device: renamedInZ2m,
+                      name: 'Living room motion',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+          zhaDevices: 0,
+        ),
+        make: false,
+      );
+      expect(r.renamed, 1);
+      expect((await names(home)).first, 'Living room motion');
+    },
+  );
 
   test('importing again renames nothing twice', () async {
     await apply(_realPlan(), make: false);

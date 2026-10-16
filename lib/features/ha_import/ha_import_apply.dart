@@ -58,7 +58,7 @@ class HaImportApplier {
     String base = 'zigbee2mqtt',
     Set<String> skipRooms = const {},
   }) async {
-    final renamed = await _rename(connectionId, plan);
+    final renamed = await _rename(connectionId, plan, base);
     if (!makeDashboards) {
       return HaImportResult(renamed: renamed, dashboardIds: const [], tiles: 0);
     }
@@ -104,10 +104,12 @@ class HaImportApplier {
     return HaImportResult(renamed: renamed, dashboardIds: ids, tiles: tiles);
   }
 
-  /// Device and reading tiles still named after their device, by the same
-  /// rule that follows renames in Zigbee2MQTT, take the Home Assistant name.
-  /// Reading tiles keep their own names: "Temperature" is not the device.
-  Future<int> _rename(String connectionId, ImportPlan plan) async {
+  /// Device tiles still named after their device take the Home Assistant
+  /// name, by the rule that follows renames in Zigbee2MQTT: the device's
+  /// name now, or the one the tile was made with (its topic still carries
+  /// it), raw or readable. Reading tiles keep their own names:
+  /// "Temperature" is not the device.
+  Future<int> _rename(String connectionId, ImportPlan plan, String base) async {
     final named = {
       for (final b in plan.dashboards)
         for (final r in b.rooms)
@@ -120,8 +122,16 @@ class HaImportApplier {
       final d = named[tile.deviceIeee?.toLowerCase()];
       if (d == null || tile.type != PanelType.device) continue;
       final own = d.device;
-      final still =
-          tile.name == own.friendlyName || tile.name == own.displayName;
+      final prefix = tile.topicPrefixOverride;
+      final made = prefix != null && prefix.startsWith('$base/')
+          ? prefix.substring(base.length + 1)
+          : null;
+      final still = {
+        own.friendlyName,
+        own.displayName,
+        if (made != null) made,
+        if (made != null) own.displayNameOf(made),
+      }.contains(tile.name);
       if (!still || tile.name == d.name) continue;
       await _registry.setName(tile.id, d.name);
       renamed++;
