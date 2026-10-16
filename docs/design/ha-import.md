@@ -204,6 +204,13 @@ floor "Ground floor" (`ground_floor`) holding Living Room and Kitchen;
 "Bedroom motion" with no device area and all eight of its entities in
 Bedroom (the entity-override case).
 
+**Verified on the user's phone (2026-10-16, 12:52):** a test build of
+`feat/ha-import` with a long-lived token the user created and pasted
+themselves. Preview matched Home Assistant exactly (Ground floor: Kitchen,
+Living Room; Other rooms: Bedroom from its entities; stale shutter left
+out). Import: 3 tiles renamed on the setup dashboard, which stayed first,
+and 2 dashboards added after it, with live readings.
+
 ## Testing
 
 - Unit: matching, name and area rules, ZHA detection and the preview counts,
