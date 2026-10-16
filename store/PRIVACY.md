@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.7.2 is published (replaces the policy published with ZigDash 2.7)
+**Effective date:** the day ZigDash 2.8 is published (replaces the policy published with ZigDash 2.7.2)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -119,6 +119,7 @@ never from anything you typed or anything your broker sent.
 | `app_started` | Once each time the app starts | phone or tablet; theme (system, light, dark); Material You on or off; number of homes (0, 1, 2+); number of tiles (0, 1–10, 11–30, 31+); demo or not |
 | `setup_step` | Each step of first-run setup | the step (started, scan found, scan empty, needs login, login rejected, failed, review, complete, manual, demo); the type of setup error, if any; number of devices found (0, 1–5, 6–20, 21+); from 2.5, your answer to where Zigbee2MQTT runs, if you gave one (Home Assistant, SMLIGHT hub, Raspberry Pi or Docker, not sure); and for an empty scan, the kind of hub it saw instead (Home Assistant, Zigbee2MQTT frontend, SMLIGHT hub, or none), how many addresses it tried (0, 1–253, 254–1020, 1021+), whether it widened to the surrounding network, and which private range your phone is in (192.168, 10, 172.16, other); from 2.6.2, also how many addresses answered at all (0, 1–5, 6–20, 21+), whether a VPN was on, and the kind of network (Wi-Fi, Ethernet, other); and for the address check (the address you type on the empty result), only its outcome: a broker found, a hub page found, nothing answered, the name could not be looked up, not a home address, or nothing typed; from 2.7.2, for Test & connect on the broker form, only whether it connected or which step failed (name lookup, connection, MQTT handshake, login), the number of devices found (0, 1–5, 6–20, 21+), and whether the app tidied what you typed (for example a pasted browser link); and when the scan saw Zigbee2MQTT's web page but no broker, only what asking that page found: a broker, a broker that listens only on its own machine, one that didn't answer, or no answer; never the address |
 | `feature_used` | The first use of a feature in a session | Devices tab, device page, Scenes, Edit mode, Wall display, tile added (with the kind of tile, such as "light" or "toggle"), history (from 2.7), or kiosk (with whether a PIN is set, whether Android screen pinning is on, and the dim delay as one of off, 1, 5 or 15 minutes) |
+| `ha_import` | From 2.8, the import from Home Assistant | the step (the offer after setup accepted or declined, a read that failed, the preview, the import done); for a failed read only why (no address, no token, nothing answered, not Home Assistant, token refused, certificate not trusted, read failed, home not connected); counts in buckets (0, 1–5, 6–20, 21+) of devices, rooms, renamed tiles and added dashboards; and whether Home Assistant had only ZHA devices. Never the address, the token, or any device or room name |
 | `help_opened` | Get help was opened | where from: no connection found, a setup error, manual connect, home can't be reached, device list missing, Settings, or the demo |
 | `support_contact` | A support request was started from Get help | where from (as above); email or copy |
 | `community_opened` | The Telegram community link was opened | where from: Settings, the one-time dashboard card, or the place Get help was opened from (as above) |
@@ -159,6 +160,17 @@ value names and units) and your phone's time zone. The flow records those
 values every 15 minutes as retained messages on your broker and deletes them
 after 30 days. Nothing of it leaves your network: no copy is sent to the
 developer or anyone else.
+
+## Import from Home Assistant (from 2.8)
+
+If you import from Home Assistant, ZigDash connects from your phone to the
+Home Assistant address you give, with the access token you paste, and reads
+its lists of devices, areas (rooms), floors and the rooms of entities. It
+uses them on the phone to name tiles and add dashboards, and stores only
+those names and rooms in your dashboards. The token is used for that one
+read and is not stored; you can delete it in Home Assistant afterwards.
+ZigDash never writes to Home Assistant, and nothing of it leaves your
+network: no copy is sent to the developer or anyone else.
 
 ## ZigDash Pro (from 2.7)
 

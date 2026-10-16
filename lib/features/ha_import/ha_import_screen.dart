@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/router/routes.dart';
 import '../../data/database/daos/device_registry_dao.dart';
@@ -22,8 +23,16 @@ import 'ha_import_controller.dart';
 /// preview, then the import. The token lives in its text field and is
 /// handed to Home Assistant once; nothing keeps it.
 class HaImportScreen extends ConsumerStatefulWidget {
-  const HaImportScreen({super.key, required this.connectionId});
+  const HaImportScreen({
+    super.key,
+    required this.connectionId,
+    @visibleForTesting this.controller,
+  });
   final String connectionId;
+
+  /// A controller in a given state, for screenshots; otherwise the screen
+  /// makes its own.
+  final HaImportController? controller;
 
   @override
   ConsumerState<HaImportScreen> createState() => _HaImportScreenState();
@@ -36,10 +45,17 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
 
   @override
   void dispose() {
-    _controller?.dispose();
+    if (widget.controller == null) _controller?.dispose();
     _address.dispose();
     _token.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final given = widget.controller?.value;
+    if (given is HaImportAsk) _address.text = given.address;
   }
 
   HaImportController _make(String host) {
@@ -83,6 +99,34 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
     );
   }
 
+  HaImportController _own(String host) =>
+      _make('$host:8123')..addListener(_track);
+
+  /// The `ha_import` event for each step that counts: counts only.
+  void _track() {
+    final event = switch (_controller?.value) {
+      HaImportAsk(:final problem?)
+          when problem != HaImportProblem.noAddress &&
+              problem != HaImportProblem.noToken =>
+        HaImportEvent(HaImportStep.failed, error: problem),
+      HaImportPreview(:final plan, skip: final s) when s.isEmpty =>
+        HaImportEvent(
+          HaImportStep.preview,
+          devices: plan.matched,
+          rooms: plan.rooms,
+          zhaOnly: plan.zhaOnly,
+        ),
+      HaImportDone(:final result) => HaImportEvent(
+        HaImportStep.imported,
+        renamed: result.renamed,
+        dashboards: result.dashboardIds.length,
+        devices: result.tiles,
+      ),
+      _ => null,
+    };
+    if (event != null) ref.read(analyticsProvider).track(event);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -97,7 +141,7 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-    final controller = _controller ??= _make('${home.host}:8123');
+    final controller = _controller ??= widget.controller ?? _own(home.host);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.haImportTitle)),
       body: Center(
@@ -170,7 +214,7 @@ class _Ask extends StatelessWidget {
           decoration: InputDecoration(
             labelText: l10n.haImportAddress,
             helperText: l10n.haImportAddressHelp,
-            helperMaxLines: 2,
+            helperMaxLines: 5,
             errorText: problem == HaImportProblem.noAddress
                 ? l10n.haImportNoAddress
                 : null,
@@ -187,7 +231,7 @@ class _Ask extends StatelessWidget {
           decoration: InputDecoration(
             labelText: l10n.haImportToken,
             helperText: l10n.haImportTokenHelp,
-            helperMaxLines: 4,
+            helperMaxLines: 12,
             errorText: problem == HaImportProblem.noToken
                 ? l10n.haImportNoToken
                 : null,

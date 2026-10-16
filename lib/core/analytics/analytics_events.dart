@@ -449,6 +449,51 @@ class HistorySetup extends AnalyticsEvent {
   Map<String, String> get props => {'result': _snake(result.name)};
 }
 
+/// A step of the import from Home Assistant (2.8): the offer after setup
+/// answered, a read that failed (with why), the preview, or the import
+/// done. Counts only, in buckets; never an address, a name or the token.
+enum HaImportStep { offerAccepted, offerDeclined, failed, preview, imported }
+
+class HaImportEvent extends AnalyticsEvent {
+  const HaImportEvent(
+    this.step, {
+    this.error,
+    this.devices,
+    this.rooms,
+    this.renamed,
+    this.dashboards,
+    this.zhaOnly,
+  });
+
+  final HaImportStep step;
+
+  /// Why the read failed (an `HaImportProblem`), on [HaImportStep.failed].
+  final Enum? error;
+  final int? devices;
+  final int? rooms;
+  final int? renamed;
+  final int? dashboards;
+  final bool? zhaOnly;
+
+  @override
+  String get name => 'ha_import';
+
+  @override
+  Map<String, String> get props {
+    String count(int n) =>
+        bucket(n, const [0], ranges: const [(1, 5), (6, 20)], top: '21+');
+    return {
+      'step': _snake(step.name),
+      if (error != null) 'error': _snake(error!.name),
+      if (devices != null) 'devices': count(devices!),
+      if (rooms != null) 'rooms': count(rooms!),
+      if (renamed != null) 'renamed': count(renamed!),
+      if (dashboards != null) 'dashboards': count(dashboards!),
+      if (zhaOnly != null) 'zha_only': zhaOnly! ? 'yes' : 'no',
+    };
+  }
+}
+
 /// A step of ZigDash Pro in the Play build (2.7): a locked view was shown,
 /// Unlock was tapped, or Play reported Pro unlocked afterwards. Nothing
 /// about the payment.
