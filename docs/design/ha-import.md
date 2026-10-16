@@ -128,7 +128,8 @@ most new users, where ZigDash is losing them now.
   user types; `https://` and Nabu Casa links work the same way. A
   self-signed certificate needs an explicit "trust this certificate" step.
 - **Matching:** device `identifiers` contains `["mqtt",
-  "zigbee2mqtt_<ieee>"]`. Skip `zigbee2mqtt_bridge_…` (the coordinator) and
+  "zigbee2mqtt_<ieee>"]`, and the IEEE is in Zigbee2MQTT's `bridge/devices`
+  (Home Assistant keeps removed devices). Skip `zigbee2mqtt_bridge_…` (the coordinator) and
   group identifiers (`zigbee2mqtt_<char codes>_<id>`, model `Group`). Child
   devices (`parent_device_id` set, Home Assistant 2026.9+) are skipped.
 - **Names:** device `name_by_user ?? name`. The import never uses entity
@@ -171,6 +172,32 @@ From Home Assistant core `dev` (2026.10.1 released) and Zigbee2MQTT
   Assistant stores it as `("mqtt", …)`. It does not depend on base topic or
   discovery topic. No `connections` are sent.
 - Registries come as one large JSON frame; big homes mean megabytes.
+
+## Checked on a real Home Assistant (2026-10-16)
+
+The user's Home Assistant 2026.1.1 on the Pi (Docker, Zigbee2MQTT through
+MQTT, admin user), read through its own logged-in page:
+
+- Zigbee2MQTT devices are `["mqtt","zigbee2mqtt_<ieee>"]` as researched;
+  the bridge is `zigbee2mqtt_bridge_<ieee>`. `model` holds the description
+  ("Motion sensor"), `model_id` the model (`ZG-204Z`). `connections` is
+  empty. This version still sends `config_entries` (a list), not
+  `config_entry_id`.
+- **Home Assistant keeps devices Zigbee2MQTT no longer has.** A shutter
+  removed from Zigbee2MQTT months ago is still in Home Assistant's registry
+  with its old name. The import must take only devices that are in
+  Zigbee2MQTT's own `bridge/devices` and ignore the rest (not count them as
+  "left out", which would confuse).
+- Floors work on 2026.1.1 (`config/floor_registry/list`).
+- Area IDs are slugs of the first name, also for Hebrew names
+  (`khdr_hvrym` for "חדר הורים"); show the area's `name`, never its ID.
+
+**Test data set up, with the user's agreement** (to undo after testing):
+floor "Ground floor" (`ground_floor`) holding Living Room and Kitchen;
+`0xa4c13836276df66f` named "Living room motion" in Living Room;
+`0xa4c13828d7b8e8a1` "Kitchen motion" in Kitchen; `0xa4c13863521bcd41`
+"Bedroom motion" with no device area and all eight of its entities in
+Bedroom (the entity-override case).
 
 ## Testing
 
