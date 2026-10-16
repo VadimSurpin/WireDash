@@ -4,11 +4,11 @@ Replaces `posts.md` §5, which still says "no analytics" (wrong since ADR 0007: 
 
 Where SMHUB owners are, and why this order: SMLIGHT has no user forum and its Discord invite is dead. One share from SMLIGHT (blog, Telegram channel with ~1,900 subscribers, docs) reaches more owners than any forum reply, so email first, then two Home Assistant forum replies.
 
-**Check before sending:** the lines in [brackets] are facts or choices only you can confirm. The forum replies are rough notes. The HA forum bans AI-written posts, so rewrite them in your own words.
+**Email sent 2026-10-16** from tamamg@gmail.com, as below. The forum replies are rough notes: the HA forum bans AI-written posts, so rewrite them in your own words.
 
 ---
 
-## 1. Email to SMLIGHT
+## 1. Email to SMLIGHT (sent)
 
 To: hello@smlight.tech
 
@@ -16,7 +16,7 @@ To: hello@smlight.tech
 
 > Hello SMLIGHT team,
 >
-> I'm Gilad, an SMHUB Nano MG24 owner [two of them at home] and the author of ZigDash, a free, open-source (MIT) Android app that controls Zigbee2MQTT directly over MQTT. I built it around the SMHUB: the hub already runs Zigbee2MQTT, Mosquitto and Node-RED, so a phone app that talks straight to it covers a whole home with no server or Home Assistant needed.
+> I'm Gilad, an SMHUB Nano MG24 owner (two of them at home) and the author of ZigDash, a free, open-source (MIT) Android app that controls Zigbee2MQTT directly over MQTT. I built it around the SMHUB: the hub already runs Zigbee2MQTT, Mosquitto and Node-RED, so a phone app that talks straight to it covers a whole home with no server or Home Assistant needed.
 >
 > What it does for SMHUB owners:
 >
@@ -27,18 +27,16 @@ To: hello@smlight.tech
 > - **A wall-tablet kiosk mode.**
 > - **Remote access** over Tailscale, which runs on the hub.
 >
-> It has no ads and no account, and it's in 11 languages. It collects anonymous usage data that users can turn off; nothing about the home leaves the phone. [The core app stays free; an optional one-time supporter unlock for extra wall-tablet features is planned.]
+> It has no ads and no account, and it's in 11 languages. It collects anonymous usage data that users can turn off; nothing about the home leaves the phone.
 >
 > Would you consider either of these?
 >
 > 1. **A mention** of ZigDash as a phone app for SMHUB in your docs, knowledge base or Telegram channel.
 > 2. **A short post for your blog**, like Mike Almeloo's remote-Zigbee post: how I run a home on an SMHUB with ZigDash, with screenshots. I'm happy to write it.
 >
-> And if there's anything you'd like changed or added for SMHUB users, I'm glad to do it. I'm already using your hardware daily [and found and worked around the EmberZNet 7.4.2 timeouts under bursts of reads before updating to 8.0.2].
+> And if there's anything you'd like changed or added for SMHUB users, I'm glad to do it. I'm already using your hardware daily, and found and worked around the EmberZNet 7.4.2 timeouts under bursts of reads before updating to 8.0.2.
 >
 > Play: https://play.google.com/store/apps/details?id=com.giladtamam.zigdash
-> Source: https://github.com/giladtamam/zigdash
-> Community: https://t.me/zigdash_app
 >
 > Best regards,
 > Gilad Tamam

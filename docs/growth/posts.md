@@ -131,6 +131,8 @@ Thread: https://community.home-assistant.io/t/android-app-zigdash-free-open-sour
 
 ## 5. SMLIGHT — email asking for a mention
 
+> **Superseded 2026-10-16** by `smlight-posts.md` (the text below still says "no analytics", wrong since ADR 0007).
+
 To: SMLIGHT support / community contact (find the current address on
 https://smlight.tech; the community forum or Telegram admin also works).
 
