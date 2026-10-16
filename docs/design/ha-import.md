@@ -211,6 +211,12 @@ Living Room; Other rooms: Bedroom from its entities; stale shutter left
 out). Import: 3 tiles renamed on the setup dashboard, which stayed first,
 and 2 dashboards added after it, with live readings.
 
+**Sign-in verified on the phone (2026-10-16, 13:29):** Home Assistant
+2026.1.1 accepted `https://giladtamam.github.io/zigdash/ha/` as client_id
+with `zigdash://auth` declared on that page; the user signed in on Home
+Assistant's own page, the preview came back, and afterwards Home
+Assistant's refresh-token list had no entry for that client (revoked).
+
 ## Testing
 
 - Unit: matching, name and area rules, ZHA detection and the preview counts,
