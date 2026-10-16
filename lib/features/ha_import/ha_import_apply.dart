@@ -56,7 +56,7 @@ class HaImportApplier {
     required String otherRoomsName,
     required String noRoomName,
     String base = 'zigbee2mqtt',
-    Set<String> skipRooms = const {},
+    Set<String?> skipRooms = const {},
   }) async {
     final renamed = await _rename(connectionId, plan, base);
     if (!makeDashboards) {
