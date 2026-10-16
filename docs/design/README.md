@@ -81,6 +81,7 @@ People who find the listing install the app, but few come back. The redesign is 
 | Release 1.12 Dashboard build spec | [dashboard-1.12.md](dashboard-1.12.md) |
 | Release 1.13 Devices and tablet build spec | [devices-tablet-1.13.md](devices-tablet-1.13.md) |
 | Release 2.0 Signal build spec | [signal-2.0.md](signal-2.0.md) |
+| Import from Home Assistant (names, rooms), design with open questions | [ha-import.md](ha-import.md) |
 | Research: Zigbee2MQTT health data (availability, battery, link quality) | [research/z2m-health-data.md](research/z2m-health-data.md) |
 | Research: classifying Zigbee2MQTT devices | [research/device-classes.md](research/device-classes.md) |
 | Phases, guardrails, store and community plan | [phasing.md](phasing.md) |
