@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:zigdash/features/ha_import/ha_auth.dart';
 import 'package:zigdash/features/ha_import/ha_client.dart';
 import 'package:zigdash/features/ha_import/ha_import_apply.dart';
 import 'package:zigdash/features/ha_import/ha_import_controller.dart';
@@ -114,5 +115,63 @@ void main() {
     expect((c.value as HaImportPreview).empty, isTrue);
     await c.apply();
     expect(writes, isEmpty);
+  });
+
+  group('signing in at Home Assistant\'s login page', () {
+    HaImportController signingIn(HaSignInResult result, List<String> revoked) {
+      reads = [];
+      writes = [];
+      return HaImportController(
+        address: '192.168.68.52',
+        reader: (base, token) async {
+          reads.add((base, token));
+          return (registry: _registry, error: null);
+        },
+        devices: () async => [_sensor],
+        writer: (plan, {required makeDashboards, required skipRooms}) async =>
+            const HaImportResult(renamed: 0, dashboardIds: [], tiles: 0),
+        signIn: (_) async => result,
+        revoke: (_, refresh) async => revoked.add(refresh),
+      );
+    }
+
+    test('reads with the signed-in token, then signs out', () async {
+      final revoked = <String>[];
+      final c = signingIn((
+        accessToken: 'access',
+        refreshToken: 'refresh',
+        error: null,
+      ), revoked);
+      expect(c.canSignIn, isTrue);
+      await c.signInAndRead('192.168.68.52');
+      expect(reads.single.$2, 'access');
+      expect(c.value, isA<HaImportPreview>());
+      expect(revoked, ['refresh']);
+    });
+
+    test('closing the login quietly returns to the first step', () async {
+      final c = signingIn((
+        accessToken: null,
+        refreshToken: null,
+        error: HaSignInError.cancelled,
+      ), []);
+      await c.signInAndRead('192.168.68.52');
+      expect((c.value as HaImportAsk).problem, isNull);
+      expect(reads, isEmpty);
+    });
+
+    test('a refused sign-in points to the token', () async {
+      final c = signingIn((
+        accessToken: null,
+        refreshToken: null,
+        error: HaSignInError.refused,
+      ), []);
+      await c.signInAndRead('192.168.68.52');
+      expect((c.value as HaImportAsk).problem, HaImportProblem.signInRefused);
+    });
+
+    test('without a sign-in, only the token way exists', () {
+      expect(controller().canSignIn, isFalse);
+    });
   });
 }

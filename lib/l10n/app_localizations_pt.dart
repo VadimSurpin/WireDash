@@ -3375,4 +3375,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'Importar';
+
+  @override
+  String get haImportSignIn => 'Iniciar sessão com o Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'O início de sessão do Home Assistant abre no seu navegador. O ZigDash nunca vê a sua senha e termina a sessão depois de ler.';
+
+  @override
+  String get haImportOrToken => 'Ou use um token de acesso de longa duração';
+
+  @override
+  String get haImportReadToken => 'Ler com token';
+
+  @override
+  String get haImportSignInRefused =>
+      'O Home Assistant não aceitou o início de sessão. Isto acontece quando o Home Assistant não tem acesso à internet. Use antes um token de acesso de longa duração abaixo.';
 }

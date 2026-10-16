@@ -1194,5 +1194,10 @@
   "haImportOfferTitle": "Bring your names and rooms from Home Assistant?",
   "haImportOfferBody": "Home Assistant is on your network. ZigDash can name your tiles and add a dashboard per floor and room, the way you set them up there.",
   "haImportOfferLater": "Not now",
-  "haImportOfferGo": "Import"
+  "haImportOfferGo": "Import",
+  "haImportSignIn": "Sign in with Home Assistant",
+  "haImportSignInHelp": "Home Assistant's own login opens in your browser. ZigDash never sees your password and signs out again after reading.",
+  "haImportOrToken": "Or use a long-lived token",
+  "haImportReadToken": "Read with token",
+  "haImportSignInRefused": "Home Assistant didn't accept the sign-in. This happens when Home Assistant has no internet access. Use a long-lived token below instead."
 }

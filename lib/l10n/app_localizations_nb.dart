@@ -3360,4 +3360,21 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'Importer';
+
+  @override
+  String get haImportSignIn => 'Logg inn med Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'Innloggingen til Home Assistant åpnes i nettleseren. ZigDash ser aldri passordet ditt og logger ut igjen etter lesingen.';
+
+  @override
+  String get haImportOrToken => 'Eller bruk et langvarig tilgangstoken';
+
+  @override
+  String get haImportReadToken => 'Les med token';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant godtok ikke innloggingen. Det skjer når Home Assistant ikke har internettilgang. Bruk et langvarig tilgangstoken nedenfor i stedet.';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../discovery/models/z2m_device.dart';
+import 'ha_auth.dart';
 import 'ha_client.dart';
 import 'ha_import_apply.dart';
 import 'ha_registry.dart';
@@ -11,6 +12,12 @@ typedef HaReader = Future<HaReadResult> Function(Uri base, String token);
 /// The Zigbee2MQTT devices the home has now, or null when the home is not
 /// connected.
 typedef Z2mDevicesLoader = Future<List<Z2mDevice>?> Function();
+
+/// Signs in at Home Assistant's login page; see [signInToHa].
+typedef HaSignIn = Future<HaSignInResult> Function(Uri base);
+
+/// Ends a sign-in; see [revokeHaSignIn].
+typedef HaRevoke = Future<void> Function(Uri base, String refreshToken);
 
 /// Writes a plan into the home.
 typedef HaImportWriter =
@@ -32,6 +39,10 @@ enum HaImportProblem {
 
   /// The home is not connected, so ZigDash cannot see its devices.
   noDevices,
+
+  /// Home Assistant did not accept the sign-in (often: no internet to read
+  /// ZigDash's page). The token is the way then.
+  signInRefused,
 }
 
 sealed class HaImportState {
@@ -85,16 +96,57 @@ class HaImportController extends ValueNotifier<HaImportState> {
     required HaReader reader,
     required Z2mDevicesLoader devices,
     required HaImportWriter writer,
+    HaSignIn? signIn,
+    HaRevoke? revoke,
   }) : _reader = reader,
        _devices = devices,
        _writer = writer,
+       _signIn = signIn,
+       _revoke = revoke,
        _address = address,
        super(HaImportAsk(address: address));
 
   final HaReader _reader;
   final Z2mDevicesLoader _devices;
   final HaImportWriter _writer;
+  final HaSignIn? _signIn;
+  final HaRevoke? _revoke;
   String _address;
+
+  /// Whether this build can sign in at Home Assistant's login page.
+  bool get canSignIn => _signIn != null;
+
+  /// Signs in at Home Assistant's own login page, reads once, then ends the
+  /// sign-in (Q1, Q2). The tokens never reach a state.
+  Future<void> signInAndRead(String address) async {
+    _address = address.trim();
+    final base = haBaseUri(_address);
+    final signIn = _signIn;
+    if (base == null) return _ask(HaImportProblem.noAddress);
+    if (signIn == null) return;
+    final z2m = await _devices();
+    if (z2m == null) return _ask(HaImportProblem.noDevices);
+    final signed = await signIn(base);
+    final access = signed.accessToken;
+    if (access == null) {
+      return switch (signed.error) {
+        HaSignInError.cancelled || null => back(),
+        HaSignInError.refused => _ask(HaImportProblem.signInRefused),
+        HaSignInError.failed => _ask(HaImportProblem.failed),
+      };
+    }
+    value = const HaImportReading();
+    try {
+      await _readWith(base, access, z2m);
+    } finally {
+      final refresh = signed.refreshToken;
+      if (refresh != null) {
+        try {
+          await _revoke?.call(base, refresh);
+        } catch (_) {}
+      }
+    }
+  }
 
   Future<void> read(String address, String token) async {
     _address = address.trim();
@@ -104,7 +156,11 @@ class HaImportController extends ValueNotifier<HaImportState> {
     value = const HaImportReading();
     final z2m = await _devices();
     if (z2m == null) return _ask(HaImportProblem.noDevices);
-    final read = await _reader(base, token.trim());
+    await _readWith(base, token.trim(), z2m);
+  }
+
+  Future<void> _readWith(Uri base, String token, List<Z2mDevice> z2m) async {
+    final read = await _reader(base, token);
     final registry = read.registry;
     if (registry == null) {
       return _ask(switch (read.error) {

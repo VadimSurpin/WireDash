@@ -3363,4 +3363,21 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'Импортировать';
+
+  @override
+  String get haImportSignIn => 'Войти через Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'Вход Home Assistant откроется в браузере. ZigDash не видит ваш пароль и выходит из системы после чтения.';
+
+  @override
+  String get haImportOrToken => 'Или использовать долгосрочный токен доступа';
+
+  @override
+  String get haImportReadToken => 'Прочитать с токеном';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant не принял вход. Так бывает, когда у Home Assistant нет доступа в интернет. Используйте ниже долгосрочный токен доступа.';
 }

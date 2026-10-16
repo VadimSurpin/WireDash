@@ -1065,5 +1065,10 @@
   "haImportOfferTitle": "Namen und Räume aus Home Assistant übernehmen?",
   "haImportOfferBody": "Home Assistant ist in deinem Netzwerk. ZigDash kann deine Kacheln benennen und ein Dashboard pro Etage und Raum anlegen, so wie du sie dort eingerichtet hast.",
   "haImportOfferLater": "Nicht jetzt",
-  "haImportOfferGo": "Importieren"
+  "haImportOfferGo": "Importieren",
+  "haImportSignIn": "Mit Home Assistant anmelden",
+  "haImportSignInHelp": "Die Anmeldung von Home Assistant öffnet sich in deinem Browser. ZigDash sieht dein Passwort nie und meldet sich nach dem Lesen wieder ab.",
+  "haImportOrToken": "Oder ein langlebiges Zugriffstoken nutzen",
+  "haImportReadToken": "Mit Token lesen",
+  "haImportSignInRefused": "Home Assistant hat die Anmeldung nicht angenommen. Das passiert, wenn Home Assistant keinen Internetzugang hat. Nutze stattdessen unten ein langlebiges Zugriffstoken."
 }

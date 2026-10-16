@@ -1065,5 +1065,10 @@
   "haImportOfferTitle": "Namen en ruimtes uit Home Assistant overnemen?",
   "haImportOfferBody": "Home Assistant staat op je netwerk. ZigDash kan je tegels een naam geven en een dashboard per verdieping en ruimte toevoegen, zoals je ze daar hebt ingesteld.",
   "haImportOfferLater": "Niet nu",
-  "haImportOfferGo": "Importeren"
+  "haImportOfferGo": "Importeren",
+  "haImportSignIn": "Inloggen met Home Assistant",
+  "haImportSignInHelp": "De login van Home Assistant opent in je browser. ZigDash ziet je wachtwoord nooit en logt na het lezen weer uit.",
+  "haImportOrToken": "Of gebruik een langlevend toegangstoken",
+  "haImportReadToken": "Lezen met token",
+  "haImportSignInRefused": "Home Assistant accepteerde de login niet. Dat gebeurt als Home Assistant geen internettoegang heeft. Gebruik hieronder een langlevend toegangstoken."
 }

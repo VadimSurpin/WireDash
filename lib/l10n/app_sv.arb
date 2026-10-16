@@ -1065,5 +1065,10 @@
   "haImportOfferTitle": "Hämta namn och rum från Home Assistant?",
   "haImportOfferBody": "Home Assistant finns på ditt nätverk. ZigDash kan namnge dina rutor och lägga till en dashboard per våning och rum, så som du har satt upp dem där.",
   "haImportOfferLater": "Inte nu",
-  "haImportOfferGo": "Importera"
+  "haImportOfferGo": "Importera",
+  "haImportSignIn": "Logga in med Home Assistant",
+  "haImportSignInHelp": "Home Assistants egen inloggning öppnas i webbläsaren. ZigDash ser aldrig ditt lösenord och loggar ut igen efter läsningen.",
+  "haImportOrToken": "Eller använd en långlivad åtkomsttoken",
+  "haImportReadToken": "Läs med token",
+  "haImportSignInRefused": "Home Assistant godtog inte inloggningen. Det händer när Home Assistant saknar internetåtkomst. Använd en långlivad åtkomsttoken nedan i stället."
 }

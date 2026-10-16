@@ -79,16 +79,38 @@ final _plan = ImportPlan(
   zhaDevices: 0,
 );
 
-HaImportController _in(HaImportState state) => HaImportController(
-  address: '192.168.68.52:8123',
-  reader: (_, _) async => (registry: null, error: null),
-  devices: () async => const [],
-  writer: (_, {required makeDashboards, required skipRooms}) async =>
-      const HaImportResult(renamed: 0, dashboardIds: [], tiles: 0),
-)..value = state;
+HaImportController _in(HaImportState state, {bool signIn = false}) =>
+    HaImportController(
+      signIn: signIn
+          ? (_) async => (accessToken: null, refreshToken: null, error: null)
+          : null,
+      address: '192.168.68.52:8123',
+      reader: (_, _) async => (registry: null, error: null),
+      devices: () async => const [],
+      writer: (_, {required makeDashboards, required skipRooms}) async =>
+          const HaImportResult(renamed: 0, dashboardIds: [], tiles: 0),
+    )..value = state;
 
 void main() {
   group('ha import', () {
+    goldenTest(
+      'ha_import_sign_in',
+      fileName: 'ha_import_sign_in',
+      builder: () => goldenMatrix(
+        variants: phoneMatrix,
+        overrides: () => [
+          connectionsStreamProvider.overrideWith((ref) => Stream.value(_homes)),
+        ],
+        screen: () => HaImportScreen(
+          connectionId: 'c1',
+          controller: _in(
+            const HaImportAsk(address: '192.168.68.52:8123'),
+            signIn: true,
+          ),
+        ),
+      ),
+    );
+
     for (final (name, state) in [
       (
         'ha_import_refused',

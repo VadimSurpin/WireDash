@@ -1025,5 +1025,10 @@
   "haImportOfferTitle": "Trazer os nomes e as divisões do Home Assistant?",
   "haImportOfferBody": "O Home Assistant está na sua rede. O ZigDash pode dar nome aos mosaicos e adicionar um painel por piso e divisão, como os configurou lá.",
   "haImportOfferLater": "Agora não",
-  "haImportOfferGo": "Importar"
+  "haImportOfferGo": "Importar",
+  "haImportSignIn": "Iniciar sessão com o Home Assistant",
+  "haImportSignInHelp": "O início de sessão do Home Assistant abre no seu navegador. O ZigDash nunca vê a sua senha e termina a sessão depois de ler.",
+  "haImportOrToken": "Ou use um token de acesso de longa duração",
+  "haImportReadToken": "Ler com token",
+  "haImportSignInRefused": "O Home Assistant não aceitou o início de sessão. Isto acontece quando o Home Assistant não tem acesso à internet. Use antes um token de acesso de longa duração abaixo."
 }

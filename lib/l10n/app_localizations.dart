@@ -6001,6 +6001,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import'**
   String get haImportOfferGo;
+
+  /// No description provided for @haImportSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Home Assistant'**
+  String get haImportSignIn;
+
+  /// No description provided for @haImportSignInHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant\'s own login opens in your browser. ZigDash never sees your password and signs out again after reading.'**
+  String get haImportSignInHelp;
+
+  /// No description provided for @haImportOrToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Or use a long-lived token'**
+  String get haImportOrToken;
+
+  /// No description provided for @haImportReadToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Read with token'**
+  String get haImportReadToken;
+
+  /// No description provided for @haImportSignInRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant didn\'t accept the sign-in. This happens when Home Assistant has no internet access. Use a long-lived token below instead.'**
+  String get haImportSignInRefused;
 }
 
 class _AppLocalizationsDelegate

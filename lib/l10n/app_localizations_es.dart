@@ -3378,4 +3378,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'Importar';
+
+  @override
+  String get haImportSignIn => 'Iniciar sesión con Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'El inicio de sesión de Home Assistant se abre en tu navegador. ZigDash nunca ve tu contraseña y cierra la sesión después de leer.';
+
+  @override
+  String get haImportOrToken => 'O usa un token de acceso de larga duración';
+
+  @override
+  String get haImportReadToken => 'Leer con token';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant no aceptó el inicio de sesión. Pasa cuando Home Assistant no tiene acceso a internet. Usa un token de acceso de larga duración aquí debajo.';
 }

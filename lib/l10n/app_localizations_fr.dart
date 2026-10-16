@@ -3385,4 +3385,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'Importer';
+
+  @override
+  String get haImportSignIn => 'Se connecter avec Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'La connexion de Home Assistant s\'ouvre dans votre navigateur. ZigDash ne voit jamais votre mot de passe et se déconnecte après la lecture.';
+
+  @override
+  String get haImportOrToken => 'Ou utiliser un jeton d\'accès longue durée';
+
+  @override
+  String get haImportReadToken => 'Lire avec le jeton';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant n\'a pas accepté la connexion. Cela arrive quand Home Assistant n\'a pas accès à internet. Utilisez plutôt un jeton d\'accès longue durée ci-dessous.';
 }

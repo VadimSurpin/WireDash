@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/analytics/analytics.dart';
@@ -14,6 +15,7 @@ import '../../data/repositories/section_repo.dart';
 import '../../l10n/app_localizations.dart';
 import '../devices/devices_providers.dart';
 import '../discovery/providers/discovery_provider.dart';
+import 'ha_auth.dart';
 import 'ha_client.dart';
 import 'ha_import_apply.dart';
 import 'ha_import_controller.dart';
@@ -85,6 +87,14 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
           return null;
         }
       },
+      signIn: (base) => signInToHa(
+        base,
+        browser: (url) => FlutterWebAuth2.authenticate(
+          url: url.toString(),
+          callbackUrlScheme: haCallbackScheme,
+        ),
+      ),
+      revoke: revokeHaSignIn,
       writer: (plan, {required makeDashboards, required skipRooms}) =>
           applier.apply(
             connectionId: widget.connectionId,
@@ -155,6 +165,9 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
                 address: _address,
                 token: _token,
                 onRead: () => controller.read(_address.text, _token.text),
+                onSignIn: controller.canSignIn
+                    ? () => controller.signInAndRead(_address.text)
+                    : null,
               ),
               HaImportReading() || HaImportApplying() => _Busy(
                 text: state is HaImportReading
@@ -185,30 +198,50 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
   }
 }
 
-class _Ask extends StatelessWidget {
+class _Ask extends StatefulWidget {
   const _Ask({
     required this.state,
     required this.address,
     required this.token,
     required this.onRead,
+    this.onSignIn,
   });
   final HaImportAsk state;
   final TextEditingController address;
   final TextEditingController token;
   final VoidCallback onRead;
 
+  /// Null when this build cannot sign in at Home Assistant's login page:
+  /// the token is the only way then.
+  final VoidCallback? onSignIn;
+
+  @override
+  State<_Ask> createState() => _AskState();
+}
+
+class _AskState extends State<_Ask> {
+  var _tokenOpen = false;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final problem = state.problem;
+    final problem = widget.state.problem;
+    final signIn = widget.onSignIn;
+    // The token opens by itself when it is the way forward.
+    final tokenOpen =
+        _tokenOpen ||
+        signIn == null ||
+        problem == HaImportProblem.signInRefused ||
+        problem == HaImportProblem.badToken ||
+        problem == HaImportProblem.noToken;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(l10n.haImportIntro, style: theme.textTheme.bodyLarge),
         const SizedBox(height: 16),
         TextField(
-          controller: address,
+          controller: widget.address,
           keyboardType: TextInputType.url,
           autocorrect: false,
           decoration: InputDecoration(
@@ -219,24 +252,6 @@ class _Ask extends StatelessWidget {
                 ? l10n.haImportNoAddress
                 : null,
           ),
-        ),
-        const SizedBox(height: 16),
-        // Plain, not obscured: a pasted 180-character token has to be
-        // checkable, and it is handed to Home Assistant once.
-        TextField(
-          controller: token,
-          autocorrect: false,
-          enableSuggestions: false,
-          maxLines: 1,
-          decoration: InputDecoration(
-            labelText: l10n.haImportToken,
-            helperText: l10n.haImportTokenHelp,
-            helperMaxLines: 12,
-            errorText: problem == HaImportProblem.noToken
-                ? l10n.haImportNoToken
-                : null,
-          ),
-          onSubmitted: (_) => onRead(),
         ),
         if (problem != null &&
             problem != HaImportProblem.noAddress &&
@@ -249,8 +264,54 @@ class _Ask extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: 24),
-        FilledButton(onPressed: onRead, child: Text(l10n.haImportRead)),
+        if (signIn != null) ...[
+          const SizedBox(height: 24),
+          FilledButton.icon(
+            onPressed: signIn,
+            icon: const Icon(Icons.login),
+            label: Text(l10n.haImportSignIn),
+          ),
+          const SizedBox(height: 8),
+          Text(l10n.haImportSignInHelp, style: theme.textTheme.bodySmall),
+          if (!tokenOpen)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton(
+                onPressed: () => setState(() => _tokenOpen = true),
+                child: Text(l10n.haImportOrToken),
+              ),
+            ),
+        ],
+        if (tokenOpen) ...[
+          const SizedBox(height: 16),
+          // Plain, not obscured: a pasted 180-character token has to be
+          // checkable, and it is handed to Home Assistant once.
+          TextField(
+            controller: widget.token,
+            autocorrect: false,
+            enableSuggestions: false,
+            maxLines: 1,
+            decoration: InputDecoration(
+              labelText: l10n.haImportToken,
+              helperText: l10n.haImportTokenHelp,
+              helperMaxLines: 12,
+              errorText: problem == HaImportProblem.noToken
+                  ? l10n.haImportNoToken
+                  : null,
+            ),
+            onSubmitted: (_) => widget.onRead(),
+          ),
+          const SizedBox(height: 16),
+          signIn == null
+              ? FilledButton(
+                  onPressed: widget.onRead,
+                  child: Text(l10n.haImportRead),
+                )
+              : OutlinedButton(
+                  onPressed: widget.onRead,
+                  child: Text(l10n.haImportReadToken),
+                ),
+        ],
         const SizedBox(height: 16),
         Text(l10n.haImportAutomations, style: theme.textTheme.bodySmall),
       ],
@@ -267,6 +328,7 @@ String _problemText(AppLocalizations l10n, HaImportProblem p) => switch (p) {
   HaImportProblem.certificate => l10n.haImportCertificate,
   HaImportProblem.failed => l10n.haImportFailed,
   HaImportProblem.noDevices => l10n.haImportNoDevices,
+  HaImportProblem.signInRefused => l10n.haImportSignInRefused,
 };
 
 class _Busy extends StatelessWidget {

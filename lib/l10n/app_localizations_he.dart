@@ -3331,4 +3331,21 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'ייבוא';
+
+  @override
+  String get haImportSignIn => 'התחברות עם Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'מסך ההתחברות של Home Assistant נפתח בדפדפן. ‏ZigDash לא רואה את הסיסמה שלכם ומתנתק שוב אחרי הקריאה.';
+
+  @override
+  String get haImportOrToken => 'או להשתמש באסימון גישה ארוך טווח';
+
+  @override
+  String get haImportReadToken => 'קריאה עם אסימון';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant לא קיבל את ההתחברות. זה קורה כשאין ל-Home Assistant גישה לאינטרנט. השתמשו במקום זה באסימון גישה ארוך טווח למטה.';
 }

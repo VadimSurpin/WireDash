@@ -1065,5 +1065,10 @@
   "haImportOfferTitle": "¿Traer tus nombres y estancias de Home Assistant?",
   "haImportOfferBody": "Home Assistant está en tu red. ZigDash puede nombrar tus mosaicos y añadir un panel por planta y estancia, tal como los configuraste allí.",
   "haImportOfferLater": "Ahora no",
-  "haImportOfferGo": "Importar"
+  "haImportOfferGo": "Importar",
+  "haImportSignIn": "Iniciar sesión con Home Assistant",
+  "haImportSignInHelp": "El inicio de sesión de Home Assistant se abre en tu navegador. ZigDash nunca ve tu contraseña y cierra la sesión después de leer.",
+  "haImportOrToken": "O usa un token de acceso de larga duración",
+  "haImportReadToken": "Leer con token",
+  "haImportSignInRefused": "Home Assistant no aceptó el inicio de sesión. Pasa cuando Home Assistant no tiene acceso a internet. Usa un token de acceso de larga duración aquí debajo."
 }

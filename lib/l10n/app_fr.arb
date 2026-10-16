@@ -990,5 +990,10 @@
   "haImportOfferTitle": "Récupérer vos noms et pièces depuis Home Assistant ?",
   "haImportOfferBody": "Home Assistant est sur votre réseau. ZigDash peut nommer vos tuiles et ajouter un tableau de bord par étage et par pièce, comme vous les avez définis là-bas.",
   "haImportOfferLater": "Pas maintenant",
-  "haImportOfferGo": "Importer"
+  "haImportOfferGo": "Importer",
+  "haImportSignIn": "Se connecter avec Home Assistant",
+  "haImportSignInHelp": "La connexion de Home Assistant s'ouvre dans votre navigateur. ZigDash ne voit jamais votre mot de passe et se déconnecte après la lecture.",
+  "haImportOrToken": "Ou utiliser un jeton d'accès longue durée",
+  "haImportReadToken": "Lire avec le jeton",
+  "haImportSignInRefused": "Home Assistant n'a pas accepté la connexion. Cela arrive quand Home Assistant n'a pas accès à internet. Utilisez plutôt un jeton d'accès longue durée ci-dessous."
 }

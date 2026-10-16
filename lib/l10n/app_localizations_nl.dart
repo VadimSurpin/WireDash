@@ -3375,4 +3375,21 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get haImportOfferGo => 'Importeren';
+
+  @override
+  String get haImportSignIn => 'Inloggen met Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'De login van Home Assistant opent in je browser. ZigDash ziet je wachtwoord nooit en logt na het lezen weer uit.';
+
+  @override
+  String get haImportOrToken => 'Of gebruik een langlevend toegangstoken';
+
+  @override
+  String get haImportReadToken => 'Lezen met token';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant accepteerde de login niet. Dat gebeurt als Home Assistant geen internettoegang heeft. Gebruik hieronder een langlevend toegangstoken.';
 }

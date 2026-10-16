@@ -1134,5 +1134,10 @@
   "haImportOfferTitle": "להביא את השמות והחדרים מ-Home Assistant?",
   "haImportOfferBody": "Home Assistant נמצא ברשת שלכם. ‏ZigDash יכול לתת לאריחים את השמות ולהוסיף לוח לכל קומה וחדר, כמו שהגדרתם שם.",
   "haImportOfferLater": "לא עכשיו",
-  "haImportOfferGo": "ייבוא"
+  "haImportOfferGo": "ייבוא",
+  "haImportSignIn": "התחברות עם Home Assistant",
+  "haImportSignInHelp": "מסך ההתחברות של Home Assistant נפתח בדפדפן. ‏ZigDash לא רואה את הסיסמה שלכם ומתנתק שוב אחרי הקריאה.",
+  "haImportOrToken": "או להשתמש באסימון גישה ארוך טווח",
+  "haImportReadToken": "קריאה עם אסימון",
+  "haImportSignInRefused": "Home Assistant לא קיבל את ההתחברות. זה קורה כשאין ל-Home Assistant גישה לאינטרנט. השתמשו במקום זה באסימון גישה ארוך טווח למטה."
 }

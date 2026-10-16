@@ -1065,5 +1065,10 @@
   "haImportOfferTitle": "Hente navn og rom fra Home Assistant?",
   "haImportOfferBody": "Home Assistant er på nettverket ditt. ZigDash kan gi flisene navn og legge til et dashbord per etasje og rom, slik du har satt dem opp der.",
   "haImportOfferLater": "Ikke nå",
-  "haImportOfferGo": "Importer"
+  "haImportOfferGo": "Importer",
+  "haImportSignIn": "Logg inn med Home Assistant",
+  "haImportSignInHelp": "Innloggingen til Home Assistant åpnes i nettleseren. ZigDash ser aldri passordet ditt og logger ut igjen etter lesingen.",
+  "haImportOrToken": "Eller bruk et langvarig tilgangstoken",
+  "haImportReadToken": "Les med token",
+  "haImportSignInRefused": "Home Assistant godtok ikke innloggingen. Det skjer når Home Assistant ikke har internettilgang. Bruk et langvarig tilgangstoken nedenfor i stedet."
 }

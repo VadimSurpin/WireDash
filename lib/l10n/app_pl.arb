@@ -1060,5 +1060,10 @@
   "haImportOfferTitle": "Przenieść nazwy i pomieszczenia z Home Assistant?",
   "haImportOfferBody": "Home Assistant jest w twojej sieci. ZigDash może nazwać kafelki i dodać dashboard na każde piętro i pomieszczenie, tak jak je tam ustawiłeś.",
   "haImportOfferLater": "Nie teraz",
-  "haImportOfferGo": "Importuj"
+  "haImportOfferGo": "Importuj",
+  "haImportSignIn": "Zaloguj się przez Home Assistant",
+  "haImportSignInHelp": "Logowanie Home Assistant otworzy się w przeglądarce. ZigDash nigdy nie widzi twojego hasła i po odczycie wylogowuje się.",
+  "haImportOrToken": "Albo użyj tokena dostępu długoterminowego",
+  "haImportReadToken": "Odczytaj z tokenem",
+  "haImportSignInRefused": "Home Assistant nie przyjął logowania. Zdarza się to, gdy Home Assistant nie ma dostępu do internetu. Użyj poniżej tokena dostępu długoterminowego."
 }
