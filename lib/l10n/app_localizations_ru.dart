@@ -3380,4 +3380,18 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get haImportSignInRefused =>
       'Home Assistant не принял вход. Так бывает, когда у Home Assistant нет доступа в интернет. Используйте ниже долгосрочный токен доступа.';
+
+  @override
+  String get setupIsolatedHint =>
+      'Телефон почти ничего больше не видит в этой сети Wi-Fi. Возможно, он в гостевой сети или роутер изолирует устройства друг от друга (часто это называется изоляцией клиентов или AP). Подключитесь к основной сети Wi-Fi или отключите это и попробуйте снова.';
+
+  @override
+  String get setupAuthTrust =>
+      'Ваш логин остаётся на этом телефоне и передаётся только вашему брокеру. У ZigDash нет сервера и аккаунта, и любое MQTT-приложение входит так же. Безопаснее всего: отдельный пользователь MQTT только для ZigDash, которого можно удалить в любой момент.';
+
+  @override
+  String get setupAuthWhatKept => 'Что хранит ZigDash';
+
+  @override
+  String get setupAuthDemoFirst => 'Сначала попробовать демо';
 }

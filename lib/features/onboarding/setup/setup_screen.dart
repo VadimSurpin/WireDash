@@ -9,6 +9,7 @@ import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../connections/discovery/hub_probe.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
+import '../../settings/screens/settings_screen.dart' show privacyPolicyUrl;
 import '../../support/community.dart' show CommunityLink;
 import '../../support/get_help_screen.dart' show GetHelpLink;
 import '../first_run.dart';
@@ -90,6 +91,7 @@ class SetupScreen extends ConsumerWidget {
           SetupNeedsAuth() => _AuthPrompt(
             state: state,
             onSubmit: coordinator.submitCredentials,
+            onDemo: tryDemo,
           ),
           SetupFailed(kind: SetupErrorKind.notZigbee2Mqtt) => _NoZigbee2Mqtt(
             base: coordinator.base,
@@ -450,6 +452,15 @@ class _ScanEmpty extends StatelessWidget {
         if (state.network?.vpn ?? false) ...[
           const SizedBox(height: 12),
           _VpnHint(text: l10n.setupVpnHint),
+        ],
+        // 2.8.1: almost nothing answered on the whole network. A home with
+        // a hub has dozens of devices; a phone on a guest network, or kept
+        // apart by the router, sees only a few (two users on 2026-10-16).
+        if (!(state.network?.vpn ?? false) &&
+            hub == null &&
+            (state.tried?.aliveHosts ?? 99) <= 5) ...[
+          const SizedBox(height: 12),
+          _VpnHint(text: l10n.setupIsolatedHint),
         ],
         const SizedBox(height: 8),
         // Once Zigbee2MQTT has said where its broker is (2.7.2), its answer
@@ -855,9 +866,14 @@ class _Verifying extends StatelessWidget {
 }
 
 class _AuthPrompt extends StatefulWidget {
-  const _AuthPrompt({required this.state, required this.onSubmit});
+  const _AuthPrompt({
+    required this.state,
+    required this.onSubmit,
+    required this.onDemo,
+  });
   final SetupNeedsAuth state;
   final void Function(String username, String password) onSubmit;
+  final VoidCallback onDemo;
 
   @override
   State<_AuthPrompt> createState() => _AuthPromptState();
@@ -915,6 +931,10 @@ class _AuthPromptState extends State<_AuthPrompt> {
         ],
         const SizedBox(height: 12),
         _LoginHint(platform: widget.state.platform),
+        // 2.8.1: people stopped here without typing. Say where the login
+        // goes before asking for it.
+        const SizedBox(height: 12),
+        _LoginTrust(onDemo: widget.onDemo),
         const SizedBox(height: 16),
         // The broker refused anonymous access, so the username is not
         // optional here: the button waits for one (2.6.4; a user tapped it
@@ -953,6 +973,61 @@ class _AuthPromptState extends State<_AuthPrompt> {
         ),
         const CommunityLink(from: HelpFrom.setupError),
       ],
+    );
+  }
+}
+
+/// Why typing the MQTT login here is safe, with the policy and the demo
+/// for anyone who wants to look first (2.8.1).
+class _LoginTrust extends StatelessWidget {
+  const _LoginTrust({required this.onDemo});
+  final VoidCallback onDemo;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 12, 12, 4),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.lock_outline, size: 20, color: scheme.primary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.setupAuthTrust,
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+            ],
+          ),
+          Wrap(
+            spacing: 4,
+            children: [
+              TextButton(
+                onPressed: () => launchUrl(
+                  privacyPolicyUrl,
+                  mode: LaunchMode.externalApplication,
+                ),
+                child: Text(l10n.setupAuthWhatKept),
+              ),
+              TextButton(
+                onPressed: onDemo,
+                child: Text(l10n.setupAuthDemoFirst),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

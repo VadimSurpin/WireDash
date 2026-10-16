@@ -10,8 +10,10 @@ void main() {
   test('a Zigbee2MQTT state update after its /set command confirms it', () {
     final c = make();
     c.commandSent('zigbee2mqtt/lamp/set', t0);
-    expect(c.messageReceived('zigbee2mqtt/lamp', t0.add(const Duration(seconds: 1))),
-        isTrue);
+    expect(
+      c.messageReceived('zigbee2mqtt/lamp', t0.add(const Duration(seconds: 1))),
+      isTrue,
+    );
   });
 
   test('a state update without a command confirms nothing', () {
@@ -28,8 +30,12 @@ void main() {
     final c = make();
     c.commandSent('zigbee2mqtt/lamp/set', t0);
     expect(
-        c.messageReceived('zigbee2mqtt/lamp', t0.add(const Duration(seconds: 11))),
-        isFalse);
+      c.messageReceived(
+        'zigbee2mqtt/lamp',
+        t0.add(const Duration(seconds: 11)),
+      ),
+      isFalse,
+    );
   });
 
   test('a per-attribute Zigbee2MQTT command is confirmed by the device', () {
@@ -51,5 +57,15 @@ void main() {
     c.commandSent('zigbee2mqtt/lamp/set', t0);
     expect(c.messageReceived('zigbee2mqtt/lamp', t0), isTrue);
     expect(c.messageReceived('zigbee2mqtt/lamp', t0), isFalse);
+  });
+
+  // 2.8.1: live data counts as a good day; the bridge and commands do not.
+  test('isDeviceReport', () {
+    expect(isDeviceReport('zigbee2mqtt/Kitchen motion'), isTrue);
+    expect(isDeviceReport('home/zigbee/0xa4c13836276df66f'), isTrue);
+    expect(isDeviceReport('zigbee2mqtt/bridge/devices'), isFalse);
+    expect(isDeviceReport('zigbee2mqtt/lamp/set'), isFalse);
+    expect(isDeviceReport('zigbee2mqtt/lamp/availability'), isFalse);
+    expect(isDeviceReport('zigbee2mqtt'), isFalse);
   });
 }

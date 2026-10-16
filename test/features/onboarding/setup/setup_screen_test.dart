@@ -464,6 +464,37 @@ void main() {
     expect(find.textContaining('A VPN is on'), findsNothing);
   });
 
+  // 2.8.1: almost nothing answered on the network: a guest Wi-Fi or a
+  // router keeping devices apart. Said only then.
+  for (final (alive, shown) in [(3, true), (40, false)]) {
+    testWidgets(
+      '$alive devices answered: isolation hint ${shown ? 'shown' : 'not shown'}',
+      (tester) async {
+        await _pump(
+          tester,
+          run: (_, _) => ScanRun(
+            events: Stream.fromIterable([
+              ScanTriedEvent(
+                widened: true,
+                hostsTried: 1018,
+                aliveHosts: alive,
+              ),
+            ]),
+            addHub: (_) {},
+          ),
+        );
+        await tester.tap(find.text('Find my setup'));
+        await tester.pump();
+        await tester.pump();
+        await tester.pump();
+        expect(
+          find.textContaining('guest network'),
+          shown ? findsOneWidget : findsNothing,
+        );
+      },
+    );
+  }
+
   // 2.6.6: every address-field user tapped Check on an empty field first, so
   // Check waits for text, like the login button waits for a username.
   testWidgets('Check is disabled until an address is typed', (tester) async {
@@ -503,6 +534,26 @@ void main() {
     await tester.enterText(find.widgetWithText(TextField, 'Username'), 'mqtt');
     await tester.pump();
     expect(tester.widget<FilledButton>(button).onPressed, isNotNull);
+  });
+
+  // 2.8.1: people left the login step without typing. It says where the
+  // login goes, links the policy and offers the demo.
+  testWidgets('the login prompt says the login stays on the phone', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      scan: (_) => Stream.value(
+        const ProbeResult(host: '192.168.1.10', port: 1883, needsAuth: true),
+      ),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    expect(find.textContaining('stays on this phone'), findsOneWidget);
+    expect(find.text('What ZigDash keeps'), findsOneWidget);
+    expect(find.text('Try the demo first'), findsOneWidget);
   });
 
   testWidgets('no candidates shows tailored guidance and actions', (

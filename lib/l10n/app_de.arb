@@ -1070,5 +1070,9 @@
   "haImportSignInHelp": "Die Anmeldung von Home Assistant öffnet sich in deinem Browser. ZigDash sieht dein Passwort nie und meldet sich nach dem Lesen wieder ab.",
   "haImportOrToken": "Oder ein langlebiges Zugriffstoken nutzen",
   "haImportReadToken": "Mit Token lesen",
-  "haImportSignInRefused": "Home Assistant hat die Anmeldung nicht angenommen. Das passiert, wenn Home Assistant keinen Internetzugang hat. Nutze stattdessen unten ein langlebiges Zugriffstoken."
+  "haImportSignInRefused": "Home Assistant hat die Anmeldung nicht angenommen. Das passiert, wenn Home Assistant keinen Internetzugang hat. Nutze stattdessen unten ein langlebiges Zugriffstoken.",
+  "setupIsolatedHint": "Dein Handy sieht in diesem WLAN fast nichts anderes. Es ist vielleicht in einem Gastnetz, oder der Router hält Geräte voneinander getrennt (oft Client- oder AP-Isolation genannt). Verbinde dich mit deinem Haupt-WLAN oder schalte das aus und versuche es erneut.",
+  "setupAuthTrust": "Dein Login bleibt auf diesem Handy und geht nur an deinen eigenen Broker. ZigDash hat keinen Server und kein Konto, und jede MQTT-App meldet sich so an. Am sichersten: ein eigener MQTT-Benutzer nur für ZigDash, den du jederzeit entfernen kannst.",
+  "setupAuthWhatKept": "Was ZigDash speichert",
+  "setupAuthDemoFirst": "Erst die Demo ansehen"
 }

@@ -3402,4 +3402,18 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get haImportSignInRefused =>
       'Home Assistant n\'a pas accepté la connexion. Cela arrive quand Home Assistant n\'a pas accès à internet. Utilisez plutôt un jeton d\'accès longue durée ci-dessous.';
+
+  @override
+  String get setupIsolatedHint =>
+      'Votre téléphone ne voit presque rien d\'autre sur ce Wi-Fi. Il est peut-être sur un réseau invité, ou le routeur isole les appareils (souvent appelé isolation des clients ou de l\'AP). Rejoignez votre Wi-Fi principal ou désactivez cela, puis réessayez.';
+
+  @override
+  String get setupAuthTrust =>
+      'Votre identifiant reste sur ce téléphone et ne va qu\'à votre propre broker. ZigDash n\'a ni serveur ni compte, et toute app MQTT se connecte ainsi. Le plus sûr : un utilisateur MQTT dédié à ZigDash, que vous pouvez supprimer à tout moment.';
+
+  @override
+  String get setupAuthWhatKept => 'Ce que ZigDash garde';
+
+  @override
+  String get setupAuthDemoFirst => 'Essayer d\'abord la démo';
 }

@@ -1,0 +1,1 @@
+ZigDash 2.8.1: configuração mais amigável. Quando um broker pede login, o ZigDash agora diz claramente que ele fica no seu telefone e vai só para o seu próprio broker (sem servidor, sem conta), mostra o que guarda e deixa você experimentar a demo primeiro. Se o telefone quase não vê nada no Wi-Fi, ele avisa que pode estar numa rede de convidados ou isolado pelo roteador.
