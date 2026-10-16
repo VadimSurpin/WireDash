@@ -124,7 +124,10 @@ void main() {
       // We keep the parent type too so suggestPanel can match on "light"
       expect(light.exposes.any((e) => e.type == 'light'), isTrue);
       expect(light.exposes.any((e) => e.property == 'brightness'), isTrue);
-      expect(light.exposes.any((e) => e.property == 'state' && e.type == 'binary'), isTrue);
+      expect(
+        light.exposes.any((e) => e.property == 'state' && e.type == 'binary'),
+        isTrue,
+      );
     });
 
     test('parses top-level binary expose with valueOn', () {
@@ -168,6 +171,45 @@ void main() {
     test('empty array returns empty list', () {
       final devices = parseBridgeDevices('[]');
       expect(devices, isEmpty);
+    });
+  });
+
+  // 2.7.1: devices never named in Zigbee2MQTT.
+  group('displayName', () {
+    test('a named device keeps its name', () {
+      const d = Z2mDevice(
+        friendlyName: 'Bedroom',
+        type: 'EndDevice',
+        description: 'Motion sensor',
+        ieeeAddress: '0xa4c13836276df66f',
+      );
+      expect(d.displayName, 'Bedroom');
+    });
+
+    test('an unnamed device says what it is, with the last four digits', () {
+      final d = parseBridgeDevices('''[{
+        "friendly_name": "0xa4c13836276df66f",
+        "ieee_address": "0xa4c13836276df66f",
+        "type": "EndDevice",
+        "definition": {"model": "ZG-204Z", "vendor": "HOBEIAN",
+          "description": "Motion sensor", "exposes": []}
+      }]''').single;
+      expect(d.description, 'Motion sensor');
+      expect(d.displayName, 'Motion sensor f66f');
+    });
+
+    test('falls back to the model, then to the address', () {
+      const model = Z2mDevice(
+        friendlyName: '0xa4c13836276df66f',
+        type: 'EndDevice',
+        model: 'ZG-204Z',
+      );
+      expect(model.displayName, 'ZG-204Z f66f');
+      const bare = Z2mDevice(
+        friendlyName: '0xa4c13836276df66f',
+        type: 'EndDevice',
+      );
+      expect(bare.displayName, '0xa4c13836276df66f');
     });
   });
 }

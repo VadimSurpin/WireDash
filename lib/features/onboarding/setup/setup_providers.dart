@@ -11,6 +11,7 @@ import '../../settings/providers/settings_controller.dart';
 import '../../connections/diagnostics/connect_diagnostics_provider.dart';
 import '../../connections/discovery/address_checker.dart';
 import '../../connections/discovery/broker_scan_providers.dart';
+import '../../connections/discovery/hub_probe.dart';
 import '../../connections/discovery/network_info.dart';
 import '../../support/support_details.dart';
 import '../../support/support_log.dart';
@@ -47,6 +48,7 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
       return home?.ip;
     },
     networkFacts: () async => (kind: network, vpn: await vpnActive()),
+    identifyHub: (host) => identifyHost(scanner.hubProber, host),
     checkAddress: createAddressChecker(
       prober: scanner.prober,
       hubProber: scanner.hubProber,

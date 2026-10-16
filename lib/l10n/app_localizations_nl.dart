@@ -1474,6 +1474,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'De gebruikersnaam of het wachtwoord is geweigerd. Controleer ze en probeer het opnieuw.';
 
   @override
+  String get setupAuthRejectedZ2m =>
+      'Zigbee2MQTT logt al in op deze broker: de webpagina toont de gebruikersnaam onder Instellingen › MQTT. Gebruik die gebruiker en het wachtwoord.';
+
+  @override
   String get setupAuthWhich =>
       'Dit is de MQTT-login, niet het wachtwoord van de webpagina van je hub.';
 
@@ -1635,6 +1639,16 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get setupPlatformQuestion =>
       'Terwijl we zoeken: waar draait Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformQuestionDone => 'Waar draait Zigbee2MQTT?';
+
+  @override
+  String get setupScanDoneTitle => 'Kies een verbinding';
+
+  @override
+  String get setupScanDoneHint =>
+      'Meer dan één broker antwoordde. Kies degene die Zigbee2MQTT gebruikt.';
 
   @override
   String get setupPlatformHa => 'Home Assistant';

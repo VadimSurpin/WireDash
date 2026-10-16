@@ -8,13 +8,12 @@ Z2mDevice dev(
   String type = 'EndDevice',
   bool supported = true,
   List<Z2mExpose> exposes = const [],
-}) =>
-    Z2mDevice(
-      friendlyName: name,
-      type: type,
-      supported: supported,
-      exposes: exposes,
-    );
+}) => Z2mDevice(
+  friendlyName: name,
+  type: type,
+  supported: supported,
+  exposes: exposes,
+);
 
 void main() {
   group('recommendDevices', () {
@@ -38,8 +37,10 @@ void main() {
 
     test('meaningful binary sensor is recommended', () {
       final rows = recommendDevices([
-        dev('door',
-            exposes: const [Z2mExpose(type: 'binary', property: 'contact')]),
+        dev(
+          'door',
+          exposes: const [Z2mExpose(type: 'binary', property: 'contact')],
+        ),
       ]);
       expect(rows.single.group, ReviewGroup.recommended);
       expect(rows.single.selected, isTrue);
@@ -47,18 +48,52 @@ void main() {
 
     test('button-like enum device is recommended', () {
       final rows = recommendDevices([
-        dev('remote', exposes: const [
-          Z2mExpose(type: 'enum', property: 'action'),
-        ]),
+        dev(
+          'remote',
+          exposes: const [Z2mExpose(type: 'enum', property: 'action')],
+        ),
       ]);
       expect(rows.single.group, ReviewGroup.recommended);
       expect(rows.single.selected, isTrue);
     });
 
+    test('climate sensor (temperature, humidity) is recommended', () {
+      final rows = recommendDevices([
+        dev(
+          'bedroom',
+          exposes: const [
+            Z2mExpose(type: 'numeric', property: 'temperature'),
+            Z2mExpose(type: 'numeric', property: 'humidity'),
+            Z2mExpose(type: 'numeric', property: 'battery'),
+          ],
+        ),
+        dev(
+          'cellar',
+          exposes: const [Z2mExpose(type: 'numeric', property: 'humidity')],
+        ),
+      ]);
+      expect(rows.map((r) => r.group), everyElement(ReviewGroup.recommended));
+      expect(rows.every((r) => r.selected), isTrue);
+    });
+
+    test('device temperature alone is not a climate sensor', () {
+      final rows = recommendDevices([
+        dev(
+          'router',
+          exposes: const [
+            Z2mExpose(type: 'numeric', property: 'device_temperature'),
+          ],
+        ),
+      ]);
+      expect(rows.single.group, ReviewGroup.other);
+    });
+
     test('battery-only device goes to Other, unselected', () {
       final rows = recommendDevices([
-        dev('sensor',
-            exposes: const [Z2mExpose(type: 'numeric', property: 'battery')]),
+        dev(
+          'sensor',
+          exposes: const [Z2mExpose(type: 'numeric', property: 'battery')],
+        ),
       ]);
       expect(rows.single.group, ReviewGroup.other);
       expect(rows.single.selected, isFalse);
@@ -66,11 +101,11 @@ void main() {
 
     test('linkquality-only device goes to Other, unselected', () {
       final rows = recommendDevices([
-        dev('router',
-            type: 'Router',
-            exposes: const [
-              Z2mExpose(type: 'numeric', property: 'linkquality')
-            ]),
+        dev(
+          'router',
+          type: 'Router',
+          exposes: const [Z2mExpose(type: 'numeric', property: 'linkquality')],
+        ),
       ]);
       expect(rows.single.group, ReviewGroup.other);
       expect(rows.single.selected, isFalse);
@@ -85,13 +120,18 @@ void main() {
 
     test('recommended rows sort before other and unsupported', () {
       final rows = recommendDevices([
-        dev('b_battery',
-            exposes: const [Z2mExpose(type: 'numeric', property: 'battery')]),
+        dev(
+          'b_battery',
+          exposes: const [Z2mExpose(type: 'numeric', property: 'battery')],
+        ),
         dev('a_light', exposes: const [Z2mExpose(type: 'light')]),
         dev('c_unsupported', supported: false),
       ]);
-      expect(rows.map((r) => r.device.friendlyName),
-          ['a_light', 'b_battery', 'c_unsupported']);
+      expect(rows.map((r) => r.device.friendlyName), [
+        'a_light',
+        'b_battery',
+        'c_unsupported',
+      ]);
     });
 
     test('empty input yields empty list', () {

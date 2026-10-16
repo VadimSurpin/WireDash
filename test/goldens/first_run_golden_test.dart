@@ -66,7 +66,12 @@ final _review = SetupReview(
 
 final _outcomes = <String, SetupState>{
   'welcome': const SetupIdle(),
-  'several_found': const SetupScanning([_hub, _other], done: true),
+  // 2.7.1: the cards say what their machine is when the scan could tell.
+  'several_found': const SetupScanning(
+    [_hub, _other],
+    done: true,
+    kinds: {'192.168.68.55': HubKind.homeAssistant},
+  ),
   // 2.5: progress, the platform question and a hub seen while scanning.
   'scanning': const SetupScanning(
     [],
@@ -78,6 +83,12 @@ final _outcomes = <String, SetupState>{
   // 2.5: Home Assistant answered but no broker did.
   'hub_no_broker': const SetupScanEmpty(hubs: [_haHub]),
   'needs_login': const SetupNeedsAuth(_hub),
+  // 2.7.1: after a rejected login, where a working login surely is.
+  'login_rejected': const SetupNeedsAuth(
+    _hub,
+    rejected: true,
+    platform: SetupPlatform.homeAssistant,
+  ),
   'no_zigbee2mqtt': const SetupFailed(
     SetupErrorKind.notZigbee2Mqtt,
     candidate: _hub,

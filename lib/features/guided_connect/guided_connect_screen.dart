@@ -102,7 +102,17 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   Future<void> _start() async {
     // The form is only mounted in the form phase (retry runs from the failed
     // phase, where there is no form to validate).
-    if (_phase == _Phase.form && !_formKey.currentState!.validate()) return;
+    if (_phase == _Phase.form) {
+      setState(
+        () => tidyBrokerAddress(
+          host: _host,
+          port: _port,
+          protocol: _protocol,
+          onProtocol: (p) => _protocol = p,
+        ),
+      );
+      if (!_formKey.currentState!.validate()) return;
+    }
     final host = _host.text.trim();
     final port = int.parse(_port.text);
     final base = _base.text.trim();

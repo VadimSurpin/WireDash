@@ -2726,6 +2726,12 @@ abstract class AppLocalizations {
   /// **'The username or password was rejected. Check them and try again.'**
   String get setupAuthRejectedBody;
 
+  /// No description provided for @setupAuthRejectedZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT already logs in to this broker: its web page shows the username under Settings › MQTT. Use that user and its password.'**
+  String get setupAuthRejectedZ2m;
+
   /// Setup, login step: where the MQTT login comes from (setup-help-2.5.md).
   ///
   /// In en, this message translates to:
@@ -3007,6 +3013,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'While we look: where does Zigbee2MQTT run?'**
   String get setupPlatformQuestion;
+
+  /// No description provided for @setupPlatformQuestionDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Where does Zigbee2MQTT run?'**
+  String get setupPlatformQuestionDone;
+
+  /// No description provided for @setupScanDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a connection'**
+  String get setupScanDoneTitle;
+
+  /// No description provided for @setupScanDoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'More than one broker answered. Pick the one Zigbee2MQTT uses.'**
+  String get setupScanDoneHint;
 
   /// No description provided for @setupPlatformHa.
   ///

@@ -107,6 +107,7 @@ class _Harness {
     Future<void> Function(SetupResult result)? onCreated,
     String? ip = '192.168.1.5',
     AddressChecker? checkAddress,
+    HubIdentifier? identifyHub,
     NetworkFactsProvider? networkFacts,
   }) : diagnostics = _FakeDiagnostics(reports ?? [ok()]),
        creator = _FakeCreator() {
@@ -128,6 +129,7 @@ class _Harness {
       creator: creator,
       onCreated: onCreated,
       checkAddress: checkAddress,
+      identifyHub: identifyHub,
       networkFacts: networkFacts,
     );
   }
@@ -165,6 +167,48 @@ void main() {
       expect(scanning[2].candidates, hasLength(2));
       expect(h.coordinator.state, isA<SetupScanning>());
       expect((h.coordinator.state as SetupScanning).done, isTrue);
+    });
+
+    test('several brokers: each card learns what its machine is', () async {
+      final asked = <String>[];
+      final h = _Harness(
+        scan: (_) => Stream.fromIterable([
+          const ProbeResult(host: '192.168.1.10', port: 1883),
+          const ProbeResult(host: '192.168.1.11', port: 1883),
+          const ProbeResult(host: '192.168.1.12', port: 1883),
+        ]),
+        identifyHub: (host) async {
+          asked.add(host);
+          return switch (host) {
+            '192.168.1.10' => HubKind.homeAssistant,
+            '192.168.1.11' => HubKind.smlight,
+            _ => null,
+          };
+        },
+      );
+      await h.coordinator.startScan();
+      for (var i = 0; i < 5; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      final s = h.coordinator.state as SetupScanning;
+      expect(s.done, isTrue);
+      expect(
+        asked,
+        unorderedEquals(['192.168.1.10', '192.168.1.11', '192.168.1.12']),
+      );
+      expect(s.kinds, {
+        '192.168.1.10': HubKind.homeAssistant,
+        '192.168.1.11': HubKind.smlight,
+      });
+
+      // The answer survives the platform question...
+      h.coordinator.setPlatform(SetupPlatform.piOrDocker);
+      expect((h.coordinator.state as SetupScanning).kinds, hasLength(2));
+      h.coordinator.setPlatform(null);
+
+      // ...and picking the Home Assistant card answers it for the login hint.
+      await h.coordinator.selectCandidate(s.candidates.first);
+      expect(h.coordinator.platform, SetupPlatform.homeAssistant);
     });
 
     // First-run decision: one broker found → continue without a tap.

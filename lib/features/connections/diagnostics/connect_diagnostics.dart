@@ -213,6 +213,8 @@ class ConnectDiagnostics {
     // `$base/bridge/devices` list (every paired device, including silent ones
     // that never publish) and live `$base/#` state topics.
     final names = <String>{};
+    // Unnamed devices read "Motion sensor f66f", not their address (2.7.1).
+    final shown = <String, String>{};
     StreamSubscription<List<mc.MqttReceivedMessage<mc.MqttMessage>>>? sub;
     try {
       sub = client.updates?.listen((events) {
@@ -227,6 +229,7 @@ class ConnectDiagnostics {
                 mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message);
             for (final device in parseBridgeDevices(payload)) {
               if (device.friendlyName.isNotEmpty) names.add(device.friendlyName);
+              shown[device.friendlyName] = device.displayName;
             }
             continue;
           }
@@ -250,7 +253,7 @@ class ConnectDiagnostics {
       status: StepStatus.pass,
       deviceCount: names.length,
     ));
-    final sorted = names.toList()..sort();
+    final sorted = [for (final n in names) shown[n] ?? n]..sort();
     return DiagnosticsReport(
       steps: steps,
       connected: true,

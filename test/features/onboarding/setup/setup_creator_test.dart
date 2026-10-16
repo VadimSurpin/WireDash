@@ -215,7 +215,8 @@ void main() {
       final tiles = await PanelDao(db).getByDashboard(result.dashboardId);
       expect(tiles.map((p) => p.type), everyElement(PanelType.device));
       final byName = {for (final p in tiles) p.name: p};
-      final b = byName['0xc4d7fdbbfeba0000']!;
+      // Never named in Zigbee2MQTT: the tile says what it is (2.7.1).
+      final b = byName['CK-BL702-AL-01 0000']!;
       expect(b.sectionId, sections[0].id);
       expect(b.width, PanelWidth.wide);
       expect(b.deviceIeee, '0xc4d7fdbbfeba0000');

@@ -24,7 +24,8 @@ class ConnectionFormScreen extends ConsumerStatefulWidget {
   final String? connectionId;
 
   @override
-  ConsumerState<ConnectionFormScreen> createState() => _ConnectionFormScreenState();
+  ConsumerState<ConnectionFormScreen> createState() =>
+      _ConnectionFormScreenState();
 }
 
 class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
@@ -84,21 +85,35 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   Future<void> _findBrokers() async {
     final result = await BrokerScanSheet.show(context);
     if (result == null || !mounted) return;
-    setState(() => applyScanResult(
-          host: _host,
-          port: _port,
-          onProtocol: (p) => _protocol = p,
-          result: result,
-        ));
+    setState(
+      () => applyScanResult(
+        host: _host,
+        port: _port,
+        onProtocol: (p) => _protocol = p,
+        result: result,
+      ),
+    );
   }
 
+  void _tidyAddress() => setState(
+    () => tidyBrokerAddress(
+      host: _host,
+      port: _port,
+      protocol: _protocol,
+      onProtocol: (p) => _protocol = p,
+    ),
+  );
+
   Future<void> _save() async {
+    _tidyAddress();
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final repo = ref.read(connectionRepoProvider);
     final port = int.parse(_port.text);
     final keepAlive = int.parse(_keepAlive.text);
-    final passwordToWrite = _password.text.isEmpty && _isEdit ? null : _password.text;
+    final passwordToWrite = _password.text.isEmpty && _isEdit
+        ? null
+        : _password.text;
 
     try {
       if (_isEdit) {
@@ -108,11 +123,15 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
           host: _host.text.trim(),
           port: port,
           protocol: _protocol,
-          username: _username.text.trim().isEmpty ? null : _username.text.trim(),
+          username: _username.text.trim().isEmpty
+              ? null
+              : _username.text.trim(),
           password: passwordToWrite,
           keepAliveSeconds: keepAlive,
           autoConnect: _autoConnect,
-          remoteHost: _remoteHost.text.trim().isEmpty ? null : _remoteHost.text.trim(),
+          remoteHost: _remoteHost.text.trim().isEmpty
+              ? null
+              : _remoteHost.text.trim(),
         );
       } else {
         final id = await repo.create(
@@ -120,11 +139,15 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
           host: _host.text.trim(),
           port: port,
           protocol: _protocol,
-          username: _username.text.trim().isEmpty ? null : _username.text.trim(),
+          username: _username.text.trim().isEmpty
+              ? null
+              : _username.text.trim(),
           password: _password.text.isEmpty ? null : _password.text,
           keepAliveSeconds: keepAlive,
           autoConnect: _autoConnect,
-          remoteHost: _remoteHost.text.trim().isEmpty ? null : _remoteHost.text.trim(),
+          remoteHost: _remoteHost.text.trim().isEmpty
+              ? null
+              : _remoteHost.text.trim(),
         );
         // A new real home counts as completing setup: it ends first run and
         // removes the demo home. Bookkeeping failures must not block saving.
@@ -139,6 +162,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   }
 
   Future<void> _testConnection() async {
+    _tidyAddress();
     if (!_formKey.currentState!.validate()) return;
     setState(() => _testing = true);
 
@@ -149,12 +173,17 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       protocol: _protocol,
       username: _username.text.trim().isEmpty ? null : _username.text.trim(),
       keepAliveSeconds: int.parse(_keepAlive.text),
-      remoteHost: _remoteHost.text.trim().isEmpty ? null : _remoteHost.text.trim(),
+      remoteHost: _remoteHost.text.trim().isEmpty
+          ? null
+          : _remoteHost.text.trim(),
     );
     final diagnostics = ref.read(connectDiagnosticsProvider);
 
     try {
-      final report = await diagnostics.run(config: cfg, password: _password.text);
+      final report = await diagnostics.run(
+        config: cfg,
+        password: _password.text,
+      );
       if (!mounted) return;
       setState(() => _testing = false);
       _showLadderSheet(report);
@@ -260,8 +289,13 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
           children: [
             TextFormField(
               controller: _name,
-              decoration: InputDecoration(labelText: context.l10n.connName, hintText: context.l10n.connNameHint),
-              validator: (v) => v == null || v.trim().isEmpty ? context.l10n.fieldRequired : null,
+              decoration: InputDecoration(
+                labelText: context.l10n.connName,
+                hintText: context.l10n.connNameHint,
+              ),
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? context.l10n.fieldRequired
+                  : null,
             ),
             const SizedBox(height: 12),
             ProtocolDropdown(value: _protocol, onChanged: _onProtocolChanged),
@@ -272,8 +306,13 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                   flex: 3,
                   child: TextFormField(
                     controller: _host,
-                    decoration: InputDecoration(labelText: context.l10n.connLocalHost, hintText: context.l10n.connHostHint),
-                    validator: (v) => v == null || v.trim().isEmpty ? context.l10n.fieldRequired : null,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.connLocalHost,
+                      hintText: context.l10n.connHostHint,
+                    ),
+                    validator: (v) => v == null || v.trim().isEmpty
+                        ? context.l10n.fieldRequired
+                        : null,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -281,10 +320,14 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                   child: TextFormField(
                     controller: _port,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: context.l10n.connPort),
+                    decoration: InputDecoration(
+                      labelText: context.l10n.connPort,
+                    ),
                     validator: (v) {
                       final n = int.tryParse(v ?? '');
-                      if (n == null || n < 1 || n > 65535) return context.l10n.connPortRange;
+                      if (n == null || n < 1 || n > 65535) {
+                        return context.l10n.connPortRange;
+                      }
                       return null;
                     },
                   ),
@@ -308,7 +351,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
             const SizedBox(height: 12),
             TextFormField(
               controller: _username,
-              decoration: InputDecoration(labelText: context.l10n.connUsernameOptional),
+              decoration: InputDecoration(
+                labelText: context.l10n.connUsernameOptional,
+              ),
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -316,7 +361,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: context.l10n.connPasswordOptional,
-                hintText: _isEdit && _passwordExists ? context.l10n.connPasswordKeepHint : null,
+                hintText: _isEdit && _passwordExists
+                    ? context.l10n.connPasswordKeepHint
+                    : null,
               ),
             ),
             const SizedBox(height: 12),
@@ -354,10 +401,14 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                 TextFormField(
                   controller: _keepAlive,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: context.l10n.connKeepAlive),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.connKeepAlive,
+                  ),
                   validator: (v) {
                     final n = int.tryParse(v ?? '');
-                    if (n == null || n < 5 || n > 3600) return context.l10n.connKeepAliveRange;
+                    if (n == null || n < 5 || n > 3600) {
+                      return context.l10n.connKeepAliveRange;
+                    }
                     return null;
                   },
                 ),

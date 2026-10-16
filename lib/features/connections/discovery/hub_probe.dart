@@ -29,7 +29,9 @@ HubKind? hubKindOfPage(String body) {
     return HubKind.homeAssistant;
   }
   if (b.contains('zigbee2mqtt')) return HubKind.zigbee2mqtt;
-  if (b.contains('slzb') || b.contains('smlight')) return HubKind.smlight;
+  if (b.contains('slzb') || b.contains('smlight') || b.contains('smhub')) {
+    return HubKind.smlight;
+  }
   return null;
 }
 
@@ -60,6 +62,24 @@ class HubFound {
 /// answers or the page is not one we know. Implementations never throw.
 abstract class HubProber {
   Future<HubKind?> probe(String host, int port);
+}
+
+/// What one machine is, from its web pages (2.7.1): every hub port probed at
+/// once; Home Assistant wins over an SMLIGHT hub, which wins over a bare
+/// Zigbee2MQTT frontend (an SMHUB serves that too, on 8080). Null when no
+/// page is one we know.
+Future<HubKind?> identifyHost(HubProber prober, String host) async {
+  final kinds = await Future.wait([
+    for (final port in hubPorts.values) prober.probe(host, port),
+  ]);
+  for (final kind in const [
+    HubKind.homeAssistant,
+    HubKind.smlight,
+    HubKind.zigbee2mqtt,
+  ]) {
+    if (kinds.contains(kind)) return kind;
+  }
+  return null;
 }
 
 /// What a running scan reports.

@@ -34,20 +34,15 @@ class ReviewRow {
   bool get selectable => group != ReviewGroup.unsupported;
 
   ReviewRow copyWith({bool? selected}) => ReviewRow(
-        device: device,
-        suggestion: suggestion,
-        group: group,
-        selected: selected ?? this.selected,
-      );
+    device: device,
+    suggestion: suggestion,
+    group: group,
+    selected: selected ?? this.selected,
+  );
 }
 
 /// Panel types considered useful first-dashboard controls.
-const _recommendedTypes = {
-  'light',
-  'cover',
-  'switch',
-  'climate',
-};
+const _recommendedTypes = {'light', 'cover', 'switch', 'climate'};
 
 /// Binary properties that make a sensor "meaningful" (presence/safety).
 const _meaningfulBinary = {
@@ -61,23 +56,30 @@ const _meaningfulBinary = {
   'tamper',
 };
 
+/// Numeric readings that make a sensor worth a first-dashboard tile.
+const _meaningfulNumeric = {'temperature', 'humidity'};
+
 /// Builds the review rows from discovered devices: groups them, preselects
 /// the recommended ones, and orders recommended → other → unsupported
 /// (stable within a group).
 ///
 /// Pure policy: no I/O, no widgets — the UI renders and toggles the result.
-List<ReviewRow> recommendDevices(List<Z2mDevice> devices,
-    {String base = 'zigbee2mqtt'}) {
+List<ReviewRow> recommendDevices(
+  List<Z2mDevice> devices, {
+  String base = 'zigbee2mqtt',
+}) {
   final rows = <ReviewRow>[];
   for (final device in devices) {
     final suggestion = suggestPanel(device, base: base);
     final group = _groupFor(device);
-    rows.add(ReviewRow(
-      device: device,
-      suggestion: suggestion,
-      group: group,
-      selected: group == ReviewGroup.recommended,
-    ));
+    rows.add(
+      ReviewRow(
+        device: device,
+        suggestion: suggestion,
+        group: group,
+        selected: group == ReviewGroup.recommended,
+      ),
+    );
   }
   rows.sort((a, b) => a.group.index.compareTo(b.group.index));
   return rows;
@@ -94,10 +96,22 @@ ReviewGroup _groupFor(Z2mDevice device) {
     return ReviewGroup.recommended;
   }
   // Meaningful presence/safety sensors (not plain battery/linkquality).
-  if (e.any((x) =>
-      x.type == 'binary' &&
-      x.property != null &&
-      _meaningfulBinary.contains(x.property))) {
+  if (e.any(
+    (x) =>
+        x.type == 'binary' &&
+        x.property != null &&
+        _meaningfulBinary.contains(x.property),
+  )) {
+    return ReviewGroup.recommended;
+  }
+  // Climate sensors (2.7.1): a room's temperature or humidity is what most
+  // people put on a first dashboard, and what history records.
+  if (e.any(
+    (x) =>
+        x.type == 'numeric' &&
+        x.property != null &&
+        _meaningfulNumeric.contains(x.property),
+  )) {
     return ReviewGroup.recommended;
   }
   return ReviewGroup.other;

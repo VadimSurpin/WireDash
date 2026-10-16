@@ -1453,6 +1453,10 @@ class AppLocalizationsHe extends AppLocalizations {
       'שם המשתמש או הסיסמה נדחו. בדקו ונסו שוב.';
 
   @override
+  String get setupAuthRejectedZ2m =>
+      'Zigbee2MQTT כבר מתחבר לברוקר הזה: בדף הווב שלו, תחת Settings › MQTT, מופיע שם המשתמש. השתמשו במשתמש הזה ובסיסמה שלו.';
+
+  @override
   String get setupAuthWhich =>
       'זו ההתחברות ל‑MQTT, לא הסיסמה של דף הווב של ה‑hub.';
 
@@ -1611,6 +1615,16 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get setupPlatformQuestion => 'בזמן החיפוש: איפה Zigbee2MQTT פועל?';
+
+  @override
+  String get setupPlatformQuestionDone => 'איפה Zigbee2MQTT פועל?';
+
+  @override
+  String get setupScanDoneTitle => 'בחרו חיבור';
+
+  @override
+  String get setupScanDoneHint =>
+      'יותר מברוקר אחד ענה. בחרו את זה ש‑Zigbee2MQTT משתמש בו.';
 
   @override
   String get setupPlatformHa => 'Home Assistant';

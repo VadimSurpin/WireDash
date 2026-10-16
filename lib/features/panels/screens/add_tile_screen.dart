@@ -260,7 +260,7 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
       base: z2mBase(dashboard?.topicPrefix,
           homeBase: ref.read(baseTopicOverrideProvider(widget.connectionId))),
       device: widget.device,
-      name: name.isEmpty ? widget.device.friendlyName : name,
+      name: name.isEmpty ? widget.device.displayName : name,
       size: _size,
       sectionId: _sectionId,
       sortOrder: sortOrder,

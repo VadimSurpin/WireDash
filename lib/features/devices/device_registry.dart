@@ -41,11 +41,14 @@ class DeviceRegistry {
           await _dao.setPrefix(tile.id, expected);
           // A tile still named after the device takes its new name; one the
           // user named stays as it is.
+          // Setup names an unnamed device's tile "Motion sensor f66f"
+          // (2.7.1); that counts as named after the device too.
           final was = tile.topicPrefixOverride;
-          if (was != null &&
-              was.startsWith('$base/') &&
-              tile.name == was.substring(base.length + 1)) {
-            await _dao.setName(tile.id, device!.friendlyName);
+          if (was != null && was.startsWith('$base/')) {
+            final old = was.substring(base.length + 1);
+            if (tile.name == old || tile.name == device!.displayNameOf(old)) {
+              await _dao.setName(tile.id, device!.displayName);
+            }
           }
         }
         continue;
