@@ -10,7 +10,12 @@ end. Research behind it (HA core `dev` and Zigbee2MQTT `master` as of
 2026-10-16, with file citations) is summarised in
 [Facts](#facts-from-the-research).
 
-**Status:** design. Nothing built. Decisions marked **Q** wait on the user.
+**Status:** decided 2026-10-16: the user took every recommendation (Q1
+Home Assistant's login page with a pasted token as the fallback, Q2 import
+once with "Import again", Q3 a dashboard per floor with a section per room,
+Q4 no layout copy, Q5 rename tiles only in existing homes, Q6 free, Q7 its
+own release, 2.8, before the wall-tablet pack). Building on
+`feat/ha-import`, in the build order below.
 
 ## Why
 
