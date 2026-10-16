@@ -1372,8 +1372,14 @@ class AppLocalizationsSv extends AppLocalizations {
       'Servern avvisade anslutningen. Kontrollera anslutningsinställningarna.';
 
   @override
-  String foundDevices(Object count) {
-    return 'Hittade $count enheter';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Hittade $count enheter',
+      one: 'Hittade 1 enhet',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1492,8 +1498,14 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupReviewTitle => 'Dina enheter';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count enheter hittades. Välj vad som hamnar på din första dashboard.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count enheter hittades.',
+      one: '1 enhet hittades.',
+    );
+    return '$_temp0 Välj vad som hamnar på din första dashboard.';
   }
 
   @override

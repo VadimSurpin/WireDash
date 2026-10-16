@@ -2573,8 +2573,8 @@ abstract class AppLocalizations {
   /// No description provided for @foundDevices.
   ///
   /// In en, this message translates to:
-  /// **'Found {count} devices'**
-  String foundDevices(Object count);
+  /// **'{count, plural, =1{Found 1 device} other{Found {count} devices}}'**
+  String foundDevices(int count);
 
   /// No description provided for @foundDevicesHint.
   ///
@@ -2771,8 +2771,8 @@ abstract class AppLocalizations {
   /// No description provided for @setupReviewSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'{count} devices found. Choose what goes on your first dashboard.'**
-  String setupReviewSubtitle(Object count);
+  /// **'{count, plural, =1{1 device found.} other{{count} devices found.}} Choose what goes on your first dashboard.'**
+  String setupReviewSubtitle(int count);
 
   /// No description provided for @setupCreateWithCount.
   ///

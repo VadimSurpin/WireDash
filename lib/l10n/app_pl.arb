@@ -478,7 +478,7 @@
   "diagAuthRejected": "Broker odrzucił nazwę użytkownika lub hasło. Sprawdź dane logowania.",
   "diagAuthRefused": "Broker odmówił połączenia. Sprawdź ustawienia połączenia.",
   "foundDevices": "Znalezione urządzenia: {count}",
-  "@foundDevices": { "placeholders": {"count": {}} },
+  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
   "foundDevicesHint": "Twoje urządzenia Zigbee są widoczne. Przejdź dalej, aby zbudować dashboard.",
   "noDevicesTitle": "Połączono — nie znaleziono jeszcze urządzeń",
   "noDevicesHint": "ZigDash widzi Twój broker, ale nie znalazł jeszcze urządzeń Zigbee. Możesz rozpocząć parowanie, aby je dodać.",

@@ -1372,8 +1372,14 @@ class AppLocalizationsNb extends AppLocalizations {
       'Brokeren avviste tilkoblingen. Kontroller tilkoblingsinnstillingene.';
 
   @override
-  String foundDevices(Object count) {
-    return 'Fant $count enheter';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Fant $count enheter',
+      one: 'Fant 1 enhet',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1491,8 +1497,14 @@ class AppLocalizationsNb extends AppLocalizations {
   String get setupReviewTitle => 'Enhetene dine';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count enheter funnet. Velg hva som kommer på det første dashbordet ditt.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count enheter funnet.',
+      one: '1 enhet funnet.',
+    );
+    return '$_temp0 Velg hva som kommer på det første dashbordet ditt.';
   }
 
   @override

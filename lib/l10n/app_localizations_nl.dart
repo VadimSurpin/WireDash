@@ -1380,8 +1380,14 @@ class AppLocalizationsNl extends AppLocalizations {
       'De broker heeft de verbinding geweigerd. Controleer de verbindingsinstellingen.';
 
   @override
-  String foundDevices(Object count) {
-    return '$count apparaten gevonden';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apparaten gevonden',
+      one: '1 apparaat gevonden',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1500,8 +1506,14 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupReviewTitle => 'Je apparaten';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count apparaten gevonden. Kies wat op je eerste dashboard komt.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apparaten gevonden.',
+      one: '1 apparaat gevonden.',
+    );
+    return '$_temp0 Kies wat op je eerste dashboard komt.';
   }
 
   @override

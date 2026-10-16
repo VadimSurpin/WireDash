@@ -1387,7 +1387,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Брокер отказал в подключении. Проверьте настройки подключения.';
 
   @override
-  String foundDevices(Object count) {
+  String foundDevices(int count) {
     return 'Найдено устройств: $count';
   }
 
@@ -1507,7 +1507,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupReviewTitle => 'Ваши устройства';
 
   @override
-  String setupReviewSubtitle(Object count) {
+  String setupReviewSubtitle(int count) {
     return 'Найдено устройств: $count. Выберите, что будет на первом дашборде.';
   }
 

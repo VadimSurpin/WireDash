@@ -1392,7 +1392,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Broker odmówił połączenia. Sprawdź ustawienia połączenia.';
 
   @override
-  String foundDevices(Object count) {
+  String foundDevices(int count) {
     return 'Znalezione urządzenia: $count';
   }
 
@@ -1511,7 +1511,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get setupReviewTitle => 'Twoje urządzenia';
 
   @override
-  String setupReviewSubtitle(Object count) {
+  String setupReviewSubtitle(int count) {
     return 'Znalezione urządzenia: $count. Wybierz, co trafi na pierwszy dashboard.';
   }
 

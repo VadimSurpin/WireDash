@@ -1379,8 +1379,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'O broker recusou a conexão. Verifique as configurações de conexão.';
 
   @override
-  String foundDevices(Object count) {
-    return '$count dispositivos encontrados';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dispositivos encontrados',
+      one: '1 dispositivo encontrado',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1500,8 +1506,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get setupReviewTitle => 'Seus dispositivos';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count dispositivos encontrados. Escolha o que vai para o seu primeiro painel.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dispositivos encontrados.',
+      one: '1 dispositivo encontrado.',
+    );
+    return '$_temp0 Escolha o que vai para o seu primeiro painel.';
   }
 
   @override

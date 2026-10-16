@@ -1370,8 +1370,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'The broker refused the connection. Check the connection settings.';
 
   @override
-  String foundDevices(Object count) {
-    return 'Found $count devices';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Found $count devices',
+      one: 'Found 1 device',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1490,8 +1496,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupReviewTitle => 'Your devices';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count devices found. Choose what goes on your first dashboard.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices found.',
+      one: '1 device found.',
+    );
+    return '$_temp0 Choose what goes on your first dashboard.';
   }
 
   @override

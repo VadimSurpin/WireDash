@@ -478,7 +478,7 @@
   "diagAuthRejected": "Брокер отклонил имя пользователя или пароль. Проверьте учётные данные.",
   "diagAuthRefused": "Брокер отказал в подключении. Проверьте настройки подключения.",
   "foundDevices": "Найдено устройств: {count}",
-  "@foundDevices": { "placeholders": {"count": {}} },
+  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
   "foundDevicesHint": "Ваши Zigbee-устройства видны. Продолжите, чтобы собрать дашборд.",
   "noDevicesTitle": "Подключено — устройств пока нет",
   "noDevicesHint": "ZigDash видит ваш брокер, но пока не нашёл Zigbee-устройств. Начните сопряжение, чтобы добавить их.",

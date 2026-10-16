@@ -1360,8 +1360,14 @@ class AppLocalizationsHe extends AppLocalizations {
   String get diagAuthRefused => 'הברוקר סירב לחיבור. בדקו את הגדרות החיבור.';
 
   @override
-  String foundDevices(Object count) {
-    return 'נמצאו $count מכשירים';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'נמצאו $count מכשירים',
+      one: 'נמצא מכשיר אחד',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1479,8 +1485,14 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupReviewTitle => 'המכשירים שלך';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return 'נמצאו $count מכשירים. בחרו מה ייכנס ללוח הראשון.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'נמצאו $count מכשירים.',
+      one: 'נמצא מכשיר אחד.',
+    );
+    return '$_temp0 בחרו מה ייכנס ללוח הראשון.';
   }
 
   @override
