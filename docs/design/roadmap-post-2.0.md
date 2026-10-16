@@ -27,6 +27,7 @@ The releases after 2.0, in order, decided on 2026-10-08 to 2026-10-10 in the "Po
 - **2.4 Gauge.** Specced in [gauge-2.4.md](gauge-2.4.md) (2026-10-11). Not a new tile type: a style of the Reading tile, with a min, max and up to three colour bands drawn from the theme's state roles (Good, Attention), defaults from the device's expose or a preset per reading. Rival reviews ask for color gradients on gauges and for a plain value display; one tile with two styles covers both. No hub work.
 - **2.6 Kiosk.** Specced in [kiosk-2.6.md](kiosk-2.6.md) (2026-10-12). One feature: the Wall display sheet with the Kiosk lock (in-app PIN, Android screen pinning as an extra), Fullscreen and Dim. A router redirect keeps a kiosk on its Home's dashboards.
 - **2.7 History.** Zigbee2MQTT keeps no history, so a Node-RED flow on the hub records chosen readings; the app draws them. Decided 2026-10-15 ([history-2.7.md](history-2.7.md)): retained day records on the broker, kept 30 days; every reading tile is recorded; a tap on a reading tile opens its history.
+- **2.7.1 Setup on a real Home Assistant home.** From a phone test on 2026-10-16: a pasted Home Assistant link works in the broker form, several brokers found are named (Home Assistant, SMLIGHT hub, Zigbee2MQTT), the platform question stays after a fast scan, unnamed devices read "Motion sensor f66f", climate sensors are preselected, and a rejected login points at the login Zigbee2MQTT uses. Names given in Home Assistant never reach MQTT, so ZigDash cannot show them.
 
 ## 2.1 build spec: shortcuts
 
