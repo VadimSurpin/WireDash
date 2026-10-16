@@ -1481,6 +1481,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Имя пользователя или пароль отклонены. Проверьте их и повторите попытку.';
 
   @override
+  String get setupAuthRejectedZ2m =>
+      'Zigbee2MQTT уже подключается к этому брокеру: на его веб-странице в Настройки › MQTT указано имя пользователя. Используйте этого пользователя и его пароль.';
+
+  @override
   String get setupAuthWhich =>
       'Это логин MQTT, а не пароль от веб-страницы вашего хаба.';
 
@@ -1640,6 +1644,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get setupPlatformQuestion => 'Пока мы ищем: где работает Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformQuestionDone => 'Где работает Zigbee2MQTT?';
+
+  @override
+  String get setupScanDoneTitle => 'Выберите подключение';
+
+  @override
+  String get setupScanDoneHint =>
+      'Ответило несколько брокеров. Выберите тот, который использует Zigbee2MQTT.';
 
   @override
   String get setupPlatformHa => 'Home Assistant';

@@ -791,7 +791,10 @@ class _DashboardsCard extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.dashboard_outlined),
             title: Text([dashboard.name, ?section?.name].join(' › ')),
-            subtitle: panel.name == d?.friendlyName ? null : Text(panel.name),
+            subtitle:
+                panel.name == d?.friendlyName || panel.name == d?.displayName
+                ? null
+                : Text(panel.name),
             trailing: const Icon(Icons.chevron_right),
             onTap: () async {
               await ref

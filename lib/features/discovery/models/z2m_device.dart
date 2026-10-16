@@ -92,6 +92,21 @@ class Z2mDevice {
 
   bool get interviewFailed => interviewState == 'FAILED';
 
+  /// `definition.description`, what the device is: "Motion sensor".
+  final String? description;
+
+  /// The name to show and to give new tiles: the friendly name, or for a
+  /// device never named in Zigbee2MQTT (still called by its IEEE address)
+  /// what it is plus the address's last four digits, "Motion sensor · f66f"
+  /// (2.7.1). Names given in Home Assistant never reach MQTT.
+  String get displayName {
+    final what = description ?? model;
+    if (what == null || what.isEmpty || !_ieeeName.hasMatch(friendlyName)) {
+      return friendlyName;
+    }
+    return '$what · ${friendlyName.substring(friendlyName.length - 4)}';
+  }
+
   const Z2mDevice({
     required this.friendlyName,
     required this.type,
@@ -103,8 +118,11 @@ class Z2mDevice {
     this.rawExposes = const [],
     this.powerSource,
     this.interviewState,
+    this.description,
   });
 }
+
+final _ieeeName = RegExp(r'^0x[0-9a-fA-F]{16}$');
 
 /// Parses the `zigbee2mqtt/bridge/devices` retained JSON payload.
 ///
@@ -134,18 +152,21 @@ List<Z2mDevice> parseBridgeDevices(String jsonString) {
       final rawExposes = definition?['exposes'] as List<dynamic>? ?? [];
       final exposes = _flattenExposes(rawExposes);
 
-      result.add(Z2mDevice(
-        friendlyName: friendlyName,
-        type: deviceType,
-        vendor: vendor,
-        model: model,
-        exposes: exposes,
-        supported: supported,
-        ieeeAddress: map['ieee_address'] as String?,
-        rawExposes: rawExposes,
-        powerSource: map['power_source'] as String?,
-        interviewState: map['interview_state'] as String?,
-      ));
+      result.add(
+        Z2mDevice(
+          friendlyName: friendlyName,
+          type: deviceType,
+          vendor: vendor,
+          model: model,
+          exposes: exposes,
+          supported: supported,
+          ieeeAddress: map['ieee_address'] as String?,
+          rawExposes: rawExposes,
+          powerSource: map['power_source'] as String?,
+          interviewState: map['interview_state'] as String?,
+          description: definition?['description'] as String?,
+        ),
+      );
     }
 
     return result;

@@ -1466,6 +1466,10 @@ class AppLocalizationsSv extends AppLocalizations {
       'Användarnamnet eller lösenordet avvisades. Kontrollera dem och försök igen.';
 
   @override
+  String get setupAuthRejectedZ2m =>
+      'Zigbee2MQTT loggar redan in på den här brokern: webbsidan visar användarnamnet under Inställningar › MQTT. Använd den användaren och dess lösenord.';
+
+  @override
   String get setupAuthWhich =>
       'Det här är MQTT-inloggningen, inte lösenordet till hubbens webbsida.';
 
@@ -1625,6 +1629,16 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get setupPlatformQuestion => 'Medan vi letar: var kör Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformQuestionDone => 'Var kör Zigbee2MQTT?';
+
+  @override
+  String get setupScanDoneTitle => 'Välj en anslutning';
+
+  @override
+  String get setupScanDoneHint =>
+      'Mer än en broker svarade. Välj den som Zigbee2MQTT använder.';
 
   @override
   String get setupPlatformHa => 'Home Assistant';

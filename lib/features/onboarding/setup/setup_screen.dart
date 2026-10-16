@@ -246,6 +246,7 @@ class _Scanning extends StatelessWidget {
     final theme = Theme.of(context);
     final progress = state.progress;
     final hint = switch (state.platform) {
+      _ when state.done => l10n.setupScanDoneHint,
       SetupPlatform.homeAssistant => l10n.setupScanHintHa,
       SetupPlatform.smlight => l10n.setupScanHintSmlight,
       SetupPlatform.piOrDocker => l10n.setupScanHintPi,
@@ -257,7 +258,7 @@ class _Scanning extends StatelessWidget {
         Semantics(
           liveRegion: true,
           child: Text(
-            l10n.setupScanningTitle,
+            state.done ? l10n.setupScanDoneTitle : l10n.setupScanningTitle,
             style: theme.textTheme.titleMedium,
           ),
         ),
@@ -278,9 +279,15 @@ class _Scanning extends StatelessWidget {
             ),
             style: theme.textTheme.bodySmall,
           ),
-          const SizedBox(height: 20),
-          _PlatformChips(value: state.platform, onChanged: onPlatform),
         ],
+        // Kept after the scan ends (2.7.1): a fast scan used to hide the
+        // question before anyone could answer it.
+        const SizedBox(height: 20),
+        _PlatformChips(
+          value: state.platform,
+          onChanged: onPlatform,
+          done: state.done,
+        ),
         const SizedBox(height: 16),
         for (final h in state.hubs)
           Card(
@@ -294,7 +301,7 @@ class _Scanning extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.router_outlined),
-              title: Text(l10n.setupCandidateFound),
+              title: Text(_candidateTitle(l10n, state.kinds[c.host])),
               subtitle: Text('${c.host}:${c.port} · ${c.protocol.name}'),
               onTap: () => onSelect(c),
             ),
@@ -311,12 +318,28 @@ String _hubSeen(AppLocalizations l10n, HubFound hub) => switch (hub.kind) {
   HubKind.smlight => l10n.setupHubSeenSmlight(hub.host),
 };
 
+/// A candidate card's title: what its machine is when the scan could tell
+/// (2.7.1), else the generic "Possible connection found".
+String _candidateTitle(AppLocalizations l10n, HubKind? kind) => switch (kind) {
+  HubKind.homeAssistant => l10n.setupPlatformHa,
+  HubKind.smlight => l10n.setupPlatformSmlight,
+  HubKind.zigbee2mqtt => 'Zigbee2MQTT',
+  null => l10n.setupCandidateFound,
+};
+
 /// "Where does Zigbee2MQTT run?", asked while the scan runs and on the empty
 /// result (2.5). Tapping the chosen chip again clears the answer.
 class _PlatformChips extends StatelessWidget {
-  const _PlatformChips({required this.value, required this.onChanged});
+  const _PlatformChips({
+    required this.value,
+    required this.onChanged,
+    this.done = false,
+  });
   final SetupPlatform? value;
   final ValueChanged<SetupPlatform?> onChanged;
+
+  /// The scan has ended: the question drops its "While we look".
+  final bool done;
 
   @override
   Widget build(BuildContext context) {
@@ -331,7 +354,7 @@ class _PlatformChips extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.setupPlatformQuestion,
+          done ? l10n.setupPlatformQuestionDone : l10n.setupPlatformQuestion,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 8),
@@ -792,6 +815,13 @@ class _AuthPromptState extends State<_AuthPrompt> {
                 )
               : theme.textTheme.bodyMedium,
         ),
+        // After a rejected login, the one place that surely holds a working
+        // login: the one Zigbee2MQTT itself uses (2.7.1; a user left after
+        // a rejected login with no idea which one was wanted).
+        if (widget.state.rejected) ...[
+          const SizedBox(height: 8),
+          Text(l10n.setupAuthRejectedZ2m, style: theme.textTheme.bodyMedium),
+        ],
         const SizedBox(height: 12),
         _LoginHint(platform: widget.state.platform),
         const SizedBox(height: 16),
@@ -1021,7 +1051,7 @@ class _DeviceRow extends StatelessWidget {
     return CheckboxListTile(
       value: row.selected,
       onChanged: enabled ? (_) => onToggle(row.device.friendlyName) : null,
-      title: Text(row.device.friendlyName),
+      title: Text(row.device.displayName),
       subtitle: Text(
         [row.device.vendor, row.device.model].whereType<String>().join(' · '),
       ),

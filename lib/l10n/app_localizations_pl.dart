@@ -1486,6 +1486,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nazwa użytkownika lub hasło zostały odrzucone. Sprawdź je i spróbuj ponownie.';
 
   @override
+  String get setupAuthRejectedZ2m =>
+      'Zigbee2MQTT już loguje się do tego brokera: jego strona WWW pokazuje nazwę użytkownika w Ustawienia › MQTT. Użyj tego użytkownika i jego hasła.';
+
+  @override
   String get setupAuthWhich => 'To login MQTT, a nie hasło do strony WWW huba.';
 
   @override
@@ -1645,6 +1649,16 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get setupPlatformQuestion =>
       'W trakcie szukania: gdzie działa Zigbee2MQTT?';
+
+  @override
+  String get setupPlatformQuestionDone => 'Gdzie działa Zigbee2MQTT?';
+
+  @override
+  String get setupScanDoneTitle => 'Wybierz połączenie';
+
+  @override
+  String get setupScanDoneHint =>
+      'Odpowiedział więcej niż jeden broker. Wybierz ten, którego używa Zigbee2MQTT.';
 
   @override
   String get setupPlatformHa => 'Home Assistant';

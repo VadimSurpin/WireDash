@@ -237,6 +237,38 @@ void main() {
       expect(hubKindOfPage('SLZB-06 web UI'), HubKind.smlight);
       expect(hubKindOfPage('<title>Printer</title>'), isNull);
     });
+
+    test('an SMHUB calls itself SMHUB', () {
+      expect(hubKindOfPage('<title>SMHUB</title>'), HubKind.smlight);
+    });
+  });
+
+  // 2.7.1: two brokers found, each card says what its machine is.
+  group('identifyHost', () {
+    test(
+      'Home Assistant beats a Zigbee2MQTT page on the same machine',
+      () async {
+        final hubs = _FakeHubs({
+          '192.168.1.20:8123': HubKind.homeAssistant,
+          '192.168.1.20:8080': HubKind.zigbee2mqtt,
+        });
+        expect(await identifyHost(hubs, '192.168.1.20'), HubKind.homeAssistant);
+      },
+    );
+
+    test('an SMLIGHT hub beats the Zigbee2MQTT page it serves', () async {
+      final hubs = _FakeHubs({
+        '192.168.1.30:80': HubKind.smlight,
+        '192.168.1.30:8080': HubKind.zigbee2mqtt,
+      });
+      expect(await identifyHost(hubs, '192.168.1.30'), HubKind.smlight);
+    });
+
+    test('a bare Zigbee2MQTT page, or nothing', () async {
+      final hubs = _FakeHubs({'192.168.1.40:8080': HubKind.zigbee2mqtt});
+      expect(await identifyHost(hubs, '192.168.1.40'), HubKind.zigbee2mqtt);
+      expect(await identifyHost(hubs, '192.168.1.41'), isNull);
+    });
   });
 
   // 2.5: the empty result says what was found, so the scan looks for hubs

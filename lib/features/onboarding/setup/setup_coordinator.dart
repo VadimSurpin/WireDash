@@ -41,6 +41,9 @@ Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
   if (platform == SetupPlatform.smlight) HubKind.smlight,
 };
 
+/// Names the machine at a host from its web pages; see [identifyHost].
+typedef HubIdentifier = Future<HubKind?> Function(String host);
+
 /// How far a scan has come, for the progress bar.
 typedef ScanProgressValue = ({int checked, int total});
 
@@ -88,7 +91,8 @@ class SetupIdle extends SetupState {
 
 /// Scanning the local network; [candidates] grow progressively and [done]
 /// flips true when the scan completes. [hubs] are the hubs seen so far,
-/// [progress] how far the scan is, [platform] the user's answer.
+/// [progress] how far the scan is, [platform] the user's answer, [kinds]
+/// what the candidates' machines are.
 class SetupScanning extends SetupState {
   const SetupScanning(
     this.candidates, {
@@ -96,12 +100,17 @@ class SetupScanning extends SetupState {
     this.hubs = const [],
     this.progress,
     this.platform,
+    this.kinds = const {},
   });
   final List<SetupCandidate> candidates;
   final bool done;
   final List<HubFound> hubs;
   final ScanProgressValue? progress;
   final SetupPlatform? platform;
+
+  /// What each candidate's machine is, by host, once the scan has found more
+  /// than one broker and looked at their web pages (2.7.1).
+  final Map<String, HubKind> kinds;
 }
 
 /// The scan finished without a single usable candidate. [hubs] are the hubs
@@ -218,6 +227,7 @@ class SetupCoordinator {
     required DeviceListFetcher fetchDevices,
     required SetupStore creator,
     AddressChecker? checkAddress,
+    HubIdentifier? identifyHub,
     NetworkFactsProvider? networkFacts,
     String base = 'zigbee2mqtt',
     this.onCreated,
@@ -228,6 +238,7 @@ class SetupCoordinator {
        _fetchDevices = fetchDevices,
        _creator = creator,
        _checkAddress = checkAddress,
+       _identifyHub = identifyHub,
        _networkFacts = networkFacts;
 
   final ScanRunFactory _scan;
@@ -239,6 +250,11 @@ class SetupCoordinator {
   /// The address check (2.6.2); null where the platform cannot probe (web),
   /// and then [checkAddress] reports nothing found.
   final AddressChecker? _checkAddress;
+
+  /// Names the machine behind each broker when the scan finds several, so
+  /// the cards say "Home Assistant" instead of two identical "Possible
+  /// connection found" (2.7.1). Null where the platform cannot probe.
+  final HubIdentifier? _identifyHub;
   final NetworkFactsProvider? _networkFacts;
 
   /// Runs once after a successful setup, before [SetupComplete] is emitted
@@ -350,6 +366,7 @@ class SetupCoordinator {
           unawaited(_verify(merged.single));
         } else {
           emitScanning(done: true);
+          unawaited(_nameCandidates(merged, op));
         }
       },
       onError: (_) {
@@ -364,6 +381,30 @@ class SetupCoordinator {
           );
         }
       },
+    );
+  }
+
+  Future<void> _nameCandidates(List<SetupCandidate> found, int op) async {
+    final identify = _identifyHub;
+    if (identify == null) return;
+    final kinds = <String, HubKind>{};
+    await Future.wait([
+      for (final host in {for (final c in found) c.host})
+        identify(host).then((kind) {
+          if (kind != null) kinds[host] = kind;
+        }, onError: (_) {}),
+    ]);
+    final s = _state;
+    if (op != _op || s is! SetupScanning || kinds.isEmpty) return;
+    _emit(
+      SetupScanning(
+        s.candidates,
+        done: s.done,
+        hubs: s.hubs,
+        progress: s.progress,
+        platform: s.platform,
+        kinds: Map.unmodifiable(kinds),
+      ),
     );
   }
 
@@ -382,6 +423,7 @@ class SetupCoordinator {
           hubs: s.hubs,
           progress: s.progress,
           platform: platform,
+          kinds: s.kinds,
         ),
       );
     } else if (s is SetupScanEmpty) {
@@ -466,6 +508,16 @@ class SetupCoordinator {
   }
 
   Future<void> selectCandidate(SetupCandidate candidate) async {
+    // A card the scan named answers "where does Zigbee2MQTT run?" when the
+    // user has not, so the login step's hint fits (2.7.1).
+    final s = _state;
+    if (_platform == null && s is SetupScanning) {
+      _platform = switch (s.kinds[candidate.host]) {
+        HubKind.homeAssistant => SetupPlatform.homeAssistant,
+        HubKind.smlight => SetupPlatform.smlight,
+        _ => null,
+      };
+    }
     _cancelScan();
     await _verify(candidate);
   }

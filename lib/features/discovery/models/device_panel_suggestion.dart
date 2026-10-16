@@ -76,7 +76,7 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
   if (exposes.any((e) => e.type == 'light')) {
     return PanelSuggestion(
       type: PanelType.slider,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: 'set',
       subscribeTopicSuffix: '',
@@ -89,7 +89,7 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
   if (exposes.any((e) => e.type == 'cover')) {
     return PanelSuggestion(
       type: PanelType.cover,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: 'set',
       subscribeTopicSuffix: '',
@@ -105,7 +105,7 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
   if (hasSwitch || hasBinaryState) {
     return PanelSuggestion(
       type: PanelType.toggle,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: 'set',
       subscribeTopicSuffix: '',
@@ -116,17 +116,17 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
 
   // 4. Binary sensor expose matching a known presence/safety property → led
   final sensorExpose = exposes.cast<Z2mExpose?>().firstWhere(
-        (e) =>
-            e != null &&
-            e.type == 'binary' &&
-            e.property != null &&
-            _binarySensorProperties.contains(e.property),
-        orElse: () => null,
-      );
+    (e) =>
+        e != null &&
+        e.type == 'binary' &&
+        e.property != null &&
+        _binarySensorProperties.contains(e.property),
+    orElse: () => null,
+  );
   if (sensorExpose != null) {
     return PanelSuggestion(
       type: PanelType.led,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: '',
       subscribeTopicSuffix: '',
@@ -137,13 +137,13 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
 
   // 5a. Numeric expose with property == "battery" → progress (%)
   final batteryExpose = exposes.cast<Z2mExpose?>().firstWhere(
-        (e) => e != null && e.type == 'numeric' && e.property == 'battery',
-        orElse: () => null,
-      );
+    (e) => e != null && e.type == 'numeric' && e.property == 'battery',
+    orElse: () => null,
+  );
   if (batteryExpose != null) {
     return PanelSuggestion(
       type: PanelType.progress,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: '',
       subscribeTopicSuffix: '',
@@ -154,13 +154,13 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
 
   // 5b. Numeric expose with property == "linkquality" → progress (no unit)
   final lqExpose = exposes.cast<Z2mExpose?>().firstWhere(
-        (e) => e != null && e.type == 'numeric' && e.property == 'linkquality',
-        orElse: () => null,
-      );
+    (e) => e != null && e.type == 'numeric' && e.property == 'linkquality',
+    orElse: () => null,
+  );
   if (lqExpose != null) {
     return PanelSuggestion(
       type: PanelType.progress,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: '',
       subscribeTopicSuffix: '',
@@ -170,13 +170,13 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
 
   // 6. Enum expose → combo
   final enumExpose = exposes.cast<Z2mExpose?>().firstWhere(
-        (e) => e != null && e.type == 'enum',
-        orElse: () => null,
-      );
+    (e) => e != null && e.type == 'enum',
+    orElse: () => null,
+  );
   if (enumExpose != null) {
     return PanelSuggestion(
       type: PanelType.combo,
-      name: device.friendlyName,
+      name: device.displayName,
       topicPrefixOverride: prefix,
       publishTopicSuffix: 'set',
       subscribeTopicSuffix: '',
@@ -187,7 +187,7 @@ PanelSuggestion suggestPanel(Z2mDevice device, {String base = 'zigbee2mqtt'}) {
   // 7. Fallback → textLog (read-only)
   return PanelSuggestion(
     type: PanelType.textLog,
-    name: device.friendlyName,
+    name: device.displayName,
     topicPrefixOverride: prefix,
     publishTopicSuffix: '',
     subscribeTopicSuffix: '',
