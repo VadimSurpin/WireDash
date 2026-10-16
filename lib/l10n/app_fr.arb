@@ -986,5 +986,9 @@
   "haImportZhaOnly": "Ces appareils utilisent ZHA, le Zigbee intégré de Home Assistant, et non Zigbee2MQTT : ZigDash ne peut pas les afficher.",
   "haImportNothing": "Aucun des appareils Zigbee2MQTT de cette maison n'est dans Home Assistant.",
   "haImportDone": "Terminé. Tuiles renommées : {renamed}. Tableaux de bord ajoutés : {dashboards}.",
-  "haImportOpen": "Ouvrir les tableaux de bord"
+  "haImportOpen": "Ouvrir les tableaux de bord",
+  "haImportOfferTitle": "Récupérer vos noms et pièces depuis Home Assistant ?",
+  "haImportOfferBody": "Home Assistant est sur votre réseau. ZigDash peut nommer vos tuiles et ajouter un tableau de bord par étage et par pièce, comme vous les avez définis là-bas.",
+  "haImportOfferLater": "Pas maintenant",
+  "haImportOfferGo": "Importer"
 }

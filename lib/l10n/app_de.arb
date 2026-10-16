@@ -1061,5 +1061,9 @@
   "haImportZhaOnly": "Diese Geräte laufen über ZHA, das eigene Zigbee von Home Assistant, nicht über Zigbee2MQTT. ZigDash kann sie nicht anzeigen.",
   "haImportNothing": "Keines der Zigbee2MQTT-Geräte dieses Zuhauses ist in Home Assistant.",
   "haImportDone": "Fertig. Umbenannte Kacheln: {renamed}. Neue Dashboards: {dashboards}.",
-  "haImportOpen": "Dashboards öffnen"
+  "haImportOpen": "Dashboards öffnen",
+  "haImportOfferTitle": "Namen und Räume aus Home Assistant übernehmen?",
+  "haImportOfferBody": "Home Assistant ist in deinem Netzwerk. ZigDash kann deine Kacheln benennen und ein Dashboard pro Etage und Raum anlegen, so wie du sie dort eingerichtet hast.",
+  "haImportOfferLater": "Nicht jetzt",
+  "haImportOfferGo": "Importieren"
 }

@@ -3347,4 +3347,17 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Åpne dashbord';
+
+  @override
+  String get haImportOfferTitle => 'Hente navn og rom fra Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant er på nettverket ditt. ZigDash kan gi flisene navn og legge til et dashbord per etasje og rom, slik du har satt dem opp der.';
+
+  @override
+  String get haImportOfferLater => 'Ikke nå';
+
+  @override
+  String get haImportOfferGo => 'Importer';
 }

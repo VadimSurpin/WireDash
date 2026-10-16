@@ -1190,5 +1190,9 @@
   "haImportNothing": "None of this home's Zigbee2MQTT devices are in Home Assistant.",
   "haImportDone": "Done. Tiles renamed: {renamed}. Dashboards added: {dashboards}.",
   "@haImportDone": {"placeholders": {"renamed": {"type": "int"}, "dashboards": {"type": "int"}}},
-  "haImportOpen": "Open dashboards"
+  "haImportOpen": "Open dashboards",
+  "haImportOfferTitle": "Bring your names and rooms from Home Assistant?",
+  "haImportOfferBody": "Home Assistant is on your network. ZigDash can name your tiles and add a dashboard per floor and room, the way you set them up there.",
+  "haImportOfferLater": "Not now",
+  "haImportOfferGo": "Import"
 }

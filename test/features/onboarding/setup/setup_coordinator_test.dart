@@ -894,4 +894,68 @@ void main() {
       expect((h.coordinator.state as SetupScanEmpty).z2m, isNull);
     });
   });
+
+  // ha-import: setup offers the import when this home has Home Assistant.
+  group('homeAssistantSeen', () {
+    Future<_Harness> doneWith({
+      HubKind? onBrokerHost,
+      List<String>? asked,
+    }) async {
+      final h = _Harness(
+        identifyHub: (host) async {
+          asked?.add(host);
+          return onBrokerHost;
+        },
+      );
+      await h.coordinator.startScan();
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+      await h.coordinator.createDashboard();
+      return h;
+    }
+
+    test('Home Assistant on the broker\'s machine: offered', () async {
+      final asked = <String>[];
+      final h = await doneWith(
+        onBrokerHost: HubKind.homeAssistant,
+        asked: asked,
+      );
+      expect(await h.coordinator.homeAssistantSeen(), isTrue);
+      expect(asked, ['192.168.1.10']);
+    });
+
+    test('nothing there: not offered', () async {
+      final h = await doneWith(onBrokerHost: HubKind.zigbee2mqtt);
+      expect(await h.coordinator.homeAssistantSeen(), isFalse);
+    });
+
+    test('the user said Home Assistant: offered without asking', () async {
+      final asked = <String>[];
+      final h = _Harness(
+        identifyHub: (host) async {
+          asked.add(host);
+          return null;
+        },
+      );
+      h.coordinator.setPlatform(SetupPlatform.homeAssistant);
+      expect(await h.coordinator.homeAssistantSeen(), isTrue);
+      expect(asked, isEmpty);
+    });
+
+    test('a scan card named Home Assistant: offered', () async {
+      final h = _Harness(
+        scan: (_) => Stream.fromIterable([
+          const ProbeResult(host: '192.168.1.10', port: 1883),
+          const ProbeResult(host: '192.168.1.11', port: 1883),
+        ]),
+        identifyHub: (host) async =>
+            host == '192.168.1.10' ? HubKind.homeAssistant : null,
+      );
+      await h.coordinator.startScan();
+      for (var i = 0; i < 5; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      expect(await h.coordinator.homeAssistantSeen(), isTrue);
+    });
+  });
 }

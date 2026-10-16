@@ -3347,4 +3347,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Open dashboards';
+
+  @override
+  String get haImportOfferTitle =>
+      'Bring your names and rooms from Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant is on your network. ZigDash can name your tiles and add a dashboard per floor and room, the way you set them up there.';
+
+  @override
+  String get haImportOfferLater => 'Not now';
+
+  @override
+  String get haImportOfferGo => 'Import';
 }

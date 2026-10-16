@@ -3318,4 +3318,17 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haImportOpen => 'פתיחת הלוחות';
+
+  @override
+  String get haImportOfferTitle => 'להביא את השמות והחדרים מ-Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant נמצא ברשת שלכם. ‏ZigDash יכול לתת לאריחים את השמות ולהוסיף לוח לכל קומה וחדר, כמו שהגדרתם שם.';
+
+  @override
+  String get haImportOfferLater => 'לא עכשיו';
+
+  @override
+  String get haImportOfferGo => 'ייבוא';
 }

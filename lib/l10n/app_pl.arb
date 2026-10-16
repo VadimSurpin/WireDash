@@ -1056,5 +1056,9 @@
   "haImportZhaOnly": "Te urządzenia działają w ZHA, wbudowanym Zigbee Home Assistant, a nie w Zigbee2MQTT, więc ZigDash nie może ich pokazać.",
   "haImportNothing": "Żadne z urządzeń Zigbee2MQTT tego domu nie jest w Home Assistant.",
   "haImportDone": "Gotowe. Kafelki ze zmienioną nazwą: {renamed}. Dodane dashboardy: {dashboards}.",
-  "haImportOpen": "Otwórz dashboardy"
+  "haImportOpen": "Otwórz dashboardy",
+  "haImportOfferTitle": "Przenieść nazwy i pomieszczenia z Home Assistant?",
+  "haImportOfferBody": "Home Assistant jest w twojej sieci. ZigDash może nazwać kafelki i dodać dashboard na każde piętro i pomieszczenie, tak jak je tam ustawiłeś.",
+  "haImportOfferLater": "Nie teraz",
+  "haImportOfferGo": "Importuj"
 }

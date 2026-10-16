@@ -3361,4 +3361,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Abrir painéis';
+
+  @override
+  String get haImportOfferTitle =>
+      'Trazer os nomes e as divisões do Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'O Home Assistant está na sua rede. O ZigDash pode dar nome aos mosaicos e adicionar um painel por piso e divisão, como os configurou lá.';
+
+  @override
+  String get haImportOfferLater => 'Agora não';
+
+  @override
+  String get haImportOfferGo => 'Importar';
 }

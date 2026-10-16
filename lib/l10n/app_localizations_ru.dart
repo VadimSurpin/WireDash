@@ -3349,4 +3349,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Открыть дашборды';
+
+  @override
+  String get haImportOfferTitle =>
+      'Перенести имена и комнаты из Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant есть в вашей сети. ZigDash может назвать плитки и добавить дашборд на каждый этаж и комнату, как вы настроили их там.';
+
+  @override
+  String get haImportOfferLater => 'Не сейчас';
+
+  @override
+  String get haImportOfferGo => 'Импортировать';
 }

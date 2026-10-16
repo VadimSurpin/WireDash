@@ -3371,4 +3371,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Ouvrir les tableaux de bord';
+
+  @override
+  String get haImportOfferTitle =>
+      'Récupérer vos noms et pièces depuis Home Assistant ?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant est sur votre réseau. ZigDash peut nommer vos tuiles et ajouter un tableau de bord par étage et par pièce, comme vous les avez définis là-bas.';
+
+  @override
+  String get haImportOfferLater => 'Pas maintenant';
+
+  @override
+  String get haImportOfferGo => 'Importer';
 }

@@ -1056,5 +1056,9 @@
   "haImportZhaOnly": "Эти устройства работают через ZHA, встроенный Zigbee Home Assistant, а не через Zigbee2MQTT, поэтому ZigDash не может их показать.",
   "haImportNothing": "Ни одного устройства Zigbee2MQTT этого дома нет в Home Assistant.",
   "haImportDone": "Готово. Переименовано плиток: {renamed}. Добавлено дашбордов: {dashboards}.",
-  "haImportOpen": "Открыть дашборды"
+  "haImportOpen": "Открыть дашборды",
+  "haImportOfferTitle": "Перенести имена и комнаты из Home Assistant?",
+  "haImportOfferBody": "Home Assistant есть в вашей сети. ZigDash может назвать плитки и добавить дашборд на каждый этаж и комнату, как вы настроили их там.",
+  "haImportOfferLater": "Не сейчас",
+  "haImportOfferGo": "Импортировать"
 }

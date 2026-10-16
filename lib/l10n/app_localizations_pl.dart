@@ -3355,4 +3355,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Otwórz dashboardy';
+
+  @override
+  String get haImportOfferTitle =>
+      'Przenieść nazwy i pomieszczenia z Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant jest w twojej sieci. ZigDash może nazwać kafelki i dodać dashboard na każde piętro i pomieszczenie, tak jak je tam ustawiłeś.';
+
+  @override
+  String get haImportOfferLater => 'Nie teraz';
+
+  @override
+  String get haImportOfferGo => 'Importuj';
 }

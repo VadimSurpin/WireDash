@@ -3365,4 +3365,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Dashboards öffnen';
+
+  @override
+  String get haImportOfferTitle =>
+      'Namen und Räume aus Home Assistant übernehmen?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant ist in deinem Netzwerk. ZigDash kann deine Kacheln benennen und ein Dashboard pro Etage und Raum anlegen, so wie du sie dort eingerichtet hast.';
+
+  @override
+  String get haImportOfferLater => 'Nicht jetzt';
+
+  @override
+  String get haImportOfferGo => 'Importieren';
 }

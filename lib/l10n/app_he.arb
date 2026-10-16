@@ -1130,5 +1130,9 @@
   "haImportZhaOnly": "המכשירים האלה עובדים עם ZHA, ה-Zigbee המובנה של Home Assistant, ולא עם Zigbee2MQTT, ולכן ZigDash לא יכול להציג אותם.",
   "haImportNothing": "אף אחד ממכשירי ה-Zigbee2MQTT של הבית הזה לא נמצא ב-Home Assistant.",
   "haImportDone": "בוצע. אריחים ששמם שונה: {renamed}. לוחות שנוספו: {dashboards}.",
-  "haImportOpen": "פתיחת הלוחות"
+  "haImportOpen": "פתיחת הלוחות",
+  "haImportOfferTitle": "להביא את השמות והחדרים מ-Home Assistant?",
+  "haImportOfferBody": "Home Assistant נמצא ברשת שלכם. ‏ZigDash יכול לתת לאריחים את השמות ולהוסיף לוח לכל קומה וחדר, כמו שהגדרתם שם.",
+  "haImportOfferLater": "לא עכשיו",
+  "haImportOfferGo": "ייבוא"
 }

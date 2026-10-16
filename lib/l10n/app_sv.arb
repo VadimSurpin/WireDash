@@ -1061,5 +1061,9 @@
   "haImportZhaOnly": "De här enheterna körs på ZHA, Home Assistants eget Zigbee, inte på Zigbee2MQTT, så ZigDash kan inte visa dem.",
   "haImportNothing": "Ingen av det här hemmets Zigbee2MQTT-enheter finns i Home Assistant.",
   "haImportDone": "Klart. Rutor med nytt namn: {renamed}. Tillagda dashboards: {dashboards}.",
-  "haImportOpen": "Öppna dashboards"
+  "haImportOpen": "Öppna dashboards",
+  "haImportOfferTitle": "Hämta namn och rum från Home Assistant?",
+  "haImportOfferBody": "Home Assistant finns på ditt nätverk. ZigDash kan namnge dina rutor och lägga till en dashboard per våning och rum, så som du har satt upp dem där.",
+  "haImportOfferLater": "Inte nu",
+  "haImportOfferGo": "Importera"
 }

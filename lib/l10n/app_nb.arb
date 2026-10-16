@@ -1061,5 +1061,9 @@
   "haImportZhaOnly": "Disse enhetene kjører på ZHA, Home Assistants egen Zigbee, ikke på Zigbee2MQTT, så ZigDash kan ikke vise dem.",
   "haImportNothing": "Ingen av Zigbee2MQTT-enhetene i dette hjemmet er i Home Assistant.",
   "haImportDone": "Ferdig. Fliser med nytt navn: {renamed}. Nye dashbord: {dashboards}.",
-  "haImportOpen": "Åpne dashbord"
+  "haImportOpen": "Åpne dashbord",
+  "haImportOfferTitle": "Hente navn og rom fra Home Assistant?",
+  "haImportOfferBody": "Home Assistant er på nettverket ditt. ZigDash kan gi flisene navn og legge til et dashbord per etasje og rom, slik du har satt dem opp der.",
+  "haImportOfferLater": "Ikke nå",
+  "haImportOfferGo": "Importer"
 }

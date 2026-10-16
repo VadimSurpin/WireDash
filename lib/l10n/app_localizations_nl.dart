@@ -3361,4 +3361,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Dashboards openen';
+
+  @override
+  String get haImportOfferTitle =>
+      'Namen en ruimtes uit Home Assistant overnemen?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant staat op je netwerk. ZigDash kan je tegels een naam geven en een dashboard per verdieping en ruimte toevoegen, zoals je ze daar hebt ingesteld.';
+
+  @override
+  String get haImportOfferLater => 'Niet nu';
+
+  @override
+  String get haImportOfferGo => 'Importeren';
 }

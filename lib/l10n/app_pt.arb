@@ -1021,5 +1021,9 @@
   "haImportZhaOnly": "Estes dispositivos usam ZHA, o Zigbee próprio do Home Assistant, e não o Zigbee2MQTT, por isso o ZigDash não os pode mostrar.",
   "haImportNothing": "Nenhum dos dispositivos Zigbee2MQTT desta casa está no Home Assistant.",
   "haImportDone": "Pronto. Mosaicos renomeados: {renamed}. Painéis adicionados: {dashboards}.",
-  "haImportOpen": "Abrir painéis"
+  "haImportOpen": "Abrir painéis",
+  "haImportOfferTitle": "Trazer os nomes e as divisões do Home Assistant?",
+  "haImportOfferBody": "O Home Assistant está na sua rede. O ZigDash pode dar nome aos mosaicos e adicionar um painel por piso e divisão, como os configurou lá.",
+  "haImportOfferLater": "Agora não",
+  "haImportOfferGo": "Importar"
 }

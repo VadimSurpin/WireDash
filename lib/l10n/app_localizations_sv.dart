@@ -3350,4 +3350,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get haImportOpen => 'Öppna dashboards';
+
+  @override
+  String get haImportOfferTitle => 'Hämta namn och rum från Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant finns på ditt nätverk. ZigDash kan namnge dina rutor och lägga till en dashboard per våning och rum, så som du har satt upp dem där.';
+
+  @override
+  String get haImportOfferLater => 'Inte nu';
+
+  @override
+  String get haImportOfferGo => 'Importera';
 }

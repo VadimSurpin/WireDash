@@ -5977,6 +5977,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open dashboards'**
   String get haImportOpen;
+
+  /// No description provided for @haImportOfferTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring your names and rooms from Home Assistant?'**
+  String get haImportOfferTitle;
+
+  /// No description provided for @haImportOfferBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant is on your network. ZigDash can name your tiles and add a dashboard per floor and room, the way you set them up there.'**
+  String get haImportOfferBody;
+
+  /// No description provided for @haImportOfferLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get haImportOfferLater;
+
+  /// No description provided for @haImportOfferGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get haImportOfferGo;
 }
 
 class _AppLocalizationsDelegate
