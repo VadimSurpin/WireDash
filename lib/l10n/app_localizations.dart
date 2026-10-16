@@ -2573,8 +2573,8 @@ abstract class AppLocalizations {
   /// No description provided for @foundDevices.
   ///
   /// In en, this message translates to:
-  /// **'Found {count} devices'**
-  String foundDevices(Object count);
+  /// **'{count, plural, =1{Found 1 device} other{Found {count} devices}}'**
+  String foundDevices(int count);
 
   /// No description provided for @foundDevicesHint.
   ///
@@ -2771,8 +2771,8 @@ abstract class AppLocalizations {
   /// No description provided for @setupReviewSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'{count} devices found. Choose what goes on your first dashboard.'**
-  String setupReviewSubtitle(Object count);
+  /// **'{count, plural, =1{1 device found.} other{{count} devices found.}} Choose what goes on your first dashboard.'**
+  String setupReviewSubtitle(int count);
 
   /// No description provided for @setupCreateWithCount.
   ///
@@ -3151,6 +3151,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your hub is at {host}, but its MQTT broker can\'t be reached. In the hub\'s web UI, open Settings › MQTT, turn on Allow External and check that Zigbee2MQTT is running, then try again.'**
   String setupNoBrokerSmlightBody(String host);
+
+  /// No description provided for @setupZ2mAsking.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking Zigbee2MQTT where its broker is…'**
+  String get setupZ2mAsking;
+
+  /// No description provided for @setupZ2mLocalOnlyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your broker only accepts connections from its own machine'**
+  String get setupZ2mLocalOnlyTitle;
+
+  /// No description provided for @setupZ2mLocalOnlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT uses {server}, and nothing answers there from your phone. Mosquitto 2 does this by default. Add these two lines to mosquitto.conf, restart Mosquitto, then try again:'**
+  String setupZ2mLocalOnlyBody(String server);
+
+  /// No description provided for @setupZ2mLocalOnlyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer a login over open access? Use a password_file instead of allow_anonymous.'**
+  String get setupZ2mLocalOnlyNote;
+
+  /// No description provided for @setupZ2mUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT uses the broker at {server}, but it didn\'t answer from your phone. Check that the broker is running and that your phone is on the same network.'**
+  String setupZ2mUnreachable(String server);
 
   /// No description provided for @setupConnectTo.
   ///

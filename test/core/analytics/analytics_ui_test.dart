@@ -116,6 +116,38 @@ void main() {
         'step': 'scan_empty',
         'hub': 'none',
       });
+
+      // 2.7.2: asking Zigbee2MQTT where its broker is counts once, with the
+      // outcome; the asking state itself is not a step.
+      const asking = SetupScanEmpty(
+        z2m: (status: Z2mAnswerStatus.asking, server: ''),
+      );
+      expect(setupStepFor(const SetupScanEmpty(), asking), isNull);
+      expect(
+        setupStepFor(
+          asking,
+          const SetupScanEmpty(
+            z2m: (
+              status: Z2mAnswerStatus.localOnly,
+              server: 'mqtt://localhost:1883',
+            ),
+          ),
+        )?.props,
+        {'step': 'z2m_asked', 'result': 'local_only'},
+      );
+      expect(
+        setupStepFor(
+          asking,
+          const SetupVerifying(
+            SetupCandidate(
+              host: '192.168.1.30',
+              port: 1884,
+              protocol: MqttProtocol.tcp,
+            ),
+          ),
+        )?.props,
+        {'step': 'z2m_asked', 'result': 'broker'},
+      );
       expect(
         setupStepFor(
           null,

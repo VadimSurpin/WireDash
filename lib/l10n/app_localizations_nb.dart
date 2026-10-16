@@ -1372,8 +1372,14 @@ class AppLocalizationsNb extends AppLocalizations {
       'Brokeren avviste tilkoblingen. Kontroller tilkoblingsinnstillingene.';
 
   @override
-  String foundDevices(Object count) {
-    return 'Fant $count enheter';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Fant $count enheter',
+      one: 'Fant 1 enhet',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1491,8 +1497,14 @@ class AppLocalizationsNb extends AppLocalizations {
   String get setupReviewTitle => 'Enhetene dine';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count enheter funnet. Velg hva som kommer på det første dashbordet ditt.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count enheter funnet.',
+      one: '1 enhet funnet.',
+    );
+    return '$_temp0 Velg hva som kommer på det første dashbordet ditt.';
   }
 
   @override
@@ -1718,6 +1730,27 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String setupNoBrokerSmlightBody(String host) {
     return 'Huben din er på $host, men MQTT-brokeren kan ikke nås. Åpne Settings › MQTT i hubens nettgrensesnitt, slå på Allow External og sjekk at Zigbee2MQTT kjører. Prøv så igjen.';
+  }
+
+  @override
+  String get setupZ2mAsking => 'Spør Zigbee2MQTT hvor brokeren er…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'Brokeren godtar bare tilkoblinger fra sin egen maskin';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'Zigbee2MQTT bruker $server, og ingenting svarer der fra telefonen din. Mosquitto 2 gjør dette som standard. Legg til disse to linjene i mosquitto.conf, start Mosquitto på nytt og prøv igjen:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'Vil du heller ha innlogging enn åpen tilgang? Bruk en password_file i stedet for allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'Zigbee2MQTT bruker brokeren på $server, men den svarte ikke telefonen din. Sjekk at brokeren kjører og at telefonen er på samme nettverk.';
   }
 
   @override

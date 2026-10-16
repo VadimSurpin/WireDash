@@ -7,6 +7,7 @@ import 'package:zigdash/features/connections/discovery/address_check.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
 import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
+import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_candidate.dart';
@@ -108,6 +109,8 @@ class _Harness {
     String? ip = '192.168.1.5',
     AddressChecker? checkAddress,
     HubIdentifier? identifyHub,
+    Z2mBrokerLookup? askZ2m,
+    BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
   }) : diagnostics = _FakeDiagnostics(reports ?? [ok()]),
        creator = _FakeCreator() {
@@ -130,6 +133,8 @@ class _Harness {
       onCreated: onCreated,
       checkAddress: checkAddress,
       identifyHub: identifyHub,
+      askZ2m: askZ2m,
+      probeBroker: probeBroker,
       networkFacts: networkFacts,
     );
   }
@@ -767,6 +772,126 @@ void main() {
       // Facts that fail to load never stop the scan.
       final h2 = await empty(networkFacts: () async => throw 'no');
       expect((h2.coordinator.state as SetupScanEmpty).network, isNull);
+    });
+  });
+
+  // 2.7.2: the scan saw Zigbee2MQTT's web page but no broker, so setup asks
+  // the page where its broker is.
+  group('asking Zigbee2MQTT', () {
+    const z2mPage = HubFound(
+      kind: HubKind.zigbee2mqtt,
+      host: '192.168.1.30',
+      port: 8080,
+    );
+
+    Future<_Harness> emptyScanWith(
+      List<HubFound> hubs, {
+      Z2mBrokerSetting? Function(String host, int port)? answer,
+      Map<String, ProbeResult> brokers = const {},
+      List<String>? asked,
+      List<String>? probed,
+    }) async {
+      final h = _Harness(
+        run: (_, _) => ScanRun(
+          events: Stream.fromIterable([for (final hub in hubs) HubSeen(hub)]),
+          addHub: (_) {},
+        ),
+        askZ2m: (host, port) async {
+          asked?.add('$host:$port');
+          return answer?.call(host, port);
+        },
+        probeBroker: (host, port) async {
+          probed?.add('$host:$port');
+          return brokers['$host:$port'];
+        },
+      );
+      await h.coordinator.startScan();
+      for (var i = 0; i < 8; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+      return h;
+    }
+
+    Z2mBrokerSetting setting(String server, {String? user}) => z2mBrokerSetting(
+      {'server': server, 'user': ?user},
+      frontendHost: '192.168.1.30',
+    )!;
+
+    test('a broker where Zigbee2MQTT says: verified, its user ready', () async {
+      final asked = <String>[];
+      final h = await emptyScanWith(
+        [z2mPage],
+        asked: asked,
+        answer: (_, _) => setting('mqtt://localhost:1884', user: 'zigbee'),
+        brokers: {
+          '192.168.1.30:1884': const ProbeResult(
+            host: '192.168.1.30',
+            port: 1884,
+            needsAuth: true,
+          ),
+        },
+      );
+      expect(asked, ['192.168.1.30:8080']);
+      final auth = h.coordinator.state as SetupNeedsAuth;
+      expect(auth.candidate.port, 1884);
+      expect(auth.suggestedUser, 'zigbee');
+    });
+
+    test(
+      'nothing answers on the same machine: it listens only there',
+      () async {
+        final h = await emptyScanWith([
+          z2mPage,
+        ], answer: (_, _) => setting('mqtt://localhost:1883'));
+        final empty = h.coordinator.state as SetupScanEmpty;
+        expect(empty.z2m, (
+          status: Z2mAnswerStatus.localOnly,
+          server: 'mqtt://localhost:1883',
+        ));
+      },
+    );
+
+    test('another address that does not answer is named', () async {
+      final probed = <String>[];
+      final h = await emptyScanWith(
+        [z2mPage],
+        probed: probed,
+        answer: (_, _) => setting('mqtt://192.168.1.20:1883'),
+      );
+      expect(probed, ['192.168.1.20:1883']);
+      expect((h.coordinator.state as SetupScanEmpty).z2m, (
+        status: Z2mAnswerStatus.unreachable,
+        server: 'mqtt://192.168.1.20:1883',
+      ));
+    });
+
+    test('the page does not answer: the result stays as it was', () async {
+      final h = await emptyScanWith([z2mPage]);
+      expect((h.coordinator.state as SetupScanEmpty).z2m, (
+        status: Z2mAnswerStatus.noAnswer,
+        server: '',
+      ));
+    });
+
+    test('an SMLIGHT hub is asked on the Zigbee2MQTT port', () async {
+      final asked = <String>[];
+      await emptyScanWith([
+        const HubFound(kind: HubKind.smlight, host: '192.168.1.40', port: 80),
+      ], asked: asked);
+      expect(asked, ['192.168.1.40:8080']);
+    });
+
+    test('Home Assistant alone is not asked', () async {
+      final asked = <String>[];
+      final h = await emptyScanWith([
+        const HubFound(
+          kind: HubKind.homeAssistant,
+          host: '192.168.1.50',
+          port: 8123,
+        ),
+      ], asked: asked);
+      expect(asked, isEmpty);
+      expect((h.coordinator.state as SetupScanEmpty).z2m, isNull);
     });
   });
 }

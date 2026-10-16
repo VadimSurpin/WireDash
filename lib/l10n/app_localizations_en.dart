@@ -1370,8 +1370,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'The broker refused the connection. Check the connection settings.';
 
   @override
-  String foundDevices(Object count) {
-    return 'Found $count devices';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Found $count devices',
+      one: 'Found 1 device',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1490,8 +1496,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupReviewTitle => 'Your devices';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count devices found. Choose what goes on your first dashboard.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices found.',
+      one: '1 device found.',
+    );
+    return '$_temp0 Choose what goes on your first dashboard.';
   }
 
   @override
@@ -1717,6 +1729,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String setupNoBrokerSmlightBody(String host) {
     return 'Your hub is at $host, but its MQTT broker can\'t be reached. In the hub\'s web UI, open Settings › MQTT, turn on Allow External and check that Zigbee2MQTT is running, then try again.';
+  }
+
+  @override
+  String get setupZ2mAsking => 'Asking Zigbee2MQTT where its broker is…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'Your broker only accepts connections from its own machine';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'Zigbee2MQTT uses $server, and nothing answers there from your phone. Mosquitto 2 does this by default. Add these two lines to mosquitto.conf, restart Mosquitto, then try again:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'Prefer a login over open access? Use a password_file instead of allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'Zigbee2MQTT uses the broker at $server, but it didn\'t answer from your phone. Check that the broker is running and that your phone is on the same network.';
   }
 
   @override

@@ -1379,8 +1379,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'O broker recusou a conexão. Verifique as configurações de conexão.';
 
   @override
-  String foundDevices(Object count) {
-    return '$count dispositivos encontrados';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dispositivos encontrados',
+      one: '1 dispositivo encontrado',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1500,8 +1506,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get setupReviewTitle => 'Seus dispositivos';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return '$count dispositivos encontrados. Escolha o que vai para o seu primeiro painel.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dispositivos encontrados.',
+      one: '1 dispositivo encontrado.',
+    );
+    return '$_temp0 Escolha o que vai para o seu primeiro painel.';
   }
 
   @override
@@ -1727,6 +1739,27 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String setupNoBrokerSmlightBody(String host) {
     return 'O seu hub está em $host, mas o seu broker MQTT não está acessível. Na interface web do hub, abra Settings › MQTT, ative Allow External e verifique que o Zigbee2MQTT está a correr. Depois tente novamente.';
+  }
+
+  @override
+  String get setupZ2mAsking => 'A perguntar ao Zigbee2MQTT onde está o broker…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'O seu broker só aceita ligações da própria máquina';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'O Zigbee2MQTT usa $server, e do seu telefone nada responde aí. O Mosquitto 2 faz isto por omissão. Adicione estas duas linhas ao mosquitto.conf, reinicie o Mosquitto e tente de novo:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'Prefere um login em vez de acesso aberto? Use um password_file em vez de allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'O Zigbee2MQTT usa o broker em $server, mas ele não respondeu ao seu telefone. Verifique se o broker está a correr e se o telefone está na mesma rede.';
   }
 
   @override

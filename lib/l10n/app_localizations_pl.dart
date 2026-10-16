@@ -1392,7 +1392,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Broker odmówił połączenia. Sprawdź ustawienia połączenia.';
 
   @override
-  String foundDevices(Object count) {
+  String foundDevices(int count) {
     return 'Znalezione urządzenia: $count';
   }
 
@@ -1511,7 +1511,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get setupReviewTitle => 'Twoje urządzenia';
 
   @override
-  String setupReviewSubtitle(Object count) {
+  String setupReviewSubtitle(int count) {
     return 'Znalezione urządzenia: $count. Wybierz, co trafi na pierwszy dashboard.';
   }
 
@@ -1737,6 +1737,27 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String setupNoBrokerSmlightBody(String host) {
     return 'Twój hub jest pod adresem $host, ale jego broker MQTT jest nieosiągalny. W interfejsie webowym huba otwórz Settings › MQTT, włącz Allow External i sprawdź, czy Zigbee2MQTT działa. Potem spróbuj ponownie.';
+  }
+
+  @override
+  String get setupZ2mAsking => 'Pytamy Zigbee2MQTT, gdzie jest jego broker…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'Twój broker przyjmuje połączenia tylko z własnego komputera';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'Zigbee2MQTT używa $server, a z twojego telefonu nic tam nie odpowiada. Mosquitto 2 tak działa domyślnie. Dodaj te dwie linie do mosquitto.conf, uruchom ponownie Mosquitto i spróbuj jeszcze raz:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'Wolisz logowanie zamiast otwartego dostępu? Użyj password_file zamiast allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'Zigbee2MQTT używa brokera pod adresem $server, ale nie odpowiedział twojemu telefonowi. Sprawdź, czy broker działa i czy telefon jest w tej samej sieci.';
   }
 
   @override

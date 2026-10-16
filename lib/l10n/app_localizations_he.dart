@@ -1360,8 +1360,14 @@ class AppLocalizationsHe extends AppLocalizations {
   String get diagAuthRefused => 'הברוקר סירב לחיבור. בדקו את הגדרות החיבור.';
 
   @override
-  String foundDevices(Object count) {
-    return 'נמצאו $count מכשירים';
+  String foundDevices(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'נמצאו $count מכשירים',
+      one: 'נמצא מכשיר אחד',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1479,8 +1485,14 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupReviewTitle => 'המכשירים שלך';
 
   @override
-  String setupReviewSubtitle(Object count) {
-    return 'נמצאו $count מכשירים. בחרו מה ייכנס ללוח הראשון.';
+  String setupReviewSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'נמצאו $count מכשירים.',
+      one: 'נמצא מכשיר אחד.',
+    );
+    return '$_temp0 בחרו מה ייכנס ללוח הראשון.';
   }
 
   @override
@@ -1702,6 +1714,27 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String setupNoBrokerSmlightBody(String host) {
     return 'הרכזת נמצאת בכתובת $host, אבל אי אפשר להגיע ל-MQTT broker שלה. בממשק הווב של הרכזת פתחו Settings › MQTT, הפעילו Allow External ובדקו ש-Zigbee2MQTT פועל. אחר כך נסו שוב.';
+  }
+
+  @override
+  String get setupZ2mAsking => 'שואלים את Zigbee2MQTT איפה ה-broker שלו…';
+
+  @override
+  String get setupZ2mLocalOnlyTitle =>
+      'ה-broker שלכם מקבל חיבורים רק מהמכשיר שעליו הוא רץ';
+
+  @override
+  String setupZ2mLocalOnlyBody(String server) {
+    return 'Zigbee2MQTT משתמש ב-$server, ומהטלפון שלכם שום דבר לא עונה שם. כך Mosquitto 2 מתנהג כברירת מחדל. הוסיפו את שתי השורות האלה ל-mosquitto.conf, הפעילו מחדש את Mosquitto ונסו שוב:';
+  }
+
+  @override
+  String get setupZ2mLocalOnlyNote =>
+      'מעדיפים התחברות עם סיסמה במקום גישה פתוחה? השתמשו ב-password_file במקום allow_anonymous.';
+
+  @override
+  String setupZ2mUnreachable(String server) {
+    return 'Zigbee2MQTT משתמש ב-broker בכתובת $server, אבל הוא לא ענה לטלפון שלכם. בדקו שה-broker פועל ושהטלפון באותה רשת.';
   }
 
   @override

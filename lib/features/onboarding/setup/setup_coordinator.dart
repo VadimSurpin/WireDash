@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import '../../../data/database/tables/connections.dart';
 import '../../../mqtt/broker_config.dart';
 import '../../connections/diagnostics/connect_diagnostics.dart';
 import '../../connections/discovery/address_check.dart';
 import '../../connections/discovery/broker_probe.dart';
 import '../../connections/discovery/broker_scan_service.dart';
 import '../../connections/discovery/hub_probe.dart';
+import '../../connections/discovery/z2m_frontend.dart';
 import '../../discovery/models/z2m_device.dart';
 import 'recommendation_policy.dart';
 import 'setup_candidate.dart';
@@ -40,6 +42,14 @@ Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
   ...BrokerScanService.defaultHubs,
   if (platform == SetupPlatform.smlight) HubKind.smlight,
 };
+
+/// What Zigbee2MQTT's web page at host:port says about its broker; see
+/// [z2mBrokerSetting].
+typedef Z2mBrokerLookup =
+    Future<Z2mBrokerSetting?> Function(String host, int port);
+
+/// Probes one host:port for an MQTT broker.
+typedef BrokerPortProbe = Future<ProbeResult?> Function(String host, int port);
 
 /// Names the machine at a host from its web pages; see [identifyHost].
 typedef HubIdentifier = Future<HubKind?> Function(String host);
@@ -117,7 +127,8 @@ class SetupScanning extends SetupState {
 /// it saw instead, [platform] the user's answer, [tried] what it covered,
 /// [deviceIp] the phone's address and [network] what it ran on, for the
 /// result screen and its analytics. [address] is the address check's state
-/// once the user typed one (2.6.2).
+/// once the user typed one (2.6.2). [z2m] is what Zigbee2MQTT's web page
+/// said about its broker, once asked (2.7.2).
 class SetupScanEmpty extends SetupState {
   const SetupScanEmpty({
     this.hubs = const [],
@@ -126,6 +137,7 @@ class SetupScanEmpty extends SetupState {
     this.deviceIp,
     this.network,
     this.address,
+    this.z2m,
   });
   final List<HubFound> hubs;
   final SetupPlatform? platform;
@@ -133,12 +145,15 @@ class SetupScanEmpty extends SetupState {
   final String? deviceIp;
   final NetworkFacts? network;
   final AddressCheckState? address;
+  final Z2mAnswer? z2m;
 
   SetupScanEmpty copyWith({
     List<HubFound>? hubs,
     SetupPlatform? platform,
     AddressCheckState? address,
     bool clearAddress = false,
+    Z2mAnswer? z2m,
+    bool clearZ2m = false,
   }) => SetupScanEmpty(
     hubs: hubs ?? this.hubs,
     platform: platform ?? this.platform,
@@ -146,6 +161,7 @@ class SetupScanEmpty extends SetupState {
     deviceIp: deviceIp,
     network: network,
     address: clearAddress ? null : (address ?? this.address),
+    z2m: clearZ2m ? null : (z2m ?? this.z2m),
   );
 
   /// The hub the result speaks about: Home Assistant first (it hosts the
@@ -160,6 +176,15 @@ class SetupScanEmpty extends SetupState {
   }
 }
 
+/// Asking Zigbee2MQTT's web page where its broker is (2.7.2), and what came
+/// of it. [broker] leaves the empty result for verification; the others stay
+/// on it.
+enum Z2mAnswerStatus { asking, broker, localOnly, unreachable, noAnswer }
+
+/// [server] is the broker as Zigbee2MQTT names it (`mqtt://localhost:1883`),
+/// empty while asking or when nothing answered.
+typedef Z2mAnswer = ({Z2mAnswerStatus status, String server});
+
 /// Running the diagnostic ladder against [candidate].
 class SetupVerifying extends SetupState {
   const SetupVerifying(this.candidate);
@@ -172,10 +197,18 @@ class SetupVerifying extends SetupState {
 /// The broker refused anonymous access. [platform] is the user's answer so
 /// far, so the prompt can say where that platform keeps its MQTT login.
 class SetupNeedsAuth extends SetupState {
-  const SetupNeedsAuth(this.candidate, {this.rejected = false, this.platform});
+  const SetupNeedsAuth(
+    this.candidate, {
+    this.rejected = false,
+    this.platform,
+    this.suggestedUser,
+  });
   final SetupCandidate candidate;
   final bool rejected;
   final SetupPlatform? platform;
+
+  /// The username Zigbee2MQTT logs in with, when its web page said (2.7.2).
+  final String? suggestedUser;
 }
 
 /// A categorized failure. [failedAtCreation] marks save failures: retry then
@@ -228,6 +261,8 @@ class SetupCoordinator {
     required SetupStore creator,
     AddressChecker? checkAddress,
     HubIdentifier? identifyHub,
+    Z2mBrokerLookup? askZ2m,
+    BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
     String base = 'zigbee2mqtt',
     this.onCreated,
@@ -239,6 +274,8 @@ class SetupCoordinator {
        _creator = creator,
        _checkAddress = checkAddress,
        _identifyHub = identifyHub,
+       _askZ2m = askZ2m,
+       _probeBroker = probeBroker,
        _networkFacts = networkFacts;
 
   final ScanRunFactory _scan;
@@ -255,6 +292,16 @@ class SetupCoordinator {
   /// the cards say "Home Assistant" instead of two identical "Possible
   /// connection found" (2.7.1). Null where the platform cannot probe.
   final HubIdentifier? _identifyHub;
+
+  /// Asks Zigbee2MQTT's web page where its broker is, when the scan saw the
+  /// page but no broker (2.7.2), and probes the answer. Null where the
+  /// platform cannot.
+  final Z2mBrokerLookup? _askZ2m;
+  final BrokerPortProbe? _probeBroker;
+
+  /// The username Zigbee2MQTT logs in with, from its web page, for the login
+  /// step.
+  String? _z2mUser;
   final NetworkFactsProvider? _networkFacts;
 
   /// Runs once after a successful setup, before [SetupComplete] is emitted
@@ -293,6 +340,7 @@ class SetupCoordinator {
   Future<void> startScan() async {
     final op = ++_op;
     _cancelScan();
+    _z2mUser = null;
     _emit(SetupScanning(const [], platform: _platform));
     final ip = await _deviceIp();
     if (op != _op) return;
@@ -361,6 +409,7 @@ class SetupCoordinator {
               network: network,
             ),
           );
+          unawaited(_askZigbee2Mqtt());
         } else if (merged.length == 1) {
           // One broker found: continue without asking the user to pick it.
           unawaited(_verify(merged.single));
@@ -382,6 +431,78 @@ class SetupCoordinator {
         }
       },
     );
+  }
+
+  /// The scan (or the address check) saw Zigbee2MQTT's web page but no
+  /// broker: ask the page where its broker is (2.7.2). A broker that answers
+  /// there is verified like a found one, with Zigbee2MQTT's username ready
+  /// for the login step; otherwise the empty result says why: the broker
+  /// listens only on its own machine (Mosquitto 2's default), or it did not
+  /// answer at the address Zigbee2MQTT uses. An SMLIGHT hub serves the page
+  /// on the Zigbee2MQTT port too. Home Assistant's add-on page opens only
+  /// inside Home Assistant, so it is not asked.
+  Future<void> _askZigbee2Mqtt() async {
+    final ask = _askZ2m;
+    final probe = _probeBroker;
+    final s = _state;
+    if (ask == null || probe == null || s is! SetupScanEmpty || s.z2m != null) {
+      return;
+    }
+    final pages = [
+      for (final h in s.hubs)
+        if (h.kind == HubKind.zigbee2mqtt)
+          (h.host, h.port)
+        else if (h.kind == HubKind.smlight)
+          (h.host, hubPorts[HubKind.zigbee2mqtt]!),
+    ];
+    if (pages.isEmpty) return;
+    final op = ++_op;
+    _emit(s.copyWith(z2m: (status: Z2mAnswerStatus.asking, server: '')));
+    for (final (host, port) in pages) {
+      Z2mBrokerSetting? setting;
+      try {
+        setting = await ask(host, port);
+      } catch (_) {}
+      if (op != _op) return;
+      if (setting == null) continue;
+      for (final target in setting.hosts) {
+        ProbeResult? found;
+        try {
+          found = await probe(target, setting.port);
+        } catch (_) {}
+        if (op != _op) return;
+        if (found == null) continue;
+        _z2mUser = setting.user;
+        final candidate = SetupCandidate(
+          host: found.host,
+          port: found.port,
+          protocol: setting.tls ? MqttProtocol.tcpSsl : MqttProtocol.tcp,
+          needsAuth: found.needsAuth,
+        );
+        _emit(SetupVerifying(candidate));
+        await _verify(candidate);
+        return;
+      }
+      final current = _state;
+      if (current is! SetupScanEmpty) return;
+      _emit(
+        current.copyWith(
+          z2m: (
+            status: setting.sameMachine
+                ? Z2mAnswerStatus.localOnly
+                : Z2mAnswerStatus.unreachable,
+            server: setting.server,
+          ),
+        ),
+      );
+      return;
+    }
+    final current = _state;
+    if (current is SetupScanEmpty) {
+      _emit(
+        current.copyWith(z2m: (status: Z2mAnswerStatus.noAnswer, server: '')),
+      );
+    }
   }
 
   Future<void> _nameCandidates(List<SetupCandidate> found, int op) async {
@@ -436,6 +557,7 @@ class SetupCoordinator {
           deviceIp: s.deviceIp,
           network: s.network,
           address: s.address,
+          z2m: s.z2m,
         ),
       );
     }
@@ -485,8 +607,10 @@ class SetupCoordinator {
           current.copyWith(
             hubs: [result.hub!],
             address: (status: AddressCheckStatus.hub, host: parsed.host),
+            clearZ2m: true,
           ),
         );
+        await _askZigbee2Mqtt();
       case AddressOutcome.nothing:
       case AddressOutcome.notResolved:
       case AddressOutcome.notLocal:
@@ -647,7 +771,9 @@ class SetupCoordinator {
 
   Future<void> _verify(SetupCandidate candidate) async {
     if (candidate.needsAuth && _username == null) {
-      _emit(SetupNeedsAuth(candidate, platform: _platform));
+      _emit(
+        SetupNeedsAuth(candidate, platform: _platform, suggestedUser: _z2mUser),
+      );
       return;
     }
     final op = ++_op;
@@ -682,6 +808,7 @@ class SetupCoordinator {
             candidate,
             rejected: _username != null,
             platform: _platform,
+            suggestedUser: _z2mUser,
           ),
         );
         return;

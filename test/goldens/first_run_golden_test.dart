@@ -25,6 +25,11 @@ const _haHub = HubFound(
   host: '192.168.1.20',
   port: 8123,
 );
+const _z2mHub = HubFound(
+  kind: HubKind.zigbee2mqtt,
+  host: '192.168.1.30',
+  port: 8080,
+);
 const _hub = SetupCandidate(
   host: '192.168.68.55',
   port: 1883,
@@ -82,6 +87,11 @@ final _outcomes = <String, SetupState>{
   'nothing_found': const SetupScanEmpty(),
   // 2.5: Home Assistant answered but no broker did.
   'hub_no_broker': const SetupScanEmpty(hubs: [_haHub]),
+  // 2.7.2: Zigbee2MQTT said where its broker is, and it listens only there.
+  'z2m_local_only': const SetupScanEmpty(
+    hubs: [_z2mHub],
+    z2m: (status: Z2mAnswerStatus.localOnly, server: 'mqtt://localhost:1883'),
+  ),
   'needs_login': const SetupNeedsAuth(_hub),
   // 2.7.1: after a rejected login, where a working login surely is.
   'login_rejected': const SetupNeedsAuth(

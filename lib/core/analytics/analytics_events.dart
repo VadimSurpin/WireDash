@@ -63,7 +63,20 @@ enum SetupStepKind {
 
   /// The address check on the empty result (2.6.2), with its [SetupStep.result].
   address,
+
+  /// Test & connect on the broker form (2.7.2), with its
+  /// [SetupStep.result]: connected, or the first step that failed.
+  manualTest,
+
+  /// Zigbee2MQTT's web page asked where its broker is (2.7.2), with its
+  /// [SetupStep.result]: broker, local_only, unreachable or no_answer.
+  z2mAsked,
 }
+
+/// How Test & connect on the broker form ended (2.7.2): connected, or the
+/// first step that failed (name lookup, TCP connection, MQTT handshake,
+/// login). Never the address.
+enum ManualTestResult { connected, resolve, tcp, connack, auth }
 
 /// Each step of first-run setup: where people get stuck. An empty scan
 /// (2.5) also says what the scan saw: the user's platform answer, the hub
@@ -86,6 +99,7 @@ class SetupStep extends AnalyticsEvent {
     this.vpn,
     this.network,
     this.result,
+    this.tidied,
   });
 
   final SetupStepKind step;
@@ -114,6 +128,10 @@ class SetupStep extends AnalyticsEvent {
 
   /// The hub kind an empty scan found; null on an empty scan means none.
   final Enum? hub;
+
+  /// Whether the broker form cleaned up what was typed (a pasted browser
+  /// link, a web port), on [SetupStepKind.manualTest].
+  final bool? tidied;
   final int? hostsTried;
   final bool? widened;
 
@@ -156,6 +174,7 @@ class SetupStep extends AnalyticsEvent {
     if (vpn != null) 'vpn': vpn! ? 'yes' : 'no',
     if (network != null) 'net': networkLabel(network!),
     if (result != null) 'result': _snake(result!.name),
+    if (tidied != null) 'tidied': tidied! ? 'yes' : 'no',
   };
 
   /// The interface kind as a fixed label: wifi, ethernet or other.
