@@ -1065,5 +1065,9 @@
   "haImportSignInHelp": "Logowanie Home Assistant otworzy się w przeglądarce. ZigDash nigdy nie widzi twojego hasła i po odczycie wylogowuje się.",
   "haImportOrToken": "Albo użyj tokena dostępu długoterminowego",
   "haImportReadToken": "Odczytaj z tokenem",
-  "haImportSignInRefused": "Home Assistant nie przyjął logowania. Zdarza się to, gdy Home Assistant nie ma dostępu do internetu. Użyj poniżej tokena dostępu długoterminowego."
+  "haImportSignInRefused": "Home Assistant nie przyjął logowania. Zdarza się to, gdy Home Assistant nie ma dostępu do internetu. Użyj poniżej tokena dostępu długoterminowego.",
+  "setupIsolatedHint": "Telefon prawie nic więcej nie widzi w tej sieci Wi-Fi. Może być w sieci dla gości albo router oddziela urządzenia od siebie (często zwane izolacją klientów lub AP). Połącz się z główną siecią Wi-Fi albo to wyłącz i spróbuj ponownie.",
+  "setupAuthTrust": "Twój login zostaje na tym telefonie i trafia tylko do twojego brokera. ZigDash nie ma serwera ani konta, a każda aplikacja MQTT loguje się w ten sposób. Najbezpieczniej: osobny użytkownik MQTT tylko dla ZigDash, którego możesz w każdej chwili usunąć.",
+  "setupAuthWhatKept": "Co ZigDash zachowuje",
+  "setupAuthDemoFirst": "Najpierw wypróbuj demo"
 }

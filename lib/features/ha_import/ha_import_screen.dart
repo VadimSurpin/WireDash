@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
+import '../../core/review/review_prompt_controller.dart';
 import '../../core/router/routes.dart';
 import '../../data/database/daos/device_registry_dao.dart';
 import '../../data/database/database.dart';
@@ -135,6 +136,10 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
       _ => null,
     };
     if (event != null) ref.read(analyticsProvider).track(event);
+    // A happy moment (2.8.1): the review policy still decides.
+    if (_controller?.value is HaImportDone) {
+      ref.read(reviewPromptControllerProvider).recordSuccessfulSession();
+    }
   }
 
   @override

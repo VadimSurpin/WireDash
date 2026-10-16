@@ -1,0 +1,1 @@
+ZigDash 2.8.1: vänligare installation. När en broker ber om inloggning säger ZigDash nu tydligt att den stannar på telefonen och bara går till din egen broker (ingen server, inget konto), länkar till vad den sparar och låter dig prova demon först. Ser telefonen nästan inget på wifi-nätet säger den att den kanske är på ett gästnät eller hålls isär av routern.

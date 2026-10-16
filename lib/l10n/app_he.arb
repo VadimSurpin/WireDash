@@ -1139,5 +1139,9 @@
   "haImportSignInHelp": "מסך ההתחברות של Home Assistant נפתח בדפדפן. ‏ZigDash לא רואה את הסיסמה שלכם ומתנתק שוב אחרי הקריאה.",
   "haImportOrToken": "או להשתמש באסימון גישה ארוך טווח",
   "haImportReadToken": "קריאה עם אסימון",
-  "haImportSignInRefused": "Home Assistant לא קיבל את ההתחברות. זה קורה כשאין ל-Home Assistant גישה לאינטרנט. השתמשו במקום זה באסימון גישה ארוך טווח למטה."
+  "haImportSignInRefused": "Home Assistant לא קיבל את ההתחברות. זה קורה כשאין ל-Home Assistant גישה לאינטרנט. השתמשו במקום זה באסימון גישה ארוך טווח למטה.",
+  "setupIsolatedHint": "הטלפון שלכם כמעט לא רואה שום דבר אחר ברשת ה-Wi-Fi הזו. ייתכן שהוא ברשת אורחים, או שהנתב מפריד בין המכשירים (נקרא לרוב client isolation או AP isolation). התחברו ל-Wi-Fi הראשי או כבו את זה, ונסו שוב.",
+  "setupAuthTrust": "פרטי ההתחברות נשארים בטלפון הזה ועוברים רק ל-broker שלכם. ל-ZigDash אין שרת ואין חשבון, וכל אפליקציית MQTT מתחברת כך. הכי בטוח: משתמש MQTT נפרד רק ל-ZigDash, שאפשר למחוק בכל רגע.",
+  "setupAuthWhatKept": "מה ZigDash שומר",
+  "setupAuthDemoFirst": "לנסות קודם את ההדגמה"
 }

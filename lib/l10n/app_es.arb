@@ -1070,5 +1070,9 @@
   "haImportSignInHelp": "El inicio de sesión de Home Assistant se abre en tu navegador. ZigDash nunca ve tu contraseña y cierra la sesión después de leer.",
   "haImportOrToken": "O usa un token de acceso de larga duración",
   "haImportReadToken": "Leer con token",
-  "haImportSignInRefused": "Home Assistant no aceptó el inicio de sesión. Pasa cuando Home Assistant no tiene acceso a internet. Usa un token de acceso de larga duración aquí debajo."
+  "haImportSignInRefused": "Home Assistant no aceptó el inicio de sesión. Pasa cuando Home Assistant no tiene acceso a internet. Usa un token de acceso de larga duración aquí debajo.",
+  "setupIsolatedHint": "Tu móvil apenas ve nada más en esta Wi-Fi. Puede estar en una red de invitados, o el router mantiene los dispositivos separados (suele llamarse aislamiento de clientes o de AP). Conéctate a tu Wi-Fi principal o desactiva eso, y vuelve a intentarlo.",
+  "setupAuthTrust": "Tu acceso se queda en este móvil y solo va a tu propio broker. ZigDash no tiene servidor ni cuenta, y toda app MQTT inicia sesión así. Lo más seguro: un usuario MQTT aparte solo para ZigDash, que puedes quitar cuando quieras.",
+  "setupAuthWhatKept": "Qué guarda ZigDash",
+  "setupAuthDemoFirst": "Probar primero la demo"
 }

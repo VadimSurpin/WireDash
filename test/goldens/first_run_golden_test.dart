@@ -85,6 +85,10 @@ final _outcomes = <String, SetupState>{
     hubs: [_haHub],
   ),
   'nothing_found': const SetupScanEmpty(),
+  // 2.8.1: almost nothing answered: a guest Wi-Fi or client isolation.
+  'nothing_found_isolated': const SetupScanEmpty(
+    tried: (widened: true, hostsTried: 1018, aliveHosts: 3),
+  ),
   // 2.5: Home Assistant answered but no broker did.
   'hub_no_broker': const SetupScanEmpty(hubs: [_haHub]),
   // 2.7.2: Zigbee2MQTT said where its broker is, and it listens only there.

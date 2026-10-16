@@ -1,0 +1,1 @@
+ZigDash 2.8.1: configuración más amable. Cuando un broker pide acceso, ZigDash dice claramente que se queda en tu móvil y solo va a tu propio broker (sin servidor ni cuenta), enlaza qué guarda y te deja probar primero la demo. Si tu móvil apenas ve nada en la Wi-Fi, te avisa de que puede estar en una red de invitados o separado por el router.

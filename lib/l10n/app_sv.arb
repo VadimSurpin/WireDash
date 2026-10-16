@@ -1070,5 +1070,9 @@
   "haImportSignInHelp": "Home Assistants egen inloggning öppnas i webbläsaren. ZigDash ser aldrig ditt lösenord och loggar ut igen efter läsningen.",
   "haImportOrToken": "Eller använd en långlivad åtkomsttoken",
   "haImportReadToken": "Läs med token",
-  "haImportSignInRefused": "Home Assistant godtog inte inloggningen. Det händer när Home Assistant saknar internetåtkomst. Använd en långlivad åtkomsttoken nedan i stället."
+  "haImportSignInRefused": "Home Assistant godtog inte inloggningen. Det händer när Home Assistant saknar internetåtkomst. Använd en långlivad åtkomsttoken nedan i stället.",
+  "setupIsolatedHint": "Telefonen ser nästan inget annat på det här wifi-nätet. Den kan vara på ett gästnät, eller så håller routern enheterna isär (kallas ofta klient- eller AP-isolering). Anslut till ditt huvudwifi eller stäng av det och försök igen.",
+  "setupAuthTrust": "Din inloggning stannar på den här telefonen och går bara till din egen broker. ZigDash har ingen server och inget konto, och alla MQTT-appar loggar in så här. Säkrast: en egen MQTT-användare bara för ZigDash, som du kan ta bort när som helst.",
+  "setupAuthWhatKept": "Vad ZigDash sparar",
+  "setupAuthDemoFirst": "Prova demon först"
 }

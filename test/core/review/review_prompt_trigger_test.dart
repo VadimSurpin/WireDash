@@ -22,21 +22,25 @@ class _FakeLauncher implements ReviewLauncher {
 
 /// Prefs seeded so that one more session today satisfies the default policy.
 Map<String, Object> _eligiblePrefs() => {
-      ReviewPromptController.kSessions: 3,
-      ReviewPromptController.kFirstSessionDay: '2020-01-01',
-      ReviewPromptController.kLastSessionDay: '2020-01-03',
-    };
+  ReviewPromptController.kSessions: 3,
+  ReviewPromptController.kFirstSessionDay: '2020-01-01',
+  ReviewPromptController.kLastSessionDay: '2020-01-03',
+};
 
-Future<(_FakeLauncher, StreamController<MqttStatus>, StreamController<DateTime>)>
-    _pump(
-  WidgetTester tester, {
-  required Map<String, Object> prefsValues,
-}) async {
+/// Device reports (2.8.1): live data on the dashboard counts as a session.
+var reported = StreamController<DateTime>.broadcast();
+
+Future<
+  (_FakeLauncher, StreamController<MqttStatus>, StreamController<DateTime>)
+>
+_pump(WidgetTester tester, {required Map<String, Object> prefsValues}) async {
   SharedPreferences.setMockInitialValues(prefsValues);
   final prefs = await SharedPreferences.getInstance();
+  reported = StreamController<DateTime>.broadcast();
   final launcher = _FakeLauncher();
   final status = StreamController<MqttStatus>.broadcast();
   final confirmed = StreamController<DateTime>.broadcast();
+  addTearDown(reported.close);
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -44,6 +48,7 @@ Future<(_FakeLauncher, StreamController<MqttStatus>, StreamController<DateTime>)
         reviewLauncherProvider.overrideWithValue(launcher),
         connectionStatusProvider.overrideWith((ref, id) => status.stream),
         commandConfirmedProvider.overrideWith((ref, id) => confirmed.stream),
+        deviceReportedProvider.overrideWith((ref, id) => reported.stream),
       ],
       child: const Center(child: ReviewPromptTrigger(connectionId: 'c1')),
     ),
@@ -55,8 +60,10 @@ void main() {
   // First-run decision: a successful session is a calendar day on which the
   // user sent a command and received a confirming state update.
   testWidgets('being connected alone is not a session', (tester) async {
-    final (launcher, status, confirmed) =
-        await _pump(tester, prefsValues: _eligiblePrefs());
+    final (launcher, status, confirmed) = await _pump(
+      tester,
+      prefsValues: _eligiblePrefs(),
+    );
     status.add(MqttStatus.connected);
     await tester.pump();
     await tester.pump();
@@ -67,10 +74,13 @@ void main() {
     await confirmed.close();
   });
 
-  testWidgets('a confirmed command records a session and can prompt',
-      (tester) async {
-    final (launcher, status, confirmed) =
-        await _pump(tester, prefsValues: _eligiblePrefs());
+  testWidgets('a confirmed command records a session and can prompt', (
+    tester,
+  ) async {
+    final (launcher, status, confirmed) = await _pump(
+      tester,
+      prefsValues: _eligiblePrefs(),
+    );
 
     confirmed.add(DateTime.now());
     await tester.pump();
@@ -102,6 +112,21 @@ void main() {
     final (_, status, confirmed) = await _pump(tester, prefsValues: {});
     expect(find.byType(SizedBox), findsOneWidget);
     expect(tester.getSize(find.byType(SizedBox)), Size.zero);
+    await status.close();
+    await confirmed.close();
+  });
+
+  testWidgets('live data from a device records a session (2.8.1)', (
+    tester,
+  ) async {
+    final (launcher, status, confirmed) = await _pump(
+      tester,
+      prefsValues: _eligiblePrefs(),
+    );
+    reported.add(DateTime.now());
+    await tester.pump();
+    await tester.pump();
+    expect(launcher.requests, 1);
     await status.close();
     await confirmed.close();
   });

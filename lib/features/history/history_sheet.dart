@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../alerts/node_red_installer.dart';
 import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
+import '../../core/review/review_prompt_controller.dart';
 import '../../core/theme/signal_colors.dart';
 import '../../l10n/app_localizations.dart';
 import '../panels/providers/panel_value_provider.dart';
@@ -320,6 +321,10 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
               SnackBar(content: Text(l10n.historyInstalled)),
             );
           }
+          // A happy moment (2.8.1): the review policy still decides.
+          await ref
+              .read(reviewPromptControllerProvider)
+              .recordSuccessfulSession();
         case NodeRedInstall.needsLogin:
           _track(HistorySetupResult.manual);
           await _manualSteps(l10n);
