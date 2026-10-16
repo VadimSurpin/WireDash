@@ -1,0 +1,1 @@
+ZigDash 2.7.2: gdy wyszukiwanie znajdzie Zigbee2MQTT, ale nie jego brokera, ZigDash pyta teraz Zigbee2MQTT, gdzie on jest. Jeśli działa pod innym adresem lub portem, ZigDash łączy się sam, z nazwą użytkownika z Zigbee2MQTT. Jeśli przyjmuje połączenia tylko z własnego komputera (domyślnie w Mosquitto 2), ZigDash o tym mówi i pokazuje dwie linie, które to naprawiają.

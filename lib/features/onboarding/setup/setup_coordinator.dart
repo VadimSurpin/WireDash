@@ -340,6 +340,7 @@ class SetupCoordinator {
   Future<void> startScan() async {
     final op = ++_op;
     _cancelScan();
+    _z2mUser = null;
     _emit(SetupScanning(const [], platform: _platform));
     final ip = await _deviceIp();
     if (op != _op) return;
