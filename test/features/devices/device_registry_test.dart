@@ -126,6 +126,29 @@ void main() {
     expect((await PanelDao(db).getById(custom))!.name, 'Kids room');
   });
 
+  test('a tile setup named "Motion sensor b9d5" follows a rename too',
+      () async {
+    final id = await panels.create(
+      dashboardId: dash,
+      name: 'Motion sensor b9d5',
+      type: PanelType.device,
+      topic: 'set',
+      subscribeTopic: '',
+      topicPrefixOverride: 'zigbee2mqtt/0xc02cedfffec0b9d5',
+      deviceIeee: '0xc02cedfffec0b9d5',
+      config: PanelConfig.defaultFor(PanelType.device),
+    );
+    await registry.sync('c1', 'zigbee2mqtt', [
+      const Z2mDevice(
+        friendlyName: 'Bedroom',
+        type: 'EndDevice',
+        ieeeAddress: '0xc02cedfffec0b9d5',
+        description: 'Motion sensor',
+      ),
+    ]);
+    expect((await PanelDao(db).getById(id))!.name, 'Bedroom');
+  });
+
   test('tiles on the dashboard prefix link too; unrelated topics do not',
       () async {
     final viaDashboard = await panels.create(

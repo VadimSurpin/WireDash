@@ -45,7 +45,7 @@ Future<String> createDeviceTile(
   final profile = classifyExposes(device.rawExposes);
   return panels.create(
     dashboardId: dashboardId,
-    name: name ?? device.friendlyName,
+    name: name ?? device.displayName,
     type: PanelType.device,
     topic: 'set',
     subscribeTopic: '',

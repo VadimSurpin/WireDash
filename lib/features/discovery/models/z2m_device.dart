@@ -97,14 +97,17 @@ class Z2mDevice {
 
   /// The name to show and to give new tiles: the friendly name, or for a
   /// device never named in Zigbee2MQTT (still called by its IEEE address)
-  /// what it is plus the address's last four digits, "Motion sensor · f66f"
+  /// what it is plus the address's last four digits, "Motion sensor f66f"
   /// (2.7.1). Names given in Home Assistant never reach MQTT.
-  String get displayName {
+  String get displayName => displayNameOf(friendlyName);
+
+  /// [displayName] as it reads when this device is called [name].
+  String displayNameOf(String name) {
     final what = description ?? model;
-    if (what == null || what.isEmpty || !_ieeeName.hasMatch(friendlyName)) {
-      return friendlyName;
+    if (what == null || what.isEmpty || !_ieeeName.hasMatch(name)) {
+      return name;
     }
-    return '$what · ${friendlyName.substring(friendlyName.length - 4)}';
+    return '$what ${name.substring(name.length - 4)}';
   }
 
   const Z2mDevice({

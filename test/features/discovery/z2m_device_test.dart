@@ -195,7 +195,7 @@ void main() {
           "description": "Motion sensor", "exposes": []}
       }]''').single;
       expect(d.description, 'Motion sensor');
-      expect(d.displayName, 'Motion sensor · f66f');
+      expect(d.displayName, 'Motion sensor f66f');
     });
 
     test('falls back to the model, then to the address', () {
@@ -204,7 +204,7 @@ void main() {
         type: 'EndDevice',
         model: 'ZG-204Z',
       );
-      expect(model.displayName, 'ZG-204Z · f66f');
+      expect(model.displayName, 'ZG-204Z f66f');
       const bare = Z2mDevice(
         friendlyName: '0xa4c13836276df66f',
         type: 'EndDevice',

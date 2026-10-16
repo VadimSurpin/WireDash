@@ -325,8 +325,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                     ),
                     validator: (v) {
                       final n = int.tryParse(v ?? '');
-                      if (n == null || n < 1 || n > 65535)
+                      if (n == null || n < 1 || n > 65535) {
                         return context.l10n.connPortRange;
+                      }
                       return null;
                     },
                   ),
@@ -405,8 +406,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                   ),
                   validator: (v) {
                     final n = int.tryParse(v ?? '');
-                    if (n == null || n < 5 || n > 3600)
+                    if (n == null || n < 5 || n > 3600) {
                       return context.l10n.connKeepAliveRange;
+                    }
                     return null;
                   },
                 ),
