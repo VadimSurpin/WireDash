@@ -3231,4 +3231,151 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get historyPersistence =>
       'History lives on your broker. If you run Mosquitto yourself, make sure its config has \"persistence true\", or history is lost when the broker restarts.';
+
+  @override
+  String get haImportTitle => 'Import from Home Assistant';
+
+  @override
+  String get haImportSettingsSubtitle =>
+      'Names and rooms you set up in Home Assistant';
+
+  @override
+  String get haImportIntro =>
+      'Bring the names and rooms you set up in Home Assistant. ZigDash reads them once and keeps nothing else from Home Assistant.';
+
+  @override
+  String get haImportAddress => 'Home Assistant address';
+
+  @override
+  String get haImportAddressHelp =>
+      'The address you open Home Assistant with, like 192.168.1.20:8123';
+
+  @override
+  String get haImportToken => 'Long-lived access token';
+
+  @override
+  String get haImportTokenHelp =>
+      'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. ZigDash uses it once and doesn\'t keep it; you can delete it in Home Assistant afterwards.';
+
+  @override
+  String get haImportRead => 'Read from Home Assistant';
+
+  @override
+  String get haImportReading => 'Reading Home Assistant…';
+
+  @override
+  String get haImportApplying => 'Importing…';
+
+  @override
+  String get haImportNoAddress =>
+      'Type the address you open Home Assistant with.';
+
+  @override
+  String get haImportNoToken => 'Paste a long-lived access token.';
+
+  @override
+  String get haImportUnreachable =>
+      'Nothing answered at that address. Check it, and that your phone is on your home network.';
+
+  @override
+  String get haImportNotHa =>
+      'Something answered at that address, but it isn\'t Home Assistant.';
+
+  @override
+  String get haImportBadToken =>
+      'Home Assistant refused that token. Create a new one and paste it again.';
+
+  @override
+  String get haImportCertificate =>
+      'Your phone doesn\'t trust this Home Assistant\'s certificate. Try its http:// address on your home network.';
+
+  @override
+  String get haImportFailed =>
+      'Home Assistant answered, but reading it failed. Try again.';
+
+  @override
+  String get haImportNoDevices =>
+      'ZigDash can\'t see this home\'s devices right now. Connect to the home, then try again.';
+
+  @override
+  String get haImportAutomations =>
+      'Your automations stay in Home Assistant and keep running.';
+
+  @override
+  String haImportFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count devices found in Home Assistant',
+      one: '1 device found in Home Assistant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get haImportRenameNote =>
+      'Tiles still named after their device take the name from Home Assistant. Dashboards you built stay as they are.';
+
+  @override
+  String get haImportMakeDashboards =>
+      'Also add dashboards from your floors and rooms';
+
+  @override
+  String get haImportOtherRooms => 'Other rooms';
+
+  @override
+  String get haImportNoRoom => 'No room';
+
+  @override
+  String get haImportApply => 'Import';
+
+  @override
+  String get haImportBack => 'Back';
+
+  @override
+  String get haImportZhaOnly =>
+      'These devices run on ZHA, Home Assistant\'s own Zigbee, not on Zigbee2MQTT, so ZigDash can\'t show them.';
+
+  @override
+  String get haImportNothing =>
+      'None of this home\'s Zigbee2MQTT devices are in Home Assistant.';
+
+  @override
+  String haImportDone(int renamed, int dashboards) {
+    return 'Done. Tiles renamed: $renamed. Dashboards added: $dashboards.';
+  }
+
+  @override
+  String get haImportOpen => 'Open dashboards';
+
+  @override
+  String get haImportOfferTitle =>
+      'Bring your names and rooms from Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant is on your network. ZigDash can name your tiles and add a dashboard per floor and room, the way you set them up there.';
+
+  @override
+  String get haImportOfferLater => 'Not now';
+
+  @override
+  String get haImportOfferGo => 'Import';
+
+  @override
+  String get haImportSignIn => 'Sign in with Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'Home Assistant\'s own login opens in your browser. ZigDash never sees your password and signs out again after reading.';
+
+  @override
+  String get haImportOrToken => 'Or use a long-lived token';
+
+  @override
+  String get haImportReadToken => 'Read with token';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant didn\'t accept the sign-in. This happens when Home Assistant has no internet access. Use a long-lived token below instead.';
 }

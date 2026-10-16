@@ -18,6 +18,7 @@ import '../../connections/discovery/network_info.dart';
 import '../../support/support_details.dart';
 import '../../support/support_log.dart';
 import '../first_run.dart';
+import '../../ha_import/ha_import_offer.dart';
 import 'setup_coordinator.dart';
 import 'setup_creator.dart';
 import 'z2m_probe.dart';
@@ -31,7 +32,8 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
   final support = ref.read(supportLogProvider);
   // The interface the scan runs on, kept only as a kind (Wi-Fi, Ethernet).
   String? network;
-  final coordinator = SetupCoordinator(
+  late final SetupCoordinator coordinator;
+  coordinator = SetupCoordinator(
     scan: (ip, hubs) => scanner.run(
       ip,
       hubs: hubs,
@@ -70,8 +72,15 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
       registry: DeviceRegistryDao(ref.watch(appDatabaseProvider)),
       l10n: appL10n(ref.read(settingsControllerProvider).locale),
     ),
-    onCreated: (result) =>
-        ref.read(firstRunProvider).finish(result.connectionId),
+    onCreated: (result) async {
+      await ref.read(firstRunProvider).finish(result.connectionId);
+      // Home Assistant nearby: the new dashboard offers its names and rooms.
+      if (await coordinator.homeAssistantSeen()) {
+        await ref
+            .read(haImportOfferProvider.notifier)
+            .offer(result.connectionId);
+      }
+    },
   );
   final failures = coordinator.states.listen((s) {
     if (s is SetupFailed) support.recordFailure(failureKindFromSetup(s.kind));

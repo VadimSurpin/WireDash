@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/core/analytics/analytics.dart';
+import 'package:zigdash/features/ha_import/ha_client.dart' show HaReadError;
 import 'package:zigdash/features/onboarding/setup/setup_error_guidance.dart';
 import 'package:zigdash/data/database/tables/panels.dart';
 import 'package:zigdash/features/settings/providers/settings_controller.dart';
@@ -154,6 +155,40 @@ void main() {
         'step': 'scan_empty',
         'hub': 'none',
       });
+    });
+
+    // 2.8: the import from Home Assistant, counts only.
+    test('ha_import: steps with bucketed counts', () {
+      expect(
+        const HaImportEvent(
+          HaImportStep.preview,
+          devices: 3,
+          rooms: 3,
+          zhaOnly: false,
+        ).props,
+        {'step': 'preview', 'devices': '1-5', 'rooms': '1-5', 'zha_only': 'no'},
+      );
+      expect(
+        const HaImportEvent(
+          HaImportStep.failed,
+          error: HaReadError.badToken,
+        ).props,
+        {'step': 'failed', 'error': 'bad_token'},
+      );
+      expect(
+        const HaImportEvent(
+          HaImportStep.imported,
+          renamed: 0,
+          dashboards: 2,
+          devices: 25,
+        ).props,
+        {
+          'step': 'imported',
+          'renamed': '0',
+          'dashboards': '1-5',
+          'devices': '21+',
+        },
+      );
     });
 
     // 2.7.2: the broker form's Test & connect, without the address.

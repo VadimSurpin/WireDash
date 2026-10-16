@@ -69,6 +69,13 @@ class HomeSettingsScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => context.push(Routes.homeAlerts(home.id)),
               ),
+              ListTile(
+                leading: const Icon(Icons.download_outlined),
+                title: Text(l10n.haImportTitle),
+                subtitle: Text(l10n.haImportSettingsSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(Routes.homeHaImport(home.id)),
+              ),
               if (!current)
                 ListTile(
                   leading: const Icon(Icons.swap_horiz),

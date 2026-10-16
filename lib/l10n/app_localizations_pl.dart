@@ -3245,4 +3245,145 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get historyPersistence =>
       'Historia jest przechowywana na brokerze. Jeśli sam uruchamiasz Mosquitto, upewnij się, że konfiguracja zawiera \"persistence true\", inaczej historia zniknie po restarcie brokera.';
+
+  @override
+  String get haImportTitle => 'Import z Home Assistant';
+
+  @override
+  String get haImportSettingsSubtitle =>
+      'Nazwy i pomieszczenia z Home Assistant';
+
+  @override
+  String get haImportIntro =>
+      'Przenieś nazwy i pomieszczenia ustawione w Home Assistant. ZigDash odczytuje je raz i nie zatrzymuje niczego innego z Home Assistant.';
+
+  @override
+  String get haImportAddress => 'Adres Home Assistant';
+
+  @override
+  String get haImportAddressHelp =>
+      'Adres, pod którym otwierasz Home Assistant, np. 192.168.1.20:8123';
+
+  @override
+  String get haImportToken => 'Token dostępu długoterminowego';
+
+  @override
+  String get haImportTokenHelp =>
+      'W Home Assistant otwórz swój profil, potem Bezpieczeństwo › Tokeny dostępu długoterminowego › Utwórz token. Skopiuj go i wklej tutaj. ZigDash użyje go raz i go nie zachowa; potem możesz go usunąć w Home Assistant.';
+
+  @override
+  String get haImportRead => 'Odczytaj z Home Assistant';
+
+  @override
+  String get haImportReading => 'Odczytywanie Home Assistant…';
+
+  @override
+  String get haImportApplying => 'Importowanie…';
+
+  @override
+  String get haImportNoAddress =>
+      'Wpisz adres, pod którym otwierasz Home Assistant.';
+
+  @override
+  String get haImportNoToken => 'Wklej token dostępu długoterminowego.';
+
+  @override
+  String get haImportUnreachable =>
+      'Pod tym adresem nic nie odpowiada. Sprawdź go i czy telefon jest w sieci domowej.';
+
+  @override
+  String get haImportNotHa =>
+      'Coś odpowiedziało pod tym adresem, ale to nie Home Assistant.';
+
+  @override
+  String get haImportBadToken =>
+      'Home Assistant odrzucił ten token. Utwórz nowy i wklej go ponownie.';
+
+  @override
+  String get haImportCertificate =>
+      'Telefon nie ufa certyfikatowi tego Home Assistant. Spróbuj adresu http:// w sieci domowej.';
+
+  @override
+  String get haImportFailed =>
+      'Home Assistant odpowiedział, ale odczyt się nie udał. Spróbuj ponownie.';
+
+  @override
+  String get haImportNoDevices =>
+      'ZigDash nie widzi teraz urządzeń tego domu. Połącz się z domem i spróbuj ponownie.';
+
+  @override
+  String get haImportAutomations =>
+      'Twoje automatyzacje zostają w Home Assistant i dalej działają.';
+
+  @override
+  String haImportFound(int count) {
+    return 'Urządzenia znalezione w Home Assistant: $count';
+  }
+
+  @override
+  String get haImportRenameNote =>
+      'Kafelki, które wciąż mają nazwę urządzenia, dostaną nazwę z Home Assistant. Twoje własne dashboardy zostają bez zmian.';
+
+  @override
+  String get haImportMakeDashboards =>
+      'Dodaj też dashboardy z pięter i pomieszczeń';
+
+  @override
+  String get haImportOtherRooms => 'Inne pomieszczenia';
+
+  @override
+  String get haImportNoRoom => 'Bez pomieszczenia';
+
+  @override
+  String get haImportApply => 'Importuj';
+
+  @override
+  String get haImportBack => 'Wstecz';
+
+  @override
+  String get haImportZhaOnly =>
+      'Te urządzenia działają w ZHA, wbudowanym Zigbee Home Assistant, a nie w Zigbee2MQTT, więc ZigDash nie może ich pokazać.';
+
+  @override
+  String get haImportNothing =>
+      'Żadne z urządzeń Zigbee2MQTT tego domu nie jest w Home Assistant.';
+
+  @override
+  String haImportDone(int renamed, int dashboards) {
+    return 'Gotowe. Kafelki ze zmienioną nazwą: $renamed. Dodane dashboardy: $dashboards.';
+  }
+
+  @override
+  String get haImportOpen => 'Otwórz dashboardy';
+
+  @override
+  String get haImportOfferTitle =>
+      'Przenieść nazwy i pomieszczenia z Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant jest w twojej sieci. ZigDash może nazwać kafelki i dodać dashboard na każde piętro i pomieszczenie, tak jak je tam ustawiłeś.';
+
+  @override
+  String get haImportOfferLater => 'Nie teraz';
+
+  @override
+  String get haImportOfferGo => 'Importuj';
+
+  @override
+  String get haImportSignIn => 'Zaloguj się przez Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'Logowanie Home Assistant otworzy się w przeglądarce. ZigDash nigdy nie widzi twojego hasła i po odczycie wylogowuje się.';
+
+  @override
+  String get haImportOrToken => 'Albo użyj tokena dostępu długoterminowego';
+
+  @override
+  String get haImportReadToken => 'Odczytaj z tokenem';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant nie przyjął logowania. Zdarza się to, gdy Home Assistant nie ma dostępu do internetu. Użyj poniżej tokena dostępu długoterminowego.';
 }

@@ -302,6 +302,29 @@ class SetupCoordinator {
   /// The username Zigbee2MQTT logs in with, from its web page, for the login
   /// step.
   String? _z2mUser;
+
+  /// Home Assistant answered during this setup (a scan card, a hub page).
+  bool _haSeen = false;
+
+  /// The broker's host once the home is saved, for [homeAssistantSeen].
+  String? _createdOn;
+
+  /// Whether this home has Home Assistant, for offering the import after
+  /// setup (docs/design/ha-import.md): seen by the scan, answered by the
+  /// user, or found on the broker's machine now (the scan skips web pages
+  /// when one broker answers at once).
+  Future<bool> homeAssistantSeen() async {
+    if (_haSeen || _platform == SetupPlatform.homeAssistant) return true;
+    final host = _createdOn;
+    final identify = _identifyHub;
+    if (host == null || identify == null) return false;
+    try {
+      return await identify(host) == HubKind.homeAssistant;
+    } catch (_) {
+      return false;
+    }
+  }
+
   final NetworkFactsProvider? _networkFacts;
 
   /// Runs once after a successful setup, before [SetupComplete] is emitted
@@ -331,6 +354,13 @@ class SetupCoordinator {
   SetupPlatform? get platform => _platform;
 
   void _emit(SetupState s) {
+    if (s is SetupScanning &&
+            (s.hubs.any((h) => h.kind == HubKind.homeAssistant) ||
+                s.kinds.containsValue(HubKind.homeAssistant)) ||
+        s is SetupScanEmpty &&
+            s.hubs.any((h) => h.kind == HubKind.homeAssistant)) {
+      _haSeen = true;
+    }
     _state = s;
     if (!_states.isClosed) _states.add(s);
   }
@@ -341,6 +371,7 @@ class SetupCoordinator {
     final op = ++_op;
     _cancelScan();
     _z2mUser = null;
+    _haSeen = false;
     _emit(SetupScanning(const [], platform: _platform));
     final ip = await _deviceIp();
     if (op != _op) return;
@@ -685,6 +716,7 @@ class SetupCoordinator {
         notSelected: rows.where((r) => !r.selected).toList(),
       );
       if (op != _op) return;
+      _createdOn = candidate.host;
       try {
         await onCreated?.call(result);
       } catch (_) {

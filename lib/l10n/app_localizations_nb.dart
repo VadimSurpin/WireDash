@@ -3233,4 +3233,148 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get historyPersistence =>
       'Historikken ligger på brokeren din. Kjører du Mosquitto selv, sørg for at konfigurasjonen har \"persistence true\", ellers forsvinner historikken når brokeren starter på nytt.';
+
+  @override
+  String get haImportTitle => 'Importer fra Home Assistant';
+
+  @override
+  String get haImportSettingsSubtitle => 'Navn og rom fra Home Assistant';
+
+  @override
+  String get haImportIntro =>
+      'Hent navnene og rommene du har satt opp i Home Assistant. ZigDash leser dem én gang og beholder ikke noe annet fra Home Assistant.';
+
+  @override
+  String get haImportAddress => 'Adressen til Home Assistant';
+
+  @override
+  String get haImportAddressHelp =>
+      'Adressen du åpner Home Assistant med, for eksempel 192.168.1.20:8123';
+
+  @override
+  String get haImportToken => 'Langvarig tilgangstoken';
+
+  @override
+  String get haImportTokenHelp =>
+      'I Home Assistant åpner du profilen din, så Sikkerhet › Langvarige tilgangstokener › Opprett token. Kopier det og lim det inn her. ZigDash bruker det én gang og beholder det ikke; du kan slette det i Home Assistant etterpå.';
+
+  @override
+  String get haImportRead => 'Les fra Home Assistant';
+
+  @override
+  String get haImportReading => 'Leser Home Assistant…';
+
+  @override
+  String get haImportApplying => 'Importerer…';
+
+  @override
+  String get haImportNoAddress => 'Skriv adressen du åpner Home Assistant med.';
+
+  @override
+  String get haImportNoToken => 'Lim inn et langvarig tilgangstoken.';
+
+  @override
+  String get haImportUnreachable =>
+      'Ingenting svarte på den adressen. Sjekk den, og at telefonen er på hjemmenettet.';
+
+  @override
+  String get haImportNotHa =>
+      'Noe svarte på den adressen, men det er ikke Home Assistant.';
+
+  @override
+  String get haImportBadToken =>
+      'Home Assistant avviste det tokenet. Opprett et nytt og lim det inn igjen.';
+
+  @override
+  String get haImportCertificate =>
+      'Telefonen stoler ikke på sertifikatet til denne Home Assistant. Prøv http://-adressen på hjemmenettet.';
+
+  @override
+  String get haImportFailed =>
+      'Home Assistant svarte, men lesingen mislyktes. Prøv igjen.';
+
+  @override
+  String get haImportNoDevices =>
+      'ZigDash ser ikke enhetene i dette hjemmet nå. Koble til hjemmet og prøv igjen.';
+
+  @override
+  String get haImportAutomations =>
+      'Automasjonene dine blir i Home Assistant og fortsetter å kjøre.';
+
+  @override
+  String haImportFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Fant $count enheter i Home Assistant',
+      one: 'Fant 1 enhet i Home Assistant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get haImportRenameNote =>
+      'Fliser som fortsatt har enhetens navn, får navnet fra Home Assistant. Dashbord du har laget, forblir som de er.';
+
+  @override
+  String get haImportMakeDashboards =>
+      'Legg også til dashbord fra etasjene og rommene dine';
+
+  @override
+  String get haImportOtherRooms => 'Andre rom';
+
+  @override
+  String get haImportNoRoom => 'Uten rom';
+
+  @override
+  String get haImportApply => 'Importer';
+
+  @override
+  String get haImportBack => 'Tilbake';
+
+  @override
+  String get haImportZhaOnly =>
+      'Disse enhetene kjører på ZHA, Home Assistants egen Zigbee, ikke på Zigbee2MQTT, så ZigDash kan ikke vise dem.';
+
+  @override
+  String get haImportNothing =>
+      'Ingen av Zigbee2MQTT-enhetene i dette hjemmet er i Home Assistant.';
+
+  @override
+  String haImportDone(int renamed, int dashboards) {
+    return 'Ferdig. Fliser med nytt navn: $renamed. Nye dashbord: $dashboards.';
+  }
+
+  @override
+  String get haImportOpen => 'Åpne dashbord';
+
+  @override
+  String get haImportOfferTitle => 'Hente navn og rom fra Home Assistant?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant er på nettverket ditt. ZigDash kan gi flisene navn og legge til et dashbord per etasje og rom, slik du har satt dem opp der.';
+
+  @override
+  String get haImportOfferLater => 'Ikke nå';
+
+  @override
+  String get haImportOfferGo => 'Importer';
+
+  @override
+  String get haImportSignIn => 'Logg inn med Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'Innloggingen til Home Assistant åpnes i nettleseren. ZigDash ser aldri passordet ditt og logger ut igjen etter lesingen.';
+
+  @override
+  String get haImportOrToken => 'Eller bruk et langvarig tilgangstoken';
+
+  @override
+  String get haImportReadToken => 'Les med token';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant godtok ikke innloggingen. Det skjer når Home Assistant ikke har internettilgang. Bruk et langvarig tilgangstoken nedenfor i stedet.';
 }

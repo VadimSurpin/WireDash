@@ -1,7 +1,7 @@
 name: zigdash
 description: "Material 3 MQTT dashboard for Zigbee2MQTT control."
 publish_to: 'none'
-version: 2.7.2+51
+version: 2.8.0+52
 
 environment:
   sdk: ^3.8.0
@@ -70,6 +70,8 @@ dependencies:
   unifiedpush_android: ^3.5.0
   unifiedpush_platform_interface: ^4.0.0
   flutter_local_notifications: ^22.3.1
+  flutter_web_auth_2: 5.1.0
+  crypto: ^3.0.7
 
 dev_dependencies:
   flutter_test:

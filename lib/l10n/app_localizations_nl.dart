@@ -3246,4 +3246,150 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get historyPersistence =>
       'De geschiedenis staat op je broker. Draai je Mosquitto zelf, zorg dan dat de config \"persistence true\" bevat, anders gaat de geschiedenis verloren als de broker herstart.';
+
+  @override
+  String get haImportTitle => 'Importeren uit Home Assistant';
+
+  @override
+  String get haImportSettingsSubtitle => 'Namen en ruimtes uit Home Assistant';
+
+  @override
+  String get haImportIntro =>
+      'Haal de namen en ruimtes op die je in Home Assistant hebt ingesteld. ZigDash leest ze één keer en bewaart verder niets uit Home Assistant.';
+
+  @override
+  String get haImportAddress => 'Adres van Home Assistant';
+
+  @override
+  String get haImportAddressHelp =>
+      'Het adres waarmee je Home Assistant opent, zoals 192.168.1.20:8123';
+
+  @override
+  String get haImportToken => 'Langlevend toegangstoken';
+
+  @override
+  String get haImportTokenHelp =>
+      'Open in Home Assistant je profiel, dan Beveiliging › Langlevende toegangstokens › Token aanmaken. Kopieer het en plak het hier. ZigDash gebruikt het één keer en bewaart het niet; daarna kun je het in Home Assistant verwijderen.';
+
+  @override
+  String get haImportRead => 'Lezen uit Home Assistant';
+
+  @override
+  String get haImportReading => 'Home Assistant lezen…';
+
+  @override
+  String get haImportApplying => 'Importeren…';
+
+  @override
+  String get haImportNoAddress =>
+      'Typ het adres waarmee je Home Assistant opent.';
+
+  @override
+  String get haImportNoToken => 'Plak een langlevend toegangstoken.';
+
+  @override
+  String get haImportUnreachable =>
+      'Niets antwoordde op dat adres. Controleer het, en of je telefoon op het thuisnetwerk zit.';
+
+  @override
+  String get haImportNotHa =>
+      'Er antwoordde iets op dat adres, maar het is geen Home Assistant.';
+
+  @override
+  String get haImportBadToken =>
+      'Home Assistant weigerde dat token. Maak een nieuw aan en plak het opnieuw.';
+
+  @override
+  String get haImportCertificate =>
+      'Je telefoon vertrouwt het certificaat van deze Home Assistant niet. Probeer het http://-adres op je thuisnetwerk.';
+
+  @override
+  String get haImportFailed =>
+      'Home Assistant antwoordde, maar lezen mislukte. Probeer het opnieuw.';
+
+  @override
+  String get haImportNoDevices =>
+      'ZigDash ziet de apparaten van dit huis nu niet. Maak verbinding met het huis en probeer het opnieuw.';
+
+  @override
+  String get haImportAutomations =>
+      'Je automatiseringen blijven in Home Assistant en blijven werken.';
+
+  @override
+  String haImportFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apparaten gevonden in Home Assistant',
+      one: '1 apparaat gevonden in Home Assistant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get haImportRenameNote =>
+      'Tegels die nog de naam van hun apparaat hebben, krijgen de naam uit Home Assistant. Dashboards die je zelf maakte, blijven zoals ze zijn.';
+
+  @override
+  String get haImportMakeDashboards =>
+      'Ook dashboards maken van je verdiepingen en ruimtes';
+
+  @override
+  String get haImportOtherRooms => 'Andere ruimtes';
+
+  @override
+  String get haImportNoRoom => 'Geen ruimte';
+
+  @override
+  String get haImportApply => 'Importeren';
+
+  @override
+  String get haImportBack => 'Terug';
+
+  @override
+  String get haImportZhaOnly =>
+      'Deze apparaten draaien op ZHA, de eigen Zigbee van Home Assistant, niet op Zigbee2MQTT. ZigDash kan ze dus niet tonen.';
+
+  @override
+  String get haImportNothing =>
+      'Geen van de Zigbee2MQTT-apparaten van dit huis staat in Home Assistant.';
+
+  @override
+  String haImportDone(int renamed, int dashboards) {
+    return 'Klaar. Hernoemde tegels: $renamed. Toegevoegde dashboards: $dashboards.';
+  }
+
+  @override
+  String get haImportOpen => 'Dashboards openen';
+
+  @override
+  String get haImportOfferTitle =>
+      'Namen en ruimtes uit Home Assistant overnemen?';
+
+  @override
+  String get haImportOfferBody =>
+      'Home Assistant staat op je netwerk. ZigDash kan je tegels een naam geven en een dashboard per verdieping en ruimte toevoegen, zoals je ze daar hebt ingesteld.';
+
+  @override
+  String get haImportOfferLater => 'Niet nu';
+
+  @override
+  String get haImportOfferGo => 'Importeren';
+
+  @override
+  String get haImportSignIn => 'Inloggen met Home Assistant';
+
+  @override
+  String get haImportSignInHelp =>
+      'De login van Home Assistant opent in je browser. ZigDash ziet je wachtwoord nooit en logt na het lezen weer uit.';
+
+  @override
+  String get haImportOrToken => 'Of gebruik een langlevend toegangstoken';
+
+  @override
+  String get haImportReadToken => 'Lezen met token';
+
+  @override
+  String get haImportSignInRefused =>
+      'Home Assistant accepteerde de login niet. Dat gebeurt als Home Assistant geen internettoegang heeft. Gebruik hieronder een langlevend toegangstoken.';
 }

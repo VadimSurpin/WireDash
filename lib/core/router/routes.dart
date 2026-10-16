@@ -21,6 +21,10 @@ class Routes {
       '/settings/home/$connectionId';
   static String homeAlerts(String connectionId) =>
       '/settings/home/$connectionId/alerts';
+
+  /// Importing names and rooms from Home Assistant (docs/design/ha-import.md).
+  static String homeHaImport(String connectionId) =>
+      '/settings/home/$connectionId/ha-import';
   static String homeAlertEdit(String connectionId, String alertId) =>
       '/settings/home/$connectionId/alerts/$alertId';
 

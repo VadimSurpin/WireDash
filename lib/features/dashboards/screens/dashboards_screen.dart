@@ -28,6 +28,7 @@ import '../edit_mode.dart';
 import '../../onboarding/demo_banner.dart';
 import '../../onboarding/demo_service.dart' show isDemoConnection;
 import '../../panels/widgets/panel_grid.dart';
+import '../../ha_import/ha_import_offer.dart';
 import '../widgets/analytics_consent_card.dart';
 import '../../kiosk/kiosk.dart';
 import '../../kiosk/wall_display_sheet.dart';
@@ -285,6 +286,7 @@ class _DashboardsTabbed extends ConsumerWidget {
                     RememberHome(connectionId: connectionId),
                     DemoBanner(connectionId: connectionId),
                     if (!kiosk) ...[
+                      HaImportOfferCard(connectionId: connectionId),
                       AnalyticsConsentCard(connectionId: connectionId),
                       PollCard(connectionId: connectionId),
                     ],

@@ -35,7 +35,7 @@ never writes:
 
 | From Home Assistant | Becomes in ZigDash |
 |---|---|
-| Device name (`name_by_user`, else `name`) | Tile name |
+| Device name the user gave (`name_by_user`) | Tile name (else ZigDash's own) |
 | Device area, or an entity's own area when it overrides | Section (or dashboard, **Q3**) |
 | Floors, if any | Dashboards (**Q3**) |
 | The default dashboard's cards, if stored (**Q4**) | Tile order |
@@ -137,7 +137,7 @@ most new users, where ZigDash is losing them now.
   (Home Assistant keeps removed devices). Skip `zigbee2mqtt_bridge_…` (the coordinator) and
   group identifiers (`zigbee2mqtt_<char codes>_<id>`, model `Group`). Child
   devices (`parent_device_id` set, Home Assistant 2026.9+) are skipped.
-- **Names:** device `name_by_user ?? name`. The import never uses entity
+- **Names:** device `name_by_user`, else ZigDash's own name for the device (Home Assistant's `name` is only Zigbee2MQTT's). The import never uses entity
   names for tiles; a device tile shows the device.
 - **Rooms:** device `area_id`; if all of a device's entities share another
   area, use that one.
@@ -197,12 +197,25 @@ MQTT, admin user), read through its own logged-in page:
 - Area IDs are slugs of the first name, also for Hebrew names
   (`khdr_hvrym` for "חדר הורים"); show the area's `name`, never its ID.
 
-**Test data set up, with the user's agreement** (to undo after testing):
+**Test data set up, with the user's agreement** (undone on 2026-10-16 after 2.8 went live):
 floor "Ground floor" (`ground_floor`) holding Living Room and Kitchen;
 `0xa4c13836276df66f` named "Living room motion" in Living Room;
 `0xa4c13828d7b8e8a1` "Kitchen motion" in Kitchen; `0xa4c13863521bcd41`
 "Bedroom motion" with no device area and all eight of its entities in
 Bedroom (the entity-override case).
+
+**Verified on the user's phone (2026-10-16, 12:52):** a test build of
+`feat/ha-import` with a long-lived token the user created and pasted
+themselves. Preview matched Home Assistant exactly (Ground floor: Kitchen,
+Living Room; Other rooms: Bedroom from its entities; stale shutter left
+out). Import: 3 tiles renamed on the setup dashboard, which stayed first,
+and 2 dashboards added after it, with live readings.
+
+**Sign-in verified on the phone (2026-10-16, 13:29):** Home Assistant
+2026.1.1 accepted `https://giladtamam.github.io/zigdash/ha/` as client_id
+with `zigdash://auth` declared on that page; the user signed in on Home
+Assistant's own page, the preview came back, and afterwards Home
+Assistant's refresh-token list had no entry for that client (revoked).
 
 ## Testing
 
