@@ -17,6 +17,10 @@ enum HaReadError {
 
   /// Home Assistant answered but a read failed or timed out.
   failed,
+
+  /// An `https://` address whose certificate the phone does not trust
+  /// (self-signed). Not "nothing answered": the fix is different.
+  certificate,
 }
 
 /// A read: the registries, or why not.
@@ -60,6 +64,8 @@ Future<HaReadResult> readHaRegistry(
     socket = await WebSocket.connect(
       haWebSocketUri(base).toString(),
     ).timeout(const Duration(seconds: 8));
+  } on HandshakeException {
+    return (registry: null, error: HaReadError.certificate);
   } on WebSocketException {
     // The host answered HTTP but refused the upgrade: not Home Assistant.
     return (registry: null, error: HaReadError.notHomeAssistant);
