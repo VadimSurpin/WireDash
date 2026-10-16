@@ -197,7 +197,7 @@ MQTT, admin user), read through its own logged-in page:
 - Area IDs are slugs of the first name, also for Hebrew names
   (`khdr_hvrym` for "חדר הורים"); show the area's `name`, never its ID.
 
-**Test data set up, with the user's agreement** (to undo after testing):
+**Test data set up, with the user's agreement** (undone on 2026-10-16 after 2.8 went live):
 floor "Ground floor" (`ground_floor`) holding Living Room and Kitchen;
 `0xa4c13836276df66f` named "Living room motion" in Living Room;
 `0xa4c13828d7b8e8a1` "Kitchen motion" in Kitchen; `0xa4c13863521bcd41`
