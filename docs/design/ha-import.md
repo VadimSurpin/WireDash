@@ -35,7 +35,7 @@ never writes:
 
 | From Home Assistant | Becomes in ZigDash |
 |---|---|
-| Device name (`name_by_user`, else `name`) | Tile name |
+| Device name the user gave (`name_by_user`) | Tile name (else ZigDash's own) |
 | Device area, or an entity's own area when it overrides | Section (or dashboard, **Q3**) |
 | Floors, if any | Dashboards (**Q3**) |
 | The default dashboard's cards, if stored (**Q4**) | Tile order |
@@ -137,7 +137,7 @@ most new users, where ZigDash is losing them now.
   (Home Assistant keeps removed devices). Skip `zigbee2mqtt_bridge_…` (the coordinator) and
   group identifiers (`zigbee2mqtt_<char codes>_<id>`, model `Group`). Child
   devices (`parent_device_id` set, Home Assistant 2026.9+) are skipped.
-- **Names:** device `name_by_user ?? name`. The import never uses entity
+- **Names:** device `name_by_user`, else ZigDash's own name for the device (Home Assistant's `name` is only Zigbee2MQTT's). The import never uses entity
   names for tiles; a device tile shows the device.
 - **Rooms:** device `area_id`; if all of a device's entities share another
   area, use that one.
