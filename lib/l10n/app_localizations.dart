@@ -5797,6 +5797,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'History lives on your broker. If you run Mosquitto yourself, make sure its config has \"persistence true\", or history is lost when the broker restarts.'**
   String get historyPersistence;
+
+  /// No description provided for @haImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from Home Assistant'**
+  String get haImportTitle;
+
+  /// No description provided for @haImportSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Names and rooms you set up in Home Assistant'**
+  String get haImportSettingsSubtitle;
+
+  /// No description provided for @haImportIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the names and rooms you set up in Home Assistant. ZigDash reads them once and keeps nothing else from Home Assistant.'**
+  String get haImportIntro;
+
+  /// No description provided for @haImportAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant address'**
+  String get haImportAddress;
+
+  /// No description provided for @haImportAddressHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address you open Home Assistant with, like 192.168.1.20:8123'**
+  String get haImportAddressHelp;
+
+  /// No description provided for @haImportToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-lived access token'**
+  String get haImportToken;
+
+  /// No description provided for @haImportTokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. ZigDash uses it once and doesn\'t keep it; you can delete it in Home Assistant afterwards.'**
+  String get haImportTokenHelp;
+
+  /// No description provided for @haImportRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read from Home Assistant'**
+  String get haImportRead;
+
+  /// No description provided for @haImportReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading Home Assistant…'**
+  String get haImportReading;
+
+  /// No description provided for @haImportApplying.
+  ///
+  /// In en, this message translates to:
+  /// **'Importing…'**
+  String get haImportApplying;
+
+  /// No description provided for @haImportNoAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the address you open Home Assistant with.'**
+  String get haImportNoAddress;
+
+  /// No description provided for @haImportNoToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a long-lived access token.'**
+  String get haImportNoToken;
+
+  /// No description provided for @haImportUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered at that address. Check it, and that your phone is on your home network.'**
+  String get haImportUnreachable;
+
+  /// No description provided for @haImportNotHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Something answered at that address, but it isn\'t Home Assistant.'**
+  String get haImportNotHa;
+
+  /// No description provided for @haImportBadToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant refused that token. Create a new one and paste it again.'**
+  String get haImportBadToken;
+
+  /// No description provided for @haImportCertificate.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone doesn\'t trust this Home Assistant\'s certificate. Try its http:// address on your home network.'**
+  String get haImportCertificate;
+
+  /// No description provided for @haImportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant answered, but reading it failed. Try again.'**
+  String get haImportFailed;
+
+  /// No description provided for @haImportNoDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash can\'t see this home\'s devices right now. Connect to the home, then try again.'**
+  String get haImportNoDevices;
+
+  /// No description provided for @haImportAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Your automations stay in Home Assistant and keep running.'**
+  String get haImportAutomations;
+
+  /// No description provided for @haImportFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 device found in Home Assistant} other{{count} devices found in Home Assistant}}'**
+  String haImportFound(int count);
+
+  /// No description provided for @haImportRenameNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Tiles still named after their device take the name from Home Assistant. Dashboards you built stay as they are.'**
+  String get haImportRenameNote;
+
+  /// No description provided for @haImportMakeDashboards.
+  ///
+  /// In en, this message translates to:
+  /// **'Also add dashboards from your floors and rooms'**
+  String get haImportMakeDashboards;
+
+  /// No description provided for @haImportOtherRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Other rooms'**
+  String get haImportOtherRooms;
+
+  /// No description provided for @haImportNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'No room'**
+  String get haImportNoRoom;
+
+  /// No description provided for @haImportApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get haImportApply;
+
+  /// No description provided for @haImportBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get haImportBack;
+
+  /// No description provided for @haImportZhaOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'These devices run on ZHA, Home Assistant\'s own Zigbee, not on Zigbee2MQTT, so ZigDash can\'t show them.'**
+  String get haImportZhaOnly;
+
+  /// No description provided for @haImportNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'None of this home\'s Zigbee2MQTT devices are in Home Assistant.'**
+  String get haImportNothing;
+
+  /// No description provided for @haImportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done. Tiles renamed: {renamed}. Dashboards added: {dashboards}.'**
+  String haImportDone(int renamed, int dashboards);
+
+  /// No description provided for @haImportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open dashboards'**
+  String get haImportOpen;
 }
 
 class _AppLocalizationsDelegate

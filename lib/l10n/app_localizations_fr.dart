@@ -3255,4 +3255,120 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get historyPersistence =>
       'L\'historique est stocké sur votre broker. Si vous gérez Mosquitto vous-même, vérifiez que sa configuration contient \"persistence true\", sinon l\'historique est perdu au redémarrage du broker.';
+
+  @override
+  String get haImportTitle => 'Importer depuis Home Assistant';
+
+  @override
+  String get haImportSettingsSubtitle =>
+      'Noms et pièces définis dans Home Assistant';
+
+  @override
+  String get haImportIntro =>
+      'Récupérez les noms et les pièces définis dans Home Assistant. ZigDash les lit une fois et ne garde rien d\'autre de Home Assistant.';
+
+  @override
+  String get haImportAddress => 'Adresse de Home Assistant';
+
+  @override
+  String get haImportAddressHelp =>
+      'L\'adresse avec laquelle vous ouvrez Home Assistant, par exemple 192.168.1.20:8123';
+
+  @override
+  String get haImportToken => 'Jeton d\'accès longue durée';
+
+  @override
+  String get haImportTokenHelp =>
+      'Dans Home Assistant, ouvrez votre profil, puis Sécurité › Jetons d\'accès longue durée › Créer un jeton. Copiez-le et collez-le ici. ZigDash l\'utilise une fois et ne le garde pas ; vous pouvez ensuite le supprimer dans Home Assistant.';
+
+  @override
+  String get haImportRead => 'Lire depuis Home Assistant';
+
+  @override
+  String get haImportReading => 'Lecture de Home Assistant…';
+
+  @override
+  String get haImportApplying => 'Importation…';
+
+  @override
+  String get haImportNoAddress =>
+      'Saisissez l\'adresse avec laquelle vous ouvrez Home Assistant.';
+
+  @override
+  String get haImportNoToken => 'Collez un jeton d\'accès longue durée.';
+
+  @override
+  String get haImportUnreachable =>
+      'Rien n\'a répondu à cette adresse. Vérifiez-la, et que votre téléphone est sur le réseau de la maison.';
+
+  @override
+  String get haImportNotHa =>
+      'Quelque chose a répondu à cette adresse, mais ce n\'est pas Home Assistant.';
+
+  @override
+  String get haImportBadToken =>
+      'Home Assistant a refusé ce jeton. Créez-en un nouveau et collez-le à nouveau.';
+
+  @override
+  String get haImportCertificate =>
+      'Votre téléphone ne fait pas confiance au certificat de ce Home Assistant. Essayez son adresse http:// sur le réseau de la maison.';
+
+  @override
+  String get haImportFailed =>
+      'Home Assistant a répondu, mais la lecture a échoué. Réessayez.';
+
+  @override
+  String get haImportNoDevices =>
+      'ZigDash ne voit pas les appareils de cette maison pour l\'instant. Connectez-vous à la maison, puis réessayez.';
+
+  @override
+  String get haImportAutomations =>
+      'Vos automatisations restent dans Home Assistant et continuent de tourner.';
+
+  @override
+  String haImportFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count appareils trouvés dans Home Assistant',
+      one: '1 appareil trouvé dans Home Assistant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get haImportRenameNote =>
+      'Les tuiles qui portent encore le nom de leur appareil prennent le nom de Home Assistant. Vos tableaux de bord restent tels quels.';
+
+  @override
+  String get haImportMakeDashboards =>
+      'Ajouter aussi des tableaux de bord par étage et par pièce';
+
+  @override
+  String get haImportOtherRooms => 'Autres pièces';
+
+  @override
+  String get haImportNoRoom => 'Sans pièce';
+
+  @override
+  String get haImportApply => 'Importer';
+
+  @override
+  String get haImportBack => 'Retour';
+
+  @override
+  String get haImportZhaOnly =>
+      'Ces appareils utilisent ZHA, le Zigbee intégré de Home Assistant, et non Zigbee2MQTT : ZigDash ne peut pas les afficher.';
+
+  @override
+  String get haImportNothing =>
+      'Aucun des appareils Zigbee2MQTT de cette maison n\'est dans Home Assistant.';
+
+  @override
+  String haImportDone(int renamed, int dashboards) {
+    return 'Terminé. Tuiles renommées : $renamed. Tableaux de bord ajoutés : $dashboards.';
+  }
+
+  @override
+  String get haImportOpen => 'Ouvrir les tableaux de bord';
 }

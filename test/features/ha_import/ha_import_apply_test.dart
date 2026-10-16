@@ -150,11 +150,13 @@ void main() {
       final r = await apply(_realPlan());
       expect(r.tiles, 3);
       expect(r.dashboardIds, hasLength(2));
+      // The home's own dashboard stays first; the imported ones follow.
       final boards = await dashboards.getByConnection('c1');
-      expect(
-        boards.map((b) => b.name),
-        containsAll(['My Home', 'Ground floor', 'Other rooms']),
-      );
+      expect(boards.map((b) => b.name), [
+        'My Home',
+        'Ground floor',
+        'Other rooms',
+      ]);
       final ground = r.dashboardIds.first;
       expect((await sections.getByDashboard(ground)).map((s) => s.name), [
         'Kitchen',

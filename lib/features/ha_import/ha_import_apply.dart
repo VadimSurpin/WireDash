@@ -64,6 +64,11 @@ class HaImportApplier {
     }
     final ids = <String>[];
     var tiles = 0;
+    // After the home's own dashboards, in plan order.
+    var boardOrder = [
+      for (final d in await _dashboards.getByConnection(connectionId))
+        d.sortOrder + 1,
+    ].fold(0, (a, b) => a > b ? a : b);
     final floored = plan.dashboards.any((d) => d.floor != null);
     for (final board in plan.dashboards) {
       final rooms = [
@@ -77,6 +82,7 @@ class HaImportApplier {
         topicPrefix: base,
         colorSeed: defaultDashboardSeed,
         iconCodepoint: 0xe318, // Icons.home, as setup's first dashboard
+        sortOrder: boardOrder++,
       );
       ids.add(id);
       var order = 0;
