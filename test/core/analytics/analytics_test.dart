@@ -129,14 +129,49 @@ void main() {
     });
 
     test('kiosk started: feature_used with the chosen options', () {
+      const off = {
+        'idle_show': 'dim',
+        'motion': 'no',
+        'night': 'no',
+        'alarms': 'no',
+      };
       expect(
         const KioskStarted(pin: true, osPinning: false, dimMinutes: 5).props,
-        {'feature': 'kiosk', 'lock': 'pin', 'os_pin': 'no', 'dim': '5m'},
+        {
+          'feature': 'kiosk',
+          'lock': 'pin',
+          'os_pin': 'no',
+          'dim': '5m',
+          ...off,
+        },
       );
       expect(
         const KioskStarted(pin: false, osPinning: true, dimMinutes: 0).props,
-        {'feature': 'kiosk', 'lock': 'none', 'os_pin': 'yes', 'dim': 'off'},
+        {
+          'feature': 'kiosk',
+          'lock': 'none',
+          'os_pin': 'yes',
+          'dim': 'off',
+          ...off,
+        },
       );
+      expect(
+        const KioskStarted(
+          pin: false,
+          osPinning: false,
+          dimMinutes: 1,
+          idleShow: 'readings',
+          motion: true,
+          night: true,
+          alarms: true,
+        ).props,
+        containsPair('idle_show', 'readings'),
+      );
+    });
+
+    test('alarm_shown: only the kind', () {
+      expect(const AlarmShown('leak').name, 'alarm_shown');
+      expect(const AlarmShown('leak').props, {'kind': 'leak'});
     });
 
     test('setup_step with an error and a device count', () {

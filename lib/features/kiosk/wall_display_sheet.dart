@@ -258,6 +258,10 @@ class WallDisplaySheet extends ConsumerWidget {
             pin: kiosk.hasPin,
             osPinning: kiosk.osPinning,
             dimMinutes: ref.read(wallDimProvider(id)),
+            idleShow: ref.read(wallIdleShowProvider(id)).name,
+            motion: ref.read(wallMotionSensorsProvider(id)).isNotEmpty,
+            night: ref.read(wallNightProvider(id)).on,
+            alarms: ref.read(wallAlarmProvider(id)).on,
           ),
         );
     if (!context.mounted) return;

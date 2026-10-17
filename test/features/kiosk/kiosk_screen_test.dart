@@ -242,6 +242,10 @@ void main() {
       'lock': 'none',
       'os_pin': 'no',
       'dim': '5m',
+      'idle_show': 'dim',
+      'motion': 'no',
+      'night': 'no',
+      'alarms': 'no',
     });
     // The header lost its actions and the add-tile button; tabs stay.
     expect(find.byIcon(Icons.edit_outlined), findsNothing);

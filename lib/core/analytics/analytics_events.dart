@@ -225,6 +225,10 @@ class KioskStarted extends AnalyticsEvent {
     required this.pin,
     required this.osPinning,
     required this.dimMinutes,
+    this.idleShow = 'dim',
+    this.motion = false,
+    this.night = false,
+    this.alarms = false,
   });
 
   final bool pin;
@@ -232,6 +236,14 @@ class KioskStarted extends AnalyticsEvent {
 
   /// 0 for off, else one of the fixed choices (1, 5, 15).
   final int dimMinutes;
+
+  /// From 2.9 (wall-tablet-2.9.md §11): what the idle screen shows (dim,
+  /// clock, readings, black), and whether wake on motion, the night
+  /// schedule and alarm takeover are on.
+  final String idleShow;
+  final bool motion;
+  final bool night;
+  final bool alarms;
 
   @override
   String get name => 'feature_used';
@@ -242,7 +254,26 @@ class KioskStarted extends AnalyticsEvent {
     'lock': pin ? 'pin' : 'none',
     'os_pin': osPinning ? 'yes' : 'no',
     'dim': dimMinutes == 0 ? 'off' : '${dimMinutes}m',
+    'idle_show': idleShow,
+    'motion': motion ? 'yes' : 'no',
+    'night': night ? 'yes' : 'no',
+    'alarms': alarms ? 'yes' : 'no',
   };
+}
+
+/// Alarm takeover showed on a wall display (2.9): only the kind of alarm,
+/// never the device.
+class AlarmShown extends AnalyticsEvent {
+  const AlarmShown(this.kind);
+
+  /// leak, smoke, gas or co.
+  final String kind;
+
+  @override
+  String get name => 'alarm_shown';
+
+  @override
+  Map<String, String> get props => {'kind': kind};
 }
 
 /// Where Get help was opened from (docs/design/support.md §2).

@@ -338,6 +338,9 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     if (wakers.contains(e.name) && wakesFor(e.state)) _wokenByMotion();
     if (alarmsOn && _alarms.update(e.name, e.state)) {
       setState(() {});
+      ref
+          .read(analyticsProvider)
+          .track(AlarmShown(_alarms.showing.last.kind.name));
       _touched();
       final sound = ref.read(wallAlarmProvider(_settingsId)).sound;
       if (sound && !_sounding) {
