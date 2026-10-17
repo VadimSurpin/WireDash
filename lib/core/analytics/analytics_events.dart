@@ -308,6 +308,20 @@ class HelpOpened extends AnalyticsEvent {
   Map<String, String> get props => {'from': _snake(from.name)};
 }
 
+/// The "talk to a person" card was shown (2.9.2): after two failed checks
+/// on the broker form. Only where from.
+class HelpOffered extends AnalyticsEvent {
+  const HelpOffered(this.from);
+
+  final HelpFrom from;
+
+  @override
+  String get name => 'help_offered';
+
+  @override
+  Map<String, String> get props => {'from': _snake(from.name)};
+}
+
 /// The user sent or copied a support request from Get help.
 class SupportContact extends AnalyticsEvent {
   const SupportContact(this.from, this.via);

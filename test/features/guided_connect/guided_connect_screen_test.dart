@@ -335,6 +335,27 @@ void main() {
     expect(find.text('localhost'), findsOneWidget);
   });
 
+  testWidgets('after two failed checks a person is offered (2.9.2)', (
+    tester,
+  ) async {
+    _tall(tester);
+    final db = AppDatabase.test(NativeDatabase.memory());
+    addTearDown(db.close);
+    final fake = _FakeDiagnostics([_failedReport(), _failedReport()]);
+
+    await tester.pumpWidget(_wrap(db: db, diagnostics: fake));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Test & connect'));
+    await tester.pumpAndSettle();
+    expect(find.text('Stuck? Ask a person'), findsNothing, reason: 'one try');
+
+    await tester.tap(find.text('Retry'));
+    await tester.pumpAndSettle();
+    expect(find.text('Stuck? Ask a person'), findsOneWidget);
+    expect(find.text('Ask in Telegram'), findsOneWidget);
+    expect(find.text('Tips and email'), findsOneWidget);
+  });
+
   testWidgets('retry re-runs the ladder and can reach success', (tester) async {
     _tall(tester);
     final db = AppDatabase.test(NativeDatabase.memory());

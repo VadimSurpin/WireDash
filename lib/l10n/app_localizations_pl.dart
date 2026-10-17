@@ -1425,6 +1425,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get guidedBackToForm => 'Edytuj ustawienia';
 
   @override
+  String get guidedStuckTitle => 'Utknąłeś? Zapytaj człowieka';
+
+  @override
+  String get guidedStuckBody =>
+      'Dwie próby bez połączenia. Napisz, jaki masz hub i co wpisałeś, a pomożemy go znaleźć.';
+
+  @override
+  String get guidedStuckTelegram => 'Zapytaj na Telegramie';
+
+  @override
+  String get guidedStuckHelp => 'Porady i e-mail';
+
+  @override
   String ladderTriedHint(Object count) {
     return 'Sprawdzone adresy: $count';
   }

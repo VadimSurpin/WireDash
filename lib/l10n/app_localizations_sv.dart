@@ -1411,6 +1411,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get guidedBackToForm => 'Redigera inställningar';
 
   @override
+  String get guidedStuckTitle => 'Fastnat? Fråga en människa';
+
+  @override
+  String get guidedStuckBody =>
+      'Två försök utan anslutning. Berätta vilken hubb du har och vad du skrev, så hjälper vi dig att hitta den.';
+
+  @override
+  String get guidedStuckTelegram => 'Fråga i Telegram';
+
+  @override
+  String get guidedStuckHelp => 'Tips och e-post';
+
+  @override
   String ladderTriedHint(Object count) {
     return 'Försökte $count adresser';
   }

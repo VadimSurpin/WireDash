@@ -1411,6 +1411,19 @@ class AppLocalizationsNb extends AppLocalizations {
   String get guidedBackToForm => 'Rediger innstillinger';
 
   @override
+  String get guidedStuckTitle => 'Står du fast? Spør et menneske';
+
+  @override
+  String get guidedStuckBody =>
+      'To forsøk uten tilkobling. Fortell oss hvilken hub du har og hva du skrev, så hjelper vi deg å finne den.';
+
+  @override
+  String get guidedStuckTelegram => 'Spør i Telegram';
+
+  @override
+  String get guidedStuckHelp => 'Tips og e-post';
+
+  @override
   String ladderTriedHint(Object count) {
     return 'Prøvde $count adresser';
   }

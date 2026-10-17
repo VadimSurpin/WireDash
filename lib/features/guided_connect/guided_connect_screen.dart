@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../support/support_details.dart';
 import '../support/get_help_screen.dart' show GetHelpLink;
+import '../support/community.dart';
 import '../support/support_log.dart';
 import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
@@ -65,6 +66,11 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   MqttProtocol _protocol = MqttProtocol.tcp;
   _Phase _phase = _Phase.form;
   DiagnosticsReport? _report;
+
+  /// Failed checks on this screen: after two, a card offers a person
+  /// (2.9.2; the small link at the bottom was opened by 6 of 53 stuck users).
+  int _failures = 0;
+  bool _offerTracked = false;
   String? _savedConnectionId;
   String _baseTopic = 'zigbee2mqtt';
   bool _pairingRequested = false;
@@ -187,6 +193,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     } else {
       setState(() {
         _report = report;
+        _failures++;
         _phase = _Phase.failed;
       });
     }
@@ -397,9 +404,24 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
 
   Widget _buildFailed(BuildContext context) {
     final report = _report!;
+    final offer = !_saveFailed && _failures >= 2;
+    if (offer && !_offerTracked) {
+      _offerTracked = true;
+      ref
+          .read(analyticsProvider)
+          .track(const HelpOffered(HelpFrom.manualConnect));
+    }
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        if (offer) ...[
+          _StuckCard(
+            onTelegram: () => openCommunity(ref, HelpFrom.manualConnect),
+            onHelp: () =>
+                context.push(Routes.getHelpFrom(HelpFrom.manualConnect.name)),
+          ),
+          const SizedBox(height: 16),
+        ],
         if (_saveFailed)
           Card(
             color: Theme.of(context).colorScheme.errorContainer,
@@ -563,6 +585,50 @@ class _PairingButton extends ConsumerWidget {
       onPressed: connected ? onPressed : null,
       icon: const Icon(Icons.add_circle_outline),
       label: Text(context.l10n.startPairing),
+    );
+  }
+}
+
+/// After two failed checks: a person can help, in one tap (2.9.2).
+class _StuckCard extends StatelessWidget {
+  const _StuckCard({required this.onTelegram, required this.onHelp});
+
+  final VoidCallback onTelegram;
+  final VoidCallback onHelp;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.guidedStuckTitle, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Text(l10n.guidedStuckBody, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  onPressed: onTelegram,
+                  icon: const Icon(Icons.forum_outlined),
+                  label: Text(l10n.guidedStuckTelegram),
+                ),
+                OutlinedButton(
+                  onPressed: onHelp,
+                  child: Text(l10n.guidedStuckHelp),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

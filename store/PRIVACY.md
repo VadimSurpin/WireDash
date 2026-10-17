@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.9.1 is published (replaces the policy published with ZigDash 2.9)
+**Effective date:** the day ZigDash 2.9.2 is published (replaces the policy published with ZigDash 2.9.1)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -125,6 +125,7 @@ never from anything you typed or anything your broker sent.
 | `feature_used` | The first use of a feature in a session | Devices tab, device page, Scenes, Edit mode, Wall display, tile added (with the kind of tile, such as "light" or "toggle"), history (from 2.7), or kiosk (with whether a PIN is set, whether Android screen pinning is on, and the dim delay as one of off, 1, 5 or 15 minutes; from 2.9 also what the idle screen shows (dimmed, clock, clock and readings, or black) and whether wake on motion, the night schedule and alarm takeover are on) |
 | `ha_import` | From 2.8, the import from Home Assistant | the step (the offer after setup accepted or declined, a read that failed, the preview, the import done); for a failed read only why (no address, no token, nothing answered, not Home Assistant, token refused, certificate not trusted, read failed, home not connected); counts in buckets (0, 1–5, 6–20, 21+) of devices, rooms, renamed tiles and added dashboards; and whether Home Assistant had only ZHA devices. Never the address, the token, or any device or room name |
 | `help_opened` | Get help was opened | where from: no connection found, a setup error, manual connect, home can't be reached, device list missing, Settings, or the demo |
+| `help_offered` | From 2.9.2: the "ask a person" card was shown after two failed checks on the broker form | where: the broker form |
 | `support_contact` | A support request was started from Get help | where from (as above); email or copy |
 | `community_opened` | The Telegram community link was opened | where from: Settings, the one-time dashboard card, or the place Get help was opened from (as above) |
 | `shortcut_added` | A Quick Settings tile was given a device, a home-screen widget was added, or ZigDash's Device Controls were first shown | tile, control, widget, scene widget or group widget |

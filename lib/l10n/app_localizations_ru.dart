@@ -1420,6 +1420,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get guidedBackToForm => 'Изменить настройки';
 
   @override
+  String get guidedStuckTitle => 'Застряли? Спросите человека';
+
+  @override
+  String get guidedStuckBody =>
+      'Две попытки без подключения. Напишите, какой у вас хаб и что вы ввели, и мы поможем его найти.';
+
+  @override
+  String get guidedStuckTelegram => 'Спросить в Telegram';
+
+  @override
+  String get guidedStuckHelp => 'Советы и почта';
+
+  @override
   String ladderTriedHint(Object count) {
     return 'Проверено адресов: $count';
   }

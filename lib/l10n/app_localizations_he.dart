@@ -1399,6 +1399,19 @@ class AppLocalizationsHe extends AppLocalizations {
   String get guidedBackToForm => 'עריכת הגדרות';
 
   @override
+  String get guidedStuckTitle => 'נתקעתם? שאלו אדם';
+
+  @override
+  String get guidedStuckBody =>
+      'שני ניסיונות בלי חיבור. ספרו לנו איזו רכזת יש לכם ומה הקלדתם, ונעזור למצוא אותה.';
+
+  @override
+  String get guidedStuckTelegram => 'לשאול בטלגרם';
+
+  @override
+  String get guidedStuckHelp => 'טיפים ואימייל';
+
+  @override
   String ladderTriedHint(Object count) {
     return 'נוסו $count כתובות';
   }
