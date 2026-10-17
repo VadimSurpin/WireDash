@@ -1,0 +1,1 @@
+ZigDash 2.9.1: historik utan Node-RED. Ingen Node-RED på hubben? Slå på ”Spela in på den här enheten” på en telefon eller surfplatta som står öppen, som en väggsurfplatta, så ser alla telefoner i hemmet historiken. Dessutom: klockan visas inte längre bakom ett öppet fönster.

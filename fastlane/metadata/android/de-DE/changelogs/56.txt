@@ -1,0 +1,1 @@
+ZigDash 2.9.1: Verlauf ohne Node-RED. Kein Node-RED auf deinem Hub? Schalte „Auf diesem Gerät aufzeichnen“ auf einem Handy oder Tablet ein, das geöffnet bleibt, etwa einem Wandtablet, und jedes Handy deines Zuhauses sieht den Verlauf. Außerdem: Die Uhr erscheint nicht mehr hinter einem geöffneten Fenster.

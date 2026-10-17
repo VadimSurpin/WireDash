@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zigdash/core/router/routes.dart';
 import 'package:zigdash/data/database/database.dart';
@@ -8,7 +9,9 @@ import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/features/devices/device_registry.dart';
 import 'package:zigdash/features/devices/devices_providers.dart';
+import 'package:zigdash/features/history/app_history_recorder.dart';
 import 'package:zigdash/features/home/home_shell.dart';
+import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 
 final _stamp = DateTime(2026, 9, 26);
@@ -53,6 +56,7 @@ Widget _app(List<Connection> homes,
   );
   return ProviderScope(
     overrides: [
+      sharedPreferencesProvider.overrideWithValue(_prefs),
       connectionsStreamProvider.overrideWith((ref) => Stream.value(homes)),
       unassignedCountProvider
           .overrideWith((ref, _) => AsyncValue.data(newDevices)),
@@ -68,7 +72,26 @@ Widget _app(List<Connection> homes,
   );
 }
 
+late SharedPreferences _prefs;
+
 void main() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    _prefs = await SharedPreferences.getInstance();
+  });
+
+  testWidgets('the history recorder lives with the home, not a tab (2.9.1)',
+      (tester) async {
+    await tester.pumpWidget(_app([_home('c1', 'My Home')]));
+    await tester.pumpAndSettle();
+    final first = tester.state(find.byType(AppHistoryRecorder));
+    await tester.tap(find.text('Devices'));
+    await tester.pumpAndSettle();
+    expect(find.text('devices c1'), findsOneWidget);
+    expect(tester.state(find.byType(AppHistoryRecorder)), same(first),
+        reason: 'switching tabs must not restart (or stop) recording');
+  });
+
   testWidgets('one home: plain name, no switcher', (tester) async {
     await tester.pumpWidget(_app([_home('c1', 'My Home')]));
     await tester.pumpAndSettle();

@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.9 is published (replaces the policy published with ZigDash 2.8)
+**Effective date:** the day ZigDash 2.9.1 is published (replaces the policy published with ZigDash 2.9)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -133,7 +133,7 @@ never from anything you typed or anything your broker sent.
 | `alerts_setup` | A step of setting alerts up | the step (flow installed, flow installed by hand, no Node-RED, phone registered, no Google services, test sent, test failed); the channel (push, ntfy, Pushover) |
 | `alert_added` | An alert was added | its kind: leak, smoke, door or window opened, or battery low |
 | `alarm_shown` | From 2.9: alarm takeover filled a wall display | only the kind: leak, smoke, gas or carbon monoxide. Never the device or where it is |
-| `history_setup` | From 2.7: setting up the history recorder on the hub ended | installed, updated, imported by hand (Node-RED asked for a login), no Node-RED found, or refused |
+| `history_setup` | From 2.7: setting up the history recorder on the hub ended | installed, updated, imported by hand (Node-RED asked for a login), no Node-RED found, or refused; from 2.9.1 also recording on this device instead |
 | `pro` | From 2.7, Google Play version only: a step of ZigDash Pro | a locked view was shown, Unlock was tapped, or Pro became unlocked. Nothing about the payment |
 | `review_prompt` | From 2.6.5: the app asked Google Play to show its "rate this app" dialog (after a device you control has answered on two different days) | whether the dialog was requested, or could not be because the Play review flow is not available on the device. Nothing about whether you rated, or what |
 
@@ -165,6 +165,12 @@ value names and units) and your phone's time zone. The flow records those
 values every 15 minutes as retained messages on your broker and deletes them
 after 30 days. Nothing of it leaves your network: no copy is sent to the
 developer or anyone else.
+
+From 2.9.1, without Node-RED, you can let ZigDash record on one phone or
+tablet you choose (Record on this device). While ZigDash is open there, it
+does what the flow does: it reads the same values from your broker and
+writes the same 15-minute records back to your broker, retained, and
+deletes them after 30 days. The choice is stored on that device only.
 
 ## Import from Home Assistant (from 2.8)
 

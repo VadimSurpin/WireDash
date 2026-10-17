@@ -1,0 +1,1 @@
+ZigDash 2.9.1: historikk uten Node-RED. Ingen Node-RED på huben? Slå på «Ta opp på denne enheten» på en telefon eller et nettbrett som står åpent, som et veggnettbrett, så ser alle telefonene i hjemmet historikken. Dessuten: klokken vises ikke lenger bak et åpent vindu.

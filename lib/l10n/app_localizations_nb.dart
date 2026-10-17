@@ -3326,6 +3326,24 @@ class AppLocalizationsNb extends AppLocalizations {
       'Bare tall som vises på et dashbord tas opp. Legg til denne som en flis for å starte historikken.';
 
   @override
+  String get historyRecordHere => 'Ta opp på denne enheten';
+
+  @override
+  String get historyRecordHereHint =>
+      'Ingen Node-RED? ZigDash kan ta opp på en telefon eller et nettbrett som står åpent, som et veggnettbrett. Alle telefonene i dette hjemmet ser historikken.';
+
+  @override
+  String get historyRecordingHere =>
+      'Denne enheten tar opp historikk mens ZigDash er åpen. De første verdiene kommer innen 15 minutter.';
+
+  @override
+  String get wallRecordHistory => 'Ta opp historikk på denne enheten';
+
+  @override
+  String get wallRecordHistorySubtitle =>
+      'Hvert 15. minutt mens ZigDash er åpen, for alle telefonene i dette hjemmet. Ikke nødvendig når Node-RED tar opp.';
+
+  @override
   String historyNeedsPassword(String host) {
     return 'Ett steg til: brokeren din krever innlogging. Åpne Node-RED på $host:1880, dobbeltklikk på «ZigDash history broker», skriv MQTT-passordet i fanen Security og trykk Deploy. ZigDash sender aldri passordet ditt til huben.';
   }

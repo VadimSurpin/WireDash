@@ -232,6 +232,56 @@ void main() {
       await tester.pump();
     });
 
+    testWidgets('no idle screen under an open sheet; it comes after', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({
+        'wall_display_d1': true,
+        'wall_dim_d1': 1,
+        'wall_idle_show_d1': 'clock',
+      });
+      prefs = await SharedPreferences.getInstance();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(prefs),
+            screenWakeProvider.overrideWithValue(wake),
+          ],
+          child: MaterialApp(
+            home: WallDisplayScope(
+              dashboardId: 'd1',
+              active: true,
+              child: Scaffold(
+                body: Builder(
+                  builder: (context) => ElevatedButton(
+                    onPressed: () => showModalBottomSheet<void>(
+                      context: context,
+                      useRootNavigator: true,
+                      builder: (_) =>
+                          const SizedBox(height: 200, child: Text('history')),
+                    ),
+                    child: const Text('open'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(minutes: 3));
+      expect(find.byType(WallIdleScreen), findsNothing, reason: 'sheet open');
+      expect(wake.dimCalls, isEmpty);
+
+      Navigator.of(tester.element(find.text('history'))).pop();
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(minutes: 1, seconds: 1));
+      expect(find.byType(WallIdleScreen), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    });
+
     testWidgets('black covers the dashboard too', (tester) async {
       SharedPreferences.setMockInitialValues({
         'wall_display_d1': true,

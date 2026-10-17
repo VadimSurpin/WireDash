@@ -1,0 +1,1 @@
+ZigDash 2.9.1: history without Node-RED. No Node-RED on your hub? Turn on "Record on this device" on a phone or tablet that stays open, like a wall tablet, and every phone of your Home sees the history. Also: the clock no longer comes on behind an open sheet.

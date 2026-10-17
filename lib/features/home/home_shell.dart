@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../history/app_history_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,7 +41,21 @@ class HomeShell extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) => Stack(
+    children: [
+      Positioned.fill(child: _shell(context, ref)),
+      // History without Node-RED (2.9.1): the recorder lives with the home,
+      // not a tab, so it keeps recording on Devices, Scenes and pages
+      // opened on top. Same place in every layout, so its state survives
+      // the chrome hiding and the rail appearing.
+      AppHistoryRecorder(
+        key: ValueKey(connectionId),
+        connectionId: connectionId,
+      ),
+    ],
+  );
+
+  Widget _shell(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final newDevices =
         ref.watch(unassignedCountProvider(connectionId)).valueOrNull ?? 0;

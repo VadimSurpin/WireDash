@@ -465,7 +465,16 @@ class ReviewPrompted extends AnalyticsEvent {
 }
 
 /// What setting up the history recorder ended in (2.7).
-enum HistorySetupResult { installed, updated, manual, noNodeRed, failed }
+enum HistorySetupResult {
+  installed,
+  updated,
+  manual,
+  noNodeRed,
+  failed,
+
+  /// 2.9.1: no Node-RED, so this device records while ZigDash is open.
+  thisDevice,
+}
 
 /// The history recorder was set up from a history sheet.
 class HistorySetup extends AnalyticsEvent {
