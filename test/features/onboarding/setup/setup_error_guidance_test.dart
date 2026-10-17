@@ -48,6 +48,12 @@ void main() {
           SetupErrorKind.authRejected);
     });
 
+    test('a login with no answer → loginNoAnswer', () {
+      expect(
+          mapLadderFailure(report([fail(DiagnosticStep.connack, 'diagLoginNoAnswer')])),
+          SetupErrorKind.loginNoAnswer);
+    });
+
     test('no failing step → unknown', () {
       final steps = [
         const StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),

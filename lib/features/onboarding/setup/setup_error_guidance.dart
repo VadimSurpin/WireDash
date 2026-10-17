@@ -16,6 +16,11 @@ enum SetupErrorKind {
   /// Credentials were given and rejected — allow correction and retry.
   authRejected,
 
+  /// Credentials were given and the broker never answered them in time
+  /// (2.8.2). Home Assistant's Mosquitto add-on checks logins against Home
+  /// Assistant's users, which can be slow on a Raspberry Pi.
+  loginNoAnswer,
+
   /// MQTT connected but no Zigbee2MQTT topics verified on this endpoint.
   notZigbee2Mqtt,
 
@@ -65,6 +70,7 @@ SetupErrorKind mapLadderFailure(DiagnosticsReport report) {
       SetupErrorKind.hostUnreachable,
     'diagTcpFail' || 'diagConnackFail' => SetupErrorKind.portClosed,
     'diagAuthRejected' || 'diagAuthRefused' => SetupErrorKind.authRejected,
+    'diagLoginNoAnswer' => SetupErrorKind.loginNoAnswer,
     _ => SetupErrorKind.unknown,
   };
 }
@@ -80,6 +86,11 @@ SetupGuidance guidanceFor(SetupErrorKind kind) => switch (kind) {
           titleKey: 'setupErrPortClosedTitle',
           explanationKey: 'setupErrPortClosedBody',
           actionKey: 'setupErrPortClosedAction',
+        ),
+      SetupErrorKind.loginNoAnswer => const SetupGuidance(
+          titleKey: 'setupErrLoginNoAnswerTitle',
+          explanationKey: 'setupErrLoginNoAnswerBody',
+          actionKey: 'setupErrLoginNoAnswerAction',
         ),
       SetupErrorKind.authRequired => const SetupGuidance(
           titleKey: 'setupErrAuthRequiredTitle',

@@ -149,6 +149,12 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
   'setupErrSaveFailedTitle' => l10n.setupErrSaveFailedTitle,
   'setupErrSaveFailedBody' => l10n.setupErrSaveFailedBody,
   'setupErrSaveFailedAction' => l10n.setupErrSaveFailedAction,
+  'setupErrLoginNoAnswerTitle' => l10n.setupErrLoginNoAnswerTitle,
+  'setupErrLoginNoAnswerBody' => l10n.setupErrLoginNoAnswerBody,
+  'setupErrLoginNoAnswerAction' => l10n.setupErrLoginNoAnswerAction,
+  // Missing until 2.8.2: the unknown screen read "Try again" three times.
+  'setupErrUnknownTitle' => l10n.setupErrUnknownTitle,
+  'setupErrUnknownBody' => l10n.setupErrUnknownBody,
   _ => l10n.setupErrUnknownAction,
 };
 

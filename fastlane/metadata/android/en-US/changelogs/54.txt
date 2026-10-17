@@ -1,0 +1,1 @@
+ZigDash 2.8.2: a fix for slow logins. If your broker takes too long to answer the username and password (Home Assistant's Mosquitto add-on checks logins with Home Assistant, which can be slow on a Raspberry Pi), setup now says so and lets you try again, instead of showing an unknown error.

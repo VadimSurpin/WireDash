@@ -2558,6 +2558,12 @@ abstract class AppLocalizations {
   /// **'The broker didn\'t complete the MQTT handshake. Make sure this is an MQTT broker (Mosquitto, Zigbee2MQTT).'**
   String get diagConnackFail;
 
+  /// No description provided for @diagLoginNoAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'The broker didn\'t answer the login in time. Home Assistant can take a few seconds to check it, so try again.'**
+  String get diagLoginNoAnswer;
+
   /// No description provided for @diagAuthRejected.
   ///
   /// In en, this message translates to:
@@ -2977,6 +2983,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get setupErrUnknownAction;
+
+  /// No description provided for @setupErrLoginNoAnswerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The broker didn\'t answer the login'**
+  String get setupErrLoginNoAnswerTitle;
+
+  /// No description provided for @setupErrLoginNoAnswerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your broker was found, but it didn\'t answer the username and password in time. Home Assistant\'s Mosquitto add-on checks logins with Home Assistant, which can take a few seconds on a Raspberry Pi. Try again, and check that this user exists in Home Assistant.'**
+  String get setupErrLoginNoAnswerBody;
+
+  /// No description provided for @setupErrLoginNoAnswerAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrLoginNoAnswerAction;
 
   /// No description provided for @setupNoZ2mTitle.
   ///

@@ -222,15 +222,25 @@ class ConnectDiagnostics {
     }
     final status = client.connectionStatus;
     final code = status?.returnCode;
+    // mqtt_client starts every attempt at `noneSpecified` and only replaces
+    // it when a CONNACK arrives, so that value means no answer at all. It
+    // used to count as an answer that passed the login, and the device step
+    // then threw on a dead client: setup showed "unknown" (a Spanish user on
+    // Home Assistant, 2026-10-17).
     answered =
-        status?.state == mc.MqttConnectionState.connected || code != null;
+        status?.state == mc.MqttConnectionState.connected ||
+        (code != null && code != mc.MqttConnectReturnCode.noneSpecified);
     if (!answered) {
       _dispose(client);
       steps.add(
         StepResult(
           step: DiagnosticStep.connack,
           status: StepStatus.fail,
-          detailKey: 'diagConnackFail',
+          // With a login the broker was reached and went quiet on it; the
+          // Mosquitto add-on checks logins against Home Assistant's users.
+          detailKey: config.username == null
+              ? 'diagConnackFail'
+              : 'diagLoginNoAnswer',
         ),
       );
       return _aborted(steps);
@@ -264,6 +274,19 @@ class ConnectDiagnostics {
           step: DiagnosticStep.auth,
           status: StepStatus.fail,
           detailKey: 'diagAuthRefused',
+        ),
+      );
+      return _aborted(steps);
+    }
+
+    // Accepted, then dropped before we could listen: nothing to subscribe on.
+    if (status?.state != mc.MqttConnectionState.connected) {
+      _dispose(client);
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.devices,
+          status: StepStatus.fail,
+          detailKey: 'diagConnackFail',
         ),
       );
       return _aborted(steps);
@@ -305,6 +328,16 @@ class ConnectDiagnostics {
         ..subscribe('$base/bridge/devices', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/#', mc.MqttQos.atLeastOnce);
       await Future<void>.delayed(deviceWindow);
+    } on mc.ConnectionException {
+      // Dropped between the CONNACK and the subscribe.
+      steps.add(
+        StepResult(
+          step: DiagnosticStep.devices,
+          status: StepStatus.fail,
+          detailKey: 'diagConnackFail',
+        ),
+      );
+      return _aborted(steps);
     } finally {
       // Fire-and-forget: the probe client is disposed immediately after, and
       // awaiting cancel() here deadlocks the ladder under fakeAsync.

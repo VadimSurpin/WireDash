@@ -44,6 +44,7 @@ FailureKind failureKindFromSetup(SetupErrorKind kind) => switch (kind) {
       SetupErrorKind.portClosed => FailureKind.refused,
       SetupErrorKind.authRequired => FailureKind.loginRequired,
       SetupErrorKind.authRejected => FailureKind.loginRejected,
+      SetupErrorKind.loginNoAnswer => FailureKind.timedOut,
       SetupErrorKind.notZigbee2Mqtt => FailureKind.noZigbee2mqtt,
       SetupErrorKind.noDevices => FailureKind.noDevices,
       SetupErrorKind.scanFailed => FailureKind.noLocalNetwork,
@@ -60,6 +61,7 @@ FailureKind failureKindFromLadder(DiagnosticsReport report) {
       'diagTcpTimeout' => FailureKind.timedOut,
       'diagTcpFail' => FailureKind.refused,
       'diagConnackFail' => FailureKind.notMqtt,
+      'diagLoginNoAnswer' => FailureKind.timedOut,
       'diagAuthRejected' || 'diagAuthRefused' => FailureKind.loginRejected,
       _ => FailureKind.unknown,
     };

@@ -1379,6 +1379,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Брокер не завершил рукопожатие MQTT. Убедитесь, что это MQTT-брокер (Mosquitto, Zigbee2MQTT).';
 
   @override
+  String get diagLoginNoAnswer =>
+      'Брокер не ответил на вход вовремя. Home Assistant может проверять его несколько секунд, попробуйте ещё раз.';
+
+  @override
   String get diagAuthRejected =>
       'Брокер отклонил имя пользователя или пароль. Проверьте учётные данные.';
 
@@ -1623,6 +1627,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get setupErrUnknownAction => 'Повторить';
+
+  @override
+  String get setupErrLoginNoAnswerTitle => 'Брокер не ответил на вход';
+
+  @override
+  String get setupErrLoginNoAnswerBody =>
+      'Ваш брокер найден, но он не ответил на имя пользователя и пароль вовремя. Дополнение Mosquitto в Home Assistant проверяет вход через Home Assistant, и на Raspberry Pi это может занять несколько секунд. Попробуйте ещё раз и проверьте, что такой пользователь есть в Home Assistant.';
+
+  @override
+  String get setupErrLoginNoAnswerAction => 'Повторить';
 
   @override
   String get setupNoZ2mTitle =>

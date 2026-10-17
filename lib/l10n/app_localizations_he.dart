@@ -1353,6 +1353,10 @@ class AppLocalizationsHe extends AppLocalizations {
       'הברוקר לא השלים את לחיצת היד של MQTT. ודאו שזה ברוקר MQTT (Mosquitto, Zigbee2MQTT).';
 
   @override
+  String get diagLoginNoAnswer =>
+      'הברוקר לא ענה להתחברות בזמן. ל-Home Assistant לוקח לפעמים כמה שניות לבדוק אותה, נסו שוב.';
+
+  @override
   String get diagAuthRejected =>
       'הברוקר דחה את שם המשתמש או הסיסמה. בדקו את פרטי ההתחברות.';
 
@@ -1606,6 +1610,16 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get setupErrUnknownAction => 'נסו שוב';
+
+  @override
+  String get setupErrLoginNoAnswerTitle => 'הברוקר לא ענה להתחברות';
+
+  @override
+  String get setupErrLoginNoAnswerBody =>
+      'הברוקר שלכם נמצא, אבל הוא לא ענה לשם המשתמש והסיסמה בזמן. תוסף Mosquitto של Home Assistant בודק התחברויות מול Home Assistant, וב-Raspberry Pi זה יכול לקחת כמה שניות. נסו שוב, ובדקו שהמשתמש הזה קיים ב-Home Assistant.';
+
+  @override
+  String get setupErrLoginNoAnswerAction => 'לנסות שוב';
 
   @override
   String get setupNoZ2mTitle =>
