@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/l10n/l10n_ext.dart';
-import '../../../core/theme/signal_colors.dart';
 import '../wall_sensors.dart';
 
 /// Alarm takeover (wall-tablet-2.9.md §6): the whole wall screen in the
-/// attention colour, what happened and where, until someone taps OK.
+/// theme's error colour (strong in light and dark alike; the attention
+/// role is a soft tile fill), what happened and where, until someone taps
+/// OK.
 class WallAlarmScreen extends StatelessWidget {
   const WallAlarmScreen({
     super.key,
@@ -21,7 +22,9 @@ class WallAlarmScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final colors = SignalColors.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final bg = scheme.error;
+    final fg = scheme.onError;
     final text = Theme.of(context).textTheme;
     final what = switch (kind) {
       WallAlarmKind.leak => l10n.wallAlarmLeak,
@@ -37,7 +40,7 @@ class WallAlarmScreen extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       child: Material(
-        color: colors.attention,
+        color: bg,
         child: SafeArea(
           child: Center(
             child: Padding(
@@ -45,28 +48,24 @@ class WallAlarmScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 96, color: colors.onAttention),
+                  Icon(icon, size: 96, color: fg),
                   const SizedBox(height: 24),
                   Text(
                     what,
                     textAlign: TextAlign.center,
-                    style: text.displayMedium?.copyWith(
-                      color: colors.onAttention,
-                    ),
+                    style: text.displayMedium?.copyWith(color: fg),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     deviceName,
                     textAlign: TextAlign.center,
-                    style: text.headlineSmall?.copyWith(
-                      color: colors.onAttention,
-                    ),
+                    style: text.headlineSmall?.copyWith(color: fg),
                   ),
                   const SizedBox(height: 40),
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      backgroundColor: colors.onAttention,
-                      foregroundColor: colors.attention,
+                      backgroundColor: fg,
+                      foregroundColor: bg,
                       minimumSize: const Size(200, 64),
                       textStyle: text.titleLarge,
                     ),

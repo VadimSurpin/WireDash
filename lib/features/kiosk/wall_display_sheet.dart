@@ -89,7 +89,7 @@ class WallDisplaySheet extends ConsumerWidget {
                 ref.read(wallFullscreenProvider(id).notifier).set(on),
           ),
           ListTile(
-            leading: const Icon(Icons.bedtime_outlined),
+            leading: const Icon(Icons.hourglass_bottom),
             title: Text(l10n.wallIdleTitle),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,40 +116,37 @@ class WallDisplaySheet extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Text(l10n.wallIdleShow),
                   const SizedBox(height: 4),
-                  SegmentedButton<WallIdleShow>(
-                    showSelectedIcon: false,
-                    segments: [
-                      ButtonSegment(
-                        value: WallIdleShow.dim,
-                        label: Text(l10n.wallIdleShowDim),
-                      ),
-                      ButtonSegment(
-                        value: WallIdleShow.clock,
-                        label: Text(l10n.wallIdleShowClock),
-                      ),
-                      if (pro != ProStatus.unavailable)
-                        ButtonSegment(
-                          value: WallIdleShow.readings,
-                          enabled: proOpen,
-                          label: Text(
+                  // Chips that wrap: four choices don't fit one row on a phone.
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      for (final (show, label) in [
+                        (WallIdleShow.dim, l10n.wallIdleShowDim),
+                        (WallIdleShow.clock, l10n.wallIdleShowClock),
+                        if (pro != ProStatus.unavailable)
+                          (
+                            WallIdleShow.readings,
                             proOpen
                                 ? l10n.wallIdleShowReadings
                                 : '${l10n.wallIdleShowReadings} · ${l10n.proBadge}',
                           ),
+                        (WallIdleShow.black, l10n.wallIdleShowBlack),
+                      ])
+                        ChoiceChip(
+                          label: Text(label),
+                          selected:
+                              show ==
+                              (idleShow == WallIdleShow.readings && !proOpen
+                                  ? WallIdleShow.clock
+                                  : idleShow),
+                          onSelected: show == WallIdleShow.readings && !proOpen
+                              ? null
+                              : (_) => ref
+                                    .read(wallIdleShowProvider(id).notifier)
+                                    .set(show),
                         ),
-                      ButtonSegment(
-                        value: WallIdleShow.black,
-                        label: Text(l10n.wallIdleShowBlack),
-                      ),
                     ],
-                    selected: {
-                      idleShow == WallIdleShow.readings && !proOpen
-                          ? WallIdleShow.clock
-                          : idleShow,
-                    },
-                    onSelectionChanged: (s) => ref
-                        .read(wallIdleShowProvider(id).notifier)
-                        .set(s.first),
                   ),
                   if (idleShow == WallIdleShow.readings && proOpen)
                     _ReadingsPicker(dashboardId: id),

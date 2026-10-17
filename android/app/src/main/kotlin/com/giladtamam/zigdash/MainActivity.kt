@@ -62,6 +62,11 @@ class MainActivity : FlutterActivity() {
                             ?: android.media.RingtoneManager.getDefaultUri(
                                 android.media.RingtoneManager.TYPE_NOTIFICATION)
                         alarmTone = android.media.RingtoneManager.getRingtone(this, uri)?.apply {
+                            // The alarm stream: heard on a tablet set to silent.
+                            audioAttributes = android.media.AudioAttributes.Builder()
+                                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                .build()
                             if (Build.VERSION.SDK_INT >= 28) isLooping = true
                             play()
                         }

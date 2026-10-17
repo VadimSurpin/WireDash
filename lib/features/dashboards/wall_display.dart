@@ -296,13 +296,15 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     _timer?.cancel();
     _dimTimer?.cancel();
     final hidden = ref.read(wallChromeHiddenProvider.notifier);
-    if (hidden.state) hidden.state = false;
+    // An alarm fills the screen: the header and navigation stay away.
+    final alarm = _alarms.showing.isNotEmpty;
+    if (hidden.state != alarm) hidden.state = alarm;
     if (_dimmed) {
       _dimmed = false;
       ref.read(screenWakeProvider).dim(false).ignore();
     }
     if (_idle != null) setState(() => _idle = null);
-    if (_wall) {
+    if (_wall && !alarm) {
       _timer = Timer(wallChromeDelay, () {
         if (mounted && _wall) {
           ref.read(wallChromeHiddenProvider.notifier).state = true;
@@ -356,6 +358,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
       _sounding = false;
       ref.read(screenWakeProvider).alarmSound(false).ignore();
     }
+    _touched();
   }
 
   /// For [dispose], where `ref` can no longer be used.
