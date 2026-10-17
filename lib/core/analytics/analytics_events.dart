@@ -195,6 +195,9 @@ enum Feature {
 
   /// A history sheet or the device page's History card was opened (2.7).
   history,
+
+  /// A device was controlled from the app (2.9.2), with its kind in `tile`.
+  control,
 }
 
 /// The first use of a feature in a session.

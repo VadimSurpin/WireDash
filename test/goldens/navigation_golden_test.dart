@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +21,8 @@ import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
 import 'package:zigdash/features/home/home_shell.dart';
 import 'package:zigdash/features/panels/screens/add_tile_screen.dart';
 import 'package:zigdash/features/settings/providers/settings_controller.dart';
+
+import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
 import 'golden_harness.dart';
 
@@ -104,6 +108,8 @@ late SharedPreferences _prefs;
 List<Override> _overrides() => [
       // The home shell holds the history recorder (2.9.1), off here.
       sharedPreferencesProvider.overrideWithValue(_prefs),
+      // The shell's control tracker asks for the broker (2.9.2): none here.
+      mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
       connectionsStreamProvider.overrideWith((ref) =>
           Stream.value([_home('c1', 'My Home'), _home('c2', 'SMHUB')])),
       unassignedCountProvider.overrideWith((ref, _) => const AsyncValue.data(1)),
