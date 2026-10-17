@@ -159,3 +159,52 @@ final wallAlarmProvider =
     NotifierProvider.family<WallAlarmSetting, ({bool on, bool sound}), String>(
       WallAlarmSetting.new,
     );
+
+/// The night schedule (wall-tablet-2.9.md §5): between [from] and [to]
+/// (minutes after midnight, phone time) the idle screen is black and motion
+/// wakes the screen only dimly. Off until chosen; 23:00 to 07:00 when first
+/// turned on.
+typedef WallNight = ({bool on, int from, int to});
+
+class WallNightSetting extends FamilyNotifier<WallNight, String> {
+  String get _onKey => 'wall_night_on_$arg';
+  String get _fromKey => 'wall_night_from_$arg';
+  String get _toKey => 'wall_night_to_$arg';
+
+  @override
+  WallNight build(String arg) {
+    final prefs = ref.read(sharedPreferencesProvider);
+    return (
+      on: prefs.getBool(_onKey) ?? false,
+      from: prefs.getInt(_fromKey) ?? 23 * 60,
+      to: prefs.getInt(_toKey) ?? 7 * 60,
+    );
+  }
+
+  Future<void> set({bool? on, int? from, int? to}) async {
+    state = (on: on ?? state.on, from: from ?? state.from, to: to ?? state.to);
+    final prefs = ref.read(sharedPreferencesProvider);
+    await prefs.setBool(_onKey, state.on);
+    await prefs.setInt(_fromKey, state.from);
+    await prefs.setInt(_toKey, state.to);
+  }
+}
+
+final wallNightProvider =
+    NotifierProvider.family<WallNightSetting, WallNight, String>(
+      WallNightSetting.new,
+    );
+
+/// Whether [now] falls in the night from [from] to [to] minutes after
+/// midnight; a night that crosses midnight (23:00 to 07:00) wraps.
+bool isNightAt(DateTime now, int from, int to) {
+  final m = now.hour * 60 + now.minute;
+  if (from == to) return false;
+  return from < to ? m >= from && m < to : m >= from || m < to;
+}
+
+/// How bright motion wakes the screen at night.
+const nightWakeBrightness = 0.15;
+
+/// The wall display's clock; tests replace it.
+final wallNowProvider = Provider<DateTime Function()>((_) => DateTime.now);

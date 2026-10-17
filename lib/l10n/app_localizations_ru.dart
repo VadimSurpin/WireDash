@@ -3178,6 +3178,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wallAlarmSound => 'Звуковой сигнал';
 
   @override
+  String get wallNightTitle => 'Ночь';
+
+  @override
+  String get wallNightSubtitle =>
+      'Чёрный экран в эти часы. Движение будит его только приглушённо; тревоги — всегда полностью.';
+
+  @override
+  String get wallNightFrom => 'С';
+
+  @override
+  String get wallNightTo => 'до';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes мин';
   }

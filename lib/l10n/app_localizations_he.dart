@@ -3143,6 +3143,19 @@ class AppLocalizationsHe extends AppLocalizations {
   String get wallAlarmSound => 'להשמיע צליל';
 
   @override
+  String get wallNightTitle => 'לילה';
+
+  @override
+  String get wallNightSubtitle =>
+      'שחור בין השעות האלה. תנועה מעירה רק בעמעום; התראות תמיד במלואן.';
+
+  @override
+  String get wallNightFrom => 'מ-';
+
+  @override
+  String get wallNightTo => 'עד';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes דק׳';
   }

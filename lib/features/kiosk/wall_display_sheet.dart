@@ -163,6 +163,7 @@ class WallDisplaySheet extends ConsumerWidget {
               dashboardId: id,
               open: proOpen,
             ),
+            _NightSection(dashboardId: id, open: proOpen),
             _AlarmsSection(dashboardId: id, open: proOpen),
           ],
           if (pro == ProStatus.locked) const _ProNote(),
@@ -476,6 +477,75 @@ class _AlarmsSection extends ConsumerWidget {
             title: Text(l10n.wallAlarmSound),
             value: alarms.sound,
             onChanged: setting.setSound,
+          ),
+      ],
+    );
+  }
+}
+
+/// "Night": black between two times, motion wakes only dimly
+/// (wall-tablet-2.9.md §5).
+class _NightSection extends ConsumerWidget {
+  const _NightSection({required this.dashboardId, required this.open});
+
+  final String dashboardId;
+  final bool open;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final loc = MaterialLocalizations.of(context);
+    final night = ref.watch(wallNightProvider(dashboardId));
+    final setting = ref.read(wallNightProvider(dashboardId).notifier);
+    String label(int minutes) => loc.formatTimeOfDay(
+      TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+      alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+    );
+    Future<int?> pick(int minutes) async {
+      final t = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+      );
+      return t == null ? null : t.hour * 60 + t.minute;
+    }
+
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.nightlight_outlined),
+          title: Text(
+            open
+                ? l10n.wallNightTitle
+                : '${l10n.wallNightTitle} · ${l10n.proBadge}',
+          ),
+          subtitle: Text(l10n.wallNightSubtitle),
+          value: open && night.on,
+          onChanged: open ? (on) => setting.set(on: on) : null,
+        ),
+        if (open && night.on)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 56, end: 16),
+            child: Row(
+              children: [
+                Text(l10n.wallNightFrom),
+                TextButton(
+                  onPressed: () async {
+                    final m = await pick(night.from);
+                    if (m != null) await setting.set(from: m);
+                  },
+                  child: Text(label(night.from)),
+                ),
+                const SizedBox(width: 16),
+                Text(l10n.wallNightTo),
+                TextButton(
+                  onPressed: () async {
+                    final m = await pick(night.to);
+                    if (m != null) await setting.set(to: m);
+                  },
+                  child: Text(label(night.to)),
+                ),
+              ],
+            ),
           ),
       ],
     );

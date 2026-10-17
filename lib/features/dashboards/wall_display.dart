@@ -273,6 +273,23 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     _touched();
   }
 
+  /// The night schedule is on and it is night now (Pro).
+  bool get _night {
+    final night = ref.read(wallNightProvider(_settingsId));
+    return night.on &&
+        ref.read(proStatusProvider) == ProStatus.unlocked &&
+        isNightAt(ref.read(wallNowProvider)(), night.from, night.to);
+  }
+
+  /// Motion at night: awake, but only dimly (wall-tablet-2.9.md §5).
+  void _wokenByMotion() {
+    _touched();
+    if (_night && _alarms.showing.isEmpty) {
+      _dimmed = true;
+      ref.read(screenWakeProvider).brightness(nightWakeBrightness).ignore();
+    }
+  }
+
   /// Shows the chrome and undims; on a wall display, hides the chrome again
   /// after a while, and dims again after the chosen minutes.
   void _touched() {
@@ -292,7 +309,9 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         }
       });
     }
-    final minutes = _ambient ? ref.read(wallDimProvider(_settingsId)) : 0;
+    var minutes = _ambient ? ref.read(wallDimProvider(_settingsId)) : 0;
+    // At night the screen goes black even when the day setting is Never.
+    if (_ambient && minutes == 0 && _night) minutes = 1;
     if (minutes > 0) {
       _dimTimer = Timer(Duration(minutes: minutes), () {
         if (!mounted || !_ambient) return;
@@ -306,6 +325,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
             ref.read(proStatusProvider) != ProStatus.unlocked) {
           show = WallIdleShow.clock;
         }
+        if (_night) show = WallIdleShow.black;
         if (show != WallIdleShow.dim) setState(() => _idle = show);
       });
     }
@@ -315,7 +335,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   /// the screen as a touch does; an alarm takes it over.
   void _onState(WallStateEvent e, Set<String> wakers, bool alarmsOn) {
     if (!mounted) return;
-    if (wakers.contains(e.name) && wakesFor(e.state)) _touched();
+    if (wakers.contains(e.name) && wakesFor(e.state)) _wokenByMotion();
     if (alarmsOn && _alarms.update(e.name, e.state)) {
       setState(() {});
       _touched();
@@ -372,6 +392,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     ref.listen(wallFullscreenProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(wallDimProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(wallIdleShowProvider(widget.dashboardId), (_, __) => _apply());
+    ref.listen(wallNightProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(kioskProvider, (_, __) => _apply());
     _listenToSensors();
     final idle = _idle;

@@ -3170,6 +3170,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wallAlarmSound => 'Play a sound';
 
   @override
+  String get wallNightTitle => 'Night';
+
+  @override
+  String get wallNightSubtitle =>
+      'Black between these hours. Motion wakes it only dimly; alarms always fully.';
+
+  @override
+  String get wallNightFrom => 'From';
+
+  @override
+  String get wallNightTo => 'to';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }

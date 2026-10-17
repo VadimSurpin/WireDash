@@ -21,6 +21,9 @@ import 'package:zigdash/l10n/app_localizations.dart';
 class _Wake extends ScreenWake {
   final dimCalls = <bool>[];
   final soundCalls = <bool>[];
+  final brightnessCalls = <double?>[];
+  @override
+  Future<void> brightness(double? value) async => brightnessCalls.add(value);
   @override
   Future<void> keepOn(bool on) async {}
   @override
@@ -76,6 +79,17 @@ void main() {
       expect(t.update('Laundry', {'water_leak': true}), isTrue);
     });
 
+    test('night hours, across midnight or not', () {
+      DateTime at(int h, int m) => DateTime(2026, 10, 17, h, m);
+      expect(isNightAt(at(23, 30), 23 * 60, 7 * 60), isTrue);
+      expect(isNightAt(at(3, 0), 23 * 60, 7 * 60), isTrue);
+      expect(isNightAt(at(7, 0), 23 * 60, 7 * 60), isFalse);
+      expect(isNightAt(at(12, 0), 23 * 60, 7 * 60), isFalse);
+      expect(isNightAt(at(1, 0), 0, 6 * 60), isTrue);
+      expect(isNightAt(at(6, 0), 0, 6 * 60), isFalse);
+      expect(isNightAt(at(6, 0), 60, 60), isFalse, reason: 'empty night');
+    });
+
     test('a message without the alarm property keeps its state', () {
       final t = WallAlarmTracker();
       t.update('Hall', {'smoke': true});
@@ -118,7 +132,11 @@ void main() {
       ]),
     ).single;
 
-    Future<void> pump(WidgetTester tester, Map<String, Object> values) async {
+    Future<void> pump(
+      WidgetTester tester,
+      Map<String, Object> values, {
+      DateTime? now,
+    }) async {
       SharedPreferences.setMockInitialValues({
         'wall_display_d1': true,
         ...values,
@@ -132,6 +150,7 @@ void main() {
             sharedPreferencesProvider.overrideWithValue(prefs),
             screenWakeProvider.overrideWithValue(wake),
             proStatusProvider.overrideWithValue(ProStatus.unlocked),
+            if (now != null) wallNowProvider.overrideWithValue(() => now),
             dashboardByIdProvider('d1').overrideWith(
               (_) async => Dashboard(
                 id: 'd1',
@@ -215,6 +234,40 @@ void main() {
       await tester.pump();
       expect(find.byType(WallAlarmScreen), findsNothing);
       expect(wake.soundCalls, [true, false]);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('at night the idle screen is black, even set to Never, and '
+        'motion wakes it only dimly', (tester) async {
+      await pump(tester, {
+        'wall_dim_d1': 0,
+        'wall_idle_show_d1': 'clock',
+        'wall_night_on_d1': true,
+        'wall_motion_sensors_d1': ['0x00158d0001a2b3c4'],
+      }, now: DateTime(2026, 10, 17, 2, 30));
+      await tester.pump(const Duration(minutes: 1, seconds: 1));
+      expect(
+        tester.widget<WallIdleScreen>(find.byType(WallIdleScreen)).show,
+        WallIdleShow.black,
+      );
+
+      await send(tester, 'Hallway motion', {'occupancy': true});
+      expect(find.byType(WallIdleScreen), findsNothing);
+      expect(wake.brightnessCalls, [nightWakeBrightness]);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('by day the night schedule changes nothing', (tester) async {
+      await pump(tester, {
+        'wall_dim_d1': 1,
+        'wall_idle_show_d1': 'clock',
+        'wall_night_on_d1': true,
+      }, now: DateTime(2026, 10, 17, 14, 0));
+      await tester.pump(const Duration(minutes: 1, seconds: 1));
+      expect(
+        tester.widget<WallIdleScreen>(find.byType(WallIdleScreen)).show,
+        WallIdleShow.clock,
+      );
       await tester.pumpWidget(const SizedBox());
     });
 

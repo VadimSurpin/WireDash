@@ -5690,6 +5690,30 @@ abstract class AppLocalizations {
   /// **'Play a sound'**
   String get wallAlarmSound;
 
+  /// No description provided for @wallNightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Night'**
+  String get wallNightTitle;
+
+  /// No description provided for @wallNightSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Black between these hours. Motion wakes it only dimly; alarms always fully.'**
+  String get wallNightSubtitle;
+
+  /// No description provided for @wallNightFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get wallNightFrom;
+
+  /// No description provided for @wallNightTo.
+  ///
+  /// In en, this message translates to:
+  /// **'to'**
+  String get wallNightTo;
+
   /// No description provided for @wallDimMinutes.
   ///
   /// In en, this message translates to:
