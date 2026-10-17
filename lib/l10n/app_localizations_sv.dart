@@ -1364,6 +1364,10 @@ class AppLocalizationsSv extends AppLocalizations {
       'Servern slutförde inte MQTT-handskakningen. Se till att det är en MQTT-server (Mosquitto, Zigbee2MQTT).';
 
   @override
+  String get diagLoginNoAnswer =>
+      'Brokern svarade inte på inloggningen i tid. Home Assistant kan behöva några sekunder för att kontrollera den, försök igen.';
+
+  @override
   String get diagAuthRejected =>
       'Servern avvisade användarnamn eller lösenord. Kontrollera dina uppgifter.';
 
@@ -1620,6 +1624,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get setupErrUnknownAction => 'Försök igen';
+
+  @override
+  String get setupErrLoginNoAnswerTitle =>
+      'Brokern svarade inte på inloggningen';
+
+  @override
+  String get setupErrLoginNoAnswerBody =>
+      'Din broker hittades, men den svarade inte på användarnamn och lösenord i tid. Mosquitto-tillägget i Home Assistant kontrollerar inloggningar mot Home Assistant, vilket kan ta några sekunder på en Raspberry Pi. Försök igen och kontrollera att användaren finns i Home Assistant.';
+
+  @override
+  String get setupErrLoginNoAnswerAction => 'Försök igen';
 
   @override
   String get setupNoZ2mTitle =>

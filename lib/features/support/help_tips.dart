@@ -33,7 +33,9 @@ List<HelpTip> tipsFor(
         t(l.tipStartBrokerTitle, l.tipStartBrokerBody),
         t(l.tipMosquitto2Title, l.tipMosquitto2Body),
       ],
-      SetupErrorKind.authRequired || SetupErrorKind.authRejected => [
+      SetupErrorKind.authRequired ||
+      SetupErrorKind.authRejected ||
+      SetupErrorKind.loginNoAnswer => [
         t(l.tipMqttLoginTitle, l.tipMqttLoginBody),
         t(l.tipSpacesTitle, l.tipSpacesBody),
       ],

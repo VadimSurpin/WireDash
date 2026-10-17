@@ -1371,6 +1371,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'O broker não concluiu o handshake MQTT. Verifique se é um broker MQTT (Mosquitto, Zigbee2MQTT).';
 
   @override
+  String get diagLoginNoAnswer =>
+      'O broker não respondeu ao login a tempo. O Home Assistant pode levar alguns segundos para verificá-lo, tente de novo.';
+
+  @override
   String get diagAuthRejected =>
       'O broker rejeitou o usuário ou a senha. Verifique suas credenciais.';
 
@@ -1628,6 +1632,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get setupErrUnknownAction => 'Tentar de novo';
+
+  @override
+  String get setupErrLoginNoAnswerTitle => 'O broker não respondeu ao login';
+
+  @override
+  String get setupErrLoginNoAnswerBody =>
+      'Seu broker foi encontrado, mas não respondeu ao usuário e à senha a tempo. O complemento Mosquitto do Home Assistant verifica os logins no Home Assistant, o que pode levar alguns segundos em um Raspberry Pi. Tente de novo e verifique se esse usuário existe no Home Assistant.';
+
+  @override
+  String get setupErrLoginNoAnswerAction => 'Tentar de novo';
 
   @override
   String get setupNoZ2mTitle =>
