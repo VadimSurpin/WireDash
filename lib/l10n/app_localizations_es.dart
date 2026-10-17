@@ -1419,6 +1419,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get guidedBackToForm => 'Editar configuración';
 
   @override
+  String get guidedStuckTitle => '¿Atascado? Pregunta a una persona';
+
+  @override
+  String get guidedStuckBody =>
+      'Dos intentos sin conexión. Dinos qué hub tienes y qué escribiste, y te ayudamos a encontrarlo.';
+
+  @override
+  String get guidedStuckTelegram => 'Preguntar en Telegram';
+
+  @override
+  String get guidedStuckHelp => 'Consejos y correo';
+
+  @override
   String ladderTriedHint(Object count) {
     return 'Se probaron $count direcciones';
   }

@@ -195,6 +195,9 @@ enum Feature {
 
   /// A history sheet or the device page's History card was opened (2.7).
   history,
+
+  /// A device was controlled from the app (2.9.2), with its kind in `tile`.
+  control,
 }
 
 /// The first use of a feature in a session.
@@ -303,6 +306,20 @@ class HelpOpened extends AnalyticsEvent {
 
   @override
   String get name => 'help_opened';
+
+  @override
+  Map<String, String> get props => {'from': _snake(from.name)};
+}
+
+/// The "talk to a person" card was shown (2.9.2): after two failed checks
+/// on the broker form. Only where from.
+class HelpOffered extends AnalyticsEvent {
+  const HelpOffered(this.from);
+
+  final HelpFrom from;
+
+  @override
+  String get name => 'help_offered';
 
   @override
   Map<String, String> get props => {'from': _snake(from.name)};

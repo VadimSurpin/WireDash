@@ -1,0 +1,1 @@
+ZigDash 2.9.2 : la configuration trouve désormais Zigbee2MQTT même avec son propre topic de base. Si deux tests de connexion échouent, ZigDash propose de vous mettre en contact avec une personne. Et le réveil par mouvement affiche les capteurs avec les noms que vous leur avez donnés.

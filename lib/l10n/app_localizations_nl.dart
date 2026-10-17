@@ -1419,6 +1419,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get guidedBackToForm => 'Instellingen bewerken';
 
   @override
+  String get guidedStuckTitle => 'Vast? Vraag het een mens';
+
+  @override
+  String get guidedStuckBody =>
+      'Twee pogingen zonder verbinding. Vertel ons welke hub je hebt en wat je hebt ingevuld, dan helpen we je hem te vinden.';
+
+  @override
+  String get guidedStuckTelegram => 'Vragen in Telegram';
+
+  @override
+  String get guidedStuckHelp => 'Tips en e-mail';
+
+  @override
   String ladderTriedHint(Object count) {
     return '$count adressen geprobeerd';
   }

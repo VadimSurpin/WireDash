@@ -17,12 +17,21 @@ import 'setup_error_guidance.dart';
 /// The outcome of fetching the device list during verification: whether
 /// Zigbee2MQTT topics verified on the endpoint at all, and the parsed devices.
 class Z2mFetchResult {
-  const Z2mFetchResult({required this.detected, required this.devices});
+  const Z2mFetchResult({
+    required this.detected,
+    required this.devices,
+    this.otherBases = const [],
+  });
 
   /// True only after `$base/bridge/...` topics verified Zigbee2MQTT — the UI
   /// may not claim Z2M was found before this.
   final bool detected;
   final List<Z2mDevice> devices;
+
+  /// Other base topics with a Zigbee2MQTT bridge on the same broker (their
+  /// `<base>/bridge/state`), for a Zigbee2MQTT set up with its own base
+  /// topic (2.9.2, a German user on 2026-10-17).
+  final List<String> otherBases;
 }
 
 typedef DeviceIpProvider = Future<String?> Function();
@@ -336,6 +345,10 @@ class SetupCoordinator {
   String get base => _base;
   String _base;
 
+  /// The base topic was switched to one found on the broker (2.9.2); only
+  /// once per verification, so two bridges can't bounce between each other.
+  bool _triedOtherBase = false;
+
   final _states = StreamController<SetupState>.broadcast();
   SetupState _state = const SetupIdle();
 
@@ -368,6 +381,7 @@ class SetupCoordinator {
   // --- Intents ---
 
   Future<void> startScan() async {
+    _triedOtherBase = false;
     final op = ++_op;
     _cancelScan();
     _z2mUser = null;
@@ -663,6 +677,7 @@ class SetupCoordinator {
   }
 
   Future<void> selectCandidate(SetupCandidate candidate) async {
+    _triedOtherBase = false;
     // A card the scan named answers "where does Zigbee2MQTT run?" when the
     // user has not, so the login step's hint fits (2.7.1).
     final s = _state;
@@ -859,6 +874,14 @@ class SetupCoordinator {
     }
     if (op != _op) return;
     if (!fetch.detected) {
+      // Zigbee2MQTT under another base topic: use it and check again, once.
+      final other = fetch.otherBases.where((b) => b != _base).firstOrNull;
+      if (other != null && !_triedOtherBase) {
+        _triedOtherBase = true;
+        _base = other;
+        await _verify(candidate);
+        return;
+      }
       _emit(SetupFailed(SetupErrorKind.notZigbee2Mqtt, candidate: candidate));
       return;
     }

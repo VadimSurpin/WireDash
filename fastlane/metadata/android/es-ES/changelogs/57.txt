@@ -1,0 +1,1 @@
+ZigDash 2.9.2: la configuración ahora encuentra Zigbee2MQTT aunque use su propio tema base. Si fallan dos pruebas de conexión, ZigDash te ofrece hablar con una persona. Y Despertar con movimiento muestra los sensores con los nombres que les diste.

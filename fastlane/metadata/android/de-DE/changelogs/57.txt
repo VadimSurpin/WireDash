@@ -1,0 +1,1 @@
+ZigDash 2.9.2: Die Einrichtung findet Zigbee2MQTT jetzt auch mit eigenem Basis-Topic. Wenn zwei Verbindungstests fehlschlagen, bietet ZigDash an, dich mit einem Menschen in Kontakt zu bringen. Und Bei Bewegung aufwecken zeigt Sensoren mit den Namen, die du ihnen gegeben hast.

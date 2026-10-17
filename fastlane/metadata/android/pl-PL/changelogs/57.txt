@@ -1,0 +1,1 @@
+ZigDash 2.9.2: konfiguracja znajduje teraz Zigbee2MQTT także z własnym tematem bazowym. Jeśli dwa testy połączenia się nie powiodą, ZigDash proponuje kontakt z człowiekiem. A Wybudzanie ruchem pokazuje czujniki pod nazwami, które im nadałeś.

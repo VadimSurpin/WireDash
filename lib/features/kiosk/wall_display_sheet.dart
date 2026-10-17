@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../data/database/database.dart';
+import '../../data/repositories/panel_repo.dart';
 import '../dashboards/wall_display.dart';
 import '../dashboards/wall_readings.dart';
 import '../pro/pro.dart';
@@ -428,6 +429,14 @@ class _MotionSection extends ConsumerWidget {
           d,
     ];
     final chosen = ref.watch(wallMotionSensorsProvider(dashboardId));
+    // The names the user gave the tiles ("sensor 1"), not Zigbee's
+    // ("Motion sensor e8a1"), so the list matches the dashboard (2.9.2).
+    final tileNames = {
+      for (final p
+          in ref.watch(panelsForDashboardProvider(dashboardId)).valueOrNull ??
+              const <Panel>[])
+        if (p.deviceIeee != null) p.deviceIeee!: p.name,
+    };
     final title = open
         ? l10n.wallMotionTitle
         : '${l10n.wallMotionTitle} · ${l10n.proBadge}';
@@ -449,7 +458,7 @@ class _MotionSection extends ConsumerWidget {
               CheckboxListTile(
                 contentPadding: EdgeInsets.zero,
                 dense: true,
-                title: Text(d.displayName),
+                title: Text(tileNames[d.ieeeAddress] ?? d.displayName),
                 value: chosen.contains(d.ieeeAddress),
                 onChanged: (on) => ref
                     .read(wallMotionSensorsProvider(dashboardId).notifier)

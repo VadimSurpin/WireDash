@@ -1425,6 +1425,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get guidedBackToForm => 'Modifier les paramètres';
 
   @override
+  String get guidedStuckTitle => 'Bloqué ? Demandez à quelqu\'un';
+
+  @override
+  String get guidedStuckBody =>
+      'Deux essais sans connexion. Dites-nous quel hub vous avez et ce que vous avez saisi, et nous vous aidons à le trouver.';
+
+  @override
+  String get guidedStuckTelegram => 'Demander sur Telegram';
+
+  @override
+  String get guidedStuckHelp => 'Conseils et e-mail';
+
+  @override
   String ladderTriedHint(Object count) {
     return '$count adresses essayées';
   }

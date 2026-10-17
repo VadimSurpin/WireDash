@@ -2624,6 +2624,30 @@ abstract class AppLocalizations {
   /// **'Edit settings'**
   String get guidedBackToForm;
 
+  /// No description provided for @guidedStuckTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stuck? Ask a person'**
+  String get guidedStuckTitle;
+
+  /// No description provided for @guidedStuckBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Two tries without a connection. Tell us which hub you have and what you typed, and we\'ll help you find it.'**
+  String get guidedStuckBody;
+
+  /// No description provided for @guidedStuckTelegram.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask in Telegram'**
+  String get guidedStuckTelegram;
+
+  /// No description provided for @guidedStuckHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips and email'**
+  String get guidedStuckHelp;
+
   /// No description provided for @ladderTriedHint.
   ///
   /// In en, this message translates to:

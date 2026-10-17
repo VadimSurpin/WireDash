@@ -557,6 +557,10 @@
   "pairingEnabled": "השיוך פעיל. לחצו על כפתור השיוך במכשיר כדי לצרף אותו.",
   "continueToDashboard": "המשך ללוח המחוונים",
   "guidedBackToForm": "עריכת הגדרות",
+  "guidedStuckTitle": "נתקעתם? שאלו אדם",
+  "guidedStuckBody": "שני ניסיונות בלי חיבור. ספרו לנו איזו רכזת יש לכם ומה הקלדתם, ונעזור למצוא אותה.",
+  "guidedStuckTelegram": "לשאול בטלגרם",
+  "guidedStuckHelp": "טיפים ואימייל",
   "ladderTriedHint": "נוסו {count} כתובות",
   "@ladderTriedHint": {
     "placeholders": {

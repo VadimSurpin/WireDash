@@ -485,6 +485,44 @@ void main() {
       },
     );
 
+    test(
+      'Zigbee2MQTT under its own base topic is found by itself (2.9.2)',
+      () async {
+        final h = _Harness(
+          reports: [ok(), ok()],
+          fetchFor: (base) => base == 'home/z2m'
+              ? const Z2mFetchResult(detected: true, devices: [_lamp])
+              : const Z2mFetchResult(
+                  detected: false,
+                  devices: [],
+                  otherBases: ['home/z2m'],
+                ),
+        );
+        await h.coordinator.selectCandidate(candidate);
+        expect(h.fetchedBases, ['zigbee2mqtt', 'home/z2m']);
+        expect(h.coordinator.state, isA<SetupReview>());
+        await h.coordinator.createDashboard();
+        expect(h.creator.lastBase, 'home/z2m');
+      },
+    );
+
+    test('a base topic that also fails stops after one switch', () async {
+      final h = _Harness(
+        reports: [ok(), ok(), ok()],
+        fetch: const Z2mFetchResult(
+          detected: false,
+          devices: [],
+          otherBases: ['a', 'b'],
+        ),
+      );
+      await h.coordinator.selectCandidate(candidate);
+      expect(h.fetchedBases, ['zigbee2mqtt', 'a']);
+      expect(
+        (h.coordinator.state as SetupFailed).kind,
+        SetupErrorKind.notZigbee2Mqtt,
+      );
+    });
+
     test('Zigbee2MQTT detected but no devices → noDevices', () async {
       final h = _Harness(
         fetch: const Z2mFetchResult(detected: true, devices: []),
