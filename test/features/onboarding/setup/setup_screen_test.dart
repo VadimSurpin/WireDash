@@ -653,6 +653,65 @@ void main() {
     expect(find.textContaining('rejected'), findsWidgets);
   });
 
+  testWidgets('a login the broker never answers says so, not "unknown"', (
+    tester,
+  ) async {
+    const noAnswer = DiagnosticsReport(
+      steps: [
+        StepResult(
+          step: DiagnosticStep.connack,
+          status: StepStatus.fail,
+          detailKey: 'diagLoginNoAnswer',
+        ),
+      ],
+      connected: false,
+      candidatesTried: 1,
+    );
+    await _pump(tester, reports: [_authFail(), noAnswer, _ok()]);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Username').first,
+      'user',
+    );
+    await tester.ensureVisible(find.text('Enter login'));
+    await tester.pump();
+    await tester.tap(find.text('Enter login'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text("The broker didn't answer the login"), findsOneWidget);
+    expect(find.textContaining('Mosquitto add-on'), findsOneWidget);
+    expect(find.text('Something went wrong'), findsNothing);
+
+    // Try again re-checks the same login.
+    await tester.tap(find.text('Try again'));
+    await tester.pump();
+    await tester.pump();
+    expect(find.textContaining('1 device found.'), findsOneWidget);
+  });
+
+  testWidgets('the unknown error has its own title and text', (tester) async {
+    const odd = DiagnosticsReport(
+      steps: [],
+      connected: false,
+      candidatesTried: 1,
+    );
+    await _pump(tester, reports: [odd]);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Something went wrong'), findsOneWidget);
+    expect(find.text('An unexpected error occurred.'), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+  });
+
   testWidgets(
     'review groups devices, preselects recommended, counts selection',
     (tester) async {

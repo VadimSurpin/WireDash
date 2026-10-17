@@ -1,0 +1,1 @@
+ZigDash 2.8.2: en retting for trege innlogginger. Hvis brokeren bruker for lang tid på å svare på brukernavn og passord (Mosquitto-tillegget i Home Assistant sjekker innlogginger mot Home Assistant, noe som kan være tregt på en Raspberry Pi), sier oppsettet det nå og lar deg prøve igjen, i stedet for å vise en ukjent feil.

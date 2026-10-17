@@ -22,6 +22,9 @@ enum _ConnectBehavior {
 
   /// Never answers — the case the per-step timeout must bound.
   hang,
+
+  /// Accepts (CONNACK 0), then the socket drops before any subscribe.
+  acceptedThenDropped,
 }
 
 class _FakeClient extends mc.MqttClient {
@@ -51,19 +54,20 @@ class _FakeClient extends mc.MqttClient {
       case _ConnectBehavior.refused:
         return Future.error(Exception('connection refused'));
       case _ConnectBehavior.hang:
+        _status.state = mc.MqttConnectionState.connecting;
         return Completer<mc.MqttClientConnectionStatus?>().future;
+      case _ConnectBehavior.acceptedThenDropped:
+        _status.returnCode = mc.MqttConnectReturnCode.connectionAccepted;
+        return Future.value(_status);
     }
   }
 
+  // Faithful to mqtt_client 10.11: connectionStatus is never null. Every
+  // attempt starts at `noneSpecified`, which only a CONNACK replaces, so a
+  // refused or hung connect reads `noneSpecified`; a CONNACK refusal leaves
+  // its code. (Returning null here once hid the "unknown" setup error.)
   @override
-  mc.MqttClientConnectionStatus? get connectionStatus =>
-      // Faithful to mqtt_client: after a failed connect with no CONNACK
-      // (refused / hang) the handler's status is null; a CONNACK refusal
-      // (authRejected) leaves the return code readable.
-      (behavior == _ConnectBehavior.refused ||
-          behavior == _ConnectBehavior.hang)
-      ? null
-      : _status;
+  mc.MqttClientConnectionStatus? get connectionStatus => _status;
 
   @override
   Stream<List<mc.MqttReceivedMessage<mc.MqttMessage>>>? get updates =>
@@ -317,6 +321,51 @@ void main() {
         expect(report!.steps[2].status, StepStatus.fail);
         expect(report!.steps[2].detailKey, 'diagConnackFail');
         expect(report!.connected, isFalse);
+      });
+    });
+
+    test('a login the broker never answers fails the connack step', () {
+      fakeAsync((async) {
+        final d = diagnostics(behavior: _ConnectBehavior.hang);
+        DiagnosticsReport? report;
+        final withLogin = BrokerConfig(
+          id: 'conn-1',
+          host: host,
+          port: 1883,
+          protocol: MqttProtocol.tcp,
+          username: 'zigdash',
+        );
+        d.run(config: withLogin, password: 'pw').then((r) => report = r);
+        async.elapse(const Duration(milliseconds: 5001));
+
+        expect(report!.steps[2].step, DiagnosticStep.connack);
+        expect(report!.steps[2].status, StepStatus.fail);
+        expect(report!.steps[2].detailKey, 'diagLoginNoAnswer');
+        expect(report!.connected, isFalse);
+        expect(manualTestResult(report!), ManualTestResult.connack);
+      });
+    });
+
+    test('accepted then dropped fails cleanly instead of throwing', () {
+      fakeAsync((async) {
+        final d = diagnostics(behavior: _ConnectBehavior.acceptedThenDropped);
+        DiagnosticsReport? report;
+        Object? error;
+        d
+            .run(config: config(), password: '')
+            .then(
+              (r) => report = r,
+              onError: (Object e) {
+                error = e;
+                return report!;
+              },
+            );
+        async.elapse(const Duration(seconds: 6));
+
+        expect(error, isNull);
+        expect(report!.connected, isFalse);
+        expect(report!.steps.last.step, DiagnosticStep.devices);
+        expect(report!.steps.last.status, StepStatus.fail);
       });
     });
 
