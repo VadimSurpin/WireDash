@@ -46,6 +46,7 @@ class WallDisplaySheet extends ConsumerWidget {
     final wall = ref.watch(wallDisplayProvider(id));
     final fullscreen = ref.watch(wallFullscreenProvider(id));
     final dim = ref.watch(wallDimProvider(id));
+    final idleShow = ref.watch(wallIdleShowProvider(id));
     final kiosk = ref.watch(kioskProvider);
     final locked = kiosk.dashboardId == id;
     return DraggableScrollableSheet(
@@ -77,25 +78,56 @@ class WallDisplaySheet extends ConsumerWidget {
                 ref.read(wallFullscreenProvider(id).notifier).set(on),
           ),
           ListTile(
-            leading: const Icon(Icons.brightness_medium_outlined),
-            title: Text(l10n.wallDimAfter),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: SegmentedButton<int>(
-                showSelectedIcon: false,
-                segments: [
-                  for (final m in wallDimChoices)
-                    ButtonSegment(
-                      value: m,
-                      label: Text(
-                        m == 0 ? l10n.wallDimOff : l10n.wallDimMinutes(m),
+            leading: const Icon(Icons.bedtime_outlined),
+            title: Text(l10n.wallIdleTitle),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                Text(l10n.wallIdleAfter),
+                const SizedBox(height: 4),
+                SegmentedButton<int>(
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final m in wallDimChoices)
+                      ButtonSegment(
+                        value: m,
+                        label: Text(
+                          m == 0 ? l10n.wallIdleNever : l10n.wallDimMinutes(m),
+                        ),
                       ),
-                    ),
+                  ],
+                  selected: {dim},
+                  onSelectionChanged: (s) =>
+                      ref.read(wallDimProvider(id).notifier).set(s.first),
+                ),
+                if (dim > 0) ...[
+                  const SizedBox(height: 12),
+                  Text(l10n.wallIdleShow),
+                  const SizedBox(height: 4),
+                  SegmentedButton<WallIdleShow>(
+                    showSelectedIcon: false,
+                    segments: [
+                      ButtonSegment(
+                        value: WallIdleShow.dim,
+                        label: Text(l10n.wallIdleShowDim),
+                      ),
+                      ButtonSegment(
+                        value: WallIdleShow.clock,
+                        label: Text(l10n.wallIdleShowClock),
+                      ),
+                      ButtonSegment(
+                        value: WallIdleShow.black,
+                        label: Text(l10n.wallIdleShowBlack),
+                      ),
+                    ],
+                    selected: {idleShow},
+                    onSelectionChanged: (s) => ref
+                        .read(wallIdleShowProvider(id).notifier)
+                        .set(s.first),
+                  ),
                 ],
-                selected: {dim},
-                onSelectionChanged: (s) =>
-                    ref.read(wallDimProvider(id).notifier).set(s.first),
-              ),
+              ],
             ),
           ),
           const Divider(height: 24),

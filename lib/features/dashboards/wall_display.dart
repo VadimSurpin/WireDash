@@ -8,6 +8,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../settings/providers/settings_controller.dart';
 import '../../core/analytics/analytics.dart';
 import '../kiosk/kiosk.dart';
+import 'widgets/wall_idle_screen.dart';
 
 /// The screen as Wall display and kiosk drive it; a seam so tests need no
 /// platform channel. Every call is best effort and never throws.
@@ -124,6 +125,35 @@ final wallDimProvider = NotifierProvider.family<WallDimSetting, int, String>(
   WallDimSetting.new,
 );
 
+/// What an idle wall display shows once [WallDimSetting]'s minutes pass
+/// (wall-tablet-2.9.md §2): the dimmed dashboard (2.6's behaviour, the
+/// default), a clock, the clock with readings (Pro), or black.
+enum WallIdleShow { dim, clock, readings, black }
+
+/// The idle screen for one dashboard, stored on this tablet.
+class WallIdleShowSetting extends FamilyNotifier<WallIdleShow, String> {
+  String get _key => 'wall_idle_show_$arg';
+
+  @override
+  WallIdleShow build(String arg) {
+    final name = ref.read(sharedPreferencesProvider).getString(_key);
+    return WallIdleShow.values.firstWhere(
+      (s) => s.name == name,
+      orElse: () => WallIdleShow.dim,
+    );
+  }
+
+  Future<void> set(WallIdleShow show) async {
+    state = show;
+    await ref.read(sharedPreferencesProvider).setString(_key, show.name);
+  }
+}
+
+final wallIdleShowProvider =
+    NotifierProvider.family<WallIdleShowSetting, WallIdleShow, String>(
+      WallIdleShowSetting.new,
+    );
+
 /// True while a wall-display dashboard has had no touch for [wallChromeDelay]:
 /// the header and the navigation hide until the screen is touched.
 final wallChromeHiddenProvider = StateProvider<bool>((_) => false);
@@ -159,6 +189,9 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   bool _fullscreenOn = false;
   bool _dimmed = false;
   bool _pinned = false;
+
+  /// What the idle screen shows over the dashboard, or null while awake.
+  WallIdleShow? _idle;
 
   /// Kiosk is app-wide: swiping to a sibling dashboard stays in it, with
   /// the kiosk dashboard's Wall display settings governing the whole time.
@@ -220,6 +253,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
       _dimmed = false;
       ref.read(screenWakeProvider).dim(false).ignore();
     }
+    if (_idle != null) setState(() => _idle = null);
     if (_wall) {
       _timer = Timer(wallChromeDelay, () {
         if (mounted && _wall) {
@@ -233,6 +267,8 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         if (!mounted || !_ambient) return;
         _dimmed = true;
         ref.read(screenWakeProvider).dim(true).ignore();
+        final show = ref.read(wallIdleShowProvider(_settingsId));
+        if (show != WallIdleShow.dim) setState(() => _idle = show);
       });
     }
   }
@@ -272,11 +308,20 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     ref.listen(wallDisplayProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(wallFullscreenProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(wallDimProvider(widget.dashboardId), (_, __) => _apply());
+    ref.listen(wallIdleShowProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(kioskProvider, (_, __) => _apply());
+    final idle = _idle;
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_) => _touched(),
-      child: widget.child,
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          widget.child,
+          // The touch that wakes the screen lands here, not on a tile.
+          if (idle != null) Positioned.fill(child: WallIdleScreen(show: idle)),
+        ],
+      ),
     );
   }
 }

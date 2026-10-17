@@ -3095,6 +3095,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get wallDimOff => 'No';
 
   @override
+  String get wallIdleTitle => 'Cuando nadie lo toca';
+
+  @override
+  String get wallIdleAfter => 'Después de';
+
+  @override
+  String get wallIdleNever => 'Nunca';
+
+  @override
+  String get wallIdleShow => 'Mostrar';
+
+  @override
+  String get wallIdleShowDim => 'Atenuado';
+
+  @override
+  String get wallIdleShowClock => 'Reloj';
+
+  @override
+  String get wallIdleShowBlack => 'Negro';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }

@@ -3088,6 +3088,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wallDimOff => 'Выкл.';
 
   @override
+  String get wallIdleTitle => 'Когда никто не касается';
+
+  @override
+  String get wallIdleAfter => 'Через';
+
+  @override
+  String get wallIdleNever => 'Никогда';
+
+  @override
+  String get wallIdleShow => 'Показывать';
+
+  @override
+  String get wallIdleShowDim => 'Затемнение';
+
+  @override
+  String get wallIdleShowClock => 'Часы';
+
+  @override
+  String get wallIdleShowBlack => 'Чёрный';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes мин';
   }

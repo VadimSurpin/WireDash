@@ -3083,6 +3083,27 @@ class AppLocalizationsSv extends AppLocalizations {
   String get wallDimOff => 'Av';
 
   @override
+  String get wallIdleTitle => 'När ingen rör den';
+
+  @override
+  String get wallIdleAfter => 'Efter';
+
+  @override
+  String get wallIdleNever => 'Aldrig';
+
+  @override
+  String get wallIdleShow => 'Visa';
+
+  @override
+  String get wallIdleShowDim => 'Dämpad';
+
+  @override
+  String get wallIdleShowClock => 'Klocka';
+
+  @override
+  String get wallIdleShowBlack => 'Svart';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }

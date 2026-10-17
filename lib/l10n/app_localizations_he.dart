@@ -3055,6 +3055,27 @@ class AppLocalizationsHe extends AppLocalizations {
   String get wallDimOff => 'כבוי';
 
   @override
+  String get wallIdleTitle => 'כשאף אחד לא נוגע';
+
+  @override
+  String get wallIdleAfter => 'אחרי';
+
+  @override
+  String get wallIdleNever => 'אף פעם';
+
+  @override
+  String get wallIdleShow => 'להציג';
+
+  @override
+  String get wallIdleShowDim => 'מעומעם';
+
+  @override
+  String get wallIdleShowClock => 'שעון';
+
+  @override
+  String get wallIdleShowBlack => 'שחור';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes דק׳';
   }

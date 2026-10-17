@@ -5528,6 +5528,48 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get wallDimOff;
 
+  /// No description provided for @wallIdleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When no one touches it'**
+  String get wallIdleTitle;
+
+  /// No description provided for @wallIdleAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After'**
+  String get wallIdleAfter;
+
+  /// No description provided for @wallIdleNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get wallIdleNever;
+
+  /// No description provided for @wallIdleShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get wallIdleShow;
+
+  /// No description provided for @wallIdleShowDim.
+  ///
+  /// In en, this message translates to:
+  /// **'Dimmed'**
+  String get wallIdleShowDim;
+
+  /// No description provided for @wallIdleShowClock.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock'**
+  String get wallIdleShowClock;
+
+  /// No description provided for @wallIdleShowBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get wallIdleShowBlack;
+
   /// No description provided for @wallDimMinutes.
   ///
   /// In en, this message translates to:
