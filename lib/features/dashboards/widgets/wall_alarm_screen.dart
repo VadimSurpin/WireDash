@@ -22,9 +22,12 @@ class WallAlarmScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    // Strong in both themes: dark mode's `error` is a pale tint, so it
+    // uses the deep error container there.
     final scheme = Theme.of(context).colorScheme;
-    final bg = scheme.error;
-    final fg = scheme.onError;
+    final dark = scheme.brightness == Brightness.dark;
+    final bg = dark ? scheme.errorContainer : scheme.error;
+    final fg = dark ? scheme.onErrorContainer : scheme.onError;
     final text = Theme.of(context).textTheme;
     final what = switch (kind) {
       WallAlarmKind.leak => l10n.wallAlarmLeak,
