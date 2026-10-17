@@ -340,6 +340,13 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
       if (!mounted || !_ambient) return;
       // An alarm on screen stays bright until OK.
       if (_alarms.showing.isNotEmpty) return;
+      // A sheet or dialog is open on top (history, a device, Wall display):
+      // its touches never reach this scope, so wait until it closes rather
+      // than going idle under it (2.9.1).
+      if (ModalRoute.of(context)?.isCurrent == false) {
+        _scheduleIdle();
+        return;
+      }
       _dimmed = true;
       ref.read(screenWakeProvider).dim(true).ignore();
       final show = _idleShow;

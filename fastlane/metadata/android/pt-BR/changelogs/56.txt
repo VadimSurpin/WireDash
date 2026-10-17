@@ -1,0 +1,1 @@
+ZigDash 2.9.1: histórico sem Node-RED. Sem Node-RED no seu hub? Ative "Gravar neste dispositivo" num celular ou tablet que fica aberto, como um tablet de parede, e todos os celulares da sua casa veem o histórico. Além disso: o relógio não aparece mais atrás de uma janela aberta.

@@ -1,0 +1,1 @@
+ZigDash 2.9.1 : l'historique sans Node-RED. Pas de Node-RED sur votre hub ? Activez « Enregistrer sur cet appareil » sur un téléphone ou une tablette qui reste ouvert, comme une tablette murale, et chaque téléphone de votre domicile voit l'historique. Aussi : l'horloge n'apparaît plus derrière une fenêtre ouverte.

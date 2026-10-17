@@ -1,0 +1,1 @@
+ZigDash 2.9.1: geschiedenis zonder Node-RED. Geen Node-RED op je hub? Zet „Opnemen op dit apparaat” aan op een telefoon of tablet die open blijft, zoals een wandtablet, en elke telefoon van je huis ziet de geschiedenis. Ook: de klok verschijnt niet meer achter een geopend venster.
