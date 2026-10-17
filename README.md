@@ -64,8 +64,14 @@ MQTT.
   Hebrew) with full RTL, responsive panel
   grid, dashboard lock, JSON backup/restore.
 - **Kiosk mode** — a tablet on the wall: keep the screen on, hide the bars,
-  go fullscreen, dim after a few minutes, and a Kiosk lock with a PIN that
-  keeps guests on the dashboards. Optional Android screen pinning on top.
+  go fullscreen, and a Kiosk lock with a PIN that keeps guests on the
+  dashboards. Optional Android screen pinning on top. When no one touches
+  it, the screen dims, shows a big clock, or goes black.
+- **Wall tablet extras** — readings under the clock, waking the screen when
+  a Zigbee motion sensor sees someone, a night schedule, and alarms that
+  fill the screen with a sound on a leak, smoke, gas or CO report. Part of
+  ZigDash Pro on Google Play (a one-time purchase, with 7- and 30-day
+  history); the GitHub and F-Droid builds have everything.
 - **Private** — no ads, no account. Anonymous usage data you can turn off at
   any time; builds without an analytics key (F-Droid, your own) send nothing at all.
   Data lives on your device and your broker.
