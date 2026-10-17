@@ -1,0 +1,1 @@
+ZigDash 2.8.2: een oplossing voor trage aanmeldingen. Als je broker te lang doet over het antwoord op gebruikersnaam en wachtwoord (de Mosquitto-add-on van Home Assistant controleert aanmeldingen via Home Assistant, wat traag kan zijn op een Raspberry Pi), zegt de installatie dat nu en kun je het opnieuw proberen, in plaats van een onbekende fout te zien.

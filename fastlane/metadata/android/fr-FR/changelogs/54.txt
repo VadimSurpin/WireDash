@@ -1,0 +1,1 @@
+ZigDash 2.8.2 : une correction pour les connexions lentes. Si votre broker met trop de temps à répondre à l'identifiant et au mot de passe (le module Mosquitto de Home Assistant vérifie les connexions auprès de Home Assistant, ce qui peut être lent sur un Raspberry Pi), la configuration le dit maintenant et vous laisse réessayer, au lieu d'afficher une erreur inconnue.

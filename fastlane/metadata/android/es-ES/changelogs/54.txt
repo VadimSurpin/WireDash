@@ -1,0 +1,1 @@
+ZigDash 2.8.2: una corrección para inicios de sesión lentos. Si tu broker tarda demasiado en responder al usuario y la contraseña (el complemento Mosquitto de Home Assistant comprueba los inicios de sesión con Home Assistant, lo que puede ser lento en una Raspberry Pi), la configuración ahora lo dice y te deja reintentar, en lugar de mostrar un error desconocido.

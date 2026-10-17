@@ -1,0 +1,1 @@
+ZigDash 2.8.2: poprawka dla wolnego logowania. Jeśli broker zbyt długo odpowiada na nazwę użytkownika i hasło (dodatek Mosquitto w Home Assistant sprawdza logowania w Home Assistant, co na Raspberry Pi bywa wolne), konfiguracja teraz o tym mówi i pozwala spróbować ponownie, zamiast pokazywać nieznany błąd.
