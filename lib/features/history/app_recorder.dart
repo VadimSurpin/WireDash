@@ -36,6 +36,12 @@ class HistoryFolder {
       keys.add(_key(r));
       (index[r.topic] ??= []).add(r);
     }
+    // New readings get their old records cleared too, on the next tick.
+    final before = {
+      for (final rs in _index.values)
+        for (final r in rs) _key(r),
+    };
+    if (!before.containsAll(keys)) _cleanedFor = null;
     _index = index;
     _mem.removeWhere((k, _) => !keys.contains(k));
   }

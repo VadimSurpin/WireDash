@@ -65,14 +65,13 @@ class _AppHistoryRecorderState extends ConsumerState<AppHistoryRecorder> {
     super.initState();
     ref.listenManual(
       historyRecordHereProvider(widget.connectionId),
-      (_, on) => on ? _start() : _stop(),
+      (_, on) => on ? _start() : _stop(switchedOff: true),
       fireImmediately: true,
     );
-    ref.listenManual(
-      historyRetainedConfigProvider(widget.connectionId),
-      (_, next) => _configure(next.valueOrNull ?? ''),
-    );
   }
+
+  /// Only while recording: a Home that doesn't record here pays nothing.
+  ProviderSubscription<AsyncValue<String>>? _config;
 
   Future<void> _start() async {
     if (_running) return;
@@ -89,11 +88,10 @@ class _AppHistoryRecorderState extends ConsumerState<AppHistoryRecorder> {
       if (parts.length != 5) return;
       _folder.restore(parts[2], parts[3], parts[4], m.payload);
     });
-    _configure(
-      ref
-              .read(historyRetainedConfigProvider(widget.connectionId))
-              .valueOrNull ??
-          '',
+    _config = ref.listenManual(
+      historyRetainedConfigProvider(widget.connectionId),
+      (_, next) => _configure(next.valueOrNull ?? ''),
+      fireImmediately: true,
     );
     _tick = Timer.periodic(const Duration(minutes: 1), (_) => _flush());
   }
@@ -131,6 +129,9 @@ class _AppHistoryRecorderState extends ConsumerState<AppHistoryRecorder> {
   void _flush() {
     if (!mounted || !_running) return;
     _folder.tick(_now()).forEach(_publish);
+    // Reasserted each minute, as the Node-RED flow does every 30 s, so a
+    // stale "offline" can't hide the graphs while this device records.
+    _publish(historyBridgeTopic, 'online');
   }
 
   void _publish(String topic, String payload) => _mgr?.publish(
@@ -141,9 +142,19 @@ class _AppHistoryRecorderState extends ConsumerState<AppHistoryRecorder> {
     retain: true,
   );
 
-  void _stop() {
+  /// [switchedOff]: the user turned recording off here (not the app
+  /// closing): the open slot is published and the heartbeat says offline,
+  /// so phones offer the Node-RED set-up again. A Node-RED recorder, if
+  /// there is one, says online again within 30 s.
+  void _stop({bool switchedOff = false}) {
     if (!_running) return;
+    if (switchedOff) {
+      _flush();
+      _publish(historyBridgeTopic, 'offline');
+    }
     _running = false;
+    _config?.close();
+    _config = null;
     _tick?.cancel();
     _tick = null;
     for (final e in _subs.entries) {

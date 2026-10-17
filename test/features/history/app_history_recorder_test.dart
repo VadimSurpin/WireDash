@@ -143,4 +143,23 @@ void main() {
     ]);
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('switched off: the open slot is kept, the heartbeat says '
+      'offline', (tester) async {
+    await pump(tester, on: true);
+    broker.send('zigbee2mqtt/Living room', '{"temperature": 20}');
+    await tester.pump();
+    now = DateTime(2026, 10, 17, 10, 16);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(AppHistoryRecorder)),
+    );
+    await container.read(historyRecordHereProvider('c1').notifier).set(false);
+    await tester.pump();
+    expect(broker.published[historyBridgeTopic], 'offline');
+    expect(
+      broker.published['zigdash/history/0xa1/temperature/2026-10-17'],
+      isNotNull,
+    );
+    await tester.pumpWidget(const SizedBox());
+  });
 }
