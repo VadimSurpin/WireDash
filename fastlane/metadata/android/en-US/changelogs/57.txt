@@ -1,0 +1,1 @@
+ZigDash 2.9.2: setup now finds Zigbee2MQTT even when it uses its own base topic. If two connection tests fail, ZigDash offers to put you in touch with a person. And Wake on motion lists sensors by the names you gave them.

@@ -1,0 +1,1 @@
+ZigDash 2.9.2: de installatie vindt Zigbee2MQTT nu ook met een eigen basistopic. Als twee verbindingstests mislukken, biedt ZigDash aan je met een mens in contact te brengen. En Wekken bij beweging toont sensoren met de namen die je ze gaf.

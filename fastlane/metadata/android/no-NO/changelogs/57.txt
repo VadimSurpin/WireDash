@@ -1,0 +1,1 @@
+ZigDash 2.9.2: oppsettet finner nå Zigbee2MQTT også når det bruker sitt eget basis-topic. Hvis to tilkoblingstester feiler, tilbyr ZigDash å sette deg i kontakt med et menneske. Og Vekk ved bevegelse viser sensorene med navnene du ga dem.

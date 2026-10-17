@@ -1,0 +1,1 @@
+ZigDash 2.9.2: installationen hittar nu Zigbee2MQTT även när det använder ett eget bas-topic. Om två anslutningstester misslyckas erbjuder ZigDash att sätta dig i kontakt med en människa. Och Väck vid rörelse visar sensorerna med namnen du gav dem.
