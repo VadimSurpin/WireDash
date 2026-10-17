@@ -3118,6 +3118,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get wallIdleShowBlack => 'Schwarz';
 
   @override
+  String get wallIdleShowReadings => 'Messwerte';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Dieses Dashboard hat noch keine Messwerte. Füge zuerst eine Messwert- oder Sensorkachel hinzu.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Messwerte auf der Uhr (bis zu $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Messwerte auf der Uhr, Aufwecken bei Bewegung, der Nachtplan und Alarme gehören zu ZigDash Pro, einem einmaligen Kauf.';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes Min.';
   }
@@ -3249,7 +3268,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'Verlauf über 7 und 30 Tage. Ein einmaliger Kauf.';
+  String get proAbout =>
+      'Längerer Verlauf und die Extras für Wandtablets. Ein einmaliger Kauf.';
 
   @override
   String get proUnlocked =>

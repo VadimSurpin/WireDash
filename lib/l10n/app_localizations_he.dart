@@ -3076,6 +3076,25 @@ class AppLocalizationsHe extends AppLocalizations {
   String get wallIdleShowBlack => 'שחור';
 
   @override
+  String get wallIdleShowReadings => 'מדידות';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'בלוח הזה עדיין אין מדידות. הוסיפו קודם אריח מדידה או חיישן.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'מדידות על השעון (עד $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'מדידות על השעון, התעוררות בתנועה, מצב לילה והתראות הם חלק מ-ZigDash Pro, רכישה חד-פעמית.';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes דק׳';
   }
@@ -3206,7 +3225,8 @@ class AppLocalizationsHe extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'היסטוריה של 7 ו-30 יום. רכישה חד-פעמית.';
+  String get proAbout =>
+      'היסטוריה ארוכה יותר והתוספות לטאבלט על הקיר. רכישה חד-פעמית.';
 
   @override
   String get proUnlocked => 'פתוח. תודה שאתם תומכים ב-ZigDash.';

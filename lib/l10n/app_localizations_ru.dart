@@ -3109,6 +3109,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wallIdleShowBlack => 'Чёрный';
 
   @override
+  String get wallIdleShowReadings => 'Показания';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'На этой панели ещё нет показаний. Сначала добавьте плитку показания или датчика.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Показания на часах (до $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Показания на часах, пробуждение по движению, ночной режим и тревоги входят в ZigDash Pro — разовую покупку.';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes мин';
   }
@@ -3240,7 +3259,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'История за 7 и 30 дней. Разовая покупка.';
+  String get proAbout =>
+      'Более долгая история и функции для настенного планшета. Разовая покупка.';
 
   @override
   String get proUnlocked => 'Открыто. Спасибо, что поддерживаете ZigDash.';

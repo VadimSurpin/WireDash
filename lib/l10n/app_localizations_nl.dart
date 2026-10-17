@@ -3114,6 +3114,25 @@ class AppLocalizationsNl extends AppLocalizations {
   String get wallIdleShowBlack => 'Zwart';
 
   @override
+  String get wallIdleShowReadings => 'Metingen';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Dit dashboard heeft nog geen metingen. Voeg eerst een meting- of sensortegel toe.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Metingen op de klok (maximaal $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Metingen op de klok, wekken bij beweging, het nachtschema en alarmen horen bij ZigDash Pro, een eenmalige aankoop.';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
@@ -3246,7 +3265,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Geschiedenis over 7 en 30 dagen. Een eenmalige aankoop.';
+      'Langere geschiedenis en de extra\'s voor wandtablets. Een eenmalige aankoop.';
 
   @override
   String get proUnlocked => 'Ontgrendeld. Bedankt dat je ZigDash steunt.';

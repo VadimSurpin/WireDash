@@ -3116,6 +3116,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get wallIdleShowBlack => 'Negro';
 
   @override
+  String get wallIdleShowReadings => 'Lecturas';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Este panel aún no tiene lecturas. Añade primero una lectura o un mosaico de sensor.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Lecturas en el reloj (hasta $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Las lecturas en el reloj, despertar con movimiento, el horario nocturno y las alarmas forman parte de ZigDash Pro, una compra única.';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
@@ -3248,7 +3267,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'Historial de 7 y 30 días. Una compra única.';
+  String get proAbout =>
+      'Historial más largo y los extras para tabletas de pared. Una compra única.';
 
   @override
   String get proUnlocked => 'Desbloqueado. Gracias por apoyar ZigDash.';

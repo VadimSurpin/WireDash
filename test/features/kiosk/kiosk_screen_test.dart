@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zigdash/features/pro/pro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/alerts/alerts_service.dart';
 import 'package:zigdash/core/analytics/analytics.dart';
@@ -98,8 +99,9 @@ void main() {
     wake = _Wake();
   });
 
-  Widget app() => ProviderScope(
+  Widget app({ProStatus? pro}) => ProviderScope(
     overrides: [
+      if (pro != null) proStatusProvider.overrideWithValue(pro),
       sharedPreferencesProvider.overrideWithValue(prefs),
       kioskPinStoreProvider.overrideWithValue(pins),
       analyticsSinkProvider.overrideWithValue(sink),
@@ -139,8 +141,8 @@ void main() {
     ),
   );
 
-  Future<void> pump(WidgetTester tester) async {
-    await tester.pumpWidget(app());
+  Future<void> pump(WidgetTester tester, {ProStatus? pro}) async {
+    await tester.pumpWidget(app(pro: pro));
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 50));
     }
@@ -165,6 +167,51 @@ void main() {
       findsOneWidget,
       reason: 'offered before a PIN is set',
     );
+  });
+
+  group('the idle screen and Pro (wall-tablet-2.9.md)', () {
+    Future<void> openSheet(WidgetTester tester, ProStatus pro) async {
+      await setPrefs({'analytics_consent': true, 'wall_dim_d1': 5});
+      await pump(tester, pro: pro);
+      await tester.tap(find.byType(PopupMenuButton<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Wall display'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('where Pro cannot be had, Readings is not offered', (
+      tester,
+    ) async {
+      await openSheet(tester, ProStatus.unavailable);
+      expect(find.text('When no one touches it'), findsOneWidget);
+      expect(find.text('Clock'), findsOneWidget);
+      expect(find.textContaining('Readings'), findsNothing);
+      expect(find.textContaining('part of ZigDash Pro'), findsNothing);
+    });
+
+    testWidgets('where it can be bought: Readings marked Pro, one note', (
+      tester,
+    ) async {
+      await openSheet(tester, ProStatus.locked);
+      expect(find.text('Readings · Pro'), findsOneWidget);
+      expect(find.textContaining('part of ZigDash Pro'), findsOneWidget);
+      await tester.tap(find.text('Readings · Pro'));
+      await tester.pumpAndSettle();
+      expect(prefs.getString('wall_idle_show_d1'), isNull, reason: 'locked');
+    });
+
+    testWidgets('unlocked: Readings opens the picker', (tester) async {
+      await openSheet(tester, ProStatus.unlocked);
+      await tester.tap(find.text('Readings'));
+      await tester.pumpAndSettle();
+      expect(prefs.getString('wall_idle_show_d1'), 'readings');
+      expect(
+        find.textContaining('no readings yet'),
+        findsOneWidget,
+        reason: 'this dashboard has no tiles',
+      );
+      expect(find.textContaining('part of ZigDash Pro'), findsNothing);
+    });
   });
 
   testWidgets('turning the Kiosk lock on starts kiosk with fullscreen and a '

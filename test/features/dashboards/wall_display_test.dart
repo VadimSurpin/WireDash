@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/features/dashboards/wall_display.dart';
 import 'package:zigdash/features/dashboards/widgets/wall_idle_screen.dart';
+import 'package:zigdash/features/pro/pro.dart';
 import 'package:zigdash/features/settings/providers/settings_controller.dart';
 
 class _Wake extends ScreenWake {
@@ -195,6 +196,38 @@ void main() {
       await tester.tap(find.text('tile'));
       expect(taps, 1, reason: 'awake, tiles work again');
 
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+    });
+
+    testWidgets('readings without Pro fall back to the clock', (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'wall_display_d1': true,
+        'wall_dim_d1': 1,
+        'wall_idle_show_d1': 'readings',
+      });
+      prefs = await SharedPreferences.getInstance();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(prefs),
+            screenWakeProvider.overrideWithValue(wake),
+            proStatusProvider.overrideWithValue(ProStatus.locked),
+          ],
+          child: const MaterialApp(
+            home: WallDisplayScope(
+              dashboardId: 'd1',
+              active: true,
+              child: Scaffold(body: Text('tile')),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(minutes: 1, seconds: 1));
+      expect(
+        tester.widget<WallIdleScreen>(find.byType(WallIdleScreen)).show,
+        WallIdleShow.clock,
+      );
       await tester.pumpWidget(const SizedBox());
       await tester.pump();
     });

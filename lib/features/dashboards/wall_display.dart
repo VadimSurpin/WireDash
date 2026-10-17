@@ -8,6 +8,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../settings/providers/settings_controller.dart';
 import '../../core/analytics/analytics.dart';
 import '../kiosk/kiosk.dart';
+import '../pro/pro.dart';
 import 'widgets/wall_idle_screen.dart';
 
 /// The screen as Wall display and kiosk drive it; a seam so tests need no
@@ -267,7 +268,12 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         if (!mounted || !_ambient) return;
         _dimmed = true;
         ref.read(screenWakeProvider).dim(true).ignore();
-        final show = ref.read(wallIdleShowProvider(_settingsId));
+        var show = ref.read(wallIdleShowProvider(_settingsId));
+        // Readings are Pro (wall-tablet-2.9.md §7); without it, the clock.
+        if (show == WallIdleShow.readings &&
+            ref.read(proStatusProvider) != ProStatus.unlocked) {
+          show = WallIdleShow.clock;
+        }
         if (show != WallIdleShow.dim) setState(() => _idle = show);
       });
     }
@@ -319,7 +325,10 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         children: [
           widget.child,
           // The touch that wakes the screen lands here, not on a tile.
-          if (idle != null) Positioned.fill(child: WallIdleScreen(show: idle)),
+          if (idle != null)
+            Positioned.fill(
+              child: WallIdleScreen(show: idle, dashboardId: _settingsId),
+            ),
         ],
       ),
     );

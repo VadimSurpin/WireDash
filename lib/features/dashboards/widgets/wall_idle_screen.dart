@@ -1,9 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/motion.dart';
+import '../../../data/repositories/dashboard_repo.dart';
+import '../../panels/providers/panel_value_provider.dart';
+import '../../panels/widgets/device_tile_panel.dart' show formatReading, ltr;
 import '../wall_display.dart';
+import '../wall_readings.dart';
 
 /// What an idle wall display shows over its dashboard (wall-tablet-2.9.md
 /// §2): a clock that drifts a little every minute so nothing burns into the
@@ -11,9 +16,17 @@ import '../wall_display.dart';
 /// alike: it is a screen at night as much as by day, and black pixels are
 /// off on OLED panels. The touch that wakes it never reaches a tile.
 class WallIdleScreen extends StatefulWidget {
-  const WallIdleScreen({super.key, required this.show, this.now});
+  const WallIdleScreen({
+    super.key,
+    required this.show,
+    this.dashboardId,
+    this.now,
+  });
 
   final WallIdleShow show;
+
+  /// Whose readings [WallIdleShow.readings] shows.
+  final String? dashboardId;
 
   /// The clock's time source; tests pass a fixed one.
   final DateTime Function()? now;
@@ -111,11 +124,84 @@ class _WallIdleScreenState extends State<WallIdleScreen> {
                     color: ink.withValues(alpha: 0.7),
                   ),
                 ),
+                if (widget.show == WallIdleShow.readings &&
+                    widget.dashboardId != null)
+                  _Readings(dashboardId: widget.dashboardId!, ink: ink),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Up to three of the dashboard's numbers under the clock, large, each with
+/// its tile's name.
+class _Readings extends ConsumerWidget {
+  const _Readings({required this.dashboardId, required this.ink});
+
+  final String dashboardId;
+  final Color ink;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final connectionId = ref
+        .watch(dashboardByIdProvider(dashboardId))
+        .valueOrNull
+        ?.connectionId;
+    final readings = ref.watch(wallIdleReadingsProvider(dashboardId));
+    if (connectionId == null || readings.isEmpty) return const SizedBox();
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 32),
+      child: Wrap(
+        spacing: 48,
+        runSpacing: 16,
+        alignment: WrapAlignment.center,
+        children: [
+          for (final r in readings)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _format(
+                    ref
+                        .watch(
+                          panelValueProvider(
+                            PanelStreamKey(
+                              connectionId: connectionId,
+                              topic: r.topic,
+                              jsonPath: r.path,
+                            ),
+                          ),
+                        )
+                        .valueOrNull,
+                    r,
+                  ),
+                  style: text.displaySmall?.copyWith(color: ink),
+                ),
+                Text(
+                  r.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodyLarge?.copyWith(
+                    color: ink.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  static String _format(Object? raw, WallReading r) {
+    final v = raw is num ? raw : num.tryParse('${raw ?? ''}');
+    if (v == null) return '—';
+    if (r.decimals == null) return formatReading(v, r.unit);
+    return ltr(
+      '${v.toStringAsFixed(r.decimals!)}${r.unit == null ? '' : ' ${r.unit}'}',
     );
   }
 }

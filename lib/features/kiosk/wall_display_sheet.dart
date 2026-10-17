@@ -5,6 +5,8 @@ import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../data/database/database.dart';
 import '../dashboards/wall_display.dart';
+import '../dashboards/wall_readings.dart';
+import '../pro/pro.dart';
 import '../dashboards/widgets/export_dialog.dart';
 import 'kiosk.dart';
 import 'kiosk_pin_dialogs.dart';
@@ -47,6 +49,10 @@ class WallDisplaySheet extends ConsumerWidget {
     final fullscreen = ref.watch(wallFullscreenProvider(id));
     final dim = ref.watch(wallDimProvider(id));
     final idleShow = ref.watch(wallIdleShowProvider(id));
+    // Pro rows (wall-tablet-2.9.md §7): hidden where Pro can't be had,
+    // shown locked with one note where it can be bought.
+    final pro = ref.watch(proStatusProvider);
+    final proOpen = pro == ProStatus.unlocked;
     final kiosk = ref.watch(kioskProvider);
     final locked = kiosk.dashboardId == id;
     return DraggableScrollableSheet(
@@ -116,20 +122,37 @@ class WallDisplaySheet extends ConsumerWidget {
                         value: WallIdleShow.clock,
                         label: Text(l10n.wallIdleShowClock),
                       ),
+                      if (pro != ProStatus.unavailable)
+                        ButtonSegment(
+                          value: WallIdleShow.readings,
+                          enabled: proOpen,
+                          label: Text(
+                            proOpen
+                                ? l10n.wallIdleShowReadings
+                                : '${l10n.wallIdleShowReadings} · ${l10n.proBadge}',
+                          ),
+                        ),
                       ButtonSegment(
                         value: WallIdleShow.black,
                         label: Text(l10n.wallIdleShowBlack),
                       ),
                     ],
-                    selected: {idleShow},
+                    selected: {
+                      idleShow == WallIdleShow.readings && !proOpen
+                          ? WallIdleShow.clock
+                          : idleShow,
+                    },
                     onSelectionChanged: (s) => ref
                         .read(wallIdleShowProvider(id).notifier)
                         .set(s.first),
                   ),
+                  if (idleShow == WallIdleShow.readings && proOpen)
+                    _ReadingsPicker(dashboardId: id),
                 ],
               ],
             ),
           ),
+          if (pro == ProStatus.locked) const _ProNote(),
           const Divider(height: 24),
           SwitchListTile(
             secondary: const Icon(Icons.lock_outline),
@@ -265,4 +288,71 @@ Future<bool> leaveKiosk(BuildContext context, WidgetRef ref) async {
   }
   if (ok) await kiosk.stop();
   return ok;
+}
+
+/// Which of the dashboard's numbers the idle clock shows, up to
+/// [wallMaxReadings]; the first ones until the user picks.
+class _ReadingsPicker extends ConsumerWidget {
+  const _ReadingsPicker({required this.dashboardId});
+
+  final String dashboardId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final all = ref.watch(wallReadingsAvailableProvider(dashboardId));
+    final shown = {
+      for (final r in ref.watch(wallIdleReadingsProvider(dashboardId))) r.key,
+    };
+    if (all.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Text(l10n.wallIdleReadingsNone),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        Text(l10n.wallIdleReadingsPick(wallMaxReadings)),
+        for (final r in all)
+          CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            title: Text(r.name),
+            subtitle: r.unit == null ? null : Text(r.unit!),
+            value: shown.contains(r.key),
+            onChanged: shown.contains(r.key) || shown.length < wallMaxReadings
+                ? (on) {
+                    final next = [
+                      for (final x in all)
+                        if (x.key == r.key ? on! : shown.contains(x.key)) x.key,
+                    ];
+                    ref
+                        .read(
+                          wallIdleReadingsSettingProvider(dashboardId).notifier,
+                        )
+                        .set(next);
+                  }
+                : null,
+          ),
+      ],
+    );
+  }
+}
+
+/// The one mention of Pro in the sheet: what it adds and Unlock. No pop-up.
+class _ProNote extends ConsumerWidget {
+  const _ProNote();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final buy = ref.watch(proPurchaseProvider);
+    return ListTile(
+      leading: const Icon(Icons.workspace_premium_outlined),
+      title: Text(l10n.wallProNote),
+      trailing: TextButton(onPressed: buy, child: Text(l10n.historyUnlock)),
+    );
+  }
 }

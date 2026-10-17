@@ -5570,6 +5570,36 @@ abstract class AppLocalizations {
   /// **'Black'**
   String get wallIdleShowBlack;
 
+  /// No description provided for @wallIdleShowReadings.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings'**
+  String get wallIdleShowReadings;
+
+  /// No description provided for @proBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get proBadge;
+
+  /// No description provided for @wallIdleReadingsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This dashboard has no readings yet. Add a reading or a sensor tile first.'**
+  String get wallIdleReadingsNone;
+
+  /// No description provided for @wallIdleReadingsPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings on the clock (up to {count})'**
+  String wallIdleReadingsPick(int count);
+
+  /// No description provided for @wallProNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings on the clock, wake on motion, the night schedule and alarms are part of ZigDash Pro, a one-time purchase.'**
+  String get wallProNote;
+
   /// No description provided for @wallDimMinutes.
   ///
   /// In en, this message translates to:
@@ -5807,7 +5837,7 @@ abstract class AppLocalizations {
   /// No description provided for @proAbout.
   ///
   /// In en, this message translates to:
-  /// **'7- and 30-day history. A one-time purchase.'**
+  /// **'Longer history and the wall tablet extras. A one-time purchase.'**
   String get proAbout;
 
   /// No description provided for @proUnlocked.

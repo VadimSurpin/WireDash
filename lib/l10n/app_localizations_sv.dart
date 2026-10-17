@@ -3104,6 +3104,25 @@ class AppLocalizationsSv extends AppLocalizations {
   String get wallIdleShowBlack => 'Svart';
 
   @override
+  String get wallIdleShowReadings => 'Mätvärden';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Den här instrumentpanelen har inga mätvärden än. Lägg först till en mätvärdes- eller sensorruta.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Mätvärden på klockan (upp till $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Mätvärden på klockan, väckning vid rörelse, nattschemat och larm ingår i ZigDash Pro, ett engångsköp.';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
@@ -3235,7 +3254,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'Historik för 7 och 30 dagar. Ett engångsköp.';
+  String get proAbout =>
+      'Längre historik och extrafunktionerna för väggsurfplattor. Ett engångsköp.';
 
   @override
   String get proUnlocked => 'Upplåst. Tack för att du stöder ZigDash.';
