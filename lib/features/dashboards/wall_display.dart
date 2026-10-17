@@ -9,7 +9,12 @@ import '../settings/providers/settings_controller.dart';
 import '../../core/analytics/analytics.dart';
 import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
+import 'widgets/wall_alarm_screen.dart';
 import 'widgets/wall_idle_screen.dart';
+import '../../data/repositories/dashboard_repo.dart';
+import '../devices/devices_providers.dart';
+import '../discovery/providers/discovery_provider.dart';
+import 'wall_sensors.dart';
 
 /// The screen as Wall display and kiosk drive it; a seam so tests need no
 /// platform channel. Every call is best effort and never throws.
@@ -35,6 +40,24 @@ class ScreenWake {
       });
     } on PlatformException catch (_) {
       // No window to dim (tests, web).
+    } on MissingPluginException catch (_) {}
+  }
+
+  /// This window's brightness, 0 to 1; null returns to the system's.
+  Future<void> brightness(double? value) async {
+    try {
+      await _channel.invokeMethod<void>('setBrightness', {
+        'value': value ?? -1.0,
+      });
+    } on PlatformException catch (_) {
+    } on MissingPluginException catch (_) {}
+  }
+
+  /// The phone's alarm tone, looping while [on] (alarm takeover).
+  Future<void> alarmSound(bool on) async {
+    try {
+      await _channel.invokeMethod<void>('alarmSound', {'on': on});
+    } on PlatformException catch (_) {
     } on MissingPluginException catch (_) {}
   }
 
@@ -194,6 +217,13 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   /// What the idle screen shows over the dashboard, or null while awake.
   WallIdleShow? _idle;
 
+  /// Alarm takeover's alarms (wall-tablet-2.9.md §6).
+  final _alarms = WallAlarmTracker();
+  bool _sounding = false;
+
+  /// Friendly name to display name, for the alarm screen.
+  Map<String, String> _names = const {};
+
   /// Kiosk is app-wide: swiping to a sibling dashboard stays in it, with
   /// the kiosk dashboard's Wall display settings governing the whole time.
   bool get _kiosk => widget.active && ref.read(kioskProvider).on;
@@ -266,6 +296,8 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     if (minutes > 0) {
       _dimTimer = Timer(Duration(minutes: minutes), () {
         if (!mounted || !_ambient) return;
+        // An alarm on screen stays bright until OK.
+        if (_alarms.showing.isNotEmpty) return;
         _dimmed = true;
         ref.read(screenWakeProvider).dim(true).ignore();
         var show = ref.read(wallIdleShowProvider(_settingsId));
@@ -276,6 +308,30 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         }
         if (show != WallIdleShow.dim) setState(() => _idle = show);
       });
+    }
+  }
+
+  /// A state message from the Home: a picked sensor seeing someone wakes
+  /// the screen as a touch does; an alarm takes it over.
+  void _onState(WallStateEvent e, Set<String> wakers, bool alarmsOn) {
+    if (!mounted) return;
+    if (wakers.contains(e.name) && wakesFor(e.state)) _touched();
+    if (alarmsOn && _alarms.update(e.name, e.state)) {
+      setState(() {});
+      _touched();
+      final sound = ref.read(wallAlarmProvider(_settingsId)).sound;
+      if (sound && !_sounding) {
+        _sounding = true;
+        ref.read(screenWakeProvider).alarmSound(true).ignore();
+      }
+    }
+  }
+
+  void _acknowledge() {
+    setState(_alarms.acknowledge);
+    if (_alarms.showing.isEmpty && _sounding) {
+      _sounding = false;
+      ref.read(screenWakeProvider).alarmSound(false).ignore();
     }
   }
 
@@ -298,6 +354,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     if (_fullscreenOn) screen.fullscreen(false).ignore();
     if (_dimmed) screen.dim(false).ignore();
     if (_pinned) screen.lockTask(false).ignore();
+    if (_sounding) screen.alarmSound(false).ignore();
     // Leaving the dashboard brings the chrome back for the other screens.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
@@ -316,7 +373,9 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
     ref.listen(wallDimProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(wallIdleShowProvider(widget.dashboardId), (_, __) => _apply());
     ref.listen(kioskProvider, (_, __) => _apply());
+    _listenToSensors();
     final idle = _idle;
+    final alarm = _alarms.showing.firstOrNull;
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_) => _touched(),
@@ -329,8 +388,58 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
             Positioned.fill(
               child: WallIdleScreen(show: idle, dashboardId: _settingsId),
             ),
+          if (alarm != null)
+            Positioned.fill(
+              child: WallAlarmScreen(
+                kind: alarm.kind,
+                deviceName: _names[alarm.name] ?? alarm.name,
+                onOk: _acknowledge,
+              ),
+            ),
         ],
       ),
+    );
+  }
+
+  /// Wake on motion and alarm takeover listen to the Home's devices while a
+  /// wall display or kiosk is on, with Pro (wall-tablet-2.9.md §4, §6, §7).
+  void _listenToSensors() {
+    final id = ref.watch(kioskProvider).dashboardId ?? widget.dashboardId;
+    final ambient =
+        widget.active &&
+        (ref.watch(wallDisplayProvider(id)) || ref.watch(kioskProvider).on);
+    if (!ambient || ref.watch(proStatusProvider) != ProStatus.unlocked) return;
+    final motion = ref.watch(wallMotionSensorsProvider(id));
+    final alarmsOn = ref.watch(wallAlarmProvider(id)).on;
+    if (motion.isEmpty && !alarmsOn) return;
+    final connectionId = ref
+        .watch(dashboardByIdProvider(id))
+        .valueOrNull
+        ?.connectionId;
+    if (connectionId == null) return;
+    final base = ref.watch(homeBaseTopicProvider(connectionId));
+    if (base == null) return;
+    final devices =
+        ref
+            .watch(
+              bridgeDevicesStreamProvider((
+                connectionId: connectionId,
+                base: base,
+              )),
+            )
+            .valueOrNull ??
+        const [];
+    _names = {for (final d in devices) d.friendlyName: d.displayName};
+    final wakers = {
+      for (final d in devices)
+        if (motion.contains(d.ieeeAddress)) d.friendlyName,
+    };
+    ref.listen(
+      wallStateEventsProvider((connectionId: connectionId, base: base)),
+      (_, next) {
+        final e = next.valueOrNull;
+        if (e != null) _onState(e, wakers, alarmsOn);
+      },
     );
   }
 }

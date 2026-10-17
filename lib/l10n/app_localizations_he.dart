@@ -3095,6 +3095,40 @@ class AppLocalizationsHe extends AppLocalizations {
       'מדידות על השעון, התעוררות בתנועה, מצב לילה והתראות הם חלק מ-ZigDash Pro, רכישה חד-פעמית.';
 
   @override
+  String get wallAlarmLeak => 'נזילת מים';
+
+  @override
+  String get wallAlarmSmoke => 'עשן';
+
+  @override
+  String get wallAlarmGas => 'גז';
+
+  @override
+  String get wallAlarmCo => 'פחמן חד-חמצני';
+
+  @override
+  String get wallAlarmOk => 'אישור';
+
+  @override
+  String get wallMotionTitle => 'להעיר בתנועה';
+
+  @override
+  String get wallMotionSubtitle => 'חיישן שמזהה מישהו מעיר את המסך.';
+
+  @override
+  String get wallMotionNone => 'אין בבית הזה חיישני תנועה, נוכחות או דלת.';
+
+  @override
+  String get wallAlarmsTitle => 'התראות ממלאות את המסך';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'נזילה, עשן, גז או פחמן חד-חמצני ממלאים את המסך עד שמישהו לוחץ אישור. רק כש-ZigDash פתוח בטאבלט הזה; ההתראות מגיעות לטלפונים בכל מקום.';
+
+  @override
+  String get wallAlarmSound => 'להשמיע צליל';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes דק׳';
   }

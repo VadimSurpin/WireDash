@@ -3128,6 +3128,42 @@ class AppLocalizationsRu extends AppLocalizations {
       'Показания на часах, пробуждение по движению, ночной режим и тревоги входят в ZigDash Pro — разовую покупку.';
 
   @override
+  String get wallAlarmLeak => 'Протечка';
+
+  @override
+  String get wallAlarmSmoke => 'Дым';
+
+  @override
+  String get wallAlarmGas => 'Газ';
+
+  @override
+  String get wallAlarmCo => 'Угарный газ';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Пробуждение по движению';
+
+  @override
+  String get wallMotionSubtitle =>
+      'Датчик, который замечает человека, будит экран.';
+
+  @override
+  String get wallMotionNone =>
+      'В этом доме нет датчиков движения, присутствия или дверей.';
+
+  @override
+  String get wallAlarmsTitle => 'Тревоги на весь экран';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Протечка, дым, газ или угарный газ заполняют экран, пока кто-нибудь не нажмёт OK. Только пока ZigDash открыт на этом планшете; уведомления приходят на телефоны где угодно.';
+
+  @override
+  String get wallAlarmSound => 'Звуковой сигнал';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes мин';
   }

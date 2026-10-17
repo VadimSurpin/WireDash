@@ -17,6 +17,9 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     private var channel: MethodChannel? = null
 
+    /** Alarm takeover's tone (wall-tablet-2.9.md §6), while one shows. */
+    private var alarmTone: android.media.Ringtone? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         ProBilling.register(this, flutterEngine.dartExecutor.binaryMessenger)
@@ -48,6 +51,22 @@ class MainActivity : FlutterActivity() {
                         // Not allowed here (e.g. a managed device): nothing to pin.
                         result.success(false)
                     }
+                }
+                // Alarm takeover: the phone's own alarm tone, looping, until OK.
+                "alarmSound" -> {
+                    alarmTone?.stop()
+                    alarmTone = null
+                    if (call.argument<Boolean>("on") == true) {
+                        val uri = android.media.RingtoneManager.getDefaultUri(
+                            android.media.RingtoneManager.TYPE_ALARM)
+                            ?: android.media.RingtoneManager.getDefaultUri(
+                                android.media.RingtoneManager.TYPE_NOTIFICATION)
+                        alarmTone = android.media.RingtoneManager.getRingtone(this, uri)?.apply {
+                            if (Build.VERSION.SDK_INT >= 28) isLooping = true
+                            play()
+                        }
+                    }
+                    result.success(null)
                 }
                 // Alerts: a background-restricted app gets no pushes (alerts-2.3.md).
                 "isBackgroundRestricted" -> result.success(

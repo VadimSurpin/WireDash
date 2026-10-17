@@ -3121,6 +3121,41 @@ class AppLocalizationsNb extends AppLocalizations {
       'Målinger på klokken, vekking ved bevegelse, nattplanen og alarmer er en del av ZigDash Pro, et engangskjøp.';
 
   @override
+  String get wallAlarmLeak => 'Vannlekkasje';
+
+  @override
+  String get wallAlarmSmoke => 'Røyk';
+
+  @override
+  String get wallAlarmGas => 'Gass';
+
+  @override
+  String get wallAlarmCo => 'Karbonmonoksid';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Vekk ved bevegelse';
+
+  @override
+  String get wallMotionSubtitle => 'En sensor som ser noen, vekker skjermen.';
+
+  @override
+  String get wallMotionNone =>
+      'Ingen bevegelses-, tilstedeværelses- eller dørsensorer i dette hjemmet.';
+
+  @override
+  String get wallAlarmsTitle => 'Alarmer fyller skjermen';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Lekkasje, røyk, gass eller karbonmonoksid fyller skjermen til noen trykker OK. Bare mens ZigDash er åpen på dette nettbrettet; varsler når telefoner overalt.';
+
+  @override
+  String get wallAlarmSound => 'Spill av en lyd';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }

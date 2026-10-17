@@ -5600,6 +5600,72 @@ abstract class AppLocalizations {
   /// **'Readings on the clock, wake on motion, the night schedule and alarms are part of ZigDash Pro, a one-time purchase.'**
   String get wallProNote;
 
+  /// No description provided for @wallAlarmLeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Water leak'**
+  String get wallAlarmLeak;
+
+  /// No description provided for @wallAlarmSmoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoke'**
+  String get wallAlarmSmoke;
+
+  /// No description provided for @wallAlarmGas.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas'**
+  String get wallAlarmGas;
+
+  /// No description provided for @wallAlarmCo.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbon monoxide'**
+  String get wallAlarmCo;
+
+  /// No description provided for @wallAlarmOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get wallAlarmOk;
+
+  /// No description provided for @wallMotionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake on motion'**
+  String get wallMotionTitle;
+
+  /// No description provided for @wallMotionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A sensor that sees someone wakes the screen.'**
+  String get wallMotionSubtitle;
+
+  /// No description provided for @wallMotionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No motion, presence or door sensors in this Home.'**
+  String get wallMotionNone;
+
+  /// No description provided for @wallAlarmsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarms take over the screen'**
+  String get wallAlarmsTitle;
+
+  /// No description provided for @wallAlarmsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak, smoke, gas or carbon monoxide fills the screen until someone taps OK. Only while ZigDash is open on this tablet; Alerts reach phones anywhere.'**
+  String get wallAlarmsSubtitle;
+
+  /// No description provided for @wallAlarmSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a sound'**
+  String get wallAlarmSound;
+
   /// No description provided for @wallDimMinutes.
   ///
   /// In en, this message translates to:

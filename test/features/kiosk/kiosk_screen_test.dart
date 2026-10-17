@@ -142,6 +142,10 @@ void main() {
   );
 
   Future<void> pump(WidgetTester tester, {ProStatus? pro}) async {
+    // A tall tablet: the Wall display sheet grew in 2.9 and builds lazily.
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(app(pro: pro));
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 50));

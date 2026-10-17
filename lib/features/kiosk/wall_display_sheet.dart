@@ -7,6 +7,11 @@ import '../../data/database/database.dart';
 import '../dashboards/wall_display.dart';
 import '../dashboards/wall_readings.dart';
 import '../pro/pro.dart';
+import '../dashboards/wall_sensors.dart';
+import '../devices/device_profile.dart';
+import '../devices/devices_providers.dart';
+import '../discovery/models/z2m_device.dart';
+import '../discovery/providers/discovery_provider.dart';
 import '../dashboards/widgets/export_dialog.dart';
 import 'kiosk.dart';
 import 'kiosk_pin_dialogs.dart';
@@ -152,6 +157,14 @@ class WallDisplaySheet extends ConsumerWidget {
               ],
             ),
           ),
+          if (pro != ProStatus.unavailable) ...[
+            _MotionSection(
+              connectionId: connectionId,
+              dashboardId: id,
+              open: proOpen,
+            ),
+            _AlarmsSection(dashboardId: id, open: proOpen),
+          ],
           if (pro == ProStatus.locked) const _ProNote(),
           const Divider(height: 24),
           SwitchListTile(
@@ -353,6 +366,118 @@ class _ProNote extends ConsumerWidget {
       leading: const Icon(Icons.workspace_premium_outlined),
       title: Text(l10n.wallProNote),
       trailing: TextButton(onPressed: buy, child: Text(l10n.historyUnlock)),
+    );
+  }
+}
+
+/// "Wake on motion": the Home's motion, presence and door sensors to pick
+/// from (wall-tablet-2.9.md §4). Locked without Pro.
+class _MotionSection extends ConsumerWidget {
+  const _MotionSection({
+    required this.connectionId,
+    required this.dashboardId,
+    required this.open,
+  });
+
+  final String connectionId;
+  final String dashboardId;
+  final bool open;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final base = ref.watch(homeBaseTopicProvider(connectionId));
+    final devices = base == null
+        ? const <Z2mDevice>[]
+        : ref
+                  .watch(
+                    bridgeDevicesStreamProvider((
+                      connectionId: connectionId,
+                      base: base,
+                    )),
+                  )
+                  .valueOrNull ??
+              const <Z2mDevice>[];
+    final sensors = [
+      for (final d in devices)
+        if (d.ieeeAddress != null &&
+            const {
+              DeviceClass.motion,
+              DeviceClass.contact,
+            }.contains(classifyExposes(d.rawExposes).deviceClass))
+          d,
+    ];
+    final chosen = ref.watch(wallMotionSensorsProvider(dashboardId));
+    final title = open
+        ? l10n.wallMotionTitle
+        : '${l10n.wallMotionTitle} · ${l10n.proBadge}';
+    return ListTile(
+      leading: const Icon(Icons.directions_walk),
+      enabled: open,
+      title: Text(title),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.wallMotionSubtitle),
+          if (open && sensors.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(l10n.wallMotionNone),
+            ),
+          if (open)
+            for (final d in sensors)
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: Text(d.displayName),
+                value: chosen.contains(d.ieeeAddress),
+                onChanged: (on) => ref
+                    .read(wallMotionSensorsProvider(dashboardId).notifier)
+                    .set([
+                      for (final x in chosen)
+                        if (x != d.ieeeAddress) x,
+                      if (on!) d.ieeeAddress!,
+                    ]),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Alarms take over the screen" and its sound (wall-tablet-2.9.md §6).
+class _AlarmsSection extends ConsumerWidget {
+  const _AlarmsSection({required this.dashboardId, required this.open});
+
+  final String dashboardId;
+  final bool open;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final alarms = ref.watch(wallAlarmProvider(dashboardId));
+    final setting = ref.read(wallAlarmProvider(dashboardId).notifier);
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.warning_amber_rounded),
+          title: Text(
+            open
+                ? l10n.wallAlarmsTitle
+                : '${l10n.wallAlarmsTitle} · ${l10n.proBadge}',
+          ),
+          subtitle: Text(l10n.wallAlarmsSubtitle),
+          value: open && alarms.on,
+          onChanged: open ? setting.setOn : null,
+        ),
+        if (open && alarms.on)
+          SwitchListTile(
+            secondary: const Icon(Icons.volume_up_outlined),
+            title: Text(l10n.wallAlarmSound),
+            value: alarms.sound,
+            onChanged: setting.setSound,
+          ),
+      ],
     );
   }
 }

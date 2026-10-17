@@ -3143,6 +3143,42 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les mesures sur l\'horloge, le réveil par mouvement, le mode nuit et les alarmes font partie de ZigDash Pro, un achat unique.';
 
   @override
+  String get wallAlarmLeak => 'Fuite d\'eau';
+
+  @override
+  String get wallAlarmSmoke => 'Fumée';
+
+  @override
+  String get wallAlarmGas => 'Gaz';
+
+  @override
+  String get wallAlarmCo => 'Monoxyde de carbone';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Réveil par mouvement';
+
+  @override
+  String get wallMotionSubtitle =>
+      'Un capteur qui détecte quelqu\'un réveille l\'écran.';
+
+  @override
+  String get wallMotionNone =>
+      'Aucun capteur de mouvement, de présence ou de porte dans ce domicile.';
+
+  @override
+  String get wallAlarmsTitle => 'Les alarmes prennent tout l\'écran';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Une fuite, de la fumée, du gaz ou du monoxyde de carbone remplit l\'écran jusqu\'à ce que quelqu\'un touche OK. Uniquement quand ZigDash est ouvert sur cette tablette ; les alertes atteignent les téléphones partout.';
+
+  @override
+  String get wallAlarmSound => 'Jouer un son';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
