@@ -13,8 +13,10 @@ import 'setup_coordinator.dart';
 /// Zigbee2MQTT publishes. [Z2mFetchResult.detected] is true only after such a
 /// topic arrived — the flow may not claim "Zigbee2MQTT found" before that.
 class Z2mProbeFetcher {
-  Z2mProbeFetcher({MqttClientFactory? clientFactory, this.window = const Duration(seconds: 5)})
-      : _clientFactory = clientFactory ?? buildMqttClient;
+  Z2mProbeFetcher({
+    MqttClientFactory? clientFactory,
+    this.window = const Duration(seconds: 5),
+  }) : _clientFactory = clientFactory ?? buildMqttClient;
 
   final MqttClientFactory _clientFactory;
 
@@ -22,7 +24,10 @@ class Z2mProbeFetcher {
   final Duration window;
 
   Future<Z2mFetchResult> fetch(
-      BrokerConfig config, String password, String base) async {
+    BrokerConfig config,
+    String password,
+    String base,
+  ) async {
     final clientId = 'zd-${DateTime.now().microsecondsSinceEpoch & 0xffffff}';
     final client = _clientFactory(config, clientId);
     client
@@ -30,8 +35,9 @@ class Z2mProbeFetcher {
       ..keepAlivePeriod = 5
       ..connectTimeoutPeriod = window.inMilliseconds
       ..autoReconnect = false
-      ..connectionMessage =
-          mc.MqttConnectMessage().withClientIdentifier(clientId).startClean();
+      ..connectionMessage = mc.MqttConnectMessage()
+          .withClientIdentifier(clientId)
+          .startClean();
 
     try {
       await client.connect(config.username, password).timeout(window);
@@ -46,17 +52,29 @@ class Z2mProbeFetcher {
 
     var detected = false;
     var devices = <Z2mDevice>[];
+    final others = <String>{};
     final sub = client.updates?.listen((events) {
       for (final event in events) {
         final pub = event.payload;
         if (pub is! mc.MqttPublishMessage) continue;
+        // Another Zigbee2MQTT on this broker, under its own base topic.
+        if (event.topic.endsWith('/bridge/state') &&
+            !event.topic.startsWith('$base/')) {
+          others.add(
+            event.topic.substring(
+              0,
+              event.topic.length - '/bridge/state'.length,
+            ),
+          );
+        }
         final rest = event.topic.length > base.length + 1
             ? event.topic.substring(base.length + 1)
             : '';
         if (rest == 'bridge/devices') {
           detected = true;
           final payload = mc.MqttPublishPayload.bytesToStringAsString(
-              pub.payload.message);
+            pub.payload.message,
+          );
           devices = parseBridgeDevices(payload);
         } else if (rest == 'bridge/info' || rest == 'bridge/state') {
           detected = true;
@@ -67,13 +85,20 @@ class Z2mProbeFetcher {
       client
         ..subscribe('$base/bridge/devices', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/bridge/info', mc.MqttQos.atLeastOnce)
-        ..subscribe('$base/bridge/state', mc.MqttQos.atLeastOnce);
+        ..subscribe('$base/bridge/state', mc.MqttQos.atLeastOnce)
+        // A base topic of one or two levels ("z2m", "home/zigbee").
+        ..subscribe('+/bridge/state', mc.MqttQos.atLeastOnce)
+        ..subscribe('+/+/bridge/state', mc.MqttQos.atLeastOnce);
       await Future<void>.delayed(window);
     } finally {
       unawaited(sub?.cancel());
       _dispose(client);
     }
-    return Z2mFetchResult(detected: detected, devices: devices);
+    return Z2mFetchResult(
+      detected: detected,
+      devices: devices,
+      otherBases: others.toList()..sort(),
+    );
   }
 
   void _dispose(mc.MqttClient client) {
