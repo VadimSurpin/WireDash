@@ -136,6 +136,7 @@ void main() {
       WidgetTester tester,
       Map<String, Object> values, {
       DateTime? now,
+      DateTime Function()? clock,
     }) async {
       SharedPreferences.setMockInitialValues({
         'wall_display_d1': true,
@@ -151,6 +152,7 @@ void main() {
             screenWakeProvider.overrideWithValue(wake),
             proStatusProvider.overrideWithValue(ProStatus.unlocked),
             if (now != null) wallNowProvider.overrideWithValue(() => now),
+            if (clock != null) wallNowProvider.overrideWithValue(clock),
             dashboardByIdProvider('d1').overrideWith(
               (_) async => Dashboard(
                 id: 'd1',
@@ -227,6 +229,11 @@ void main() {
       expect(find.text('Laundry leak'), findsOneWidget);
       expect(wake.soundCalls, [true]);
 
+      bool chromeHidden() => ProviderScope.containerOf(
+        tester.element(find.byType(WallDisplayScope)),
+      ).read(wallChromeHiddenProvider);
+      expect(chromeHidden(), isTrue, reason: 'no header or navigation');
+
       await tester.pump(const Duration(minutes: 2));
       expect(wake.dimCalls, isNot(contains(true)), reason: 'stays bright');
 
@@ -234,6 +241,7 @@ void main() {
       await tester.pump();
       expect(find.byType(WallAlarmScreen), findsNothing);
       expect(wake.soundCalls, [true, false]);
+      expect(chromeHidden(), isFalse, reason: 'back after OK');
       await tester.pumpWidget(const SizedBox());
     });
 
@@ -254,6 +262,30 @@ void main() {
       await send(tester, 'Hallway motion', {'occupancy': true});
       expect(find.byType(WallIdleScreen), findsNothing);
       expect(wake.brightnessCalls, [nightWakeBrightness]);
+      await tester.pumpWidget(const SizedBox());
+    });
+
+    testWidgets('night starting while the clock shows turns it black', (
+      tester,
+    ) async {
+      var now = DateTime(2026, 10, 17, 22, 58);
+      await pump(tester, {
+        'wall_dim_d1': 1,
+        'wall_idle_show_d1': 'clock',
+        'wall_night_on_d1': true,
+      }, clock: () => now);
+      now = DateTime(2026, 10, 17, 22, 59);
+      await tester.pump(const Duration(minutes: 1, seconds: 1));
+      expect(
+        tester.widget<WallIdleScreen>(find.byType(WallIdleScreen)).show,
+        WallIdleShow.clock,
+      );
+      now = DateTime(2026, 10, 17, 23, 0);
+      await tester.pump(const Duration(minutes: 1));
+      expect(
+        tester.widget<WallIdleScreen>(find.byType(WallIdleScreen)).show,
+        WallIdleShow.black,
+      );
       await tester.pumpWidget(const SizedBox());
     });
 

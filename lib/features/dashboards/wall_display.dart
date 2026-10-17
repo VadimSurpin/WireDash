@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -209,6 +210,7 @@ class WallDisplayScope extends ConsumerStatefulWidget {
 class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   Timer? _timer;
   Timer? _dimTimer;
+  Timer? _nightTimer;
   bool _wakeOn = false;
   bool _fullscreenOn = false;
   bool _dimmed = false;
@@ -311,26 +313,68 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
         }
       });
     }
+    _scheduleIdle();
+    _scheduleNightBoundary();
+  }
+
+  /// What the idle screen shows now: the chosen screen, the clock instead
+  /// of readings without Pro, black at night.
+  WallIdleShow get _idleShow {
+    var show = ref.read(wallIdleShowProvider(_settingsId));
+    // Readings are Pro (wall-tablet-2.9.md §7); without it, the clock.
+    if (show == WallIdleShow.readings &&
+        ref.read(proStatusProvider) != ProStatus.unlocked) {
+      show = WallIdleShow.clock;
+    }
+    return _night ? WallIdleShow.black : show;
+  }
+
+  /// Goes idle after the chosen minutes without a touch.
+  void _scheduleIdle() {
+    _dimTimer?.cancel();
     var minutes = _ambient ? ref.read(wallDimProvider(_settingsId)) : 0;
     // At night the screen goes black even when the day setting is Never.
     if (_ambient && minutes == 0 && _night) minutes = 1;
-    if (minutes > 0) {
-      _dimTimer = Timer(Duration(minutes: minutes), () {
-        if (!mounted || !_ambient) return;
-        // An alarm on screen stays bright until OK.
-        if (_alarms.showing.isNotEmpty) return;
-        _dimmed = true;
-        ref.read(screenWakeProvider).dim(true).ignore();
-        var show = ref.read(wallIdleShowProvider(_settingsId));
-        // Readings are Pro (wall-tablet-2.9.md §7); without it, the clock.
-        if (show == WallIdleShow.readings &&
-            ref.read(proStatusProvider) != ProStatus.unlocked) {
-          show = WallIdleShow.clock;
-        }
-        if (_night) show = WallIdleShow.black;
-        if (show != WallIdleShow.dim) setState(() => _idle = show);
-      });
+    if (minutes <= 0) return;
+    _dimTimer = Timer(Duration(minutes: minutes), () {
+      if (!mounted || !_ambient) return;
+      // An alarm on screen stays bright until OK.
+      if (_alarms.showing.isNotEmpty) return;
+      _dimmed = true;
+      ref.read(screenWakeProvider).dim(true).ignore();
+      final show = _idleShow;
+      if (show != WallIdleShow.dim) setState(() => _idle = show);
+    });
+  }
+
+  /// Night starts or ends while nobody touches the screen: an idle screen
+  /// turns black (or back), and a screen set to Never goes idle at night.
+  void _scheduleNightBoundary() {
+    _nightTimer?.cancel();
+    final night = ref.read(wallNightProvider(_settingsId));
+    if (!_ambient ||
+        !night.on ||
+        ref.read(proStatusProvider) != ProStatus.unlocked) {
+      return;
     }
+    final now = ref.read(wallNowProvider)();
+    final m = now.hour * 60 + now.minute;
+    int until(int target) => (target - m + 24 * 60) % (24 * 60);
+    final a = until(night.from), b = until(night.to);
+    final next = [a, b].where((x) => x > 0).fold(24 * 60, math.min);
+    _nightTimer = Timer(
+      Duration(minutes: next) - Duration(seconds: now.second),
+      () {
+        if (!mounted) return;
+        if (_dimmed && _alarms.showing.isEmpty) {
+          final show = _idleShow;
+          setState(() => _idle = show == WallIdleShow.dim ? null : show);
+        } else if (!_dimmed) {
+          _scheduleIdle();
+        }
+        _scheduleNightBoundary();
+      },
+    );
   }
 
   /// A state message from the Home: a picked sensor seeing someone wakes
@@ -338,11 +382,12 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   void _onState(WallStateEvent e, Set<String> wakers, bool alarmsOn) {
     if (!mounted) return;
     if (wakers.contains(e.name) && wakesFor(e.state)) _wokenByMotion();
+    final before = _alarms.showing.length;
     if (alarmsOn && _alarms.update(e.name, e.state)) {
       setState(() {});
-      ref
-          .read(analyticsProvider)
-          .track(AlarmShown(_alarms.showing.last.kind.name));
+      for (final a in _alarms.showing.skip(before)) {
+        ref.read(analyticsProvider).track(AlarmShown(a.kind.name));
+      }
       _touched();
       final sound = ref.read(wallAlarmProvider(_settingsId)).sound;
       if (sound && !_sounding) {
@@ -374,6 +419,7 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   void dispose() {
     _timer?.cancel();
     _dimTimer?.cancel();
+    _nightTimer?.cancel();
     final container = _container;
     final screen = container.read(screenWakeProvider);
     if (_wakeOn) screen.keepOn(false).ignore();

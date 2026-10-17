@@ -39,7 +39,9 @@ on Wall display and the Kiosk lock ([kiosk-2.6.md](kiosk-2.6.md)) and on Pro
    wakes the tablet as a touch does: full brightness, dashboard shown, the
    idle timer restarts. Touch still wakes it. No sensor picked: as today.
 5. **Night:** from-to hours (default 23:00 to 07:00, off until chosen).
-   During the night the idle screen is **Black** whatever Show says. A touch
+   During the night the idle screen is **Black** whatever Show says, also
+   when night starts while the clock already shows (a timer at each
+   boundary; at the end of the night an idle screen goes back to Show). A touch
    wakes it normally; motion wakes it only to low brightness (about 15%) so
    a hallway isn't lit at 3 a.m.; an alarm wakes it fully. Phone time zone.
 6. **Alarm takeover:** reads the devices of the tablet's Home directly, no
@@ -69,8 +71,9 @@ on Wall display and the Kiosk lock ([kiosk-2.6.md](kiosk-2.6.md)) and on Pro
 11. **Measured.** The `kiosk` feature event (sent when the wall display is
     set up) gains `idle_show` (dim, clock, readings, black), `motion` (yes,
     no), `night` (yes, no) and `alarms` (yes, no). New event `alarm_shown`
-    with only `kind` (leak, smoke, gas, co). Never names. Both privacy
-    policy copies get the rows.
+    with only `kind` (leak, smoke, gas, co). Never names. `store/PRIVACY.md` (the canonical
+    policy) gets the rows; `docs/privacy.md` is a stale copy from before
+    2.7 and isn't kept.
 
 ## Build notes (not yet decided in detail)
 

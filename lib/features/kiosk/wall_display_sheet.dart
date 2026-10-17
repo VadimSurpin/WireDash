@@ -255,7 +255,13 @@ class WallDisplaySheet extends ConsumerWidget {
             pin: kiosk.hasPin,
             osPinning: kiosk.osPinning,
             dimMinutes: ref.read(wallDimProvider(id)),
-            idleShow: ref.read(wallIdleShowProvider(id)).name,
+            // What will show: readings without Pro is the clock.
+            idleShow:
+                (ref.read(wallIdleShowProvider(id)) == WallIdleShow.readings &&
+                            ref.read(proStatusProvider) != ProStatus.unlocked
+                        ? WallIdleShow.clock
+                        : ref.read(wallIdleShowProvider(id)))
+                    .name,
             motion: ref.read(wallMotionSensorsProvider(id)).isNotEmpty,
             night: ref.read(wallNightProvider(id)).on,
             alarms: ref.read(wallAlarmProvider(id)).on,
