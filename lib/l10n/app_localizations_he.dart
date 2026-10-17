@@ -3069,6 +3069,93 @@ class AppLocalizationsHe extends AppLocalizations {
   String get wallDimOff => 'כבוי';
 
   @override
+  String get wallIdleTitle => 'כשאף אחד לא נוגע';
+
+  @override
+  String get wallIdleAfter => 'אחרי';
+
+  @override
+  String get wallIdleNever => 'אף פעם';
+
+  @override
+  String get wallIdleShow => 'להציג';
+
+  @override
+  String get wallIdleShowDim => 'מעומעם';
+
+  @override
+  String get wallIdleShowClock => 'שעון';
+
+  @override
+  String get wallIdleShowBlack => 'שחור';
+
+  @override
+  String get wallIdleShowReadings => 'מדידות';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'בלוח הזה עדיין אין מדידות. הוסיפו קודם אריח מדידה או חיישן.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'מדידות על השעון (עד $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'מדידות על השעון, התעוררות בתנועה, מצב לילה והתראות הם חלק מ-ZigDash Pro, רכישה חד-פעמית.';
+
+  @override
+  String get wallAlarmLeak => 'נזילת מים';
+
+  @override
+  String get wallAlarmSmoke => 'עשן';
+
+  @override
+  String get wallAlarmGas => 'גז';
+
+  @override
+  String get wallAlarmCo => 'פחמן חד-חמצני';
+
+  @override
+  String get wallAlarmOk => 'אישור';
+
+  @override
+  String get wallMotionTitle => 'להעיר בתנועה';
+
+  @override
+  String get wallMotionSubtitle => 'חיישן שמזהה מישהו מעיר את המסך.';
+
+  @override
+  String get wallMotionNone => 'אין בבית הזה חיישני תנועה, נוכחות או דלת.';
+
+  @override
+  String get wallAlarmsTitle => 'התראות ממלאות את המסך';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'נזילה, עשן, גז או פחמן חד-חמצני ממלאים את המסך עד שמישהו לוחץ אישור. רק כש-ZigDash פתוח בטאבלט הזה; ההתראות מגיעות לטלפונים בכל מקום.';
+
+  @override
+  String get wallAlarmSound => 'להשמיע צליל';
+
+  @override
+  String get wallNightTitle => 'לילה';
+
+  @override
+  String get wallNightSubtitle =>
+      'שחור בין השעות האלה. תנועה מעירה רק בעמעום; התראות תמיד במלואן.';
+
+  @override
+  String get wallNightFrom => 'מ-';
+
+  @override
+  String get wallNightTo => 'עד';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes דק׳';
   }
@@ -3199,7 +3286,8 @@ class AppLocalizationsHe extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'היסטוריה של 7 ו-30 יום. רכישה חד-פעמית.';
+  String get proAbout =>
+      'היסטוריה ארוכה יותר והתוספות לטאבלט על הקיר. רכישה חד-פעמית.';
 
   @override
   String get proUnlocked => 'פתוח. תודה שאתם תומכים ב-ZigDash.';

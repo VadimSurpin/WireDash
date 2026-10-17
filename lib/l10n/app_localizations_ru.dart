@@ -3102,6 +3102,95 @@ class AppLocalizationsRu extends AppLocalizations {
   String get wallDimOff => 'Выкл.';
 
   @override
+  String get wallIdleTitle => 'Когда никто не касается';
+
+  @override
+  String get wallIdleAfter => 'Через';
+
+  @override
+  String get wallIdleNever => 'Никогда';
+
+  @override
+  String get wallIdleShow => 'Показывать';
+
+  @override
+  String get wallIdleShowDim => 'Затемнение';
+
+  @override
+  String get wallIdleShowClock => 'Часы';
+
+  @override
+  String get wallIdleShowBlack => 'Чёрный';
+
+  @override
+  String get wallIdleShowReadings => 'Показания';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'На этой панели ещё нет показаний. Сначала добавьте плитку показания или датчика.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Показания на часах (до $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Показания на часах, пробуждение по движению, ночной режим и тревоги входят в ZigDash Pro — разовую покупку.';
+
+  @override
+  String get wallAlarmLeak => 'Протечка';
+
+  @override
+  String get wallAlarmSmoke => 'Дым';
+
+  @override
+  String get wallAlarmGas => 'Газ';
+
+  @override
+  String get wallAlarmCo => 'Угарный газ';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Пробуждение по движению';
+
+  @override
+  String get wallMotionSubtitle =>
+      'Датчик, который замечает человека, будит экран.';
+
+  @override
+  String get wallMotionNone =>
+      'В этом доме нет датчиков движения, присутствия или дверей.';
+
+  @override
+  String get wallAlarmsTitle => 'Тревоги на весь экран';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Протечка, дым, газ или угарный газ заполняют экран, пока кто-нибудь не нажмёт OK. Только пока ZigDash открыт на этом планшете; уведомления приходят на телефоны где угодно.';
+
+  @override
+  String get wallAlarmSound => 'Звуковой сигнал';
+
+  @override
+  String get wallNightTitle => 'Ночь';
+
+  @override
+  String get wallNightSubtitle =>
+      'Чёрный экран в эти часы. Движение будит его только приглушённо; тревоги — всегда полностью.';
+
+  @override
+  String get wallNightFrom => 'С';
+
+  @override
+  String get wallNightTo => 'до';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes мин';
   }
@@ -3233,7 +3322,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'История за 7 и 30 дней. Разовая покупка.';
+  String get proAbout =>
+      'Более долгая история и функции для настенного планшета. Разовая покупка.';
 
   @override
   String get proUnlocked => 'Открыто. Спасибо, что поддерживаете ZigDash.';

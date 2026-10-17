@@ -15,6 +15,9 @@ abstract final class SignalMotion {
   /// Half of a leak or smoke alarm's 2 s pulse: out, then back.
   static const alarmPulseHalf = Duration(seconds: 1);
 
+  /// The idle clock's slow move to its next spot each minute (2.9).
+  static const idleDrift = Duration(seconds: 2);
+
   /// [duration], or zero when animations are off (TalkBack users, "Remove
   /// animations" in Android accessibility settings).
   static Duration of(BuildContext context, Duration duration) =>

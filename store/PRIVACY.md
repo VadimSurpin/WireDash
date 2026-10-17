@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.8 is published (replaces the policy published with ZigDash 2.7.2)
+**Effective date:** the day ZigDash 2.9 is published (replaces the policy published with ZigDash 2.8)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -47,6 +47,10 @@ All data stays on your device:
   screen and Device Controls display these names and states on your phone
   (including, if you allow it in Android's settings, on the lock screen);
   they are not sent anywhere.
+
+- **Wall display** — per dashboard: the idle screen, the readings it
+  shows, the sensors that wake the screen, the night hours and whether
+  alarms take over, kept in the app's own storage on that tablet (2.9).
 
 This data is never uploaded to the developer. You can remove it at any time by
 deleting a connection (which removes its dashboards, panels, and saved password)
@@ -118,7 +122,7 @@ never from anything you typed or anything your broker sent.
 |---|---|---|
 | `app_started` | Once each time the app starts | phone or tablet; theme (system, light, dark); Material You on or off; number of homes (0, 1, 2+); number of tiles (0, 1–10, 11–30, 31+); demo or not |
 | `setup_step` | Each step of first-run setup | the step (started, scan found, scan empty, needs login, login rejected, failed, review, complete, manual, demo); the type of setup error, if any; number of devices found (0, 1–5, 6–20, 21+); from 2.5, your answer to where Zigbee2MQTT runs, if you gave one (Home Assistant, SMLIGHT hub, Raspberry Pi or Docker, not sure); and for an empty scan, the kind of hub it saw instead (Home Assistant, Zigbee2MQTT frontend, SMLIGHT hub, or none), how many addresses it tried (0, 1–253, 254–1020, 1021+), whether it widened to the surrounding network, and which private range your phone is in (192.168, 10, 172.16, other); from 2.6.2, also how many addresses answered at all (0, 1–5, 6–20, 21+), whether a VPN was on, and the kind of network (Wi-Fi, Ethernet, other); and for the address check (the address you type on the empty result), only its outcome: a broker found, a hub page found, nothing answered, the name could not be looked up, not a home address, or nothing typed; from 2.7.2, for Test & connect on the broker form, only whether it connected or which step failed (name lookup, connection, MQTT handshake, login), the number of devices found (0, 1–5, 6–20, 21+), and whether the app tidied what you typed (for example a pasted browser link); and when the scan saw Zigbee2MQTT's web page but no broker, only what asking that page found: a broker, a broker that listens only on its own machine, one that didn't answer, or no answer; never the address |
-| `feature_used` | The first use of a feature in a session | Devices tab, device page, Scenes, Edit mode, Wall display, tile added (with the kind of tile, such as "light" or "toggle"), history (from 2.7), or kiosk (with whether a PIN is set, whether Android screen pinning is on, and the dim delay as one of off, 1, 5 or 15 minutes) |
+| `feature_used` | The first use of a feature in a session | Devices tab, device page, Scenes, Edit mode, Wall display, tile added (with the kind of tile, such as "light" or "toggle"), history (from 2.7), or kiosk (with whether a PIN is set, whether Android screen pinning is on, and the dim delay as one of off, 1, 5 or 15 minutes; from 2.9 also what the idle screen shows (dimmed, clock, clock and readings, or black) and whether wake on motion, the night schedule and alarm takeover are on) |
 | `ha_import` | From 2.8, the import from Home Assistant | the step (the offer after setup accepted or declined, a read that failed, the preview, the import done); for a failed read only why (no address, no token, nothing answered, not Home Assistant, token refused, certificate not trusted, read failed, home not connected); counts in buckets (0, 1–5, 6–20, 21+) of devices, rooms, renamed tiles and added dashboards; and whether Home Assistant had only ZHA devices. Never the address, the token, or any device or room name |
 | `help_opened` | Get help was opened | where from: no connection found, a setup error, manual connect, home can't be reached, device list missing, Settings, or the demo |
 | `support_contact` | A support request was started from Get help | where from (as above); email or copy |
@@ -128,6 +132,7 @@ never from anything you typed or anything your broker sent.
 | `poll_answer` | The one-time "What should ZigDash do next?" card was answered | notifications, history graphs, kiosk mode or Zigbee groups |
 | `alerts_setup` | A step of setting alerts up | the step (flow installed, flow installed by hand, no Node-RED, phone registered, no Google services, test sent, test failed); the channel (push, ntfy, Pushover) |
 | `alert_added` | An alert was added | its kind: leak, smoke, door or window opened, or battery low |
+| `alarm_shown` | From 2.9: alarm takeover filled a wall display | only the kind: leak, smoke, gas or carbon monoxide. Never the device or where it is |
 | `history_setup` | From 2.7: setting up the history recorder on the hub ended | installed, updated, imported by hand (Node-RED asked for a login), no Node-RED found, or refused |
 | `pro` | From 2.7, Google Play version only: a step of ZigDash Pro | a locked view was shown, Unlock was tapped, or Pro became unlocked. Nothing about the payment |
 | `review_prompt` | From 2.6.5: the app asked Google Play to show its "rate this app" dialog (after a device you control has answered on two different days) | whether the dialog was requested, or could not be because the Play review flow is not available on the device. Nothing about whether you rated, or what |

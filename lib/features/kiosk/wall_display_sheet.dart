@@ -5,6 +5,13 @@ import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../data/database/database.dart';
 import '../dashboards/wall_display.dart';
+import '../dashboards/wall_readings.dart';
+import '../pro/pro.dart';
+import '../dashboards/wall_sensors.dart';
+import '../devices/device_profile.dart';
+import '../devices/devices_providers.dart';
+import '../discovery/models/z2m_device.dart';
+import '../discovery/providers/discovery_provider.dart';
 import '../dashboards/widgets/export_dialog.dart';
 import 'kiosk.dart';
 import 'kiosk_pin_dialogs.dart';
@@ -46,6 +53,11 @@ class WallDisplaySheet extends ConsumerWidget {
     final wall = ref.watch(wallDisplayProvider(id));
     final fullscreen = ref.watch(wallFullscreenProvider(id));
     final dim = ref.watch(wallDimProvider(id));
+    final idleShow = ref.watch(wallIdleShowProvider(id));
+    // Pro rows (wall-tablet-2.9.md §7): hidden where Pro can't be had,
+    // shown locked with one note where it can be bought.
+    final pro = ref.watch(proStatusProvider);
+    final proOpen = pro == ProStatus.unlocked;
     final kiosk = ref.watch(kioskProvider);
     final locked = kiosk.dashboardId == id;
     return DraggableScrollableSheet(
@@ -77,27 +89,81 @@ class WallDisplaySheet extends ConsumerWidget {
                 ref.read(wallFullscreenProvider(id).notifier).set(on),
           ),
           ListTile(
-            leading: const Icon(Icons.brightness_medium_outlined),
-            title: Text(l10n.wallDimAfter),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: SegmentedButton<int>(
-                showSelectedIcon: false,
-                segments: [
-                  for (final m in wallDimChoices)
-                    ButtonSegment(
-                      value: m,
-                      label: Text(
-                        m == 0 ? l10n.wallDimOff : l10n.wallDimMinutes(m),
+            leading: const Icon(Icons.hourglass_bottom),
+            title: Text(l10n.wallIdleTitle),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                Text(l10n.wallIdleAfter),
+                const SizedBox(height: 4),
+                SegmentedButton<int>(
+                  showSelectedIcon: false,
+                  segments: [
+                    for (final m in wallDimChoices)
+                      ButtonSegment(
+                        value: m,
+                        label: Text(
+                          m == 0 ? l10n.wallIdleNever : l10n.wallDimMinutes(m),
+                        ),
                       ),
-                    ),
+                  ],
+                  selected: {dim},
+                  onSelectionChanged: (s) =>
+                      ref.read(wallDimProvider(id).notifier).set(s.first),
+                ),
+                if (dim > 0) ...[
+                  const SizedBox(height: 12),
+                  Text(l10n.wallIdleShow),
+                  const SizedBox(height: 4),
+                  // Chips that wrap: four choices don't fit one row on a phone.
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      for (final (show, label) in [
+                        (WallIdleShow.dim, l10n.wallIdleShowDim),
+                        (WallIdleShow.clock, l10n.wallIdleShowClock),
+                        if (pro != ProStatus.unavailable)
+                          (
+                            WallIdleShow.readings,
+                            proOpen
+                                ? l10n.wallIdleShowReadings
+                                : '${l10n.wallIdleShowReadings} · ${l10n.proBadge}',
+                          ),
+                        (WallIdleShow.black, l10n.wallIdleShowBlack),
+                      ])
+                        ChoiceChip(
+                          label: Text(label),
+                          selected:
+                              show ==
+                              (idleShow == WallIdleShow.readings && !proOpen
+                                  ? WallIdleShow.clock
+                                  : idleShow),
+                          onSelected: show == WallIdleShow.readings && !proOpen
+                              ? null
+                              : (_) => ref
+                                    .read(wallIdleShowProvider(id).notifier)
+                                    .set(show),
+                        ),
+                    ],
+                  ),
+                  if (idleShow == WallIdleShow.readings && proOpen)
+                    _ReadingsPicker(dashboardId: id),
                 ],
-                selected: {dim},
-                onSelectionChanged: (s) =>
-                    ref.read(wallDimProvider(id).notifier).set(s.first),
-              ),
+              ],
             ),
           ),
+          if (pro != ProStatus.unavailable) ...[
+            _MotionSection(
+              connectionId: connectionId,
+              dashboardId: id,
+              open: proOpen,
+            ),
+            _NightSection(dashboardId: id, open: proOpen),
+            _AlarmsSection(dashboardId: id, open: proOpen),
+          ],
+          if (pro == ProStatus.locked) const _ProNote(),
           const Divider(height: 24),
           SwitchListTile(
             secondary: const Icon(Icons.lock_outline),
@@ -189,6 +255,16 @@ class WallDisplaySheet extends ConsumerWidget {
             pin: kiosk.hasPin,
             osPinning: kiosk.osPinning,
             dimMinutes: ref.read(wallDimProvider(id)),
+            // What will show: readings without Pro is the clock.
+            idleShow:
+                (ref.read(wallIdleShowProvider(id)) == WallIdleShow.readings &&
+                            ref.read(proStatusProvider) != ProStatus.unlocked
+                        ? WallIdleShow.clock
+                        : ref.read(wallIdleShowProvider(id)))
+                    .name,
+            motion: ref.read(wallMotionSensorsProvider(id)).isNotEmpty,
+            night: ref.read(wallNightProvider(id)).on,
+            alarms: ref.read(wallAlarmProvider(id)).on,
           ),
         );
     if (!context.mounted) return;
@@ -233,4 +309,252 @@ Future<bool> leaveKiosk(BuildContext context, WidgetRef ref) async {
   }
   if (ok) await kiosk.stop();
   return ok;
+}
+
+/// Which of the dashboard's numbers the idle clock shows, up to
+/// [wallMaxReadings]; the first ones until the user picks.
+class _ReadingsPicker extends ConsumerWidget {
+  const _ReadingsPicker({required this.dashboardId});
+
+  final String dashboardId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final all = ref.watch(wallReadingsAvailableProvider(dashboardId));
+    final shown = {
+      for (final r in ref.watch(wallIdleReadingsProvider(dashboardId))) r.key,
+    };
+    if (all.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Text(l10n.wallIdleReadingsNone),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        Text(l10n.wallIdleReadingsPick(wallMaxReadings)),
+        for (final r in all)
+          CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            title: Text(r.name),
+            subtitle: r.unit == null ? null : Text(r.unit!),
+            value: shown.contains(r.key),
+            onChanged: shown.contains(r.key) || shown.length < wallMaxReadings
+                ? (on) {
+                    final next = [
+                      for (final x in all)
+                        if (x.key == r.key ? on! : shown.contains(x.key)) x.key,
+                    ];
+                    ref
+                        .read(
+                          wallIdleReadingsSettingProvider(dashboardId).notifier,
+                        )
+                        .set(next);
+                  }
+                : null,
+          ),
+      ],
+    );
+  }
+}
+
+/// The one mention of Pro in the sheet: what it adds and Unlock. No pop-up.
+class _ProNote extends ConsumerWidget {
+  const _ProNote();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final buy = ref.watch(proPurchaseProvider);
+    return ListTile(
+      leading: const Icon(Icons.workspace_premium_outlined),
+      title: Text(l10n.wallProNote),
+      trailing: TextButton(onPressed: buy, child: Text(l10n.historyUnlock)),
+    );
+  }
+}
+
+/// "Wake on motion": the Home's motion, presence and door sensors to pick
+/// from (wall-tablet-2.9.md §4). Locked without Pro.
+class _MotionSection extends ConsumerWidget {
+  const _MotionSection({
+    required this.connectionId,
+    required this.dashboardId,
+    required this.open,
+  });
+
+  final String connectionId;
+  final String dashboardId;
+  final bool open;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final base = ref.watch(homeBaseTopicProvider(connectionId));
+    final devices = base == null
+        ? const <Z2mDevice>[]
+        : ref
+                  .watch(
+                    bridgeDevicesStreamProvider((
+                      connectionId: connectionId,
+                      base: base,
+                    )),
+                  )
+                  .valueOrNull ??
+              const <Z2mDevice>[];
+    final sensors = [
+      for (final d in devices)
+        if (d.ieeeAddress != null &&
+            const {
+              DeviceClass.motion,
+              DeviceClass.contact,
+            }.contains(classifyExposes(d.rawExposes).deviceClass))
+          d,
+    ];
+    final chosen = ref.watch(wallMotionSensorsProvider(dashboardId));
+    final title = open
+        ? l10n.wallMotionTitle
+        : '${l10n.wallMotionTitle} · ${l10n.proBadge}';
+    return ListTile(
+      leading: const Icon(Icons.directions_walk),
+      enabled: open,
+      title: Text(title),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.wallMotionSubtitle),
+          if (open && sensors.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(l10n.wallMotionNone),
+            ),
+          if (open)
+            for (final d in sensors)
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                dense: true,
+                title: Text(d.displayName),
+                value: chosen.contains(d.ieeeAddress),
+                onChanged: (on) => ref
+                    .read(wallMotionSensorsProvider(dashboardId).notifier)
+                    .set([
+                      for (final x in chosen)
+                        if (x != d.ieeeAddress) x,
+                      if (on!) d.ieeeAddress!,
+                    ]),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Alarms take over the screen" and its sound (wall-tablet-2.9.md §6).
+class _AlarmsSection extends ConsumerWidget {
+  const _AlarmsSection({required this.dashboardId, required this.open});
+
+  final String dashboardId;
+  final bool open;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final alarms = ref.watch(wallAlarmProvider(dashboardId));
+    final setting = ref.read(wallAlarmProvider(dashboardId).notifier);
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.warning_amber_rounded),
+          title: Text(
+            open
+                ? l10n.wallAlarmsTitle
+                : '${l10n.wallAlarmsTitle} · ${l10n.proBadge}',
+          ),
+          subtitle: Text(l10n.wallAlarmsSubtitle),
+          value: open && alarms.on,
+          onChanged: open ? setting.setOn : null,
+        ),
+        if (open && alarms.on)
+          SwitchListTile(
+            secondary: const Icon(Icons.volume_up_outlined),
+            title: Text(l10n.wallAlarmSound),
+            value: alarms.sound,
+            onChanged: setting.setSound,
+          ),
+      ],
+    );
+  }
+}
+
+/// "Night": black between two times, motion wakes only dimly
+/// (wall-tablet-2.9.md §5).
+class _NightSection extends ConsumerWidget {
+  const _NightSection({required this.dashboardId, required this.open});
+
+  final String dashboardId;
+  final bool open;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final loc = MaterialLocalizations.of(context);
+    final night = ref.watch(wallNightProvider(dashboardId));
+    final setting = ref.read(wallNightProvider(dashboardId).notifier);
+    String label(int minutes) => loc.formatTimeOfDay(
+      TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+      alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+    );
+    Future<int?> pick(int minutes) async {
+      final t = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
+      );
+      return t == null ? null : t.hour * 60 + t.minute;
+    }
+
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.nightlight_outlined),
+          title: Text(
+            open
+                ? l10n.wallNightTitle
+                : '${l10n.wallNightTitle} · ${l10n.proBadge}',
+          ),
+          subtitle: Text(l10n.wallNightSubtitle),
+          value: open && night.on,
+          onChanged: open ? (on) => setting.set(on: on) : null,
+        ),
+        if (open && night.on)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 56, end: 16),
+            child: Row(
+              children: [
+                Text(l10n.wallNightFrom),
+                TextButton(
+                  onPressed: () async {
+                    final m = await pick(night.from);
+                    if (m != null) await setting.set(from: m);
+                  },
+                  child: Text(label(night.from)),
+                ),
+                const SizedBox(width: 16),
+                Text(l10n.wallNightTo),
+                TextButton(
+                  onPressed: () async {
+                    final m = await pick(night.to);
+                    if (m != null) await setting.set(to: m);
+                  },
+                  child: Text(label(night.to)),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
 }

@@ -3098,6 +3098,94 @@ class AppLocalizationsSv extends AppLocalizations {
   String get wallDimOff => 'Av';
 
   @override
+  String get wallIdleTitle => 'När ingen rör den';
+
+  @override
+  String get wallIdleAfter => 'Efter';
+
+  @override
+  String get wallIdleNever => 'Aldrig';
+
+  @override
+  String get wallIdleShow => 'Visa';
+
+  @override
+  String get wallIdleShowDim => 'Dämpad';
+
+  @override
+  String get wallIdleShowClock => 'Klocka';
+
+  @override
+  String get wallIdleShowBlack => 'Svart';
+
+  @override
+  String get wallIdleShowReadings => 'Mätvärden';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Den här instrumentpanelen har inga mätvärden än. Lägg först till en mätvärdes- eller sensorruta.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Mätvärden på klockan (upp till $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Mätvärden på klockan, väckning vid rörelse, nattschemat och larm ingår i ZigDash Pro, ett engångsköp.';
+
+  @override
+  String get wallAlarmLeak => 'Vattenläcka';
+
+  @override
+  String get wallAlarmSmoke => 'Rök';
+
+  @override
+  String get wallAlarmGas => 'Gas';
+
+  @override
+  String get wallAlarmCo => 'Kolmonoxid';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Väck vid rörelse';
+
+  @override
+  String get wallMotionSubtitle => 'En sensor som ser någon väcker skärmen.';
+
+  @override
+  String get wallMotionNone =>
+      'Inga rörelse-, närvaro- eller dörrsensorer i det här hemmet.';
+
+  @override
+  String get wallAlarmsTitle => 'Larm fyller skärmen';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Läcka, rök, gas eller kolmonoxid fyller skärmen tills någon trycker på OK. Bara medan ZigDash är öppen på den här surfplattan; aviseringar når telefoner var som helst.';
+
+  @override
+  String get wallAlarmSound => 'Spela upp ett ljud';
+
+  @override
+  String get wallNightTitle => 'Natt';
+
+  @override
+  String get wallNightSubtitle =>
+      'Svart mellan dessa tider. Rörelse väcker den bara dämpat; larm alltid fullt.';
+
+  @override
+  String get wallNightFrom => 'Från';
+
+  @override
+  String get wallNightTo => 'till';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
@@ -3229,7 +3317,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'Historik för 7 och 30 dagar. Ett engångsköp.';
+  String get proAbout =>
+      'Längre historik och extrafunktionerna för väggsurfplattor. Ett engångsköp.';
 
   @override
   String get proUnlocked => 'Upplåst. Tack för att du stöder ZigDash.';

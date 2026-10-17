@@ -5552,6 +5552,168 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get wallDimOff;
 
+  /// No description provided for @wallIdleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When no one touches it'**
+  String get wallIdleTitle;
+
+  /// No description provided for @wallIdleAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After'**
+  String get wallIdleAfter;
+
+  /// No description provided for @wallIdleNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get wallIdleNever;
+
+  /// No description provided for @wallIdleShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get wallIdleShow;
+
+  /// No description provided for @wallIdleShowDim.
+  ///
+  /// In en, this message translates to:
+  /// **'Dimmed'**
+  String get wallIdleShowDim;
+
+  /// No description provided for @wallIdleShowClock.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock'**
+  String get wallIdleShowClock;
+
+  /// No description provided for @wallIdleShowBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get wallIdleShowBlack;
+
+  /// No description provided for @wallIdleShowReadings.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings'**
+  String get wallIdleShowReadings;
+
+  /// No description provided for @proBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get proBadge;
+
+  /// No description provided for @wallIdleReadingsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This dashboard has no readings yet. Add a reading or a sensor tile first.'**
+  String get wallIdleReadingsNone;
+
+  /// No description provided for @wallIdleReadingsPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings on the clock (up to {count})'**
+  String wallIdleReadingsPick(int count);
+
+  /// No description provided for @wallProNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Readings on the clock, wake on motion, the night schedule and alarms are part of ZigDash Pro, a one-time purchase.'**
+  String get wallProNote;
+
+  /// No description provided for @wallAlarmLeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Water leak'**
+  String get wallAlarmLeak;
+
+  /// No description provided for @wallAlarmSmoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoke'**
+  String get wallAlarmSmoke;
+
+  /// No description provided for @wallAlarmGas.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas'**
+  String get wallAlarmGas;
+
+  /// No description provided for @wallAlarmCo.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbon monoxide'**
+  String get wallAlarmCo;
+
+  /// No description provided for @wallAlarmOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get wallAlarmOk;
+
+  /// No description provided for @wallMotionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wake on motion'**
+  String get wallMotionTitle;
+
+  /// No description provided for @wallMotionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A sensor that sees someone wakes the screen.'**
+  String get wallMotionSubtitle;
+
+  /// No description provided for @wallMotionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No motion, presence or door sensors in this Home.'**
+  String get wallMotionNone;
+
+  /// No description provided for @wallAlarmsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarms take over the screen'**
+  String get wallAlarmsTitle;
+
+  /// No description provided for @wallAlarmsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leak, smoke, gas or carbon monoxide fills the screen until someone taps OK. Only while ZigDash is open on this tablet; Alerts reach phones anywhere.'**
+  String get wallAlarmsSubtitle;
+
+  /// No description provided for @wallAlarmSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a sound'**
+  String get wallAlarmSound;
+
+  /// No description provided for @wallNightTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Night'**
+  String get wallNightTitle;
+
+  /// No description provided for @wallNightSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Black between these hours. Motion wakes it only dimly; alarms always fully.'**
+  String get wallNightSubtitle;
+
+  /// No description provided for @wallNightFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get wallNightFrom;
+
+  /// No description provided for @wallNightTo.
+  ///
+  /// In en, this message translates to:
+  /// **'to'**
+  String get wallNightTo;
+
   /// No description provided for @wallDimMinutes.
   ///
   /// In en, this message translates to:
@@ -5789,7 +5951,7 @@ abstract class AppLocalizations {
   /// No description provided for @proAbout.
   ///
   /// In en, this message translates to:
-  /// **'7- and 30-day history. A one-time purchase.'**
+  /// **'Longer history and the wall tablet extras. A one-time purchase.'**
   String get proAbout;
 
   /// No description provided for @proUnlocked.

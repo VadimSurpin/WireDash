@@ -3108,6 +3108,95 @@ class AppLocalizationsNl extends AppLocalizations {
   String get wallDimOff => 'Uit';
 
   @override
+  String get wallIdleTitle => 'Als niemand het aanraakt';
+
+  @override
+  String get wallIdleAfter => 'Na';
+
+  @override
+  String get wallIdleNever => 'Nooit';
+
+  @override
+  String get wallIdleShow => 'Tonen';
+
+  @override
+  String get wallIdleShowDim => 'Gedimd';
+
+  @override
+  String get wallIdleShowClock => 'Klok';
+
+  @override
+  String get wallIdleShowBlack => 'Zwart';
+
+  @override
+  String get wallIdleShowReadings => 'Metingen';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Dit dashboard heeft nog geen metingen. Voeg eerst een meting- of sensortegel toe.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Metingen op de klok (maximaal $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Metingen op de klok, wekken bij beweging, het nachtschema en alarmen horen bij ZigDash Pro, een eenmalige aankoop.';
+
+  @override
+  String get wallAlarmLeak => 'Waterlek';
+
+  @override
+  String get wallAlarmSmoke => 'Rook';
+
+  @override
+  String get wallAlarmGas => 'Gas';
+
+  @override
+  String get wallAlarmCo => 'Koolmonoxide';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Wekken bij beweging';
+
+  @override
+  String get wallMotionSubtitle =>
+      'Een sensor die iemand ziet, wekt het scherm.';
+
+  @override
+  String get wallMotionNone =>
+      'Geen bewegings-, aanwezigheids- of deursensoren in dit huis.';
+
+  @override
+  String get wallAlarmsTitle => 'Alarmen vullen het scherm';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Een lek, rook, gas of koolmonoxide vult het scherm tot iemand op OK tikt. Alleen zolang ZigDash open is op deze tablet; meldingen bereiken telefoons overal.';
+
+  @override
+  String get wallAlarmSound => 'Geluid afspelen';
+
+  @override
+  String get wallNightTitle => 'Nacht';
+
+  @override
+  String get wallNightSubtitle =>
+      'Zwart tussen deze tijden. Beweging wekt het alleen gedimd; alarmen altijd volledig.';
+
+  @override
+  String get wallNightFrom => 'Van';
+
+  @override
+  String get wallNightTo => 'tot';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
@@ -3240,7 +3329,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Geschiedenis over 7 en 30 dagen. Een eenmalige aankoop.';
+      'Langere geschiedenis en de extra\'s voor wandtablets. Een eenmalige aankoop.';
 
   @override
   String get proUnlocked => 'Ontgrendeld. Bedankt dat je ZigDash steunt.';

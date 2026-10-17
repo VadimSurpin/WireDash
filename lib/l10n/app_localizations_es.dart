@@ -3110,6 +3110,95 @@ class AppLocalizationsEs extends AppLocalizations {
   String get wallDimOff => 'No';
 
   @override
+  String get wallIdleTitle => 'Cuando nadie lo toca';
+
+  @override
+  String get wallIdleAfter => 'Después de';
+
+  @override
+  String get wallIdleNever => 'Nunca';
+
+  @override
+  String get wallIdleShow => 'Mostrar';
+
+  @override
+  String get wallIdleShowDim => 'Atenuado';
+
+  @override
+  String get wallIdleShowClock => 'Reloj';
+
+  @override
+  String get wallIdleShowBlack => 'Negro';
+
+  @override
+  String get wallIdleShowReadings => 'Lecturas';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get wallIdleReadingsNone =>
+      'Este panel aún no tiene lecturas. Añade primero una lectura o un mosaico de sensor.';
+
+  @override
+  String wallIdleReadingsPick(int count) {
+    return 'Lecturas en el reloj (hasta $count)';
+  }
+
+  @override
+  String get wallProNote =>
+      'Las lecturas en el reloj, despertar con movimiento, el horario nocturno y las alarmas forman parte de ZigDash Pro, una compra única.';
+
+  @override
+  String get wallAlarmLeak => 'Fuga de agua';
+
+  @override
+  String get wallAlarmSmoke => 'Humo';
+
+  @override
+  String get wallAlarmGas => 'Gas';
+
+  @override
+  String get wallAlarmCo => 'Monóxido de carbono';
+
+  @override
+  String get wallAlarmOk => 'OK';
+
+  @override
+  String get wallMotionTitle => 'Despertar con movimiento';
+
+  @override
+  String get wallMotionSubtitle =>
+      'Un sensor que detecta a alguien despierta la pantalla.';
+
+  @override
+  String get wallMotionNone =>
+      'No hay sensores de movimiento, presencia ni puertas en este hogar.';
+
+  @override
+  String get wallAlarmsTitle => 'Las alarmas ocupan la pantalla';
+
+  @override
+  String get wallAlarmsSubtitle =>
+      'Una fuga, humo, gas o monóxido de carbono llena la pantalla hasta que alguien toca OK. Solo mientras ZigDash está abierto en esta tableta; los avisos llegan a los teléfonos en cualquier lugar.';
+
+  @override
+  String get wallAlarmSound => 'Reproducir un sonido';
+
+  @override
+  String get wallNightTitle => 'Noche';
+
+  @override
+  String get wallNightSubtitle =>
+      'Negro entre estas horas. El movimiento solo la enciende tenue; las alarmas, siempre del todo.';
+
+  @override
+  String get wallNightFrom => 'De';
+
+  @override
+  String get wallNightTo => 'a';
+
+  @override
   String wallDimMinutes(Object minutes) {
     return '$minutes min';
   }
@@ -3242,7 +3331,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proTitle => 'ZigDash Pro';
 
   @override
-  String get proAbout => 'Historial de 7 y 30 días. Una compra única.';
+  String get proAbout =>
+      'Historial más largo y los extras para tabletas de pared. Una compra única.';
 
   @override
   String get proUnlocked => 'Desbloqueado. Gracias por apoyar ZigDash.';
