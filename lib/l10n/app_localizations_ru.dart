@@ -3333,6 +3333,24 @@ class AppLocalizationsRu extends AppLocalizations {
       'Записываются только числа, показанные на панели. Добавьте это значение плиткой, чтобы начать его историю.';
 
   @override
+  String get historyRecordHere => 'Записывать на этом устройстве';
+
+  @override
+  String get historyRecordHereHint =>
+      'Нет Node-RED? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном планшете. Историю видят все телефоны этого дома.';
+
+  @override
+  String get historyRecordingHere =>
+      'Это устройство записывает историю, пока ZigDash открыт. Первые значения появятся в течение 15 минут.';
+
+  @override
+  String get wallRecordHistory => 'Записывать историю на этом устройстве';
+
+  @override
+  String get wallRecordHistorySubtitle =>
+      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает Node-RED.';
+
+  @override
   String historyNeedsPassword(String host) {
     return 'Ещё один шаг: брокер требует вход. Откройте Node-RED по адресу $host:1880, дважды нажмите «ZigDash history broker», введите пароль MQTT на вкладке Security и нажмите Deploy. ZigDash никогда не отправляет пароль на хаб.';
   }

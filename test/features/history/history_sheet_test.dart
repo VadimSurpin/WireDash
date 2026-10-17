@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/features/history/history_chart.dart';
 import 'package:zigdash/features/history/history_record.dart';
 import 'package:zigdash/features/history/history_service.dart';
 import 'package:zigdash/features/history/history_sheet.dart';
 import 'package:zigdash/features/kiosk/kiosk.dart';
 import 'package:zigdash/features/pro/pro.dart';
+import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 
 final _now = DateTime(2026, 10, 15, 12);
@@ -154,5 +156,25 @@ void main() {
     await tester.pump();
     expect(find.textContaining('ZigDash has no server'), findsOneWidget);
     expect(find.textContaining("hasn't connected"), findsNothing);
+  });
+
+  testWidgets('no Node-RED needed: record on this device instead', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+        child: _app(online: null, retained: ''),
+      ),
+    );
+    await tester.pump();
+    expect(find.textContaining('No Node-RED?'), findsOneWidget);
+    await tester.ensureVisible(find.text('Record on this device'));
+    await tester.tap(find.text('Record on this device'));
+    await tester.pump();
+    expect(prefs.getBool('history_record_here_c1'), isTrue);
+    expect(find.textContaining('This device records history'), findsOneWidget);
   });
 }

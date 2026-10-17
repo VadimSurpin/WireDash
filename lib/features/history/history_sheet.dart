@@ -18,6 +18,7 @@ import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
 import 'history_chart.dart';
 import 'history_config.dart' show decodeHistoryReadings;
+import 'app_history_recorder.dart';
 import 'history_record.dart';
 import 'history_service.dart';
 
@@ -192,6 +193,7 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
               busy: _busy,
               notConnected: installed,
               onSetUp: () => _install(l10n),
+              onRecordHere: () => _recordHere(l10n),
             )
           : _Note(text: recorded ? l10n.historyEmpty : l10n.historyNotRecorded);
     } else {
@@ -332,18 +334,25 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
           _track(HistorySetupResult.noNodeRed);
           final host = await service.hostOf(widget.connectionId) ?? '';
           if (!mounted) return;
-          await showDialog<void>(
+          final here = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
-              content: Text(l10n.historyNoNodeRed(host)),
+              content: Text(
+                '${l10n.historyNoNodeRed(host)}\n\n${l10n.historyRecordHereHint}',
+              ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(ctx),
+                  onPressed: () => Navigator.pop(ctx, false),
                   child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: Text(l10n.historyRecordHere),
                 ),
               ],
             ),
           );
+          if (here == true) await _recordHere(l10n);
         case NodeRedInstall.failed:
           _track(HistorySetupResult.failed);
           messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubFailed)));
@@ -351,6 +360,16 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  /// No Node-RED (2.9.1): this device records while ZigDash is open.
+  Future<void> _recordHere(AppLocalizations l10n) async {
+    final messenger = ScaffoldMessenger.of(context);
+    await ref
+        .read(historyRecordHereProvider(widget.connectionId).notifier)
+        .set(true);
+    _track(HistorySetupResult.thisDevice);
+    messenger.showSnackBar(SnackBar(content: Text(l10n.historyRecordingHere)));
   }
 
   void _track(HistorySetupResult r) =>
@@ -397,6 +416,7 @@ class _SetupCard extends StatelessWidget {
   const _SetupCard({
     required this.busy,
     required this.onSetUp,
+    required this.onRecordHere,
     this.notConnected = false,
   });
 
@@ -405,6 +425,9 @@ class _SetupCard extends StatelessWidget {
   /// The recorder was installed but never came online.
   final bool notConnected;
   final VoidCallback onSetUp;
+
+  /// No Node-RED: record on this device instead (2.9.1).
+  final VoidCallback onRecordHere;
 
   @override
   Widget build(BuildContext context) {
@@ -440,6 +463,18 @@ class _SetupCard extends StatelessWidget {
                     )
                   : const Icon(Icons.timeline),
               label: Text(l10n.historySetupAction),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.historyRecordHereHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: busy ? null : onRecordHere,
+              icon: const Icon(Icons.tablet_android_outlined),
+              label: Text(l10n.historyRecordHere),
             ),
           ],
         ),

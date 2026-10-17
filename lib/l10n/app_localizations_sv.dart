@@ -3328,6 +3328,24 @@ class AppLocalizationsSv extends AppLocalizations {
       'Bara siffror som visas på en instrumentpanel spelas in. Lägg till den här som en ruta för att starta historiken.';
 
   @override
+  String get historyRecordHere => 'Spela in på den här enheten';
+
+  @override
+  String get historyRecordHereHint =>
+      'Ingen Node-RED? ZigDash kan spela in på en telefon eller surfplatta som står öppen, som en väggsurfplatta. Alla telefoner i det här hemmet ser historiken.';
+
+  @override
+  String get historyRecordingHere =>
+      'Den här enheten spelar in historik medan ZigDash är öppen. De första värdena kommer inom 15 minuter.';
+
+  @override
+  String get wallRecordHistory => 'Spela in historik på den här enheten';
+
+  @override
+  String get wallRecordHistorySubtitle =>
+      'Var 15:e minut medan ZigDash är öppen, för alla telefoner i det här hemmet. Behövs inte när Node-RED spelar in.';
+
+  @override
   String historyNeedsPassword(String host) {
     return 'Ett steg till: din broker kräver inloggning. Öppna Node-RED på $host:1880, dubbelklicka på ”ZigDash history broker”, skriv MQTT-lösenordet på fliken Security och klicka på Deploy. ZigDash skickar aldrig ditt lösenord till hubben.';
   }

@@ -3339,6 +3339,24 @@ class AppLocalizationsNl extends AppLocalizations {
       'Alleen getallen die op een dashboard staan worden opgenomen. Voeg deze toe als tegel om de geschiedenis te starten.';
 
   @override
+  String get historyRecordHere => 'Opnemen op dit apparaat';
+
+  @override
+  String get historyRecordHereHint =>
+      'Geen Node-RED? ZigDash kan opnemen op een telefoon of tablet die open blijft, zoals een wandtablet. Elke telefoon van dit huis ziet de geschiedenis.';
+
+  @override
+  String get historyRecordingHere =>
+      'Dit apparaat neemt de geschiedenis op zolang ZigDash open is. De eerste waarden verschijnen binnen 15 minuten.';
+
+  @override
+  String get wallRecordHistory => 'Geschiedenis opnemen op dit apparaat';
+
+  @override
+  String get wallRecordHistorySubtitle =>
+      'Elke 15 minuten zolang ZigDash open is, voor elke telefoon van dit huis. Niet nodig als Node-RED opneemt.';
+
+  @override
   String historyNeedsPassword(String host) {
     return 'Nog één stap: je broker vraagt om een login. Open Node-RED op $host:1880, dubbelklik op \"ZigDash history broker\", typ het MQTT-wachtwoord op het tabblad Security en klik op Deploy. ZigDash stuurt je wachtwoord nooit naar de hub.';
   }

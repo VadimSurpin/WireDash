@@ -5966,6 +5966,36 @@ abstract class AppLocalizations {
   /// **'Only numbers shown on a dashboard are recorded. Add this one as a tile to start its history.'**
   String get historyNotRecorded;
 
+  /// No description provided for @historyRecordHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Record on this device'**
+  String get historyRecordHere;
+
+  /// No description provided for @historyRecordHereHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No Node-RED? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
+  String get historyRecordHereHint;
+
+  /// No description provided for @historyRecordingHere.
+  ///
+  /// In en, this message translates to:
+  /// **'This device records history while ZigDash is open. The first values appear within 15 minutes.'**
+  String get historyRecordingHere;
+
+  /// No description provided for @wallRecordHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Record history on this device'**
+  String get wallRecordHistory;
+
+  /// No description provided for @wallRecordHistorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when Node-RED records.'**
+  String get wallRecordHistorySubtitle;
+
   /// No description provided for @historyNeedsPassword.
   ///
   /// In en, this message translates to:

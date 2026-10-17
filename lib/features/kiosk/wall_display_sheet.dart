@@ -7,6 +7,7 @@ import '../../data/database/database.dart';
 import '../dashboards/wall_display.dart';
 import '../dashboards/wall_readings.dart';
 import '../pro/pro.dart';
+import '../history/app_history_recorder.dart';
 import '../dashboards/wall_sensors.dart';
 import '../devices/device_profile.dart';
 import '../devices/devices_providers.dart';
@@ -164,6 +165,17 @@ class WallDisplaySheet extends ConsumerWidget {
             _AlarmsSection(dashboardId: id, open: proOpen),
           ],
           if (pro == ProStatus.locked) const _ProNote(),
+          // History without Node-RED (2.9.1): a wall tablet that stays open
+          // is the natural recorder.
+          SwitchListTile(
+            secondary: const Icon(Icons.timeline),
+            title: Text(l10n.wallRecordHistory),
+            subtitle: Text(l10n.wallRecordHistorySubtitle),
+            value: ref.watch(historyRecordHereProvider(connectionId)),
+            onChanged: (on) => ref
+                .read(historyRecordHereProvider(connectionId).notifier)
+                .set(on),
+          ),
           const Divider(height: 24),
           SwitchListTile(
             secondary: const Icon(Icons.lock_outline),

@@ -3349,6 +3349,24 @@ class AppLocalizationsFr extends AppLocalizations {
       'Seules les valeurs affichées sur un tableau de bord sont enregistrées. Ajoutez celle-ci en tuile pour démarrer son historique.';
 
   @override
+  String get historyRecordHere => 'Enregistrer sur cet appareil';
+
+  @override
+  String get historyRecordHereHint =>
+      'Pas de Node-RED ? ZigDash peut enregistrer sur un téléphone ou une tablette qui reste ouvert, comme une tablette murale. Chaque téléphone de ce domicile voit l\'historique.';
+
+  @override
+  String get historyRecordingHere =>
+      'Cet appareil enregistre l\'historique tant que ZigDash est ouvert. Les premières valeurs apparaissent sous 15 minutes.';
+
+  @override
+  String get wallRecordHistory => 'Enregistrer l\'historique sur cet appareil';
+
+  @override
+  String get wallRecordHistorySubtitle =>
+      'Toutes les 15 minutes tant que ZigDash est ouvert, pour chaque téléphone de ce domicile. Inutile si Node-RED enregistre.';
+
+  @override
   String historyNeedsPassword(String host) {
     return 'Encore une étape : votre broker demande un identifiant. Ouvrez Node-RED sur $host:1880, double-cliquez sur « ZigDash history broker », saisissez le mot de passe MQTT dans l\'onglet Security, puis Deploy. ZigDash n\'envoie jamais votre mot de passe au hub.';
   }
