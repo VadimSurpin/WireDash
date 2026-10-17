@@ -1,6 +1,8 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
@@ -16,6 +18,7 @@ import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
 import 'package:zigdash/features/home/home_shell.dart';
 import 'package:zigdash/features/panels/screens/add_tile_screen.dart';
+import 'package:zigdash/features/settings/providers/settings_controller.dart';
 
 import 'golden_harness.dart';
 
@@ -96,7 +99,11 @@ final _devices = [
   ),
 ];
 
+late SharedPreferences _prefs;
+
 List<Override> _overrides() => [
+      // The home shell holds the history recorder (2.9.1), off here.
+      sharedPreferencesProvider.overrideWithValue(_prefs),
       connectionsStreamProvider.overrideWith((ref) =>
           Stream.value([_home('c1', 'My Home'), _home('c2', 'SMHUB')])),
       unassignedCountProvider.overrideWith((ref, _) => const AsyncValue.data(1)),
@@ -142,6 +149,11 @@ Widget _shell(Widget body) => HomeShell(
     );
 
 void main() {
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    _prefs = await SharedPreferences.getInstance();
+  });
+
   goldenTest(
     'devices tab in the home shell',
     fileName: 'devices_tab_phone',
