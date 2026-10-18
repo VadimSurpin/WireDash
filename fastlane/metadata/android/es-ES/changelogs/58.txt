@@ -1,0 +1,1 @@
+ZigDash 2.9.3: si la configuración no encuentra nada en tu red, ahora vuelve a buscar los equipos que tardaron en responder. Y si falla la prueba del broker, te dice qué hacer: usar la dirección IP en lugar de un nombre .local, instalar el complemento Mosquitto en Home Assistant o iniciar sesión con un usuario de Home Assistant.

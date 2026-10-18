@@ -1,0 +1,1 @@
+ZigDash 2.9.3: when setup finds nothing on your network, it now looks a second time for machines that were slow to answer. And if the broker test fails, it tells you what to do: use the IP address instead of a .local name, install the Mosquitto add-on in Home Assistant, or log in with a Home Assistant user.

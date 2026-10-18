@@ -1,0 +1,1 @@
+ZigDash 2.9.3: når oppsettet ikke finner noe på nettverket, ser det nå en gang til etter maskiner som svarte sakte. Og hvis megler-testen feiler, forteller det hva du skal gjøre: bruke IP-adressen i stedet for et .local-navn, installere Mosquitto-tillegget i Home Assistant eller logge inn med en Home Assistant-bruker.
