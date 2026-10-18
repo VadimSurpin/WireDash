@@ -2576,6 +2576,24 @@ abstract class AppLocalizations {
   /// **'The broker refused the connection. Check the connection settings.'**
   String get diagAuthRefused;
 
+  /// Broker test: the name ends in .local and could not be looked up (2.9.3). Settings › System › Network is Home Assistant's own menu path.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone couldn\'t find this name. Android often can\'t look up names ending in .local, so enter the IP address instead (Home Assistant shows it under Settings › System › Network).'**
+  String get diagResolveLocalName;
+
+  /// No description provided for @diagTcpHaNoBroker.
+  ///
+  /// In en, this message translates to:
+  /// **'This is your Home Assistant, but no MQTT broker is running on it. Install and start the Mosquitto broker add-on (Settings › Add-ons), then try again.'**
+  String get diagTcpHaNoBroker;
+
+  /// No description provided for @diagAuthRejectedHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant\'s broker refused this login. Use the name and password of a Home Assistant user (Settings › People › Users); a separate user just for MQTT works best.'**
+  String get diagAuthRejectedHa;
+
   /// No description provided for @foundDevices.
   ///
   /// In en, this message translates to:

@@ -8,6 +8,7 @@ import '../../../mqtt/client_factory.dart';
 import '../../../mqtt/endpoint.dart';
 import '../../../mqtt/mqtt_manager.dart' show MqttClientFactory;
 import '../../discovery/models/z2m_device.dart';
+import '../discovery/hub_probe.dart';
 import 'socket_probe.dart';
 
 /// The ladder's steps, in run order.
@@ -58,6 +59,9 @@ typedef HostLookup = Future<List<String>> Function(String host);
 typedef TcpProbe =
     Future<void> Function(String host, int port, Duration timeout);
 
+/// Names the machine at a host from its web pages ([identifyHost]).
+typedef HostIdentifier = Future<HubKind?> Function(String host);
+
 /// Runs the guided-connect diagnostic ladder: resolve → tcp → connack → auth
 /// → devices, one candidate at a time ([endpointCandidates] order), reporting
 /// per-step results with stable detail keys.
@@ -72,15 +76,33 @@ class ConnectDiagnostics {
     MqttClientFactory? clientFactory,
     HostLookup? hostLookup,
     TcpProbe? tcpProbe,
+    HostIdentifier? identify,
     this.deviceWindow = const Duration(seconds: 3),
   }) : _clientFactory = clientFactory ?? buildMqttClient,
        _hostLookup = hostLookup ?? defaultHostLookup,
-       _tcpProbe = tcpProbe ?? defaultTcpProbe;
+       _tcpProbe = tcpProbe ?? defaultTcpProbe,
+       _identify = identify;
 
   final MqttClientFactory _clientFactory;
   final HostLookup _hostLookup;
   final TcpProbe _tcpProbe;
+
+  /// Asked only after a refused connection or login (2.9.3), so the
+  /// failure can say "this is your Home Assistant, and here is what it
+  /// lacks". Without it the general messages stay.
+  final HostIdentifier? _identify;
   final Duration deviceWindow;
+
+  Future<bool> _isHomeAssistant(String host) async {
+    final identify = _identify;
+    if (identify == null) return false;
+    try {
+      return await identify(host).timeout(const Duration(seconds: 4)) ==
+          HubKind.homeAssistant;
+    } catch (_) {
+      return false;
+    }
+  }
 
   Future<DiagnosticsReport> run({
     required BrokerConfig config,
@@ -137,7 +159,9 @@ class ConnectDiagnostics {
         StepResult(
           step: DiagnosticStep.resolve,
           status: StepStatus.fail,
-          detailKey: 'diagResolveTimeout',
+          detailKey: _isLocalName(cand.host)
+              ? 'diagResolveLocalName'
+              : 'diagResolveTimeout',
         ),
       );
     } catch (_) {
@@ -145,7 +169,9 @@ class ConnectDiagnostics {
         StepResult(
           step: DiagnosticStep.resolve,
           status: StepStatus.fail,
-          detailKey: 'diagResolveFail',
+          detailKey: _isLocalName(cand.host)
+              ? 'diagResolveLocalName'
+              : 'diagResolveFail',
         ),
       );
     }
@@ -168,11 +194,16 @@ class ConnectDiagnostics {
         ),
       );
     } catch (_) {
+      // Refused: something is there. Home Assistant without the Mosquitto
+      // add-on refuses 1883 (a US user, 2026-10-17, went from here to
+      // giving up).
       steps.add(
         StepResult(
           step: DiagnosticStep.tcp,
           status: StepStatus.fail,
-          detailKey: 'diagTcpFail',
+          detailKey: await _isHomeAssistant(cand.host)
+              ? 'diagTcpHaNoBroker'
+              : 'diagTcpFail',
         ),
       );
     }
@@ -263,7 +294,9 @@ class ConnectDiagnostics {
         StepResult(
           step: DiagnosticStep.auth,
           status: StepStatus.fail,
-          detailKey: 'diagAuthRejected',
+          detailKey: await _isHomeAssistant(cand.host)
+              ? 'diagAuthRejectedHa'
+              : 'diagAuthRejected',
         ),
       );
       return _aborted(steps);
@@ -385,15 +418,26 @@ class ConnectDiagnostics {
   }
 }
 
+/// A `.local` name, which Android often cannot look up (2.9.3).
+bool _isLocalName(String host) =>
+    host.toLowerCase().replaceFirst(RegExp(r'\.$'), '').endsWith('.local');
+
 /// How a ladder run ends, for analytics: connected, or its first failed
-/// step (2.7.2).
+/// step (2.7.2), or the more precise reason its message gave (2.9.3).
 ManualTestResult manualTestResult(DiagnosticsReport report) {
   if (report.connected) return ManualTestResult.connected;
-  final failed = report.steps
+  final failure = report.steps
       .where((s) => s.status == StepStatus.fail)
-      .map((s) => s.step)
       .firstOrNull;
-  return switch (failed) {
+  switch (failure?.detailKey) {
+    case 'diagResolveLocalName':
+      return ManualTestResult.localName;
+    case 'diagTcpHaNoBroker':
+      return ManualTestResult.haNoBroker;
+    case 'diagAuthRejectedHa':
+      return ManualTestResult.haLogin;
+  }
+  return switch (failure?.step) {
     DiagnosticStep.resolve => ManualTestResult.resolve,
     DiagnosticStep.tcp || null => ManualTestResult.tcp,
     DiagnosticStep.connack => ManualTestResult.connack,

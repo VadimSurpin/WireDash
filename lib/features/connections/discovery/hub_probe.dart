@@ -116,8 +116,12 @@ class ScanTriedEvent extends ScanEvent {
     required this.widened,
     required this.hostsTried,
     this.aliveHosts = 0,
+    this.lateHosts = 0,
   });
   final bool widened;
   final int hostsTried;
   final int aliveHosts;
+
+  /// Hosts that answered only to the second, slower look (2.9.3).
+  final int lateHosts;
 }

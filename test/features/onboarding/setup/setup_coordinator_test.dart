@@ -304,7 +304,12 @@ void main() {
       expect(empty.hubs, [ha]);
       expect(empty.hub, ha);
       expect(empty.platform, SetupPlatform.smlight);
-      expect(empty.tried, (widened: true, hostsTried: 1018, aliveHosts: 3));
+      expect(empty.tried, (
+        widened: true,
+        hostsTried: 1018,
+        aliveHosts: 3,
+        lateHosts: 0,
+      ));
       expect(empty.deviceIp, '192.168.1.5');
 
       // On the empty result the answer retags; Try again scans with it.

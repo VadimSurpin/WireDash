@@ -7,6 +7,11 @@ import 'broker_probe.dart';
 
 HostProber createHostProber() => const SocketMqttProber();
 
+/// The scan's second look (2.9.3): time for the phone to find the machine
+/// on the Wi-Fi first.
+HostProber createPatientHostProber() =>
+    const SocketMqttProber(tcpTimeout: Duration(milliseconds: 1500));
+
 /// Confirms a broker by first doing a fast TCP connect (cheap rejection of
 /// closed ports) and then an MQTT handshake. Mirrors [MqttManager]'s client
 /// settings — notably staying on the default MQTT 3.1 protocol, which the

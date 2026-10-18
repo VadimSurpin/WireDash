@@ -34,6 +34,9 @@ class DiagnosticsLadderView extends StatelessWidget {
   String? _detail(BuildContext context, String? key) => switch (key) {
         'diagResolveFail' => context.l10n.diagResolveFail,
         'diagResolveTimeout' => context.l10n.diagResolveTimeout,
+        'diagResolveLocalName' => context.l10n.diagResolveLocalName,
+        'diagTcpHaNoBroker' => context.l10n.diagTcpHaNoBroker,
+        'diagAuthRejectedHa' => context.l10n.diagAuthRejectedHa,
         'diagTcpFail' => context.l10n.diagTcpFail,
         'diagTcpTimeout' => context.l10n.diagTcpTimeout,
         'diagConnackFail' => context.l10n.diagConnackFail,

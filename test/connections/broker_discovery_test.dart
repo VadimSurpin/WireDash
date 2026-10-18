@@ -31,15 +31,26 @@ class _FakeProber extends HostProber {
 
 /// Fake prober that finds no broker but knows which hosts are alive.
 class _AliveProber extends HostProber {
-  _AliveProber(this.alive);
+  _AliveProber(this.alive, {this.brokers = const {}});
   final Set<String> alive;
+
+  /// Hosts that answer as a broker on any port.
+  final Set<String> brokers;
+  final probed = <String>[];
 
   @override
   Future<ProbeResult?> probe(String host, int port) async => null;
 
   @override
-  Future<HostProbe> probeHost(String host, int port) async =>
-      (broker: null, alive: alive.contains(host));
+  Future<HostProbe> probeHost(String host, int port) async {
+    probed.add('$host:$port');
+    return (
+      broker: brokers.contains(host)
+          ? ProbeResult(host: host, port: port)
+          : null,
+      alive: alive.contains(host),
+    );
+  }
 }
 
 /// Fake hub prober: answers with a kind for a fixed set of `host:port`.
@@ -197,6 +208,7 @@ void main() {
         hostsTried: 253,
         brokersFound: 0,
         aliveHosts: 0,
+        lateHosts: 0,
       ));
     });
 
@@ -216,6 +228,55 @@ void main() {
       final tried = events.whereType<ScanTriedEvent>().single;
       expect(tried.aliveHosts, 2);
       expect(tried.widened, isTrue);
+    });
+
+    // 2.9.3: a quick first try can give up before the phone has found the
+    // machine on the Wi-Fi; the silent hosts get a second, slower look.
+    test('the second look finds a broker the first one missed', () async {
+      final patient = _AliveProber({'192.168.7.20'}, brokers: {'192.168.7.20'});
+      final stats = <ScanStats>[];
+      final events = await BrokerScanService(
+        prober: _AliveProber({'192.168.7.1'}),
+        patientProber: patient,
+        ports: const [1883, 8883],
+      ).run('192.168.7.42', hubs: const {}, onDone: stats.add).events.toList();
+      expect(events.whereType<BrokerFound>().map((e) => e.broker.key), [
+        '192.168.7.20:1883',
+      ]);
+      // Only the /24's silent hosts, once each, on the first port.
+      expect(patient.probed, isNot(contains('192.168.7.1:1883')));
+      expect(patient.probed.every((k) => k.endsWith(':1883')), isTrue);
+      expect(patient.probed, hasLength(252));
+      expect(stats.single.lateHosts, 1);
+      expect(stats.single.aliveHosts, 2);
+      expect(events.whereType<ScanTriedEvent>().single.lateHosts, 1);
+      final last = events.whereType<ScanProgress>().last;
+      expect(last.checked, last.total);
+    });
+
+    test('a host that answers late is asked for its hub page', () async {
+      final hubs = _FakeHubs({'192.168.7.30:8123': HubKind.homeAssistant});
+      final events = await BrokerScanService(
+        prober: _AliveProber({}),
+        hubProber: _FakeHubs({}),
+        patientProber: _AliveProber({'192.168.7.30'}),
+        patientHubProber: hubs,
+        ports: const [1883],
+      ).run('192.168.7.42', hubs: {HubKind.homeAssistant}).events.toList();
+      expect(events.whereType<HubSeen>().map((e) => e.hub.key), [
+        '192.168.7.30:8123',
+      ]);
+      expect(hubs.probed, ['192.168.7.30:8123']);
+    });
+
+    test('no second look once a broker is found', () async {
+      final patient = _AliveProber({});
+      await BrokerScanService(
+        prober: _FakeProber({'192.168.68.55:1883': false}),
+        patientProber: patient,
+        ports: const [1883],
+      ).scan('192.168.69.10').toList();
+      expect(patient.probed, isEmpty);
     });
 
     test('no brokers found → empty, still closes', () async {
@@ -380,6 +441,7 @@ void main() {
         hostsTried: 253,
         brokersFound: 0,
         aliveHosts: 0,
+        lateHosts: 0,
       ));
     });
   });

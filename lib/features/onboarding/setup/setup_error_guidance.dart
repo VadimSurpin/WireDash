@@ -66,10 +66,16 @@ SetupErrorKind mapLadderFailure(DiagnosticsReport report) {
   }
   if (firstFail == null) return SetupErrorKind.unknown;
   return switch (firstFail.detailKey) {
-    'diagResolveFail' || 'diagResolveTimeout' || 'diagTcpTimeout' =>
-      SetupErrorKind.hostUnreachable,
-    'diagTcpFail' || 'diagConnackFail' => SetupErrorKind.portClosed,
-    'diagAuthRejected' || 'diagAuthRefused' => SetupErrorKind.authRejected,
+    'diagResolveFail' ||
+    'diagResolveTimeout' ||
+    'diagResolveLocalName' ||
+    'diagTcpTimeout' => SetupErrorKind.hostUnreachable,
+    'diagTcpFail' ||
+    'diagTcpHaNoBroker' ||
+    'diagConnackFail' => SetupErrorKind.portClosed,
+    'diagAuthRejected' ||
+    'diagAuthRejectedHa' ||
+    'diagAuthRefused' => SetupErrorKind.authRejected,
     'diagLoginNoAnswer' => SetupErrorKind.loginNoAnswer,
     _ => SetupErrorKind.unknown,
   };

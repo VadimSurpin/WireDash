@@ -67,8 +67,14 @@ typedef HubIdentifier = Future<HubKind?> Function(String host);
 typedef ScanProgressValue = ({int checked, int total});
 
 /// What a finished scan tried, for the empty result's analytics: whether it
-/// widened, how many hosts it tried and how many answered at all (2.6.2).
-typedef ScanTried = ({bool widened, int hostsTried, int aliveHosts});
+/// widened, how many hosts it tried and how many answered at all (2.6.2),
+/// and how many only to the second, slower look (2.9.3).
+typedef ScanTried = ({
+  bool widened,
+  int hostsTried,
+  int aliveHosts,
+  int lateHosts,
+});
 
 /// The network the scan ran on, for the empty result's analytics (2.6.2):
 /// the interface kind as Support details names it ("Wi-Fi", "Ethernet",
@@ -196,8 +202,12 @@ typedef Z2mAnswer = ({Z2mAnswerStatus status, String server});
 
 /// Running the diagnostic ladder against [candidate].
 class SetupVerifying extends SetupState {
-  const SetupVerifying(this.candidate);
+  const SetupVerifying(this.candidate, {this.lateHosts});
   final SetupCandidate candidate;
+
+  /// For a broker the scan found: how many hosts answered only to its
+  /// second look (2.9.3), so analytics can tell whether that look found it.
+  final int? lateHosts;
 }
 
 /// The broker requires credentials. [rejected] is true when credentials were
@@ -433,11 +443,13 @@ class SetupCoordinator {
             :final widened,
             :final hostsTried,
             :final aliveHosts,
+            :final lateHosts,
           ):
             tried = (
               widened: widened,
               hostsTried: hostsTried,
               aliveHosts: aliveHosts,
+              lateHosts: lateHosts,
             );
         }
       },
@@ -457,7 +469,7 @@ class SetupCoordinator {
           unawaited(_askZigbee2Mqtt());
         } else if (merged.length == 1) {
           // One broker found: continue without asking the user to pick it.
-          unawaited(_verify(merged.single));
+          unawaited(_verify(merged.single, lateHosts: tried?.lateHosts));
         } else {
           emitScanning(done: true);
           unawaited(_nameCandidates(merged, op));
@@ -816,7 +828,7 @@ class SetupCoordinator {
     _ => null,
   };
 
-  Future<void> _verify(SetupCandidate candidate) async {
+  Future<void> _verify(SetupCandidate candidate, {int? lateHosts}) async {
     if (candidate.needsAuth && _username == null) {
       _emit(
         SetupNeedsAuth(candidate, platform: _platform, suggestedUser: _z2mUser),
@@ -824,7 +836,7 @@ class SetupCoordinator {
       return;
     }
     final op = ++_op;
-    _emit(SetupVerifying(candidate));
+    _emit(SetupVerifying(candidate, lateHosts: lateHosts));
     final config = BrokerConfig(
       id: 'setup-${DateTime.now().microsecondsSinceEpoch}',
       host: candidate.host,

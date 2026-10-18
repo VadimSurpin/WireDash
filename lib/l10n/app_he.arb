@@ -544,6 +544,9 @@
   "diagLoginNoAnswer": "הברוקר לא ענה להתחברות בזמן. ל-Home Assistant לוקח לפעמים כמה שניות לבדוק אותה, נסו שוב.",
   "diagAuthRejected": "הברוקר דחה את שם המשתמש או הסיסמה. בדקו את פרטי ההתחברות.",
   "diagAuthRefused": "הברוקר סירב לחיבור. בדקו את הגדרות החיבור.",
+  "diagResolveLocalName": "הטלפון לא מצא את השם הזה. אנדרואיד לרוב לא מזהה שמות שמסתיימים ב‑.local, אז הזינו את כתובת ה‑IP במקום (Home Assistant מציג אותה תחת הגדרות › מערכת › רשת).",
+  "diagTcpHaNoBroker": "זה ה‑Home Assistant שלכם, אבל לא פועל בו ברוקר MQTT. התקינו והפעילו את התוסף Mosquitto broker (הגדרות › תוספים), ונסו שוב.",
+  "diagAuthRejectedHa": "הברוקר של Home Assistant דחה את ההתחברות. השתמשו בשם ובסיסמה של משתמש Home Assistant (הגדרות › אנשים › משתמשים); הכי טוב משתמש נפרד רק ל‑MQTT.",
   "foundDevices": "{count, plural, =1{נמצא מכשיר אחד} other{נמצאו {count} מכשירים}}",
   "@foundDevices": {
     "placeholders": {

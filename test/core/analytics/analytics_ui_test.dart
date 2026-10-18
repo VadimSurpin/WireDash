@@ -178,7 +178,7 @@ void main() {
           ),
         ],
         platform: SetupPlatform.homeAssistant,
-        tried: (widened: true, hostsTried: 1018, aliveHosts: 7),
+        tried: (widened: true, hostsTried: 1018, aliveHosts: 7, lateHosts: 2),
         deviceIp: '192.168.1.37',
         network: (kind: 'Wi-Fi', vpn: true),
       );
@@ -191,6 +191,7 @@ void main() {
         'widened': 'yes',
         'subnet': '192.168',
         'alive': '6-20',
+        'late': '1-5',
         'vpn': 'yes',
         'net': 'wifi',
       });
@@ -214,12 +215,35 @@ void main() {
       expect(subnetShape(null), isNull);
     });
 
+    // 2.9.3: whether the scan's second look found the broker.
+    test('scan_found says how many hosts answered only late', () {
+      const candidate = SetupCandidate(
+        host: '192.168.1.30',
+        port: 1883,
+        protocol: MqttProtocol.tcp,
+      );
+      expect(
+        setupStepFor(
+          const SetupScanning([]),
+          const SetupVerifying(candidate, lateHosts: 1),
+        )!.props,
+        {'step': 'scan_found', 'late': '1-5'},
+      );
+      expect(
+        setupStepFor(
+          const SetupScanning([]),
+          const SetupVerifying(candidate),
+        )!.props,
+        {'step': 'scan_found'},
+      );
+    });
+
     // 2.6.3: the empty result is counted once; chip taps re-emit it but
     // don't re-send it (they tripled the 2.6.2 diagnostics).
     test('a chip tap on the empty result does not re-send scan_empty', () {
       const scanning = SetupScanning([]);
       const empty = SetupScanEmpty(
-        tried: (widened: true, hostsTried: 1018, aliveHosts: 2),
+        tried: (widened: true, hostsTried: 1018, aliveHosts: 2, lateHosts: 0),
         deviceIp: '192.168.1.37',
       );
       expect(setupStepFor(scanning, empty)!.props['step'], 'scan_empty');
@@ -228,7 +252,12 @@ void main() {
           empty,
           const SetupScanEmpty(
             platform: SetupPlatform.homeAssistant,
-            tried: (widened: true, hostsTried: 1018, aliveHosts: 2),
+            tried: (
+              widened: true,
+              hostsTried: 1018,
+              aliveHosts: 2,
+              lateHosts: 0,
+            ),
             deviceIp: '192.168.1.37',
           ),
         ),
