@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../discovery/hub_probe.dart';
+import '../discovery/hub_prober.dart';
 import 'connect_diagnostics.dart';
 
 /// Provider the guided-connect wizard and the connection form read; tests
@@ -7,5 +9,7 @@ import 'connect_diagnostics.dart';
 /// file so [ConnectDiagnostics] itself stays Flutter-free (the `bin/` smoke
 /// harness runs it on the pure Dart VM).
 final connectDiagnosticsProvider = Provider<ConnectDiagnostics>(
-  (ref) => ConnectDiagnostics(),
+  (ref) => ConnectDiagnostics(
+    identify: (host) => identifyHost(createHubProber(), host),
+  ),
 );

@@ -7,6 +7,7 @@ import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:zigdash/core/analytics/analytics_events.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 
 /// How the fake client's [connect] behaves.
@@ -117,12 +118,14 @@ void main() {
     _ConnectBehavior? remoteBehavior,
     HostLookup? hostLookup,
     TcpProbe? tcpProbe,
+    HostIdentifier? identify,
     List<String>? builtHosts,
   }) {
     final seen = builtHosts ?? <String>[];
     return ConnectDiagnostics(
       hostLookup: hostLookup ?? okLookup,
       tcpProbe: tcpProbe ?? okProbe,
+      identify: identify,
       clientFactory: (cfg, clientId, {host}) {
         seen.add(host ?? cfg.host);
         final h = host ?? cfg.host;
@@ -380,6 +383,92 @@ void main() {
         expect(report!.steps[3].status, StepStatus.fail);
         expect(report!.steps[3].detailKey, 'diagAuthRejected');
         expect(report!.connected, isFalse);
+      });
+    });
+
+    // 2.9.3: the failures people met on 2026-10-17/18 say what to do.
+    test('a .local name that does not resolve: use the IP', () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          hostLookup: (_) async => throw Exception('no such host'),
+        );
+        DiagnosticsReport? report;
+        d
+            .run(
+              config: const BrokerConfig(
+                id: 'c',
+                host: 'homeassistant.local',
+                port: 1883,
+                protocol: MqttProtocol.tcp,
+              ),
+              password: '',
+            )
+            .then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps.single.detailKey, 'diagResolveLocalName');
+        expect(manualTestResult(report!), ManualTestResult.localName);
+      });
+    });
+
+    test('refused by a Home Assistant: install the Mosquitto add-on', () {
+      fakeAsync((async) {
+        final asked = <String>[];
+        final d = diagnostics(
+          tcpProbe: (h, p, t) async => throw Exception('refused'),
+          identify: (h) async {
+            asked.add(h);
+            return HubKind.homeAssistant;
+          },
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: '').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpHaNoBroker');
+        expect(manualTestResult(report!), ManualTestResult.haNoBroker);
+        expect(asked, [host]);
+
+        // Another port refused says nothing about a broker on 1883.
+        d
+            .run(
+              config: const BrokerConfig(
+                id: 'c',
+                host: host,
+                port: 1884,
+                protocol: MqttProtocol.tcp,
+              ),
+              password: '',
+            )
+            .then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpFail');
+      });
+    });
+
+    test('refused by something else: the general message', () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          tcpProbe: (h, p, t) async => throw Exception('refused'),
+          identify: (h) async => null,
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: '').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpFail');
+        expect(manualTestResult(report!), ManualTestResult.tcp);
+      });
+    });
+
+    test('a login Home Assistant refuses: use a Home Assistant user', () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          behavior: _ConnectBehavior.authRejected,
+          identify: (h) async => HubKind.homeAssistant,
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: 'wrong').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[3].detailKey, 'diagAuthRejectedHa');
+        expect(manualTestResult(report!), ManualTestResult.haLogin);
       });
     });
 

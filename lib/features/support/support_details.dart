@@ -57,12 +57,16 @@ FailureKind failureKindFromLadder(DiagnosticsReport report) {
   for (final s in report.steps) {
     if (s.status != StepStatus.fail) continue;
     return switch (s.detailKey) {
-      'diagResolveFail' || 'diagResolveTimeout' => FailureKind.hostNotFound,
+      'diagResolveFail' ||
+      'diagResolveTimeout' ||
+      'diagResolveLocalName' => FailureKind.hostNotFound,
       'diagTcpTimeout' => FailureKind.timedOut,
-      'diagTcpFail' => FailureKind.refused,
+      'diagTcpFail' || 'diagTcpHaNoBroker' => FailureKind.refused,
       'diagConnackFail' => FailureKind.notMqtt,
       'diagLoginNoAnswer' => FailureKind.timedOut,
-      'diagAuthRejected' || 'diagAuthRefused' => FailureKind.loginRejected,
+      'diagAuthRejected' ||
+      'diagAuthRejectedHa' ||
+      'diagAuthRefused' => FailureKind.loginRejected,
       _ => FailureKind.unknown,
     };
   }

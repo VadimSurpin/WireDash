@@ -5,6 +5,10 @@ import 'hub_probe.dart';
 
 HubProber createHubProber() => const HttpHubProber();
 
+/// The scan's second look (2.9.3): a slower first connect.
+HubProber createPatientHubProber() =>
+    const HttpHubProber(tcpTimeout: Duration(milliseconds: 1500));
+
 /// Identifies a hub by fetching the first bytes of its web page: a fast TCP
 /// connect first (closed ports refuse at once), then a plain HTTP GET, and
 /// HTTPS when plain fails (Home Assistant with SSL on serves only HTTPS).

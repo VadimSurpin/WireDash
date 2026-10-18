@@ -4,6 +4,8 @@ import 'broker_probe.dart';
 /// finds nothing (the scan UI is hidden on web anyway).
 HostProber createHostProber() => _NoopProber();
 
+HostProber createPatientHostProber() => _NoopProber();
+
 class _NoopProber extends HostProber {
   @override
   Future<ProbeResult?> probe(String host, int port) async => null;

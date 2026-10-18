@@ -1364,6 +1364,18 @@ class AppLocalizationsHe extends AppLocalizations {
   String get diagAuthRefused => 'הברוקר סירב לחיבור. בדקו את הגדרות החיבור.';
 
   @override
+  String get diagResolveLocalName =>
+      'הטלפון לא מצא את השם הזה. אנדרואיד לרוב לא מזהה שמות שמסתיימים ב‑.local, אז הזינו את כתובת ה‑IP במקום (Home Assistant מציג אותה תחת הגדרות › מערכת › רשת).';
+
+  @override
+  String get diagTcpHaNoBroker =>
+      'זה ה‑Home Assistant שלכם, אבל לא פועל בו ברוקר MQTT. התקינו והפעילו את התוסף Mosquitto broker (הגדרות › תוספים), ונסו שוב.';
+
+  @override
+  String get diagAuthRejectedHa =>
+      'הברוקר של Home Assistant דחה את ההתחברות. השתמשו בשם ובסיסמה של משתמש Home Assistant (הגדרות › אנשים › משתמשים); הכי טוב משתמש נפרד רק ל‑MQTT.';
+
+  @override
   String foundDevices(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

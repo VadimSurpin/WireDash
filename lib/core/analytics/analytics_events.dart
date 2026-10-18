@@ -75,8 +75,19 @@ enum SetupStepKind {
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the
 /// first step that failed (name lookup, TCP connection, MQTT handshake,
-/// login). Never the address.
-enum ManualTestResult { connected, resolve, tcp, connack, auth }
+/// login). Never the address. 2.9.3 splits out the cases with their own
+/// message: a `.local` name, Home Assistant without a broker, Home
+/// Assistant refusing the login.
+enum ManualTestResult {
+  connected,
+  resolve,
+  tcp,
+  connack,
+  auth,
+  localName,
+  haNoBroker,
+  haLogin,
+}
 
 /// Each step of first-run setup: where people get stuck. An empty scan
 /// (2.5) also says what the scan saw: the user's platform answer, the hub
@@ -96,6 +107,7 @@ class SetupStep extends AnalyticsEvent {
     this.widened,
     this.subnet,
     this.aliveHosts,
+    this.lateHosts,
     this.vpn,
     this.network,
     this.result,
@@ -109,6 +121,10 @@ class SetupStep extends AnalyticsEvent {
 
   /// How many scanned hosts answered at all, on an empty scan.
   final int? aliveHosts;
+
+  /// How many answered only to the scan's second, slower look (2.9.3), on
+  /// an empty scan and on a found one.
+  final int? lateHosts;
 
   /// Whether a VPN interface was up during the scan.
   final bool? vpn;
@@ -167,6 +183,13 @@ class SetupStep extends AnalyticsEvent {
     if (aliveHosts != null)
       'alive': bucket(
         aliveHosts!,
+        const [0],
+        ranges: const [(1, 5), (6, 20)],
+        top: '21+',
+      ),
+    if (lateHosts != null)
+      'late': bucket(
+        lateHosts!,
         const [0],
         ranges: const [(1, 5), (6, 20)],
         top: '21+',

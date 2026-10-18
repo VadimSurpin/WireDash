@@ -1376,6 +1376,18 @@ class AppLocalizationsNb extends AppLocalizations {
       'Brokeren avviste tilkoblingen. Kontroller tilkoblingsinnstillingene.';
 
   @override
+  String get diagResolveLocalName =>
+      'Telefonen fant ikke dette navnet. Android klarer ofte ikke å slå opp navn som slutter på .local, så skriv inn IP-adressen i stedet (Home Assistant viser den under Innstillinger › System › Nettverk).';
+
+  @override
+  String get diagTcpHaNoBroker =>
+      'Dette er Home Assistant, men ingen MQTT-megler kjører på den. Installer og start tillegget Mosquitto broker (Innstillinger › Tillegg), og prøv igjen.';
+
+  @override
+  String get diagAuthRejectedHa =>
+      'Megleren i Home Assistant avviste denne påloggingen. Bruk navnet og passordet til en Home Assistant-bruker (Innstillinger › Personer › Brukere); helst en egen bruker bare for MQTT.';
+
+  @override
   String foundDevices(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

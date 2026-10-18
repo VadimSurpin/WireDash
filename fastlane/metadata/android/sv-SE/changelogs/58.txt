@@ -1,0 +1,1 @@
+ZigDash 2.9.3: när installationen inte hittar något i nätverket letar den nu en gång till efter enheter som svarade långsamt. Och om broker-testet misslyckas säger den vad du ska göra: använda IP-adressen i stället för ett .local-namn, installera Mosquitto-tillägget i Home Assistant eller logga in med en Home Assistant-användare.

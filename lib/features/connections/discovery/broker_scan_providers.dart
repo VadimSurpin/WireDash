@@ -13,5 +13,7 @@ final brokerScanServiceProvider = Provider<BrokerScanService>(
   (ref) => BrokerScanService(
     prober: createHostProber(),
     hubProber: createHubProber(),
+    patientProber: createPatientHostProber(),
+    patientHubProber: createPatientHubProber(),
   ),
 );

@@ -1383,6 +1383,18 @@ class AppLocalizationsPt extends AppLocalizations {
       'O broker recusou a conexão. Verifique as configurações de conexão.';
 
   @override
+  String get diagResolveLocalName =>
+      'O telemóvel não encontrou este nome. O Android muitas vezes não resolve nomes terminados em .local; introduza antes o endereço IP (o Home Assistant mostra-o em Definições › Sistema › Rede).';
+
+  @override
+  String get diagTcpHaNoBroker =>
+      'Este é o seu Home Assistant, mas não tem nenhum broker MQTT a correr. Instale e inicie o add-on Mosquitto broker (Definições › Add-ons) e tente novamente.';
+
+  @override
+  String get diagAuthRejectedHa =>
+      'O broker do Home Assistant recusou este início de sessão. Use o nome e a palavra-passe de um utilizador do Home Assistant (Definições › Pessoas › Utilizadores); de preferência um utilizador só para MQTT.';
+
+  @override
   String foundDevices(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

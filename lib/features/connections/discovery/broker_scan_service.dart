@@ -7,11 +7,13 @@ import 'subnet.dart';
 /// What a finished (or cancelled) scan tried, for Support details.
 /// [aliveHosts] is how many probed hosts answered at all (connected or
 /// refused), the difference between an empty network and a hub elsewhere.
+/// [lateHosts] answered only to the slower second look (2.9.3).
 typedef ScanStats = ({
   bool widened,
   int hostsTried,
   int brokersFound,
   int aliveHosts,
+  int lateHosts,
 });
 
 /// A scan in progress: its [events], and a way to add the answer-gated hub
@@ -40,18 +42,31 @@ class ScanRun {
 /// the `/24` for Home Assistant and the Zigbee2MQTT frontend (and an SMLIGHT
 /// hub when asked) before the wider pass, so the empty result can say what
 /// was found. Hub hits never count as brokers and never stop the widening.
+/// When all of that finds no broker, the `/24` hosts that never answered get
+/// a second, slower look on [ports]' first port with [patientProber] (and
+/// the hubs with [patientHubProber] on those that answer it) (2.9.3). A
+/// phone must first find each machine on the Wi-Fi, and a quick first try
+/// can give up before that: two users whose scan found nothing typed their
+/// broker's address and connected at once.
+///
 /// The stream closes when every candidate has been probed; cancelling the
 /// subscription stops further probing.
 class BrokerScanService {
   BrokerScanService({
     required this.prober,
     HubProber? hubProber,
+    this.patientProber,
+    this.patientHubProber,
     this.ports = const [1883, 8883],
     this.concurrency = 48,
   }) : hubProber = hubProber ?? const _NoHubs();
 
   final HostProber prober;
   final HubProber hubProber;
+
+  /// The second look's probers; without [patientProber] there is none.
+  final HostProber? patientProber;
+  final HubProber? patientHubProber;
   final List<int> ports;
   final int concurrency;
 
@@ -102,9 +117,16 @@ class _HubTask extends _Task {
   final HubKind kind;
 }
 
+/// The second look at a host that never answered: the broker port, slowly,
+/// then the hub pages if it answers now.
+class _LateTask extends _Task {
+  const _LateTask(super.host, super.port);
+}
+
 /// One scan: a task queue pumped at the service's concurrency, in phases.
 /// Phase A probes the `/24` for brokers. If none answered, phase B probes
-/// the `/24` for hubs and phase C the rest of the `/22` for brokers.
+/// the `/24` for hubs and phase C the rest of the `/22` for brokers. If
+/// still none, phase D takes the second look at the `/24`'s silent hosts.
 class _Engine {
   _Engine(this.service, this.deviceIp, this.hubs, this.onDone) {
     final local = candidateHosts(deviceIp);
@@ -112,7 +134,13 @@ class _Engine {
     _tasks.addAll(_brokerTasks(local));
     _phaseAEnd = _tasks.length;
     _wider = _brokerTasks(widerCandidateHosts(deviceIp));
-    _total = _tasks.length + local.length * hubs.length + _wider.length;
+    // Phase D counts as every local host until it starts, then shrinks to
+    // the silent ones, so the bar never moves backwards.
+    _total =
+        _tasks.length +
+        local.length * hubs.length +
+        _wider.length +
+        (service.patientProber == null ? 0 : local.length);
     _controller = StreamController<ScanEvent>(
       onListen: _pump,
       onCancel: () {
@@ -138,6 +166,7 @@ class _Engine {
   final _seen = <String>{};
   final _hubsSeen = <String>{};
   final _alive = <String>{};
+  final _late = <String>{};
   var _index = 0;
   var _active = 0;
   var _checked = 0;
@@ -145,6 +174,7 @@ class _Engine {
   var _cancelled = false;
   var _closed = false;
   var _phaseAEmpty = false;
+  var _lateQueued = false;
   var _widened = false;
   var _reported = false;
 
@@ -176,6 +206,7 @@ class _Engine {
       hostsTried: _brokerTasksDone ~/ service.ports.length,
       brokersFound: _seen.length,
       aliveHosts: _alive.length,
+      lateHosts: _late.length,
     ));
   }
 
@@ -198,13 +229,32 @@ class _Engine {
         return;
       }
     }
+    if (!_cancelled &&
+        !_lateQueued &&
+        _seen.isEmpty &&
+        service.patientProber != null) {
+      _lateQueued = true;
+      final silent = [
+        for (final h in _localHosts)
+          if (!_alive.contains(h)) _LateTask(h, service.ports.first),
+      ];
+      _total -= _localHosts.length - silent.length;
+      _tasks.addAll(silent);
+      if (silent.isNotEmpty) {
+        scheduleMicrotask(_pump);
+        return;
+      }
+    }
     _closed = true;
     _report();
+    // The second look may have shrunk the total after the last probe.
+    if (!_cancelled) _controller.add(ScanProgress(_checked, _total));
     _controller.add(
       ScanTriedEvent(
         widened: _widened,
         hostsTried: _brokerTasksDone ~/ service.ports.length,
         aliveHosts: _alive.length,
+        lateHosts: _late.length,
       ),
     );
     _controller.close();
@@ -243,9 +293,31 @@ class _Engine {
         }
       case _HubTask():
         final kind = await service.hubProber.probe(task.host, task.port);
-        if (kind == null || _cancelled) return;
-        final hub = HubFound(kind: kind, host: task.host, port: task.port);
-        if (_hubsSeen.add(hub.key)) _controller.add(HubSeen(hub));
+        _hubSeen(kind, task.host, task.port);
+      case _LateTask():
+        final (:broker, :alive) = await service.patientProber!.probeHost(
+          task.host,
+          task.port,
+        );
+        if (alive != true || _cancelled) return;
+        _alive.add(task.host);
+        _late.add(task.host);
+        if (broker != null && _seen.add(broker.key)) {
+          _controller.add(BrokerFound(broker));
+          return;
+        }
+        final hubProber = service.patientHubProber;
+        if (hubProber == null) return;
+        for (final kind in hubs) {
+          final port = hubPorts[kind]!;
+          _hubSeen(await hubProber.probe(task.host, port), task.host, port);
+        }
     }
+  }
+
+  void _hubSeen(HubKind? kind, String host, int port) {
+    if (kind == null || _cancelled || _closed) return;
+    final hub = HubFound(kind: kind, host: host, port: port);
+    if (_hubsSeen.add(hub.key)) _controller.add(HubSeen(hub));
   }
 }

@@ -1391,6 +1391,18 @@ class AppLocalizationsRu extends AppLocalizations {
       'Брокер отказал в подключении. Проверьте настройки подключения.';
 
   @override
+  String get diagResolveLocalName =>
+      'Телефон не нашёл это имя. Android часто не распознаёт имена, оканчивающиеся на .local, поэтому введите IP-адрес (Home Assistant показывает его в Настройки › Система › Сеть).';
+
+  @override
+  String get diagTcpHaNoBroker =>
+      'Это ваш Home Assistant, но MQTT-брокер на нём не запущен. Установите и запустите дополнение Mosquitto broker (Настройки › Дополнения) и попробуйте снова.';
+
+  @override
+  String get diagAuthRejectedHa =>
+      'Брокер Home Assistant отклонил вход. Используйте имя и пароль пользователя Home Assistant (Настройки › Люди › Пользователи); лучше всего отдельного пользователя только для MQTT.';
+
+  @override
   String foundDevices(int count) {
     return 'Найдено устройств: $count';
   }

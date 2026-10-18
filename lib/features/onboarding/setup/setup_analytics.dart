@@ -34,9 +34,10 @@ SetupStep? setupStepFor(
       result: status,
       platform: next.platform ?? platform,
     ),
-  SetupVerifying() when previous is SetupScanning => SetupStep(
+  SetupVerifying(:final lateHosts) when previous is SetupScanning => SetupStep(
     SetupStepKind.scanFound,
     platform: platform,
+    lateHosts: lateHosts,
   ),
   SetupVerifying() when previous is SetupScanEmpty => SetupStep(
     SetupStepKind.address,
@@ -73,6 +74,7 @@ SetupStep? setupStepFor(
     widened: tried?.widened,
     subnet: subnetShape(deviceIp),
     aliveHosts: tried?.aliveHosts,
+    lateHosts: tried?.lateHosts,
     vpn: network?.vpn,
     network: network?.kind,
   ),
