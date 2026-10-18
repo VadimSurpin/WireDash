@@ -426,6 +426,21 @@ void main() {
         expect(report!.steps[1].detailKey, 'diagTcpHaNoBroker');
         expect(manualTestResult(report!), ManualTestResult.haNoBroker);
         expect(asked, [host]);
+
+        // Another port refused says nothing about a broker on 1883.
+        d
+            .run(
+              config: const BrokerConfig(
+                id: 'c',
+                host: host,
+                port: 1884,
+                protocol: MqttProtocol.tcp,
+              ),
+              password: '',
+            )
+            .then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpFail');
       });
     });
 

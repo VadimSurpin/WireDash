@@ -247,6 +247,8 @@ class _Engine {
     }
     _closed = true;
     _report();
+    // The second look may have shrunk the total after the last probe.
+    if (!_cancelled) _controller.add(ScanProgress(_checked, _total));
     _controller.add(
       ScanTriedEvent(
         widened: _widened,

@@ -201,7 +201,9 @@ class ConnectDiagnostics {
         StepResult(
           step: DiagnosticStep.tcp,
           status: StepStatus.fail,
-          detailKey: await _isHomeAssistant(cand.host)
+          // Only on the usual port: another port refused says nothing
+          // about whether a broker runs there.
+          detailKey: config.port == 1883 && await _isHomeAssistant(cand.host)
               ? 'diagTcpHaNoBroker'
               : 'diagTcpFail',
         ),
