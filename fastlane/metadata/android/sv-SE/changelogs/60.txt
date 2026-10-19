@@ -1,0 +1,1 @@
+ZigDash 2.9.5: en tydligare välkomstskärm. Allt du behöver är en liten hubb som kör Zigbee2MQTT, som en SMLIGHT-hubb, en Raspberry Pi eller vilken Linux-dator som helst. Ingen Home Assistant behövs, och har du det fungerar ZigDash med det också.

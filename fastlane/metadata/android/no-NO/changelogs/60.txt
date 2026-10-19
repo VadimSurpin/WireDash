@@ -1,0 +1,1 @@
+ZigDash 2.9.5: en tydeligere velkomst. Alt du trenger er en liten hub som kjører Zigbee2MQTT, som en SMLIGHT-hub, en Raspberry Pi eller en hvilken som helst Linux-maskin. Du trenger ikke Home Assistant, og har du det, fungerer ZigDash med det også.

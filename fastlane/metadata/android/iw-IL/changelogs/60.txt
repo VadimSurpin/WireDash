@@ -1,0 +1,1 @@
+ZigDash 2.9.5: מסך פתיחה ברור יותר. כל מה שצריך הוא רכזת קטנה שמריצה Zigbee2MQTT, כמו רכזת SMLIGHT, ‏Raspberry Pi או כל מחשב Linux. לא צריך Home Assistant, ואם יש לך, ZigDash עובד גם איתו.
