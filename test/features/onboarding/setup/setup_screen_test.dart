@@ -106,6 +106,20 @@ class _FakeFirstRun implements FirstRun {
   Future<void> finish(String connectionId) async {}
 }
 
+class _RecordingSink implements AnalyticsSink {
+  _RecordingSink(this.sent);
+  final List<(String, Map<String, String>)> sent;
+
+  @override
+  Future<void> start() async {}
+
+  @override
+  Future<void> stop() async {}
+
+  @override
+  void send(String name, Map<String, String> props) => sent.add((name, props));
+}
+
 /// Pumps the setup screen with a coordinator built on fakes.
 Future<SetupCoordinator> _pump(
   WidgetTester tester, {
@@ -498,6 +512,138 @@ void main() {
       },
     );
   }
+
+  // 2.9.5: the empty result with no hub found offers three ways out.
+  group('the empty result\'s choices', () {
+    late List<(String, Map<String, String>)> sent;
+    late List<Override> analytics;
+    setUp(() {
+      sent = [];
+      analytics = [
+        analyticsProvider.overrideWithValue(
+          Analytics(_RecordingSink(sent), enabled: true),
+        ),
+      ];
+    });
+    List<String?> choices() => [
+      for (final (name, props) in sent)
+        if (name == 'setup_step' && props['step'] == 'empty_choice')
+          props['choice'],
+    ];
+
+    testWidgets('no hub yet opens the Hubs page', (tester) async {
+      Uri? opened;
+      final original = openSetupLink;
+      addTearDown(() => openSetupLink = original);
+      openSetupLink = (url) async {
+        opened = url;
+        return true;
+      };
+      await _pump(tester, scan: (_) => const Stream.empty(), extra: analytics);
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.text('Which of these fits you?'), findsOneWidget);
+      await tester.tap(find.text("I don't have a hub yet"));
+      await tester.pump();
+      expect(opened, hubsPageUrl);
+      expect(opened.toString(), 'https://zigdash.app/hubs/');
+      expect(choices(), ['no_hub']);
+    });
+
+    testWidgets('Home Assistant checks homeassistant.local', (tester) async {
+      final asked = <String>[];
+      final coordinator = await _pump(
+        tester,
+        scan: (_) => const Stream.empty(),
+        extra: analytics,
+        checkAddress: (host, port) async {
+          asked.add(host);
+          return const AddressCheckResult(AddressOutcome.notResolved);
+        },
+      );
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      await tester.pump();
+      await tester.tap(find.text('I use Home Assistant'));
+      await tester.pump();
+      await tester.pump();
+      expect(asked, ['homeassistant.local']);
+      expect(coordinator.platform, SetupPlatform.homeAssistant);
+      expect(find.textContaining('Mosquitto broker add-on'), findsOneWidget);
+      // The field shows the address the choice checked, and its outcome.
+      expect(
+        find.widgetWithText(TextField, 'homeassistant.local'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('homeassistant.local could not be looked up'),
+        findsOneWidget,
+      );
+      expect(choices(), ['home_assistant']);
+    });
+
+    testWidgets('another network explains, and checks a usual name', (
+      tester,
+    ) async {
+      final asked = <String>[];
+      await _pump(
+        tester,
+        scan: (_) => const Stream.empty(),
+        extra: analytics,
+        checkAddress: (host, port) async {
+          asked.add(host);
+          return const AddressCheckResult.nothing();
+        },
+      );
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      await tester.pump();
+      expect(find.textContaining('smhub.local'), findsNothing);
+      await tester.tap(find.text('My hub is on another network'));
+      await tester.pump();
+      expect(
+        find.textContaining('A guest Wi-Fi, or a second router'),
+        findsOneWidget,
+      );
+      await tester.tap(find.textContaining('smhub.local'));
+      await tester.pump();
+      await tester.pump();
+      expect(asked, ['smhub.local']);
+      expect(
+        find.textContaining('Nothing answered at smhub.local'),
+        findsOneWidget,
+      );
+      expect(choices(), ['other_network']);
+    });
+
+    testWidgets('a hub found: no choices', (tester) async {
+      await _pump(
+        tester,
+        run: (_, _) => ScanRun(
+          events: Stream.fromIterable(const [
+            HubSeen(
+              HubFound(
+                kind: HubKind.homeAssistant,
+                host: '192.168.1.20',
+                port: 8123,
+              ),
+            ),
+          ]),
+          addHub: (_) {},
+        ),
+      );
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      expect(
+        find.text('Found Home Assistant, but no MQTT broker'),
+        findsOneWidget,
+      );
+      expect(find.text('Which of these fits you?'), findsNothing);
+    });
+  });
 
   // 2.6.6: every address-field user tapped Check on an empty field first, so
   // Check waits for text, like the login button waits for a username.

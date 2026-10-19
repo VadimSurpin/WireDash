@@ -3374,6 +3374,60 @@ abstract class AppLocalizations {
   /// **'Enter an address first.'**
   String get setupAddressInvalid;
 
+  /// No description provided for @setupChoicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which of these fits you?'**
+  String get setupChoicesTitle;
+
+  /// No description provided for @setupChoiceNoHub.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t have a hub yet'**
+  String get setupChoiceNoHub;
+
+  /// No description provided for @setupChoiceNoHubSub.
+  ///
+  /// In en, this message translates to:
+  /// **'See the small hubs that run Zigbee2MQTT'**
+  String get setupChoiceNoHubSub;
+
+  /// No description provided for @setupChoiceHa.
+  ///
+  /// In en, this message translates to:
+  /// **'I use Home Assistant'**
+  String get setupChoiceHa;
+
+  /// No description provided for @setupChoiceHaSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for it at homeassistant.local'**
+  String get setupChoiceHaSub;
+
+  /// No description provided for @setupChoiceHaNote.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash connects to Home Assistant\'s MQTT broker, the Mosquitto broker add-on under Settings › Add-ons, and Zigbee2MQTT has to use it too. If homeassistant.local isn\'t found, enter Home Assistant\'s IP address below. It\'s under Settings › System › Network.'**
+  String get setupChoiceHaNote;
+
+  /// No description provided for @setupChoiceOther.
+  ///
+  /// In en, this message translates to:
+  /// **'My hub is on another network'**
+  String get setupChoiceOther;
+
+  /// No description provided for @setupChoiceOtherSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A guest Wi-Fi or a second router'**
+  String get setupChoiceOtherSub;
+
+  /// No description provided for @setupChoiceOtherNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone has to reach your hub. A guest Wi-Fi, or a second router with its own Wi-Fi, keeps them apart. Join the Wi-Fi your hub is on and tap Try again. Or enter the hub\'s IP address below, or try one of these usual names:'**
+  String get setupChoiceOtherNote;
+
   /// No description provided for @guidedHostYourPhone.
   ///
   /// In en, this message translates to:

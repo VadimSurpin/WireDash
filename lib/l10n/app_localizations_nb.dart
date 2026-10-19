@@ -1875,6 +1875,35 @@ class AppLocalizationsNb extends AppLocalizations {
   String get setupAddressInvalid => 'Skriv inn en adresse først.';
 
   @override
+  String get setupChoicesTitle => 'Hva av dette passer for deg?';
+
+  @override
+  String get setupChoiceNoHub => 'Jeg har ikke en hub ennå';
+
+  @override
+  String get setupChoiceNoHubSub => 'Se små huber som kjører Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'Jeg bruker Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Let etter den på homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash kobler til MQTT-megleren i Home Assistant, tillegget Mosquitto broker under Innstillinger › Tillegg, og Zigbee2MQTT må bruke den også. Hvis homeassistant.local ikke blir funnet, skriv inn IP-adressen til Home Assistant nedenfor. Den står under Innstillinger › System › Nettverk.';
+
+  @override
+  String get setupChoiceOther => 'Huben min er på et annet nettverk';
+
+  @override
+  String get setupChoiceOtherSub => 'Et gjestenett eller en ekstra ruter';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Telefonen må nå huben din. Et gjestenett, eller en ekstra ruter med eget Wi-Fi, holder dem adskilt. Koble til Wi-Fi-nettet huben er på, og trykk på Prøv igjen. Eller skriv inn hubens IP-adresse nedenfor, eller prøv et av disse vanlige navnene:';
+
+  @override
   String guidedHostYourPhone(String ip, String prefix) {
     return 'Telefonen din er $ip, så huben begynner vanligvis med $prefix.';
   }

@@ -1876,6 +1876,35 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupAddressInvalid => 'Сначала введите адрес.';
 
   @override
+  String get setupChoicesTitle => 'Что из этого про вас?';
+
+  @override
+  String get setupChoiceNoHub => 'У меня ещё нет хаба';
+
+  @override
+  String get setupChoiceNoHubSub => 'Посмотреть небольшие хабы с Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'У меня Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Искать по адресу homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash подключается к MQTT-брокеру Home Assistant, дополнению Mosquitto broker в Настройки › Дополнения, и Zigbee2MQTT тоже должен его использовать. Если homeassistant.local не найден, введите ниже IP-адрес Home Assistant. Он указан в Настройки › Система › Сеть.';
+
+  @override
+  String get setupChoiceOther => 'Мой хаб в другой сети';
+
+  @override
+  String get setupChoiceOtherSub => 'Гостевой Wi-Fi или второй роутер';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Телефон должен видеть ваш хаб. Гостевой Wi-Fi или второй роутер со своим Wi-Fi разделяют их. Подключитесь к Wi-Fi, в котором находится хаб, и нажмите Повторить. Или введите ниже IP-адрес хаба, или попробуйте одно из этих обычных имён:';
+
+  @override
   String guidedHostYourPhone(String ip, String prefix) {
     return 'Ваш телефон — $ip, значит адрес хаба обычно начинается с $prefix.';
   }

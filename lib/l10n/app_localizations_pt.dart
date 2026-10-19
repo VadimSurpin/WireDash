@@ -1883,6 +1883,37 @@ class AppLocalizationsPt extends AppLocalizations {
   String get setupAddressInvalid => 'Digite um endereço primeiro.';
 
   @override
+  String get setupChoicesTitle => 'Qual destas combina com você?';
+
+  @override
+  String get setupChoiceNoHub => 'Ainda não tenho um hub';
+
+  @override
+  String get setupChoiceNoHubSub =>
+      'Ver os hubs pequenos que rodam Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'Uso o Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Procurar em homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'O ZigDash se conecta ao broker MQTT do Home Assistant, o add-on Mosquitto broker em Configurações › Add-ons, e o Zigbee2MQTT também precisa usá-lo. Se homeassistant.local não for encontrado, digite abaixo o endereço IP do Home Assistant. Ele fica em Configurações › Sistema › Rede.';
+
+  @override
+  String get setupChoiceOther => 'Meu hub está em outra rede';
+
+  @override
+  String get setupChoiceOtherSub =>
+      'Uma rede Wi-Fi de convidados ou um segundo roteador';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Seu telefone precisa alcançar o hub. Uma rede Wi-Fi de convidados, ou um segundo roteador com Wi-Fi próprio, separa os dois. Entre na rede Wi-Fi em que o hub está e toque em Tentar de novo. Ou digite abaixo o endereço IP do hub, ou tente um destes nomes comuns:';
+
+  @override
   String guidedHostYourPhone(String ip, String prefix) {
     return 'O seu telemóvel é $ip, por isso o hub costuma começar por $prefix.';
   }

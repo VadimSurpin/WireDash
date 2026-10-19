@@ -9,6 +9,7 @@ import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shortcuts/shortcut_service.dart' show appChannel;
+import '../../connections/discovery/address_check.dart';
 import '../../connections/discovery/hub_probe.dart';
 import '../../connections/discovery/no_network.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
@@ -22,6 +23,25 @@ import 'setup_coordinator.dart';
 import 'setup_error_guidance.dart';
 import 'setup_analytics.dart';
 import 'setup_providers.dart';
+
+/// zigdash.app's Hubs page: the small hubs that run Zigbee2MQTT, for the
+/// empty result's "I don't have a hub yet" (2.9.5).
+final hubsPageUrl = Uri.parse('https://zigdash.app/hubs/');
+
+/// Opens a link outside the app; replaced in tests.
+@visibleForTesting
+Future<bool> Function(Uri url) openSetupLink = (url) =>
+    launchUrl(url, mode: LaunchMode.externalApplication);
+
+/// The usual names of a machine running Zigbee2MQTT and its broker, offered
+/// under "My hub is on another network" (2.9.5): an SMHUB's own name
+/// (SMLIGHT's SMHUB Nano guide), Home Assistant's, and Raspberry Pi OS's
+/// default. No SLZB-06: it is only the Zigbee radio and has no broker.
+const usualHubNames = [
+  'smhub.local',
+  'homeassistant.local',
+  'raspberrypi.local',
+];
 
 /// The discovery-first onboarding flow: renders [SetupCoordinator] state and
 /// forwards user intents. No network work or persistence happens here.
@@ -61,6 +81,17 @@ class SetupScreen extends ConsumerWidget {
       context.push(Routes.guidedConnectTo(hub.host, 1883));
     }
 
+    // 2.9.5: a choice on the empty result, counted before it acts.
+    void emptyChoice(ScanEmptyChoice choice) => ref
+        .read(analyticsProvider)
+        .track(
+          SetupStep(
+            SetupStepKind.emptyChoice,
+            choice: choice,
+            platform: coordinator.platform,
+          ),
+        );
+
     Future<void> tryDemo() async {
       ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.demo));
       final id = await ref.read(firstRunProvider).startDemo();
@@ -86,6 +117,7 @@ class SetupScreen extends ConsumerWidget {
             onRetry: coordinator.retry,
             onPlatform: coordinator.setPlatform,
             onCheckAddress: coordinator.checkAddress,
+            onChoice: emptyChoice,
             onManual: manual,
             onManualTo: manualTo,
             onDemo: tryDemo,
@@ -404,6 +436,7 @@ class _ScanEmpty extends StatelessWidget {
     required this.onPlatform,
     required this.onManual,
     required this.onCheckAddress,
+    required this.onChoice,
     required this.onManualTo,
     required this.onDemo,
   });
@@ -411,6 +444,7 @@ class _ScanEmpty extends StatelessWidget {
   final VoidCallback onRetry;
   final ValueChanged<SetupPlatform?> onPlatform;
   final ValueChanged<String> onCheckAddress;
+  final ValueChanged<ScanEmptyChoice> onChoice;
   final VoidCallback onManual;
   final ValueChanged<HubFound> onManualTo;
   final VoidCallback onDemo;
@@ -500,10 +534,21 @@ class _ScanEmpty extends StatelessWidget {
         ],
         const SizedBox(height: 12),
         _SetupGuides(only: guideFor),
-        // No hub found: the address question comes first and its Check is
-        // the primary action (2.6.4: five users saw it under the chips and
-        // none typed into it); the chips and Try again follow.
+        // No hub found: three ways out of the dead end (2.9.5: 13 of the
+        // first 20 Home Assistant users left here without typing an
+        // address), then the address question, whose Check is the primary
+        // action (2.6.4: five users saw it under the chips and none typed
+        // into it); the chips and Try again follow.
         if (hub == null) ...[
+          const SizedBox(height: 20),
+          _EmptyChoices(
+            onChoice: onChoice,
+            onHomeAssistant: () {
+              onPlatform(SetupPlatform.homeAssistant);
+              onCheckAddress('homeassistant.local');
+            },
+            onCheckAddress: onCheckAddress,
+          ),
           const SizedBox(height: 20),
           _AddressField(
             platform: platform,
@@ -559,6 +604,136 @@ class _ScanEmpty extends StatelessWidget {
           TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
           TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
         ],
+      ],
+    );
+  }
+}
+
+/// The three choices on an empty result with no hub found (2.9.5): no hub
+/// yet opens the Hubs page; Home Assistant checks homeassistant.local and
+/// says where its broker lives; another network explains guest networks
+/// and offers [usualHubNames] to check.
+class _EmptyChoices extends StatefulWidget {
+  const _EmptyChoices({
+    required this.onChoice,
+    required this.onHomeAssistant,
+    required this.onCheckAddress,
+  });
+  final ValueChanged<ScanEmptyChoice> onChoice;
+  final VoidCallback onHomeAssistant;
+  final ValueChanged<String> onCheckAddress;
+
+  @override
+  State<_EmptyChoices> createState() => _EmptyChoicesState();
+}
+
+class _EmptyChoicesState extends State<_EmptyChoices> {
+  ScanEmptyChoice? _open;
+
+  Future<void> _tap(ScanEmptyChoice choice) async {
+    widget.onChoice(choice);
+    switch (choice) {
+      case ScanEmptyChoice.noHub:
+        try {
+          await openSetupLink(hubsPageUrl);
+        } catch (_) {}
+      case ScanEmptyChoice.homeAssistant:
+        setState(() => _open = choice);
+        widget.onHomeAssistant();
+      case ScanEmptyChoice.otherNetwork:
+        setState(() => _open = choice);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    Widget note(List<Widget> children) => Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+    Widget tile(
+      ScanEmptyChoice choice,
+      IconData icon,
+      String title,
+      String subtitle, {
+      IconData? trailing,
+    }) => ListTile(
+      leading: Icon(icon, color: scheme.primary),
+      title: Text(title),
+      subtitle: Text(subtitle),
+      trailing: trailing != null
+          ? Icon(trailing, size: 20, color: scheme.primary)
+          : null,
+      selected: _open == choice,
+      onTap: () => _tap(choice),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(l10n.setupChoicesTitle, style: theme.textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Card.outlined(
+          margin: EdgeInsets.zero,
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              tile(
+                ScanEmptyChoice.noHub,
+                Icons.router_outlined,
+                l10n.setupChoiceNoHub,
+                l10n.setupChoiceNoHubSub,
+                trailing: Icons.open_in_new,
+              ),
+              const Divider(height: 1),
+              tile(
+                ScanEmptyChoice.homeAssistant,
+                Icons.home_outlined,
+                l10n.setupChoiceHa,
+                l10n.setupChoiceHaSub,
+              ),
+              if (_open == ScanEmptyChoice.homeAssistant)
+                note([
+                  Text(
+                    l10n.setupChoiceHaNote,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ]),
+              const Divider(height: 1),
+              tile(
+                ScanEmptyChoice.otherNetwork,
+                Icons.wifi_find,
+                l10n.setupChoiceOther,
+                l10n.setupChoiceOtherSub,
+              ),
+              if (_open == ScanEmptyChoice.otherNetwork)
+                note([
+                  Text(
+                    l10n.setupChoiceOtherNote,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final name in usualHubNames)
+                        ActionChip(
+                          label: Text(ltr(name)),
+                          onPressed: () => widget.onCheckAddress(name),
+                        ),
+                    ],
+                  ),
+                ]),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -696,6 +871,19 @@ class _AddressField extends StatefulWidget {
 
 class _AddressFieldState extends State<_AddressField> {
   final _controller = TextEditingController();
+
+  // A choice above (Home Assistant, a usual name) checks an address the user
+  // didn't type: show it in the field, so the outcome under it makes sense.
+  @override
+  void didUpdateWidget(_AddressField old) {
+    super.didUpdateWidget(old);
+    final host = widget.check?.host ?? '';
+    if (host.isNotEmpty &&
+        host != old.check?.host &&
+        hostFromAddressInput(_controller.text)?.host != host) {
+      _controller.text = host;
+    }
+  }
 
   @override
   void dispose() {

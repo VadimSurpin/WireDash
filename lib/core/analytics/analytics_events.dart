@@ -71,7 +71,17 @@ enum SetupStepKind {
   /// Zigbee2MQTT's web page asked where its broker is (2.7.2), with its
   /// [SetupStep.result]: broker, local_only, unreachable or no_answer.
   z2mAsked,
+
+  /// One of the three choices on the empty result (2.9.5), with its
+  /// [SetupStep.choice].
+  emptyChoice,
 }
+
+/// What the user tapped on an empty result with no hub found (2.9.5): no
+/// hub yet (opens the Hubs page), Home Assistant (checks
+/// homeassistant.local), or a hub on another network (the guest-network
+/// note and usual names).
+enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the
 /// first step that failed (name lookup, TCP connection, MQTT handshake,
@@ -113,9 +123,14 @@ class SetupStep extends AnalyticsEvent {
     this.result,
     this.tidied,
     this.noNetwork,
+    this.choice,
   });
 
   final SetupStepKind step;
+
+  /// The choice tapped on the empty result (a [ScanEmptyChoice]), when
+  /// [step] is emptyChoice.
+  final Enum? choice;
 
   /// The setup error kind's name, when [step] is failed.
   final Enum? error;
@@ -204,6 +219,7 @@ class SetupStep extends AnalyticsEvent {
     if (result != null) 'result': _snake(result!.name),
     if (tidied != null) 'tidied': tidied! ? 'yes' : 'no',
     if (noNetwork != null) 'why': _snake(noNetwork!.name),
+    if (choice != null) 'choice': _snake(choice!.name),
   };
 
   /// The interface kind as a fixed label: wifi, ethernet or other.
