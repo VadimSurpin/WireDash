@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zigdash/features/connections/discovery/no_network.dart';
 import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/core/analytics/analytics_tracker.dart';
 import 'package:zigdash/data/database/database.dart';
@@ -154,6 +155,16 @@ void main() {
           const SetupFailed(SetupErrorKind.authRequired),
         )?.props,
         {'step': 'failed', 'error': 'auth_required'},
+      );
+      expect(
+        setupStepFor(
+          null,
+          const SetupFailed(
+            SetupErrorKind.scanFailed,
+            noNetwork: NoNetwork.mobileData,
+          ),
+        )?.props,
+        {'step': 'failed', 'error': 'scan_failed', 'why': 'mobile_data'},
       );
       expect(
         setupStepFor(

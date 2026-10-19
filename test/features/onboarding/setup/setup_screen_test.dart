@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,7 @@ import 'package:zigdash/features/connections/discovery/address_check.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
 import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
+import 'package:zigdash/features/connections/discovery/no_network.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
@@ -117,6 +119,7 @@ Future<SetupCoordinator> _pump(
   List<Override> extra = const [],
   AddressChecker? checkAddress,
   bool vpn = false,
+  NoNetwork? noNetwork,
 }) async {
   // The setup screens are lists that grew in 2.5 (progress, the platform
   // question); a tall view keeps every action built and tappable.
@@ -135,7 +138,8 @@ Future<SetupCoordinator> _pump(
                   .map(BrokerFound.new),
           addHub: (_) {},
         ),
-    deviceIp: () async => '192.168.1.5',
+    deviceIp: () async => noNetwork == null ? '192.168.1.5' : null,
+    noNetwork: () async => noNetwork ?? NoNetwork.unknown,
     diagnostics: _FakeDiagnostics(reports ?? [_ok()]),
     fetchDevices: (config, password, base) async =>
         fetchFor?.call(base) ?? fetch,
@@ -692,6 +696,52 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.textContaining('1 device found.'), findsOneWidget);
+  });
+
+  testWidgets('on mobile data: says so, opens Wi-Fi, no Try again', (
+    tester,
+  ) async {
+    final calls = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('zigdash/app'),
+      (call) async {
+        calls.add(call.method);
+        return true;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('zigdash/app'),
+        null,
+      ),
+    );
+    final c = await _pump(tester, noNetwork: NoNetwork.mobileData);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text("Your phone isn't on Wi-Fi"), findsOneWidget);
+    expect(find.textContaining('mobile data'), findsOneWidget);
+    expect(find.text('Waiting for Wi-Fi…'), findsOneWidget);
+    expect(find.text('Try again'), findsNothing);
+    expect(find.text('Enter details manually'), findsOneWidget);
+
+    await tester.tap(find.text('Open Wi-Fi settings'));
+    await tester.pump();
+    expect(calls, ['openWifiSettings']);
+    await c.cancel();
+  });
+
+  testWidgets('no reason known: never claims mobile data', (tester) async {
+    final c = await _pump(tester, noNetwork: NoNetwork.unknown);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('No local network'), findsOneWidget);
+    expect(find.textContaining('mobile data'), findsNothing);
+    expect(find.text('Open Wi-Fi settings'), findsOneWidget);
+    await c.cancel();
   });
 
   testWidgets('the unknown error has its own title and text', (tester) async {

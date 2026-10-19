@@ -36,6 +36,25 @@ class MainActivity : FlutterActivity() {
                     call.argument<String>("name") ?: ""))
                 "generateVapidKeys" -> result.success(generateVapidKeys())
                 "timeZoneId" -> result.success(java.util.TimeZone.getDefault().id)
+                // Setup's no-network screen (2.9.4): the Wi-Fi panel over the
+                // app on Android 10+, the Wi-Fi settings page before.
+                "openWifiSettings" -> {
+                    val action = if (android.os.Build.VERSION.SDK_INT >= 29)
+                        android.provider.Settings.Panel.ACTION_WIFI
+                    else android.provider.Settings.ACTION_WIFI_SETTINGS
+                    try {
+                        startActivity(android.content.Intent(action))
+                        result.success(true)
+                    } catch (_: Exception) {
+                        try {
+                            startActivity(android.content.Intent(
+                                android.provider.Settings.ACTION_WIFI_SETTINGS))
+                            result.success(true)
+                        } catch (_: Exception) {
+                            result.success(false)
+                        }
+                    }
+                }
                 // Wall display / kiosk (kiosk-2.6.md): dim this window, and
                 // Android screen pinning. Brightness -1 = the system's.
                 "setBrightness" -> {

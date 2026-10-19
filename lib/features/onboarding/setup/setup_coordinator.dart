@@ -7,6 +7,7 @@ import '../../connections/discovery/address_check.dart';
 import '../../connections/discovery/broker_probe.dart';
 import '../../connections/discovery/broker_scan_service.dart';
 import '../../connections/discovery/hub_probe.dart';
+import '../../connections/discovery/no_network.dart';
 import '../../connections/discovery/z2m_frontend.dart';
 import '../../discovery/models/z2m_device.dart';
 import 'recommendation_policy.dart';
@@ -35,6 +36,9 @@ class Z2mFetchResult {
 }
 
 typedef DeviceIpProvider = Future<String?> Function();
+
+/// Why there is no home address, when [DeviceIpProvider] found none (2.9.4).
+typedef NoNetworkProvider = Future<NoNetwork> Function();
 
 /// Starts a scan; [hubs] are the hub kinds to look for when the phone's /24
 /// has no broker (the user's platform answer adds the SMLIGHT pass).
@@ -233,10 +237,19 @@ class SetupNeedsAuth extends SetupState {
 /// A categorized failure. [failedAtCreation] marks save failures: retry then
 /// resumes at creation instead of re-verifying.
 class SetupFailed extends SetupState {
-  const SetupFailed(this.kind, {this.candidate, this.failedAtCreation = false});
+  const SetupFailed(
+    this.kind, {
+    this.candidate,
+    this.failedAtCreation = false,
+    this.noNetwork,
+  });
   final SetupErrorKind kind;
   final SetupCandidate? candidate;
   final bool failedAtCreation;
+
+  /// Why the phone had no home address, on [SetupErrorKind.scanFailed]
+  /// (2.9.4). Setup starts again by itself once Wi-Fi is back.
+  final NoNetwork? noNetwork;
 }
 
 /// Devices verified — the user reviews the grouped, preselected rows.
@@ -283,6 +296,8 @@ class SetupCoordinator {
     Z2mBrokerLookup? askZ2m,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
+    NoNetworkProvider? noNetwork,
+    this.networkRecheck = const Duration(seconds: 2),
     String base = 'zigbee2mqtt',
     this.onCreated,
   }) : _base = base,
@@ -295,7 +310,8 @@ class SetupCoordinator {
        _identifyHub = identifyHub,
        _askZ2m = askZ2m,
        _probeBroker = probeBroker,
-       _networkFacts = networkFacts;
+       _networkFacts = networkFacts,
+       _noNetwork = noNetwork;
 
   final ScanRunFactory _scan;
   final DeviceIpProvider _deviceIp;
@@ -345,6 +361,13 @@ class SetupCoordinator {
   }
 
   final NetworkFactsProvider? _networkFacts;
+  final NoNetworkProvider? _noNetwork;
+
+  /// How often the no-network screen looks for Wi-Fi again (2.9.4). Quiet:
+  /// it emits nothing until there is an address, so the scan_failed count
+  /// stays one per attempt.
+  final Duration networkRecheck;
+  Timer? _recheck;
 
   /// Runs once after a successful setup, before [SetupComplete] is emitted
   /// (the app clears demo mode, finishes first run and remembers the new
@@ -400,7 +423,15 @@ class SetupCoordinator {
     final ip = await _deviceIp();
     if (op != _op) return;
     if (ip == null) {
-      _emit(const SetupFailed(SetupErrorKind.scanFailed));
+      NoNetwork why;
+      try {
+        why = await _noNetwork?.call() ?? NoNetwork.unknown;
+      } catch (_) {
+        why = NoNetwork.unknown;
+      }
+      if (op != _op) return;
+      _emit(SetupFailed(SetupErrorKind.scanFailed, noNetwork: why));
+      _watchForNetwork(op);
       return;
     }
     NetworkFacts? network;
@@ -813,12 +844,41 @@ class SetupCoordinator {
   /// awaiting it can stall behind a still-open stream, and the listener
   /// already drops events once the state leaves [SetupScanning].
   void _cancelScan() {
+    _recheck?.cancel();
+    _recheck = null;
     unawaited(_scanSub?.cancel());
     _scanSub = null;
     _run = null;
   }
 
   // --- Internals ---
+
+  /// Scans again once the phone has a home address, while the no-network
+  /// screen is up and nothing else started.
+  void _watchForNetwork(int op) {
+    var busy = false;
+    _recheck = Timer.periodic(networkRecheck, (timer) async {
+      if (busy) return;
+      final s = _state;
+      if (op != _op ||
+          s is! SetupFailed ||
+          s.kind != SetupErrorKind.scanFailed) {
+        timer.cancel();
+        return;
+      }
+      busy = true;
+      String? ip;
+      try {
+        ip = await _deviceIp();
+      } catch (_) {
+        ip = null;
+      }
+      busy = false;
+      if (ip == null || op != _op || !identical(_state, s)) return;
+      timer.cancel();
+      await startScan();
+    });
+  }
 
   SetupCandidate? get _candidate => switch (_state) {
     SetupVerifying(:final candidate) => candidate,

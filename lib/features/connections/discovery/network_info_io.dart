@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'no_network.dart';
+
+export 'no_network.dart';
+
 /// Returns the phone's private IPv4 address on the home network (Wi-Fi or
 /// Ethernet), or null if none is found.
 Future<String?> wifiIpv4() async => (await homeIpv4())?.ip;
@@ -18,6 +22,22 @@ Future<({String name, String ip})?> homeIpv4() async {
     ]);
   } catch (_) {
     return null;
+  }
+}
+
+/// Why there is no home address (2.9.4): every interface and address
+/// family, since mobile data is often IPv6 only. Never throws; unreadable
+/// interfaces are [NoNetwork.unknown], never mobile data.
+Future<NoNetwork> noNetworkReason() async {
+  try {
+    final interfaces = await NetworkInterface.list(includeLoopback: false);
+    return whyNoNetwork([
+      for (final iface in interfaces)
+        for (final addr in iface.addresses)
+          (name: iface.name, ip: addr.address),
+    ]);
+  } catch (_) {
+    return NoNetwork.unknown;
   }
 }
 

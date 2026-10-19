@@ -1618,6 +1618,27 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupErrScanFailedAction => 'נסו שוב';
 
   @override
+  String get setupNoWifiTitle => 'הטלפון לא מחובר ל-Wi-Fi';
+
+  @override
+  String get setupNoWifiMobileData =>
+      'הוא משתמש בנתונים סלולריים, ולכן לא רואה את המכשירים בבית. הפעילו Wi-Fi והתחברו לרשת הביתית: ההגדרה תתחיל מחדש מעצמה.';
+
+  @override
+  String get setupNoWifiOffline =>
+      'לטלפון אין חיבור לרשת. הפעילו Wi-Fi והתחברו לרשת הביתית: ההגדרה תתחיל מחדש מעצמה.';
+
+  @override
+  String get setupNoWifiUnknown =>
+      'ZigDash לא מוצא את כתובת ה-Wi-Fi של הטלפון. ודאו שה-Wi-Fi פועל ומחובר לרשת הביתית: ההגדרה תתחיל מחדש מעצמה. מחוברים ל-VPN או מחוץ לבית? הזינו את הפרטים ידנית.';
+
+  @override
+  String get setupOpenWifiSettings => 'פתיחת הגדרות Wi-Fi';
+
+  @override
+  String get setupWaitingForWifi => 'ממתין ל-Wi-Fi…';
+
+  @override
   String get setupErrSaveFailedTitle => 'השמירה נכשלה';
 
   @override
