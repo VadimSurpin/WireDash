@@ -7,7 +7,7 @@ PLAY = "https://play.google.com/store/apps/details?id=com.giladtamam.zigdash"
 
 
 def page(slug, title, desc, body):
-    nav = [("setup", "Setup"), ("home-assistant", "Home Assistant"), ("help", "Help")]
+    nav = [("setup", "Setup"), ("hubs", "Hubs"), ("home-assistant", "Home Assistant"), ("help", "Help")]
     links = "\n".join(
         f'    <a href="../{s}/"{" aria-current=\"page\"" if s == slug else ""}>{n}</a>'
         for s, n in nav
@@ -65,7 +65,7 @@ SETUP = f"""
 <h2 id="need">What you need</h2>
 <ul>
   <li><strong>Zigbee2MQTT</strong>, running, with at least one device paired.</li>
-  <li><strong>An MQTT broker</strong> that Zigbee2MQTT uses, usually Mosquitto. It can run on Home Assistant, a Raspberry Pi, a server or an SMLIGHT hub.</li>
+  <li><strong>An MQTT broker</strong> that Zigbee2MQTT uses, usually Mosquitto. It can run on Home Assistant, a Raspberry Pi, a server or an SMLIGHT hub. No hub yet? See <a href="../hubs/">the hubs we recommend</a>.</li>
   <li><strong>An Android phone or tablet</strong> on the same Wi-Fi as that hub.</li>
 </ul>
 <p>No Zigbee2MQTT yet? Open ZigDash and try the demo home first.</p>
@@ -193,6 +193,50 @@ HELP = "\n".join([
 <p>Ask in the <a href="https://t.me/zigdash_app">Telegram group</a>, <a href="https://github.com/giladtamam/zigdash/issues">open an issue on GitHub</a>, or write to <a href="mailto:support@zigdash.app">support@zigdash.app</a>. Tell us what you run (Home Assistant, Raspberry Pi, SMLIGHT) and what ZigDash says.</p>""",
 ])
 
+HUBS = """
+<h1>Hubs we recommend</h1>
+<p class="lead">ZigDash needs Zigbee2MQTT running somewhere at home. If you're starting fresh, a small SMLIGHT hub is the simplest way to get there. No Home Assistant needed, and if you have it, ZigDash works with it too.</p>
+
+<div class="tip">These are plain links to AliExpress. We don't earn anything from them, and ZigDash works with any Zigbee2MQTT setup, not only these.</div>
+
+<h2 id="smhub-nano">SMHUB Nano: the easy start</h2>
+<p><strong>For:</strong> a first Zigbee home, with no computer to look after.</p>
+<p>A small box that runs Zigbee2MQTT and the Mosquitto broker on the hub itself. Plug it into your router, pair your devices on its web page, and ZigDash connects to it directly. It also comes with Node-RED for automations and WireGuard for reaching home.</p>
+<ul>
+  <li><strong>Good:</strong> everything in one box, stored on built-in eMMC rather than an SD card, with an external Zigbee antenna.</li>
+  <li><strong>Keep in mind:</strong> SMLIGHT's hub software is still new and can feel slow in places. Connect it by Ethernet rather than Wi-Fi.</li>
+  <li><strong>In ZigDash:</strong> turn on <strong>Allow External</strong> in the hub's Settings › MQTT, then tap Find my setup and choose SMLIGHT.</li>
+</ul>
+<p><a class="btn primary" href="https://www.aliexpress.com/item/1005011888765730.html">SMHUB Nano on AliExpress</a></p>
+
+<h2 id="smhub">SMHUB Essentials and Premium: room to grow</h2>
+<p><strong>For:</strong> bigger homes, or if you may add Z-Wave later.</p>
+<p>The same idea as the Nano, with two radios instead of one and slots for add-on modules (Z-Wave, PoE, LTE). Premium has the newer, stronger radios. Zigbee2MQTT and Mosquitto run on the hub, just like the Nano.</p>
+<ul>
+  <li><strong>Good:</strong> a second radio for Thread, and the most room to expand.</li>
+  <li><strong>Keep in mind:</strong> more than most homes need, and the add-on modules cost extra.</li>
+</ul>
+<p><a class="btn primary" href="https://www.aliexpress.com/item/1005011781605879.html">SMHUB on AliExpress</a></p>
+
+<h2 id="slzb-06">SLZB-06: if you already run a Raspberry Pi or server</h2>
+<p><strong>For:</strong> people who already run Zigbee2MQTT on a Pi, a server or Home Assistant, and want a better Zigbee radio.</p>
+<p>A network Zigbee coordinator: it plugs into your router (with PoE, one cable does power and network) and Zigbee2MQTT connects to it over the network, so it can sit in the middle of the house instead of behind a computer. SMLIGHT recommends the TI versions (SLZB-06 and SLZB-06P7) for Zigbee2MQTT.</p>
+<ul>
+  <li><strong>Good:</strong> solid, widely used, and easy to place where the signal is best.</li>
+  <li><strong>Keep in mind:</strong> it is only the Zigbee radio. Zigbee2MQTT and the broker still run on your own Pi or server, so on its own it is not a complete setup.</li>
+</ul>
+<p><a class="btn primary" href="https://www.aliexpress.com/item/1005004942648430.html">SLZB-06 on AliExpress</a></p>
+
+<h2 id="which">Which one?</h2>
+<ul>
+  <li><strong>Starting from nothing:</strong> SMHUB Nano.</li>
+  <li><strong>A big home, or Z-Wave plans:</strong> SMHUB Premium.</li>
+  <li><strong>Already running Zigbee2MQTT on a Pi or server:</strong> SLZB-06.</li>
+</ul>
+
+<div class="next"><a class="btn" href="../setup/">Setup guide</a><a class="btn" href="https://t.me/zigdash_app">Ask the community</a></div>
+"""
+
 NOTFOUND = """
 <h1>Page not found</h1>
 <p class="lead">That page doesn't exist. Try the <a href="/">home page</a>, the <a href="/setup/">setup guide</a> or <a href="/help/">help</a>.</p>
@@ -201,6 +245,7 @@ NOTFOUND = """
 root = pathlib.Path("landing")
 for slug, title, desc, body in [
     ("setup", "Setting up", "How to connect ZigDash to Zigbee2MQTT and your MQTT broker: scan, connect by address, the login, and notes for Home Assistant, Raspberry Pi and SMLIGHT.", SETUP),
+    ("hubs", "Hubs we recommend", "SMLIGHT hubs that run Zigbee2MQTT, with an honest note on each: SMHUB Nano, SMHUB Essentials and Premium, and the SLZB-06 coordinator.", HUBS),
     ("home-assistant", "With Home Assistant", "Use ZigDash with Home Assistant's Mosquitto and Zigbee2MQTT add-ons: make a user, connect, and import your names and rooms.", HA),
     ("help", "Help", "Fixes for the most common ZigDash problems: nothing found, login rejected, no Zigbee2MQTT, missing devices, and reaching home.", HELP),
 ]:
