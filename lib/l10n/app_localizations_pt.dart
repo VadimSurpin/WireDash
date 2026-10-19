@@ -1640,6 +1640,27 @@ class AppLocalizationsPt extends AppLocalizations {
   String get setupErrScanFailedAction => 'Tentar de novo';
 
   @override
+  String get setupNoWifiTitle => 'Seu celular não está no Wi-Fi';
+
+  @override
+  String get setupNoWifiMobileData =>
+      'Ele está usando dados móveis, por isso não vê os aparelhos de casa. Ligue o Wi-Fi e conecte-se à rede de casa: a configuração recomeça sozinha.';
+
+  @override
+  String get setupNoWifiOffline =>
+      'Seu celular está sem conexão de rede. Ligue o Wi-Fi e conecte-se à rede de casa: a configuração recomeça sozinha.';
+
+  @override
+  String get setupNoWifiUnknown =>
+      'O ZigDash não encontra o endereço Wi-Fi do seu celular. Verifique se o Wi-Fi está ligado e conectado à rede de casa: a configuração recomeça sozinha. Usando VPN ou fora de casa? Digite os dados manualmente.';
+
+  @override
+  String get setupOpenWifiSettings => 'Abrir configurações de Wi-Fi';
+
+  @override
+  String get setupWaitingForWifi => 'Aguardando o Wi-Fi…';
+
+  @override
   String get setupErrSaveFailedTitle => 'Não foi possível salvar';
 
   @override

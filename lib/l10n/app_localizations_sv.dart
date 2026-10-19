@@ -1632,6 +1632,27 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupErrScanFailedAction => 'Försök igen';
 
   @override
+  String get setupNoWifiTitle => 'Telefonen är inte på wifi';
+
+  @override
+  String get setupNoWifiMobileData =>
+      'Den använder mobildata och ser därför inte enheterna hemma. Slå på wifi och anslut till hemnätverket: installationen börjar om av sig själv.';
+
+  @override
+  String get setupNoWifiOffline =>
+      'Telefonen har ingen nätverksanslutning. Slå på wifi och anslut till hemnätverket: installationen börjar om av sig själv.';
+
+  @override
+  String get setupNoWifiUnknown =>
+      'ZigDash hittar inte telefonens wifi-adress. Kontrollera att wifi är på och anslutet till hemnätverket: installationen börjar om av sig själv. På VPN eller borta? Ange uppgifterna manuellt.';
+
+  @override
+  String get setupOpenWifiSettings => 'Öppna wifi-inställningar';
+
+  @override
+  String get setupWaitingForWifi => 'Väntar på wifi…';
+
+  @override
   String get setupErrSaveFailedTitle => 'Kunde inte spara';
 
   @override

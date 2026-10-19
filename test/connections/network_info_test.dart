@@ -66,4 +66,41 @@ void main() {
     expect(hasVpnInterface(['wlan0', 'p2p-wlan0-0', 'rmnet0']), isFalse);
     expect(hasVpnInterface(const []), isFalse);
   });
+
+  group('why there is no home address (2.9.4)', () {
+    test('mobile data only, IPv6 too', () {
+      expect(
+        whyNoNetwork(const [
+          (name: 'rmnet_data0', ip: '2a00:1:2::5'),
+          (name: 'wlan0', ip: 'fe80::1'),
+        ]),
+        NoNetwork.mobileData,
+      );
+    });
+
+    test('nothing but link-local: no network', () {
+      expect(
+        whyNoNetwork(const [(name: 'wlan0', ip: 'fe80::abcd')]),
+        NoNetwork.offline,
+      );
+      expect(whyNoNetwork(const []), NoNetwork.offline);
+    });
+
+    test('Wi-Fi with an IPv6 address only is not called mobile data', () {
+      expect(
+        whyNoNetwork(const [
+          (name: 'wlan0', ip: '2a00:1:2::9'),
+          (name: 'rmnet_data0', ip: '10.1.2.3'),
+        ]),
+        NoNetwork.unknown,
+      );
+    });
+
+    test('only a VPN: unknown', () {
+      expect(
+        whyNoNetwork(const [(name: 'tun0', ip: '10.8.0.2')]),
+        NoNetwork.unknown,
+      );
+    });
+  });
 }

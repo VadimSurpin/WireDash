@@ -112,6 +112,7 @@ class SetupStep extends AnalyticsEvent {
     this.network,
     this.result,
     this.tidied,
+    this.noNetwork,
   });
 
   final SetupStepKind step;
@@ -125,6 +126,10 @@ class SetupStep extends AnalyticsEvent {
   /// How many answered only to the scan's second, slower look (2.9.3), on
   /// an empty scan and on a found one.
   final int? lateHosts;
+
+  /// Why the phone had no home address, on a scan_failed (2.9.4): mobile
+  /// data, no network, or unknown. Never an address or interface name.
+  final Enum? noNetwork;
 
   /// Whether a VPN interface was up during the scan.
   final bool? vpn;
@@ -198,6 +203,7 @@ class SetupStep extends AnalyticsEvent {
     if (network != null) 'net': networkLabel(network!),
     if (result != null) 'result': _snake(result!.name),
     if (tidied != null) 'tidied': tidied! ? 'yes' : 'no',
+    if (noNetwork != null) 'why': _snake(noNetwork!.name),
   };
 
   /// The interface kind as a fixed label: wifi, ethernet or other.

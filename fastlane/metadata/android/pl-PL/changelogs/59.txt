@@ -1,0 +1,1 @@
+ZigDash 2.9.4: jeśli telefon nie jest w sieci Wi-Fi, konfiguracja teraz to mówi (dane komórkowe albo brak sieci), otwiera ustawienia Wi-Fi i rusza ponownie sama, gdy tylko się połączysz.

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
@@ -7,6 +8,7 @@ import 'package:zigdash/features/connections/discovery/address_check.dart';
 import 'package:zigdash/features/connections/discovery/broker_probe.dart';
 import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
+import 'package:zigdash/features/connections/discovery/no_network.dart';
 import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
@@ -112,6 +114,9 @@ class _Harness {
     Z2mBrokerLookup? askZ2m,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
+    DeviceIpProvider? deviceIp,
+    NoNetworkProvider? noNetwork,
+    Duration networkRecheck = const Duration(seconds: 2),
   }) : diagnostics = _FakeDiagnostics(reports ?? [ok()]),
        creator = _FakeCreator() {
     coordinator = SetupCoordinator(
@@ -123,7 +128,9 @@ class _Harness {
                   const ProbeResult(host: '192.168.1.10', port: 1883),
                 ]))(ip),
           ),
-      deviceIp: () async => ip,
+      deviceIp: deviceIp ?? () async => ip,
+      noNetwork: noNetwork,
+      networkRecheck: networkRecheck,
       diagnostics: diagnostics,
       fetchDevices: (config, password, base) async {
         fetchedBases.add(base);
@@ -240,6 +247,72 @@ void main() {
       final s = h.coordinator.state;
       expect(s, isA<SetupFailed>());
       expect((s as SetupFailed).kind, SetupErrorKind.scanFailed);
+      expect(s.noNetwork, NoNetwork.unknown);
+      await h.coordinator.dispose();
+    });
+
+    test('no local IP says why: mobile data', () async {
+      final h = _Harness(ip: null, noNetwork: () async => NoNetwork.mobileData);
+      await h.coordinator.startScan();
+      expect(
+        (h.coordinator.state as SetupFailed).noNetwork,
+        NoNetwork.mobileData,
+      );
+      await h.coordinator.dispose();
+    });
+
+    test('a failing reason lookup is unknown, never mobile data', () async {
+      final h = _Harness(ip: null, noNetwork: () => throw Exception('no'));
+      await h.coordinator.startScan();
+      expect((h.coordinator.state as SetupFailed).noNetwork, NoNetwork.unknown);
+      await h.coordinator.dispose();
+    });
+
+    test('scans by itself once Wi-Fi is back, quietly until then', () {
+      fakeAsync((async) {
+        String? ip;
+        final h = _Harness(
+          deviceIp: () async => ip,
+          noNetwork: () async => NoNetwork.mobileData,
+        );
+        final states = <SetupState>[];
+        h.coordinator.states.listen(states.add);
+        h.coordinator.startScan();
+        async.flushMicrotasks();
+        expect(h.coordinator.state, isA<SetupFailed>());
+        final before = states.length;
+        async.elapse(const Duration(seconds: 7));
+        expect(states.length, before, reason: 'no new states without Wi-Fi');
+        ip = '192.168.1.5';
+        async.elapse(const Duration(seconds: 2));
+        expect(states.skip(before).first, isA<SetupScanning>());
+        h.coordinator.dispose();
+        async.flushMicrotasks();
+      });
+    });
+
+    test('leaving setup stops looking for Wi-Fi', () {
+      fakeAsync((async) {
+        String? ip;
+        var asked = 0;
+        final h = _Harness(
+          deviceIp: () async {
+            asked++;
+            return ip;
+          },
+        );
+        h.coordinator.startScan();
+        async.flushMicrotasks();
+        h.coordinator.cancel();
+        async.flushMicrotasks();
+        final after = asked;
+        ip = '192.168.1.5';
+        async.elapse(const Duration(seconds: 10));
+        expect(asked, after);
+        expect(h.coordinator.state, isA<SetupIdle>());
+        h.coordinator.dispose();
+        async.flushMicrotasks();
+      });
     });
 
     test('retry from empty scan rescans', () async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -7,7 +8,9 @@ import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../shortcuts/shortcut_service.dart' show appChannel;
 import '../../connections/discovery/hub_probe.dart';
+import '../../connections/discovery/no_network.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
 import '../../settings/screens/settings_screen.dart' show privacyPolicyUrl;
 import '../../support/community.dart' show CommunityLink;
@@ -97,6 +100,10 @@ class SetupScreen extends ConsumerWidget {
             base: coordinator.base,
             onRetry: coordinator.retryWithBase,
             onDemo: tryDemo,
+            onManual: manual,
+          ),
+          SetupFailed(kind: SetupErrorKind.scanFailed) => _NoNetwork(
+            state: state,
             onManual: manual,
           ),
           SetupFailed() => _Failure(
@@ -1125,6 +1132,96 @@ class _Failure extends StatelessWidget {
         const CommunityLink(from: HelpFrom.setupError),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+      ],
+    );
+  }
+}
+
+/// No home address to scan from (2.9.4): says why (mobile data, no
+/// network), opens the Wi-Fi panel, and waits; the coordinator scans again
+/// by itself once Wi-Fi is back, so there is no Try again to tap repeatedly.
+class _NoNetwork extends StatelessWidget {
+  const _NoNetwork({required this.state, required this.onManual});
+  final SetupFailed state;
+  final VoidCallback onManual;
+
+  static Future<void> _openWifi() async {
+    try {
+      await appChannel.invokeMethod<bool>('openWifiSettings');
+    } on PlatformException catch (_) {
+      // No settings page to open: the text still says what to do.
+    } on MissingPluginException catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final why = state.noNetwork ?? NoNetwork.unknown;
+    final (title, body) = switch (why) {
+      NoNetwork.mobileData => (
+        l10n.setupNoWifiTitle,
+        l10n.setupNoWifiMobileData,
+      ),
+      NoNetwork.offline => (l10n.setupNoWifiTitle, l10n.setupNoWifiOffline),
+      NoNetwork.unknown => (
+        l10n.setupErrScanFailedTitle,
+        l10n.setupNoWifiUnknown,
+      ),
+    };
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Icon(Icons.wifi_off, size: 48, color: theme.colorScheme.error),
+        const SizedBox(height: 16),
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          body,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 24),
+        FilledButton.icon(
+          onPressed: _openWifi,
+          icon: const Icon(Icons.wifi),
+          label: Text(l10n.setupOpenWifiSettings),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox.square(
+              dimension: 14,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                l10n.setupWaitingForWifi,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+        GetHelpLink(
+          onPressed: () => context.push(
+            Routes.getHelpFrom(
+              HelpFrom.setupError.name,
+              error: state.kind.name,
+            ),
+          ),
+        ),
+        const CommunityLink(from: HelpFrom.setupError),
       ],
     );
   }

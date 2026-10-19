@@ -2990,6 +2990,42 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get setupErrScanFailedAction;
 
+  /// No description provided for @setupNoWifiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone isn\'t on Wi-Fi'**
+  String get setupNoWifiTitle;
+
+  /// No description provided for @setupNoWifiMobileData.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s using mobile data, so it can\'t see the devices at home. Turn on Wi-Fi and join your home network: setup starts again by itself.'**
+  String get setupNoWifiMobileData;
+
+  /// No description provided for @setupNoWifiOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone has no network connection. Turn on Wi-Fi and join your home network: setup starts again by itself.'**
+  String get setupNoWifiOffline;
+
+  /// No description provided for @setupNoWifiUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash can\'t find your phone\'s Wi-Fi address. Check that Wi-Fi is on and joined to your home network: setup starts again by itself. On a VPN or away from home? Enter the details manually.'**
+  String get setupNoWifiUnknown;
+
+  /// No description provided for @setupOpenWifiSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Wi-Fi settings'**
+  String get setupOpenWifiSettings;
+
+  /// No description provided for @setupWaitingForWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for Wi-Fi…'**
+  String get setupWaitingForWifi;
+
   /// No description provided for @setupErrSaveFailedTitle.
   ///
   /// In en, this message translates to:

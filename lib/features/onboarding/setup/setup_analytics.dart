@@ -82,7 +82,11 @@ SetupStep? setupStepFor(
     rejected ? SetupStepKind.loginRejected : SetupStepKind.needsLogin,
     platform: next.platform ?? platform,
   ),
-  SetupFailed(:final kind) => SetupStep(SetupStepKind.failed, error: kind),
+  SetupFailed(:final kind, :final noNetwork) => SetupStep(
+    SetupStepKind.failed,
+    error: kind,
+    noNetwork: noNetwork,
+  ),
   SetupReview(:final rows) when previous is! SetupReview => SetupStep(
     SetupStepKind.review,
     devices: rows.length,

@@ -52,6 +52,7 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
       return home?.ip;
     },
     networkFacts: () async => (kind: network, vpn: await vpnActive()),
+    noNetwork: noNetworkReason,
     identifyHub: (host) => identifyHost(scanner.hubProber, host),
     askZ2m: (host, port) async => z2mBrokerSetting(
       await fetchZ2mMqttConfig(host, port),

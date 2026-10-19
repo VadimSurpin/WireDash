@@ -1641,6 +1641,27 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupErrScanFailedAction => 'Opnieuw proberen';
 
   @override
+  String get setupNoWifiTitle => 'Je telefoon zit niet op wifi';
+
+  @override
+  String get setupNoWifiMobileData =>
+      'Hij gebruikt mobiele data en ziet daardoor de apparaten thuis niet. Zet wifi aan en maak verbinding met je thuisnetwerk: de installatie start dan vanzelf opnieuw.';
+
+  @override
+  String get setupNoWifiOffline =>
+      'Je telefoon heeft geen netwerkverbinding. Zet wifi aan en maak verbinding met je thuisnetwerk: de installatie start dan vanzelf opnieuw.';
+
+  @override
+  String get setupNoWifiUnknown =>
+      'ZigDash vindt het wifi-adres van je telefoon niet. Controleer of wifi aan staat en verbonden is met je thuisnetwerk: de installatie start dan vanzelf opnieuw. Via vpn of niet thuis? Vul de gegevens handmatig in.';
+
+  @override
+  String get setupOpenWifiSettings => 'Wifi-instellingen openen';
+
+  @override
+  String get setupWaitingForWifi => 'Wachten op wifi…';
+
+  @override
   String get setupErrSaveFailedTitle => 'Opslaan mislukt';
 
   @override

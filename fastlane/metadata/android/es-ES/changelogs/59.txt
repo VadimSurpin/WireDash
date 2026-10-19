@@ -1,0 +1,1 @@
+ZigDash 2.9.4: si tu teléfono no está en Wi-Fi, la configuración ahora te lo dice (datos móviles o sin red), te abre los ajustes de Wi-Fi y vuelve a empezar sola en cuanto te conectas.

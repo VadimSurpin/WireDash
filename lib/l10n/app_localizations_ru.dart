@@ -1635,6 +1635,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupErrScanFailedAction => 'Повторить';
 
   @override
+  String get setupNoWifiTitle => 'Телефон не подключён к Wi-Fi';
+
+  @override
+  String get setupNoWifiMobileData =>
+      'Он использует мобильный интернет и поэтому не видит устройства дома. Включите Wi-Fi и подключитесь к домашней сети: настройка начнётся снова сама.';
+
+  @override
+  String get setupNoWifiOffline =>
+      'У телефона нет подключения к сети. Включите Wi-Fi и подключитесь к домашней сети: настройка начнётся снова сама.';
+
+  @override
+  String get setupNoWifiUnknown =>
+      'ZigDash не может найти Wi-Fi-адрес телефона. Проверьте, что Wi-Fi включён и подключён к домашней сети: настройка начнётся снова сама. Через VPN или не дома? Введите данные вручную.';
+
+  @override
+  String get setupOpenWifiSettings => 'Открыть настройки Wi-Fi';
+
+  @override
+  String get setupWaitingForWifi => 'Ожидание Wi-Fi…';
+
+  @override
   String get setupErrSaveFailedTitle => 'Не удалось сохранить';
 
   @override
