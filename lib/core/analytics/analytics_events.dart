@@ -77,7 +77,9 @@ enum SetupStepKind {
 /// first step that failed (name lookup, TCP connection, MQTT handshake,
 /// login). Never the address. 2.9.3 splits out the cases with their own
 /// message: a `.local` name, Home Assistant without a broker, Home
-/// Assistant refusing the login.
+/// Assistant refusing the login. 2.9.5 adds a refused port on an SMLIGHT
+/// hub (Allow External off) and on a Zigbee2MQTT machine whose broker
+/// listens only locally.
 enum ManualTestResult {
   connected,
   resolve,
@@ -87,6 +89,8 @@ enum ManualTestResult {
   localName,
   haNoBroker,
   haLogin,
+  smlightClosed,
+  z2mNoBroker,
 }
 
 /// Each step of first-run setup: where people get stuck. An empty scan

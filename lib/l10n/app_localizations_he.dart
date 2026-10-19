@@ -1342,7 +1342,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get diagTcpFail =>
-      'לא ניתן להגיע לברוקר. האם Zigbee2MQTT פעיל? בדקו את הכתובת והיציאה.';
+      'הברוקר לא קיבל את החיבור. בדקו שברוקר ה‑MQTT שלכם (בדרך כלל Mosquitto) פועל ומקבל חיבורים ממכשירים אחרים, ושהכתובת והיציאה (בדרך כלל 1883) נכונות.';
 
   @override
   String get diagTcpTimeout =>
@@ -1370,6 +1370,14 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get diagTcpHaNoBroker =>
       'זה ה‑Home Assistant שלכם, אבל לא פועל בו ברוקר MQTT. התקינו והפעילו את התוסף Mosquitto broker (הגדרות › תוספים), ונסו שוב.';
+
+  @override
+  String get diagTcpSmlightClosed =>
+      'זה ה‑hub של SMLIGHT שלכם, אבל ברוקר ה‑MQTT שלו לא מקבל חיבורים ממכשירים אחרים. בדף האינטרנט של ה‑hub פתחו Settings › MQTT, הפעילו Allow External, שמרו ונסו שוב.';
+
+  @override
+  String get diagTcpZ2mNoBroker =>
+      'בכתובת הזו פועל Zigbee2MQTT, אבל ברוקר ה‑MQTT שלו לא מקבל חיבורים ממכשירים אחרים. Mosquitto מאזין רק במחשב שלו עד שמוסיפים לקובץ mosquitto.conf את השורות \"listener 1883\" ו‑\"allow_anonymous true\" (או מגדירים סיסמה). הפעילו מחדש את Mosquitto ונסו שוב.';
 
   @override
   String get diagAuthRejectedHa =>

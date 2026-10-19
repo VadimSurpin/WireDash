@@ -1361,7 +1361,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get diagTcpFail =>
-      'No se puede alcanzar el broker. ¿Está Zigbee2MQTT en marcha? Comprueba la dirección y el puerto.';
+      'El broker no aceptó la conexión. Comprueba que tu broker MQTT (normalmente Mosquitto) está en marcha y acepta conexiones de otros dispositivos, y que la dirección y el puerto (normalmente 1883) son correctos.';
 
   @override
   String get diagTcpTimeout =>
@@ -1390,6 +1390,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get diagTcpHaNoBroker =>
       'Este es tu Home Assistant, pero no tiene ningún broker MQTT en marcha. Instala e inicia el complemento Mosquitto broker (Ajustes › Complementos) y vuelve a intentarlo.';
+
+  @override
+  String get diagTcpSmlightClosed =>
+      'Este es tu hub SMLIGHT, pero su broker MQTT no acepta conexiones de otros dispositivos. En la página web del hub, abre Settings › MQTT, activa Allow External, guarda y vuelve a intentarlo.';
+
+  @override
+  String get diagTcpZ2mNoBroker =>
+      'En esta dirección funciona Zigbee2MQTT, pero su broker MQTT no acepta conexiones de otros dispositivos. Mosquitto solo escucha en su propia máquina hasta que añades las líneas \"listener 1883\" y \"allow_anonymous true\" a mosquitto.conf (o configuras una contraseña). Reinicia Mosquitto y vuelve a intentarlo.';
 
   @override
   String get diagAuthRejectedHa =>

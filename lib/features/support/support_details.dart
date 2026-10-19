@@ -61,7 +61,10 @@ FailureKind failureKindFromLadder(DiagnosticsReport report) {
       'diagResolveTimeout' ||
       'diagResolveLocalName' => FailureKind.hostNotFound,
       'diagTcpTimeout' => FailureKind.timedOut,
-      'diagTcpFail' || 'diagTcpHaNoBroker' => FailureKind.refused,
+      'diagTcpFail' ||
+      'diagTcpHaNoBroker' ||
+      'diagTcpSmlightClosed' ||
+      'diagTcpZ2mNoBroker' => FailureKind.refused,
       'diagConnackFail' => FailureKind.notMqtt,
       'diagLoginNoAnswer' => FailureKind.timedOut,
       'diagAuthRejected' ||
