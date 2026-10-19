@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting up · ZigDash</title>
+<meta name="description" content="How to connect ZigDash to Zigbee2MQTT and your MQTT broker: scan, connect by address, the login, and notes for Home Assistant, Raspberry Pi and SMLIGHT.">
+<link rel="canonical" href="https://zigdash.app/setup/">
+<link rel="icon" href="../assets/icon.png">
+<meta property="og:title" content="Setting up · ZigDash">
+<meta property="og:description" content="How to connect ZigDash to Zigbee2MQTT and your MQTT broker: scan, connect by address, the login, and notes for Home Assistant, Raspberry Pi and SMLIGHT.">
+<meta property="og:url" content="https://zigdash.app/setup/">
+<meta property="og:image" content="https://zigdash.app/assets/01-dashboard.jpg">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="../"><img src="../assets/icon.png" alt=""> ZigDash</a>
+  <nav>
+    <a href="../setup/" aria-current="page">Setup</a>
+    <a href="../home-assistant/">Home Assistant</a>
+    <a href="../help/">Help</a>
+    <a href="https://t.me/zigdash_app">Community</a>
+  </nav>
+</header>
+<main>
+<article class="doc">
+<h1>Setting up ZigDash</h1>
+<p class="lead">ZigDash connects to the MQTT broker that your Zigbee2MQTT already uses. Most people are done in a minute.</p>
+
+<div class="toc"><strong>On this page</strong>
+<ul>
+  <li><a href="#need">What you need</a></li>
+  <li><a href="#scan">Let ZigDash find it</a></li>
+  <li><a href="#address">Connect by address</a></li>
+  <li><a href="#login">The login</a></li>
+  <li><a href="#hubs">Notes for your hub</a></li>
+  <li><a href="#away">Away from home</a></li>
+</ul></div>
+
+<h2 id="need">What you need</h2>
+<ul>
+  <li><strong>Zigbee2MQTT</strong>, running, with at least one device paired.</li>
+  <li><strong>An MQTT broker</strong> that Zigbee2MQTT uses, usually Mosquitto. It can run on Home Assistant, a Raspberry Pi, a server or an SMLIGHT hub.</li>
+  <li><strong>An Android phone or tablet</strong> on the same Wi-Fi as that hub.</li>
+</ul>
+<p>No Zigbee2MQTT yet? Open ZigDash and try the demo home first.</p>
+<div class="buttons" style="justify-content:flex-start"><a class="btn primary" href="https://play.google.com/store/apps/details?id=com.giladtamam.zigdash">Get ZigDash on Google Play</a></div>
+
+<h2 id="scan">1. Let ZigDash find it</h2>
+<ol>
+  <li>Connect your phone to your home Wi-Fi. Not a guest network, and turn mobile data off while you set up.</li>
+  <li>Open ZigDash and tap <strong>Find my setup</strong>. While it looks, tell it where Zigbee2MQTT runs: Home Assistant, an SMLIGHT hub, a Raspberry Pi or Docker, or not sure.</li>
+  <li>ZigDash looks for an MQTT broker on your network, then checks that Zigbee2MQTT is on it.</li>
+  <li>Pick the devices you want and you have a dashboard.</li>
+</ol>
+<div class="tip">If your phone isn't on Wi-Fi, ZigDash says so and gives you a button for the Wi-Fi settings. Once you join, it scans again by itself.</div>
+
+<h2 id="address">2. Nothing found? Connect by address</h2>
+<p>The scan can miss a hub behind a second router, on a mesh network, or one that answers slowly. Type its address instead:</p>
+<ol>
+  <li>Find the hub's address: in your router's app, or the address you open Home Assistant or the hub's web page with. It looks like <code>192.168.1.20</code>.</li>
+  <li>Type it in ZigDash and tap <strong>Check this address</strong>. You can paste the link from your browser too.</li>
+</ol>
+<div class="tip">Use the number, not a name. Names ending in <code>.local</code> don't work on every Android phone. Use the address that works at home, not a remote link such as Nabu Casa or DuckDNS.</div>
+<p>In manual setup the usual settings are <strong>TCP, port 1883</strong>. Use 8883 only if your broker is set up for TLS. Port 8080 or 80 is the hub's web page, not MQTT.</p>
+
+<h2 id="login">3. The login</h2>
+<p>If the broker asks for a login, it wants the <strong>MQTT login</strong>, not the password of your hub's web page.</p>
+<ul>
+  <li><strong>Home Assistant:</strong> a Home Assistant user. See the <a href="../home-assistant/">Home Assistant guide</a>.</li>
+  <li><strong>Raspberry Pi or Docker:</strong> the user from Mosquitto's password file. It's the same one in Zigbee2MQTT's <code>configuration.yaml</code> under <code>mqtt</code>.</li>
+  <li><strong>SMLIGHT:</strong> the login shown on the hub's web page under Settings › MQTT.</li>
+</ul>
+<p>Zigbee2MQTT already logs in to this broker, so its web page shows the username under Settings › MQTT. Copying a password can add a space at the end; check for one.</p>
+
+<h2 id="hubs">Notes for your hub</h2>
+<h3>Home Assistant</h3>
+<p>Needs the Mosquitto broker add-on and the Zigbee2MQTT add-on, both running. Full steps in the <a href="../home-assistant/">Home Assistant guide</a>.</p>
+<h3>Raspberry Pi, Linux or Docker</h3>
+<p>Mosquitto 2 only accepts connections from the machine it runs on until you tell it to listen on the network. Add this to <code>mosquitto.conf</code> and restart Mosquitto:</p>
+<pre><code>listener 1883
+password_file /etc/mosquitto/passwd
+allow_anonymous false</code></pre>
+<p>Create the user with <code>mosquitto_passwd -c /etc/mosquitto/passwd zigdash</code> (leave out <code>-c</code> if the file already exists).</p>
+<h3>SMLIGHT (SMHUB, SLZB)</h3>
+<p>Open the hub's web page, go to Settings › MQTT and turn on <strong>Allow External</strong>, so your phone can reach the broker. Check that Zigbee2MQTT shows as running.</p>
+
+<h2 id="away">Away from home</h2>
+<p>At home ZigDash talks to your hub directly. To use it away from home, install <a href="https://tailscale.com/">Tailscale</a> on the hub and the phone, then add the hub's Tailscale address (<code>100.x.y.z</code>) as the home's remote host. Nothing is opened to the internet and no port forwarding is needed.</p>
+
+<div class="next"><a class="btn" href="../help/">Something not working?</a><a class="btn" href="https://t.me/zigdash_app">Ask the community</a></div>
+</article>
+</main>
+<footer>
+  <p>© 2026 ZigDash · <a href="https://github.com/giladtamam/zigdash">Source code</a> · <a href="https://github.com/giladtamam/zigdash/blob/main/store/PRIVACY.md">Privacy policy</a> · <a href="mailto:support@zigdash.app">support@zigdash.app</a></p>
+</footer>
+</body>
+</html>

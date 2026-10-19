@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help · ZigDash</title>
+<meta name="description" content="Fixes for the most common ZigDash problems: nothing found, login rejected, no Zigbee2MQTT, missing devices, and reaching home.">
+<link rel="canonical" href="https://zigdash.app/help/">
+<link rel="icon" href="../assets/icon.png">
+<meta property="og:title" content="Help · ZigDash">
+<meta property="og:description" content="Fixes for the most common ZigDash problems: nothing found, login rejected, no Zigbee2MQTT, missing devices, and reaching home.">
+<meta property="og:url" content="https://zigdash.app/help/">
+<meta property="og:image" content="https://zigdash.app/assets/01-dashboard.jpg">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="../"><img src="../assets/icon.png" alt=""> ZigDash</a>
+  <nav>
+    <a href="../setup/">Setup</a>
+    <a href="../home-assistant/">Home Assistant</a>
+    <a href="../help/" aria-current="page">Help</a>
+    <a href="https://t.me/zigdash_app">Community</a>
+  </nav>
+</header>
+<main>
+<article class="doc">
+<h1>Help</h1>
+<p class="lead">The problems people hit most, and what to do. ZigDash shows the same tips in the app under Get help.</p>
+<h2>Setup</h2>
+<details><summary>ZigDash says my phone isn't on Wi-Fi</summary>
+<p>The scan only sees devices on the same network as your phone. Turn on Wi-Fi and join your home network; setup starts again by itself. On a VPN, or away from home? Enter the details manually.</p>
+</details>
+<details><summary>The scan found nothing</summary>
+<ul>
+<li>Phone and hub on the same Wi-Fi, not a guest network. Turn mobile data off.</li>
+<li>The broker is running: the Mosquitto add-on on Home Assistant, Mosquitto on a Pi, Settings › MQTT on SMLIGHT.</li>
+<li>The broker accepts your phone: on SMLIGHT turn on Allow External; Mosquitto 2 needs <code>listener 1883</code> (see <a href="../setup/#hubs">setup</a>).</li>
+<li>Mesh Wi-Fi or two routers? Your phone may not see a hub on the second one. Connect by address.</li>
+</ul>
+</details>
+<details><summary>Nothing answers at the address I typed</summary>
+<p>Check the address in your router's app, and that your phone is on the same Wi-Fi. Use the number address (like <code>192.168.1.20</code>), not a <code>.local</code> name, and not a remote link such as Nabu Casa or DuckDNS.</p>
+</details>
+<details><summary>The login is rejected</summary>
+<p>It needs the MQTT login, not your hub's web page password. On Home Assistant, use a Home Assistant user. Zigbee2MQTT's web page shows the username it uses under Settings › MQTT. Check for a space at the end of a pasted password.</p>
+</details>
+<details><summary>“No Zigbee2MQTT here”</summary>
+<p>A broker answered, but Zigbee2MQTT isn't publishing to it. Check that Zigbee2MQTT is running and that its MQTT server is this same broker. If you changed the base topic from <code>zigbee2mqtt</code>, enter it in manual setup. On Home Assistant with ZHA instead of Zigbee2MQTT, ZigDash can't show the devices.</p>
+</details>
+<details><summary>“No devices received”</summary>
+<p>Zigbee2MQTT is running but sent no devices. Pair at least one device in Zigbee2MQTT's web page, then check again. If devices are paired, restart Zigbee2MQTT so it publishes its device list.</p>
+</details>
+<h2>Day to day</h2>
+<details><summary>The device list is missing</summary>
+<p>When the broker restarts, Zigbee2MQTT's device list is gone until Zigbee2MQTT restarts too. Use the <strong>Restart Zigbee2MQTT</strong> button on the Devices tab. If Zigbee2MQTT's own web page doesn't load, restart it on your hub.</p>
+</details>
+<details><summary>ZigDash can't reach my home</summary>
+<ul>
+<li>Is the hub on? After a power cut or an update, give it a minute.</li>
+<li>Are you away from home? ZigDash needs a remote address, for example <a href="../setup/#away">Tailscale</a>. Use the hub's <code>100.x.y.z</code> address, not a <code>.ts.net</code> name.</li>
+<li>Did the address change? After a router restart the hub may get a new one. Reserve it in your router's app, then update the home in ZigDash.</li>
+</ul>
+</details>
+<details><summary>A device shows wrong or doesn't respond</summary>
+<p>Check it in Zigbee2MQTT's web page first. If it works there but not in ZigDash, use Settings › Report a problem in the app.</p>
+</details>
+<h2>Still stuck?</h2>
+<p>Ask in the <a href="https://t.me/zigdash_app">Telegram group</a>, <a href="https://github.com/giladtamam/zigdash/issues">open an issue on GitHub</a>, or write to <a href="mailto:support@zigdash.app">support@zigdash.app</a>. Tell us what you run (Home Assistant, Raspberry Pi, SMLIGHT) and what ZigDash says.</p>
+</article>
+</main>
+<footer>
+  <p>© 2026 ZigDash · <a href="https://github.com/giladtamam/zigdash">Source code</a> · <a href="https://github.com/giladtamam/zigdash/blob/main/store/PRIVACY.md">Privacy policy</a> · <a href="mailto:support@zigdash.app">support@zigdash.app</a></p>
+</footer>
+</body>
+</html>

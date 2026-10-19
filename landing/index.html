@@ -12,73 +12,16 @@
 <meta property="og:url" content="https://zigdash.app/">
 <meta property="og:image" content="https://zigdash.app/assets/01-dashboard.jpg">
 <meta property="og:type" content="website">
-<style>
-  :root {
-    --bg: #ffffff; --fg: #1a1c1e; --muted: #5a5e66; --card: #f2f4f6;
-    --accent: #006a6a; --accent-fg: #ffffff; --border: #dde1e5;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #101415; --fg: #e2e6e8; --muted: #9aa3a8; --card: #1a2022;
-      --accent: #4cdada; --accent-fg: #003737; --border: #2a3235;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; }
-  body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--fg); line-height: 1.6;
-  }
-  a { color: var(--accent); }
-  header {
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-    max-width: 960px; margin: 0 auto; padding: 20px 16px;
-  }
-  header .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; }
-  header img { width: 32px; height: 32px; border-radius: 8px; }
-  nav a { color: var(--muted); text-decoration: none; margin-left: 16px; font-size: .95rem; }
-  nav a:first-child { margin-left: 0; }
-  nav a:hover { color: var(--accent); }
-  main { max-width: 960px; margin: 0 auto; padding: 0 16px 60px; }
-  .hero { text-align: center; padding: 40px 0 24px; }
-  .hero h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.2; margin-bottom: 16px; }
-  .hero h1 span { color: var(--accent); }
-  .hero p { font-size: 1.1rem; color: var(--muted); max-width: 620px; margin: 0 auto 28px; }
-  .buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 12px 22px; border-radius: 12px; font-weight: 600;
-    text-decoration: none; border: 1px solid var(--border); color: var(--fg);
-  }
-  .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
-  .note { color: var(--muted); font-size: .9rem; margin-top: 14px; }
-  .shots { display: flex; gap: 14px; overflow-x: auto; padding: 24px 2px; margin: 8px 0 24px; scroll-snap-type: x mandatory; }
-  .shots img { height: 420px; max-height: 70vh; border-radius: 16px; border: 1px solid var(--border); scroll-snap-align: center; }
-  h2 { font-size: 1.4rem; margin: 40px 0 18px; text-align: center; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-  .card h3 { font-size: 1.02rem; margin-bottom: 6px; }
-  .card p { color: var(--muted); font-size: .95rem; }
-  ol.steps { max-width: 640px; margin: 0 auto; padding-left: 1.4em; }
-  ol.steps li { margin-bottom: 10px; }
-  ol.steps li span { color: var(--muted); }
-  .callout {
-    text-align: center; background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 28px 20px; margin-top: 40px;
-  }
-  .callout p { color: var(--muted); max-width: 640px; margin: 8px auto 0; }
-  footer {
-    border-top: 1px solid var(--border); text-align: center; color: var(--muted);
-    font-size: .9rem; padding: 24px 16px; margin-top: 20px;
-  }
-  footer a { color: var(--muted); }
-</style>
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header>
-  <div class="brand"><img src="assets/icon.png" alt=""> ZigDash</div>
+  <a class="brand" href="./"><img src="assets/icon.png" alt=""> ZigDash</a>
   <nav>
-    <a href="#setup">Setup</a>
+    <a href="setup/">Setup</a>
+    <a href="home-assistant/">Home Assistant</a>
+    <a href="help/">Help</a>
     <a href="https://t.me/zigdash_app">Community</a>
-    <a href="https://github.com/giladtamam/zigdash">Source</a>
   </nav>
 </header>
 
@@ -120,6 +63,11 @@
     <li>If it asks for a login, use your broker's user. <span>On Home Assistant, that is your Home Assistant user.</span></li>
     <li>Not found? Type your hub's address (for example 192.168.1.20) and tap Check this address.</li>
   </ol>
+  <div class="buttons" style="margin-top:20px">
+    <a class="btn" href="setup/">Full setup guide</a>
+    <a class="btn" href="home-assistant/">Using Home Assistant?</a>
+    <a class="btn" href="help/">Something not working?</a>
+  </div>
   <p class="note" style="text-align:center">Stuck? Ask in the <a href="https://t.me/zigdash_app">Telegram group</a> or <a href="https://github.com/giladtamam/zigdash/issues">open an issue</a>.</p>
 
   <div class="callout">
@@ -130,7 +78,7 @@
 </main>
 
 <footer>
-  <p>© 2026 ZigDash · <a href="https://github.com/giladtamam/zigdash/blob/main/store/PRIVACY.md">Privacy policy</a> · <a href="mailto:support@zigdash.app">support@zigdash.app</a></p>
+  <p>© 2026 ZigDash · <a href="https://github.com/giladtamam/zigdash">Source code</a> · <a href="https://github.com/giladtamam/zigdash/blob/main/store/PRIVACY.md">Privacy policy</a> · <a href="mailto:support@zigdash.app">support@zigdash.app</a></p>
 </footer>
 </body>
 </html>

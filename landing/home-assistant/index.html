@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>With Home Assistant · ZigDash</title>
+<meta name="description" content="Use ZigDash with Home Assistant's Mosquitto and Zigbee2MQTT add-ons: make a user, connect, and import your names and rooms.">
+<link rel="canonical" href="https://zigdash.app/home-assistant/">
+<link rel="icon" href="../assets/icon.png">
+<meta property="og:title" content="With Home Assistant · ZigDash">
+<meta property="og:description" content="Use ZigDash with Home Assistant's Mosquitto and Zigbee2MQTT add-ons: make a user, connect, and import your names and rooms.">
+<meta property="og:url" content="https://zigdash.app/home-assistant/">
+<meta property="og:image" content="https://zigdash.app/assets/01-dashboard.jpg">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="../"><img src="../assets/icon.png" alt=""> ZigDash</a>
+  <nav>
+    <a href="../setup/">Setup</a>
+    <a href="../home-assistant/" aria-current="page">Home Assistant</a>
+    <a href="../help/">Help</a>
+    <a href="https://t.me/zigdash_app">Community</a>
+  </nav>
+</header>
+<main>
+<article class="doc">
+<h1>ZigDash with Home Assistant</h1>
+<p class="lead">ZigDash shows the devices that Zigbee2MQTT runs. On Home Assistant that means the Mosquitto broker add-on and the Zigbee2MQTT add-on. Your automations stay in Home Assistant and keep running.</p>
+
+<div class="tip"><strong>Using ZHA?</strong> ZHA is Home Assistant's own Zigbee and doesn't use MQTT, so ZigDash can't show those devices. ZigDash is for Zigbee2MQTT.</div>
+
+<h2>1. Check the two add-ons</h2>
+<p>In Home Assistant, open Settings › Add-ons and check that both are installed and <strong>started</strong>:</p>
+<ul>
+  <li><strong>Mosquitto broker</strong>: the MQTT broker.</li>
+  <li><strong>Zigbee2MQTT</strong>: with your devices paired. Its configuration should point at the Mosquitto broker (the default on Home Assistant).</li>
+</ul>
+
+<h2>2. Make a user for ZigDash</h2>
+<p>The Mosquitto add-on accepts Home Assistant users. Most people make one just for MQTT:</p>
+<ol>
+  <li>Settings › People › Users › <strong>Add user</strong>. (Turn on Advanced mode in your profile if you don't see Users.)</li>
+  <li>Give it a name like <code>zigdash</code> and a password. It doesn't need to be an administrator.</li>
+</ol>
+<p>You can also use your own Home Assistant login, or a login set in the Mosquitto add-on's options.</p>
+
+<h2>3. Connect ZigDash</h2>
+<ol>
+  <li>With your phone on your home Wi-Fi, open ZigDash and tap <strong>Find my setup</strong>. When it asks where Zigbee2MQTT runs, choose <strong>Home Assistant</strong>.</li>
+  <li>If it doesn't find it, type the address you open Home Assistant with, for example <code>192.168.1.20:8123</code>, and tap <strong>Check this address</strong>. ZigDash finds the broker on the same machine.</li>
+  <li>When it asks for a login, enter the user from step 2.</li>
+</ol>
+<div class="tip"><code>homeassistant.local</code> doesn't work on every Android phone. Use the number address: Home Assistant shows it under Settings › System › Network. Don't use your Nabu Casa or DuckDNS link; ZigDash needs the address that works at home.</div>
+<p>The Mosquitto add-on checks each login with Home Assistant, which can take a few seconds on a Raspberry Pi. If ZigDash says the broker didn't answer the login, try again.</p>
+
+<h2>4. Optional: bring your names and rooms</h2>
+<p>In ZigDash, Settings › <strong>Import from Home Assistant</strong> reads the names and rooms you gave your devices in Home Assistant, and can make a dashboard for each room. It reads them once and keeps nothing else from Home Assistant.</p>
+
+<div class="next"><a class="btn" href="../setup/">General setup guide</a><a class="btn" href="../help/">Something not working?</a></div>
+</article>
+</main>
+<footer>
+  <p>© 2026 ZigDash · <a href="https://github.com/giladtamam/zigdash">Source code</a> · <a href="https://github.com/giladtamam/zigdash/blob/main/store/PRIVACY.md">Privacy policy</a> · <a href="mailto:support@zigdash.app">support@zigdash.app</a></p>
+</footer>
+</body>
+</html>
