@@ -1,0 +1,1 @@
+ZigDash 2.9.4: er telefonen ikke på Wi-Fi, sier oppsettet nå fra (mobildata eller ikke noe nett), åpner Wi-Fi-innstillingene for deg og starter igjen av seg selv så snart du er tilkoblet.

@@ -1,0 +1,1 @@
+ZigDash 2.9.4: zit je telefoon niet op wifi, dan zegt de installatie dat nu (mobiele data of geen netwerk), opent ze de wifi-instellingen voor je en begint ze vanzelf opnieuw zodra je verbonden bent.

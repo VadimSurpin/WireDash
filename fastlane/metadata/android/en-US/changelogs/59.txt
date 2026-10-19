@@ -1,0 +1,1 @@
+ZigDash 2.9.4: if your phone isn't on Wi-Fi, setup now says so (mobile data or no network), opens the Wi-Fi settings for you, and starts again by itself as soon as you're connected.

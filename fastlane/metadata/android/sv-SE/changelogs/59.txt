@@ -1,0 +1,1 @@
+ZigDash 2.9.4: om telefonen inte är på wifi säger installationen nu det (mobildata eller inget nät), öppnar wifi-inställningarna åt dig och börjar om av sig själv så fort du är ansluten.
