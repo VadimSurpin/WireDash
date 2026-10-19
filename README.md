@@ -7,6 +7,7 @@
 [![Built with Flutter](https://img.shields.io/badge/Built%20with-Flutter-02569B.svg)](https://flutter.dev)
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2.svg)](https://github.com/sponsors/giladtamam)
 [![Telegram](https://img.shields.io/badge/Telegram-Join%20the%20community-26A5E4.svg?logo=telegram&logoColor=white)](https://t.me/zigdash_app)
+[![Website](https://img.shields.io/badge/Website-zigdash.app-006a6a.svg)](https://zigdash.app)
 
 ZigDash discovers your Zigbee devices automatically — no manual topic wiring —
 and controls lights, shutters, switches, and sensors from your phone or a
