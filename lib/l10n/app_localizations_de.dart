@@ -1458,8 +1458,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get setupWelcomeTitle => 'Willkommen bei ZigDash';
 
   @override
+  String get setupWelcomeHeadline => 'Dein Zigbee-Zuhause, auf deinem Handy';
+
+  @override
   String get setupWelcomeBody =>
-      'ZigDash steuert dein bestehendes Zigbee2MQTT-Zuhause — lokal, ohne Cloud. Stelle sicher, dass Zigbee2MQTT läuft, und lass ZigDash es finden.';
+      'Ein kleiner Hub mit Zigbee2MQTT ist alles, was du brauchst: ein SMLIGHT-Hub, ein Raspberry Pi oder ein beliebiger Linux-Rechner. Kein Home Assistant nötig, und wenn du es hast, funktioniert ZigDash auch damit. Alles bleibt lokal, ohne Cloud.';
 
   @override
   String get setupFindMySetup => 'Mein Setup finden';
@@ -2699,7 +2702,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tipWhatYouNeedBody =>
-      'Einen MQTT-Broker (Mosquitto) und Zigbee2MQTT, die auf einem Hub laufen: Home Assistant, ein Raspberry Pi oder ein SMLIGHT-Hub.';
+      'Ein kleiner Hub mit Zigbee2MQTT und einem MQTT-Broker (Mosquitto): ein SMLIGHT-Hub, ein Raspberry Pi oder ein beliebiger Linux-Rechner. Home Assistant geht auch, ist aber nicht nötig.';
 
   @override
   String get tipSetupAtHomeTitle => 'Im selben WLAN';

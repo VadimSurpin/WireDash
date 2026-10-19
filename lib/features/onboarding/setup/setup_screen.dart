@@ -207,6 +207,12 @@ class _WelcomeState extends ConsumerState<_Welcome> {
         ),
         const SizedBox(height: 24),
         Text(
+          l10n.setupWelcomeHeadline,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 12),
+        Text(
           l10n.setupWelcomeBody,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge,

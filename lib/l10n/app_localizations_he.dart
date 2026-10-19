@@ -1435,8 +1435,11 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupWelcomeTitle => 'ברוכים הבאים ל-ZigDash';
 
   @override
+  String get setupWelcomeHeadline => 'בית ה-Zigbee שלך, בטלפון';
+
+  @override
   String get setupWelcomeBody =>
-      'ZigDash שולט בבית ה-Zigbee2MQTT הקיים שלך — מקומית, ללא ענן. ודאו ש-Zigbee2MQTT פועל, ותנו ל-ZigDash למצוא אותו.';
+      'כל מה שצריך הוא רכזת קטנה שמריצה Zigbee2MQTT: רכזת SMLIGHT, ‏Raspberry Pi או כל מחשב Linux. לא צריך Home Assistant, ואם יש לך, ZigDash עובד גם איתו. הכול נשאר מקומי, בלי ענן.';
 
   @override
   String get setupFindMySetup => 'מצאו את ההתקנה שלי';
@@ -2665,7 +2668,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get tipWhatYouNeedBody =>
-      'broker של MQTT (Mosquitto) ו‑Zigbee2MQTT שפועלים על האב: Home Assistant, Raspberry Pi או האב של SMLIGHT.';
+      'רכזת קטנה שמריצה Zigbee2MQTT ו-broker של MQTT ‏(Mosquitto): רכזת SMLIGHT, ‏Raspberry Pi או כל מחשב Linux. גם Home Assistant מתאים, אבל לא חובה.';
 
   @override
   String get tipSetupAtHomeTitle => 'באותה רשת Wi-Fi';

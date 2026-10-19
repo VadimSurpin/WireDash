@@ -2684,10 +2684,16 @@ abstract class AppLocalizations {
   /// **'Welcome to ZigDash'**
   String get setupWelcomeTitle;
 
+  /// No description provided for @setupWelcomeHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee home, on your phone'**
+  String get setupWelcomeHeadline;
+
   /// No description provided for @setupWelcomeBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash controls your existing Zigbee2MQTT home — locally, with no cloud. Make sure Zigbee2MQTT is running, then let ZigDash find it.'**
+  /// **'A small hub running Zigbee2MQTT is all you need: an SMLIGHT hub, a Raspberry Pi or any Linux box. No Home Assistant needed, and if you have it, ZigDash works with it too. Everything stays local, with no cloud.'**
   String get setupWelcomeBody;
 
   /// No description provided for @setupFindMySetup.
@@ -4847,7 +4853,7 @@ abstract class AppLocalizations {
   /// No description provided for @tipWhatYouNeedBody.
   ///
   /// In en, this message translates to:
-  /// **'An MQTT broker (Mosquitto) and Zigbee2MQTT running on a hub: Home Assistant, a Raspberry Pi, or an SMLIGHT hub.'**
+  /// **'A small hub running Zigbee2MQTT and an MQTT broker (Mosquitto): an SMLIGHT hub, a Raspberry Pi or any Linux box. Home Assistant works too, but you don\'t need it.'**
   String get tipWhatYouNeedBody;
 
   /// No description provided for @tipSetupAtHomeTitle.
