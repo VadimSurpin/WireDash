@@ -75,3 +75,10 @@
   .doc details[open] summary { margin-bottom: 8px; }
   .next { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
   header .brand { color: var(--fg); text-decoration: none; }
+  .compare { overflow-x: auto; }
+  .compare table { width: 100%; border-collapse: collapse; min-width: 520px; }
+  .compare th, .compare td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: .95rem; }
+  .compare thead th { font-size: .9rem; color: var(--muted); }
+  .compare thead th:last-child, .compare td:last-child { background: var(--card); }
+  .compare thead th:last-child { color: var(--accent); }
+  .compare tbody th { color: var(--muted); font-weight: 600; width: 22%; }
