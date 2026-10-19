@@ -1,1 +1,1 @@
-Vereist Zigbee2MQTT. Dashboard dat zichzelf bouwt. Telefoon, wandtablet, kiosk.
+Dashboard voor Zigbee2MQTT. Zonder Home Assistant: een kleine hub en je mobiel.

@@ -1,1 +1,1 @@
-Requiert Zigbee2MQTT. Dashboard qui se construit seul. Tablette murale, kiosque.
+Tableau de bord Zigbee2MQTT. Sans Home Assistant : un petit hub et votre mobile.

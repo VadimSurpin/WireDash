@@ -1,1 +1,1 @@
-Wymaga Zigbee2MQTT. Dashboard buduje się sam. Telefon, tablet ścienny, kiosk.
+Panel dla Zigbee2MQTT. Bez Home Assistant: mały hub i Twój telefon.

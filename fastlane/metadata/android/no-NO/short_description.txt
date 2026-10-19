@@ -1,1 +1,1 @@
-Krever Zigbee2MQTT. Dashbord som bygger seg selv. Mobil, veggnettbrett, kiosk.
+Dashbord for Zigbee2MQTT. Ingen Home Assistant: en liten hub og mobilen din.

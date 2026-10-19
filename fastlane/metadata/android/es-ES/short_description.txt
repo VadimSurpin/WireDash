@@ -1,1 +1,1 @@
-Necesita Zigbee2MQTT. Panel que se crea solo. Móvil, tablet de pared, kiosco.
+Panel para Zigbee2MQTT. Sin Home Assistant: un hub pequeño y tu móvil.

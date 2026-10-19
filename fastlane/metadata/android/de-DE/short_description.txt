@@ -1,1 +1,1 @@
-Braucht Zigbee2MQTT. Dashboard, das sich selbst baut. Handy, Wandtablet, Kiosk.
+Dashboard für Zigbee2MQTT. Ohne Home Assistant: ein kleiner Hub und dein Handy.

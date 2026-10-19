@@ -1,1 +1,1 @@
-Needs Zigbee2MQTT. Dashboard that builds itself. Phone, wall tablet, kiosk mode.
+Zigbee2MQTT dashboard. No Home Assistant needed: a small hub and your phone.
