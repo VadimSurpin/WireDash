@@ -1,0 +1,1 @@
+ZigDash 2.9.6: gdy konfiguracja nic nie znajdzie, pyta, co do Ciebie pasuje (jeszcze bez huba, Home Assistant albo hub w innej sieci), i pomaga dalej. Gdy port 1883 odrzuca połączenie, mówi, czy chodzi o Twój hub SMLIGHT, czy o Mosquitto, i co zmienić.
