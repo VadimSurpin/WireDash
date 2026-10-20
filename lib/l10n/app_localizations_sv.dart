@@ -1520,6 +1520,15 @@ class AppLocalizationsSv extends AppLocalizations {
       'Hemma på ditt wifi? Tryck för att försöka igen: det tar ungefär en minut.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Inget Zigbee2MQTT än?';
+
+  @override
+  String get setupWelcomeDemo => 'Prova demohemmet';
+
+  @override
+  String get setupWelcomeHubs => 'Vilken hubb som passar';
+
+  @override
   String get setupAuthTitle => 'Den här brokern kräver inloggning';
 
   @override

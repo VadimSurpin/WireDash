@@ -1528,6 +1528,15 @@ class AppLocalizationsNl extends AppLocalizations {
       'Thuis op je wifi? Tik om het opnieuw te proberen: het duurt ongeveer een minuut.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Nog geen Zigbee2MQTT?';
+
+  @override
+  String get setupWelcomeDemo => 'Probeer het demohuis';
+
+  @override
+  String get setupWelcomeHubs => 'Welke hub kiezen';
+
+  @override
   String get setupAuthTitle => 'Deze broker vereist een login';
 
   @override

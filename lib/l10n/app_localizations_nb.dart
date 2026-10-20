@@ -1520,6 +1520,15 @@ class AppLocalizationsNb extends AppLocalizations {
       'Hjemme på Wi-Fi-en din? Trykk for å prøve igjen: det tar omtrent ett minutt.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Ingen Zigbee2MQTT ennå?';
+
+  @override
+  String get setupWelcomeDemo => 'Prøv demohjemmet';
+
+  @override
+  String get setupWelcomeHubs => 'Hvilken hub du bør velge';
+
+  @override
   String get setupAuthTitle => 'Denne brokeren krever innlogging';
 
   @override

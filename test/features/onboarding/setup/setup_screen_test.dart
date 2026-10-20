@@ -960,8 +960,10 @@ void main() {
     await tester.tap(find.text('Remind me tomorrow'));
     await tester.pump();
     expect(reminder.scheduled, 1);
-    expect(find.text("We'll remind you tomorrow, on this phone."),
-        findsOneWidget);
+    expect(
+      find.text("We'll remind you tomorrow, on this phone."),
+      findsOneWidget,
+    );
     expect(find.text('Remind me tomorrow'), findsNothing);
   });
 
@@ -1052,9 +1054,65 @@ void main() {
     expect(find.text('dashboards of demo1'), findsOneWidget);
   });
 
-  testWidgets('the welcome screen does not offer the demo', (tester) async {
-    await _pump(tester);
-    expect(find.text('Try demo'), findsNothing);
+  // 2.9.7: without Zigbee2MQTT there is nothing to scan for, so the
+  // welcome screen offers the demo and the hubs page under its own heading;
+  // Find my setup stays the one main button.
+  group('welcome: no Zigbee2MQTT yet', () {
+    late List<(String, Map<String, String>)> sent;
+    late List<Override> analytics;
+    setUp(() {
+      sent = [];
+      analytics = [
+        analyticsProvider.overrideWithValue(
+          Analytics(_RecordingSink(sent), enabled: true),
+        ),
+      ];
+    });
+    List<String?> steps() => [
+      for (final (name, props) in sent)
+        if (name == 'setup_step') props['step'],
+    ];
+
+    testWidgets('Find my setup is still the only main button', (tester) async {
+      await _pump(tester);
+      expect(find.text('No Zigbee2MQTT yet?'), findsOneWidget);
+      expect(
+        find.widgetWithText(FilledButton, 'Find my setup'),
+        findsOneWidget,
+      );
+      expect(find.byType(FilledButton), findsOneWidget);
+      expect(find.text('Try demo'), findsNothing);
+    });
+
+    testWidgets('the demo home opens without a scan', (tester) async {
+      final firstRun = _FakeFirstRun();
+      final coordinator = await _pump(
+        tester,
+        firstRun: firstRun,
+        extra: analytics,
+      );
+      await tester.tap(find.text('Try the demo home'));
+      await tester.pumpAndSettle();
+      expect(firstRun.demoStarted, 1);
+      expect(find.text('dashboards of demo1'), findsOneWidget);
+      expect(coordinator.state, isA<SetupIdle>());
+      expect(steps(), ['welcome_demo']);
+    });
+
+    testWidgets('which hub to get opens the Hubs page', (tester) async {
+      Uri? opened;
+      final original = openSetupLink;
+      addTearDown(() => openSetupLink = original);
+      openSetupLink = (url) async {
+        opened = url;
+        return true;
+      };
+      await _pump(tester, extra: analytics);
+      await tester.tap(find.text('Which hub to get'));
+      await tester.pump();
+      expect(opened, hubsPageUrl);
+      expect(steps(), ['welcome_hubs']);
+    });
   });
 
   testWidgets('renders in RTL for Hebrew', (tester) async {

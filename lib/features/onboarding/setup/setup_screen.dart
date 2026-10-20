@@ -94,10 +94,20 @@ class SetupScreen extends ConsumerWidget {
           ),
         );
 
-    Future<void> tryDemo() async {
-      ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.demo));
+    Future<void> tryDemo({SetupStepKind kind = SetupStepKind.demo}) async {
+      ref.read(analyticsProvider).track(SetupStep(kind));
       final id = await ref.read(firstRunProvider).startDemo();
       if (context.mounted) context.go(Routes.homeDashboards(id));
+    }
+
+    // 2.9.7: no Zigbee2MQTT yet, so no point scanning.
+    Future<void> welcomeHubs() async {
+      ref
+          .read(analyticsProvider)
+          .track(const SetupStep(SetupStepKind.welcomeHubs));
+      try {
+        await openSetupLink(hubsPageUrl);
+      } catch (_) {}
     }
 
     return Scaffold(
@@ -107,6 +117,8 @@ class SetupScreen extends ConsumerWidget {
           SetupIdle() => _Welcome(
             onFind: coordinator.startScan,
             onManual: manual,
+            onDemo: () => tryDemo(kind: SetupStepKind.welcomeDemo),
+            onHubs: welcomeHubs,
           ),
           SetupScanning() => _Scanning(
             state: state,
@@ -203,9 +215,19 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
 /// made yet, it carries the one usage-data question for new installs: a box
 /// ticked by default (ADR 0007), recorded either way when the user moves on.
 class _Welcome extends ConsumerStatefulWidget {
-  const _Welcome({required this.onFind, required this.onManual});
+  const _Welcome({
+    required this.onFind,
+    required this.onManual,
+    required this.onDemo,
+    required this.onHubs,
+  });
   final VoidCallback onFind;
   final VoidCallback onManual;
+
+  /// "No Zigbee2MQTT yet?": nothing to scan for, so the demo home or which
+  /// hub to get (2.9.7).
+  final VoidCallback onDemo;
+  final VoidCallback onHubs;
 
   @override
   ConsumerState<_Welcome> createState() => _WelcomeState();
@@ -243,6 +265,8 @@ class _WelcomeState extends ConsumerState<_Welcome> {
     final l10n = context.l10n;
     void onFind() => _then(widget.onFind);
     void onManual() => _then(widget.onManual);
+    void onDemo() => _then(widget.onDemo);
+    void onHubs() => _then(widget.onHubs);
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
@@ -272,6 +296,29 @@ class _WelcomeState extends ConsumerState<_Welcome> {
         ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+        const SizedBox(height: 24),
+        Text(
+          l10n.setupWelcomeNoZ2m,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 4),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          children: [
+            TextButton.icon(
+              onPressed: onDemo,
+              icon: const Icon(Icons.play_circle_outline),
+              label: Text(l10n.setupWelcomeDemo),
+            ),
+            TextButton.icon(
+              onPressed: onHubs,
+              icon: const Icon(Icons.router_outlined),
+              label: Text(l10n.setupWelcomeHubs),
+            ),
+          ],
+        ),
         if (_asking) ...[
           const SizedBox(height: 24),
           CheckboxListTile(

@@ -1528,6 +1528,15 @@ class AppLocalizationsPt extends AppLocalizations {
       'Em casa, no seu Wi-Fi? Toque para tentar de novo: demora cerca de um minuto.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Ainda sem Zigbee2MQTT?';
+
+  @override
+  String get setupWelcomeDemo => 'Experimente a casa de demonstração';
+
+  @override
+  String get setupWelcomeHubs => 'Qual hub escolher';
+
+  @override
   String get setupAuthTitle => 'Este broker exige login';
 
   @override

@@ -1534,6 +1534,15 @@ class AppLocalizationsPl extends AppLocalizations {
       'Jesteś w domu w swojej sieci Wi-Fi? Dotknij, aby spróbować ponownie: to zajmie około minuty.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Nie masz jeszcze Zigbee2MQTT?';
+
+  @override
+  String get setupWelcomeDemo => 'Wypróbuj dom demo';
+
+  @override
+  String get setupWelcomeHubs => 'Jaki hub wybrać';
+
+  @override
   String get setupAuthTitle => 'Ten broker wymaga logowania';
 
   @override

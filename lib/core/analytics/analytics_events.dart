@@ -97,6 +97,12 @@ enum SetupStepKind {
 
   /// The app was opened from that reminder (2.9.7).
   reminderOpened,
+
+  /// "No Zigbee2MQTT yet?" on the welcome screen (2.9.7): the demo home…
+  welcomeDemo,
+
+  /// …or the page of hubs that run Zigbee2MQTT.
+  welcomeHubs,
 }
 
 /// What the user tapped on an empty result with no hub found (2.9.6): no
