@@ -199,7 +199,7 @@ void main() {
     await ha.start();
     final client = await connect(haStoredRefresh('refresh'));
     expect(client.connectionStatus?.state, mc.MqttConnectionState.faulted);
-    expect(client.problem, HaConnectProblem.signInRejected);
+    expect(client.problem, HaClientProblem.signInRejected);
     expect(
       client.connectionStatus?.returnCode,
       mc.MqttConnectReturnCode.badUsernameOrPassword,
@@ -211,7 +211,7 @@ void main() {
     ha = _FakeHa();
     await ha.start();
     final client = await connect('stale');
-    expect(client.problem, HaConnectProblem.signInRejected);
+    expect(client.problem, HaClientProblem.signInRejected);
     expect(client.connectionStatus?.state, mc.MqttConnectionState.faulted);
   });
 
@@ -220,7 +220,7 @@ void main() {
     await ha.start();
     final client = await connect('access');
     expect(client.connectionStatus?.state, mc.MqttConnectionState.faulted);
-    expect(client.problem, HaConnectProblem.notAdmin);
+    expect(client.problem, HaClientProblem.notAdmin);
     expect(
       client.connectionStatus?.returnCode,
       mc.MqttConnectReturnCode.notAuthorized,
@@ -232,7 +232,7 @@ void main() {
     await ha.start();
     final client = await connect('access');
     expect(client.connectionStatus?.state, mc.MqttConnectionState.faulted);
-    expect(client.problem, HaConnectProblem.noMqtt);
+    expect(client.problem, HaClientProblem.noMqtt);
     expect(
       client.connectionStatus?.returnCode,
       mc.MqttConnectReturnCode.noneSpecified,

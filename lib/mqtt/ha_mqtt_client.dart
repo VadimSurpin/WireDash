@@ -26,7 +26,7 @@ import 'ha_token.dart';
 
 /// Why the probe after sign-in failed, for a more exact message than the
 /// return code carries.
-enum HaConnectProblem {
+enum HaClientProblem {
   /// The stored sign-in no longer works (revoked, or signed out).
   signInRejected,
 
@@ -65,7 +65,7 @@ class HaMqttClient extends mc.MqttClient {
 
   String? haVersion;
   bool? isAdmin;
-  HaConnectProblem? problem;
+  HaClientProblem? problem;
 
   @override
   mc.MqttClientConnectionStatus? get connectionStatus => _status;
@@ -102,8 +102,8 @@ class HaMqttClient extends mc.MqttClient {
     if (token == null) {
       return _fail(
         access.error == HaTokenError.rejected
-            ? HaConnectProblem.signInRejected
-            : HaConnectProblem.unreachable,
+            ? HaClientProblem.signInRejected
+            : HaClientProblem.unreachable,
       );
     }
     final WebSocket socket;
@@ -114,7 +114,7 @@ class HaMqttClient extends mc.MqttClient {
     } on TimeoutException {
       rethrow;
     } catch (e) {
-      problem = HaConnectProblem.unreachable;
+      problem = HaClientProblem.unreachable;
       _status.state = mc.MqttConnectionState.faulted;
       rethrow;
     }
@@ -133,8 +133,8 @@ class HaMqttClient extends mc.MqttClient {
       await socket.close();
       return _fail(
         hello['type'] == 'auth_invalid'
-            ? HaConnectProblem.signInRejected
-            : HaConnectProblem.unreachable,
+            ? HaClientProblem.signInRejected
+            : HaClientProblem.unreachable,
       );
     }
     haVersion = hello['ha_version'] as String?;
@@ -149,8 +149,8 @@ class HaMqttClient extends mc.MqttClient {
       await socket.close();
       return _fail(
         code == 'unauthorized' || isAdmin == false
-            ? HaConnectProblem.notAdmin
-            : HaConnectProblem.noMqtt,
+            ? HaClientProblem.notAdmin
+            : HaClientProblem.noMqtt,
       );
     }
     _send({'type': 'unsubscribe_events', 'subscription': probe!['id']});
@@ -168,16 +168,16 @@ class HaMqttClient extends mc.MqttClient {
     return _status;
   }
 
-  mc.MqttClientConnectionStatus _fail(HaConnectProblem why) {
+  mc.MqttClientConnectionStatus _fail(HaClientProblem why) {
     problem = why;
     _status
       ..state = mc.MqttConnectionState.faulted
       ..returnCode = switch (why) {
-        HaConnectProblem.signInRejected =>
+        HaClientProblem.signInRejected =>
           mc.MqttConnectReturnCode.badUsernameOrPassword,
-        HaConnectProblem.notAdmin => mc.MqttConnectReturnCode.notAuthorized,
-        HaConnectProblem.noMqtt ||
-        HaConnectProblem.unreachable => mc.MqttConnectReturnCode.noneSpecified,
+        HaClientProblem.notAdmin => mc.MqttConnectReturnCode.notAuthorized,
+        HaClientProblem.noMqtt ||
+        HaClientProblem.unreachable => mc.MqttConnectReturnCode.noneSpecified,
       };
     return _status;
   }

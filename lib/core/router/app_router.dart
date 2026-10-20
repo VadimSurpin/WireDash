@@ -8,6 +8,7 @@ import '../../alerts/alerts_screen.dart';
 import '../../features/ha_import/ha_import_screen.dart';
 import '../../features/connections/screens/connection_form_screen.dart';
 import '../../features/guided_connect/guided_connect_screen.dart';
+import '../../features/onboarding/setup/ha_connect_screen.dart';
 import '../../features/onboarding/setup/setup_screen.dart';
 import '../../features/dashboards/screens/dashboard_form_screen.dart';
 import '../../features/dashboards/screens/dashboards_screen.dart';
@@ -92,6 +93,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   state.uri.queryParameters['port'] ?? '',
                 ),
               ),
+            ),
+          ),
+          GoRoute(
+            path: 'home-assistant',
+            pageBuilder: (_, state) => _slideUp(
+              HaConnectScreen(initialHost: state.uri.queryParameters['host']),
             ),
           ),
         ],

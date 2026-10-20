@@ -135,6 +135,7 @@ class SetupScreen extends ConsumerWidget {
             onManual: manual,
             onManualTo: manualTo,
             onDemo: tryDemo,
+            onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
           ),
           SetupVerifying() => const _Verifying(),
           SetupNeedsAuth() => _AuthPrompt(
@@ -501,6 +502,7 @@ class _ScanEmpty extends StatelessWidget {
     required this.onChoice,
     required this.onManualTo,
     required this.onDemo,
+    required this.onConnectViaHa,
   });
   final SetupScanEmpty state;
   final VoidCallback onRetry;
@@ -510,6 +512,10 @@ class _ScanEmpty extends StatelessWidget {
   final VoidCallback onManual;
   final ValueChanged<HubFound> onManualTo;
   final VoidCallback onDemo;
+
+  /// Connect through Home Assistant (2.10), with the Home Assistant the
+  /// scan saw, if any.
+  final ValueChanged<String?> onConnectViaHa;
 
   @override
   Widget build(BuildContext context) {
@@ -605,6 +611,7 @@ class _ScanEmpty extends StatelessWidget {
           const SizedBox(height: 20),
           _EmptyChoices(
             onChoice: onChoice,
+            onConnectViaHa: () => onConnectViaHa(null),
             onHomeAssistant: () {
               onPlatform(SetupPlatform.homeAssistant);
               onCheckAddress('homeassistant.local');
@@ -629,6 +636,14 @@ class _ScanEmpty extends StatelessWidget {
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
             label: Text(l10n.setupTryAgain),
+          ),
+          const SizedBox(height: 8),
+          // 2.10: the broker may be out of reach or need a login the user
+          // doesn't have; Home Assistant can carry the connection.
+          OutlinedButton.icon(
+            onPressed: () => onConnectViaHa(hub!.host),
+            icon: const Icon(Icons.home_outlined),
+            label: Text(l10n.haConnectButton),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
@@ -682,9 +697,11 @@ class _EmptyChoices extends StatefulWidget {
     required this.onChoice,
     required this.onHomeAssistant,
     required this.onCheckAddress,
+    required this.onConnectViaHa,
   });
   final ValueChanged<ScanEmptyChoice> onChoice;
   final VoidCallback onHomeAssistant;
+  final VoidCallback onConnectViaHa;
   final ValueChanged<String> onCheckAddress;
 
   @override
@@ -767,6 +784,20 @@ class _EmptyChoicesState extends State<_EmptyChoices> {
                   Text(
                     l10n.setupChoiceHaNote,
                     style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  // 2.10: 21 of 22 Home Assistant users saw no Home
+                  // Assistant on this network at all; Home Assistant's
+                  // own address works from anywhere.
+                  Text(
+                    l10n.haConnectEmptyNote,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  FilledButton.icon(
+                    onPressed: widget.onConnectViaHa,
+                    icon: const Icon(Icons.home_outlined),
+                    label: Text(l10n.haConnectButton),
                   ),
                 ]),
               const Divider(height: 1),

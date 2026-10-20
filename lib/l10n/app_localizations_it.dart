@@ -1535,6 +1535,58 @@ class AppLocalizationsIt extends AppLocalizations {
   String get setupWelcomeHubs => 'Quale hub scegliere';
 
   @override
+  String get haConnectTitle => 'Connetti tramite Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'Il tuo telefono non raggiunge il broker, ma raggiunge Home Assistant. Accedi una volta e ZigDash parlerà con Zigbee2MQTT tramite Home Assistant: a casa o fuori, senza impostazioni del broker.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'L\'indirizzo con cui apri Home Assistant: 192.168.1.20:8123, homeassistant.local, oppure il tuo indirizzo remoto, come https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'L\'accesso di Home Assistant si apre nel tuo browser. ZigDash non vede mai la tua password.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash conserva questo accesso sul tuo telefono e agisce come te in Home Assistant, solo per MQTT. Puoi terminarlo in qualsiasi momento in Home Assistant, in Profilo › Sicurezza.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'In Home Assistant apri il tuo profilo, poi Sicurezza › Token di accesso a lunga durata › Crea token. Copialo e incollalo qui. ZigDash lo conserva su questo telefono per connettersi; eliminalo in Home Assistant quando vuoi terminare.';
+
+  @override
+  String get haConnectWithToken => 'Connetti con token';
+
+  @override
+  String get haConnectChecking => 'Controllo di Home Assistant…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'Il tuo utente Home Assistant non è amministratore. ZigDash ne ha bisogno per l\'MQTT di Home Assistant. Accedi come amministratore, oppure incolla un token creato da un amministratore.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'Questo Home Assistant non ha l\'integrazione MQTT. Anche Zigbee2MQTT ne ha bisogno: in Home Assistant aggiungi il componente aggiuntivo Mosquitto broker e l\'integrazione MQTT, poi riprova.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'L\'accesso non è stato completato. Riprova, oppure usa un token a lunga durata.';
+
+  @override
+  String get haConnectButton => 'Connetti tramite Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'Usi Home Assistant? Connettiti tramite esso';
+
+  @override
+  String get haConnectEmptyNote =>
+      'Questo telefono non raggiunge il broker? Home Assistant può portare la connessione per te.';
+
+  @override
   String get setupAuthTitle => 'Questo broker richiede un login';
 
   @override

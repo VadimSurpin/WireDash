@@ -1533,6 +1533,58 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupWelcomeHubs => 'Jaký hub vybrat';
 
   @override
+  String get haConnectTitle => 'Připojit přes Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'Tvůj telefon na broker nedosáhne, ale na Home Assistant ano. Přihlas se jednou a ZigDash bude se Zigbee2MQTT mluvit přes Home Assistant: doma i mimo domov, bez nastavení brokeru.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'Adresa, kterou otevíráš Home Assistant: 192.168.1.20:8123, homeassistant.local nebo tvoje vzdálená adresa, třeba https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'Vlastní přihlášení Home Assistantu se otevře v prohlížeči. ZigDash tvoje heslo nikdy nevidí.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash si toto přihlášení ponechá v telefonu a jedná v Home Assistantu tvým jménem, jen pro MQTT. Ukončit to můžeš kdykoli v Home Assistantu v Profil › Zabezpečení.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'V Home Assistantu otevři svůj profil, pak Zabezpečení › Dlouhodobé přístupové tokeny › Vytvořit token. Zkopíruj ho a vlož sem. ZigDash si ho ponechá v tomto telefonu pro připojení; smaž ho v Home Assistantu, kdykoli to budeš chtít ukončit.';
+
+  @override
+  String get haConnectWithToken => 'Připojit s tokenem';
+
+  @override
+  String get haConnectChecking => 'Kontroluji Home Assistant…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'Tvůj uživatel v Home Assistantu není správce. ZigDash správce potřebuje pro MQTT Home Assistantu. Přihlas se jako správce, nebo vlož token, který správce vytvořil.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'Tento Home Assistant nemá integraci MQTT. Zigbee2MQTT ji potřebuje taky: v Home Assistantu přidej doplněk Mosquitto broker a integraci MQTT a zkus to znovu.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'Přihlášení se nedokončilo. Zkus to znovu, nebo použij dlouhodobý token.';
+
+  @override
+  String get haConnectButton => 'Připojit přes Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'Používáš Home Assistant? Připoj se raději přes něj';
+
+  @override
+  String get haConnectEmptyNote =>
+      'Tento telefon na broker nedosáhne? Home Assistant může připojení přenést za tebe.';
+
+  @override
   String get setupAuthTitle => 'Tento broker vyžaduje přihlášení';
 
   @override

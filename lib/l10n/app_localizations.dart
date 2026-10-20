@@ -2832,6 +2832,90 @@ abstract class AppLocalizations {
   /// **'Which hub to get'**
   String get setupWelcomeHubs;
 
+  /// No description provided for @haConnectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect through Home Assistant'**
+  String get haConnectTitle;
+
+  /// No description provided for @haConnectIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Your phone can\'t reach the broker, but it can reach Home Assistant. Sign in once, and ZigDash talks to Zigbee2MQTT through Home Assistant: at home or away, with no broker settings.'**
+  String get haConnectIntro;
+
+  /// No description provided for @haConnectAddressHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The address you open Home Assistant with: 192.168.1.20:8123, homeassistant.local, or your remote address, like https://xyz.ui.nabu.casa'**
+  String get haConnectAddressHelp;
+
+  /// No description provided for @haConnectSignInHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant\'s own login opens in your browser. ZigDash never sees your password.'**
+  String get haConnectSignInHelp;
+
+  /// No description provided for @haConnectKeeps.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash keeps this sign-in on your phone and acts as you in Home Assistant, for MQTT only. End it any time in Home Assistant under Profile › Security.'**
+  String get haConnectKeeps;
+
+  /// No description provided for @haConnectTokenHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. ZigDash keeps it on this phone to connect; delete it in Home Assistant whenever you want to end that.'**
+  String get haConnectTokenHelp;
+
+  /// No description provided for @haConnectWithToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect with token'**
+  String get haConnectWithToken;
+
+  /// No description provided for @haConnectChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking Home Assistant…'**
+  String get haConnectChecking;
+
+  /// No description provided for @haConnectNotAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Home Assistant user isn\'t an administrator. ZigDash needs one for Home Assistant\'s MQTT. Sign in as an administrator, or paste a token an administrator created.'**
+  String get haConnectNotAdmin;
+
+  /// No description provided for @haConnectNoMqtt.
+  ///
+  /// In en, this message translates to:
+  /// **'This Home Assistant has no MQTT integration. Zigbee2MQTT needs one too: in Home Assistant, add the Mosquitto broker add-on and the MQTT integration, then try again.'**
+  String get haConnectNoMqtt;
+
+  /// No description provided for @haConnectSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The sign-in didn\'t complete. Try again, or use a long-lived token.'**
+  String get haConnectSignInFailed;
+
+  /// No description provided for @haConnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect through Home Assistant'**
+  String get haConnectButton;
+
+  /// No description provided for @haConnectManualLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Using Home Assistant? Connect through it instead'**
+  String get haConnectManualLink;
+
+  /// No description provided for @haConnectEmptyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach the broker from this phone? Home Assistant can carry the connection for you.'**
+  String get haConnectEmptyNote;
+
   /// No description provided for @setupAuthTitle.
   ///
   /// In en, this message translates to:
