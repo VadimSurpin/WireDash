@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/secure_storage.dart';
+import '../../mqtt/ha_address.dart';
 import '../../core/utils/uuid.dart';
 import '../database/daos/connection_dao.dart';
 import '../database/database.dart';
@@ -93,6 +94,32 @@ class ConnectionRepo {
         await _secure.writePassword(id, password);
       }
     }
+  }
+
+  /// A home connected through Home Assistant signed in again (2.10.1):
+  /// the address it uses and the stored sign-in, nothing else.
+  Future<void> setHomeAssistantSignIn(
+    String id, {
+    required Uri address,
+    required String signIn,
+  }) async {
+    await _dao.updateById(
+      id,
+      ConnectionsCompanion(
+        host: Value(haAddressText(address)),
+        port: Value(
+          address.hasPort
+              ? address.port
+              : (address.scheme == 'https' ? 443 : 80),
+        ),
+        protocol: Value(
+          address.scheme == 'https' ? MqttProtocol.wss : MqttProtocol.ws,
+        ),
+        transport: const Value(ConnectionTransport.homeAssistant),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+    await _secure.writePassword(id, signIn);
   }
 
   Future<void> rename(String id, String name) => _dao.updateById(

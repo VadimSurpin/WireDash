@@ -188,12 +188,12 @@ shortcuts do not change. Known gaps to close for release:
 
 ### Follow-ups after the first release
 
-- **Sign in again** for an existing Home Assistant home: a new phone
-  (secure storage is not backed up), a revoked token or a changed admin
-  end in "login rejected", and 2.10 only offers deleting the home and
-  connecting again, which loses its dashboards. A "Sign in again" on the
-  home's form that reuses the connect screen and replaces the stored
-  sign-in is the fix; the form says the 2.10 way for now.
+- **Sign in again** for an existing Home Assistant home (done in 2.10.1):
+  a new phone (secure storage is not backed up), a revoked token or a
+  changed admin end in "login rejected"; the home's form has "Sign in
+  again", which reuses the connect screen (`?again=<id>`), replaces the
+  stored sign-in (`ConnectionRepo.setHomeAssistantSignIn`), ends the old
+  refresh token at Home Assistant and rebuilds the live connection.
 
 ### Still to verify before release
 

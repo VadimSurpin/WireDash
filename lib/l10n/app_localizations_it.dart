@@ -1591,7 +1591,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Per usare un altro accesso a Home Assistant, elimina questa casa e connettiti di nuovo. Puoi terminare l\'accesso in Home Assistant, in Profilo › Sicurezza.';
+      'Se l\'accesso smette di funzionare, su un nuovo telefono o dopo aver rimosso il token in Home Assistant, accedi di nuovo qui. Puoi anche terminarlo in Home Assistant, in Profilo › Sicurezza.';
+
+  @override
+  String get haHomeSignInAgain => 'Accedi di nuovo';
 
   @override
   String get haHomeRemote => 'Indirizzo remoto di Home Assistant (facoltativo)';

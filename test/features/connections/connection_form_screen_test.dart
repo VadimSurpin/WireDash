@@ -273,6 +273,7 @@ void main() {
     expect(find.text('https://abc.ui.nabu.casa'), findsOneWidget);
     expect(find.text('Local host'), findsNothing);
     expect(find.text('Test connection'), findsNothing);
+    expect(find.text('Sign in again'), findsOneWidget);
 
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Name'),

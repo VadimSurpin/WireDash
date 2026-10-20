@@ -98,7 +98,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'home-assistant',
             pageBuilder: (_, state) => _slideUp(
-              HaConnectScreen(initialHost: state.uri.queryParameters['host']),
+              HaConnectScreen(
+                initialHost: state.uri.queryParameters['host'],
+                again: state.uri.queryParameters['again'],
+              ),
             ),
           ),
         ],

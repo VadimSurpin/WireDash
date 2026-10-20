@@ -1572,7 +1572,10 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'כדי להשתמש בכניסה אחרת ל-Home Assistant, מחקו את הבית הזה והתחברו שוב. אפשר לסיים את הכניסה ב-Home Assistant תחת פרופיל › אבטחה.';
+      'אם הכניסה מפסיקה לעבוד, בטלפון חדש או אחרי שהסרתם את האסימון ב-Home Assistant, היכנסו שוב כאן. אפשר גם לסיים אותה ב-Home Assistant תחת פרופיל › אבטחה.';
+
+  @override
+  String get haHomeSignInAgain => 'כניסה מחדש';
 
   @override
   String get haHomeRemote => 'כתובת מרוחקת של Home Assistant (לא חובה)';

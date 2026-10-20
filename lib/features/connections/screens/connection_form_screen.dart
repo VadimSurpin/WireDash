@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/router/routes.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../onboarding/first_run.dart';
 import '../../../data/database/tables/connections.dart';
@@ -306,7 +307,15 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
             ),
             const SizedBox(height: 12),
             if (_viaHa) ...[
-              _HaHomeCard(address: _host.text),
+              _HaHomeCard(
+                address: _host.text,
+                onSignInAgain: () async {
+                  await context.push(
+                    Routes.haConnectAgain(widget.connectionId!, _host.text),
+                  );
+                  if (mounted) _load();
+                },
+              ),
               const SizedBox(height: 12),
             ] else ...[
               ProtocolDropdown(value: _protocol, onChanged: _onProtocolChanged),
@@ -444,8 +453,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
 /// A home that connects through Home Assistant: where, and how to change
 /// the sign-in (docs/design/ha-route.md).
 class _HaHomeCard extends StatelessWidget {
-  const _HaHomeCard({required this.address});
+  const _HaHomeCard({required this.address, required this.onSignInAgain});
   final String address;
+  final VoidCallback onSignInAgain;
 
   @override
   Widget build(BuildContext context) {
@@ -478,6 +488,15 @@ class _HaHomeCard extends StatelessWidget {
             Text(
               l10n.haHomeChange,
               style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: OutlinedButton.icon(
+                onPressed: onSignInAgain,
+                icon: const Icon(Icons.login),
+                label: Text(l10n.haHomeSignInAgain),
+              ),
             ),
           ],
         ),

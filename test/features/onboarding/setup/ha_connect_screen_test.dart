@@ -16,6 +16,7 @@ void main() {
     HaConnectProblem? problem,
     List<(Uri, String)>? adopted,
     String? initialHost,
+    String? again,
   }) async {
     final controller = HaConnectController(
       address: initialHost ?? '',
@@ -33,8 +34,11 @@ void main() {
         GoRoute(path: Routes.setup, builder: (_, __) => const Text('setup')),
         GoRoute(
           path: Routes.haConnect,
-          builder: (_, __) =>
-              HaConnectScreen(initialHost: initialHost, controller: controller),
+          builder: (_, __) => HaConnectScreen(
+            initialHost: initialHost,
+            controller: controller,
+            again: again,
+          ),
         ),
       ],
     );
@@ -133,5 +137,31 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.textContaining('no MQTT integration'), findsOneWidget);
+  });
+
+  testWidgets('signing in again for a home returns to where it came from', (
+    tester,
+  ) async {
+    final adopted = <(Uri, String)>[];
+    await pump(
+      tester,
+      adopted: adopted,
+      again: 'ha1',
+      initialHost: 'https://abc.ui.nabu.casa',
+    );
+    expect(
+      find.widgetWithText(TextField, 'https://abc.ui.nabu.casa'),
+      findsOneWidget,
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Long-lived access token'),
+      'eyJ.new',
+    );
+    await tester.tap(find.text('Connect with token'));
+    await tester.pump();
+    await tester.pump();
+    expect(adopted.single.$2, 'eyJ.new');
+    await tester.pumpAndSettle();
+    expect(find.text('setup'), findsOneWidget, reason: 'popped back');
   });
 }

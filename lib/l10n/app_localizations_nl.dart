@@ -1593,7 +1593,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Om een andere Home Assistant-aanmelding te gebruiken, verwijder je dit huis en verbind je opnieuw. Je kunt de aanmelding beëindigen in Home Assistant onder Profiel › Beveiliging.';
+      'Als de aanmelding niet meer werkt, op een nieuwe telefoon of nadat je het token in Home Assistant hebt verwijderd, meld je je hier opnieuw aan. Je kunt het ook beëindigen in Home Assistant onder Profiel › Beveiliging.';
+
+  @override
+  String get haHomeSignInAgain => 'Opnieuw aanmelden';
 
   @override
   String get haHomeRemote => 'Extern adres van Home Assistant (optioneel)';

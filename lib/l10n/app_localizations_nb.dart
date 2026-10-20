@@ -1585,7 +1585,10 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'For å bruke en annen Home Assistant-innlogging, slett dette hjemmet og koble til på nytt. Du kan avslutte innloggingen i Home Assistant under Profil › Sikkerhet.';
+      'Hvis innloggingen slutter å virke, på en ny telefon eller etter at du fjernet tokenet i Home Assistant, logger du inn på nytt her. Du kan også avslutte den i Home Assistant under Profil › Sikkerhet.';
+
+  @override
+  String get haHomeSignInAgain => 'Logg inn på nytt';
 
   @override
   String get haHomeRemote => 'Fjernadresse for Home Assistant (valgfritt)';

@@ -1595,7 +1595,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Um eine andere Home-Assistant-Anmeldung zu nutzen, lösche dieses Zuhause und verbinde dich erneut. Die Anmeldung beendest du in Home Assistant unter Profil › Sicherheit.';
+      'Wenn die Anmeldung nicht mehr funktioniert, auf einem neuen Telefon oder nachdem du den Token in Home Assistant entfernt hast, melde dich hier erneut an. Beenden kannst du sie auch in Home Assistant unter Profil › Sicherheit.';
+
+  @override
+  String get haHomeSignInAgain => 'Erneut anmelden';
 
   @override
   String get haHomeRemote =>
