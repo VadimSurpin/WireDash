@@ -25,7 +25,7 @@ import 'setup_analytics.dart';
 import 'setup_providers.dart';
 
 /// zigdash.app's Hubs page: the small hubs that run Zigbee2MQTT, for the
-/// empty result's "I don't have a hub yet" (2.9.5).
+/// empty result's "I don't have a hub yet" (2.9.6).
 final hubsPageUrl = Uri.parse('https://zigdash.app/hubs/');
 
 /// Opens a link outside the app; replaced in tests.
@@ -34,7 +34,7 @@ Future<bool> Function(Uri url) openSetupLink = (url) =>
     launchUrl(url, mode: LaunchMode.externalApplication);
 
 /// The usual names of a machine running Zigbee2MQTT and its broker, offered
-/// under "My hub is on another network" (2.9.5): an SMHUB's own name
+/// under "My hub is on another network" (2.9.6): an SMHUB's own name
 /// (SMLIGHT's SMHUB Nano guide), Home Assistant's, and Raspberry Pi OS's
 /// default. No SLZB-06: it is only the Zigbee radio and has no broker.
 const usualHubNames = [
@@ -81,7 +81,7 @@ class SetupScreen extends ConsumerWidget {
       context.push(Routes.guidedConnectTo(hub.host, 1883));
     }
 
-    // 2.9.5: a choice on the empty result, counted before it acts.
+    // 2.9.6: a choice on the empty result, counted before it acts.
     void emptyChoice(ScanEmptyChoice choice) => ref
         .read(analyticsProvider)
         .track(
@@ -534,7 +534,7 @@ class _ScanEmpty extends StatelessWidget {
         ],
         const SizedBox(height: 12),
         _SetupGuides(only: guideFor),
-        // No hub found: three ways out of the dead end (2.9.5: 13 of the
+        // No hub found: three ways out of the dead end (2.9.6: 13 of the
         // first 20 Home Assistant users left here without typing an
         // address), then the address question, whose Check is the primary
         // action (2.6.4: five users saw it under the chips and none typed
@@ -609,7 +609,7 @@ class _ScanEmpty extends StatelessWidget {
   }
 }
 
-/// The three choices on an empty result with no hub found (2.9.5): no hub
+/// The three choices on an empty result with no hub found (2.9.6): no hub
 /// yet opens the Hubs page; Home Assistant checks homeassistant.local and
 /// says where its broker lives; another network explains guest networks
 /// and offers [usualHubNames] to check.

@@ -72,12 +72,12 @@ enum SetupStepKind {
   /// [SetupStep.result]: broker, local_only, unreachable or no_answer.
   z2mAsked,
 
-  /// One of the three choices on the empty result (2.9.5), with its
+  /// One of the three choices on the empty result (2.9.6), with its
   /// [SetupStep.choice].
   emptyChoice,
 }
 
-/// What the user tapped on an empty result with no hub found (2.9.5): no
+/// What the user tapped on an empty result with no hub found (2.9.6): no
 /// hub yet (opens the Hubs page), Home Assistant (checks
 /// homeassistant.local), or a hub on another network (the guest-network
 /// note and usual names).
@@ -87,7 +87,9 @@ enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
 /// first step that failed (name lookup, TCP connection, MQTT handshake,
 /// login). Never the address. 2.9.3 splits out the cases with their own
 /// message: a `.local` name, Home Assistant without a broker, Home
-/// Assistant refusing the login.
+/// Assistant refusing the login. 2.9.5 adds a refused port on an SMLIGHT
+/// hub (Allow External off) and on a Zigbee2MQTT machine whose broker
+/// listens only locally.
 enum ManualTestResult {
   connected,
   resolve,
@@ -97,6 +99,8 @@ enum ManualTestResult {
   localName,
   haNoBroker,
   haLogin,
+  smlightClosed,
+  z2mNoBroker,
 }
 
 /// Each step of first-run setup: where people get stuck. An empty scan

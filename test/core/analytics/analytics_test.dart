@@ -252,7 +252,7 @@ void main() {
       );
     });
 
-    // 2.9.5: which way out of the empty result was tapped.
+    // 2.9.6: which way out of the empty result was tapped.
     test('setup_step empty_choice: the choice', () {
       expect(
         const SetupStep(

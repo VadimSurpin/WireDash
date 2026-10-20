@@ -513,7 +513,7 @@ void main() {
     );
   }
 
-  // 2.9.5: the empty result with no hub found offers three ways out.
+  // 2.9.6: the empty result with no hub found offers three ways out.
   group('the empty result\'s choices', () {
     late List<(String, Map<String, String>)> sent;
     late List<Override> analytics;

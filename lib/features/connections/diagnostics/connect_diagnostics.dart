@@ -93,14 +93,14 @@ class ConnectDiagnostics {
   final HostIdentifier? _identify;
   final Duration deviceWindow;
 
-  Future<bool> _isHomeAssistant(String host) async {
+  /// The kind of machine at [host], or null when it can't be told.
+  Future<HubKind?> _kindOf(String host) async {
     final identify = _identify;
-    if (identify == null) return false;
+    if (identify == null) return null;
     try {
-      return await identify(host).timeout(const Duration(seconds: 4)) ==
-          HubKind.homeAssistant;
+      return await identify(host).timeout(const Duration(seconds: 4));
     } catch (_) {
-      return false;
+      return null;
     }
   }
 
@@ -196,16 +196,22 @@ class ConnectDiagnostics {
     } catch (_) {
       // Refused: something is there. Home Assistant without the Mosquitto
       // add-on refuses 1883 (a US user, 2026-10-17, went from here to
-      // giving up).
+      // giving up); so does an SMLIGHT hub with Allow External off, and a
+      // Mosquitto 2 with no `listener` line, which listens only locally
+      // (2.9.5: manual_test tcp was the biggest dead end, Oct 7-19).
+      // Only on the usual port: another port refused says nothing about
+      // whether a broker runs there.
+      final kind = config.port == 1883 ? await _kindOf(cand.host) : null;
       steps.add(
         StepResult(
           step: DiagnosticStep.tcp,
           status: StepStatus.fail,
-          // Only on the usual port: another port refused says nothing
-          // about whether a broker runs there.
-          detailKey: config.port == 1883 && await _isHomeAssistant(cand.host)
-              ? 'diagTcpHaNoBroker'
-              : 'diagTcpFail',
+          detailKey: switch (kind) {
+            HubKind.homeAssistant => 'diagTcpHaNoBroker',
+            HubKind.smlight => 'diagTcpSmlightClosed',
+            HubKind.zigbee2mqtt => 'diagTcpZ2mNoBroker',
+            null => 'diagTcpFail',
+          },
         ),
       );
     }
@@ -296,7 +302,7 @@ class ConnectDiagnostics {
         StepResult(
           step: DiagnosticStep.auth,
           status: StepStatus.fail,
-          detailKey: await _isHomeAssistant(cand.host)
+          detailKey: await _kindOf(cand.host) == HubKind.homeAssistant
               ? 'diagAuthRejectedHa'
               : 'diagAuthRejected',
         ),
@@ -425,7 +431,8 @@ bool _isLocalName(String host) =>
     host.toLowerCase().replaceFirst(RegExp(r'\.$'), '').endsWith('.local');
 
 /// How a ladder run ends, for analytics: connected, or its first failed
-/// step (2.7.2), or the more precise reason its message gave (2.9.3).
+/// step (2.7.2), or the more precise reason its message gave (2.9.3,
+/// 2.9.5).
 ManualTestResult manualTestResult(DiagnosticsReport report) {
   if (report.connected) return ManualTestResult.connected;
   final failure = report.steps
@@ -436,6 +443,10 @@ ManualTestResult manualTestResult(DiagnosticsReport report) {
       return ManualTestResult.localName;
     case 'diagTcpHaNoBroker':
       return ManualTestResult.haNoBroker;
+    case 'diagTcpSmlightClosed':
+      return ManualTestResult.smlightClosed;
+    case 'diagTcpZ2mNoBroker':
+      return ManualTestResult.z2mNoBroker;
     case 'diagAuthRejectedHa':
       return ManualTestResult.haLogin;
   }
