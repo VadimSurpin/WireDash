@@ -21,6 +21,7 @@ class AppStarted extends AnalyticsEvent {
     required this.homes,
     required this.tiles,
     required this.demo,
+    this.daysInstalled,
   });
 
   final FormFactor form;
@@ -29,6 +30,12 @@ class AppStarted extends AnalyticsEvent {
   final int homes;
   final int tiles;
   final bool demo;
+
+  /// Whole days since ZigDash was installed on this phone (2.9.7), from
+  /// Android's install time; null when it couldn't be read. Only the range
+  /// is sent: it shows whether people come back, which a daily-changing
+  /// anonymous id can't.
+  final int? daysInstalled;
 
   @override
   String get name => 'app_started';
@@ -46,6 +53,15 @@ class AppStarted extends AnalyticsEvent {
       top: '31+',
     ),
     'demo': demo ? 'yes' : 'no',
+    'installed': switch (daysInstalled) {
+      null => 'unknown',
+      final d => bucket(
+        d,
+        const [0, 1],
+        ranges: const [(2, 7), (8, 30)],
+        top: '31+',
+      ),
+    },
   };
 }
 

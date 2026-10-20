@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../data/database/database.dart';
 import '../../features/onboarding/demo_service.dart';
@@ -50,6 +51,7 @@ class _AnalyticsTrackerState extends ConsumerState<AnalyticsTracker> {
     final db = ref.read(appDatabaseProvider);
     final homes = await db.select(db.connections).get();
     final tiles = await db.select(db.panels).get();
+    final installed = await _installTime();
     if (!mounted) return;
     final settings = ref.read(settingsControllerProvider);
     final shortest = MediaQuery.sizeOf(context).shortestSide;
@@ -60,7 +62,20 @@ class _AnalyticsTrackerState extends ConsumerState<AnalyticsTracker> {
       homes: homes.where((c) => !isDemoConnection(c.host)).length,
       tiles: tiles.length,
       demo: ref.read(demoServiceProvider),
+      daysInstalled: installed == null
+          ? null
+          : DateTime.now().difference(installed).inDays.clamp(0, 100000),
     ));
+  }
+
+  /// When Android installed ZigDash on this phone; null where unknown
+  /// (tests, platforms without it).
+  static Future<DateTime?> _installTime() async {
+    try {
+      return (await PackageInfo.fromPlatform()).installTime;
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
