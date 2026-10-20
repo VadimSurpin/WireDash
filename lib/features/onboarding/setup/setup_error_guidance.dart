@@ -72,6 +72,8 @@ SetupErrorKind mapLadderFailure(DiagnosticsReport report) {
     'diagTcpTimeout' => SetupErrorKind.hostUnreachable,
     'diagTcpFail' ||
     'diagTcpHaNoBroker' ||
+    'diagTcpSmlightClosed' ||
+    'diagTcpZ2mNoBroker' ||
     'diagConnackFail' => SetupErrorKind.portClosed,
     'diagAuthRejected' ||
     'diagAuthRejectedHa' ||

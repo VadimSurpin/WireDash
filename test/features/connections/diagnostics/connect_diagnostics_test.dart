@@ -444,6 +444,36 @@ void main() {
       });
     });
 
+    // 2.9.5: manual_test tcp was the biggest dead end (17 times Oct 7-19).
+    test('refused by an SMLIGHT hub: turn on Allow External', () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          tcpProbe: (h, p, t) async => throw Exception('refused'),
+          identify: (h) async => HubKind.smlight,
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: '').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpSmlightClosed');
+        expect(manualTestResult(report!), ManualTestResult.smlightClosed);
+      });
+    });
+
+    test('refused where only Zigbee2MQTT answers: Mosquitto is local only',
+        () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          tcpProbe: (h, p, t) async => throw Exception('refused'),
+          identify: (h) async => HubKind.zigbee2mqtt,
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: '').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpZ2mNoBroker');
+        expect(manualTestResult(report!), ManualTestResult.z2mNoBroker);
+      });
+    });
+
     test('refused by something else: the general message', () {
       fakeAsync((async) {
         final d = diagnostics(

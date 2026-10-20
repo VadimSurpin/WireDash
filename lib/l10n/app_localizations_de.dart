@@ -1363,7 +1363,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get diagTcpFail =>
-      'Der Broker ist nicht erreichbar. Läuft Zigbee2MQTT? Prüfen Sie Adresse und Port.';
+      'Der Broker hat die Verbindung nicht angenommen. Prüfen Sie, ob Ihr MQTT-Broker (meist Mosquitto) läuft und Verbindungen von anderen Geräten annimmt und ob Adresse und Port (meist 1883) stimmen.';
 
   @override
   String get diagTcpTimeout =>
@@ -1392,6 +1392,14 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get diagTcpHaNoBroker =>
       'Das ist Ihr Home Assistant, aber darauf läuft kein MQTT-Broker. Installieren und starten Sie das Add-on „Mosquitto broker“ (Einstellungen › Add-ons) und versuchen Sie es erneut.';
+
+  @override
+  String get diagTcpSmlightClosed =>
+      'Das ist Ihr SMLIGHT-Hub, aber sein MQTT-Broker nimmt keine Verbindungen von anderen Geräten an. Öffnen Sie auf der Weboberfläche des Hubs Settings › MQTT, schalten Sie Allow External ein, speichern Sie und versuchen Sie es erneut.';
+
+  @override
+  String get diagTcpZ2mNoBroker =>
+      'Unter dieser Adresse läuft Zigbee2MQTT, aber sein MQTT-Broker nimmt keine Verbindungen von anderen Geräten an. Mosquitto lauscht nur auf dem eigenen Rechner, bis Sie die Zeilen „listener 1883“ und „allow_anonymous true“ in mosquitto.conf eintragen (oder ein Passwort einrichten). Starten Sie Mosquitto neu und versuchen Sie es erneut.';
 
   @override
   String get diagAuthRejectedHa =>
@@ -1884,6 +1892,36 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get setupAddressInvalid => 'Gib zuerst eine Adresse ein.';
+
+  @override
+  String get setupChoicesTitle => 'Was davon passt zu dir?';
+
+  @override
+  String get setupChoiceNoHub => 'Ich habe noch keinen Hub';
+
+  @override
+  String get setupChoiceNoHubSub =>
+      'Kleine Hubs ansehen, auf denen Zigbee2MQTT läuft';
+
+  @override
+  String get setupChoiceHa => 'Ich nutze Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Unter homeassistant.local suchen';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash verbindet sich mit dem MQTT-Broker von Home Assistant, dem Mosquitto-Broker-Add-on unter Einstellungen › Add-ons, und Zigbee2MQTT muss ihn ebenfalls nutzen. Wird homeassistant.local nicht gefunden, gib unten die IP-Adresse von Home Assistant ein. Sie steht unter Einstellungen › System › Netzwerk.';
+
+  @override
+  String get setupChoiceOther => 'Mein Hub ist in einem anderen Netzwerk';
+
+  @override
+  String get setupChoiceOtherSub => 'Ein Gast-WLAN oder ein zweiter Router';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Dein Handy muss deinen Hub erreichen können. Ein Gast-WLAN oder ein zweiter Router mit eigenem WLAN trennt die beiden. Verbinde dich mit dem WLAN, in dem dein Hub ist, und tippe auf Erneut versuchen. Oder gib unten die IP-Adresse des Hubs ein oder probiere einen dieser üblichen Namen:';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

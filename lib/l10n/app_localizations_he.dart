@@ -1342,7 +1342,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get diagTcpFail =>
-      'לא ניתן להגיע לברוקר. האם Zigbee2MQTT פעיל? בדקו את הכתובת והיציאה.';
+      'הברוקר לא קיבל את החיבור. בדקו שברוקר ה‑MQTT שלכם (בדרך כלל Mosquitto) פועל ומקבל חיבורים ממכשירים אחרים, ושהכתובת והיציאה (בדרך כלל 1883) נכונות.';
 
   @override
   String get diagTcpTimeout =>
@@ -1370,6 +1370,14 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get diagTcpHaNoBroker =>
       'זה ה‑Home Assistant שלכם, אבל לא פועל בו ברוקר MQTT. התקינו והפעילו את התוסף Mosquitto broker (הגדרות › תוספים), ונסו שוב.';
+
+  @override
+  String get diagTcpSmlightClosed =>
+      'זה ה‑hub של SMLIGHT שלכם, אבל ברוקר ה‑MQTT שלו לא מקבל חיבורים ממכשירים אחרים. בדף האינטרנט של ה‑hub פתחו Settings › MQTT, הפעילו Allow External, שמרו ונסו שוב.';
+
+  @override
+  String get diagTcpZ2mNoBroker =>
+      'בכתובת הזו פועל Zigbee2MQTT, אבל ברוקר ה‑MQTT שלו לא מקבל חיבורים ממכשירים אחרים. Mosquitto מאזין רק במחשב שלו עד שמוסיפים לקובץ mosquitto.conf את השורות \"listener 1883\" ו‑\"allow_anonymous true\" (או מגדירים סיסמה). הפעילו מחדש את Mosquitto ונסו שוב.';
 
   @override
   String get diagAuthRejectedHa =>
@@ -1855,6 +1863,35 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get setupAddressInvalid => 'קודם הזינו כתובת.';
+
+  @override
+  String get setupChoicesTitle => 'מה מהבאים מתאים לכם?';
+
+  @override
+  String get setupChoiceNoHub => 'עדיין אין לי רכזת';
+
+  @override
+  String get setupChoiceNoHubSub => 'הצגת רכזות קטנות שמריצות Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'יש לי Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'חיפוש בכתובת homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash מתחבר לשרת ה-MQTT של Home Assistant, התוסף Mosquitto broker תחת הגדרות › תוספים, וגם Zigbee2MQTT צריך להשתמש בו. אם homeassistant.local לא נמצא, הזינו למטה את כתובת ה‑IP של Home Assistant. היא מופיעה תחת הגדרות › מערכת › רשת.';
+
+  @override
+  String get setupChoiceOther => 'הרכזת שלי ברשת אחרת';
+
+  @override
+  String get setupChoiceOtherSub => 'Wi-Fi לאורחים או נתב שני';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'הטלפון צריך להגיע לרכזת. Wi-Fi לאורחים, או נתב שני עם Wi-Fi משלו, מפריד ביניהם. התחברו ל-Wi-Fi שהרכזת נמצאת בו והקישו על נסו שוב. אפשר גם להזין למטה את כתובת ה‑IP של הרכזת, או לנסות אחד מהשמות המקובלים האלה:';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

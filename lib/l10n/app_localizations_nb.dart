@@ -1353,7 +1353,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get diagTcpFail =>
-      'Brokeren er ikke tilgjengelig. Kjører Zigbee2MQTT? Kontroller adresse og port.';
+      'Megleren godtok ikke tilkoblingen. Kontroller at MQTT-megleren (vanligvis Mosquitto) kjører og godtar tilkoblinger fra andre enheter, og at adresse og port (vanligvis 1883) stemmer.';
 
   @override
   String get diagTcpTimeout =>
@@ -1382,6 +1382,14 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get diagTcpHaNoBroker =>
       'Dette er Home Assistant, men ingen MQTT-megler kjører på den. Installer og start tillegget Mosquitto broker (Innstillinger › Tillegg), og prøv igjen.';
+
+  @override
+  String get diagTcpSmlightClosed =>
+      'Dette er SMLIGHT-huben din, men MQTT-megleren på den godtar ikke tilkoblinger fra andre enheter. Åpne Settings › MQTT på hubens nettside, slå på Allow External, lagre og prøv igjen.';
+
+  @override
+  String get diagTcpZ2mNoBroker =>
+      'Zigbee2MQTT kjører på denne adressen, men MQTT-megleren godtar ikke tilkoblinger fra andre enheter. Mosquitto lytter bare på sin egen maskin til du legger linjene «listener 1883» og «allow_anonymous true» til i mosquitto.conf (eller setter opp et passord). Start Mosquitto på nytt og prøv igjen.';
 
   @override
   String get diagAuthRejectedHa =>
@@ -1873,6 +1881,35 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get setupAddressInvalid => 'Skriv inn en adresse først.';
+
+  @override
+  String get setupChoicesTitle => 'Hva av dette passer for deg?';
+
+  @override
+  String get setupChoiceNoHub => 'Jeg har ikke en hub ennå';
+
+  @override
+  String get setupChoiceNoHubSub => 'Se små huber som kjører Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'Jeg bruker Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Let etter den på homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash kobler til MQTT-megleren i Home Assistant, tillegget Mosquitto broker under Innstillinger › Tillegg, og Zigbee2MQTT må bruke den også. Hvis homeassistant.local ikke blir funnet, skriv inn IP-adressen til Home Assistant nedenfor. Den står under Innstillinger › System › Nettverk.';
+
+  @override
+  String get setupChoiceOther => 'Huben min er på et annet nettverk';
+
+  @override
+  String get setupChoiceOtherSub => 'Et gjestenett eller en ekstra ruter';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Telefonen må nå huben din. Et gjestenett, eller en ekstra ruter med eget Wi-Fi, holder dem adskilt. Koble til Wi-Fi-nettet huben er på, og trykk på Prøv igjen. Eller skriv inn hubens IP-adresse nedenfor, eller prøv et av disse vanlige navnene:';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

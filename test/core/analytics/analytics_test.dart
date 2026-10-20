@@ -252,6 +252,17 @@ void main() {
       );
     });
 
+    // 2.9.6: which way out of the empty result was tapped.
+    test('setup_step empty_choice: the choice', () {
+      expect(
+        const SetupStep(
+          SetupStepKind.emptyChoice,
+          choice: ScanEmptyChoice.otherNetwork,
+        ).props,
+        {'step': 'empty_choice', 'choice': 'other_network'},
+      );
+    });
+
     test('feature_used once per session, except tiles added', () async {
       final (c, sink) = await _container(prefs: {'analytics_consent': true});
       final a = c.read(analyticsProvider);
