@@ -18,6 +18,8 @@ const appLanguages = {
   'pt': 'Português (Brasil)',
   'ru': 'Русский',
   'pl': 'Polski',
+  'it': 'Italiano',
+  'cs': 'Čeština',
 };
 
 /// "System (English)" or the chosen language's own name.
