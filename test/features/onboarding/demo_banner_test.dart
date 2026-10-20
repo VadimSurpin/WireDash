@@ -10,16 +10,17 @@ import 'package:zigdash/features/onboarding/demo_banner.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 
 Connection _conn(String host) => Connection(
-      id: 'c1',
-      name: 'Home',
-      host: host,
-      port: 1883,
-      protocol: MqttProtocol.tcp,
-      keepAliveSeconds: 60,
-      autoConnect: true,
-      createdAt: DateTime(2026, 9, 26),
-      updatedAt: DateTime(2026, 9, 26),
-    );
+  transport: ConnectionTransport.mqtt,
+  id: 'c1',
+  name: 'Home',
+  host: host,
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+  keepAliveSeconds: 60,
+  autoConnect: true,
+  createdAt: DateTime(2026, 9, 26),
+  updatedAt: DateTime(2026, 9, 26),
+);
 
 Future<void> _pump(WidgetTester tester, String host) async {
   await tester.pumpWidget(
@@ -35,9 +36,8 @@ Future<void> _pump(WidgetTester tester, String host) async {
           routes: [
             GoRoute(
               path: '/home',
-              builder: (_, __) => const Scaffold(
-                body: DemoBanner(connectionId: 'c1'),
-              ),
+              builder: (_, __) =>
+                  const Scaffold(body: DemoBanner(connectionId: 'c1')),
             ),
             GoRoute(
               path: Routes.setup,
@@ -53,8 +53,9 @@ Future<void> _pump(WidgetTester tester, String host) async {
 
 void main() {
   // First-run decision: demo mode is persistent but marked, with a way out.
-  testWidgets('a demo home shows the demo bar, which opens setup',
-      (tester) async {
+  testWidgets('a demo home shows the demo bar, which opens setup', (
+    tester,
+  ) async {
     await _pump(tester, 'demo.local');
     expect(find.text("You're in demo mode"), findsOneWidget);
 

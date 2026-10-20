@@ -87,6 +87,7 @@ class _FakeStore implements SetupStore {
     int dashboardIcon = 0,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    ConnectionTransport transport = ConnectionTransport.mqtt,
   }) async => SetupResult(
     connectionId: 'c1',
     dashboardId: 'd1',

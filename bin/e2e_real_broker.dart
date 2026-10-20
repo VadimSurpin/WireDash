@@ -7,6 +7,9 @@
 //       --device living_light --read-only true
 //   dart run bin/e2e_real_broker.dart --protocol ws --port 9001
 //   dart run bin/e2e_real_broker.dart --restart-cmd 'tool/e2e/restart_broker.sh'
+//   dart run bin/e2e_real_broker.dart --transport ha --host http://192.168.1.20:8123 \
+//       --token-file ~/.ha_token      (through Home Assistant; the file
+//       holds a long-lived token or refresh:<token>, read and never printed)
 //
 // --read-only true skips every publish, for a real home where commands would
 // switch real devices. Exit code 0 only when every check passes.
@@ -25,8 +28,12 @@ var failures = 0;
 
 void check(String name, bool ok, [String detail = '']) {
   if (!ok) failures++;
-  stdout.writeln('${ok ? 'PASS' : 'FAIL'}  $name${detail.isEmpty ? '' : '  ($detail)'}');
+  stdout.writeln(
+    '${ok ? 'PASS' : 'FAIL'}  $name${detail.isEmpty ? '' : '  ($detail)'}',
+  );
 }
+
+bool get viaHa => opts['transport'] == 'ha';
 
 BrokerConfig config(String id) => BrokerConfig(
   id: id,
@@ -35,16 +42,27 @@ BrokerConfig config(String id) => BrokerConfig(
   protocol: MqttProtocol.values.byName(opts['protocol']!),
   username: opts['user'],
   keepAliveSeconds: 30,
+  transport: viaHa
+      ? ConnectionTransport.homeAssistant
+      : ConnectionTransport.mqtt,
 );
 
-MqttManager manager({String id = '3f2a9c1e-7b4d-4e8a-9c0f-1a2b3c4d5e6f', String? clientId}) =>
-    MqttManager(
-      config: config(id),
-      password: opts['pass'] ?? '',
-      clientIdOverride: clientId,
-    );
+MqttManager manager({
+  String id = '3f2a9c1e-7b4d-4e8a-9c0f-1a2b3c4d5e6f',
+  String? clientId,
+}) => MqttManager(
+  config: config(id),
+  password: viaHa
+      ? File(opts['token-file']!).readAsStringSync().trim()
+      : opts['pass'] ?? '',
+  clientIdOverride: clientId,
+);
 
-Future<bool> waitStatus(MqttManager m, MqttStatus want, Duration timeout) async {
+Future<bool> waitStatus(
+  MqttManager m,
+  MqttStatus want,
+  Duration timeout,
+) async {
   if (m.status == want) return true;
   try {
     await m.status$.firstWhere((s) => s == want).timeout(timeout);
@@ -81,6 +99,7 @@ Future<void> main(List<String> args) async {
     'base': 'zigbee2mqtt',
     'device': 'living_light',
     'read-only': 'false',
+    'transport': 'mqtt',
   };
   for (var i = 0; i + 1 < args.length; i += 2) {
     opts[args[i].replaceFirst('--', '')] = args[i + 1];
@@ -88,15 +107,24 @@ Future<void> main(List<String> args) async {
   final base = opts['base']!;
   final device = opts['device']!;
   final readOnly = opts['read-only'] == 'true';
-  stdout.writeln('Broker ${opts['host']}:${opts['port']} (${opts['protocol']}), '
-      'base "$base"${readOnly ? ', read-only' : ''}');
+  stdout.writeln(
+    '${viaHa ? 'Home Assistant' : 'Broker'} ${opts['host']}:${opts['port']} (${viaHa ? 'ws' : opts['protocol']}), '
+    'base "$base"${readOnly ? ', read-only' : ''}',
+  );
 
   // 1. Connect.
   final m = manager();
   unawaited(m.connect());
-  final connected = await waitStatus(m, MqttStatus.connected, const Duration(seconds: 10));
-  check('connects (MQTT 3.1 CONNECT, client id ${m.clientId})', connected,
-      connected ? '' : 'last error: ${m.lastError}');
+  final connected = await waitStatus(
+    m,
+    MqttStatus.connected,
+    const Duration(seconds: 10),
+  );
+  check(
+    'connects (MQTT 3.1 CONNECT, client id ${m.clientId})',
+    connected,
+    connected ? '' : 'last error: ${m.lastError}',
+  );
   if (!connected) {
     await m.dispose();
     exit(1);
@@ -104,8 +132,11 @@ Future<void> main(List<String> args) async {
 
   // 2. Zigbee2MQTT bridge.
   final state = await firstPayload(m, '$base/bridge/state');
-  check('bridge/state is online', state != null && state.contains('online'),
-      state ?? 'nothing received');
+  check(
+    'bridge/state is online',
+    state != null && state.contains('online'),
+    state ?? 'nothing received',
+  );
   final devicesJson = await firstPayload(m, '$base/bridge/devices');
   var names = <String>[];
   if (devicesJson != null) {
@@ -114,8 +145,13 @@ Future<void> main(List<String> args) async {
         if (d['type'] != 'Coordinator') d['friendly_name'] as String,
     ];
   }
-  check('bridge/devices lists devices', devicesJson != null,
-      devicesJson == null ? 'nothing received' : '${names.length}: ${names.join(', ')}');
+  check(
+    'bridge/devices lists devices',
+    devicesJson != null,
+    devicesJson == null
+        ? 'nothing received'
+        : '${names.length}: ${names.join(', ')}',
+  );
 
   // 3. Device state (retained).
   final hasDevice = names.contains(device);
@@ -146,8 +182,11 @@ Future<void> main(List<String> args) async {
     await Future<void>.delayed(const Duration(milliseconds: 300));
     m.publish('$base/$device/set', '{"brightness":{value}}', target);
     final got = await echoed;
-    check('command round trip ($device brightness $target)', got != null,
-        got ?? 'no state update within 5 s');
+    check(
+      'command round trip ($device brightness $target)',
+      got != null,
+      got ?? 'no state update within 5 s',
+    );
   }
 
   // 5. Two clients for the same connection (phone + wall tablet restored from
@@ -167,30 +206,47 @@ Future<void> main(List<String> args) async {
     return drops;
   }
 
-  final a = manager(id: 'same-connection');
-  final b = manager(id: 'same-connection');
-  unawaited(a.connect());
-  unawaited(b.connect());
-  final bothUp = await waitStatus(a, MqttStatus.connected, const Duration(seconds: 10)) &&
-      await waitStatus(b, MqttStatus.connected, const Duration(seconds: 10));
-  final drops = bothUp ? await dropsDuring([a, b], const Duration(seconds: 6)) : -1;
-  check('two clients, same connection, both stay connected', bothUp && drops == 0,
-      'ids ${a.clientId} / ${b.clientId}, drops in 6 s: $drops');
-  await a.dispose();
-  await b.dispose();
+  if (viaHa) {
+    stdout.writeln('SKIP  same-id takeover checks (MQTT client ids only)');
+  } else {
+    final a = manager(id: 'same-connection');
+    final b = manager(id: 'same-connection');
+    unawaited(a.connect());
+    unawaited(b.connect());
+    final bothUp =
+        await waitStatus(
+          a,
+          MqttStatus.connected,
+          const Duration(seconds: 10),
+        ) &&
+        await waitStatus(b, MqttStatus.connected, const Duration(seconds: 10));
+    final drops = bothUp
+        ? await dropsDuring([a, b], const Duration(seconds: 6))
+        : -1;
+    check(
+      'two clients, same connection, both stay connected',
+      bothUp && drops == 0,
+      'ids ${a.clientId} / ${b.clientId}, drops in 6 s: $drops',
+    );
+    await a.dispose();
+    await b.dispose();
 
-  // Control: forcing one shared id must reproduce the takeover, proving the
-  // check above can see it.
-  final c1 = manager(id: 'x', clientId: 'zd-shared-id-test');
-  final c2 = manager(id: 'x', clientId: 'zd-shared-id-test');
-  unawaited(c1.connect());
-  await waitStatus(c1, MqttStatus.connected, const Duration(seconds: 10));
-  unawaited(c2.connect());
-  final ctrlDrops = await dropsDuring([c1, c2], const Duration(seconds: 6));
-  check('control: a shared id is taken over by the broker', ctrlDrops > 0,
-      'drops in 6 s: $ctrlDrops');
-  await c1.dispose();
-  await c2.dispose();
+    // Control: forcing one shared id must reproduce the takeover, proving the
+    // check above can see it.
+    final c1 = manager(id: 'x', clientId: 'zd-shared-id-test');
+    final c2 = manager(id: 'x', clientId: 'zd-shared-id-test');
+    unawaited(c1.connect());
+    await waitStatus(c1, MqttStatus.connected, const Duration(seconds: 10));
+    unawaited(c2.connect());
+    final ctrlDrops = await dropsDuring([c1, c2], const Duration(seconds: 6));
+    check(
+      'control: a shared id is taken over by the broker',
+      ctrlDrops > 0,
+      'drops in 6 s: $ctrlDrops',
+    );
+    await c1.dispose();
+    await c2.dispose();
+  }
 
   // 6. Broker restart: reconnect and resubscribe.
   final restart = opts['restart-cmd'];
@@ -205,8 +261,11 @@ Future<void> main(List<String> args) async {
           .firstWhere((e) => e.payload.contains('online'))
           .timeout(const Duration(seconds: 5));
     } on TimeoutException {
-      check('re-subscribe to a released topic gets the retained state', false,
-          'nothing within 5 s');
+      check(
+        're-subscribe to a released topic gets the retained state',
+        false,
+        'nothing within 5 s',
+      );
     }
     final afterRestart = watched
         .where((e) => e.payload.contains('online'))
@@ -224,16 +283,22 @@ Future<void> main(List<String> args) async {
     } on TimeoutException {
       reconnectSeen = false;
     }
-    final back = await waitStatus(m, MqttStatus.connected, const Duration(seconds: 30));
+    final back = await waitStatus(
+      m,
+      MqttStatus.connected,
+      const Duration(seconds: 30),
+    );
     var resubscribed = true;
     try {
       await afterRestart;
     } on TimeoutException {
       resubscribed = false;
     }
-    check('broker restart: detects drop, reconnects, resubscribes',
-        reconnectSeen && back && resubscribed,
-        'drop seen: $reconnectSeen, reconnected: $back, bridge state again: $resubscribed');
+    check(
+      'broker restart: detects drop, reconnects, resubscribes',
+      reconnectSeen && back && resubscribed,
+      'drop seen: $reconnectSeen, reconnected: $back, bridge state again: $resubscribed',
+    );
     m.unsubscribe('$base/bridge/state');
   }
 

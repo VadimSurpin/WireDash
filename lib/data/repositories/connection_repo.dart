@@ -28,22 +28,26 @@ class ConnectionRepo {
     int keepAliveSeconds = 60,
     bool autoConnect = false,
     String? remoteHost,
+    ConnectionTransport? transport,
   }) async {
     final id = newId();
     final now = DateTime.now();
-    await _dao.insertRow(ConnectionsCompanion.insert(
-      id: id,
-      name: name,
-      host: host,
-      port: port,
-      protocol: protocol,
-      username: Value(username),
-      keepAliveSeconds: Value(keepAliveSeconds),
-      autoConnect: Value(autoConnect),
-      remoteHost: Value(remoteHost),
-      createdAt: now,
-      updatedAt: now,
-    ));
+    await _dao.insertRow(
+      ConnectionsCompanion.insert(
+        id: id,
+        name: name,
+        host: host,
+        port: port,
+        protocol: protocol,
+        username: Value(username),
+        keepAliveSeconds: Value(keepAliveSeconds),
+        autoConnect: Value(autoConnect),
+        remoteHost: Value(remoteHost),
+        transport: Value(transport ?? ConnectionTransport.mqtt),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
     if (password != null && password.isNotEmpty) {
       await _secure.writePassword(id, password);
     }
@@ -63,6 +67,7 @@ class ConnectionRepo {
     int keepAliveSeconds = 60,
     bool autoConnect = false,
     String? remoteHost,
+    ConnectionTransport? transport,
   }) async {
     await _dao.updateById(
       id,
@@ -75,6 +80,9 @@ class ConnectionRepo {
         keepAliveSeconds: Value(keepAliveSeconds),
         autoConnect: Value(autoConnect),
         remoteHost: Value(remoteHost),
+        // Not passed: the home keeps how it connects (an MQTT form never
+        // turns a Home Assistant home back into a broker one).
+        transport: Value.absentIfNull(transport),
         updatedAt: Value(DateTime.now()),
       ),
     );
@@ -88,12 +96,9 @@ class ConnectionRepo {
   }
 
   Future<void> rename(String id, String name) => _dao.updateById(
-        id,
-        ConnectionsCompanion(
-          name: Value(name),
-          updatedAt: Value(DateTime.now()),
-        ),
-      );
+    id,
+    ConnectionsCompanion(name: Value(name), updatedAt: Value(DateTime.now())),
+  );
 
   /// Sets the home's Zigbee2MQTT base topic; null or blank clears it, which
   /// brings back the derivation from its dashboards.
@@ -124,6 +129,9 @@ final connectionsStreamProvider = StreamProvider<List<Connection>>((ref) {
   return ref.watch(connectionRepoProvider).watchAll();
 });
 
-final connectionByIdProvider = FutureProvider.family<Connection?, String>((ref, id) {
+final connectionByIdProvider = FutureProvider.family<Connection?, String>((
+  ref,
+  id,
+) {
   return ref.watch(connectionRepoProvider).getById(id);
 });

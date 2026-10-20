@@ -17,6 +17,7 @@ import 'golden_harness.dart';
 final _stamp = DateTime(2026, 10, 16);
 final _homes = [
   Connection(
+    transport: ConnectionTransport.mqtt,
     id: 'c1',
     name: 'My Home',
     host: '192.168.68.52',

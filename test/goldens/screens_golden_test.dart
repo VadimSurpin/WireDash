@@ -24,24 +24,23 @@ import 'golden_harness.dart';
 
 final _stamp = DateTime(2026, 9, 26);
 
-Panel _panel(String id, String name, PanelType type, PanelWidth width) =>
-    Panel(
-      id: id,
-      dashboardId: 'd1',
-      name: name,
-      type: type,
-      topic: id,
-      subscribeTopic: null,
-      topicPrefixOverride: null,
-      qos: 1,
-      retain: false,
-      width: width,
-      sortOrder: 0,
-      config: PanelConfig.defaultFor(type).encode(),
-      mergeFlags: 0,
-      createdAt: _stamp,
-      updatedAt: _stamp,
-    );
+Panel _panel(String id, String name, PanelType type, PanelWidth width) => Panel(
+  id: id,
+  dashboardId: 'd1',
+  name: name,
+  type: type,
+  topic: id,
+  subscribeTopic: null,
+  topicPrefixOverride: null,
+  qos: 1,
+  retain: false,
+  width: width,
+  sortOrder: 0,
+  config: PanelConfig.defaultFor(type).encode(),
+  mergeFlags: 0,
+  createdAt: _stamp,
+  updatedAt: _stamp,
+);
 
 final _dashboard = Dashboard(
   id: 'd1',
@@ -80,7 +79,8 @@ const _values = <String, Object?>{
 
 Object? _valueFor(String topic) {
   for (final e in _values.entries) {
-    if (topic == e.key || topic.endsWith('/${e.key}') ||
+    if (topic == e.key ||
+        topic.endsWith('/${e.key}') ||
         topic.contains('/${e.key}/')) {
       return e.value;
     }
@@ -121,32 +121,35 @@ Widget _dashboardScreen() => Scaffold(
 late SharedPreferences _prefs;
 
 Connection _home(String id, String name, String host) => Connection(
-      id: id,
-      name: name,
-      host: host,
-      port: 1883,
-      protocol: MqttProtocol.tcp,
-      keepAliveSeconds: 60,
-      autoConnect: true,
-      createdAt: DateTime(2026, 9, 27),
-      updatedAt: DateTime(2026, 9, 27),
-    );
+  transport: ConnectionTransport.mqtt,
+  id: id,
+  name: name,
+  host: host,
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+  keepAliveSeconds: 60,
+  autoConnect: true,
+  createdAt: DateTime(2026, 9, 27),
+  updatedAt: DateTime(2026, 9, 27),
+);
 
 List<Override> _settingsOverrides() => [
   sharedPreferencesProvider.overrideWithValue(_prefs),
-  connectionsStreamProvider.overrideWith((ref) => Stream.value([
-        _home('c1', 'My Home', '192.168.68.55'),
-        _home('c2', 'Cabin', 'cabin.example'),
-      ])),
-  connectionStatusProvider
-      .overrideWith((ref, _) => Stream.value(MqttStatus.connected)),
+  connectionsStreamProvider.overrideWith(
+    (ref) => Stream.value([
+      _home('c1', 'My Home', '192.168.68.55'),
+      _home('c2', 'Cabin', 'cabin.example'),
+    ]),
+  ),
+  connectionStatusProvider.overrideWith(
+    (ref, _) => Stream.value(MqttStatus.connected),
+  ),
   appVersionProvider.overrideWith((ref) async => '1.13.0 (28)'),
 ];
 
 void main() {
   setUpAll(() async {
-    SharedPreferences.setMockInitialValues(
-        {'last_dashboard_connection': 'c1'});
+    SharedPreferences.setMockInitialValues({'last_dashboard_connection': 'c1'});
     _prefs = await SharedPreferences.getInstance();
   });
 

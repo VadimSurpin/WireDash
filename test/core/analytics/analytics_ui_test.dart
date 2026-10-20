@@ -20,6 +20,7 @@ import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 
 Connection _home(String host) => Connection(
+  transport: ConnectionTransport.mqtt,
   id: 'c1',
   name: 'Home',
   host: host,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../../../data/database/tables/connections.dart';
 import '../../../mqtt/broker_config.dart';
+import '../../../mqtt/ha_address.dart';
 import '../../connections/diagnostics/connect_diagnostics.dart';
 import '../../connections/discovery/address_check.dart';
 import '../../connections/discovery/broker_probe.dart';
@@ -735,6 +736,27 @@ class SetupCoordinator {
     await _verify(candidate);
   }
 
+  /// A home reached through Home Assistant (2.10): [address] is the Home
+  /// Assistant address, [signIn] the stored form of the sign-in
+  /// (`ha_token.dart`), both already checked by the connect screen. Goes on
+  /// to read the devices and review them as any other candidate.
+  Future<void> adoptHomeAssistant({
+    required Uri address,
+    required String signIn,
+  }) async {
+    _username = null;
+    _password = signIn;
+    final candidate = SetupCandidate(
+      host: haAddressText(address),
+      port: address.hasPort
+          ? address.port
+          : (address.scheme == 'https' ? 443 : 80),
+      protocol: address.scheme == 'https' ? MqttProtocol.wss : MqttProtocol.ws,
+      transport: ConnectionTransport.homeAssistant,
+    );
+    await _verify(candidate);
+  }
+
   Future<void> submitCredentials(String username, String password) async {
     final s = _state;
     if (s is! SetupNeedsAuth) return;
@@ -772,6 +794,7 @@ class SetupCoordinator {
         base: base,
         selected: rows.where((r) => r.selected).toList(),
         notSelected: rows.where((r) => !r.selected).toList(),
+        transport: candidate.transport,
       );
       if (op != _op) return;
       _createdOn = candidate.host;
@@ -903,22 +926,29 @@ class SetupCoordinator {
       port: candidate.port,
       protocol: candidate.protocol,
       username: _username,
+      transport: candidate.transport,
     );
-    final DiagnosticsReport report;
-    try {
-      report = await _diagnostics.run(
-        config: config,
-        password: _password ?? '',
-        base: base,
-      );
-    } catch (_) {
+    // Through Home Assistant the sign-in was checked before the candidate
+    // existed (ha_connect.dart); the broker ladder is MQTT-shaped.
+    final DiagnosticsReport? report;
+    if (candidate.viaHomeAssistant) {
+      report = null;
+    } else {
+      try {
+        report = await _diagnostics.run(
+          config: config,
+          password: _password ?? '',
+          base: base,
+        );
+      } catch (_) {
+        if (op != _op) return;
+        _emit(SetupFailed(SetupErrorKind.unknown, candidate: candidate));
+        return;
+      }
       if (op != _op) return;
-      _emit(SetupFailed(SetupErrorKind.unknown, candidate: candidate));
-      return;
     }
-    if (op != _op) return;
 
-    if (!report.connected) {
+    if (report != null && !report.connected) {
       final kind = mapLadderFailure(report);
       if (kind == SetupErrorKind.authRejected) {
         // No credentials yet → first-time prompt; tried already → rejected.

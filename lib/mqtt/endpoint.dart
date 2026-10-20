@@ -13,18 +13,27 @@ const int localProbeTimeoutMs = 3000;
 /// Normal connect timeout (matches the previous single-host behavior).
 const int standardConnectTimeoutMs = 5000;
 
+/// A Home Assistant connect is a token refresh, TLS, the sign-in and a
+/// probe subscription, often over the internet: more than an MQTT CONNECT.
+const int homeAssistantConnectTimeoutMs = 12000;
+
 /// Local-first ordered candidates for [config]. With a remote host set, the LAN
 /// host is tried first with a short timeout, then the remote host. Without one,
 /// a single local candidate with the standard timeout (unchanged behavior).
 List<MqttCandidate> endpointCandidates(BrokerConfig config) {
   final remote = config.remoteHost?.trim();
+  final standard = config.viaHomeAssistant
+      ? homeAssistantConnectTimeoutMs
+      : standardConnectTimeoutMs;
   if (remote == null || remote.isEmpty) {
-    return [
-      (kind: MqttEndpoint.local, host: config.host, timeoutMs: standardConnectTimeoutMs),
-    ];
+    return [(kind: MqttEndpoint.local, host: config.host, timeoutMs: standard)];
   }
   return [
-    (kind: MqttEndpoint.local, host: config.host, timeoutMs: localProbeTimeoutMs),
-    (kind: MqttEndpoint.remote, host: remote, timeoutMs: standardConnectTimeoutMs),
+    (
+      kind: MqttEndpoint.local,
+      host: config.host,
+      timeoutMs: localProbeTimeoutMs,
+    ),
+    (kind: MqttEndpoint.remote, host: remote, timeoutMs: standard),
   ];
 }

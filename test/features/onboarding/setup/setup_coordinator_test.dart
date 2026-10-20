@@ -68,6 +68,9 @@ class _FakeCreator implements SetupStore {
   var calls = 0;
   Object? error;
   String? lastBase;
+  String? lastHost;
+  String? lastPassword;
+  ConnectionTransport? lastTransport;
   @override
   Future<SetupResult> create({
     required String host,
@@ -81,9 +84,13 @@ class _FakeCreator implements SetupStore {
     int dashboardIcon = 0,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    ConnectionTransport transport = ConnectionTransport.mqtt,
   }) async {
     calls++;
     lastBase = base;
+    lastHost = host;
+    lastPassword = password;
+    lastTransport = transport;
     if (error != null) throw error!;
     return SetupResult(
       connectionId: 'c1',
@@ -1073,5 +1080,59 @@ void main() {
       }
       expect(await h.coordinator.homeAssistantSeen(), isTrue);
     });
+  });
+
+  group('through Home Assistant (2.10)', () {
+    test(
+      'skips the broker ladder, reads devices, saves the transport',
+      () async {
+        final h = _Harness();
+        await h.coordinator.adoptHomeAssistant(
+          address: Uri.parse('https://abc.ui.nabu.casa'),
+          signIn: 'refresh:r1',
+        );
+        expect(h.diagnostics.calls, isEmpty);
+        expect(h.fetchedBases, ['zigbee2mqtt']);
+        final review = h.coordinator.state as SetupReview;
+        expect(review.candidate.transport, ConnectionTransport.homeAssistant);
+        expect(review.candidate.host, 'https://abc.ui.nabu.casa');
+        expect(review.candidate.protocol, MqttProtocol.wss);
+        expect(review.candidate.port, 443);
+
+        await h.coordinator.createDashboard();
+        expect(h.coordinator.state, isA<SetupComplete>());
+        expect(h.creator.lastTransport, ConnectionTransport.homeAssistant);
+        expect(h.creator.lastHost, 'https://abc.ui.nabu.casa');
+        expect(h.creator.lastPassword, 'refresh:r1');
+      },
+    );
+
+    test('a plain address keeps its port and scheme', () async {
+      final h = _Harness();
+      await h.coordinator.adoptHomeAssistant(
+        address: Uri.parse('http://192.168.68.52:8123'),
+        signIn: 'eyJ.long.lived',
+      );
+      final review = h.coordinator.state as SetupReview;
+      expect(review.candidate.host, 'http://192.168.68.52:8123');
+      expect(review.candidate.port, 8123);
+      expect(review.candidate.protocol, MqttProtocol.ws);
+    });
+
+    test(
+      'no Zigbee2MQTT through Home Assistant is the usual outcome',
+      () async {
+        final h = _Harness(
+          fetch: const Z2mFetchResult(detected: false, devices: []),
+        );
+        await h.coordinator.adoptHomeAssistant(
+          address: Uri.parse('http://192.168.68.52:8123'),
+          signIn: 'eyJ.long.lived',
+        );
+        final failed = h.coordinator.state as SetupFailed;
+        expect(failed.kind, SetupErrorKind.notZigbee2Mqtt);
+        expect(failed.candidate?.transport, ConnectionTransport.homeAssistant);
+      },
+    );
   });
 }

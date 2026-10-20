@@ -5,7 +5,16 @@ import '../data/database/tables/connections.dart';
 import 'broker_config.dart';
 import 'client_factory.dart';
 
-mc.MqttClient buildPlatformClient(BrokerConfig config, String clientId, {String? host}) {
+mc.MqttClient buildPlatformClient(
+  BrokerConfig config,
+  String clientId, {
+  String? host,
+}) {
+  if (config.viaHomeAssistant) {
+    throw UnsupportedError(
+      'Connecting through Home Assistant needs the Android app.',
+    );
+  }
   if (!isWebSocketProtocol(config.protocol)) {
     throw UnsupportedError(
       'Browsers cannot open raw TCP. Choose WS or WSS protocol for web targets. '

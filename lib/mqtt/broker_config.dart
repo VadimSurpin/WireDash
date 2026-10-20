@@ -12,6 +12,7 @@ class BrokerConfig {
     this.username,
     this.keepAliveSeconds = 60,
     this.remoteHost,
+    this.transport = ConnectionTransport.mqtt,
   });
 
   final String id;
@@ -24,4 +25,11 @@ class BrokerConfig {
   /// Optional fallback address (e.g. a Tailscale MagicDNS name) tried after
   /// [host] is unreachable. Reuses [port], [protocol], and credentials.
   final String? remoteHost;
+
+  /// How to reach the home. For [ConnectionTransport.homeAssistant], [host]
+  /// (and [remoteHost]) are Home Assistant addresses and the password slot
+  /// carries the sign-in (see `HaMqttClient`).
+  final ConnectionTransport transport;
+
+  bool get viaHomeAssistant => transport == ConnectionTransport.homeAssistant;
 }

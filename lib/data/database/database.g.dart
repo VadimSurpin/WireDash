@@ -118,6 +118,15 @@ class $ConnectionsTable extends Connections
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<ConnectionTransport?, String>
+  transport = GeneratedColumn<String>(
+    'transport',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<ConnectionTransport?>($ConnectionsTable.$convertertransportn);
   static const VerificationMeta _devicesSeenAtMeta = const VerificationMeta(
     'devicesSeenAt',
   );
@@ -175,6 +184,7 @@ class $ConnectionsTable extends Connections
     autoConnect,
     homeDashboardId,
     remoteHost,
+    transport,
     devicesSeenAt,
     z2mBaseTopic,
     createdAt,
@@ -345,6 +355,12 @@ class $ConnectionsTable extends Connections
         DriftSqlType.string,
         data['${effectivePrefix}remote_host'],
       ),
+      transport: $ConnectionsTable.$convertertransportn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}transport'],
+        ),
+      ),
       devicesSeenAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}devices_seen_at'],
@@ -371,6 +387,12 @@ class $ConnectionsTable extends Connections
 
   static JsonTypeConverter2<MqttProtocol, String, String> $converterprotocol =
       const EnumNameConverter<MqttProtocol>(MqttProtocol.values);
+  static JsonTypeConverter2<ConnectionTransport, String, String>
+  $convertertransport = const EnumNameConverter<ConnectionTransport>(
+    ConnectionTransport.values,
+  );
+  static JsonTypeConverter2<ConnectionTransport?, String?, String?>
+  $convertertransportn = JsonTypeConverter2.asNullable($convertertransport);
 }
 
 class Connection extends DataClass implements Insertable<Connection> {
@@ -384,6 +406,10 @@ class Connection extends DataClass implements Insertable<Connection> {
   final bool autoConnect;
   final String? homeDashboardId;
   final String? remoteHost;
+
+  /// See [ConnectionTransport]; null (homes made before 2.10, and backup
+  /// files read at their own schema version) means MQTT: [transportOf].
+  final ConnectionTransport? transport;
 
   /// When the home's existing devices were recorded as seen (first connect
   /// after 1.12 setup or upgrade). Null until then; only devices paired
@@ -407,6 +433,7 @@ class Connection extends DataClass implements Insertable<Connection> {
     required this.autoConnect,
     this.homeDashboardId,
     this.remoteHost,
+    this.transport,
     this.devicesSeenAt,
     this.z2mBaseTopic,
     required this.createdAt,
@@ -434,6 +461,11 @@ class Connection extends DataClass implements Insertable<Connection> {
     }
     if (!nullToAbsent || remoteHost != null) {
       map['remote_host'] = Variable<String>(remoteHost);
+    }
+    if (!nullToAbsent || transport != null) {
+      map['transport'] = Variable<String>(
+        $ConnectionsTable.$convertertransportn.toSql(transport),
+      );
     }
     if (!nullToAbsent || devicesSeenAt != null) {
       map['devices_seen_at'] = Variable<DateTime>(devicesSeenAt);
@@ -464,6 +496,9 @@ class Connection extends DataClass implements Insertable<Connection> {
       remoteHost: remoteHost == null && nullToAbsent
           ? const Value.absent()
           : Value(remoteHost),
+      transport: transport == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transport),
       devicesSeenAt: devicesSeenAt == null && nullToAbsent
           ? const Value.absent()
           : Value(devicesSeenAt),
@@ -493,6 +528,9 @@ class Connection extends DataClass implements Insertable<Connection> {
       autoConnect: serializer.fromJson<bool>(json['autoConnect']),
       homeDashboardId: serializer.fromJson<String?>(json['homeDashboardId']),
       remoteHost: serializer.fromJson<String?>(json['remoteHost']),
+      transport: $ConnectionsTable.$convertertransportn.fromJson(
+        serializer.fromJson<String?>(json['transport']),
+      ),
       devicesSeenAt: serializer.fromJson<DateTime?>(json['devicesSeenAt']),
       z2mBaseTopic: serializer.fromJson<String?>(json['z2mBaseTopic']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -515,6 +553,9 @@ class Connection extends DataClass implements Insertable<Connection> {
       'autoConnect': serializer.toJson<bool>(autoConnect),
       'homeDashboardId': serializer.toJson<String?>(homeDashboardId),
       'remoteHost': serializer.toJson<String?>(remoteHost),
+      'transport': serializer.toJson<String?>(
+        $ConnectionsTable.$convertertransportn.toJson(transport),
+      ),
       'devicesSeenAt': serializer.toJson<DateTime?>(devicesSeenAt),
       'z2mBaseTopic': serializer.toJson<String?>(z2mBaseTopic),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -533,6 +574,7 @@ class Connection extends DataClass implements Insertable<Connection> {
     bool? autoConnect,
     Value<String?> homeDashboardId = const Value.absent(),
     Value<String?> remoteHost = const Value.absent(),
+    Value<ConnectionTransport?> transport = const Value.absent(),
     Value<DateTime?> devicesSeenAt = const Value.absent(),
     Value<String?> z2mBaseTopic = const Value.absent(),
     DateTime? createdAt,
@@ -550,6 +592,7 @@ class Connection extends DataClass implements Insertable<Connection> {
         ? homeDashboardId.value
         : this.homeDashboardId,
     remoteHost: remoteHost.present ? remoteHost.value : this.remoteHost,
+    transport: transport.present ? transport.value : this.transport,
     devicesSeenAt: devicesSeenAt.present
         ? devicesSeenAt.value
         : this.devicesSeenAt,
@@ -577,6 +620,7 @@ class Connection extends DataClass implements Insertable<Connection> {
       remoteHost: data.remoteHost.present
           ? data.remoteHost.value
           : this.remoteHost,
+      transport: data.transport.present ? data.transport.value : this.transport,
       devicesSeenAt: data.devicesSeenAt.present
           ? data.devicesSeenAt.value
           : this.devicesSeenAt,
@@ -601,6 +645,7 @@ class Connection extends DataClass implements Insertable<Connection> {
           ..write('autoConnect: $autoConnect, ')
           ..write('homeDashboardId: $homeDashboardId, ')
           ..write('remoteHost: $remoteHost, ')
+          ..write('transport: $transport, ')
           ..write('devicesSeenAt: $devicesSeenAt, ')
           ..write('z2mBaseTopic: $z2mBaseTopic, ')
           ..write('createdAt: $createdAt, ')
@@ -621,6 +666,7 @@ class Connection extends DataClass implements Insertable<Connection> {
     autoConnect,
     homeDashboardId,
     remoteHost,
+    transport,
     devicesSeenAt,
     z2mBaseTopic,
     createdAt,
@@ -640,6 +686,7 @@ class Connection extends DataClass implements Insertable<Connection> {
           other.autoConnect == this.autoConnect &&
           other.homeDashboardId == this.homeDashboardId &&
           other.remoteHost == this.remoteHost &&
+          other.transport == this.transport &&
           other.devicesSeenAt == this.devicesSeenAt &&
           other.z2mBaseTopic == this.z2mBaseTopic &&
           other.createdAt == this.createdAt &&
@@ -657,6 +704,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
   final Value<bool> autoConnect;
   final Value<String?> homeDashboardId;
   final Value<String?> remoteHost;
+  final Value<ConnectionTransport?> transport;
   final Value<DateTime?> devicesSeenAt;
   final Value<String?> z2mBaseTopic;
   final Value<DateTime> createdAt;
@@ -673,6 +721,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
     this.autoConnect = const Value.absent(),
     this.homeDashboardId = const Value.absent(),
     this.remoteHost = const Value.absent(),
+    this.transport = const Value.absent(),
     this.devicesSeenAt = const Value.absent(),
     this.z2mBaseTopic = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -690,6 +739,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
     this.autoConnect = const Value.absent(),
     this.homeDashboardId = const Value.absent(),
     this.remoteHost = const Value.absent(),
+    this.transport = const Value.absent(),
     this.devicesSeenAt = const Value.absent(),
     this.z2mBaseTopic = const Value.absent(),
     required DateTime createdAt,
@@ -713,6 +763,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
     Expression<bool>? autoConnect,
     Expression<String>? homeDashboardId,
     Expression<String>? remoteHost,
+    Expression<String>? transport,
     Expression<DateTime>? devicesSeenAt,
     Expression<String>? z2mBaseTopic,
     Expression<DateTime>? createdAt,
@@ -730,6 +781,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
       if (autoConnect != null) 'auto_connect': autoConnect,
       if (homeDashboardId != null) 'home_dashboard_id': homeDashboardId,
       if (remoteHost != null) 'remote_host': remoteHost,
+      if (transport != null) 'transport': transport,
       if (devicesSeenAt != null) 'devices_seen_at': devicesSeenAt,
       if (z2mBaseTopic != null) 'z2m_base_topic': z2mBaseTopic,
       if (createdAt != null) 'created_at': createdAt,
@@ -749,6 +801,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
     Value<bool>? autoConnect,
     Value<String?>? homeDashboardId,
     Value<String?>? remoteHost,
+    Value<ConnectionTransport?>? transport,
     Value<DateTime?>? devicesSeenAt,
     Value<String?>? z2mBaseTopic,
     Value<DateTime>? createdAt,
@@ -766,6 +819,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
       autoConnect: autoConnect ?? this.autoConnect,
       homeDashboardId: homeDashboardId ?? this.homeDashboardId,
       remoteHost: remoteHost ?? this.remoteHost,
+      transport: transport ?? this.transport,
       devicesSeenAt: devicesSeenAt ?? this.devicesSeenAt,
       z2mBaseTopic: z2mBaseTopic ?? this.z2mBaseTopic,
       createdAt: createdAt ?? this.createdAt,
@@ -809,6 +863,11 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
     if (remoteHost.present) {
       map['remote_host'] = Variable<String>(remoteHost.value);
     }
+    if (transport.present) {
+      map['transport'] = Variable<String>(
+        $ConnectionsTable.$convertertransportn.toSql(transport.value),
+      );
+    }
     if (devicesSeenAt.present) {
       map['devices_seen_at'] = Variable<DateTime>(devicesSeenAt.value);
     }
@@ -840,6 +899,7 @@ class ConnectionsCompanion extends UpdateCompanion<Connection> {
           ..write('autoConnect: $autoConnect, ')
           ..write('homeDashboardId: $homeDashboardId, ')
           ..write('remoteHost: $remoteHost, ')
+          ..write('transport: $transport, ')
           ..write('devicesSeenAt: $devicesSeenAt, ')
           ..write('z2mBaseTopic: $z2mBaseTopic, ')
           ..write('createdAt: $createdAt, ')
@@ -5096,6 +5156,7 @@ typedef $$ConnectionsTableCreateCompanionBuilder =
       Value<bool> autoConnect,
       Value<String?> homeDashboardId,
       Value<String?> remoteHost,
+      Value<ConnectionTransport?> transport,
       Value<DateTime?> devicesSeenAt,
       Value<String?> z2mBaseTopic,
       required DateTime createdAt,
@@ -5114,6 +5175,7 @@ typedef $$ConnectionsTableUpdateCompanionBuilder =
       Value<bool> autoConnect,
       Value<String?> homeDashboardId,
       Value<String?> remoteHost,
+      Value<ConnectionTransport?> transport,
       Value<DateTime?> devicesSeenAt,
       Value<String?> z2mBaseTopic,
       Value<DateTime> createdAt,
@@ -5313,6 +5375,16 @@ class $$ConnectionsTableFilterComposer
   ColumnFilters<String> get remoteHost => $composableBuilder(
     column: $table.remoteHost,
     builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    ConnectionTransport?,
+    ConnectionTransport,
+    String
+  >
+  get transport => $composableBuilder(
+    column: $table.transport,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<DateTime> get devicesSeenAt => $composableBuilder(
@@ -5545,6 +5617,11 @@ class $$ConnectionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get transport => $composableBuilder(
+    column: $table.transport,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get devicesSeenAt => $composableBuilder(
     column: $table.devicesSeenAt,
     builder: (column) => ColumnOrderings(column),
@@ -5612,6 +5689,10 @@ class $$ConnectionsTableAnnotationComposer
     column: $table.remoteHost,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<ConnectionTransport?, String>
+  get transport =>
+      $composableBuilder(column: $table.transport, builder: (column) => column);
 
   GeneratedColumn<DateTime> get devicesSeenAt => $composableBuilder(
     column: $table.devicesSeenAt,
@@ -5826,6 +5907,7 @@ class $$ConnectionsTableTableManager
                 Value<bool> autoConnect = const Value.absent(),
                 Value<String?> homeDashboardId = const Value.absent(),
                 Value<String?> remoteHost = const Value.absent(),
+                Value<ConnectionTransport?> transport = const Value.absent(),
                 Value<DateTime?> devicesSeenAt = const Value.absent(),
                 Value<String?> z2mBaseTopic = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -5842,6 +5924,7 @@ class $$ConnectionsTableTableManager
                 autoConnect: autoConnect,
                 homeDashboardId: homeDashboardId,
                 remoteHost: remoteHost,
+                transport: transport,
                 devicesSeenAt: devicesSeenAt,
                 z2mBaseTopic: z2mBaseTopic,
                 createdAt: createdAt,
@@ -5860,6 +5943,7 @@ class $$ConnectionsTableTableManager
                 Value<bool> autoConnect = const Value.absent(),
                 Value<String?> homeDashboardId = const Value.absent(),
                 Value<String?> remoteHost = const Value.absent(),
+                Value<ConnectionTransport?> transport = const Value.absent(),
                 Value<DateTime?> devicesSeenAt = const Value.absent(),
                 Value<String?> z2mBaseTopic = const Value.absent(),
                 required DateTime createdAt,
@@ -5876,6 +5960,7 @@ class $$ConnectionsTableTableManager
                 autoConnect: autoConnect,
                 homeDashboardId: homeDashboardId,
                 remoteHost: remoteHost,
+                transport: transport,
                 devicesSeenAt: devicesSeenAt,
                 z2mBaseTopic: z2mBaseTopic,
                 createdAt: createdAt,

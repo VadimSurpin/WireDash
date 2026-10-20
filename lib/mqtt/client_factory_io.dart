@@ -4,9 +4,22 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import '../data/database/tables/connections.dart';
 import 'broker_config.dart';
 import 'client_factory.dart';
+import 'ha_address.dart';
+import 'ha_mqtt_client.dart';
 
-mc.MqttClient buildPlatformClient(BrokerConfig config, String clientId, {String? host}) {
+mc.MqttClient buildPlatformClient(
+  BrokerConfig config,
+  String clientId, {
+  String? host,
+}) {
   final target = host ?? config.host;
+  if (config.viaHomeAssistant) {
+    final base = haBaseUri(target);
+    if (base == null) {
+      throw UnsupportedError('Not a Home Assistant address: $target');
+    }
+    return HaMqttClient(haWebSocketUri(base), clientId);
+  }
   final ws = isWebSocketProtocol(config.protocol);
   final client = MqttServerClient.withPort(
     ws ? webSocketServer(config.protocol, target) : target,
