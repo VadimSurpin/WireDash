@@ -1,0 +1,1 @@
+Nástěnka pro Zigbee2MQTT. Bez Home Assistantu: malý hub a tvůj telefon.

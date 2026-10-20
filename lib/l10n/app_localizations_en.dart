@@ -3401,10 +3401,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Longer history and the wall tablet extras. A one-time purchase.';
+      'Longer history and wall tablet extras. Supports the open-source project.';
 
   @override
   String get proUnlocked => 'Unlocked. Thank you for supporting ZigDash.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash is free and open source, built by one person in their spare time. Pro is a one-time purchase that keeps it going.';
+
+  @override
+  String get proWhatYouGet => 'What you get';
+
+  @override
+  String get proGetHistory => 'History for 7 and 30 days, not just today';
+
+  @override
+  String get proGetWall =>
+      'Wall tablet: readings on the clock, wake on motion, a night schedule and alarms';
+
+  @override
+  String get proGetFuture =>
+      'Every Pro feature that comes later, at no extra cost';
+
+  @override
+  String get proFreeTitle => 'Free forever';
+
+  @override
+  String get proFreeBody =>
+      'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts and the wall tablet itself stay free. Nothing you use today gets locked.';
+
+  @override
+  String get proBuy => 'Get Pro';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'Get Pro · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'One payment, no subscription. Bought on another phone with the same Google account? It unlocks automatically.';
 
   @override
   String get historyNotRecorded =>

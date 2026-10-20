@@ -8,6 +8,7 @@ import '../../data/repositories/panel_repo.dart';
 import '../dashboards/wall_display.dart';
 import '../dashboards/wall_readings.dart';
 import '../pro/pro.dart';
+import '../pro/pro_screen.dart';
 import '../history/app_history_recorder.dart';
 import '../dashboards/wall_sensors.dart';
 import '../devices/device_profile.dart';
@@ -386,7 +387,10 @@ class _ProNote extends ConsumerWidget {
     return ListTile(
       leading: const Icon(Icons.workspace_premium_outlined),
       title: Text(l10n.wallProNote),
-      trailing: TextButton(onPressed: buy, child: Text(l10n.historyUnlock)),
+      trailing: TextButton(
+        onPressed: buy == null ? null : () => openPro(context),
+        child: Text(l10n.historyUnlock),
+      ),
     );
   }
 }

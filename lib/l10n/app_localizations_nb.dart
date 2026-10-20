@@ -3402,10 +3402,47 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Lengre historikk og ekstrafunksjonene for veggnettbrett. Et engangskjøp.';
+      'Lengre historikk og ekstra for veggnettbrettet. Støtter åpen kildekode-prosjektet.';
 
   @override
   String get proUnlocked => 'Låst opp. Takk for at du støtter ZigDash.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash er gratis og åpen kildekode, laget av én person på fritiden. Pro er et engangskjøp som holder prosjektet i gang.';
+
+  @override
+  String get proWhatYouGet => 'Dette får du';
+
+  @override
+  String get proGetHistory => 'Historikk for 7 og 30 dager, ikke bare i dag';
+
+  @override
+  String get proGetWall =>
+      'Veggnettbrett: målinger på klokken, vekking ved bevegelse, nattplan og alarmer';
+
+  @override
+  String get proGetFuture =>
+      'Alle Pro-funksjoner som kommer senere, uten ekstra kostnad';
+
+  @override
+  String get proFreeTitle => 'Gratis for alltid';
+
+  @override
+  String get proFreeBody =>
+      'Oppsett, dashbord, styring av alle enheter, moduler, hurtiginnstillingsfliser, varsler og selve veggnettbrettet forblir gratis. Ingenting du bruker i dag blir låst.';
+
+  @override
+  String get proBuy => 'Skaff Pro';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'Skaff Pro · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'Én betaling, ikke abonnement. Kjøpt på en annen telefon med samme Google-konto? Det låses opp automatisk.';
 
   @override
   String get historyNotRecorded =>

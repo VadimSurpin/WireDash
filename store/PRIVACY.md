@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.9.4 is published (replaces the policy published with ZigDash 2.9.2)
+**Effective date:** the day ZigDash 2.9.6 is published (replaces the policy published with ZigDash 2.9.4)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -135,7 +135,7 @@ never from anything you typed or anything your broker sent.
 | `alert_added` | An alert was added | its kind: leak, smoke, door or window opened, or battery low |
 | `alarm_shown` | From 2.9: alarm takeover filled a wall display | only the kind: leak, smoke, gas or carbon monoxide. Never the device or where it is |
 | `history_setup` | From 2.7: setting up the history recorder on the hub ended | installed, updated, imported by hand (Node-RED asked for a login), no Node-RED found, or refused; from 2.9.1 also recording on this device instead |
-| `pro` | From 2.7, Google Play version only: a step of ZigDash Pro | a locked view was shown, Unlock was tapped, or Pro became unlocked. Nothing about the payment |
+| `pro` | From 2.7, Google Play version only: a step of ZigDash Pro | a locked view was shown, the Pro screen was opened (from 2.9.6), Unlock was tapped, or Pro became unlocked. Nothing about the payment |
 | `review_prompt` | From 2.6.5: the app asked Google Play to show its "rate this app" dialog (after a device you control has answered on two different days) | whether the dialog was requested, or could not be because the Play review flow is not available on the device. Nothing about whether you rated, or what |
 
 **Never sent:** broker addresses, ports, usernames or passwords; the address you type into setup; MQTT topics or

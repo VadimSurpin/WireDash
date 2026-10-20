@@ -3404,10 +3404,47 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Längre historik och extrafunktionerna för väggsurfplattor. Ett engångsköp.';
+      'Längre historik och extra för väggplattan. Stöder projektet med öppen källkod.';
 
   @override
   String get proUnlocked => 'Upplåst. Tack för att du stöder ZigDash.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash är gratis och öppen källkod, byggd av en person på fritiden. Pro är ett engångsköp som håller projektet igång.';
+
+  @override
+  String get proWhatYouGet => 'Det här får du';
+
+  @override
+  String get proGetHistory => 'Historik för 7 och 30 dagar, inte bara i dag';
+
+  @override
+  String get proGetWall =>
+      'Väggplatta: mätvärden på klockan, väckning vid rörelse, nattschema och alarm';
+
+  @override
+  String get proGetFuture =>
+      'Alla Pro-funktioner som kommer senare, utan extra kostnad';
+
+  @override
+  String get proFreeTitle => 'Gratis för alltid';
+
+  @override
+  String get proFreeBody =>
+      'Konfiguration, instrumentpaneler, styrning av alla enheter, widgetar, snabbinställningsrutor, aviseringar och själva väggplattan förblir gratis. Inget du använder i dag låses.';
+
+  @override
+  String get proBuy => 'Skaffa Pro';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'Skaffa Pro · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'En betalning, ingen prenumeration. Köpt på en annan telefon med samma Google-konto? Det låses upp automatiskt.';
 
   @override
   String get historyNotRecorded =>

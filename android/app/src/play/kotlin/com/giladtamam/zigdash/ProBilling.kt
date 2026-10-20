@@ -47,6 +47,7 @@ class ProBilling(private val activity: Activity, messenger: BinaryMessenger) :
             when (call.method) {
                 "status" -> status { reply(result, it) }
                 "buy" -> buy(result)
+                "price" -> price { reply(result, it) }
                 else -> result.notImplemented()
             }
         }
@@ -84,6 +85,15 @@ class ProBilling(private val activity: Activity, messenger: BinaryMessenger) :
                 else null
             )
         }
+    }
+
+    /** Pro's price as Play formats it for this user, or "" when unknown. */
+    private fun price(done: (String) -> Unit) = connected { ok ->
+        if (!ok) {
+            done("")
+            return@connected
+        }
+        product { done(it?.oneTimePurchaseOfferDetails?.formattedPrice ?: "") }
     }
 
     /** Owned (and acknowledged), pending, or for sale. */

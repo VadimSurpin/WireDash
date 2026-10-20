@@ -5,11 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_cs.dart';
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 import 'app_localizations_fr.dart';
 import 'app_localizations_he.dart';
+import 'app_localizations_it.dart';
 import 'app_localizations_nb.dart';
 import 'app_localizations_nl.dart';
 import 'app_localizations_pl.dart';
@@ -103,11 +105,13 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('cs'),
     Locale('de'),
     Locale('en'),
     Locale('es'),
     Locale('fr'),
     Locale('he'),
+    Locale('it'),
     Locale('nb'),
     Locale('nl'),
     Locale('pl'),
@@ -6101,7 +6105,7 @@ abstract class AppLocalizations {
   /// No description provided for @proAbout.
   ///
   /// In en, this message translates to:
-  /// **'Longer history and the wall tablet extras. A one-time purchase.'**
+  /// **'Longer history and wall tablet extras. Supports the open-source project.'**
   String get proAbout;
 
   /// No description provided for @proUnlocked.
@@ -6109,6 +6113,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlocked. Thank you for supporting ZigDash.'**
   String get proUnlocked;
+
+  /// No description provided for @proScreenIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash is free and open source, built by one person in their spare time. Pro is a one-time purchase that keeps it going.'**
+  String get proScreenIntro;
+
+  /// No description provided for @proWhatYouGet.
+  ///
+  /// In en, this message translates to:
+  /// **'What you get'**
+  String get proWhatYouGet;
+
+  /// No description provided for @proGetHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History for 7 and 30 days, not just today'**
+  String get proGetHistory;
+
+  /// No description provided for @proGetWall.
+  ///
+  /// In en, this message translates to:
+  /// **'Wall tablet: readings on the clock, wake on motion, a night schedule and alarms'**
+  String get proGetWall;
+
+  /// No description provided for @proGetFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'Every Pro feature that comes later, at no extra cost'**
+  String get proGetFuture;
+
+  /// No description provided for @proFreeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free forever'**
+  String get proFreeTitle;
+
+  /// No description provided for @proFreeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts and the wall tablet itself stay free. Nothing you use today gets locked.'**
+  String get proFreeBody;
+
+  /// No description provided for @proBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro'**
+  String get proBuy;
+
+  /// No description provided for @proBuyPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro · {price}'**
+  String proBuyPrice(String price);
+
+  /// No description provided for @proOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'One payment, no subscription. Bought on another phone with the same Google account? It unlocks automatically.'**
+  String get proOnce;
 
   /// No description provided for @historyNotRecorded.
   ///
@@ -6434,11 +6498,13 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) => <String>[
+    'cs',
     'de',
     'en',
     'es',
     'fr',
     'he',
+    'it',
     'nb',
     'nl',
     'pl',
@@ -6454,6 +6520,8 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'cs':
+      return AppLocalizationsCs();
     case 'de':
       return AppLocalizationsDe();
     case 'en':
@@ -6464,6 +6532,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsFr();
     case 'he':
       return AppLocalizationsHe();
+    case 'it':
+      return AppLocalizationsIt();
     case 'nb':
       return AppLocalizationsNb();
     case 'nl':

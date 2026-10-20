@@ -19,6 +19,7 @@ import '../../../mqtt/mqtt_status.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../providers/settings_controller.dart';
 import '../../pro/pro.dart';
+import '../../pro/pro_screen.dart';
 import 'language_screen.dart';
 
 /// App version + build number, e.g. "1.3.2 (10)".
@@ -229,7 +230,7 @@ class SettingsScreen extends ConsumerWidget {
                       ref.watch(proStatusProvider) == ProStatus.unlocked
                           ? l10n.proUnlocked
                           : l10n.proAbout),
-                  onTap: ref.watch(proPurchaseProvider),
+                  onTap: () => openPro(context),
                 ),
               if (ref.watch(analyticsAvailableProvider))
                 SwitchListTile(
