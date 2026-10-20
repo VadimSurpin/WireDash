@@ -1595,6 +1595,16 @@ class AppLocalizationsPl extends AppLocalizations {
       'Ten telefon nie dociera do brokera? Home Assistant może przenieść połączenie za Ciebie.';
 
   @override
+  String get haHomeConnected => 'Połączono przez Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Aby użyć innego logowania do Home Assistant, usuń ten dom i połącz się ponownie. Logowanie możesz zakończyć w Home Assistant, w Profil › Bezpieczeństwo.';
+
+  @override
+  String get haHomeRemote => 'Zdalny adres Home Assistant (opcjonalnie)';
+
+  @override
   String get setupAuthTitle => 'Ten broker wymaga logowania';
 
   @override

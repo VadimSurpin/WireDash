@@ -1585,6 +1585,16 @@ class AppLocalizationsCs extends AppLocalizations {
       'Tento telefon na broker nedosáhne? Home Assistant může připojení přenést za tebe.';
 
   @override
+  String get haHomeConnected => 'Připojeno přes Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Pro použití jiného přihlášení k Home Assistantu smaž tuto domácnost a připoj se znovu. Přihlášení můžeš ukončit v Home Assistantu v Profil › Zabezpečení.';
+
+  @override
+  String get haHomeRemote => 'Vzdálená adresa Home Assistantu (nepovinné)';
+
+  @override
   String get setupAuthTitle => 'Tento broker vyžaduje přihlášení';
 
   @override

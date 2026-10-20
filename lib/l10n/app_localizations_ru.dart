@@ -1590,6 +1590,16 @@ class AppLocalizationsRu extends AppLocalizations {
       'Этот телефон не достаёт до брокера? Home Assistant может взять подключение на себя.';
 
   @override
+  String get haHomeConnected => 'Подключено через Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Чтобы использовать другой вход в Home Assistant, удалите этот дом и подключитесь заново. Завершить вход можно в Home Assistant: Профиль › Безопасность.';
+
+  @override
+  String get haHomeRemote => 'Удалённый адрес Home Assistant (необязательно)';
+
+  @override
   String get setupAuthTitle => 'Брокеру нужен вход';
 
   @override

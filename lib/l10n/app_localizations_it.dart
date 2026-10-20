@@ -1587,6 +1587,16 @@ class AppLocalizationsIt extends AppLocalizations {
       'Questo telefono non raggiunge il broker? Home Assistant può portare la connessione per te.';
 
   @override
+  String get haHomeConnected => 'Connesso tramite Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Per usare un altro accesso a Home Assistant, elimina questa casa e connettiti di nuovo. Puoi terminare l\'accesso in Home Assistant, in Profilo › Sicurezza.';
+
+  @override
+  String get haHomeRemote => 'Indirizzo remoto di Home Assistant (facoltativo)';
+
+  @override
   String get setupAuthTitle => 'Questo broker richiede un login';
 
   @override

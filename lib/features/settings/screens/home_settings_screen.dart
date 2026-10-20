@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../data/database/tables/connections.dart';
+import '../../ha_import/ha_auth.dart';
+import '../../../mqtt/ha_token.dart';
+import '../../../mqtt/ha_address.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
 import '../../../core/router/last_dashboard_store.dart';
@@ -10,7 +14,8 @@ import '../../../data/database/database.dart';
 import '../../../data/last_known/last_known_store.dart';
 import '../../../data/repositories/connection_repo.dart';
 import '../../../data/repositories/dashboard_repo.dart';
-import '../home_rename.dart';import '../../devices/devices_providers.dart';
+import '../home_rename.dart';
+import '../../devices/devices_providers.dart';
 
 /// One home's page in Settings (devices-tablet-1.13.md §6): its name, its
 /// connection, its Zigbee2MQTT base topic, switching to it, and deleting it.
@@ -127,25 +132,45 @@ class HomeSettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _rename(
-      BuildContext context, WidgetRef ref, Connection home) async {
-    final v = (await _ask(context,
-            title: context.l10n.connName, initial: home.name))
-        ?.trim();
+    BuildContext context,
+    WidgetRef ref,
+    Connection home,
+  ) async {
+    final v = (await _ask(
+      context,
+      title: context.l10n.connName,
+      initial: home.name,
+    ))?.trim();
     if (v == null || v.isEmpty || v.length > 64) return;
-    await renameHome(ref.read(connectionRepoProvider),
-        ref.read(dashboardRepoProvider), home, v);
+    await renameHome(
+      ref.read(connectionRepoProvider),
+      ref.read(dashboardRepoProvider),
+      home,
+      v,
+    );
   }
 
-  Future<void> _editBase(BuildContext context, WidgetRef ref, Connection home,
-      String base) async {
-    final v = await _ask(context,
-        title: context.l10n.discoverBaseTopic, initial: base);
+  Future<void> _editBase(
+    BuildContext context,
+    WidgetRef ref,
+    Connection home,
+    String base,
+  ) async {
+    final v = await _ask(
+      context,
+      title: context.l10n.discoverBaseTopic,
+      initial: base,
+    );
     if (v == null) return;
     await ref.read(connectionRepoProvider).setBaseTopic(home.id, v);
   }
 
-  Future<void> _delete(BuildContext context, WidgetRef ref, Connection home,
-      bool current) async {
+  Future<void> _delete(
+    BuildContext context,
+    WidgetRef ref,
+    Connection home,
+    bool current,
+  ) async {
     final l10n = context.l10n;
     final ok = await showDialog<bool>(
       context: context,
@@ -168,10 +193,26 @@ class HomeSettingsScreen extends ConsumerWidget {
     final repo = ref.read(connectionRepoProvider);
     final store = ref.read(lastDashboardStoreProvider);
     final remaining = [
-      for (final c in ref.read(connectionsStreamProvider).valueOrNull ??
-          const <Connection>[])
+      for (final c
+          in ref.read(connectionsStreamProvider).valueOrNull ??
+              const <Connection>[])
         if (c.id != home.id) c.id,
     ];
+    // A home connected through Home Assistant signs out there too, so the
+    // refresh token stops working even if this phone is lost (best effort:
+    // the home goes either way).
+    if (transportOf(home.transport) == ConnectionTransport.homeAssistant) {
+      final stored = await repo.readPassword(home.id);
+      final base = haBaseUri(home.host);
+      if (stored != null && isHaRefresh(stored) && base != null) {
+        try {
+          await revokeHaSignIn(
+            base,
+            stored.substring(haRefreshPrefix.length),
+          ).timeout(const Duration(seconds: 5));
+        } catch (_) {}
+      }
+    }
     await repo.delete(home.id);
     await store.forget(home.id);
     // Its last-known values go with it.

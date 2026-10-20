@@ -1568,6 +1568,16 @@ class AppLocalizationsHe extends AppLocalizations {
       'הטלפון הזה לא מגיע לברוקר? Home Assistant יכול לשאת את החיבור בשבילכם.';
 
   @override
+  String get haHomeConnected => 'מחובר דרך Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'כדי להשתמש בכניסה אחרת ל-Home Assistant, מחקו את הבית הזה והתחברו שוב. אפשר לסיים את הכניסה ב-Home Assistant תחת פרופיל › אבטחה.';
+
+  @override
+  String get haHomeRemote => 'כתובת מרוחקת של Home Assistant (לא חובה)';
+
+  @override
   String get setupAuthTitle => 'ה-broker דורש התחברות';
 
   @override

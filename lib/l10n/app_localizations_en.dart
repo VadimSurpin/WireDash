@@ -1579,6 +1579,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Can\'t reach the broker from this phone? Home Assistant can carry the connection for you.';
 
   @override
+  String get haHomeConnected => 'Connected through Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'To use another Home Assistant sign-in, delete this home and connect again. You can end the sign-in in Home Assistant under Profile › Security.';
+
+  @override
+  String get haHomeRemote => 'Remote Home Assistant address (optional)';
+
+  @override
   String get setupAuthTitle => 'This broker needs a login';
 
   @override

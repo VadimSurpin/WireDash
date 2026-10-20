@@ -1581,6 +1581,16 @@ class AppLocalizationsNb extends AppLocalizations {
       'Når ikke denne telefonen megleren? Home Assistant kan bære tilkoblingen for deg.';
 
   @override
+  String get haHomeConnected => 'Koblet til via Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'For å bruke en annen Home Assistant-innlogging, slett dette hjemmet og koble til på nytt. Du kan avslutte innloggingen i Home Assistant under Profil › Sikkerhet.';
+
+  @override
+  String get haHomeRemote => 'Fjernadresse for Home Assistant (valgfritt)';
+
+  @override
   String get setupAuthTitle => 'Denne brokeren krever innlogging';
 
   @override

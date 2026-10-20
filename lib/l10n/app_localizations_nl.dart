@@ -1589,6 +1589,16 @@ class AppLocalizationsNl extends AppLocalizations {
       'Bereikt deze telefoon de broker niet? Home Assistant kan de verbinding voor je dragen.';
 
   @override
+  String get haHomeConnected => 'Verbonden via Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Om een andere Home Assistant-aanmelding te gebruiken, verwijder je dit huis en verbind je opnieuw. Je kunt de aanmelding beëindigen in Home Assistant onder Profiel › Beveiliging.';
+
+  @override
+  String get haHomeRemote => 'Extern adres van Home Assistant (optioneel)';
+
+  @override
   String get setupAuthTitle => 'Deze broker vereist een login';
 
   @override

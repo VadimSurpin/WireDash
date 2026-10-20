@@ -45,6 +45,12 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   bool _testing = false;
   bool _passwordExists = false;
 
+  /// How the home connects (2.10); a Home Assistant home shows its address
+  /// read-only: the sign-in is replaced by deleting the home and
+  /// connecting again, never by typing a broker.
+  ConnectionTransport _transport = ConnectionTransport.mqtt;
+  bool get _viaHa => _transport == ConnectionTransport.homeAssistant;
+
   bool get _isEdit => widget.connectionId != null;
 
   @override
@@ -72,6 +78,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       _keepAlive.text = c.keepAliveSeconds.toString();
       _remoteHost.text = c.remoteHost ?? '';
       _autoConnect = c.autoConnect;
+      _transport = transportOf(c.transport);
       _loaded = true;
     });
   }
@@ -105,7 +112,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   );
 
   Future<void> _save() async {
-    _tidyAddress();
+    if (!_viaHa) _tidyAddress();
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final repo = ref.read(connectionRepoProvider);
@@ -298,75 +305,80 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                   : null,
             ),
             const SizedBox(height: 12),
-            ProtocolDropdown(value: _protocol, onChanged: _onProtocolChanged),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: TextFormField(
-                    controller: _host,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.connLocalHost,
-                      hintText: context.l10n.connHostHint,
+            if (_viaHa) ...[
+              _HaHomeCard(address: _host.text),
+              const SizedBox(height: 12),
+            ] else ...[
+              ProtocolDropdown(value: _protocol, onChanged: _onProtocolChanged),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: TextFormField(
+                      controller: _host,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.connLocalHost,
+                        hintText: context.l10n.connHostHint,
+                      ),
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? context.l10n.fieldRequired
+                          : null,
                     ),
-                    validator: (v) => v == null || v.trim().isEmpty
-                        ? context.l10n.fieldRequired
-                        : null,
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormField(
-                    controller: _port,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.connPort,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _port,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.connPort,
+                      ),
+                      validator: (v) {
+                        final n = int.tryParse(v ?? '');
+                        if (n == null || n < 1 || n > 65535) {
+                          return context.l10n.connPortRange;
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (v) {
-                      final n = int.tryParse(v ?? '');
-                      if (n == null || n < 1 || n > 65535) {
-                        return context.l10n.connPortRange;
-                      }
-                      return null;
-                    },
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                TextButton.icon(
-                  icon: const Icon(Icons.wifi_find, size: 18),
-                  label: Text(context.l10n.connFindBrokers),
-                  onPressed: _findBrokers,
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () => BrokerHelpSheet.show(context),
-                  child: Text(context.l10n.connHowToFind),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _username,
-              decoration: InputDecoration(
-                labelText: context.l10n.connUsernameOptional,
+                ],
               ),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _password,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: context.l10n.connPasswordOptional,
-                hintText: _isEdit && _passwordExists
-                    ? context.l10n.connPasswordKeepHint
-                    : null,
+              Row(
+                children: [
+                  TextButton.icon(
+                    icon: const Icon(Icons.wifi_find, size: 18),
+                    label: Text(context.l10n.connFindBrokers),
+                    onPressed: _findBrokers,
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () => BrokerHelpSheet.show(context),
+                    child: Text(context.l10n.connHowToFind),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _username,
+                decoration: InputDecoration(
+                  labelText: context.l10n.connUsernameOptional,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _password,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: context.l10n.connPasswordOptional,
+                  hintText: _isEdit && _passwordExists
+                      ? context.l10n.connPasswordKeepHint
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(context.l10n.connAutoConnect),
@@ -374,18 +386,22 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               onChanged: (v) => setState(() => _autoConnect = v),
             ),
             const SizedBox(height: 4),
-            OutlinedButton.icon(
-              onPressed: _testing ? null : _testConnection,
-              icon: _testing
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.wifi_tethering),
-              label: Text(context.l10n.connTestButton),
-            ),
-            const SizedBox(height: 4),
+            // The test ladder is MQTT-shaped; a Home Assistant home was
+            // checked when it was connected.
+            if (!_viaHa) ...[
+              OutlinedButton.icon(
+                onPressed: _testing ? null : _testConnection,
+                icon: _testing
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.wifi_tethering),
+                label: Text(context.l10n.connTestButton),
+              ),
+              const SizedBox(height: 4),
+            ],
             ExpansionTile(
               tilePadding: EdgeInsets.zero,
               title: Text(context.l10n.advanced),
@@ -393,8 +409,12 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                 TextFormField(
                   controller: _remoteHost,
                   decoration: InputDecoration(
-                    labelText: context.l10n.connRemoteHost,
-                    hintText: context.l10n.connRemoteHostHint,
+                    labelText: _viaHa
+                        ? context.l10n.haHomeRemote
+                        : context.l10n.connRemoteHost,
+                    hintText: _viaHa
+                        ? 'https://xyz.ui.nabu.casa'
+                        : context.l10n.connRemoteHostHint,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -413,6 +433,51 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                   },
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A home that connects through Home Assistant: where, and how to change
+/// the sign-in (docs/design/ha-route.md).
+class _HaHomeCard extends StatelessWidget {
+  const _HaHomeCard({required this.address});
+  final String address;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Card.outlined(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.home_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    l10n.haHomeConnected,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(address, style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 8),
+            Text(
+              l10n.haHomeChange,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),

@@ -2916,6 +2916,24 @@ abstract class AppLocalizations {
   /// **'Can\'t reach the broker from this phone? Home Assistant can carry the connection for you.'**
   String get haConnectEmptyNote;
 
+  /// No description provided for @haHomeConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected through Home Assistant'**
+  String get haHomeConnected;
+
+  /// No description provided for @haHomeChange.
+  ///
+  /// In en, this message translates to:
+  /// **'To use another Home Assistant sign-in, delete this home and connect again. You can end the sign-in in Home Assistant under Profile › Security.'**
+  String get haHomeChange;
+
+  /// No description provided for @haHomeRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote Home Assistant address (optional)'**
+  String get haHomeRemote;
+
   /// No description provided for @setupAuthTitle.
   ///
   /// In en, this message translates to:
