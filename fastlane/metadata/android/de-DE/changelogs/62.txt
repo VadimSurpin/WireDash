@@ -1,0 +1,1 @@
+ZigDash 2.9.7: Nicht zu Hause oder gerade keine Zeit? Wo die Einrichtung stoppt, tippe auf „Morgen erinnern“ und ZigDash erinnert dich einen Tag später, direkt auf diesem Telefon. Noch kein Zigbee2MQTT? Der erste Bildschirm führt dich jetzt direkt zum Demo-Zuhause oder zu den Hubs, auf denen es läuft.

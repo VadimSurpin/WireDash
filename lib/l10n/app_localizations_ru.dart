@@ -1529,6 +1529,15 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы дома, в своей сети Wi-Fi? Нажмите, чтобы попробовать снова: это займёт около минуты.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Ещё нет Zigbee2MQTT?';
+
+  @override
+  String get setupWelcomeDemo => 'Попробовать демо-дом';
+
+  @override
+  String get setupWelcomeHubs => 'Какой хаб выбрать';
+
+  @override
   String get setupAuthTitle => 'Брокеру нужен вход';
 
   @override

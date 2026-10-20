@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/features/ha_import/ha_auth.dart';
 import 'package:zigdash/features/ha_import/ha_client.dart';
 import 'package:zigdash/features/ha_import/ha_import_apply.dart';
@@ -118,11 +119,14 @@ void main() {
   });
 
   group('signing in at Home Assistant\'s login page', () {
+    late List<HaImportEvent> events;
     HaImportController signingIn(HaSignInResult result, List<String> revoked) {
       reads = [];
       writes = [];
+      events = [];
       return HaImportController(
         address: '192.168.68.52',
+        onEvent: events.add,
         reader: (base, token) async {
           reads.add((base, token));
           return (registry: _registry, error: null);
@@ -147,6 +151,28 @@ void main() {
       expect(reads.single.$2, 'access');
       expect(c.value, isA<HaImportPreview>());
       expect(revoked, ['refresh']);
+      expect(events.single.props, {
+        'step': 'sign_in',
+        'method': 'page',
+        'outcome': 'ok',
+      });
+    });
+
+    test('how the sign-in ended is counted, the token never', () async {
+      for (final (error, outcome) in [
+        (HaSignInError.cancelled, 'cancelled'),
+        (HaSignInError.refused, 'refused'),
+        (HaSignInError.failed, 'failed'),
+      ]) {
+        final c = signingIn((
+          accessToken: null,
+          refreshToken: null,
+          error: error,
+        ), []);
+        await c.signInAndRead('192.168.68.52');
+        expect(events.single.props['outcome'], outcome);
+        expect(events.single.props.values.join(), isNot(contains('secret')));
+      }
     });
 
     test('closing the login quietly returns to the first step', () async {
@@ -173,5 +199,33 @@ void main() {
     test('without a sign-in, only the token way exists', () {
       expect(controller().canSignIn, isFalse);
     });
+  });
+
+  test('a pasted token is counted once Home Assistant judged it', () async {
+    for (final (result, outcome) in <(HaReadResult, String?)>[
+      ((registry: _registry, error: null), 'ok'),
+      ((registry: null, error: HaReadError.failed), 'ok'),
+      ((registry: null, error: HaReadError.badToken), 'failed'),
+      ((registry: null, error: HaReadError.unreachable), null),
+    ]) {
+      final events = <HaImportEvent>[];
+      final c = HaImportController(
+        address: '192.168.68.52',
+        onEvent: events.add,
+        reader: (base, token) async => result,
+        devices: () async => [_sensor],
+        writer: (plan, {required makeDashboards, required skipRooms}) async =>
+            const HaImportResult(renamed: 0, dashboardIds: [], tiles: 0),
+      );
+      await c.read('192.168.68.52', 'secret');
+      expect(
+        events.map((e) => e.props['outcome']).toList(),
+        outcome == null ? isEmpty : [outcome],
+      );
+      for (final e in events) {
+        expect(e.props['method'], 'token');
+        expect(e.props.values.join(), isNot(contains('secret')));
+      }
+    }
   });
 }

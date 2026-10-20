@@ -125,7 +125,26 @@ void main() {
         'homes': '2+',
         'tiles': '11-30',
         'demo': 'no',
+        'installed': 'unknown',
       });
+    });
+
+    test('app_started: days since install, as a range', () {
+      String installed(int? days) => AppStarted(
+        form: FormFactor.phone,
+        theme: ThemeChoice.system,
+        materialYou: true,
+        homes: 1,
+        tiles: 0,
+        demo: false,
+        daysInstalled: days,
+      ).props['installed']!;
+      expect(
+        [
+          for (final d in [0, 1, 2, 7, 8, 30, 31, 400, null]) installed(d),
+        ],
+        ['0', '1', '2-7', '2-7', '8-30', '8-30', '31+', '31+', 'unknown'],
+      );
     });
 
     test('kiosk started: feature_used with the chosen options', () {
@@ -193,6 +212,17 @@ void main() {
     });
 
     // 2.8: the import from Home Assistant, counts only.
+    test('ha_import: the sign-in, by method and outcome', () {
+      expect(
+        const HaImportEvent(
+          HaImportStep.signIn,
+          method: HaSignInMethod.page,
+          outcome: HaSignInOutcome.refused,
+        ).props,
+        {'step': 'sign_in', 'method': 'page', 'outcome': 'refused'},
+      );
+    });
+
     test('ha_import: steps with bucketed counts', () {
       expect(
         const HaImportEvent(

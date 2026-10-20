@@ -1507,6 +1507,15 @@ class AppLocalizationsHe extends AppLocalizations {
       'בבית, ברשת ה-Wi-Fi שלכם? הקישו כדי לנסות שוב: זה לוקח בערך דקה.';
 
   @override
+  String get setupWelcomeNoZ2m => 'עדיין אין Zigbee2MQTT?';
+
+  @override
+  String get setupWelcomeDemo => 'לנסות את בית ההדגמה';
+
+  @override
+  String get setupWelcomeHubs => 'איזו רכזת לבחור';
+
+  @override
   String get setupAuthTitle => 'ה-broker דורש התחברות';
 
   @override

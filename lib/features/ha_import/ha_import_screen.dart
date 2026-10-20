@@ -75,6 +75,7 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
     _address.text = host;
     return HaImportController(
       address: host,
+      onEvent: (event) => ref.read(analyticsProvider).track(event),
       reader: readHaRegistry,
       devices: () async {
         try {

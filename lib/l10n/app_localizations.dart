@@ -2814,6 +2814,24 @@ abstract class AppLocalizations {
   /// **'At home on your Wi-Fi? Tap to try again: it takes about a minute.'**
   String get reminderBody;
 
+  /// No description provided for @setupWelcomeNoZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'No Zigbee2MQTT yet?'**
+  String get setupWelcomeNoZ2m;
+
+  /// No description provided for @setupWelcomeDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Try the demo home'**
+  String get setupWelcomeDemo;
+
+  /// No description provided for @setupWelcomeHubs.
+  ///
+  /// In en, this message translates to:
+  /// **'Which hub to get'**
+  String get setupWelcomeHubs;
+
   /// No description provided for @setupAuthTitle.
   ///
   /// In en, this message translates to:

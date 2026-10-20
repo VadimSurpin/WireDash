@@ -1524,6 +1524,15 @@ class AppLocalizationsCs extends AppLocalizations {
       'Jsi doma na své Wi-Fi? Klepni a zkus to znovu: zabere to asi minutu.';
 
   @override
+  String get setupWelcomeNoZ2m => 'Ještě nemáš Zigbee2MQTT?';
+
+  @override
+  String get setupWelcomeDemo => 'Vyzkoušet ukázkovou domácnost';
+
+  @override
+  String get setupWelcomeHubs => 'Jaký hub vybrat';
+
+  @override
   String get setupAuthTitle => 'Tento broker vyžaduje přihlášení';
 
   @override

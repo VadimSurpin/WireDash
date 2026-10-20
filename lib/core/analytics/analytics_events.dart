@@ -21,6 +21,7 @@ class AppStarted extends AnalyticsEvent {
     required this.homes,
     required this.tiles,
     required this.demo,
+    this.daysInstalled,
   });
 
   final FormFactor form;
@@ -29,6 +30,12 @@ class AppStarted extends AnalyticsEvent {
   final int homes;
   final int tiles;
   final bool demo;
+
+  /// Whole days since ZigDash was installed on this phone (2.9.7), from
+  /// Android's install time; null when it couldn't be read. Only the range
+  /// is sent: it shows whether people come back, which a daily-changing
+  /// anonymous id can't.
+  final int? daysInstalled;
 
   @override
   String get name => 'app_started';
@@ -46,6 +53,15 @@ class AppStarted extends AnalyticsEvent {
       top: '31+',
     ),
     'demo': demo ? 'yes' : 'no',
+    'installed': switch (daysInstalled) {
+      null => 'unknown',
+      final d => bucket(
+        d,
+        const [0, 1],
+        ranges: const [(2, 7), (8, 30)],
+        top: '31+',
+      ),
+    },
   };
 }
 
@@ -81,6 +97,12 @@ enum SetupStepKind {
 
   /// The app was opened from that reminder (2.9.7).
   reminderOpened,
+
+  /// "No Zigbee2MQTT yet?" on the welcome screen (2.9.7): the demo home…
+  welcomeDemo,
+
+  /// …or the page of hubs that run Zigbee2MQTT.
+  welcomeHubs,
 }
 
 /// What the user tapped on an empty result with no hub found (2.9.6): no
@@ -564,7 +586,23 @@ class HistorySetup extends AnalyticsEvent {
 /// A step of the import from Home Assistant (2.8): the offer after setup
 /// answered, a read that failed (with why), the preview, or the import
 /// done. Counts only, in buckets; never an address, a name or the token.
-enum HaImportStep { offerAccepted, offerDeclined, failed, preview, imported }
+enum HaImportStep {
+  offerAccepted,
+  offerDeclined,
+  failed,
+  preview,
+  imported,
+
+  /// The sign-in at Home Assistant (2.9.7), with [HaImportEvent.method]
+  /// and [HaImportEvent.outcome]: every Home Assistant route depends on it.
+  signIn,
+}
+
+/// How the user signed in: Home Assistant's login page, or a pasted token.
+enum HaSignInMethod { page, token }
+
+/// How the sign-in ended.
+enum HaSignInOutcome { ok, cancelled, refused, failed }
 
 class HaImportEvent extends AnalyticsEvent {
   const HaImportEvent(
@@ -575,9 +613,13 @@ class HaImportEvent extends AnalyticsEvent {
     this.renamed,
     this.dashboards,
     this.zhaOnly,
+    this.method,
+    this.outcome,
   });
 
   final HaImportStep step;
+  final HaSignInMethod? method;
+  final HaSignInOutcome? outcome;
 
   /// Why the read failed (an `HaImportProblem`), on [HaImportStep.failed].
   final Enum? error;
@@ -602,6 +644,8 @@ class HaImportEvent extends AnalyticsEvent {
       if (renamed != null) 'renamed': count(renamed!),
       if (dashboards != null) 'dashboards': count(dashboards!),
       if (zhaOnly != null) 'zha_only': zhaOnly! ? 'yes' : 'no',
+      if (method != null) 'method': method!.name,
+      if (outcome != null) 'outcome': outcome!.name,
     };
   }
 }

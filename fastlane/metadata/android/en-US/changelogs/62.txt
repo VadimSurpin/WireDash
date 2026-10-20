@@ -1,0 +1,1 @@
+ZigDash 2.9.7: not at home, or no time right now? Where setup stops, tap Remind me tomorrow and ZigDash reminds you a day later, right on this phone. No Zigbee2MQTT yet? The first screen now takes you straight to the demo home, or to the hubs that run it.

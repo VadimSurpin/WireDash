@@ -1,0 +1,1 @@
+ZigDash 2.9.7: ikke hjemme, eller ikke tid akkurat nå? Der oppsettet stopper, trykker du på Minn meg på det i morgen, så minner ZigDash deg på det dagen etter, rett på denne telefonen. Ingen Zigbee2MQTT ennå? Den første skjermen tar deg nå rett til demohjemmet eller til hubene som kjører det.
