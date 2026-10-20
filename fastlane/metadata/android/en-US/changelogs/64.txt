@@ -1,0 +1,1 @@
+ZigDash 2.10.1: a home connected through Home Assistant can sign in again from its settings, for a new phone or a token you renewed, without setting the home up again.

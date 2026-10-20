@@ -1,0 +1,1 @@
+ZigDash 2.10.1: Ein über Home Assistant verbundenes Zuhause kann sich in seinen Einstellungen erneut anmelden, für ein neues Telefon oder einen erneuerten Token, ohne das Zuhause neu einzurichten.

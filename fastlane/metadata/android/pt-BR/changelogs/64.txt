@@ -1,0 +1,1 @@
+ZigDash 2.10.1: uma casa conectada pelo Home Assistant pode entrar de novo pelas suas configurações, para um telefone novo ou um token renovado, sem configurar a casa de novo.
