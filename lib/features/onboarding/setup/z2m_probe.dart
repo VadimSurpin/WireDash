@@ -4,6 +4,7 @@ import 'package:mqtt_client/mqtt_client.dart' as mc;
 
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/client_factory.dart';
+import '../../../mqtt/endpoint.dart';
 import '../../../mqtt/mqtt_manager.dart' show MqttClientFactory;
 import '../../discovery/models/z2m_device.dart';
 import 'setup_coordinator.dart';
@@ -30,17 +31,22 @@ class Z2mProbeFetcher {
   ) async {
     final clientId = 'zd-${DateTime.now().microsecondsSinceEpoch & 0xffffff}';
     final client = _clientFactory(config, clientId);
+    // Through Home Assistant a connect is a token exchange, TLS, the
+    // sign-in and a probe, often over the internet: more than [window].
+    final connectBudget = config.viaHomeAssistant
+        ? const Duration(milliseconds: homeAssistantConnectTimeoutMs)
+        : window;
     client
       ..logging(on: false)
       ..keepAlivePeriod = 5
-      ..connectTimeoutPeriod = window.inMilliseconds
+      ..connectTimeoutPeriod = connectBudget.inMilliseconds
       ..autoReconnect = false
       ..connectionMessage = mc.MqttConnectMessage()
           .withClientIdentifier(clientId)
           .startClean();
 
     try {
-      await client.connect(config.username, password).timeout(window);
+      await client.connect(config.username, password).timeout(connectBudget);
     } catch (_) {
       _dispose(client);
       return const Z2mFetchResult(detected: false, devices: []);

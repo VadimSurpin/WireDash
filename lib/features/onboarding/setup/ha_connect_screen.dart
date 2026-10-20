@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
+import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../ha_import/ha_auth.dart';
 import 'ha_connect.dart';
@@ -59,8 +60,9 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
   void _onState() {
     if (!mounted) return;
     if (_controller.value is HaConnectDone) {
-      // Setup shows the review (or why it failed) from here.
-      Navigator.of(context).maybePop();
+      // Setup shows the review (or why it failed) from here, whether this
+      // screen was opened from the empty result or from manual entry.
+      context.go(Routes.setup);
       return;
     }
     setState(() {});

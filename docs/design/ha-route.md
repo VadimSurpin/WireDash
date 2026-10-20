@@ -186,6 +186,15 @@ shortcuts do not change. Known gaps to close for release:
   (page or token; ok, cancelled, refused, failed), `ha_route` (mqtt, ingress,
   none), so the funnel is visible from the first release.
 
+### Follow-ups after the first release
+
+- **Sign in again** for an existing Home Assistant home: a new phone
+  (secure storage is not backed up), a revoked token or a changed admin
+  end in "login rejected", and 2.10 only offers deleting the home and
+  connecting again, which loses its dashboards. A "Sign in again" on the
+  home's form that reuses the connect screen and replaces the stored
+  sign-in is the fix; the form says the 2.10 way for now.
+
 ### Still to verify before release
 
 - Route B end to end (needs Home Assistant OS: a VM on the Mac).

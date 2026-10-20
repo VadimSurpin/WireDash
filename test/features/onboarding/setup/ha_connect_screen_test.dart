@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zigdash/core/router/routes.dart';
 import 'package:zigdash/features/ha_import/ha_auth.dart';
 import 'package:zigdash/features/onboarding/setup/ha_connect.dart';
 import 'package:zigdash/features/onboarding/setup/ha_connect_screen.dart';
@@ -24,19 +26,29 @@ void main() {
     tester.view.physicalSize = const Size(1200, 2600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
+    // Like the app: pushed over setup, and `go`es back to it when done.
+    final router = GoRouter(
+      initialLocation: Routes.setup,
+      routes: [
+        GoRoute(path: Routes.setup, builder: (_, __) => const Text('setup')),
+        GoRoute(
+          path: Routes.haConnect,
+          builder: (_, __) =>
+              HaConnectScreen(initialHost: initialHost, controller: controller),
+        ),
+      ],
+    );
     await tester.pumpWidget(
       ProviderScope(
-        child: MaterialApp(
+        child: MaterialApp.router(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: HaConnectScreen(
-            initialHost: initialHost,
-            controller: controller,
-          ),
+          routerConfig: router,
         ),
       ),
     );
-    await tester.pump();
+    router.push(Routes.haConnect);
+    await tester.pumpAndSettle();
     return controller;
   }
 
@@ -86,6 +98,8 @@ void main() {
     await tester.pump();
     expect(adopted.single.$1, Uri.parse('https://abc.ui.nabu.casa'));
     expect(adopted.single.$2, 'eyJ.tok');
+    await tester.pumpAndSettle();
+    expect(find.text('setup'), findsOneWidget, reason: 'back on setup');
   });
 
   testWidgets('not an admin: says so, opens the token field', (tester) async {
