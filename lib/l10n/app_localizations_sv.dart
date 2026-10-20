@@ -1529,6 +1529,68 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupWelcomeHubs => 'Vilken hubb som passar';
 
   @override
+  String get haConnectTitle => 'Anslut via Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'Din telefon når inte mäklaren, men den når Home Assistant. Logga in en gång, så pratar ZigDash med Zigbee2MQTT via Home Assistant: hemma eller borta, utan mäklarinställningar.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'Adressen du öppnar Home Assistant med: 192.168.1.20:8123, homeassistant.local eller din fjärradress, som https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'Home Assistants egen inloggning öppnas i din webbläsare. ZigDash ser aldrig ditt lösenord.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash behåller den här inloggningen på din telefon och agerar som du i Home Assistant, bara för MQTT. Avsluta det när som helst i Home Assistant under Profil › Säkerhet.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'I Home Assistant öppnar du din profil, sedan Säkerhet › Långlivade åtkomsttoken › Skapa token. Kopiera den och klistra in den här. ZigDash behåller den på den här telefonen för att ansluta; ta bort den i Home Assistant när du vill avsluta.';
+
+  @override
+  String get haConnectWithToken => 'Anslut med token';
+
+  @override
+  String get haConnectChecking => 'Kontrollerar Home Assistant…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'Din Home Assistant-användare är inte administratör. ZigDash behöver en för Home Assistants MQTT. Logga in som administratör, eller klistra in en token som en administratör skapat.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'Den här Home Assistant har ingen MQTT-integration. Zigbee2MQTT behöver också en: lägg till tillägget Mosquitto broker och MQTT-integrationen i Home Assistant och försök igen.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'Inloggningen slutfördes inte. Försök igen, eller använd en långlivad token.';
+
+  @override
+  String get haConnectButton => 'Anslut via Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'Använder du Home Assistant? Anslut via den i stället';
+
+  @override
+  String get haConnectEmptyNote =>
+      'Når den här telefonen inte mäklaren? Home Assistant kan bära anslutningen åt dig.';
+
+  @override
+  String get haHomeConnected => 'Ansluten via Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'För att använda en annan Home Assistant-inloggning, ta bort det här hemmet och anslut igen. Du kan avsluta inloggningen i Home Assistant under Profil › Säkerhet.';
+
+  @override
+  String get haHomeRemote => 'Fjärradress för Home Assistant (valfritt)';
+
+  @override
   String get setupAuthTitle => 'Den här brokern kräver inloggning';
 
   @override

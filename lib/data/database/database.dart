@@ -14,21 +14,21 @@ import 'tables/alert_configs.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [
-  Connections,
-  Dashboards,
-  Panels,
-  Scenes,
-  Sections,
-  DeviceDismissals,
-  DeviceHealthFlags,
-  Shortcuts,
-  AlertConfigs,
-])
+@DriftDatabase(
+  tables: [
+    Connections,
+    Dashboards,
+    Panels,
+    Scenes,
+    Sections,
+    DeviceDismissals,
+    DeviceHealthFlags,
+    Shortcuts,
+    AlertConfigs,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
-  AppDatabase()
-      : _readOnly = false,
-        super(_open());
+  AppDatabase() : _readOnly = false, super(_open());
   AppDatabase.test(super.executor) : _readOnly = false;
 
   /// For the headless shortcut engine (2.1 §1), which runs beside the app:
@@ -41,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
   /// The file's own schema version, for [AppDatabase.readOnly].
   int? fileVersion;
 
-  static const _version = 9;
+  static const _version = 10;
 
   @override
   int get schemaVersion => _readOnly ? (fileVersion ?? _version) : _version;
@@ -55,99 +55,104 @@ class AppDatabase extends _$AppDatabase {
       : _migration;
 
   MigrationStrategy get _migration => MigrationStrategy(
-        onCreate: (m) => m.createAll(),
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.createTable(dashboards);
-            await m.createTable(panels);
-          }
-          if (from < 3) {
-            await m.addColumn(panels, panels.topicPrefixOverride);
-          }
-          if (from < 4) {
-            await m.addColumn(connections, connections.remoteHost);
-          }
-          if (from < 5) {
-            await m.createTable(scenes);
-          }
-          if (from < 6) {
-            // First, while every stored width still decodes: 1.12 renamed
-            // half and third to small (Small / Wide / Full tile sizes).
-            await customStatement(
-              "UPDATE panels SET width = 'small' "
-              "WHERE width IN ('half', 'third')",
-            );
-            await m.createTable(sections);
-            await m.createTable(deviceDismissals);
-            await m.addColumn(panels, panels.sectionId);
-            await m.addColumn(panels, panels.deviceIeee);
-            await m.addColumn(connections, connections.devicesSeenAt);
-            await m.createIndex(panelsDeviceIeee);
-            // 1.11 setup stored the device's full topic as both prefix and
-            // topic, so its tiles used '<device>/<device>'. Rewrite them to
-            // the suffixes setup meant: 'set' for controls, '' to read.
-            await customStatement(
-              "UPDATE panels SET subscribe_topic = '' "
-              'WHERE subscribe_topic = topic_prefix_override',
-            );
-            await customStatement(
-              'UPDATE panels SET topic = CASE WHEN type IN '
-              "('toggle', 'slider', 'cover') THEN 'set' ELSE '' END "
-              'WHERE topic = topic_prefix_override',
-            );
-            // 1.11 setup and the demo stored 0xe88a, the web font's home,
-            // which in Flutter's font is a "?" bubble (never pickable).
-            await customStatement(
-              'UPDATE dashboards SET icon_codepoint = 58136 '
-              'WHERE icon_codepoint = 59530',
-            );
-            // Before 1.12 foreign keys were off, so deletes never cascaded
-            // and left rows behind. Drop them before enforcement starts.
-            await customStatement(
-              'DELETE FROM dashboards WHERE connection_id NOT IN '
-              '(SELECT id FROM connections)',
-            );
-            await customStatement(
-              'DELETE FROM panels WHERE dashboard_id NOT IN '
-              '(SELECT id FROM dashboards)',
-            );
-            await customStatement(
-              'DELETE FROM scenes WHERE connection_id NOT IN '
-              '(SELECT id FROM connections)',
-            );
-          }
-          if (from < 7) {
-            await m.addColumn(connections, connections.z2mBaseTopic);
-            await m.createTable(deviceHealthFlags);
-          }
-          if (from < 8) {
-            await m.createTable(shortcuts);
-          }
-          if (from < 9) {
-            await m.createTable(alertConfigs);
-          }
-        },
-        // The schema's cascades (home → dashboards → sections, tiles) only
-        // run with enforcement on; SQLite leaves it off per connection.
-        beforeOpen: (_) async {
-          await customStatement('PRAGMA foreign_keys = ON');
-          // The "?" bubble repair also runs on every open: 1.12 previews
-          // reached schema 6 before the migration had it. Idempotent, and
-          // 0xe88a was never pickable, so no user choice is overwritten.
-          await customStatement(
-            'UPDATE dashboards SET icon_codepoint = 58136 '
-            'WHERE icon_codepoint = 59530',
-          );
-        },
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(dashboards);
+        await m.createTable(panels);
+      }
+      if (from < 3) {
+        await m.addColumn(panels, panels.topicPrefixOverride);
+      }
+      if (from < 4) {
+        await m.addColumn(connections, connections.remoteHost);
+      }
+      if (from < 5) {
+        await m.createTable(scenes);
+      }
+      if (from < 6) {
+        // First, while every stored width still decodes: 1.12 renamed
+        // half and third to small (Small / Wide / Full tile sizes).
+        await customStatement(
+          "UPDATE panels SET width = 'small' "
+          "WHERE width IN ('half', 'third')",
+        );
+        await m.createTable(sections);
+        await m.createTable(deviceDismissals);
+        await m.addColumn(panels, panels.sectionId);
+        await m.addColumn(panels, panels.deviceIeee);
+        await m.addColumn(connections, connections.devicesSeenAt);
+        await m.createIndex(panelsDeviceIeee);
+        // 1.11 setup stored the device's full topic as both prefix and
+        // topic, so its tiles used '<device>/<device>'. Rewrite them to
+        // the suffixes setup meant: 'set' for controls, '' to read.
+        await customStatement(
+          "UPDATE panels SET subscribe_topic = '' "
+          'WHERE subscribe_topic = topic_prefix_override',
+        );
+        await customStatement(
+          'UPDATE panels SET topic = CASE WHEN type IN '
+          "('toggle', 'slider', 'cover') THEN 'set' ELSE '' END "
+          'WHERE topic = topic_prefix_override',
+        );
+        // 1.11 setup and the demo stored 0xe88a, the web font's home,
+        // which in Flutter's font is a "?" bubble (never pickable).
+        await customStatement(
+          'UPDATE dashboards SET icon_codepoint = 58136 '
+          'WHERE icon_codepoint = 59530',
+        );
+        // Before 1.12 foreign keys were off, so deletes never cascaded
+        // and left rows behind. Drop them before enforcement starts.
+        await customStatement(
+          'DELETE FROM dashboards WHERE connection_id NOT IN '
+          '(SELECT id FROM connections)',
+        );
+        await customStatement(
+          'DELETE FROM panels WHERE dashboard_id NOT IN '
+          '(SELECT id FROM dashboards)',
+        );
+        await customStatement(
+          'DELETE FROM scenes WHERE connection_id NOT IN '
+          '(SELECT id FROM connections)',
+        );
+      }
+      if (from < 7) {
+        await m.addColumn(connections, connections.z2mBaseTopic);
+        await m.createTable(deviceHealthFlags);
+      }
+      if (from < 8) {
+        await m.createTable(shortcuts);
+      }
+      if (from < 9) {
+        await m.createTable(alertConfigs);
+      }
+      // Guarded by `to` as well: the schema tests migrate to older
+      // versions and compare against that version's dump.
+      if (from < 10 && to >= 10) {
+        await m.addColumn(connections, connections.transport);
+      }
+    },
+    // The schema's cascades (home → dashboards → sections, tiles) only
+    // run with enforcement on; SQLite leaves it off per connection.
+    beforeOpen: (_) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+      // The "?" bubble repair also runs on every open: 1.12 previews
+      // reached schema 6 before the migration had it. Idempotent, and
+      // 0xe88a was never pickable, so no user choice is overwritten.
+      await customStatement(
+        'UPDATE dashboards SET icon_codepoint = 58136 '
+        'WHERE icon_codepoint = 59530',
       );
+    },
+  );
 
   static QueryExecutor _open() => driftDatabase(
-        name: 'zigdash',
-        web: DriftWebOptions(
-          sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-          driftWorker: Uri.parse('drift_worker.js'),
-        ),
-      );
+    name: 'zigdash',
+    web: DriftWebOptions(
+      sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+      driftWorker: Uri.parse('drift_worker.js'),
+    ),
+  );
 }
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {

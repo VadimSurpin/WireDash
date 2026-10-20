@@ -22,35 +22,41 @@ class _Sink implements AnalyticsSink {
 }
 
 Connection _home(String host) => Connection(
-      id: 'c1',
-      name: 'Home',
-      host: host,
-      port: 1883,
-      protocol: MqttProtocol.tcp,
-      keepAliveSeconds: 60,
-      autoConnect: true,
-      createdAt: DateTime(2026),
-      updatedAt: DateTime(2026),
-    );
+  transport: ConnectionTransport.mqtt,
+  id: 'c1',
+  name: 'Home',
+  host: host,
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+  keepAliveSeconds: 60,
+  autoConnect: true,
+  createdAt: DateTime(2026),
+  updatedAt: DateTime(2026),
+);
 
-Future<(SharedPreferences, _Sink)> _card(WidgetTester tester,
-    {Map<String, Object> prefs = const {}, String host = '192.168.1.2'}) async {
+Future<(SharedPreferences, _Sink)> _card(
+  WidgetTester tester, {
+  Map<String, Object> prefs = const {},
+  String host = '192.168.1.2',
+}) async {
   SharedPreferences.setMockInitialValues(prefs);
   final p = await SharedPreferences.getInstance();
   final sink = _Sink();
-  await tester.pumpWidget(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(p),
-      analyticsAvailableProvider.overrideWithValue(true),
-      analyticsSinkProvider.overrideWithValue(sink),
-      connectionByIdProvider.overrideWith((ref, _) async => _home(host)),
-    ],
-    child: const MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: PollCard(connectionId: 'c1')),
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(p),
+        analyticsAvailableProvider.overrideWithValue(true),
+        analyticsSinkProvider.overrideWithValue(sink),
+        connectionByIdProvider.overrideWith((ref, _) async => _home(host)),
+      ],
+      child: const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(body: PollCard(connectionId: 'c1')),
+      ),
     ),
-  ));
+  );
   await tester.pumpAndSettle();
   return (p, sink);
 }
@@ -69,8 +75,10 @@ void main() {
   });
 
   testWidgets('not before the third day', (tester) async {
-    await _card(tester,
-        prefs: {'analytics_consent': true, 'review_sessions': 2});
+    await _card(
+      tester,
+      prefs: {'analytics_consent': true, 'review_sessions': 2},
+    );
     expect(find.text('What should ZigDash do next?'), findsNothing);
   });
 
@@ -82,10 +90,13 @@ void main() {
     expect(prefs.getString(pollDoneKey), '1');
   });
 
-  testWidgets('without usage data, no choices: Request a feature instead',
-      (tester) async {
-    await _card(tester,
-        prefs: {'analytics_consent': false, 'review_sessions': 5});
+  testWidgets('without usage data, no choices: Request a feature instead', (
+    tester,
+  ) async {
+    await _card(
+      tester,
+      prefs: {'analytics_consent': false, 'review_sessions': 5},
+    );
     expect(find.text('What should ZigDash do next?'), findsOneWidget);
     expect(find.text('History graphs'), findsNothing);
     expect(find.text('Request a feature'), findsOneWidget);

@@ -1,0 +1,1 @@
+ZigDash 2.10: använder du Home Assistant? Logga in en gång, så ansluter ZigDash till Zigbee2MQTT via den, hemma eller borta, utan mäklarinställningar. Din telefon behöver inte längre nå mäklaren.

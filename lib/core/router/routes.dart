@@ -13,6 +13,13 @@ class Routes {
     path: guidedConnect,
     queryParameters: {'host': host, 'port': '$port'},
   ).toString();
+
+  /// Connecting through Home Assistant (docs/design/ha-route.md), with
+  /// the address filled in when the scan saw Home Assistant.
+  static const haConnect = '/setup/home-assistant';
+  static String haConnectAt(String? host) => host == null
+      ? haConnect
+      : Uri(path: haConnect, queryParameters: {'host': host}).toString();
   static const connectionEdit = '/connections/:id/edit';
   static const dashboards = '/dashboards';
   static const settings = '/settings';

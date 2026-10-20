@@ -27,17 +27,26 @@ import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _Recording extends MqttManager {
   _Recording()
-      : super(
-          config: const BrokerConfig(
-              id: 'c1', host: 'localhost', port: 1883, protocol: MqttProtocol.tcp),
-          password: '',
-        );
+    : super(
+        config: const BrokerConfig(
+          id: 'c1',
+          host: 'localhost',
+          port: 1883,
+          protocol: MqttProtocol.tcp,
+        ),
+        password: '',
+      );
   final published = <(String, String)>[];
   @override
   bool get isConnected => true;
   @override
-  void publish(String topic, String template, Object value,
-      {mc.MqttQos qos = mc.MqttQos.atLeastOnce, bool retain = false}) {
+  void publish(
+    String topic,
+    String template,
+    Object value, {
+    mc.MqttQos qos = mc.MqttQos.atLeastOnce,
+    bool retain = false,
+  }) {
     published.add((topic, template));
   }
 }
@@ -45,22 +54,45 @@ class _Recording extends MqttManager {
 const _cover = {
   'type': 'cover',
   'features': [
-    {'type': 'enum', 'name': 'state', 'property': 'state', 'access': 3, 'values': ['OPEN', 'CLOSE', 'STOP']},
-    {'type': 'numeric', 'name': 'position', 'property': 'position', 'access': 7},
+    {
+      'type': 'enum',
+      'name': 'state',
+      'property': 'state',
+      'access': 3,
+      'values': ['OPEN', 'CLOSE', 'STOP'],
+    },
+    {
+      'type': 'numeric',
+      'name': 'position',
+      'property': 'position',
+      'access': 7,
+    },
   ],
 };
 const _light = {
   'type': 'light',
   'features': [
-    {'type': 'binary', 'name': 'state', 'property': 'state', 'access': 7, 'value_on': 'ON', 'value_off': 'OFF'},
+    {
+      'type': 'binary',
+      'name': 'state',
+      'property': 'state',
+      'access': 7,
+      'value_on': 'ON',
+      'value_off': 'OFF',
+    },
   ],
 };
 
 Z2mDevice _dev(String name, Object expose, String ieee) => Z2mDevice(
-    friendlyName: name, type: 'Router', ieeeAddress: ieee, rawExposes: [expose]);
+  friendlyName: name,
+  type: 'Router',
+  ieeeAddress: ieee,
+  rawExposes: [expose],
+);
 
 final _stamp = DateTime(2026, 10, 11);
 final _home = Connection(
+  transport: ConnectionTransport.mqtt,
   id: 'c1',
   name: 'Home',
   host: '192.168.1.2',
@@ -103,22 +135,27 @@ Future<_Recording> _pump(
   SharedPreferences.setMockInitialValues(prefs);
   final p = await SharedPreferences.getInstance();
   final mgr = _Recording();
-  await tester.pumpWidget(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(p),
-      sceneRepoProvider.overrideWithValue(_NoScenes()),
-      connectionsStreamProvider.overrideWith((ref) => Stream.value([_home])),
-      dashboardsForConnectionProvider.overrideWith(
-          (ref, _) => Stream.value(noDashboards ? const [] : [_dashboard])),
-      bridgeDevicesStreamProvider.overrideWith((ref, _) => Stream.value(devices)),
-      mqttManagerProvider.overrideWith((ref, _) async => mgr),
-    ],
-    child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: child ?? const ScenesScreen(connectionId: 'c1'),
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(p),
+        sceneRepoProvider.overrideWithValue(_NoScenes()),
+        connectionsStreamProvider.overrideWith((ref) => Stream.value([_home])),
+        dashboardsForConnectionProvider.overrideWith(
+          (ref, _) => Stream.value(noDashboards ? const [] : [_dashboard]),
+        ),
+        bridgeDevicesStreamProvider.overrideWith(
+          (ref, _) => Stream.value(devices),
+        ),
+        mqttManagerProvider.overrideWith((ref, _) async => mgr),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: child ?? const ScenesScreen(connectionId: 'c1'),
+      ),
     ),
-  ));
+  );
   for (var i = 0; i < 4; i++) {
     await tester.pump(const Duration(milliseconds: 100));
   }
@@ -132,7 +169,9 @@ void main() {
     _dev('Garage door', _cover, '0x03'),
   ];
 
-  testWidgets('a Home with shutters lists the three built-ins first', (tester) async {
+  testWidgets('a Home with shutters lists the three built-ins first', (
+    tester,
+  ) async {
     await _pump(tester, shutters);
     expect(find.text('All shutters'), findsOneWidget);
     expect(find.text('Close all shutters'), findsOneWidget);
@@ -143,14 +182,18 @@ void main() {
     expect(find.textContaining('No scenes yet'), findsOneWidget);
   });
 
-  testWidgets('a Home without shutters shows only the empty state', (tester) async {
+  testWidgets('a Home without shutters shows only the empty state', (
+    tester,
+  ) async {
     await _pump(tester, [shutters[1]]);
     expect(find.text('All shutters'), findsNothing);
     expect(find.text('Close all shutters'), findsNothing);
     expect(find.textContaining('No scenes yet'), findsOneWidget);
   });
 
-  testWidgets('tapping Close all commands every shutter, not the lamp', (tester) async {
+  testWidgets('tapping Close all commands every shutter, not the lamp', (
+    tester,
+  ) async {
     final mgr = await _pump(tester, shutters);
     await tester.tap(find.text('Close all shutters'));
     await tester.pump();
@@ -162,10 +205,16 @@ void main() {
     expect(find.text('Activated Close all shutters'), findsOneWidget);
   });
 
-  testWidgets('an excluded shutter is left out and not counted', (tester) async {
-    final mgr = await _pump(tester, shutters, prefs: {
-      allShuttersExcludedKey('c1'): ['0x03'],
-    });
+  testWidgets('an excluded shutter is left out and not counted', (
+    tester,
+  ) async {
+    final mgr = await _pump(
+      tester,
+      shutters,
+      prefs: {
+        allShuttersExcludedKey('c1'): ['0x03'],
+      },
+    );
     expect(find.text('1 shutter'), findsNWidgets(3));
     await tester.tap(find.text('Open all shutters'));
     await tester.pump();
@@ -175,7 +224,9 @@ void main() {
     ]);
   });
 
-  testWidgets('Which shutters… unticks a shutter and saves it at once', (tester) async {
+  testWidgets('Which shutters… unticks a shutter and saves it at once', (
+    tester,
+  ) async {
     await _pump(tester, shutters);
     await tester.tap(find.byType(PopupMenuButton<String>).first);
     await tester.pumpAndSettle();
@@ -190,8 +241,11 @@ void main() {
 
   testWidgets('with no base topic known yet, nothing is sent', (tester) async {
     final mgr = await _pump(tester, shutters, noDashboards: true);
-    expect(find.text('Close all shutters'), findsNothing,
-        reason: 'no base, no device list, so the group is hidden');
+    expect(
+      find.text('Close all shutters'),
+      findsNothing,
+      reason: 'no base, no device list, so the group is hidden',
+    );
     final panel = Panel(
       id: 'p1',
       dashboardId: 'd1',
@@ -204,7 +258,9 @@ void main() {
       retain: false,
       width: PanelWidth.small,
       sortOrder: 0,
-      config: SceneConfig(sceneId: allShuttersSceneId(ShutterCommand.close)).encode(),
+      config: SceneConfig(
+        sceneId: allShuttersSceneId(ShutterCommand.close),
+      ).encode(),
       mergeFlags: 0,
       createdAt: _stamp,
       updatedAt: _stamp,
@@ -217,7 +273,9 @@ void main() {
         body: ScenePanel(
           connectionId: 'c1',
           panel: panel,
-          config: SceneConfig(sceneId: allShuttersSceneId(ShutterCommand.close)),
+          config: SceneConfig(
+            sceneId: allShuttersSceneId(ShutterCommand.close),
+          ),
         ),
       ),
     );
@@ -225,7 +283,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(mgr.published, isEmpty);
-    expect(find.text("Not connected — can't activate the scene"), findsOneWidget);
+    expect(
+      find.text("Not connected — can't activate the scene"),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a scene tile for a built-in runs it too', (tester) async {
@@ -241,7 +302,9 @@ void main() {
       retain: false,
       width: PanelWidth.small,
       sortOrder: 0,
-      config: SceneConfig(sceneId: allShuttersSceneId(ShutterCommand.stop)).encode(),
+      config: SceneConfig(
+        sceneId: allShuttersSceneId(ShutterCommand.stop),
+      ).encode(),
       mergeFlags: 0,
       createdAt: _stamp,
       updatedAt: _stamp,

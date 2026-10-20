@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../data/database/tables/connections.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show DartPluginRegistrant, Locale;
@@ -49,30 +50,58 @@ void shortcutEngine() {
     final args = Map<String, Object?>.from(call.arguments as Map? ?? {});
     switch (call.method) {
       case 'toggle':
-        return jsonEncode(await engine.toggle(
-            args['connectionId'] as String, args['ieee'] as String));
+        return jsonEncode(
+          await engine.toggle(
+            args['connectionId'] as String,
+            args['ieee'] as String,
+          ),
+        );
       case 'cover':
-        return jsonEncode(await engine.toggle(
-            args['connectionId'] as String, args['ieee'] as String,
-            command: {'state': args['action'] as String}));
+        return jsonEncode(
+          await engine.toggle(
+            args['connectionId'] as String,
+            args['ieee'] as String,
+            command: {'state': args['action'] as String},
+          ),
+        );
       case 'position':
-        return jsonEncode(await engine.toggle(
-            args['connectionId'] as String, args['ieee'] as String,
-            command: {'position': args['position'] as int}));
+        return jsonEncode(
+          await engine.toggle(
+            args['connectionId'] as String,
+            args['ieee'] as String,
+            command: {'position': args['position'] as int},
+          ),
+        );
       case 'set':
-        return jsonEncode(await engine.control(
-            args['connectionId'] as String, args['ieee'] as String,
-            on: args['on'] as bool));
+        return jsonEncode(
+          await engine.control(
+            args['connectionId'] as String,
+            args['ieee'] as String,
+            on: args['on'] as bool,
+          ),
+        );
       case 'level':
-        return jsonEncode(await engine.control(
-            args['connectionId'] as String, args['ieee'] as String,
-            level: args['level'] as int));
+        return jsonEncode(
+          await engine.control(
+            args['connectionId'] as String,
+            args['ieee'] as String,
+            level: args['level'] as int,
+          ),
+        );
       case 'watch':
-        return jsonEncode(await engine.watch(args['connectionId'] as String,
-            (args['ieees'] as List).cast<String>()));
+        return jsonEncode(
+          await engine.watch(
+            args['connectionId'] as String,
+            (args['ieees'] as List).cast<String>(),
+          ),
+        );
       case 'scene':
-        return jsonEncode(await engine.scene(
-            args['connectionId'] as String, args['sceneId'] as String));
+        return jsonEncode(
+          await engine.scene(
+            args['connectionId'] as String,
+            args['sceneId'] as String,
+          ),
+        );
     }
     throw MissingPluginException(call.method);
   });
@@ -90,11 +119,16 @@ class ShortcutEngine {
     final dir = await getApplicationDocumentsDirectory();
     final file = File(p.join(dir.path, 'zigdash.sqlite'));
     late final AppDatabase db;
-    db = AppDatabase.readOnly(NativeDatabase(file, setup: (raw) {
-      db.fileVersion = raw.userVersion;
-      raw.execute('PRAGMA query_only = ON');
-      raw.execute('PRAGMA busy_timeout = 2000');
-    }));
+    db = AppDatabase.readOnly(
+      NativeDatabase(
+        file,
+        setup: (raw) {
+          db.fileVersion = raw.userVersion;
+          raw.execute('PRAGMA query_only = ON');
+          raw.execute('PRAGMA busy_timeout = 2000');
+        },
+      ),
+    );
     return db;
   }
 
@@ -129,8 +163,16 @@ class ShortcutEngine {
     final conn = await ConnectionDao(db).getById(connectionId);
     if (conn == null) return null;
     final password = await createSecureStore().readPassword(connectionId) ?? '';
-    final key = [conn.host, conn.port, conn.protocol.name, conn.username,
-        conn.keepAliveSeconds, conn.remoteHost, password].join('|');
+    final key = [
+      conn.host,
+      conn.port,
+      conn.protocol.name,
+      conn.username,
+      conn.keepAliveSeconds,
+      conn.remoteHost,
+      transportOf(conn.transport).name,
+      password,
+    ].join('|');
     final cached = _managers[connectionId];
     if (cached != null && cached.key == key) return cached.mgr;
     unawaited(cached?.mgr.dispose()); // settings changed: stop the old one
@@ -143,6 +185,7 @@ class ShortcutEngine {
         username: conn.username,
         keepAliveSeconds: conn.keepAliveSeconds,
         remoteHost: conn.remoteHost,
+        transport: transportOf(conn.transport),
       ),
       password: password,
     );
@@ -156,11 +199,15 @@ class ShortcutEngine {
   Future<ShortcutCommander> _commander() async {
     final code = (await _prefs).getString('locale');
     return ShortcutCommander(
-        l10n: appL10n(code == null || code.isEmpty ? null : Locale(code)));
+      l10n: appL10n(code == null || code.isEmpty ? null : Locale(code)),
+    );
   }
 
-  Future<Map<String, Object?>> toggle(String connectionId, String ieee,
-      {Map<String, Object?>? command}) async {
+  Future<Map<String, Object?>> toggle(
+    String connectionId,
+    String ieee, {
+    Map<String, Object?>? command,
+  }) async {
     final sw = Stopwatch()..start();
     final device = await _device(connectionId, ieee);
     final tDevice = sw.elapsedMilliseconds;
@@ -193,22 +240,35 @@ class ShortcutEngine {
       // a wall switch or an automation while the app was closed). Record
       // that, so the next tap goes the other way.
       final target = ShortcutCommander.commandFor(
-          device, last['payload'] as String?)['state'];
+        device,
+        last['payload'] as String?,
+      )['state'];
       final assumed = (await _commander()).describe(
-          device, jsonEncode({'state': target}), DateTime.now());
+        device,
+        jsonEncode({'state': target}),
+        DateTime.now(),
+      );
       await prefs.setString(key, jsonEncode(assumed.toJson()));
     }
     return {
       ...result.toJson(),
       // Where the time went, for the debug log (ms since the call).
-      'timing': {'device': tDevice, 'manager': tManager, 'done': sw.elapsedMilliseconds},
+      'timing': {
+        'device': tDevice,
+        'manager': tManager,
+        'done': sw.elapsedMilliseconds,
+      },
     };
   }
 
   /// Device Controls: switch [ieee] [on] or off, or set its [level]
   /// (a shutter's position, a light's brightness).
-  Future<Map<String, Object?>> control(String connectionId, String ieee,
-      {bool? on, int? level}) async {
+  Future<Map<String, Object?>> control(
+    String connectionId,
+    String ieee, {
+    bool? on,
+    int? level,
+  }) async {
     final device = await _device(connectionId, ieee);
     if (device == null) return {'outcome': 'removed'};
     final command = on != null
@@ -223,10 +283,13 @@ class ShortcutEngine {
   /// the current state. Gentle on the hub: one small request at a time,
   /// [spacing] apart, and none for a device that reported in the last
   /// [freshFor] or that isn't asked at all (sensors).
-  Future<Map<String, Object?>> watch(String connectionId, List<String> ieees,
-      {Duration within = const Duration(seconds: 30),
-      Duration spacing = const Duration(milliseconds: 400),
-      Duration freshFor = const Duration(minutes: 1)}) async {
+  Future<Map<String, Object?>> watch(
+    String connectionId,
+    List<String> ieees, {
+    Duration within = const Duration(seconds: 30),
+    Duration spacing = const Duration(milliseconds: 400),
+    Duration freshFor = const Duration(minutes: 1),
+  }) async {
     final mgr = await _manager(connectionId);
     if (mgr == null) return {'outcome': 'removed'};
     final commander = await _commander();
@@ -240,7 +303,9 @@ class ShortcutEngine {
       final sub = mgr.subscribe(d.subscribeTopic).listen((m) {
         if (m.payload.isEmpty) return;
         prefs.setString(
-            key, jsonEncode(commander.describe(d, m.payload, m.receivedAt).toJson()));
+          key,
+          jsonEncode(commander.describe(d, m.payload, m.receivedAt).toJson()),
+        );
       });
       Timer(within, () {
         sub.cancel();
@@ -248,10 +313,12 @@ class ShortcutEngine {
       });
       final get = ShortcutCommander.stateRequest(d);
       final at = _decode(prefs.getString(key))['at'];
-      final fresh = at is int &&
+      final fresh =
+          at is int &&
           DateTime.now()
-              .difference(DateTime.fromMillisecondsSinceEpoch(at))
-              .compareTo(freshFor) < 0;
+                  .difference(DateTime.fromMillisecondsSinceEpoch(at))
+                  .compareTo(freshFor) <
+              0;
       if (get == null || fresh) continue;
       if (asked++ > 0) await Future<void>.delayed(spacing);
       mgr.publish('${d.subscribeTopic}/get', jsonEncode(get), '');
@@ -261,9 +328,13 @@ class ShortcutEngine {
 
   /// Writes [d]'s state as it reports it, until its motor stops or after
   /// [limit]; the native tile and widget redraw on each write.
-  void _follow(MqttManager mgr, ShortcutDevice d, String key,
-      ShortcutCommander commander,
-      {Duration limit = const Duration(seconds: 45)}) {
+  void _follow(
+    MqttManager mgr,
+    ShortcutDevice d,
+    String key,
+    ShortcutCommander commander, {
+    Duration limit = const Duration(seconds: 45),
+  }) {
     late final StreamSubscription<MqttRxMessage> sub;
     Timer? stop;
     void end() {
@@ -285,7 +356,10 @@ class ShortcutEngine {
     stop = Timer(limit, end);
   }
 
-  Future<Map<String, Object?>> scene(String connectionId, String sceneId) async {
+  Future<Map<String, Object?>> scene(
+    String connectionId,
+    String sceneId,
+  ) async {
     final mgr = await _manager(connectionId);
     if (mgr == null) return {'outcome': 'removed'};
     final commander = await _commander();
@@ -309,10 +383,15 @@ class ShortcutEngine {
     // A scene's widget shows its last run like a device's state: "Sent",
     // then "Confirmed" once every device answered.
     final key = shortcutStateKey(connectionId, sceneId);
-    Future<void> say(String line) => prefs.setString(key,
-        jsonEncode({'line': line, 'at': DateTime.now().millisecondsSinceEpoch}));
-    final outcome = await commander.runScene(mgr, actions,
-        onSent: () => say(commander.l10n.shortcutSceneSent));
+    Future<void> say(String line) => prefs.setString(
+      key,
+      jsonEncode({'line': line, 'at': DateTime.now().millisecondsSinceEpoch}),
+    );
+    final outcome = await commander.runScene(
+      mgr,
+      actions,
+      onSent: () => say(commander.l10n.shortcutSceneSent),
+    );
     if (outcome == ShortcutOutcome.confirmed) {
       await say(commander.l10n.shortcutSceneConfirmed);
     }
@@ -324,15 +403,19 @@ class ShortcutEngine {
   Future<String> _homeBase(String connectionId) async {
     final db = await _database;
     final conn = await ConnectionDao(db).getById(connectionId);
-    final first =
-        (await DashboardDao(db).getByConnection(connectionId)).firstOrNull;
+    final first = (await DashboardDao(
+      db,
+    ).getByConnection(connectionId)).firstOrNull;
     return z2mBase(first?.topicPrefix, homeBase: conn?.z2mBaseTopic);
   }
 
   /// [command] for every included shutter of the Home, or empty when the
   /// bridge's device list does not arrive within [shutterListTimeout].
   Future<List<SceneAction>> _shutterActions(
-      String connectionId, ShutterCommand command, MqttManager mgr) async {
+    String connectionId,
+    ShutterCommand command,
+    MqttManager mgr,
+  ) async {
     final base = await _homeBase(connectionId);
     final topic = '$base/bridge/devices';
     List<Z2mDevice> devices;

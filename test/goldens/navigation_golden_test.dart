@@ -32,16 +32,17 @@ import 'golden_harness.dart';
 final _stamp = DateTime(2026, 9, 26);
 
 Connection _home(String id, String name) => Connection(
-      id: id,
-      name: name,
-      host: 'h',
-      port: 1883,
-      protocol: MqttProtocol.tcp,
-      keepAliveSeconds: 60,
-      autoConnect: true,
-      createdAt: _stamp,
-      updatedAt: _stamp,
-    );
+  transport: ConnectionTransport.mqtt,
+  id: id,
+  name: name,
+  host: 'h',
+  port: 1883,
+  protocol: MqttProtocol.tcp,
+  keepAliveSeconds: 60,
+  autoConnect: true,
+  createdAt: _stamp,
+  updatedAt: _stamp,
+);
 
 final _dashboard = Dashboard(
   id: 'd1',
@@ -57,12 +58,12 @@ final _dashboard = Dashboard(
 );
 
 Map<String, Object?> _feature(String type, String p) => {
-      'type': type,
-      'name': p,
-      'property': p,
-      'access': 7,
-      if (type == 'binary') ...{'value_on': 'ON', 'value_off': 'OFF'},
-    };
+  'type': type,
+  'name': p,
+  'property': p,
+  'access': 7,
+  if (type == 'binary') ...{'value_on': 'ON', 'value_off': 'OFF'},
+};
 
 final _devices = [
   Z2mDevice(
@@ -76,7 +77,12 @@ final _devices = [
         'type': 'light',
         'features': [
           _feature('binary', 'state'),
-          {'type': 'composite', 'name': 'color_xy', 'property': 'color', 'access': 7},
+          {
+            'type': 'composite',
+            'name': 'color_xy',
+            'property': 'color',
+            'access': 7,
+          },
         ],
       },
     ],
@@ -88,7 +94,10 @@ final _devices = [
     model: 'MINI-ZBD',
     ieeeAddress: '0x6ce4a4fffe6d2f80',
     rawExposes: [
-      {'type': 'switch', 'features': [_feature('binary', 'state')]},
+      {
+        'type': 'switch',
+        'features': [_feature('binary', 'state')],
+      },
     ],
   ),
   const Z2mDevice(
@@ -106,53 +115,63 @@ final _devices = [
 late SharedPreferences _prefs;
 
 List<Override> _overrides() => [
-      // The home shell holds the history recorder (2.9.1), off here.
-      sharedPreferencesProvider.overrideWithValue(_prefs),
-      // The shell's control tracker asks for the broker (2.9.2): none here.
-      mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
-      connectionsStreamProvider.overrideWith((ref) =>
-          Stream.value([_home('c1', 'My Home'), _home('c2', 'SMHUB')])),
-      unassignedCountProvider.overrideWith((ref, _) => const AsyncValue.data(1)),
-      dashboardByIdProvider.overrideWith((ref, _) async => _dashboard),
-      dashboardsForConnectionProvider
-          .overrideWith((ref, _) => Stream.value([_dashboard])),
-      bridgeDevicesStreamProvider.overrideWith((ref, _) => Stream.value(_devices)),
-      discoveredDevicesProvider.overrideWith((ref, _) async => _devices),
-      linkedIeeesProvider
-          .overrideWith((ref, _) => Stream.value({'0x6ce4a4fffe6d2f80'})),
-      deviceHealthProvider.overrideWith((ref, _) => Stream.value(
-            deviceHealthFrom(_devices, states: {
-              '0xc4d7fdbbfeba0000': (
-                payload: '{"state":"ON","brightness":180,"linkquality":68}',
-                at: DateTime(2026, 9, 26)
-              ),
-              'garden_relay': (
-                payload: '{"state":"OFF","linkquality":76}',
-                at: DateTime(2026, 9, 26)
-              ),
-              'front_door': (
-                payload: '{"contact":true,"battery":91,"linkquality":120}',
-                at: DateTime(2026, 9, 26)
-              ),
-            }),
-          )),
-      availabilityConfigProvider.overrideWith(
-          (ref, _) => Stream.value(AvailabilityConfig.unknown)),
-      batteryAlertsProvider.overrideWith((ref, _) => Stream.value(const {})),
-      batteryWatchProvider.overrideWith((ref, _) {}),
-      unassignedDevicesProvider
-          .overrideWith((ref, _) => const AsyncValue.data([])),
-      sectionsForDashboardProvider
-          .overrideWith((ref, _) => Stream.value(const <Section>[])),
-      panelsForDashboardProvider
-          .overrideWith((ref, _) => Stream.value(const <Panel>[])),
-    ];
+  // The home shell holds the history recorder (2.9.1), off here.
+  sharedPreferencesProvider.overrideWithValue(_prefs),
+  // The shell's control tracker asks for the broker (2.9.2): none here.
+  mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
+  connectionsStreamProvider.overrideWith(
+    (ref) => Stream.value([_home('c1', 'My Home'), _home('c2', 'SMHUB')]),
+  ),
+  unassignedCountProvider.overrideWith((ref, _) => const AsyncValue.data(1)),
+  dashboardByIdProvider.overrideWith((ref, _) async => _dashboard),
+  dashboardsForConnectionProvider.overrideWith(
+    (ref, _) => Stream.value([_dashboard]),
+  ),
+  bridgeDevicesStreamProvider.overrideWith((ref, _) => Stream.value(_devices)),
+  discoveredDevicesProvider.overrideWith((ref, _) async => _devices),
+  linkedIeeesProvider.overrideWith(
+    (ref, _) => Stream.value({'0x6ce4a4fffe6d2f80'}),
+  ),
+  deviceHealthProvider.overrideWith(
+    (ref, _) => Stream.value(
+      deviceHealthFrom(
+        _devices,
+        states: {
+          '0xc4d7fdbbfeba0000': (
+            payload: '{"state":"ON","brightness":180,"linkquality":68}',
+            at: DateTime(2026, 9, 26),
+          ),
+          'garden_relay': (
+            payload: '{"state":"OFF","linkquality":76}',
+            at: DateTime(2026, 9, 26),
+          ),
+          'front_door': (
+            payload: '{"contact":true,"battery":91,"linkquality":120}',
+            at: DateTime(2026, 9, 26),
+          ),
+        },
+      ),
+    ),
+  ),
+  availabilityConfigProvider.overrideWith(
+    (ref, _) => Stream.value(AvailabilityConfig.unknown),
+  ),
+  batteryAlertsProvider.overrideWith((ref, _) => Stream.value(const {})),
+  batteryWatchProvider.overrideWith((ref, _) {}),
+  unassignedDevicesProvider.overrideWith((ref, _) => const AsyncValue.data([])),
+  sectionsForDashboardProvider.overrideWith(
+    (ref, _) => Stream.value(const <Section>[]),
+  ),
+  panelsForDashboardProvider.overrideWith(
+    (ref, _) => Stream.value(const <Panel>[]),
+  ),
+];
 
 Widget _shell(Widget body) => HomeShell(
-      connectionId: 'c1',
-      location: '/connections/c1/devices',
-      child: body,
-    );
+  connectionId: 'c1',
+  location: '/connections/c1/devices',
+  child: body,
+);
 
 void main() {
   setUpAll(() async {

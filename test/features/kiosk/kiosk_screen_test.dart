@@ -30,6 +30,7 @@ import 'kiosk_test.dart' show FakeKioskPinStore;
 final _stamp = DateTime(2026, 10, 12);
 
 final _home = Connection(
+  transport: ConnectionTransport.mqtt,
   id: 'c1',
   name: 'My Home',
   host: '192.168.1.5',

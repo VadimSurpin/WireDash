@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dar
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics_provider.dart';
 import 'package:zigdash/features/connections/screens/connection_form_screen.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 
 // ---------------------------------------------------------------------------
@@ -47,11 +49,11 @@ class _FakeDiagnostics extends ConnectDiagnostics {
     required BrokerConfig config,
     required String password,
     String base = 'zigbee2mqtt',
-  }) async =>
-      report;
+  }) async => report;
 }
 
-List<Override> _overrides(AppDatabase db, {ConnectDiagnostics? diagnostics}) => [
+List<Override> _overrides(AppDatabase db, {ConnectDiagnostics? diagnostics}) =>
+    [
       appDatabaseProvider.overrideWithValue(db),
       secureStorageProvider.overrideWithValue(_MemSecure()),
       connectionRepoProvider.overrideWith(
@@ -64,7 +66,8 @@ List<Override> _overrides(AppDatabase db, {ConnectDiagnostics? diagnostics}) => 
         connectDiagnosticsProvider.overrideWithValue(diagnostics),
     ];
 
-Widget _wrap(AppDatabase db, {ConnectDiagnostics? diagnostics}) => ProviderScope(
+Widget _wrap(AppDatabase db, {ConnectDiagnostics? diagnostics}) =>
+    ProviderScope(
       overrides: _overrides(db, diagnostics: diagnostics),
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -103,38 +106,45 @@ void main() {
         ),
       ],
     );
-    await tester.pumpWidget(ProviderScope(
-      overrides: [
-        ..._overrides(db),
-        firstRunProvider.overrideWithValue(firstRun),
-      ],
-      child: MaterialApp.router(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: router,
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          ..._overrides(db),
+          firstRunProvider.overrideWithValue(firstRun),
+        ],
+        child: MaterialApp.router(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
       ),
-    ));
+    );
     router.push('/form');
     await tester.pumpAndSettle();
 
     await tester.enterText(find.widgetWithText(TextFormField, 'Name'), 'Home');
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Local host'), '192.168.1.20');
+      find.widgetWithText(TextFormField, 'Local host'),
+      '192.168.1.20',
+    );
     await tester.tap(find.text('Save'));
     // The save writes to a real (in-memory) database, which only completes
     // on the real clock.
     await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 300)));
+      () => Future<void>.delayed(const Duration(milliseconds: 300)),
+    );
     await tester.pump();
 
     final saved = await tester.runAsync(
-        () => ConnectionDao(db).watchAll().first);
+      () => ConnectionDao(db).watchAll().first,
+    );
     expect(firstRun.finished, [saved!.single.id]);
     expect(find.text('list'), findsOneWidget, reason: 'the form closed');
   });
 
-  testWidgets('new form renders Name, Local host, Port and Test connection',
-      (tester) async {
+  testWidgets('new form renders Name, Local host, Port and Test connection', (
+    tester,
+  ) async {
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
 
@@ -150,8 +160,9 @@ void main() {
     expect(find.text('Test connection'), findsOneWidget);
   });
 
-  testWidgets('save with empty Name and Host shows Required errors',
-      (tester) async {
+  testWidgets('save with empty Name and Host shows Required errors', (
+    tester,
+  ) async {
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
 
@@ -168,22 +179,25 @@ void main() {
     expect(find.text('Required'), findsWidgets);
   });
 
-  testWidgets('Test connection shows the diagnostic ladder sheet',
-      (tester) async {
+  testWidgets('Test connection shows the diagnostic ladder sheet', (
+    tester,
+  ) async {
     final db = AppDatabase.test(NativeDatabase.memory());
     addTearDown(db.close);
-    final fake = _FakeDiagnostics(const DiagnosticsReport(
-      steps: [
-        StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
-        StepResult(
-          step: DiagnosticStep.connack,
-          status: StepStatus.fail,
-          detailKey: 'diagConnackFail',
-        ),
-      ],
-      connected: false,
-      candidatesTried: 1,
-    ));
+    final fake = _FakeDiagnostics(
+      const DiagnosticsReport(
+        steps: [
+          StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
+          StepResult(
+            step: DiagnosticStep.connack,
+            status: StepStatus.fail,
+            detailKey: 'diagConnackFail',
+          ),
+        ],
+        connected: false,
+        candidatesTried: 1,
+      ),
+    );
 
     await tester.pumpWidget(_wrap(db, diagnostics: fake));
     await tester.pumpAndSettle();
@@ -191,7 +205,9 @@ void main() {
     // Name and Host are empty by default — the form validates before running.
     await tester.enterText(find.widgetWithText(TextFormField, 'Name'), 'Z2M');
     await tester.enterText(
-        find.widgetWithText(TextFormField, 'Local host'), 'localhost');
+      find.widgetWithText(TextFormField, 'Local host'),
+      'localhost',
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Test connection'));
@@ -205,5 +221,71 @@ void main() {
     );
     expect(find.text('Retry'), findsOneWidget);
     expect(find.text('Cancel'), findsOneWidget);
+  });
+
+  // 2.10: a home connected through Home Assistant shows where, not broker
+  // fields, and saving the form keeps how it connects.
+  testWidgets('a Home Assistant home: address read-only, transport kept', (
+    tester,
+  ) async {
+    final db = AppDatabase.test(NativeDatabase.memory());
+    addTearDown(db.close);
+    final now = DateTime.now();
+    await ConnectionDao(db).insertRow(
+      ConnectionsCompanion.insert(
+        id: 'ha1',
+        name: 'Casa',
+        host: 'https://abc.ui.nabu.casa',
+        port: 443,
+        protocol: MqttProtocol.wss,
+        transport: const Value(ConnectionTransport.homeAssistant),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(path: '/', builder: (_, __) => const Text('list')),
+        GoRoute(
+          path: '/form',
+          builder: (_, __) => const ConnectionFormScreen(connectionId: 'ha1'),
+        ),
+      ],
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: _overrides(db),
+        child: MaterialApp.router(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      ),
+    );
+    router.push('/form');
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 300)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Connected through Home Assistant'), findsOneWidget);
+    expect(find.text('https://abc.ui.nabu.casa'), findsOneWidget);
+    expect(find.text('Local host'), findsNothing);
+    expect(find.text('Test connection'), findsNothing);
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Name'),
+      'Casa 2',
+    );
+    await tester.tap(find.text('Save'));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 300)),
+    );
+    await tester.pump();
+    final saved = await tester.runAsync(() => ConnectionDao(db).getById('ha1'));
+    expect(saved!.name, 'Casa 2');
+    expect(saved.host, 'https://abc.ui.nabu.casa');
+    expect(saved.transport, ConnectionTransport.homeAssistant);
   });
 }

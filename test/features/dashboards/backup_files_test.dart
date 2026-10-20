@@ -50,6 +50,7 @@ class _FakeBackup implements BackupService {
 }
 
 final _home = Connection(
+  transport: ConnectionTransport.mqtt,
   id: 'c1',
   name: 'My Flat',
   host: 'h',
@@ -61,23 +62,32 @@ final _home = Connection(
   updatedAt: DateTime(2026),
 );
 
-Future<void> _pump(WidgetTester tester, _FakeFiles files, _FakeBackup backup) async {
-  await tester.pumpWidget(ProviderScope(
-    overrides: [
-      connectionByIdProvider.overrideWith((ref, id) async => _home),
-      connectionsStreamProvider.overrideWith((ref) => Stream.value([_home])),
-      dashboardsForConnectionProvider.overrideWith((ref, id) => Stream.value([])),
-      connectionStatusProvider
-          .overrideWith((ref, id) => Stream.value(MqttStatus.connected)),
-      backupFilesProvider.overrideWithValue(files),
-      backupServiceProvider.overrideWithValue(backup),
-    ],
-    child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const DashboardsScreen(connectionId: 'c1'),
+Future<void> _pump(
+  WidgetTester tester,
+  _FakeFiles files,
+  _FakeBackup backup,
+) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        connectionByIdProvider.overrideWith((ref, id) async => _home),
+        connectionsStreamProvider.overrideWith((ref) => Stream.value([_home])),
+        dashboardsForConnectionProvider.overrideWith(
+          (ref, id) => Stream.value([]),
+        ),
+        connectionStatusProvider.overrideWith(
+          (ref, id) => Stream.value(MqttStatus.connected),
+        ),
+        backupFilesProvider.overrideWithValue(files),
+        backupServiceProvider.overrideWithValue(backup),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const DashboardsScreen(connectionId: 'c1'),
+      ),
     ),
-  ));
+  );
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 100));
 }
@@ -91,10 +101,14 @@ Future<void> _menu(WidgetTester tester, String item) async {
 
 void main() {
   test('backup file names are file-safe and dated', () {
-    expect(backupFileName('My Flat', DateTime(2026, 10, 6)),
-        'zigdash-my-flat-2026-10-06.json');
-    expect(backupFileName('בית', DateTime(2026, 1, 2)),
-        'zigdash-home-2026-01-02.json');
+    expect(
+      backupFileName('My Flat', DateTime(2026, 10, 6)),
+      'zigdash-my-flat-2026-10-06.json',
+    );
+    expect(
+      backupFileName('בית', DateTime(2026, 1, 2)),
+      'zigdash-home-2026-01-02.json',
+    );
   });
 
   testWidgets('export saves the backup as a .json file', (tester) async {

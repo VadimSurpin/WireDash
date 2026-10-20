@@ -1544,6 +1544,68 @@ class AppLocalizationsFr extends AppLocalizations {
   String get setupWelcomeHubs => 'Quel hub choisir';
 
   @override
+  String get haConnectTitle => 'Se connecter via Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'Votre téléphone n\'atteint pas le broker, mais il atteint Home Assistant. Connectez-vous une fois, et ZigDash parle à Zigbee2MQTT via Home Assistant : à la maison ou ailleurs, sans réglages du broker.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'L\'adresse avec laquelle vous ouvrez Home Assistant : 192.168.1.20:8123, homeassistant.local, ou votre adresse distante, comme https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'La page de connexion de Home Assistant s\'ouvre dans votre navigateur. ZigDash ne voit jamais votre mot de passe.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash conserve cette connexion sur votre téléphone et agit en votre nom dans Home Assistant, pour MQTT uniquement. Mettez-y fin à tout moment dans Home Assistant, sous Profil › Sécurité.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'Dans Home Assistant, ouvrez votre profil, puis Sécurité › Jetons d\'accès longue durée › Créer un jeton. Copiez-le et collez-le ici. ZigDash le garde sur ce téléphone pour se connecter ; supprimez-le dans Home Assistant quand vous voulez y mettre fin.';
+
+  @override
+  String get haConnectWithToken => 'Se connecter avec un jeton';
+
+  @override
+  String get haConnectChecking => 'Vérification de Home Assistant…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'Votre utilisateur Home Assistant n\'est pas administrateur. ZigDash en a besoin pour le MQTT de Home Assistant. Connectez-vous en tant qu\'administrateur, ou collez un jeton créé par un administrateur.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'Ce Home Assistant n\'a pas d\'intégration MQTT. Zigbee2MQTT en a aussi besoin : dans Home Assistant, ajoutez le module complémentaire Mosquitto broker et l\'intégration MQTT, puis réessayez.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'La connexion ne s\'est pas terminée. Réessayez, ou utilisez un jeton longue durée.';
+
+  @override
+  String get haConnectButton => 'Se connecter via Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'Vous utilisez Home Assistant ? Connectez-vous plutôt via lui';
+
+  @override
+  String get haConnectEmptyNote =>
+      'Ce téléphone n\'atteint pas le broker ? Home Assistant peut porter la connexion pour vous.';
+
+  @override
+  String get haHomeConnected => 'Connecté via Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Pour utiliser une autre connexion Home Assistant, supprimez cette maison et reconnectez-vous. Vous pouvez mettre fin à la connexion dans Home Assistant, sous Profil › Sécurité.';
+
+  @override
+  String get haHomeRemote => 'Adresse distante de Home Assistant (facultatif)';
+
+  @override
   String get setupAuthTitle => 'Ce broker requiert des identifiants';
 
   @override

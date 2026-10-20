@@ -1527,6 +1527,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupWelcomeHubs => 'Which hub to get';
 
   @override
+  String get haConnectTitle => 'Connect through Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'Your phone can\'t reach the broker, but it can reach Home Assistant. Sign in once, and ZigDash talks to Zigbee2MQTT through Home Assistant: at home or away, with no broker settings.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'The address you open Home Assistant with: 192.168.1.20:8123, homeassistant.local, or your remote address, like https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'Home Assistant\'s own login opens in your browser. ZigDash never sees your password.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash keeps this sign-in on your phone and acts as you in Home Assistant, for MQTT only. End it any time in Home Assistant under Profile › Security.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. ZigDash keeps it on this phone to connect; delete it in Home Assistant whenever you want to end that.';
+
+  @override
+  String get haConnectWithToken => 'Connect with token';
+
+  @override
+  String get haConnectChecking => 'Checking Home Assistant…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'Your Home Assistant user isn\'t an administrator. ZigDash needs one for Home Assistant\'s MQTT. Sign in as an administrator, or paste a token an administrator created.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'This Home Assistant has no MQTT integration. Zigbee2MQTT needs one too: in Home Assistant, add the Mosquitto broker add-on and the MQTT integration, then try again.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'The sign-in didn\'t complete. Try again, or use a long-lived token.';
+
+  @override
+  String get haConnectButton => 'Connect through Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'Using Home Assistant? Connect through it instead';
+
+  @override
+  String get haConnectEmptyNote =>
+      'Can\'t reach the broker from this phone? Home Assistant can carry the connection for you.';
+
+  @override
+  String get haHomeConnected => 'Connected through Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'To use another Home Assistant sign-in, delete this home and connect again. You can end the sign-in in Home Assistant under Profile › Security.';
+
+  @override
+  String get haHomeRemote => 'Remote Home Assistant address (optional)';
+
+  @override
   String get setupAuthTitle => 'This broker needs a login';
 
   @override

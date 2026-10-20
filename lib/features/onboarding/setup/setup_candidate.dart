@@ -10,14 +10,15 @@ class SetupCandidate {
     required this.port,
     required this.protocol,
     this.needsAuth = false,
+    this.transport = ConnectionTransport.mqtt,
   });
 
   factory SetupCandidate.fromProbe(ProbeResult probe) => SetupCandidate(
-        host: probe.host,
-        port: probe.port,
-        protocol: probe.port == 8883 ? MqttProtocol.tcpSsl : MqttProtocol.tcp,
-        needsAuth: probe.needsAuth,
-      );
+    host: probe.host,
+    port: probe.port,
+    protocol: probe.port == 8883 ? MqttProtocol.tcpSsl : MqttProtocol.tcp,
+    needsAuth: probe.needsAuth,
+  );
 
   final String host;
   final int port;
@@ -27,17 +28,24 @@ class SetupCandidate {
   /// ask for credentials after selection rather than discovering it late.
   final bool needsAuth;
 
-  String get identity => '$host:$port:${protocol.name}';
+  /// How this candidate is reached (2.10). Through Home Assistant, [host]
+  /// is the Home Assistant address and the password slot holds the sign-in.
+  final ConnectionTransport transport;
+
+  bool get viaHomeAssistant => transport == ConnectionTransport.homeAssistant;
+
+  String get identity => '$host:$port:${protocol.name}:${transport.name}';
 
   @override
   bool operator ==(Object other) =>
       other is SetupCandidate &&
       other.host == host &&
       other.port == port &&
-      other.protocol == protocol;
+      other.protocol == protocol &&
+      other.transport == transport;
 
   @override
-  int get hashCode => Object.hash(host, port, protocol);
+  int get hashCode => Object.hash(host, port, protocol, transport);
 
   @override
   String toString() => 'SetupCandidate($identity)';

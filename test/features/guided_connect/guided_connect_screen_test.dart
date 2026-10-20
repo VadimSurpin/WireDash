@@ -240,7 +240,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.textContaining('Using Home Assistant?'), findsOneWidget);
+    expect(find.textContaining('Using Home Assistant? The host'), findsOneWidget);
     expect(find.text('Still stuck? Get help'), findsOneWidget);
 
     await tester.tap(find.text('Test & connect'));

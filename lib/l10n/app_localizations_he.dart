@@ -1516,6 +1516,68 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupWelcomeHubs => 'איזו רכזת לבחור';
 
   @override
+  String get haConnectTitle => 'התחברות דרך Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'הטלפון לא מגיע לברוקר, אבל כן מגיע ל-Home Assistant. היכנסו פעם אחת, ו-ZigDash ידבר עם Zigbee2MQTT דרך Home Assistant: בבית או בחוץ, בלי הגדרות ברוקר.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'הכתובת שאיתה אתם פותחים את Home Assistant: 192.168.1.20:8123, homeassistant.local, או הכתובת המרוחקת שלכם, כמו https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'דף הכניסה של Home Assistant עצמו נפתח בדפדפן. ZigDash לעולם לא רואה את הסיסמה שלכם.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash שומר את הכניסה הזו בטלפון ופועל בשמכם ב-Home Assistant, ל-MQTT בלבד. אפשר לסיים זאת בכל עת ב-Home Assistant, תחת פרופיל › אבטחה.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'ב-Home Assistant פתחו את הפרופיל שלכם, ואז אבטחה › אסימוני גישה ארוכי טווח › יצירת אסימון. העתיקו והדביקו אותו כאן. ZigDash שומר אותו בטלפון הזה כדי להתחבר; מחקו אותו ב-Home Assistant כשתרצו לסיים.';
+
+  @override
+  String get haConnectWithToken => 'התחברות עם אסימון';
+
+  @override
+  String get haConnectChecking => 'בודק את Home Assistant…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'המשתמש שלכם ב-Home Assistant אינו מנהל. ZigDash צריך מנהל בשביל ה-MQTT של Home Assistant. היכנסו כמנהל, או הדביקו אסימון שמנהל יצר.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'ל-Home Assistant הזה אין אינטגרציית MQTT. גם Zigbee2MQTT צריך אותה: ב-Home Assistant הוסיפו את התוסף Mosquitto broker ואת אינטגרציית MQTT, ואז נסו שוב.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'הכניסה לא הושלמה. נסו שוב, או השתמשו באסימון ארוך טווח.';
+
+  @override
+  String get haConnectButton => 'התחברות דרך Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'משתמשים ב-Home Assistant? התחברו דרכו במקום';
+
+  @override
+  String get haConnectEmptyNote =>
+      'הטלפון הזה לא מגיע לברוקר? Home Assistant יכול לשאת את החיבור בשבילכם.';
+
+  @override
+  String get haHomeConnected => 'מחובר דרך Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'כדי להשתמש בכניסה אחרת ל-Home Assistant, מחקו את הבית הזה והתחברו שוב. אפשר לסיים את הכניסה ב-Home Assistant תחת פרופיל › אבטחה.';
+
+  @override
+  String get haHomeRemote => 'כתובת מרוחקת של Home Assistant (לא חובה)';
+
+  @override
   String get setupAuthTitle => 'ה-broker דורש התחברות';
 
   @override

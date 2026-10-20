@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import '../../mqtt/ha_token.dart';
+
 import 'package:crypto/crypto.dart';
 
-/// ZigDash's identity at Home Assistant's login (docs/design/ha-import.md,
-/// Q1): a page on GitHub Pages that names `zigdash://auth` as its return
-/// link with `<link rel="redirect_uri">`. Home Assistant fetches it during
-/// login, so this way needs Home Assistant to have internet; pasting a
-/// token is the fallback.
-const haClientId = 'https://giladtamam.github.io/zigdash/ha/';
+export '../../mqtt/ha_token.dart' show haClientId;
+
 const haRedirectUri = 'zigdash://auth';
 const haCallbackScheme = 'zigdash';
 

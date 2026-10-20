@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/database/tables/connections.dart';
 
 import '../../core/storage/secure_storage.dart';
 import '../../data/last_known/last_known_store.dart';
@@ -28,21 +29,25 @@ class MqttManagerRegistry {
   }
 }
 
-final mqttManagerRegistryProvider =
-    Provider<MqttManagerRegistry>((ref) => MqttManagerRegistry());
+final mqttManagerRegistryProvider = Provider<MqttManagerRegistry>(
+  (ref) => MqttManagerRegistry(),
+);
 
 /// One manager per Connection ID. Lives for the session — `autoDispose` here
 /// caused Riverpod to recreate the manager on every status stream restart, so
 /// no connection attempt ever survived long enough to receive CONNACK. The
 /// manager is disposed explicitly when its Connection row is deleted.
-final mqttManagerProvider =
-    FutureProvider.family<MqttManager, String>((ref, connectionId) async {
+final mqttManagerProvider = FutureProvider.family<MqttManager, String>((
+  ref,
+  connectionId,
+) async {
   final repo = ref.watch(connectionRepoProvider);
   final conn = await repo.getById(connectionId);
   if (conn == null) {
     throw StateError('Connection $connectionId not found');
   }
-  final password = await ref.watch(secureStorageProvider).readPassword(connectionId) ?? '';
+  final password =
+      await ref.watch(secureStorageProvider).readPassword(connectionId) ?? '';
   final manager = MqttManager(
     config: BrokerConfig(
       id: conn.id,
@@ -52,6 +57,7 @@ final mqttManagerProvider =
       username: conn.username,
       keepAliveSeconds: conn.keepAliveSeconds,
       remoteHost: conn.remoteHost,
+      transport: transportOf(conn.transport),
     ),
     password: password,
   );
@@ -73,12 +79,11 @@ final mqttManagerProvider =
   }
   final store = ref.read(lastKnownStoreProvider);
   try {
-    manager.seedLastKnown(await store
-        .load(connectionId)
-        .timeout(const Duration(seconds: 2)));
+    manager.seedLastKnown(
+      await store.load(connectionId).timeout(const Duration(seconds: 2)),
+    );
   } catch (_) {}
-  final saving =
-      manager.messages.listen((m) => store.record(connectionId, m));
+  final saving = manager.messages.listen((m) => store.record(connectionId, m));
   ref.onDispose(saving.cancel);
 
   // Support details keeps the last failure kind until a connection works.
@@ -103,8 +108,10 @@ final mqttManagerProvider =
 
 /// Live status stream for a given connection. While the manager future is
 /// resolving, yields `connecting`.
-final connectionStatusProvider =
-    StreamProvider.family<MqttStatus, String>((ref, connectionId) async* {
+final connectionStatusProvider = StreamProvider.family<MqttStatus, String>((
+  ref,
+  connectionId,
+) async* {
   final managerAsync = ref.watch(mqttManagerProvider(connectionId));
   yield* managerAsync.when(
     loading: () => Stream.value(MqttStatus.connecting),
@@ -114,12 +121,13 @@ final connectionStatusProvider =
 });
 
 /// Live active-endpoint stream for a connection (null until connected).
-final connectionEndpointProvider =
-    StreamProvider.family<MqttEndpoint?, String>((ref, connectionId) async* {
-  final managerAsync = ref.watch(mqttManagerProvider(connectionId));
-  yield* managerAsync.when(
-    loading: () => Stream.value(null),
-    error: (_, __) => Stream.value(null),
-    data: (mgr) => mgr.endpoint$,
-  );
-});
+final connectionEndpointProvider = StreamProvider.family<MqttEndpoint?, String>(
+  (ref, connectionId) async* {
+    final managerAsync = ref.watch(mqttManagerProvider(connectionId));
+    yield* managerAsync.when(
+      loading: () => Stream.value(null),
+      error: (_, __) => Stream.value(null),
+      data: (mgr) => mgr.endpoint$,
+    );
+  },
+);

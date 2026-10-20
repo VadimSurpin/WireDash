@@ -45,6 +45,7 @@ abstract class SetupStore {
     int dashboardIcon,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected,
+    ConnectionTransport transport,
   });
 }
 
@@ -92,6 +93,7 @@ class SetupCreator implements SetupStore {
     int dashboardIcon = 0xe318, // Icons.home in Flutter's MaterialIcons font
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    ConnectionTransport transport = ConnectionTransport.mqtt,
   }) async {
     final done = _done;
     if (done != null) return done;
@@ -106,6 +108,7 @@ class SetupCreator implements SetupStore {
         username: username,
         password: password,
         autoConnect: true,
+        transport: transport,
       );
       // A base topic the user corrected in setup belongs to the home, so
       // Devices and later dashboards find the bridge too.

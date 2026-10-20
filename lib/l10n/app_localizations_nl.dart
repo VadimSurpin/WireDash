@@ -1537,6 +1537,68 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupWelcomeHubs => 'Welke hub kiezen';
 
   @override
+  String get haConnectTitle => 'Verbinden via Home Assistant';
+
+  @override
+  String get haConnectIntro =>
+      'Je telefoon bereikt de broker niet, maar wel Home Assistant. Meld je één keer aan, en ZigDash praat via Home Assistant met Zigbee2MQTT: thuis of onderweg, zonder brokerinstellingen.';
+
+  @override
+  String get haConnectAddressHelp =>
+      'Het adres waarmee je Home Assistant opent: 192.168.1.20:8123, homeassistant.local of je externe adres, zoals https://xyz.ui.nabu.casa';
+
+  @override
+  String get haConnectSignInHelp =>
+      'De eigen aanmelding van Home Assistant opent in je browser. ZigDash ziet je wachtwoord nooit.';
+
+  @override
+  String get haConnectKeeps =>
+      'ZigDash bewaart deze aanmelding op je telefoon en handelt als jou in Home Assistant, alleen voor MQTT. Beëindig dit wanneer je wilt in Home Assistant onder Profiel › Beveiliging.';
+
+  @override
+  String get haConnectTokenHelp =>
+      'Open in Home Assistant je profiel, dan Beveiliging › Langdurige toegangstokens › Token aanmaken. Kopieer het en plak het hier. ZigDash bewaart het op deze telefoon om te verbinden; verwijder het in Home Assistant wanneer je dat wilt beëindigen.';
+
+  @override
+  String get haConnectWithToken => 'Verbinden met token';
+
+  @override
+  String get haConnectChecking => 'Home Assistant controleren…';
+
+  @override
+  String get haConnectNotAdmin =>
+      'Je Home Assistant-gebruiker is geen beheerder. ZigDash heeft er een nodig voor de MQTT van Home Assistant. Meld je aan als beheerder, of plak een token dat een beheerder heeft aangemaakt.';
+
+  @override
+  String get haConnectNoMqtt =>
+      'Deze Home Assistant heeft geen MQTT-integratie. Zigbee2MQTT heeft die ook nodig: voeg in Home Assistant de Mosquitto broker-add-on en de MQTT-integratie toe en probeer het opnieuw.';
+
+  @override
+  String get haConnectSignInFailed =>
+      'De aanmelding is niet voltooid. Probeer het opnieuw, of gebruik een langdurig token.';
+
+  @override
+  String get haConnectButton => 'Verbinden via Home Assistant';
+
+  @override
+  String get haConnectManualLink =>
+      'Gebruik je Home Assistant? Verbind dan daardoor';
+
+  @override
+  String get haConnectEmptyNote =>
+      'Bereikt deze telefoon de broker niet? Home Assistant kan de verbinding voor je dragen.';
+
+  @override
+  String get haHomeConnected => 'Verbonden via Home Assistant';
+
+  @override
+  String get haHomeChange =>
+      'Om een andere Home Assistant-aanmelding te gebruiken, verwijder je dit huis en verbind je opnieuw. Je kunt de aanmelding beëindigen in Home Assistant onder Profiel › Beveiliging.';
+
+  @override
+  String get haHomeRemote => 'Extern adres van Home Assistant (optioneel)';
+
+  @override
   String get setupAuthTitle => 'Deze broker vereist een login';
 
   @override

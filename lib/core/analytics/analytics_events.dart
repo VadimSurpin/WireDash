@@ -103,6 +103,10 @@ enum SetupStepKind {
 
   /// …or the page of hubs that run Zigbee2MQTT.
   welcomeHubs,
+
+  /// A try to connect through Home Assistant (2.10), with its
+  /// [SetupStep.result]: ok, or why not (`HaConnectOutcome`).
+  haConnect,
 }
 
 /// What the user tapped on an empty result with no hub found (2.9.6): no

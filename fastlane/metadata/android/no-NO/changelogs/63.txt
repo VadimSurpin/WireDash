@@ -1,0 +1,1 @@
+ZigDash 2.10: bruker du Home Assistant? Logg inn én gang, så kobler ZigDash seg til Zigbee2MQTT via den, hjemme eller borte, uten meglerinnstillinger. Telefonen din trenger ikke lenger å nå megleren.

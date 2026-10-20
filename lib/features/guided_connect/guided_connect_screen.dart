@@ -309,7 +309,15 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
             l10n.guidedConnectIntro,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const SizedBox(height: 16),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () => context.push(Routes.haConnect),
+              icon: const Icon(Icons.home_outlined),
+              label: Text(l10n.haConnectManualLink),
+            ),
+          ),
+          const SizedBox(height: 8),
           ProtocolDropdown(value: _protocol, onChanged: _onProtocolChanged),
           const SizedBox(height: 12),
           Row(
