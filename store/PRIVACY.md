@@ -193,6 +193,15 @@ or anywhere else: the app asks Google Play whether Pro was bought. Versions
 from GitHub, IzzyOnDroid and F-Droid contain no billing code and have Pro
 unlocked.
 
+## The zigdash.app website
+
+The website counts page views with [GoatCounter](https://www.goatcounter.com/help/privacy):
+the page address, the site that linked to it, the screen size, the browser
+and the country, plus clicks on the Google Play button. It sets no cookies and
+stores nothing on your device. GoatCounter does not store your IP address; it
+uses it, with the browser, to tell unique visits apart for a few hours. The
+app itself sends nothing to GoatCounter.
+
 ## Children
 
 ZigDash is a utility app and is not directed at children.

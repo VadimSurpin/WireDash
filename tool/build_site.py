@@ -4,6 +4,8 @@ Run from the repo root: python3 tool/build_site.py. The home page, landing/index
 import pathlib
 
 PLAY = "https://play.google.com/store/apps/details?id=com.giladtamam.zigdash"
+# GoatCounter: page views and referrers, no cookies. Dashboard at zigdash.goatcounter.com.
+GOATCOUNTER = '<script data-goatcounter="https://zigdash.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>'
 
 
 def page(slug, title, desc, body):
@@ -43,6 +45,7 @@ def page(slug, title, desc, body):
 <footer>
   <p>© 2026 ZigDash · <a href="https://github.com/giladtamam/zigdash">Source code</a> · <a href="https://github.com/giladtamam/zigdash/blob/main/store/PRIVACY.md">Privacy policy</a> · <a href="mailto:support@zigdash.app">support@zigdash.app</a></p>
 </footer>
+{GOATCOUNTER}
 </body>
 </html>
 """
@@ -69,7 +72,7 @@ SETUP = f"""
   <li><strong>An Android phone or tablet</strong> on the same Wi-Fi as that hub.</li>
 </ul>
 <p>No Zigbee2MQTT yet? Open ZigDash and try the demo home first.</p>
-<div class="buttons" style="justify-content:flex-start"><a class="btn primary" href="{PLAY}">Get ZigDash on Google Play</a></div>
+<div class="buttons" style="justify-content:flex-start"><a class="btn primary" href="{PLAY}" data-goatcounter-click="play-setup">Get ZigDash on Google Play</a></div>
 
 <figure class="video">
   <video controls preload="none" poster="../assets/setup-video.jpg" width="1920" height="1080">
