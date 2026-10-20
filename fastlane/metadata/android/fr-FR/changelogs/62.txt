@@ -1,1 +1,1 @@
-ZigDash 2.9.7 : pas à la maison, ou pas le temps maintenant ? Là où la configuration s'arrête, touchez « Me le rappeler demain » et ZigDash vous le rappelle le lendemain, sur ce téléphone. Rien ne quitte votre téléphone.
+ZigDash 2.9.7 : pas à la maison, ou pas le temps maintenant ? Là où la configuration s'arrête, touchez « Me le rappeler demain » et ZigDash vous le rappelle le lendemain, sur ce téléphone. Pas encore de Zigbee2MQTT ? Le premier écran vous mène désormais directement à la maison de démo ou aux hubs qui le font tourner.

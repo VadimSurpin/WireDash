@@ -212,6 +212,17 @@ void main() {
     });
 
     // 2.8: the import from Home Assistant, counts only.
+    test('ha_import: the sign-in, by method and outcome', () {
+      expect(
+        const HaImportEvent(
+          HaImportStep.signIn,
+          method: HaSignInMethod.page,
+          outcome: HaSignInOutcome.refused,
+        ).props,
+        {'step': 'sign_in', 'method': 'page', 'outcome': 'refused'},
+      );
+    });
+
     test('ha_import: steps with bucketed counts', () {
       expect(
         const HaImportEvent(

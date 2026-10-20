@@ -1,1 +1,1 @@
-ZigDash 2.9.7: nie ma Cię w domu albo brak teraz czasu? Tam, gdzie konfiguracja się zatrzymuje, dotknij Przypomnij mi jutro, a ZigDash przypomni Ci o tym dzień później, na tym telefonie. Nic nie opuszcza Twojego telefonu.
+ZigDash 2.9.7: nie ma Cię w domu albo brak teraz czasu? Tam, gdzie konfiguracja się zatrzymuje, dotknij Przypomnij mi jutro, a ZigDash przypomni Ci o tym dzień później, na tym telefonie. Nie masz jeszcze Zigbee2MQTT? Pierwszy ekran prowadzi teraz prosto do domu demo albo do hubów, na których działa.

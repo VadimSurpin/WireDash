@@ -1,1 +1,1 @@
-ZigDash 2.9.7: ¿no estás en casa o no tienes tiempo ahora? Donde se detiene la configuración, toca «Recuérdamelo mañana» y ZigDash te lo recordará un día después, en este mismo teléfono. Nada sale de tu teléfono.
+ZigDash 2.9.7: ¿no estás en casa o no tienes tiempo ahora? Donde se detiene la configuración, toca «Recuérdamelo mañana» y ZigDash te lo recordará un día después, en este mismo teléfono. ¿Aún no tienes Zigbee2MQTT? La primera pantalla te lleva ahora directamente a la casa de demostración o a los hubs que lo ejecutan.

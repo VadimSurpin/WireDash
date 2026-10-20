@@ -1,1 +1,1 @@
-ZigDash 2.9.7: inte hemma, eller ingen tid just nu? Där konfigurationen stannar trycker du på Påminn mig i morgon, så påminner ZigDash dig dagen efter, direkt på den här telefonen. Inget lämnar din telefon.
+ZigDash 2.9.7: inte hemma, eller ingen tid just nu? Där konfigurationen stannar trycker du på Påminn mig i morgon, så påminner ZigDash dig dagen efter, direkt på den här telefonen. Inget Zigbee2MQTT än? Första skärmen tar dig nu direkt till demohemmet eller till hubbarna som kör det.

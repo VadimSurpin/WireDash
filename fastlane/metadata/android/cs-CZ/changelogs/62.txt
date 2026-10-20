@@ -1,1 +1,1 @@
-ZigDash 2.9.7: nejsi doma, nebo teď nemáš čas? Tam, kde se nastavení zastaví, klepni na Připomeň mi to zítra a ZigDash ti to připomene o den později, přímo na tomto telefonu. Nic neopouští tvůj telefon.
+ZigDash 2.9.7: nejsi doma, nebo teď nemáš čas? Tam, kde se nastavení zastaví, klepni na Připomeň mi to zítra a ZigDash ti to připomene o den později, přímo na tomto telefonu. Ještě nemáš Zigbee2MQTT? První obrazovka tě teď zavede rovnou do ukázkové domácnosti nebo k hubům, na kterých běží.

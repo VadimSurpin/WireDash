@@ -586,7 +586,23 @@ class HistorySetup extends AnalyticsEvent {
 /// A step of the import from Home Assistant (2.8): the offer after setup
 /// answered, a read that failed (with why), the preview, or the import
 /// done. Counts only, in buckets; never an address, a name or the token.
-enum HaImportStep { offerAccepted, offerDeclined, failed, preview, imported }
+enum HaImportStep {
+  offerAccepted,
+  offerDeclined,
+  failed,
+  preview,
+  imported,
+
+  /// The sign-in at Home Assistant (2.9.7), with [HaImportEvent.method]
+  /// and [HaImportEvent.outcome]: every Home Assistant route depends on it.
+  signIn,
+}
+
+/// How the user signed in: Home Assistant's login page, or a pasted token.
+enum HaSignInMethod { page, token }
+
+/// How the sign-in ended.
+enum HaSignInOutcome { ok, cancelled, refused, failed }
 
 class HaImportEvent extends AnalyticsEvent {
   const HaImportEvent(
@@ -597,9 +613,13 @@ class HaImportEvent extends AnalyticsEvent {
     this.renamed,
     this.dashboards,
     this.zhaOnly,
+    this.method,
+    this.outcome,
   });
 
   final HaImportStep step;
+  final HaSignInMethod? method;
+  final HaSignInOutcome? outcome;
 
   /// Why the read failed (an `HaImportProblem`), on [HaImportStep.failed].
   final Enum? error;
@@ -624,6 +644,8 @@ class HaImportEvent extends AnalyticsEvent {
       if (renamed != null) 'renamed': count(renamed!),
       if (dashboards != null) 'dashboards': count(dashboards!),
       if (zhaOnly != null) 'zha_only': zhaOnly! ? 'yes' : 'no',
+      if (method != null) 'method': method!.name,
+      if (outcome != null) 'outcome': outcome!.name,
     };
   }
 }
