@@ -1388,11 +1388,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get diagTcpSmlightClosed =>
-      'Tohle je hub SMLIGHT a jeho MQTT broker tvůj telefon odmítá. Ve webovém rozhraní hubu otevři Settings › MQTT, zapni Allow External a zkus to znovu.';
+      'Tohle je tvůj hub SMLIGHT, ale jeho MQTT broker nepřijímá připojení z jiných zařízení. Na webové stránce hubu otevři Settings › MQTT, zapni Allow External, ulož a zkus to znovu.';
 
   @override
   String get diagTcpZ2mNoBroker =>
-      'Na tomto počítači běží Zigbee2MQTT, ale jeho MQTT broker tvůj telefon odmítá. Mosquitto 2 přijímá jen samotný počítač, dokud mosquitto.conf neobsahuje „listener 1883“: přidej to, restartuj Mosquitto a zkus to znovu. Pokud tvůj broker běží na jiném počítači, zadej jeho adresu.';
+      'Na této adrese běží Zigbee2MQTT, ale jeho MQTT broker nepřijímá připojení z jiných zařízení. Mosquitto naslouchá jen na svém vlastním počítači, dokud do mosquitto.conf nepřidáš řádky \"listener 1883\" a \"allow_anonymous true\" (nebo nenastavíš heslo). Restartuj Mosquitto a zkus to znovu.';
 
   @override
   String get diagAuthRejectedHa =>
@@ -1787,23 +1787,6 @@ class AppLocalizationsCs extends AppLocalizations {
       'Používáš vlastní Zigbee Home Assistantu (ZHA) místo Zigbee2MQTT? ZigDash funguje jen se Zigbee2MQTT, takže zařízení ZHA nevidí. Demo ukazuje, co bys dostal.';
 
   @override
-  String get setupRunsZ2mQuestion => 'Používáš už Zigbee2MQTT?';
-
-  @override
-  String get setupRunsZ2mYes => 'Ano';
-
-  @override
-  String get setupRunsZ2mNo => 'Ne';
-
-  @override
-  String get setupRunsZ2mNoBody =>
-      'ZigDash zobrazuje zařízení běžícího Zigbee2MQTT, takže to je první krok: na malém hubu, jako je hub SMLIGHT, Raspberry Pi nebo jakýkoli linuxový počítač. Návody výše ukazují jak. Mezitím ti demo ukáže, co dostaneš.';
-
-  @override
-  String get setupRunsZ2mNotSureBody =>
-      'Zigbee2MQTT má vlastní webovou stránku se seznamem tvých zařízení Zigbee, obvykle na portu 8080 tvého hubu. V Home Assistantu se zobrazuje jako doplněk (Nastavení › Doplňky). Pokud nemáš ani jedno, nejspíš používáš něco jiného.';
-
-  @override
   String get setupVpnHint =>
       'Máš zapnutou VPN a ta může domácí síť před hledáním skrýt. Pokud jsi doma, vypni VPN a klepni na Zkusit znovu.';
 
@@ -1901,6 +1884,36 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupAddressInvalid => 'Nejdřív zadej adresu.';
+
+  @override
+  String get setupChoicesTitle => 'Co z toho na tebe sedí?';
+
+  @override
+  String get setupChoiceNoHub => 'Zatím nemám hub';
+
+  @override
+  String get setupChoiceNoHubSub =>
+      'Podívej se na malé huby, na kterých běží Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'Používám Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Hledat ho na homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash se připojuje k MQTT brokeru Home Assistantu, doplňku Mosquitto broker v Nastavení › Doplňky, a Zigbee2MQTT ho musí používat také. Pokud se homeassistant.local nenajde, zadej níže IP adresu Home Assistantu. Najdeš ji v Nastavení › Systém › Síť.';
+
+  @override
+  String get setupChoiceOther => 'Můj hub je v jiné síti';
+
+  @override
+  String get setupChoiceOtherSub => 'Wi-Fi pro hosty nebo druhý router';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Telefon musí na hub dosáhnout. Wi-Fi pro hosty nebo druhý router s vlastní Wi-Fi je od sebe oddělí. Připoj se k Wi-Fi, ve které je hub, a klepni na Zkusit znovu. Nebo níže zadej IP adresu hubu, případně zkus některý z těchto běžných názvů:';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {

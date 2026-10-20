@@ -1392,11 +1392,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get diagTcpSmlightClosed =>
-      'Questo è un hub SMLIGHT, e il suo broker MQTT rifiuta il tuo telefono. Nell\'interfaccia web dell\'hub apri Settings › MQTT, attiva Allow External, poi riprova.';
+      'Questo è il tuo hub SMLIGHT, ma il suo broker MQTT non accetta connessioni da altri dispositivi. Nella pagina web dell\'hub apri Settings › MQTT, attiva Allow External, salva e riprova.';
 
   @override
   String get diagTcpZ2mNoBroker =>
-      'Zigbee2MQTT gira su questa macchina, ma il suo broker MQTT rifiuta il tuo telefono. Mosquitto 2 accetta solo la macchina stessa finché mosquitto.conf non contiene \"listener 1883\": aggiungilo, riavvia Mosquitto e riprova. Se il tuo broker gira su un\'altra macchina, inserisci quell\'indirizzo.';
+      'Zigbee2MQTT gira a questo indirizzo, ma il suo broker MQTT non accetta connessioni da altri dispositivi. Mosquitto ascolta solo sulla propria macchina finché non aggiungi le righe \"listener 1883\" e \"allow_anonymous true\" a mosquitto.conf (o imposti una password). Riavvia Mosquitto e riprova.';
 
   @override
   String get diagAuthRejectedHa =>
@@ -1791,23 +1791,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'Usi lo Zigbee integrato di Home Assistant (ZHA) invece di Zigbee2MQTT? ZigDash funziona solo con Zigbee2MQTT, quindi non vede i dispositivi ZHA. La demo ti mostra cosa otterresti.';
 
   @override
-  String get setupRunsZ2mQuestion => 'Usi già Zigbee2MQTT?';
-
-  @override
-  String get setupRunsZ2mYes => 'Sì';
-
-  @override
-  String get setupRunsZ2mNo => 'No';
-
-  @override
-  String get setupRunsZ2mNoBody =>
-      'ZigDash mostra i dispositivi di uno Zigbee2MQTT in esecuzione, quindi prima serve quello: su un piccolo hub come un hub SMLIGHT, un Raspberry Pi o qualsiasi macchina Linux. Le guide qui sopra spiegano come. Intanto, la demo ti mostra cosa otterresti.';
-
-  @override
-  String get setupRunsZ2mNotSureBody =>
-      'Zigbee2MQTT ha una sua pagina web con l\'elenco dei tuoi dispositivi Zigbee, di solito sulla porta 8080 del tuo hub. In Home Assistant compare come componente aggiuntivo (Impostazioni › Componenti aggiuntivi). Se non hai né l\'una né l\'altro, probabilmente usi qualcos\'altro.';
-
-  @override
   String get setupVpnHint =>
       'C\'è una VPN attiva, e può nascondere la rete di casa alla scansione. Se sei a casa, disattiva la VPN e tocca Riprova.';
 
@@ -1906,6 +1889,36 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get setupAddressInvalid => 'Prima inserisci un indirizzo.';
+
+  @override
+  String get setupChoicesTitle => 'Quale di queste fa per te?';
+
+  @override
+  String get setupChoiceNoHub => 'Non ho ancora un hub';
+
+  @override
+  String get setupChoiceNoHubSub =>
+      'Guarda i piccoli hub che fanno girare Zigbee2MQTT';
+
+  @override
+  String get setupChoiceHa => 'Uso Home Assistant';
+
+  @override
+  String get setupChoiceHaSub => 'Cercalo su homeassistant.local';
+
+  @override
+  String get setupChoiceHaNote =>
+      'ZigDash si collega al broker MQTT di Home Assistant, il componente aggiuntivo Mosquitto broker in Impostazioni › Componenti aggiuntivi, e anche Zigbee2MQTT deve usarlo. Se homeassistant.local non viene trovato, inserisci qui sotto l\'indirizzo IP di Home Assistant. Lo trovi in Impostazioni › Sistema › Rete.';
+
+  @override
+  String get setupChoiceOther => 'Il mio hub è su un\'altra rete';
+
+  @override
+  String get setupChoiceOtherSub => 'Un Wi-Fi ospiti o un secondo router';
+
+  @override
+  String get setupChoiceOtherNote =>
+      'Il telefono deve poter raggiungere l\'hub. Un Wi-Fi ospiti, o un secondo router con il suo Wi-Fi, li tiene separati. Collegati al Wi-Fi dell\'hub e tocca Riprova. Oppure inserisci qui sotto l\'indirizzo IP dell\'hub, o prova uno di questi nomi comuni:';
 
   @override
   String guidedHostYourPhone(String ip, String prefix) {
