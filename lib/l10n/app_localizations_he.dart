@@ -3373,10 +3373,46 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'היסטוריה ארוכה יותר והתוספות לטאבלט על הקיר. רכישה חד-פעמית.';
+      'היסטוריה ארוכה יותר ותוספות לטאבלט קיר. תומך בפרויקט הקוד הפתוח.';
 
   @override
   String get proUnlocked => 'פתוח. תודה שאתם תומכים ב-ZigDash.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash חינמית וקוד פתוח, ונבנית על ידי אדם אחד בזמנו הפנוי. Pro היא רכישה חד־פעמית שמאפשרת להמשיך לפתח אותה.';
+
+  @override
+  String get proWhatYouGet => 'מה מקבלים';
+
+  @override
+  String get proGetHistory => 'היסטוריה של 7 ו־30 ימים, לא רק של היום';
+
+  @override
+  String get proGetWall =>
+      'טאבלט קיר: מדידות על השעון, התעוררות בתנועה, לוח זמנים לילי והתראות קוליות';
+
+  @override
+  String get proGetFuture => 'כל תכונת Pro שתגיע בהמשך, בלי תוספת תשלום';
+
+  @override
+  String get proFreeTitle => 'חינם לתמיד';
+
+  @override
+  String get proFreeBody =>
+      'ההגדרה, הדשבורדים, השליטה בכל מכשיר, הווידג\'טים, אריחי ההגדרות המהירות, ההתראות וטאבלט הקיר עצמו נשארים בחינם. שום דבר שאתם משתמשים בו היום לא ננעל.';
+
+  @override
+  String get proBuy => 'לקבלת Pro';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'לקבלת Pro · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'תשלום אחד, בלי מנוי. קניתם בטלפון אחר עם אותו חשבון Google? זה נפתח אוטומטית.';
 
   @override
   String get historyNotRecorded =>

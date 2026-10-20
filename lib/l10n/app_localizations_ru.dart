@@ -3409,10 +3409,46 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Более долгая история и функции для настенного планшета. Разовая покупка.';
+      'Более длинная история и дополнения для настенного планшета. Поддерживает проект с открытым кодом.';
 
   @override
   String get proUnlocked => 'Открыто. Спасибо, что поддерживаете ZigDash.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash бесплатный и с открытым исходным кодом, его делает один человек в свободное время. Pro — разовая покупка, которая помогает проекту жить.';
+
+  @override
+  String get proWhatYouGet => 'Что вы получаете';
+
+  @override
+  String get proGetHistory => 'Историю за 7 и 30 дней, а не только за сегодня';
+
+  @override
+  String get proGetWall =>
+      'Настенный планшет: показания на часах, пробуждение по движению, ночной режим и будильники';
+
+  @override
+  String get proGetFuture => 'Все будущие функции Pro без доплаты';
+
+  @override
+  String get proFreeTitle => 'Бесплатно навсегда';
+
+  @override
+  String get proFreeBody =>
+      'Настройка, панели, управление любым устройством, виджеты, плитки быстрых настроек, оповещения и сам настенный планшет остаются бесплатными. Ничто из того, чем вы пользуетесь сегодня, не будет заблокировано.';
+
+  @override
+  String get proBuy => 'Получить Pro';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'Получить Pro · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'Один платёж, без подписки. Купили на другом телефоне с тем же аккаунтом Google? Pro откроется автоматически.';
 
   @override
   String get historyNotRecorded =>

@@ -3416,10 +3416,48 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Langere geschiedenis en de extra\'s voor wandtablets. Een eenmalige aankoop.';
+      'Langere geschiedenis en extra\'s voor de wandtablet. Steunt het opensourceproject.';
 
   @override
   String get proUnlocked => 'Ontgrendeld. Bedankt dat je ZigDash steunt.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash is gratis en open source, gemaakt door één persoon in de vrije tijd. Pro is een eenmalige aankoop die het project draaiende houdt.';
+
+  @override
+  String get proWhatYouGet => 'Wat je krijgt';
+
+  @override
+  String get proGetHistory =>
+      'Geschiedenis van 7 en 30 dagen, niet alleen van vandaag';
+
+  @override
+  String get proGetWall =>
+      'Wandtablet: metingen op de klok, wakker worden bij beweging, een nachtschema en alarmen';
+
+  @override
+  String get proGetFuture =>
+      'Elke Pro-functie die later komt, zonder extra kosten';
+
+  @override
+  String get proFreeTitle => 'Altijd gratis';
+
+  @override
+  String get proFreeBody =>
+      'Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.';
+
+  @override
+  String get proBuy => 'Pro nemen';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'Pro nemen · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'Eén betaling, geen abonnement. Gekocht op een andere telefoon met hetzelfde Google-account? Het wordt automatisch ontgrendeld.';
 
   @override
   String get historyNotRecorded =>

@@ -3420,10 +3420,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Historial más largo y los extras para tabletas de pared. Una compra única.';
+      'Más historial y extras para la tablet de pared. Apoya el proyecto de código abierto.';
 
   @override
   String get proUnlocked => 'Desbloqueado. Gracias por apoyar ZigDash.';
+
+  @override
+  String get proScreenIntro =>
+      'ZigDash es gratis y de código abierto, hecho por una sola persona en su tiempo libre. Pro es una compra única que lo mantiene en marcha.';
+
+  @override
+  String get proWhatYouGet => 'Lo que obtienes';
+
+  @override
+  String get proGetHistory => 'Historial de 7 y 30 días, no solo de hoy';
+
+  @override
+  String get proGetWall =>
+      'Tablet de pared: lecturas en el reloj, activación por movimiento, horario nocturno y alarmas';
+
+  @override
+  String get proGetFuture =>
+      'Todas las funciones Pro que lleguen después, sin coste extra';
+
+  @override
+  String get proFreeTitle => 'Gratis para siempre';
+
+  @override
+  String get proFreeBody =>
+      'La configuración, los paneles, el control de cada dispositivo, los widgets, los iconos de ajustes rápidos, las alertas y la tablet de pared siguen siendo gratis. Nada de lo que usas hoy se bloquea.';
+
+  @override
+  String get proBuy => 'Obtener Pro';
+
+  @override
+  String proBuyPrice(String price) {
+    return 'Obtener Pro · $price';
+  }
+
+  @override
+  String get proOnce =>
+      'Un solo pago, sin suscripción. ¿Lo compraste en otro teléfono con la misma cuenta de Google? Se desbloquea solo.';
 
   @override
   String get historyNotRecorded =>

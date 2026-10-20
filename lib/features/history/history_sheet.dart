@@ -16,6 +16,7 @@ import '../panels/providers/panel_value_provider.dart';
 import '../panels/widgets/device_tile_panel.dart' show formatReading;
 import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
+import '../pro/pro_screen.dart';
 import 'history_chart.dart';
 import 'history_config.dart' show decodeHistoryReadings;
 import 'app_history_recorder.dart';
@@ -578,7 +579,7 @@ class _UnlockButton extends ConsumerWidget {
     if (ref.watch(kioskProvider).on) return const SizedBox.shrink();
     final buy = ref.watch(proPurchaseProvider);
     return FilledButton(
-      onPressed: buy,
+      onPressed: buy == null ? null : () => openPro(context),
       child: Text(context.l10n.historyUnlock),
     );
   }

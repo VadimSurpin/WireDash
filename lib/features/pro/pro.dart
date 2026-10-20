@@ -87,3 +87,17 @@ final proPurchaseProvider = Provider<VoidCallback?>((ref) {
   if (ref.watch(proStatusProvider) != ProStatus.locked) return null;
   return () => ref.read(proBillingProvider.notifier).buy();
 });
+
+/// Pro's price as Play formats it for this user ("€7.99"), or null where
+/// Pro can't be bought or Play doesn't say (2.9.6).
+final proPriceProvider = FutureProvider<String?>((ref) async {
+  if (proFlavor != 'play' || !proLive) return null;
+  try {
+    final price = await _billing.invokeMethod<String>('price');
+    return (price == null || price.isEmpty) ? null : price;
+  } on PlatformException {
+    return null;
+  } on MissingPluginException {
+    return null;
+  }
+});

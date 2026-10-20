@@ -601,9 +601,9 @@ class HaImportEvent extends AnalyticsEvent {
 }
 
 /// A step of ZigDash Pro in the Play build (2.7): a locked view was shown,
-/// Unlock was tapped, or Play reported Pro unlocked afterwards. Nothing
-/// about the payment.
-enum ProStep { lockedShown, unlockTapped, unlocked }
+/// the Pro screen opened (2.9.6), Unlock was tapped, or Play reported Pro
+/// unlocked afterwards. Nothing about the payment.
+enum ProStep { lockedShown, screenShown, unlockTapped, unlocked }
 
 class ProEvent extends AnalyticsEvent {
   const ProEvent(this.step);
