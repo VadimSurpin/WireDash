@@ -1509,6 +1509,26 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupTryAgain => 'Повторить';
 
   @override
+  String get reminderButton => 'Напомнить завтра';
+
+  @override
+  String get reminderSet => 'Мы напомним вам завтра, на этом телефоне.';
+
+  @override
+  String get reminderNoPermission =>
+      'Уведомления ZigDash выключены, поэтому напоминания не будет. Их можно включить в настройках Android.';
+
+  @override
+  String get reminderChannel => 'Напоминание о настройке';
+
+  @override
+  String get reminderTitle => 'Завершите настройку ZigDash';
+
+  @override
+  String get reminderBody =>
+      'Вы дома, в своей сети Wi-Fi? Нажмите, чтобы попробовать снова: это займёт около минуты.';
+
+  @override
   String get setupAuthTitle => 'Брокеру нужен вход';
 
   @override

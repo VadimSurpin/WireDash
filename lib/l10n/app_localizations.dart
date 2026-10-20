@@ -2778,6 +2778,42 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get setupTryAgain;
 
+  /// No description provided for @reminderButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me tomorrow'**
+  String get reminderButton;
+
+  /// No description provided for @reminderSet.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll remind you tomorrow, on this phone.'**
+  String get reminderSet;
+
+  /// No description provided for @reminderNoPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off for ZigDash, so there\'s no reminder. You can turn them on in Android\'s settings.'**
+  String get reminderNoPermission;
+
+  /// No description provided for @reminderChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup reminder'**
+  String get reminderChannel;
+
+  /// No description provided for @reminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish setting up ZigDash'**
+  String get reminderTitle;
+
+  /// No description provided for @reminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'At home on your Wi-Fi? Tap to try again: it takes about a minute.'**
+  String get reminderBody;
+
   /// No description provided for @setupAuthTitle.
   ///
   /// In en, this message translates to:

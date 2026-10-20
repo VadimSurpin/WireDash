@@ -21,6 +21,7 @@ import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_providers.dart';
+import 'package:zigdash/features/onboarding/setup/setup_reminder.dart';
 import 'package:zigdash/features/onboarding/setup/setup_screen.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
@@ -134,6 +135,7 @@ Future<SetupCoordinator> _pump(
   AddressChecker? checkAddress,
   bool vpn = false,
   NoNetwork? noNetwork,
+  _FakeReminder? reminder,
 }) async {
   // The setup screens are lists that grew in 2.5 (progress, the platform
   // question); a tall view keeps every action built and tappable.
@@ -170,6 +172,7 @@ Future<SetupCoordinator> _pump(
           return coordinator;
         }),
         firstRunProvider.overrideWithValue(firstRun ?? _FakeFirstRun()),
+        setupReminderProvider.overrideWithValue(reminder ?? _FakeReminder()),
         ...extra,
       ],
       child: MaterialApp.router(
@@ -945,8 +948,40 @@ void main() {
 
   // First-run decision: no "Creating…" or "ready" screens; selecting
   // devices lands directly on the generated dashboard.
+  // 2.9.7: where setup stops, a reminder a day later; gone once it works.
+  testWidgets('Remind me tomorrow on an empty result schedules one', (
+    tester,
+  ) async {
+    final reminder = _FakeReminder();
+    await _pump(tester, scan: (_) => const Stream.empty(), reminder: reminder);
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.tap(find.text('Remind me tomorrow'));
+    await tester.pump();
+    expect(reminder.scheduled, 1);
+    expect(find.text("We'll remind you tomorrow, on this phone."),
+        findsOneWidget);
+    expect(find.text('Remind me tomorrow'), findsNothing);
+  });
+
+  testWidgets('notifications off: says so, no reminder', (tester) async {
+    await _pump(
+      tester,
+      scan: (_) => const Stream.empty(),
+      reminder: _FakeReminder(allowed: false),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    await tester.pump();
+    await tester.tap(find.text('Remind me tomorrow'));
+    await tester.pump();
+    expect(find.textContaining('Notifications are off'), findsOneWidget);
+  });
+
   testWidgets('creating the dashboard opens it directly', (tester) async {
-    await _pump(tester);
+    final reminder = _FakeReminder();
+    await _pump(tester, reminder: reminder);
     await tester.tap(find.text('Find my setup'));
     await tester.pump();
     await tester.pump();
@@ -957,6 +992,7 @@ void main() {
 
     expect(find.text('dashboards of c1'), findsOneWidget);
     expect(find.text('Your dashboard is ready'), findsNothing);
+    expect(reminder.cancelled, 1, reason: 'a set-up phone needs no reminder');
   });
 
   testWidgets('no Zigbee2MQTT: own outcome with base-topic retry and demo', (
@@ -1140,6 +1176,25 @@ void main() {
       expect(find.byType(CheckboxListTile), findsNothing);
     });
   });
+}
+
+class _FakeReminder implements SetupReminder {
+  _FakeReminder({this.allowed = true});
+  final bool allowed;
+  int scheduled = 0;
+  int cancelled = 0;
+
+  @override
+  Future<bool> schedule(Locale locale) async {
+    scheduled++;
+    return allowed;
+  }
+
+  @override
+  Future<void> cancel() async => cancelled++;
+
+  @override
+  Future<bool> openedFromReminder() async => false;
 }
 
 class _SinkSpy implements AnalyticsSink {

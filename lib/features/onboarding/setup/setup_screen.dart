@@ -23,6 +23,7 @@ import 'setup_coordinator.dart';
 import 'setup_error_guidance.dart';
 import 'setup_analytics.dart';
 import 'setup_providers.dart';
+import 'setup_reminder.dart';
 
 /// zigdash.app's Hubs page: the small hubs that run Zigbee2MQTT, for the
 /// empty result's "I don't have a hub yet" (2.9.6).
@@ -66,6 +67,7 @@ class SetupScreen extends ConsumerWidget {
       );
       if (step != null) ref.read(analyticsProvider).track(step);
       if (s is SetupComplete) {
+        ref.read(setupReminderProvider).cancel();
         context.go(Routes.homeDashboards(s.result.connectionId));
       }
     });
@@ -211,6 +213,19 @@ class _Welcome extends ConsumerStatefulWidget {
 
 class _WelcomeState extends ConsumerState<_Welcome> {
   bool _share = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Counted only here: the reminder opens the app on this screen.
+    ref.read(setupReminderProvider).openedFromReminder().then((yes) {
+      if (yes && mounted) {
+        ref
+            .read(analyticsProvider)
+            .track(const SetupStep(SetupStepKind.reminderOpened));
+      }
+    });
+  }
 
   bool get _asking =>
       ref.watch(analyticsAvailableProvider) &&
@@ -604,6 +619,8 @@ class _ScanEmpty extends StatelessWidget {
           TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
           TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
         ],
+        // 2.9.7: not at home, or no time now: a nudge tomorrow.
+        const RemindMeLater(),
       ],
     );
   }
@@ -1326,6 +1343,7 @@ class _Failure extends StatelessWidget {
         const CommunityLink(from: HelpFrom.setupError),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+        const RemindMeLater(),
       ],
     );
   }
@@ -1407,6 +1425,7 @@ class _NoNetwork extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+        const RemindMeLater(),
         GetHelpLink(
           onPressed: () => context.push(
             Routes.getHelpFrom(

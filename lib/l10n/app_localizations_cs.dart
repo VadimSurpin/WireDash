@@ -1504,6 +1504,26 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupTryAgain => 'Zkusit znovu';
 
   @override
+  String get reminderButton => 'Připomeň mi to zítra';
+
+  @override
+  String get reminderSet => 'Zítra ti to připomeneme, na tomto telefonu.';
+
+  @override
+  String get reminderNoPermission =>
+      'Oznámení ZigDash jsou vypnutá, takže připomenutí nebude. Můžeš je zapnout v nastavení Androidu.';
+
+  @override
+  String get reminderChannel => 'Připomenutí nastavení';
+
+  @override
+  String get reminderTitle => 'Dokonči nastavení ZigDash';
+
+  @override
+  String get reminderBody =>
+      'Jsi doma na své Wi-Fi? Klepni a zkus to znovu: zabere to asi minutu.';
+
+  @override
   String get setupAuthTitle => 'Tento broker vyžaduje přihlášení';
 
   @override

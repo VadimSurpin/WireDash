@@ -1508,6 +1508,26 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupTryAgain => 'Opnieuw proberen';
 
   @override
+  String get reminderButton => 'Herinner me morgen';
+
+  @override
+  String get reminderSet => 'We herinneren je morgen, op deze telefoon.';
+
+  @override
+  String get reminderNoPermission =>
+      'Meldingen staan uit voor ZigDash, dus er komt geen herinnering. Je kunt ze aanzetten in de Android-instellingen.';
+
+  @override
+  String get reminderChannel => 'Herinnering voor instellen';
+
+  @override
+  String get reminderTitle => 'Rond het instellen van ZigDash af';
+
+  @override
+  String get reminderBody =>
+      'Thuis op je wifi? Tik om het opnieuw te proberen: het duurt ongeveer een minuut.';
+
+  @override
   String get setupAuthTitle => 'Deze broker vereist een login';
 
   @override

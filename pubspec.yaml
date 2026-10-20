@@ -70,6 +70,8 @@ dependencies:
   unifiedpush_android: ^3.5.0
   unifiedpush_platform_interface: ^4.0.0
   flutter_local_notifications: ^22.3.1
+  # The setup reminder's date (2.9.7); already pulled in by the plugin.
+  timezone: ^0.11.0
   flutter_web_auth_2: 5.1.0
   crypto: ^3.0.7
 

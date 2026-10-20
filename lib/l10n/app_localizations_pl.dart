@@ -1514,6 +1514,26 @@ class AppLocalizationsPl extends AppLocalizations {
   String get setupTryAgain => 'Spróbuj ponownie';
 
   @override
+  String get reminderButton => 'Przypomnij mi jutro';
+
+  @override
+  String get reminderSet => 'Przypomnimy Ci jutro, na tym telefonie.';
+
+  @override
+  String get reminderNoPermission =>
+      'Powiadomienia ZigDash są wyłączone, więc nie będzie przypomnienia. Możesz je włączyć w ustawieniach Androida.';
+
+  @override
+  String get reminderChannel => 'Przypomnienie o konfiguracji';
+
+  @override
+  String get reminderTitle => 'Dokończ konfigurację ZigDash';
+
+  @override
+  String get reminderBody =>
+      'Jesteś w domu w swojej sieci Wi-Fi? Dotknij, aby spróbować ponownie: to zajmie około minuty.';
+
+  @override
   String get setupAuthTitle => 'Ten broker wymaga logowania';
 
   @override

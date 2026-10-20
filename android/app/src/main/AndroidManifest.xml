@@ -3,6 +3,8 @@
     <!-- Widget taps run as a short foreground task (WidgetActionService). -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- The setup reminder (2.9.7) survives a restart of the phone. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Android 17 (targetSdk 37) needs this to reach the hub on the LAN;
          asked for at start on phones that enforce it (alerts-2.3.md §3). -->
     <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK"/>
@@ -43,6 +45,20 @@
             android:taskAffinity="com.giladtamam.zigdash.cover"
             android:launchMode="singleTask"
             android:theme="@style/CoverPopup" />
+        <!-- The setup reminder (2.9.7): flutter_local_notifications shows it
+             when its alarm fires, and sets it again after a restart. -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
         <!-- Shortcuts: the one-device home-screen widget. -->
         <receiver
             android:name=".DeviceWidget"

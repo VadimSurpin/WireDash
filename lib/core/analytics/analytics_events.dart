@@ -75,6 +75,12 @@ enum SetupStepKind {
   /// One of the three choices on the empty result (2.9.6), with its
   /// [SetupStep.choice].
   emptyChoice,
+
+  /// "Remind me tomorrow" was tapped where setup stopped (2.9.7).
+  remindLater,
+
+  /// The app was opened from that reminder (2.9.7).
+  reminderOpened,
 }
 
 /// What the user tapped on an empty result with no hub found (2.9.6): no

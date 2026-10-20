@@ -1500,6 +1500,26 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupTryAgain => 'Försök igen';
 
   @override
+  String get reminderButton => 'Påminn mig i morgon';
+
+  @override
+  String get reminderSet => 'Vi påminner dig i morgon, på den här telefonen.';
+
+  @override
+  String get reminderNoPermission =>
+      'Aviseringar är avstängda för ZigDash, så det blir ingen påminnelse. Du kan slå på dem i Androids inställningar.';
+
+  @override
+  String get reminderChannel => 'Påminnelse om konfiguration';
+
+  @override
+  String get reminderTitle => 'Slutför konfigurationen av ZigDash';
+
+  @override
+  String get reminderBody =>
+      'Hemma på ditt wifi? Tryck för att försöka igen: det tar ungefär en minut.';
+
+  @override
   String get setupAuthTitle => 'Den här brokern kräver inloggning';
 
   @override
