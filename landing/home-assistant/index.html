@@ -29,6 +29,8 @@
 <h1>ZigDash with Home Assistant</h1>
 <p class="lead">ZigDash shows the devices that Zigbee2MQTT runs. On Home Assistant that means the Mosquitto broker add-on and the Zigbee2MQTT add-on. Your automations stay in Home Assistant and keep running.</p>
 
+<div class="tip"><strong>New in ZigDash 2.10:</strong> sign in to Home Assistant once and ZigDash connects through it, at home or away. No broker address, no MQTT user. See <a href="#through">Connect through Home Assistant</a>.</div>
+
 <div class="tip"><strong>Using ZHA?</strong> ZHA is Home Assistant's own Zigbee and doesn't use MQTT, so ZigDash can't show those devices. ZigDash is for Zigbee2MQTT.</div>
 
 <h2>1. Check the two add-ons</h2>
@@ -38,7 +40,19 @@
   <li><strong>Zigbee2MQTT</strong>: with your devices paired. Its configuration should point at the Mosquitto broker (the default on Home Assistant).</li>
 </ul>
 
-<h2>2. Make a user for ZigDash</h2>
+<h2 id="through">2. Connect through Home Assistant (the easy way)</h2>
+<p>Your phone talks to Home Assistant, and Home Assistant talks to the broker. That works wherever you can open Home Assistant, your home Wi-Fi or your remote link included.</p>
+<ol>
+  <li>In ZigDash, tap <strong>Find my setup</strong>. On the result, choose <strong>Home Assistant</strong>, then <strong>Connect through Home Assistant</strong>. (It's also under manual entry.)</li>
+  <li>Type the address you open Home Assistant with: <code>192.168.1.20:8123</code>, <code>homeassistant.local:8123</code>, or your remote address like <code>https://xyz.ui.nabu.casa</code>.</li>
+  <li>Tap <strong>Sign in with Home Assistant</strong>. Home Assistant's own login page opens in your browser; ZigDash never sees your password. If that page refuses (Home Assistant without internet), paste a long-lived access token instead: in Home Assistant, your profile › Security › Create token.</li>
+</ol>
+<p>It needs two things: your Home Assistant user must be an <strong>administrator</strong> (Home Assistant only lets administrators use its MQTT), and Home Assistant must have the <strong>MQTT integration</strong> set up (it is, when the Mosquitto add-on is installed the usual way). ZigDash tells you if either is missing.</p>
+<p>ZigDash keeps the sign-in on your phone, in the same secure storage as passwords, and uses it only for MQTT. To end it, delete the home in ZigDash, or remove ZigDash under your profile › Security in Home Assistant.</p>
+
+<h2>3. Or connect to the broker directly</h2>
+<p>The way ZigDash worked before 2.10: your phone connects to the Mosquitto add-on itself. It needs your phone on the same network as Home Assistant, and an MQTT login.</p>
+<h3>Make a user for ZigDash</h3>
 <p>The Mosquitto add-on accepts Home Assistant users. Most people make one just for MQTT:</p>
 <ol>
   <li>Settings › People › Users › <strong>Add user</strong>. (Turn on Advanced mode in your profile if you don't see Users.)</li>
@@ -46,13 +60,13 @@
 </ol>
 <p>You can also use your own Home Assistant login, or a login set in the Mosquitto add-on's options.</p>
 
-<h2>3. Connect ZigDash</h2>
+<h3>Connect</h3>
 <ol>
   <li>With your phone on your home Wi-Fi, open ZigDash and tap <strong>Find my setup</strong>. When it asks where Zigbee2MQTT runs, choose <strong>Home Assistant</strong>.</li>
   <li>If it doesn't find it, type the address you open Home Assistant with, for example <code>192.168.1.20:8123</code>, and tap <strong>Check this address</strong>. ZigDash finds the broker on the same machine.</li>
-  <li>When it asks for a login, enter the user from step 2.</li>
+  <li>When it asks for a login, enter the user you made.</li>
 </ol>
-<div class="tip"><code>homeassistant.local</code> doesn't work on every Android phone. Use the number address: Home Assistant shows it under Settings › System › Network. Don't use your Nabu Casa or DuckDNS link; ZigDash needs the address that works at home.</div>
+<div class="tip"><code>homeassistant.local</code> doesn't work on every Android phone. Use the number address: Home Assistant shows it under Settings › System › Network. For this direct way, a remote link such as Nabu Casa or DuckDNS doesn't work; if that's all you have, connect through Home Assistant instead.</div>
 <p>The Mosquitto add-on checks each login with Home Assistant, which can take a few seconds on a Raspberry Pi. If ZigDash says the broker didn't answer the login, try again.</p>
 
 <h2>4. Optional: bring your names and rooms</h2>

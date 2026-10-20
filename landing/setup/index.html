@@ -84,7 +84,7 @@
 
 <h2 id="hubs">Notes for your hub</h2>
 <h3>Home Assistant</h3>
-<p>Needs the Mosquitto broker add-on and the Zigbee2MQTT add-on, both running. Full steps in the <a href="../home-assistant/">Home Assistant guide</a>.</p>
+<p>Needs the Mosquitto broker add-on and the Zigbee2MQTT add-on, both running. The easiest way is <strong>Connect through Home Assistant</strong> (ZigDash 2.10): sign in once, no broker address or MQTT user, and it works away from home too. Full steps in the <a href="../home-assistant/">Home Assistant guide</a>.</p>
 <h3>Raspberry Pi, Linux or Docker</h3>
 <p>Mosquitto 2 only accepts connections from the machine it runs on until you tell it to listen on the network. Add this to <code>mosquitto.conf</code> and restart Mosquitto:</p>
 <pre><code>listener 1883
