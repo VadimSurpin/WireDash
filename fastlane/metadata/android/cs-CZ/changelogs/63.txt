@@ -1,0 +1,1 @@
+ZigDash 2.10: používáš Home Assistant? Přihlas se jednou a ZigDash se přes něj připojí k Zigbee2MQTT, doma i mimo domov, bez nastavení brokeru. Tvůj telefon už na broker nemusí dosáhnout.

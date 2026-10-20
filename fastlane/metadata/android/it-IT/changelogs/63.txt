@@ -1,0 +1,1 @@
+ZigDash 2.10: usi Home Assistant? Accedi una volta e ZigDash si connette a Zigbee2MQTT tramite esso, a casa o fuori, senza impostazioni del broker. Il tuo telefono non deve più raggiungere il broker.
