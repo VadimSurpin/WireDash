@@ -2,6 +2,7 @@
 package wgbridge
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
@@ -10,6 +11,7 @@ import (
 	"net/netip"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type config struct {
@@ -132,11 +134,21 @@ func parseConfig(text string, resolve bool) (config, error) {
 			return c, errors.New("invalid Endpoint port")
 		}
 		if resolve {
-			ep, err := net.ResolveUDPAddr("udp", s["endpoint"])
-			if err != nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			ips, err := net.DefaultResolver.LookupNetIP(ctx, "ip", host)
+			cancel()
+			if err != nil || len(ips) == 0 {
 				return c, errors.New("cannot resolve WireGuard endpoint")
 			}
-			fmt.Fprintf(&u, "endpoint=%s\n", ep)
+			// Match the UDP resolver preference for IPv4 when available.
+			ip := ips[0].Unmap()
+			for _, candidate := range ips {
+				if candidate.Unmap().Is4() {
+					ip = candidate.Unmap()
+					break
+				}
+			}
+			fmt.Fprintf(&u, "endpoint=%s\n", net.JoinHostPort(ip.String(), port))
 		}
 		keepalive := 25
 		if value, ok := s["persistentkeepalive"]; ok {
