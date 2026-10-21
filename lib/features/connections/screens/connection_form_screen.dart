@@ -104,15 +104,16 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
 
   Future<void> _importWireGuard() async {
     try {
-      final picked = await FilePicker.platform.pickFiles(
+      final picked = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['conf'],
         withData: true,
       );
       if (picked == null || !mounted) return;
       final bytes = picked.files.single.bytes;
-      if (bytes == null)
+      if (bytes == null) {
         throw const FormatException('Cannot read configuration');
+      }
       final text = utf8.decode(bytes);
       await createWireGuardBackend().validate(text);
       if (mounted) setState(() => _wireGuard.text = text);
@@ -160,8 +161,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
         : _password.text;
 
     try {
-      if (_useWireGuard)
+      if (_useWireGuard) {
         await createWireGuardBackend().validate(_wireGuard.text);
+      }
       if (_isEdit) {
         await repo.update(
           id: widget.connectionId!,
@@ -239,8 +241,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
     final diagnostics = ref.read(connectDiagnosticsProvider);
 
     try {
-      if (_useWireGuard)
+      if (_useWireGuard) {
         await createWireGuardBackend().validate(_wireGuard.text);
+      }
       final password = _password.text.isEmpty && _isEdit
           ? await ref
                     .read(connectionRepoProvider)

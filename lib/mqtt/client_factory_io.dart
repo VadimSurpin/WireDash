@@ -18,7 +18,9 @@ mc.MqttClient buildPlatformClient(
   if (config.viaWireGuard) {
     final backend = createWireGuardBackend();
     if (!backend.supported) {
-      throw UnsupportedError('Embedded WireGuard is available on Android only.');
+      throw UnsupportedError(
+        'Embedded WireGuard is available on Android only.',
+      );
     }
     if (config.wireGuardConfig?.trim().isNotEmpty != true) {
       throw UnsupportedError(
