@@ -536,7 +536,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Set up your broker",
-  "guidedConnectIntro": "We'll test each step of the connection and show your Zigbee devices.",
+  "guidedConnectIntro": "We'll test your MQTT connection and discover devices on your broker.",
   "guidedBaseTopic": "Base topic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Test & connect",
@@ -2233,8 +2233,8 @@
   "wgImport": "Import .conf file",
   "wgHide": "Hide configuration",
   "wgConfiguration": "WireGuard configuration",
-  "discoverWirenBoardHint": "Add a whole device with +, or expand it to choose individual controls.",
-  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.",
+  "discoverWirenBoardHint": "Discovered modules are added to this dashboard automatically. Use + for built-ins, or expand a device to choose individual controls.",
+  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that drivers have published retained metadata.",
   "wbControllerBuiltins": "Controller built-ins",
   "wbSearch": "Search devices and controls",
   "wbAddWholeDevice": "Add whole device",
@@ -2249,5 +2249,15 @@
   },
   "wbClearSearch": "Clear search",
   "wgInvalidConfiguration": "Invalid WireGuard configuration. Check the configuration file and try again.",
-  "wgConnect": "Connect through WireGuard"
+  "wgConnect": "Connect through WireGuard",
+  "@wbAutoAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wbAutoAddFailed": "Could not add discovered devices. Try discovery again.",
+  "wbBuiltinsAvailable": "Controller built-ins remain available in All devices.",
+  "wbAutoAdded": "Modules added: {count}."
 }

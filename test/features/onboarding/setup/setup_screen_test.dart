@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,6 +89,7 @@ class _FakeStore implements SetupStore {
     int dashboardIcon = 0,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    List<WirenBoardDevice> wirenBoardDevices = const [],
     ConnectionTransport transport = ConnectionTransport.mqtt,
   }) async => SetupResult(
     connectionId: 'c1',

@@ -392,7 +392,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Nastav svůj broker",
-  "guidedConnectIntro": "Otestujeme každý krok připojení a ukážeme tvoje zařízení Zigbee.",
+  "guidedConnectIntro": "Otestujeme připojení MQTT a vyhledáme zařízení na vašem brokeru.",
   "guidedBaseTopic": "Základní téma",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Otestovat a připojit",
@@ -1279,5 +1279,16 @@
   "wgHide": "Skrýt konfiguraci",
   "wgImport": "Importovat soubor .conf",
   "wgTitle": "Použít vestavěný WireGuard",
-  "wgDescription": "Připojte tuto domácnost přes WireGuard přímo v ZigDash. Ostatní aplikace používají vlastní připojení."
+  "wgDescription": "Připojte tuto domácnost přes WireGuard přímo v ZigDash. Ostatní aplikace používají vlastní připojení.",
+  "wbControllerBuiltins": "Vestavěná zařízení kontroléru",
+  "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu.",
+  "wbSearch": "Hledat zařízení a ovládací prvky",
+  "wbAddWholeDevice": "Přidat celé zařízení",
+  "wbControlCount": "Ovládací prvky: {count}",
+  "wbAddedModules": "Přidané moduly",
+  "wbBuiltinsAvailable": "Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.",
+  "wbAutoAdded": "Přidané moduly: {count}.",
+  "discoverWirenBoardNone": "Nebyly nalezeny žádné ovládací prvky Wiren Board. Zkontrolujte přístup MQTT uživatele k metadatům /devices a publikování metadat s příznakem retained.",
+  "wbClearSearch": "Vymazat hledání",
+  "discoverWirenBoardHint": "Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky."
 }

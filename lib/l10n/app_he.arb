@@ -526,7 +526,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "הגדרת ברוקר",
-  "guidedConnectIntro": "נבדוק כל שלב בחיבור ונציג את מכשירי ה-Zigbee שלכם.",
+  "guidedConnectIntro": "נבדוק את חיבור ה־MQTT ונחפש התקנים בשרת ההודעות שלך.",
   "guidedBaseTopic": "נושא בסיס",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "בדיקה וחיבור",
@@ -1499,5 +1499,16 @@
   "wgHide": "הסתרת התצורה",
   "wgImport": "ייבוא קובץ ‎.conf",
   "wgTitle": "שימוש ב־WireGuard המובנה",
-  "wgDescription": "חיבור הבית הזה דרך WireGuard בתוך ZigDash. יישומים אחרים ממשיכים להשתמש בחיבור שלהם."
+  "wgDescription": "חיבור הבית הזה דרך WireGuard בתוך ZigDash. יישומים אחרים ממשיכים להשתמש בחיבור שלהם.",
+  "wbControllerBuiltins": "התקנים מובנים בבקר",
+  "wbAutoAddFailed": "לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב.",
+  "wbSearch": "חיפוש התקנים ופקדים",
+  "wbAddWholeDevice": "הוספת התקן שלם",
+  "wbControlCount": "פקדים: {count}",
+  "wbAddedModules": "מודולים שנוספו",
+  "wbBuiltinsAvailable": "ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים.",
+  "wbAutoAdded": "מודולים שנוספו: {count}.",
+  "discoverWirenBoardNone": "לא נמצאו פקדי Wiren Board. יש לבדוק שלמשתמש MQTT יש גישה למטא־נתונים של /devices ושהדרייברים פרסמו מטא־נתונים שמורים.",
+  "wbClearSearch": "ניקוי החיפוש",
+  "discoverWirenBoardHint": "מודולים שהתגלו נוספים ללוח הבקרה הזה באופן אוטומטי. השתמשו ב־+ להתקנים מובנים, או הרחיבו התקן כדי לבחור פקדים בודדים."
 }

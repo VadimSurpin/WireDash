@@ -9,6 +9,7 @@ import '../models/wirenboard_device.dart';
 import '../providers/discovery_provider.dart';
 import '../models/wirenboard_panel_suggestion.dart';
 import '../providers/wirenboard_discovery_provider.dart';
+import '../wirenboard_dashboard_importer.dart';
 
 class DevicePickerScreen extends ConsumerStatefulWidget {
   const DevicePickerScreen({
@@ -33,6 +34,8 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
   final _expandedWbDevices = <String>{};
   final _collapsedWbSearchDevices = <String>{};
   late bool _wirenBoard = widget.initialWirenBoard;
+  int _autoAdded = 0;
+  List<WirenBoardDevice>? _lastImported;
 
   @override
   void dispose() {
@@ -195,9 +198,33 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
     );
   }
 
+  Future<void> _autoImport(List<WirenBoardDevice> devices) async {
+    try {
+      final count = await ref
+          .read(wirenBoardDashboardImporterProvider(widget.dashboardId))
+          .importDevices(devices);
+      if (mounted && count > 0) setState(() => _autoAdded += count);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.wbAutoAddFailed),
+            action: SnackBarAction(
+              label: context.l10n.retry,
+              onPressed: () => _autoImport(devices),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   Widget _wirenBoardList() {
     final l10n = context.l10n;
     final language = Localizations.localeOf(context).languageCode;
+    final onDashboard = ref.watch(
+      wirenBoardDashboardIdsProvider(widget.dashboardId),
+    );
     return ref
         .watch(wirenBoardDevicesProvider(widget.connectionId))
         .when(
@@ -206,6 +233,12 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
             child: FilledButton(onPressed: _scan, child: Text(l10n.retry)),
           ),
           data: (devices) {
+            if (!identical(devices, _lastImported)) {
+              _lastImported = devices;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _autoImport(devices);
+              });
+            }
             if (devices.isEmpty) {
               return Center(
                 child: Padding(
@@ -271,14 +304,28 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
                       '${device.id} · ${l10n.wbControlCount(device.controls.length)}',
                     ),
                     trailing: IconButton(
-                      tooltip: l10n.wbAddWholeDevice,
-                      icon: const Icon(Icons.add_circle_outline),
-                      onPressed: () => _openSuggestion(
-                        suggestWirenBoardDevicePanel(
-                          device,
-                          language: language,
-                        ),
+                      tooltip: onDashboard.contains(device.id)
+                          ? l10n.deviceOnDashboards
+                          : !device.isControllerBuiltin
+                          ? l10n.saving
+                          : l10n.wbAddWholeDevice,
+                      icon: Icon(
+                        onDashboard.contains(device.id)
+                            ? Icons.check_circle_outline
+                            : !device.isControllerBuiltin
+                            ? Icons.more_horiz
+                            : Icons.add_circle_outline,
                       ),
+                      onPressed:
+                          !device.isControllerBuiltin ||
+                              onDashboard.contains(device.id)
+                          ? null
+                          : () => _openSuggestion(
+                              suggestWirenBoardDevicePanel(
+                                device,
+                                language: language,
+                              ),
+                            ),
                     ),
                     onTap: () => setState(() {
                       if (query.isNotEmpty) {
@@ -331,6 +378,11 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
             };
             return Column(
               children: [
+                if (_autoAdded > 0)
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(l10n.wbAutoAdded(_autoAdded)),
+                  ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SearchBar(

@@ -8,6 +8,7 @@ import '../../../mqtt/client_factory.dart';
 import '../../../mqtt/endpoint.dart';
 import '../../../mqtt/mqtt_manager.dart' show MqttClientFactory;
 import '../../discovery/models/z2m_device.dart';
+import '../../discovery/models/wirenboard_device.dart';
 import '../discovery/hub_probe.dart';
 import '../discovery/z2m_frontend.dart';
 import 'socket_probe.dart';
@@ -44,6 +45,7 @@ class DiagnosticsReport {
     required this.connected,
     required this.candidatesTried,
     this.deviceNames = const [],
+    this.wirenBoardDevices = const [],
   });
 
   final List<StepResult> steps;
@@ -54,6 +56,7 @@ class DiagnosticsReport {
   final bool connected;
   final int candidatesTried;
   final List<String> deviceNames;
+  final List<WirenBoardDevice> wirenBoardDevices;
 }
 
 typedef HostLookup = Future<List<String>> Function(String host);
@@ -152,6 +155,7 @@ class ConnectDiagnostics {
           connected: true,
           candidatesTried: tried,
           deviceNames: report.deviceNames,
+          wirenBoardDevices: report.wirenBoardDevices,
         );
       }
       last = report;
@@ -382,6 +386,7 @@ class ConnectDiagnostics {
     // `$base/bridge/devices` list (every paired device, including silent ones
     // that never publish) and live `$base/#` state topics.
     final names = <String>{};
+    final wirenBoard = WirenBoardDiscovery();
     // Unnamed devices read "Motion sensor f66f", not their address (2.7.1).
     final shown = <String, String>{};
     StreamSubscription<List<mc.MqttReceivedMessage<mc.MqttMessage>>>? sub;
@@ -391,7 +396,8 @@ class ConnectDiagnostics {
           final pub = event.payload;
           if (pub is! mc.MqttPublishMessage) continue;
           final topic = event.topic;
-          if (topic.length <= base.length + 1) continue;
+          wirenBoard.apply(topic, mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message));
+          if (!topic.startsWith('$base/') || topic.length <= base.length + 1) continue;
           final rest = topic.substring(base.length + 1);
           if (rest == 'bridge/devices') {
             final payload = mc.MqttPublishPayload.bytesToStringAsString(
@@ -410,6 +416,8 @@ class ConnectDiagnostics {
         }
       });
       client
+        ..subscribe('/devices/+/meta/#', mc.MqttQos.atLeastOnce)
+        ..subscribe('/devices/+/controls/+/meta/#', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/bridge/devices', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/#', mc.MqttQos.atLeastOnce);
       await Future<void>.delayed(deviceWindow);
@@ -433,7 +441,7 @@ class ConnectDiagnostics {
       StepResult(
         step: DiagnosticStep.devices,
         status: StepStatus.pass,
-        deviceCount: names.length,
+        deviceCount: names.length + wirenBoard.devices.length,
       ),
     );
     final sorted = [for (final n in names) shown[n] ?? n]..sort();
@@ -442,6 +450,7 @@ class ConnectDiagnostics {
       connected: true,
       candidatesTried: 1,
       deviceNames: sorted,
+      wirenBoardDevices: wirenBoard.devices,
     );
   }
 

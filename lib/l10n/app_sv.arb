@@ -526,7 +526,7 @@
   "panelSceneChoose": "Scen",
   "panelSceneMissing": "Scenen hittades inte – välj igen",
   "guidedConnectTitle": "Konfigurera broker",
-  "guidedConnectIntro": "Vi testar varje steg i anslutningen och visar dina Zigbee-enheter.",
+  "guidedConnectIntro": "Vi testar MQTT-anslutningen och söker efter enheter på din meddelandemäklare.",
   "guidedBaseTopic": "Bastopic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Testa och anslut",
@@ -1499,5 +1499,16 @@
   "wgHide": "Dölj konfiguration",
   "wgImport": "Importera .conf-fil",
   "wgTitle": "Använd inbyggd WireGuard",
-  "wgDescription": "Anslut detta hem via WireGuard i ZigDash. Andra appar behåller sin egen anslutning."
+  "wgDescription": "Anslut detta hem via WireGuard i ZigDash. Andra appar behåller sin egen anslutning.",
+  "wbControllerBuiltins": "Styrenhetens inbyggda enheter",
+  "wbAutoAddFailed": "Kunde inte lägga till upptäckta enheter. Gör om sökningen.",
+  "wbSearch": "Sök efter enheter och kontroller",
+  "wbAddWholeDevice": "Lägg till hela enheten",
+  "wbControlCount": "Kontroller: {count}",
+  "wbAddedModules": "Tillagda moduler",
+  "wbBuiltinsAvailable": "Styrenhetens inbyggda enheter är fortfarande tillgängliga under Alla enheter.",
+  "wbAutoAdded": "Tillagda moduler: {count}.",
+  "discoverWirenBoardNone": "Inga Wiren Board-kontroller hittades. Kontrollera att MQTT-användaren kan läsa /devices-metadata och att drivrutinerna har publicerat behållna metadata.",
+  "wbClearSearch": "Rensa sökning",
+  "discoverWirenBoardHint": "Upptäckta moduler läggs automatiskt till på den här kontrollpanelen. Använd + för inbyggda enheter eller expandera en enhet för att välja enskilda kontroller."
 }

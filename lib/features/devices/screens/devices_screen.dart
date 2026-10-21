@@ -10,6 +10,16 @@ import '../../../core/analytics/analytics_events.dart' show HelpFrom;
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../discovery/models/z2m_device.dart';
+import '../../discovery/models/wirenboard_device.dart';
+import '../../discovery/providers/wirenboard_discovery_provider.dart';
+import '../../discovery/wirenboard_dashboard_importer.dart';
+import '../../panels/models/panel_config.dart';
+import '../../panels/widgets/panel_tile.dart';
+import '../../panels/widgets/wirenboard_device_panel.dart';
+import '../../../data/database/database.dart';
+import '../../../data/database/tables/panels.dart';
+import '../../../data/repositories/dashboard_repo.dart';
+import '../../../core/theme/dashboard_accent.dart';
 import '../../discovery/providers/discovery_provider.dart';
 import '../../home/home_shell.dart';
 import '../../support/get_help_screen.dart' show GetHelpLink;
@@ -64,6 +74,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   void _refresh() {
     final args = (connectionId: widget.connectionId, base: _base);
     ref.invalidate(deviceHealthProvider(args));
+    ref.invalidate(wirenBoardDevicesProvider(widget.connectionId));
   }
 
   void _openPairing() {
@@ -122,6 +133,53 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     }
   }
 
+  void _openWirenBoard(WirenBoardDevice device) {
+    final config = WirenBoardDeviceConfig(device: device);
+    final panel = Panel(id: 'wirenboard:${device.id}', dashboardId: '',
+      name: device.title(Localizations.localeOf(context).languageCode),
+      type: PanelType.device, topic: '', subscribeTopic: '',
+      topicPrefixOverride: '/devices/${device.id}', qos: 1, retain: false,
+      width: PanelWidth.wide, sortOrder: 0, config: config.encode(), mergeFlags: 0,
+      createdAt: DateTime.now(), updatedAt: DateTime.now());
+    showModalBottomSheet<void>(context: context, isScrollControlled: true,
+      useSafeArea: true, showDragHandle: true,
+      builder: (_) => WirenBoardDeviceControls(connectionId: widget.connectionId,
+        panel: panel, config: config,
+        controlBuilder: (control) => PanelTile(connectionId: widget.connectionId,
+          dashboardId: '', topicPrefix: null, panel: control, locked: true)));
+  }
+
+  Future<void> _addWirenBoard(WirenBoardDevice device) async {
+    final l10n = context.l10n;
+    final repo = ref.read(dashboardRepoProvider);
+    final dashboards = await repo.getByConnection(widget.connectionId);
+    if (!mounted) return;
+    String? dashboardId;
+    if (dashboards.isEmpty) {
+      dashboardId = await repo.create(connectionId: widget.connectionId,
+        name: l10n.dashDefaultName, colorSeed: defaultDashboardSeed,
+        iconCodepoint: Icons.home.codePoint);
+    } else if (dashboards.length == 1) {
+      dashboardId = dashboards.single.id;
+    } else {
+      dashboardId = await showModalBottomSheet<String>(context: context,
+        showDragHandle: true, builder: (ctx) => SafeArea(child: ListView(
+          shrinkWrap: true, children: [
+            ListTile(title: Text(l10n.deviceAddToDashboard)),
+            for (final dashboard in dashboards) ListTile(title: Text(dashboard.name),
+              onTap: () => Navigator.pop(ctx, dashboard.id)),
+          ])));
+    }
+    if (!mounted || dashboardId == null) return;
+    await ref.read(wirenBoardDashboardImporterProvider(dashboardId))
+      .importDevices([device], includeBuiltins: true);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(l10n.deviceAddedTo(dashboards.where((d) => d.id == dashboardId)
+          .firstOrNull?.name ?? l10n.dashDefaultName))));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -142,7 +200,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         d.ieeeAddress,
     };
     final all = healthAsync.valueOrNull ?? const <DeviceHealth>[];
-    final searchable = all.length >= 8;
+    final wbDevices = ref.watch(wirenBoardDevicesProvider(widget.connectionId)).valueOrNull ?? const <WirenBoardDevice>[];
+    final wbLinked = ref.watch(linkedWirenBoardIdsProvider(widget.connectionId));
+    final searchable = all.length + wbDevices.length >= 8;
+    final visibleHealth = wbDevices.isNotEmpty ? AsyncValue<List<DeviceHealth>>.data(all) : healthAsync;
 
     return Scaffold(
       appBar: AppBar(
@@ -182,7 +243,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           ),
         ],
       ),
-      body: healthAsync.when(
+      body: visibleHealth.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Padding(
@@ -198,12 +259,12 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           ),
         ),
         data: (rows) {
-          if (rows.isEmpty) return _NoDevices(args: args);
+          if (rows.isEmpty && wbDevices.isEmpty) return _NoDevices(args: args);
           bool unassigned(DeviceHealth h) =>
               h.device.ieeeAddress != null &&
               !linked.contains(h.device.ieeeAddress);
           final attention = rows.where((h) => h.needsAttention).length;
-          final notOn = rows.where(unassigned).length;
+          final notOn = rows.where(unassigned).length + wbDevices.where((d) => !wbLinked.contains(d.id)).length;
           final filter = switch (_filter) {
             DeviceFilter.attention when attention == 0 => DeviceFilter.all,
             DeviceFilter.unassigned when notOn == 0 => DeviceFilter.all,
@@ -255,6 +316,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   padding: const EdgeInsets.all(24),
                   child: Text(l10n.devicesNoMatch, textAlign: TextAlign.center),
                 ),
+              if (wbDevices.isNotEmpty && shown.isNotEmpty) const ListTile(title: Text('Zigbee2MQTT')),
               for (final h in shown)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
@@ -268,7 +330,24 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                         isNew: newIeees.contains(h.device.ieeeAddress)),
                   ),
                 ),
-              if (!availability.any)
+              for (final builtin in [false, true]) ...[
+                if (wbDevices.any((d) => d.isControllerBuiltin == builtin &&
+                    (filter == DeviceFilter.all || filter == DeviceFilter.unassigned && !wbLinked.contains(d.id)) &&
+                    (q.isEmpty || d.id.toLowerCase().contains(q) || d.title(l10n.localeName).toLowerCase().contains(q))))
+                  ListTile(title: Text(builtin ? l10n.wbControllerBuiltins : l10n.wbAddedModules)),
+                for (final d in wbDevices)
+                  if (d.isControllerBuiltin == builtin &&
+                      (filter == DeviceFilter.all || filter == DeviceFilter.unassigned && !wbLinked.contains(d.id)) &&
+                      (q.isEmpty || d.id.toLowerCase().contains(q) || d.title(l10n.localeName).toLowerCase().contains(q)))
+                    ListTile(leading: const Icon(Icons.developer_board_outlined),
+                      title: Text(d.title(l10n.localeName)),
+                      subtitle: Text(l10n.wbControlCount(d.controls.length)),
+                      onTap: () => _openWirenBoard(d),
+                      trailing: IconButton(tooltip: l10n.deviceAddToDashboard,
+                        icon: Icon(wbLinked.contains(d.id) ? Icons.dashboard_outlined : Icons.add),
+                        onPressed: () => _addWirenBoard(d))),
+              ],
+              if (rows.isNotEmpty && !availability.any)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
                   child: _AvailabilityNote(
@@ -279,7 +358,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: wbDevices.isNotEmpty && all.isEmpty ? null : FloatingActionButton.extended(
         onPressed: _openPairing,
         icon: const Icon(Icons.add),
         label: Text(l10n.devicesAddButton),

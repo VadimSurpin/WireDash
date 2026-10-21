@@ -526,7 +526,7 @@
   "panelSceneChoose": "Scène",
   "panelSceneMissing": "Scène niet gevonden — kies opnieuw",
   "guidedConnectTitle": "Broker instellen",
-  "guidedConnectIntro": "We testen elke stap van de verbinding en tonen uw Zigbee-apparaten.",
+  "guidedConnectIntro": "We testen je MQTT-verbinding en zoeken apparaten op je broker.",
   "guidedBaseTopic": "Basis-topic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Testen en verbinden",
@@ -1499,5 +1499,16 @@
   "wgHide": "Configuratie verbergen",
   "wgImport": ".conf-bestand importeren",
   "wgTitle": "Ingebouwde WireGuard gebruiken",
-  "wgDescription": "Verbind dit huis via WireGuard binnen ZigDash. Andere apps behouden hun eigen verbinding."
+  "wgDescription": "Verbind dit huis via WireGuard binnen ZigDash. Andere apps behouden hun eigen verbinding.",
+  "wbControllerBuiltins": "Ingebouwde controllerapparaten",
+  "wbAutoAddFailed": "Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw.",
+  "wbSearch": "Apparaten en bedieningselementen zoeken",
+  "wbAddWholeDevice": "Volledig apparaat toevoegen",
+  "wbControlCount": "Bedieningselementen: {count}",
+  "wbAddedModules": "Toegevoegde modules",
+  "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.",
+  "wbAutoAdded": "Modules toegevoegd: {count}.",
+  "discoverWirenBoardNone": "Geen Wiren Board-bedieningselementen gevonden. Controleer of de MQTT-gebruiker /devices-metadata kan lezen en of de stuurprogramma’s behouden metadata publiceren.",
+  "wbClearSearch": "Zoekopdracht wissen",
+  "discoverWirenBoardHint": "Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen."
 }

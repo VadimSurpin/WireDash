@@ -526,7 +526,7 @@
   "panelSceneChoose": "Scene",
   "panelSceneMissing": "Scenen ble ikke funnet – velg på nytt",
   "guidedConnectTitle": "Sett opp broker",
-  "guidedConnectIntro": "Vi tester hvert trinn i tilkoblingen og viser Zigbee-enhetene dine.",
+  "guidedConnectIntro": "Vi tester MQTT-tilkoblingen og finner enheter på meldingsmegleren din.",
   "guidedBaseTopic": "Basistemae",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Test og koble til",
@@ -1499,5 +1499,16 @@
   "wgHide": "Skjul konfigurasjon",
   "wgImport": "Importer .conf-fil",
   "wgTitle": "Bruk innebygd WireGuard",
-  "wgDescription": "Koble dette hjemmet til via WireGuard i ZigDash. Andre apper beholder sin egen tilkobling."
+  "wgDescription": "Koble dette hjemmet til via WireGuard i ZigDash. Andre apper beholder sin egen tilkobling.",
+  "wbControllerBuiltins": "Kontrollerens innebygde enheter",
+  "wbAutoAddFailed": "Kunne ikke legge til oppdagede enheter. Prøv søket på nytt.",
+  "wbSearch": "Søk etter enheter og kontroller",
+  "wbAddWholeDevice": "Legg til hele enheten",
+  "wbControlCount": "Kontroller: {count}",
+  "wbAddedModules": "Tillagte moduler",
+  "wbBuiltinsAvailable": "Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter.",
+  "wbAutoAdded": "Moduler lagt til: {count}.",
+  "discoverWirenBoardNone": "Fant ingen Wiren Board-kontroller. Kontroller at MQTT-brukeren kan lese /devices-metadata, og at driverne har publisert beholdte metadata.",
+  "wbClearSearch": "Tøm søk",
+  "discoverWirenBoardHint": "Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller."
 }

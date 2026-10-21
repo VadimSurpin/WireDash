@@ -526,7 +526,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Configure seu broker",
-  "guidedConnectIntro": "Vamos testar cada etapa da conexão e mostrar seus dispositivos Zigbee.",
+  "guidedConnectIntro": "Vamos testar sua conexão MQTT e descobrir dispositivos no seu broker.",
   "guidedBaseTopic": "Tópico base",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Testar e conectar",
@@ -1499,5 +1499,16 @@
   "wgHide": "Ocultar configuração",
   "wgImport": "Importar arquivo .conf",
   "wgTitle": "Usar WireGuard integrado",
-  "wgDescription": "Conecte esta casa pelo WireGuard dentro do ZigDash. Outros aplicativos mantêm sua própria conexão."
+  "wgDescription": "Conecte esta casa pelo WireGuard dentro do ZigDash. Outros aplicativos mantêm sua própria conexão.",
+  "wbControllerBuiltins": "Dispositivos integrados ao controlador",
+  "wbAutoAddFailed": "Não foi possível adicionar os dispositivos descobertos. Repita a busca.",
+  "wbSearch": "Buscar dispositivos e controles",
+  "wbAddWholeDevice": "Adicionar dispositivo completo",
+  "wbControlCount": "Controles: {count}",
+  "wbAddedModules": "Módulos adicionados",
+  "wbBuiltinsAvailable": "Os dispositivos integrados ao controlador continuam disponíveis em Todos os dispositivos.",
+  "wbAutoAdded": "Módulos adicionados: {count}.",
+  "discoverWirenBoardNone": "Nenhum controle Wiren Board encontrado. Verifique se o usuário MQTT pode ler os metadados de /devices e se os drivers publicaram metadados retidos.",
+  "wbClearSearch": "Limpar busca",
+  "discoverWirenBoardHint": "Os módulos descobertos são adicionados automaticamente a este painel. Use + para os dispositivos integrados ou expanda um dispositivo para escolher controles individuais."
 }

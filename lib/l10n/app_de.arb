@@ -526,7 +526,7 @@
   "panelSceneChoose": "Szene",
   "panelSceneMissing": "Szene nicht gefunden – neu auswählen",
   "guidedConnectTitle": "Broker einrichten",
-  "guidedConnectIntro": "Wir testen jeden Schritt der Verbindung und zeigen Ihre Zigbee-Geräte.",
+  "guidedConnectIntro": "Wir testen die MQTT-Verbindung und suchen Geräte auf deinem Broker.",
   "guidedBaseTopic": "Basis-Topic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Testen & verbinden",
@@ -1499,5 +1499,16 @@
   "wgHide": "Konfiguration ausblenden",
   "wgImport": ".conf-Datei importieren",
   "wgTitle": "Integriertes WireGuard verwenden",
-  "wgDescription": "Dieses Zuhause über WireGuard direkt in ZigDash verbinden. Andere Apps behalten ihre eigene Verbindung."
+  "wgDescription": "Dieses Zuhause über WireGuard direkt in ZigDash verbinden. Andere Apps behalten ihre eigene Verbindung.",
+  "wbControllerBuiltins": "Im Controller integrierte Geräte",
+  "wbAutoAddFailed": "Entdeckte Geräte konnten nicht hinzugefügt werden. Erneut suchen.",
+  "wbSearch": "Geräte und Steuerelemente suchen",
+  "wbAddWholeDevice": "Ganzes Gerät hinzufügen",
+  "wbControlCount": "Steuerelemente: {count}",
+  "wbAddedModules": "Hinzugefügte Module",
+  "wbBuiltinsAvailable": "Integrierte Controller-Geräte bleiben unter „Alle Geräte“ verfügbar.",
+  "wbAutoAdded": "Hinzugefügte Module: {count}.",
+  "discoverWirenBoardNone": "Keine Wiren-Board-Steuerelemente gefunden. Lesezugriff des MQTT-Benutzers auf /devices-Metadaten und die Veröffentlichung gespeicherter Metadaten durch die Treiber prüfen.",
+  "wbClearSearch": "Suche löschen",
+  "discoverWirenBoardHint": "Entdeckte Module werden diesem Dashboard automatisch hinzugefügt. Integrierte Geräte mit + hinzufügen oder ein Gerät aufklappen, um einzelne Steuerelemente auszuwählen."
 }

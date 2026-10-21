@@ -10,10 +10,16 @@ converter is required. The connection must allow subscriptions to:
 ```
 
 Create an MQTT connection and a dashboard, then choose **Add tile → Wiren
-Board**. Devices start collapsed and are grouped into added modules and controller
-built-ins. Search matches both device and control names. Use the + button next
-to a device to add it as one panel, or expand it and select an individual
-control. Review the suggested tile and save it. Tap a whole-device panel to
+Board**. Discovered non-built-in modules are added automatically as whole-device panels,
+with no duplicates on repeated discovery. This works in initial broker setup,
+the manual connection wizard, and the dashboard discovery screen. Built-ins
+are listed in All devices and can be added manually.
+
+Devices start collapsed and are grouped into added modules and controller
+built-ins. Search matches both device and control names. Added modules show a
+check after automatic import. Use the + button next to a built-in to add it as
+one panel, or expand any device and select an individual control. Review the
+suggested individual tile and save it. Tap a whole-device panel to
 open its full, scrollable set of controls. The discovery screen also has a Zigbee2MQTT source selector.
 
 Discovery listens for retained metadata and subsequent changes. It supports
@@ -55,9 +61,7 @@ without Z2M's JSON wrappers. For numeric enums, hexadecimal metadata keys are
 converted to decimal command/matching values.
 
 The tile form remains editable. Numeric text input leaves validation of limits
-and precision to the device driver. Dedicated RGB/time editors, device error
-indicators, automatic setup probing, and WB entries in the Zigbee2MQTT Devices
-tab are not included. Discovery updates do not overwrite saved tile settings
+and precision to the device driver. Dedicated RGB/time editors, device error indicators are not included. Discovery updates do not overwrite saved tile settings
 or delete dashboard tiles; revisit discovery to add newly published controls.
 
 The protocol reference is the official
@@ -67,7 +71,7 @@ The protocol reference is the official
 
 ```
 flutter analyze
-flutter test test/features/discovery test/features/panels/panel_form_topics_test.dart test/features/panels/add_tile_screen_test.dart
+flutter test test/features/discovery test/features/devices/devices_screen_test.dart test/features/panels/wirenboard_device_panel_test.dart test/features/onboarding/setup test/app/wirenboard_localization_test.dart
 ```
 
 Tests exercise JSON and legacy retained metadata, updates/removal, malformed
