@@ -111,7 +111,8 @@ class _Connection extends MqttServerConnection<Object> {
   final WireGuardBackend backend;
   final Duration timeout;
   final SecurityContext? securityContext;
-  WireGuardForwarder? _forwarder;
+  final _forwarders = <WireGuardForwarder>[];
+  Socket? _connectingSocket;
   HttpClient? _http;
   bool _closed = false;
 
@@ -126,7 +127,7 @@ class _Connection extends MqttServerConnection<Object> {
       await forwarder.close();
       throw const SocketException('WireGuard connection was cancelled');
     }
-    _forwarder = forwarder;
+    _forwarders.add(forwarder);
     final socket = await Socket.connect(
       InternetAddress.loopbackIPv4,
       forwarder.port,
@@ -136,9 +137,29 @@ class _Connection extends MqttServerConnection<Object> {
       socket.destroy();
       throw const SocketException('WireGuard connection was cancelled');
     }
+    _connectingSocket = socket;
     // The native bridge consumes the token; the broker never sees it.
     socket.add(forwarder.token);
     await socket.flush();
+    return socket;
+  }
+
+  Future<Socket> _webSocketTransport(Uri uri) async {
+    final socket = await _socket(uri.host, uri.port);
+    // A custom HttpClient connectionFactory must perform TLS itself.
+    if (uri.scheme == 'https' || uri.scheme == 'wss') {
+      final secure = await SecureSocket.secure(
+        socket,
+        host: uri.host,
+        context: securityContext,
+      ).timeout(timeout);
+      if (_closed) {
+        secure.destroy();
+        throw const SocketException('WireGuard connection was cancelled');
+      }
+      _connectingSocket = secure;
+      return secure;
+    }
     return socket;
   }
 
@@ -153,9 +174,8 @@ class _Connection extends MqttServerConnection<Object> {
             .replace(port: port);
         final http = _http = HttpClient(context: securityContext)
           ..findProxy = (_) => 'DIRECT';
-        // HttpClient wraps this socket in TLS for WSS, using uri.host.
         http.connectionFactory = (uri, proxyHost, proxyPort) async =>
-            ConnectionTask.fromSocket(_socket(uri.host, uri.port), closeClient);
+            ConnectionTask.fromSocket(_webSocketTransport(uri), closeClient);
         final ws = await WebSocket.connect(
           uri.toString(),
           protocols: ['mqtt'],
@@ -182,6 +202,7 @@ class _Connection extends MqttServerConnection<Object> {
           client = secure;
         }
       }
+      _connectingSocket = null;
       readWrapper = mc.ReadWrapper();
       messageStream = mc.MqttByteBuffer(typed.Uint8Buffer());
       listeners.add(onListen());
@@ -228,16 +249,17 @@ class _Connection extends MqttServerConnection<Object> {
   @override
   void closeClient() {
     _closed = true;
+    _connectingSocket?.destroy();
+    _connectingSocket = null;
     final socket = client;
     client = null;
     if (socket is Socket) socket.destroy();
     if (socket is WebSocket) unawaited(socket.close());
     _http?.close(force: true);
-    final forwarder = _forwarder;
-    _forwarder = null;
-    if (forwarder != null) {
+    for (final forwarder in _forwarders) {
       unawaited(forwarder.close().catchError((Object _) {}));
     }
+    _forwarders.clear();
   }
 
   @override

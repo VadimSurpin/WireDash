@@ -122,9 +122,15 @@ SecurityContext _clientContext() =>
 
 // Enough of a broker to exercise the real client's CONNECT and SUBSCRIBE,
 // with a retained reading returned after SUBACK.
-void _serveMqtt(Socket socket) {
+void _serveMqtt(Socket socket) => _mqtt(socket, socket.add, socket.destroy);
+
+void _mqtt(
+  Stream<List<int>> input,
+  void Function(List<int>) send,
+  void Function() close,
+) {
   final buffer = <int>[];
-  socket.listen(
+  input.listen(
     (bytes) {
       buffer.addAll(bytes);
       while (buffer.length >= 2) {
@@ -140,9 +146,9 @@ void _serveMqtt(Socket socket) {
         final type = buffer.first >> 4;
         final body = buffer.sublist(offset, offset + length);
         buffer.removeRange(0, offset + length);
-        if (type == 1) socket.add([0x20, 2, 0, 0]);
+        if (type == 1) send([0x20, 2, 0, 0]);
         if (type == 8) {
-          socket.add([0x90, 3, body[0], body[1], 1]);
+          send([0x90, 3, body[0], body[1], 1]);
           const topic = 'sensors/temperature';
           final payload = [
             0,
@@ -150,17 +156,83 @@ void _serveMqtt(Socket socket) {
             ...utf8.encode(topic),
             ...utf8.encode('21.5'),
           ];
-          socket.add([0x31, payload.length, ...payload]);
+          send([0x31, payload.length, ...payload]);
         }
       }
     },
     onError: (_) {},
-    onDone: socket.destroy,
+    onDone: close,
   );
 }
 
 void main() {
   setUp(MqttManager.useProtocolRules);
+
+  for (final secure in [false, true]) {
+    test(
+      'MQTT ${secure ? "WSS" : "WS"} preserves the upgrade path and hostname',
+      () async {
+        final broker = secure
+            ? await HttpServer.bindSecure(
+                InternetAddress.loopbackIPv4,
+                0,
+                _serverContext(),
+              )
+            : await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+        final webSockets = <WebSocket>[];
+        broker.listen((request) async {
+          expect(request.uri.path, '/mqtt');
+          expect(
+            request.headers.value(HttpHeaders.hostHeader),
+            startsWith('broker.internal.invalid'),
+          );
+          final ws = await WebSocketTransformer.upgrade(
+            request,
+            protocolSelector: (_) => 'mqtt',
+          );
+          webSockets.add(ws);
+          _mqtt(ws.cast<List<int>>(), ws.add, () {
+            unawaited(ws.close());
+          });
+        }, onError: (_) {});
+        addTearDown(() async {
+          for (final ws in webSockets) {
+            await ws.close();
+          }
+          await broker.close(force: true);
+        });
+        final backend = _Backend(broker.port);
+        addTearDown(backend.close);
+        final config = BrokerConfig(
+          id: 'wg',
+          host: '${secure ? "wss" : "ws"}://broker.internal.invalid/mqtt',
+          port: broker.port,
+          protocol: secure ? MqttProtocol.wss : MqttProtocol.ws,
+          transport: ConnectionTransport.wireGuard,
+          wireGuardConfig: 'test config',
+        );
+        final manager = MqttManager(
+          config: config,
+          password: '',
+          clientFactory: (cfg, id, {host}) => WireGuardMqttClient(
+            cfg,
+            host!,
+            id,
+            backend: backend,
+            securityContext: secure ? _clientContext() : null,
+          ),
+        );
+        addTearDown(manager.dispose);
+        await manager.connect();
+        final value = manager.subscribe('sensors/temperature').first;
+        expect(
+          (await value.timeout(const Duration(seconds: 3))).payload,
+          '21.5',
+        );
+        expect(backend.targets, ['broker.internal.invalid']);
+      },
+    );
+  }
 
   for (final secure in [false, true]) {
     test(
