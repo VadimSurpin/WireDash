@@ -2925,8 +2925,14 @@ abstract class AppLocalizations {
   /// No description provided for @haHomeChange.
   ///
   /// In en, this message translates to:
-  /// **'To use another Home Assistant sign-in, delete this home and connect again. You can end the sign-in in Home Assistant under Profile › Security.'**
+  /// **'If the sign-in stops working, on a new phone or after you removed the token in Home Assistant, sign in again here. You can also end it in Home Assistant under Profile › Security.'**
   String get haHomeChange;
+
+  /// No description provided for @haHomeSignInAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in again'**
+  String get haHomeSignInAgain;
 
   /// No description provided for @haHomeRemote.
   ///

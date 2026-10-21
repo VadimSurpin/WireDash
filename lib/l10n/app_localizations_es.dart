@@ -1593,7 +1593,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Para usar otro inicio de sesión de Home Assistant, elimina esta casa y conéctate de nuevo. Puedes terminar el inicio de sesión en Home Assistant, en Perfil › Seguridad.';
+      'Si el inicio de sesión deja de funcionar, en un teléfono nuevo o tras quitar el token en Home Assistant, vuelve a iniciar sesión aquí. También puedes terminarlo en Home Assistant, en Perfil › Seguridad.';
+
+  @override
+  String get haHomeSignInAgain => 'Iniciar sesión de nuevo';
 
   @override
   String get haHomeRemote => 'Dirección remota de Home Assistant (opcional)';

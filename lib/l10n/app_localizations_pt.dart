@@ -1592,7 +1592,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Para usar outro login do Home Assistant, apague esta casa e conecte-se de novo. Você pode encerrar o login no Home Assistant, em Perfil › Segurança.';
+      'Se o login parar de funcionar, num telefone novo ou depois de remover o token no Home Assistant, entre de novo aqui. Você também pode encerrá-lo no Home Assistant, em Perfil › Segurança.';
+
+  @override
+  String get haHomeSignInAgain => 'Entrar de novo';
 
   @override
   String get haHomeRemote => 'Endereço remoto do Home Assistant (opcional)';

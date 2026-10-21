@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../mqtt/ha_token.dart';
+import '../../../mqtt/ha_address.dart';
+import '../../../mqtt/providers/mqtt_manager_provider.dart';
+import '../../../data/repositories/connection_repo.dart';
 import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
@@ -15,10 +19,19 @@ import 'setup_providers.dart';
 /// a sign-in (Home Assistant's login page, or a pasted token), a check,
 /// then back to setup, which reviews the devices.
 class HaConnectScreen extends ConsumerStatefulWidget {
-  const HaConnectScreen({super.key, this.initialHost, this.controller});
+  const HaConnectScreen({
+    super.key,
+    this.initialHost,
+    this.controller,
+    this.again,
+  });
 
   /// The Home Assistant the scan saw, if any.
   final String? initialHost;
+
+  /// Signing in again for this existing home (2.10.1): the new sign-in
+  /// replaces the stored one, and the screen returns to the home's form.
+  final String? again;
 
   /// Tests pass one; the screen builds its own otherwise.
   final HaConnectController? controller;
@@ -45,9 +58,11 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
   HaConnectController _make() => HaConnectController(
     address: widget.initialHost ?? '',
     onEvent: (event) => ref.read(analyticsProvider).track(event),
-    adopt: (address, signIn) => ref
-        .read(setupCoordinatorProvider)
-        .adoptHomeAssistant(address: address, signIn: signIn),
+    adopt: (address, signIn) => widget.again == null
+        ? ref
+              .read(setupCoordinatorProvider)
+              .adoptHomeAssistant(address: address, signIn: signIn)
+        : _replaceSignIn(widget.again!, address, signIn),
     signIn: (base) => signInToHa(
       base,
       browser: (url) => FlutterWebAuth2.authenticate(
@@ -57,9 +72,34 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
     ),
   );
 
+  /// The new sign-in replaces the stored one; the old refresh token is
+  /// ended at Home Assistant (best effort) and the live connection, if
+  /// any, is rebuilt with the new token.
+  Future<void> _replaceSignIn(String id, Uri address, String signIn) async {
+    final repo = ref.read(connectionRepoProvider);
+    final old = await repo.readPassword(id);
+    final home = await repo.getById(id);
+    final oldBase = home == null ? null : haBaseUri(home.host);
+    if (old != null && isHaRefresh(old) && oldBase != null && old != signIn) {
+      try {
+        await revokeHaSignIn(
+          oldBase,
+          old.substring(haRefreshPrefix.length),
+        ).timeout(const Duration(seconds: 5));
+      } catch (_) {}
+    }
+    await repo.setHomeAssistantSignIn(id, address: address, signIn: signIn);
+    ref.invalidate(mqttManagerProvider(id));
+  }
+
   void _onState() {
     if (!mounted) return;
     if (_controller.value is HaConnectDone) {
+      if (widget.again != null) {
+        // Back to the home's form.
+        Navigator.of(context).maybePop();
+        return;
+      }
       // Setup shows the review (or why it failed) from here, whether this
       // screen was opened from the empty result or from manual entry.
       context.go(Routes.setup);

@@ -1594,7 +1594,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Чтобы использовать другой вход в Home Assistant, удалите этот дом и подключитесь заново. Завершить вход можно в Home Assistant: Профиль › Безопасность.';
+      'Если вход перестал работать, на новом телефоне или после удаления токена в Home Assistant, войдите заново здесь. Завершить его можно и в Home Assistant: Профиль › Безопасность.';
+
+  @override
+  String get haHomeSignInAgain => 'Войти заново';
 
   @override
   String get haHomeRemote => 'Удалённый адрес Home Assistant (необязательно)';

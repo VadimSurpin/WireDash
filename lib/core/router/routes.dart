@@ -20,6 +20,13 @@ class Routes {
   static String haConnectAt(String? host) => host == null
       ? haConnect
       : Uri(path: haConnect, queryParameters: {'host': host}).toString();
+
+  /// Signing in again for a home that connects through Home Assistant
+  /// (2.10.1): a new phone, or a token the user removed.
+  static String haConnectAgain(String connectionId, String host) => Uri(
+    path: haConnect,
+    queryParameters: {'again': connectionId, 'host': host},
+  ).toString();
   static const connectionEdit = '/connections/:id/edit';
   static const dashboards = '/dashboards';
   static const settings = '/settings';

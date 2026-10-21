@@ -1589,7 +1589,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Pro použití jiného přihlášení k Home Assistantu smaž tuto domácnost a připoj se znovu. Přihlášení můžeš ukončit v Home Assistantu v Profil › Zabezpečení.';
+      'Pokud přihlášení přestane fungovat, na novém telefonu nebo po odstranění tokenu v Home Assistantu, přihlas se znovu zde. Ukončit ho můžeš i v Home Assistantu v Profil › Zabezpečení.';
+
+  @override
+  String get haHomeSignInAgain => 'Přihlásit se znovu';
 
   @override
   String get haHomeRemote => 'Vzdálená adresa Home Assistantu (nepovinné)';

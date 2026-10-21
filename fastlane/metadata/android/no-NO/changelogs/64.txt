@@ -1,0 +1,1 @@
+ZigDash 2.10.1: et hjem som er koblet til via Home Assistant kan logge inn på nytt fra innstillingene sine, for en ny telefon eller et fornyet token, uten å sette opp hjemmet på nytt.

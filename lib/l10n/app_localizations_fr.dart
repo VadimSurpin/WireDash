@@ -1600,7 +1600,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get haHomeChange =>
-      'Pour utiliser une autre connexion Home Assistant, supprimez cette maison et reconnectez-vous. Vous pouvez mettre fin à la connexion dans Home Assistant, sous Profil › Sécurité.';
+      'Si la connexion ne fonctionne plus, sur un nouveau téléphone ou après avoir retiré le jeton dans Home Assistant, reconnectez-vous ici. Vous pouvez aussi y mettre fin dans Home Assistant, sous Profil › Sécurité.';
+
+  @override
+  String get haHomeSignInAgain => 'Se reconnecter';
 
   @override
   String get haHomeRemote => 'Adresse distante de Home Assistant (facultatif)';

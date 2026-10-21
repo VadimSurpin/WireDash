@@ -1,0 +1,1 @@
+ZigDash 2.10.1 : une maison connectée via Home Assistant peut se reconnecter depuis ses réglages, pour un nouveau téléphone ou un jeton renouvelé, sans refaire la configuration.
