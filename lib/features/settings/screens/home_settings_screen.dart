@@ -6,6 +6,8 @@ import '../../../data/database/tables/connections.dart';
 import '../../ha_import/ha_auth.dart';
 import '../../../mqtt/ha_token.dart';
 import '../../../mqtt/ha_address.dart';
+import '../../../mqtt/providers/mqtt_manager_provider.dart';
+import '../../../shortcuts/shortcut_service.dart' show forgetShortcutHome;
 import '../../../core/l10n/l10n_ext.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
 import '../../../core/router/last_dashboard_store.dart';
@@ -227,6 +229,8 @@ class HomeSettingsScreen extends ConsumerWidget {
       }
     }
     await repo.delete(home.id);
+    ref.invalidate(mqttManagerProvider(home.id));
+    await forgetShortcutHome(home.id);
     await store.forget(home.id);
     // Its last-known values go with it.
     await ref.read(lastKnownStoreProvider).keepOnly(remaining.toSet());

@@ -170,8 +170,9 @@ class _Connection extends MqttServerConnection<Object> {
   ) async {
     try {
       if (isWebSocketProtocol(config.protocol)) {
-        final uri = Uri.parse(webSocketServer(config.protocol, host))
-            .replace(port: port);
+        final uri = Uri.parse(
+          webSocketServer(config.protocol, host),
+        ).replace(port: port);
         final http = _http = HttpClient(context: securityContext)
           ..findProxy = (_) => 'DIRECT';
         http.connectionFactory = (uri, proxyHost, proxyPort) async =>
@@ -248,6 +249,7 @@ class _Connection extends MqttServerConnection<Object> {
 
   @override
   void closeClient() {
+    if (_closed) return;
     _closed = true;
     _connectingSocket?.destroy();
     _connectingSocket = null;

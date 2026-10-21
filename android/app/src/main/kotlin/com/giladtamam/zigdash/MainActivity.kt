@@ -30,6 +30,8 @@ class MainActivity : FlutterActivity() {
         ch.setMethodCallHandler { call, result ->
             when (call.method) {
                 "takeAction" -> result.success(takeAction(intent))
+                "forgetHome" -> ShortcutEngine.forgetHome(this,
+                    call.argument<String>("connectionId") ?: "") { result.success(null) }
                 "requestAddTile" -> requestAddTile(call.argument<Int>("slot") ?: 1,
                     call.argument<String>("label") ?: "ZigDash", result)
                 "requestPinWidget" -> result.success(PinWidgetReceiver.request(this,

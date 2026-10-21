@@ -27,6 +27,16 @@ const shortcutTileSlots = 4;
 /// The `zigdash/app` channel (MainActivity.kt).
 const appChannel = MethodChannel('zigdash/app');
 
+Future<void> forgetShortcutHome(String connectionId) async {
+  try {
+    await appChannel.invokeMethod<void>('forgetHome', {
+      'connectionId': connectionId,
+    });
+  } on MissingPluginException {
+    // There is no native shortcut engine outside Android (or in tests).
+  }
+}
+
 /// How a request to add a tile went.
 enum AddTileResult { added, already, declined, unsupported, failed }
 
