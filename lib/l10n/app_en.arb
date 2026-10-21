@@ -2232,5 +2232,7 @@
   "wgTitle": "Use embedded WireGuard",
   "wgImport": "Import .conf file",
   "wgHide": "Hide configuration",
-  "wgConfiguration": "WireGuard configuration"
+  "wgConfiguration": "WireGuard configuration",
+  "discoverWirenBoardHint": "Discover controls from retained /devices MQTT metadata. Select a control to add a tile.",
+  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata."
 }
