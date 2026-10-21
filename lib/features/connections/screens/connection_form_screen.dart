@@ -94,6 +94,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       _autoConnect = c.autoConnect;
       _transport = transportOf(c.transport);
       _wireGuard.text = wireGuard ?? '';
+      _showWireGuard = _useWireGuard && _wireGuard.text.isEmpty;
       _loaded = true;
     });
   }
@@ -106,8 +107,8 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   Future<void> _importWireGuard() async {
     try {
       final picked = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['conf'],
+        // Android often labels .conf as text/plain or octet-stream. Let the
+        // native validator check the contents instead of hiding these files.
         withData: true,
       );
       if (picked == null || !mounted) return;
@@ -117,7 +118,12 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       }
       final text = utf8.decode(bytes);
       await createWireGuardBackend().validate(text);
-      if (mounted) setState(() => _wireGuard.text = text);
+      if (mounted) {
+        setState(() {
+          _wireGuard.text = text;
+          _showWireGuard = false;
+        });
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -488,12 +494,14 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                             _transport = enabled
                                 ? ConnectionTransport.wireGuard
                                 : ConnectionTransport.mqtt;
+                            _showWireGuard = enabled && _wireGuard.text.isEmpty;
                           })
                         : null,
                   ),
                   if (_useWireGuard) ...[
                     TextFormField(
                       controller: _wireGuard,
+                      readOnly: !_showWireGuard,
                       obscureText: !_showWireGuard,
                       maxLines: _showWireGuard ? 8 : 1,
                       autocorrect: false,

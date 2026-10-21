@@ -25,7 +25,8 @@ class _MemSecure implements SecureStore {
   @override
   Future<String?> readWireGuard(String id) async => _wireGuard[id];
   @override
-  Future<void> writeWireGuard(String id, String config) async => _wireGuard[id] = config;
+  Future<void> writeWireGuard(String id, String config) async =>
+      _wireGuard[id] = config;
   @override
   Future<void> deleteWireGuard(String id) async => _wireGuard.remove(id);
 
@@ -98,6 +99,33 @@ class _RecordingFirstRun implements FirstRun {
 }
 
 void main() {
+  testWidgets('WireGuard configuration can be pasted with its line breaks', (
+    tester,
+  ) async {
+    final db = AppDatabase.test(NativeDatabase.memory());
+    addTearDown(db.close);
+    await tester.pumpWidget(_wrap(db));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Advanced'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Advanced'));
+    await tester.pumpAndSettle();
+    final toggle = find.widgetWithText(
+      SwitchListTile,
+      'Use embedded WireGuard',
+    );
+    await tester.ensureVisible(toggle);
+    await tester.pumpAndSettle();
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    final field = find.widgetWithText(TextFormField, 'WireGuard configuration');
+    await tester.ensureVisible(field);
+    await tester.pumpAndSettle();
+    const config =
+        '[Interface]\nPrivateKey = test\nAddress = 10.0.0.2/32\n[Peer]\n';
+    await tester.enterText(field, config);
+    expect(tester.widget<TextFormField>(field).controller!.text, config);
+  });
   // First-run decision: completing real setup deletes the demo connection.
   // Saving a new home through this form counts as real setup too.
   testWidgets('saving a new home finishes first run with it', (tester) async {

@@ -107,7 +107,7 @@ val buildWireGuard by tasks.registering(Exec::class) {
 tasks.named("preBuild") { dependsOn(buildWireGuard) }
 
 dependencies {
-    implementation(files("libs/wireguard.aar"))
+    implementation(files("libs/wireguard.aar").builtBy(buildWireGuard))
     // Alerts arrive through Google's push with ZigDash as its own UnifiedPush
     // distributor: no Firebase project, no second app (alerts-2.3.md).
     implementation("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")
