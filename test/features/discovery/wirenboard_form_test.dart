@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zigdash/data/database/database.dart';
+import 'package:zigdash/data/database/tables/panels.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/data/repositories/dashboard_repo.dart';
 import 'package:zigdash/data/repositories/panel_repo.dart';
@@ -18,8 +19,17 @@ import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _Panels implements PanelRepo {
   Map<Symbol, dynamic>? saved;
+  Panel? existing;
   @override
   dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.memberName == #getById) {
+      return Future<Panel?>.value(existing);
+    }
+    if (invocation.memberName == #setDevice) return Future<void>.value();
+    if (invocation.memberName == #update) {
+      saved = invocation.namedArguments;
+      return Future<void>.value();
+    }
     if (invocation.memberName == #create) {
       saved = invocation.namedArguments;
       return Future<String>.value('new-panel');
@@ -49,6 +59,8 @@ class _Dashboards implements DashboardRepo {
 
 void main() {
   const cases = {
+    'device edit': '{"type":"switch"}',
+    'device': '{"type":"switch"}',
     'switch': '{"type":"switch"}',
     'range': '{"type":"range","min":10,"max":200}',
     'reading': '{"type":"value","units":"V","readonly":true}',
@@ -63,8 +75,31 @@ void main() {
       final discovery = WirenBoardDiscovery()
         ..apply('$topic/meta', entry.value);
       final device = discovery.devices.single;
-      final suggestion = suggestWirenBoardPanel(device, device.controls.single);
+      final whole = entry.key.startsWith('device');
+      final editing = entry.key == 'device edit';
+      final suggestion = whole
+          ? suggestWirenBoardDevicePanel(device)
+          : suggestWirenBoardPanel(device, device.controls.single);
       final panels = _Panels();
+      if (editing) {
+        panels.existing = Panel(
+          id: 'existing',
+          dashboardId: 'd1',
+          name: suggestion.name,
+          type: suggestion.type,
+          topic: suggestion.publishTopicSuffix,
+          subscribeTopic: suggestion.subscribeTopicSuffix,
+          topicPrefixOverride: suggestion.topicPrefixOverride,
+          qos: 1,
+          retain: false,
+          width: PanelWidth.wide,
+          sortOrder: 0,
+          config: suggestion.config!.encode(),
+          mergeFlags: 0,
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        );
+      }
       final dashboards = _Dashboards();
       final router = GoRouter(
         routes: [
@@ -82,7 +117,8 @@ void main() {
             builder: (_, __) => PanelFormScreen(
               connectionId: 'c1',
               dashboardId: 'd1',
-              suggestion: suggestion,
+              suggestion: editing ? null : suggestion,
+              panelId: editing ? 'existing' : null,
             ),
           ),
         ],
@@ -125,15 +161,15 @@ void main() {
       final saved = panels.saved!;
       expect(saved[#config].encode(), suggestion.config!.encode());
       expect(saved[#retain], isFalse);
-      expect(saved[#type], suggestion.type);
+      if (!editing) expect(saved[#type], suggestion.type);
       expect(
         composeTopic(
           saved[#topicPrefixOverride],
           saved[#subscribeTopic] ?? saved[#topic],
         ),
-        topic,
+        whole ? '/devices/board' : topic,
       );
-      if (!device.controls.single.readOnly) {
+      if (!whole && !device.controls.single.readOnly) {
         expect(
           composeTopic(saved[#topicPrefixOverride], saved[#topic]),
           '$topic/on',

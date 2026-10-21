@@ -2233,6 +2233,19 @@
   "wgImport": "Import .conf file",
   "wgHide": "Hide configuration",
   "wgConfiguration": "WireGuard configuration",
-  "discoverWirenBoardHint": "Discover controls from retained /devices MQTT metadata. Select a control to add a tile.",
-  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata."
+  "discoverWirenBoardHint": "Add a whole device with +, or expand it to choose individual controls.",
+  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.",
+  "wbControllerBuiltins": "Controller built-ins",
+  "wbSearch": "Search devices and controls",
+  "wbAddWholeDevice": "Add whole device",
+  "wbControlCount": "{count} controls",
+  "wbAddedModules": "Added modules",
+  "@wbControlCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wbClearSearch": "Clear search"
 }
