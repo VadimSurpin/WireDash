@@ -1317,7 +1317,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Otestujeme každý krok připojení a ukážeme tvoje zařízení Zigbee.';
+      'Otestujeme připojení MQTT a vyhledáme zařízení na vašem brokeru.';
 
   @override
   String get guidedBaseTopic => 'Základní téma';
@@ -3744,29 +3744,42 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'Nebyly nalezeny žádné ovládací prvky Wiren Board. Zkontrolujte přístup MQTT uživatele k metadatům /devices a publikování metadat s příznakem retained.';
 
   @override
-  String get wbControllerBuiltins => 'Controller built-ins';
+  String get wbControllerBuiltins => 'Vestavěná zařízení kontroléru';
 
   @override
-  String get wbAddedModules => 'Added modules';
+  String get wbAddedModules => 'Přidané moduly';
 
   @override
-  String get wbAddWholeDevice => 'Add whole device';
+  String get wbAddWholeDevice => 'Přidat celé zařízení';
 
   @override
   String wbControlCount(int count) {
-    return '$count controls';
+    return 'Ovládací prvky: $count';
   }
 
   @override
-  String get wbSearch => 'Search devices and controls';
+  String get wbSearch => 'Hledat zařízení a ovládací prvky';
 
   @override
-  String get wbClearSearch => 'Clear search';
+  String get wbClearSearch => 'Vymazat hledání';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Přidané moduly: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Nalezená zařízení nelze přidat. Zkuste hledání znovu.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.';
 }

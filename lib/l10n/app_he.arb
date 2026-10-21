@@ -526,7 +526,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "הגדרת ברוקר",
-  "guidedConnectIntro": "נבדוק כל שלב בחיבור ונציג את מכשירי ה-Zigbee שלכם.",
+  "guidedConnectIntro": "נבדוק את חיבור ה־MQTT ונחפש התקנים בשרת ההודעות שלך.",
   "guidedBaseTopic": "נושא בסיס",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "בדיקה וחיבור",
@@ -1241,5 +1241,16 @@
   "setupIsolatedHint": "הטלפון שלכם כמעט לא רואה שום דבר אחר ברשת ה-Wi-Fi הזו. ייתכן שהוא ברשת אורחים, או שהנתב מפריד בין המכשירים (נקרא לרוב client isolation או AP isolation). התחברו ל-Wi-Fi הראשי או כבו את זה, ונסו שוב.",
   "setupAuthTrust": "פרטי ההתחברות נשארים בטלפון הזה ועוברים רק ל-broker שלכם. ל-ZigDash אין שרת ואין חשבון, וכל אפליקציית MQTT מתחברת כך. הכי בטוח: משתמש MQTT נפרד רק ל-ZigDash, שאפשר למחוק בכל רגע.",
   "setupAuthWhatKept": "מה ZigDash שומר",
-  "setupAuthDemoFirst": "לנסות קודם את ההדגמה"
+  "setupAuthDemoFirst": "לנסות קודם את ההדגמה",
+  "discoverWirenBoardHint": "מודולים שהתגלו נוספים ללוח הבקרה הזה באופן אוטומטי. השתמשו ב־+ להתקנים מובנים, או הרחיבו התקן כדי לבחור פקדים בודדים.",
+  "discoverWirenBoardNone": "לא נמצאו פקדי Wiren Board. יש לבדוק שלמשתמש MQTT יש גישה למטא־נתונים של /devices ושהדרייברים פרסמו מטא־נתונים שמורים.",
+  "wbControllerBuiltins": "התקנים מובנים בבקר",
+  "wbAddedModules": "מודולים שנוספו",
+  "wbAddWholeDevice": "הוספת התקן שלם",
+  "wbControlCount": "פקדים: {count}",
+  "wbSearch": "חיפוש התקנים ופקדים",
+  "wbClearSearch": "ניקוי החיפוש",
+  "wbAutoAdded": "מודולים שנוספו: {count}.",
+  "wbAutoAddFailed": "לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב.",
+  "wbBuiltinsAvailable": "ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים."
 }

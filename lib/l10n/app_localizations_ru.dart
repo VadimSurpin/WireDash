@@ -1329,7 +1329,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Мы проверим каждый этап подключения и покажем ваши Zigbee-устройства.';
+      'Проверим подключение MQTT и найдём устройства на вашем брокере.';
 
   @override
   String get guidedBaseTopic => 'Базовый топик';
@@ -3735,7 +3735,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Нажмите +, чтобы добавить устройство целиком, или раскройте его для выбора отдельных контролов.';
+      'Обнаруженные модули добавляются на эту панель автоматически. Нажмите + для встроенных устройств или раскройте устройство для выбора отдельных контролов.';
 
   @override
   String get discoverWirenBoardNone =>
@@ -3760,4 +3760,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Очистить поиск';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Добавлено модулей: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Не удалось добавить обнаруженные устройства. Повторите поиск.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Встроенные устройства контроллера остаются доступными в списке всех устройств.';
 }

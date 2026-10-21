@@ -1334,7 +1334,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Przetestujemy każdy etap połączenia i pokażemy Twoje urządzenia Zigbee.';
+      'Sprawdzimy połączenie MQTT i wyszukamy urządzenia na Twoim brokerze.';
 
   @override
   String get guidedBaseTopic => 'Temat bazowy';
@@ -3742,29 +3742,42 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'Wykryte moduły są automatycznie dodawane do tego pulpitu. Użyj + dla urządzeń wbudowanych lub rozwiń urządzenie, aby wybrać poszczególne elementy sterujące.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'Nie znaleziono elementów sterujących Wiren Board. Sprawdź dostęp użytkownika MQTT do metadanych /devices oraz publikowanie metadanych z flagą retained przez sterowniki.';
 
   @override
-  String get wbControllerBuiltins => 'Controller built-ins';
+  String get wbControllerBuiltins => 'Wbudowane urządzenia kontrolera';
 
   @override
-  String get wbAddedModules => 'Added modules';
+  String get wbAddedModules => 'Dodane moduły';
 
   @override
-  String get wbAddWholeDevice => 'Add whole device';
+  String get wbAddWholeDevice => 'Dodaj całe urządzenie';
 
   @override
   String wbControlCount(int count) {
-    return '$count controls';
+    return 'Elementy sterujące: $count';
   }
 
   @override
-  String get wbSearch => 'Search devices and controls';
+  String get wbSearch => 'Szukaj urządzeń i elementów sterujących';
 
   @override
-  String get wbClearSearch => 'Clear search';
+  String get wbClearSearch => 'Wyczyść wyszukiwanie';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Dodane moduły: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Nie udało się dodać wykrytych urządzeń. Ponów wyszukiwanie.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Wbudowane urządzenia kontrolera pozostają dostępne na liście wszystkich urządzeń.';
 }

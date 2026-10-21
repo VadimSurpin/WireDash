@@ -1322,7 +1322,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'We testen elke stap van de verbinding en tonen uw Zigbee-apparaten.';
+      'We testen je MQTT-verbinding en zoeken apparaten op je broker.';
 
   @override
   String get guidedBaseTopic => 'Basis-topic';
@@ -3750,29 +3750,42 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'Geen Wiren Board-bedieningselementen gevonden. Controleer of de MQTT-gebruiker /devices-metadata kan lezen en of de stuurprogramma’s behouden metadata publiceren.';
 
   @override
-  String get wbControllerBuiltins => 'Controller built-ins';
+  String get wbControllerBuiltins => 'Ingebouwde controllerapparaten';
 
   @override
-  String get wbAddedModules => 'Added modules';
+  String get wbAddedModules => 'Toegevoegde modules';
 
   @override
-  String get wbAddWholeDevice => 'Add whole device';
+  String get wbAddWholeDevice => 'Volledig apparaat toevoegen';
 
   @override
   String wbControlCount(int count) {
-    return '$count controls';
+    return 'Bedieningselementen: $count';
   }
 
   @override
-  String get wbSearch => 'Search devices and controls';
+  String get wbSearch => 'Apparaten en bedieningselementen zoeken';
 
   @override
-  String get wbClearSearch => 'Clear search';
+  String get wbClearSearch => 'Zoekopdracht wissen';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Modules toegevoegd: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.';
 }

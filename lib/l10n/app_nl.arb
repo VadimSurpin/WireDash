@@ -465,7 +465,7 @@
   "languageNorwegian": "Norsk",
   "languageSpanish": "Español",
   "guidedConnectTitle": "Broker instellen",
-  "guidedConnectIntro": "We testen elke stap van de verbinding en tonen uw Zigbee-apparaten.",
+  "guidedConnectIntro": "We testen je MQTT-verbinding en zoeken apparaten op je broker.",
   "guidedBaseTopic": "Basis-topic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Testen en verbinden",
@@ -1172,5 +1172,16 @@
   "setupIsolatedHint": "Je telefoon ziet bijna niets anders op deze wifi. Hij zit misschien op een gastnetwerk, of de router houdt apparaten gescheiden (vaak client- of AP-isolatie genoemd). Verbind met je hoofdwifi of zet dat uit, en probeer het opnieuw.",
   "setupAuthTrust": "Je login blijft op deze telefoon en gaat alleen naar je eigen broker. ZigDash heeft geen server en geen account, en elke MQTT-app logt zo in. Het veiligst: een aparte MQTT-gebruiker alleen voor ZigDash, die je altijd kunt verwijderen.",
   "setupAuthWhatKept": "Wat ZigDash bewaart",
-  "setupAuthDemoFirst": "Eerst de demo proberen"
+  "setupAuthDemoFirst": "Eerst de demo proberen",
+  "discoverWirenBoardHint": "Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen.",
+  "discoverWirenBoardNone": "Geen Wiren Board-bedieningselementen gevonden. Controleer of de MQTT-gebruiker /devices-metadata kan lezen en of de stuurprogramma’s behouden metadata publiceren.",
+  "wbControllerBuiltins": "Ingebouwde controllerapparaten",
+  "wbAddedModules": "Toegevoegde modules",
+  "wbAddWholeDevice": "Volledig apparaat toevoegen",
+  "wbControlCount": "Bedieningselementen: {count}",
+  "wbSearch": "Apparaten en bedieningselementen zoeken",
+  "wbClearSearch": "Zoekopdracht wissen",
+  "wbAutoAdded": "Modules toegevoegd: {count}.",
+  "wbAutoAddFailed": "Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw.",
+  "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten."
 }

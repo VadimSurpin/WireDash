@@ -1314,7 +1314,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Vi tester hvert trinn i tilkoblingen og viser Zigbee-enhetene dine.';
+      'Vi tester MQTT-tilkoblingen og finner enheter på meldingsmegleren din.';
 
   @override
   String get guidedBaseTopic => 'Basistemae';
@@ -3734,29 +3734,42 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'Fant ingen Wiren Board-kontroller. Kontroller at MQTT-brukeren kan lese /devices-metadata, og at driverne har publisert beholdte metadata.';
 
   @override
-  String get wbControllerBuiltins => 'Controller built-ins';
+  String get wbControllerBuiltins => 'Kontrollerens innebygde enheter';
 
   @override
-  String get wbAddedModules => 'Added modules';
+  String get wbAddedModules => 'Tillagte moduler';
 
   @override
-  String get wbAddWholeDevice => 'Add whole device';
+  String get wbAddWholeDevice => 'Legg til hele enheten';
 
   @override
   String wbControlCount(int count) {
-    return '$count controls';
+    return 'Kontroller: $count';
   }
 
   @override
-  String get wbSearch => 'Search devices and controls';
+  String get wbSearch => 'Søk etter enheter og kontroller';
 
   @override
-  String get wbClearSearch => 'Clear search';
+  String get wbClearSearch => 'Tøm søk';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Moduler lagt til: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Kunne ikke legge til oppdagede enheter. Prøv søket på nytt.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter.';
 }

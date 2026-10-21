@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
 
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -71,6 +72,7 @@ class _FakeCreator implements SetupStore {
   String? lastHost;
   String? lastPassword;
   ConnectionTransport? lastTransport;
+  List<WirenBoardDevice> lastWirenBoardDevices = const [];
   @override
   Future<SetupResult> create({
     required String host,
@@ -84,6 +86,7 @@ class _FakeCreator implements SetupStore {
     int dashboardIcon = 0,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    List<WirenBoardDevice> wirenBoardDevices = const [],
     ConnectionTransport transport = ConnectionTransport.mqtt,
   }) async {
     calls++;
@@ -91,6 +94,7 @@ class _FakeCreator implements SetupStore {
     lastHost = host;
     lastPassword = password;
     lastTransport = transport;
+    lastWirenBoardDevices = wirenBoardDevices;
     if (error != null) throw error!;
     return SetupResult(
       connectionId: 'c1',
@@ -161,6 +165,22 @@ class _Harness {
 }
 
 void main() {
+  test('Wiren Board-only discovery creates module tiles without requiring Z2M', () async {
+    final devices = (WirenBoardDiscovery()
+      ..apply('/devices/hwmon/controls/CPU/meta', '{"type":"temperature","readonly":true}')
+      ..apply('/devices/wb-mr6_10/controls/Relay 1/meta', '{"type":"switch"}')).devices;
+    final h = _Harness(fetch: Z2mFetchResult(detected: false, devices: const [], wirenBoardDevices: devices));
+    await h.coordinator.selectCandidate(const SetupCandidate(host: '192.168.1.10', port: 1883, protocol: MqttProtocol.tcp));
+    final review = h.coordinator.state as SetupReview;
+    expect(review.rows, isEmpty);
+    expect(review.wirenBoardDevices, hasLength(2));
+    expect(review.selectedCount, 1, reason: 'Built-ins are not automatically selected');
+    await h.coordinator.createDashboard();
+    expect(h.coordinator.state, isA<SetupComplete>());
+    expect(h.creator.lastWirenBoardDevices, devices);
+    h.coordinator.dispose();
+  });
+
   test('starts idle', () {
     expect(_Harness().coordinator.state, isA<SetupIdle>());
   });

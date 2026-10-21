@@ -47,7 +47,7 @@ class WirenBoardDevicePanel extends ConsumerWidget {
           isScrollControlled: true,
           useSafeArea: true,
           showDragHandle: true,
-          builder: (_) => _WirenBoardControls(
+          builder: (_) => WirenBoardDeviceControls(
             connectionId: connectionId,
             panel: panel,
             config: config,
@@ -148,8 +148,9 @@ WirenBoardDevice _currentDevice(
         .firstOrNull ??
     cached;
 
-class _WirenBoardControls extends ConsumerWidget {
-  const _WirenBoardControls({
+class WirenBoardDeviceControls extends ConsumerWidget {
+  const WirenBoardDeviceControls({
+    super.key,
     required this.connectionId,
     required this.panel,
     required this.config,

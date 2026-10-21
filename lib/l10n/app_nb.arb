@@ -465,7 +465,7 @@
   "languageNorwegian": "Norsk",
   "languageSpanish": "Español",
   "guidedConnectTitle": "Sett opp broker",
-  "guidedConnectIntro": "Vi tester hvert trinn i tilkoblingen og viser Zigbee-enhetene dine.",
+  "guidedConnectIntro": "Vi tester MQTT-tilkoblingen og finner enheter på meldingsmegleren din.",
   "guidedBaseTopic": "Basistemae",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Test og koble til",
@@ -1172,5 +1172,16 @@
   "setupIsolatedHint": "Telefonen ser nesten ingenting annet på dette Wi-Fi-et. Den er kanskje på et gjestenett, eller ruteren holder enhetene adskilt (ofte kalt klient- eller AP-isolering). Koble til hoved-Wi-Fi-et eller slå det av, og prøv igjen.",
   "setupAuthTrust": "Innloggingen blir på denne telefonen og går bare til din egen broker. ZigDash har ingen server og ingen konto, og alle MQTT-apper logger inn slik. Tryggest: en egen MQTT-bruker bare for ZigDash, som du kan fjerne når som helst.",
   "setupAuthWhatKept": "Hva ZigDash lagrer",
-  "setupAuthDemoFirst": "Prøv demoen først"
+  "setupAuthDemoFirst": "Prøv demoen først",
+  "discoverWirenBoardHint": "Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller.",
+  "discoverWirenBoardNone": "Fant ingen Wiren Board-kontroller. Kontroller at MQTT-brukeren kan lese /devices-metadata, og at driverne har publisert beholdte metadata.",
+  "wbControllerBuiltins": "Kontrollerens innebygde enheter",
+  "wbAddedModules": "Tillagte moduler",
+  "wbAddWholeDevice": "Legg til hele enheten",
+  "wbControlCount": "Kontroller: {count}",
+  "wbSearch": "Søk etter enheter og kontroller",
+  "wbClearSearch": "Tøm søk",
+  "wbAutoAdded": "Moduler lagt til: {count}.",
+  "wbAutoAddFailed": "Kunne ikke legge til oppdagede enheter. Prøv søket på nytt.",
+  "wbBuiltinsAvailable": "Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter."
 }

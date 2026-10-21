@@ -1303,7 +1303,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'נבדוק כל שלב בחיבור ונציג את מכשירי ה-Zigbee שלכם.';
+      'נבדוק את חיבור ה־MQTT ונחפש התקנים בשרת ההודעות שלך.';
 
   @override
   String get guidedBaseTopic => 'נושא בסיס';
@@ -3701,29 +3701,42 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'מודולים שהתגלו נוספים ללוח הבקרה הזה באופן אוטומטי. השתמשו ב־+ להתקנים מובנים, או הרחיבו התקן כדי לבחור פקדים בודדים.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'לא נמצאו פקדי Wiren Board. יש לבדוק שלמשתמש MQTT יש גישה למטא־נתונים של /devices ושהדרייברים פרסמו מטא־נתונים שמורים.';
 
   @override
-  String get wbControllerBuiltins => 'Controller built-ins';
+  String get wbControllerBuiltins => 'התקנים מובנים בבקר';
 
   @override
-  String get wbAddedModules => 'Added modules';
+  String get wbAddedModules => 'מודולים שנוספו';
 
   @override
-  String get wbAddWholeDevice => 'Add whole device';
+  String get wbAddWholeDevice => 'הוספת התקן שלם';
 
   @override
   String wbControlCount(int count) {
-    return '$count controls';
+    return 'פקדים: $count';
   }
 
   @override
-  String get wbSearch => 'Search devices and controls';
+  String get wbSearch => 'חיפוש התקנים ופקדים';
 
   @override
-  String get wbClearSearch => 'Clear search';
+  String get wbClearSearch => 'ניקוי החיפוש';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'מודולים שנוספו: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים.';
 }

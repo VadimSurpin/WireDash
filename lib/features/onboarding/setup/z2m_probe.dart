@@ -7,6 +7,7 @@ import '../../../mqtt/client_factory.dart';
 import '../../../mqtt/endpoint.dart';
 import '../../../mqtt/mqtt_manager.dart' show MqttClientFactory;
 import '../../discovery/models/z2m_device.dart';
+import '../../discovery/models/wirenboard_device.dart';
 import 'setup_coordinator.dart';
 
 /// Verification fetcher for the setup coordinator: connects a throwaway probe
@@ -56,6 +57,7 @@ class Z2mProbeFetcher {
       return const Z2mFetchResult(detected: false, devices: []);
     }
 
+    final wirenBoard = WirenBoardDiscovery();
     var detected = false;
     var devices = <Z2mDevice>[];
     final others = <String>{};
@@ -63,6 +65,10 @@ class Z2mProbeFetcher {
       for (final event in events) {
         final pub = event.payload;
         if (pub is! mc.MqttPublishMessage) continue;
+        wirenBoard.apply(
+          event.topic,
+          mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message),
+        );
         // Another Zigbee2MQTT on this broker, under its own base topic.
         if (event.topic.endsWith('/bridge/state') &&
             !event.topic.startsWith('$base/')) {
@@ -89,6 +95,8 @@ class Z2mProbeFetcher {
     });
     try {
       client
+        ..subscribe('/devices/+/meta/#', mc.MqttQos.atLeastOnce)
+        ..subscribe('/devices/+/controls/+/meta/#', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/bridge/devices', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/bridge/info', mc.MqttQos.atLeastOnce)
         ..subscribe('$base/bridge/state', mc.MqttQos.atLeastOnce)
@@ -102,6 +110,7 @@ class Z2mProbeFetcher {
     }
     return Z2mFetchResult(
       detected: detected,
+      wirenBoardDevices: wirenBoard.devices,
       devices: devices,
       otherBases: others.toList()..sort(),
     );

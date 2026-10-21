@@ -1324,7 +1324,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Wir testen jeden Schritt der Verbindung und zeigen Ihre Zigbee-Geräte.';
+      'Wir testen die MQTT-Verbindung und suchen Geräte auf deinem Broker.';
 
   @override
   String get guidedBaseTopic => 'Basis-Topic';
@@ -3754,29 +3754,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'Entdeckte Module werden diesem Dashboard automatisch hinzugefügt. Integrierte Geräte mit + hinzufügen oder ein Gerät aufklappen, um einzelne Steuerelemente auszuwählen.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'Keine Wiren-Board-Steuerelemente gefunden. Lesezugriff des MQTT-Benutzers auf /devices-Metadaten und die Veröffentlichung gespeicherter Metadaten durch die Treiber prüfen.';
 
   @override
-  String get wbControllerBuiltins => 'Controller built-ins';
+  String get wbControllerBuiltins => 'Im Controller integrierte Geräte';
 
   @override
-  String get wbAddedModules => 'Added modules';
+  String get wbAddedModules => 'Hinzugefügte Module';
 
   @override
-  String get wbAddWholeDevice => 'Add whole device';
+  String get wbAddWholeDevice => 'Ganzes Gerät hinzufügen';
 
   @override
   String wbControlCount(int count) {
-    return '$count controls';
+    return 'Steuerelemente: $count';
   }
 
   @override
-  String get wbSearch => 'Search devices and controls';
+  String get wbSearch => 'Geräte und Steuerelemente suchen';
 
   @override
-  String get wbClearSearch => 'Clear search';
+  String get wbClearSearch => 'Suche löschen';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Hinzugefügte Module: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Entdeckte Geräte konnten nicht hinzugefügt werden. Erneut suchen.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Integrierte Controller-Geräte bleiben unter „Alle Geräte“ verfügbar.';
 }

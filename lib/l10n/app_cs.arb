@@ -392,7 +392,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Nastav svůj broker",
-  "guidedConnectIntro": "Otestujeme každý krok připojení a ukážeme tvoje zařízení Zigbee.",
+  "guidedConnectIntro": "Otestujeme připojení MQTT a vyhledáme zařízení na vašem brokeru.",
   "guidedBaseTopic": "Základní téma",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Otestovat a připojit",
@@ -1087,5 +1087,16 @@
   "setupIsolatedHint": "Tvůj telefon v této Wi-Fi nevidí skoro nic jiného. Může být v síti pro hosty, nebo router drží zařízení odděleně (často se tomu říká izolace klientů nebo AP). Připoj se k hlavní Wi-Fi, nebo to vypni, a zkus to znovu.",
   "setupAuthTrust": "Tvoje přihlášení zůstává v tomto telefonu a jde jen na tvůj vlastní broker. ZigDash nemá server ani účet a každá MQTT aplikace se přihlašuje stejně. Nejbezpečnější: samostatný MQTT uživatel jen pro ZigDash, kterého můžeš kdykoli odstranit.",
   "setupAuthWhatKept": "Co si ZigDash uchovává",
-  "setupAuthDemoFirst": "Nejdřív vyzkoušej demo"
+  "setupAuthDemoFirst": "Nejdřív vyzkoušej demo",
+  "discoverWirenBoardHint": "Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky.",
+  "discoverWirenBoardNone": "Nebyly nalezeny žádné ovládací prvky Wiren Board. Zkontrolujte přístup MQTT uživatele k metadatům /devices a publikování metadat s příznakem retained.",
+  "wbControllerBuiltins": "Vestavěná zařízení kontroléru",
+  "wbAddedModules": "Přidané moduly",
+  "wbAddWholeDevice": "Přidat celé zařízení",
+  "wbControlCount": "Ovládací prvky: {count}",
+  "wbSearch": "Hledat zařízení a ovládací prvky",
+  "wbClearSearch": "Vymazat hledání",
+  "wbAutoAdded": "Přidané moduly: {count}.",
+  "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu.",
+  "wbBuiltinsAvailable": "Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení."
 }

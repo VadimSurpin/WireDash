@@ -1312,7 +1312,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'We\'ll test each step of the connection and show your Zigbee devices.';
+      'We\'ll test your MQTT connection and discover devices on your broker.';
 
   @override
   String get guidedBaseTopic => 'Base topic';
@@ -3735,11 +3735,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
+      'Discovered modules are added to this dashboard automatically. Use + for built-ins, or expand a device to choose individual controls.';
 
   @override
   String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that drivers have published retained metadata.';
 
   @override
   String get wbControllerBuiltins => 'Controller built-ins';
@@ -3760,4 +3760,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Clear search';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Modules added: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Could not add discovered devices. Try discovery again.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Controller built-ins remain available in All devices.';
 }

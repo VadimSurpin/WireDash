@@ -392,7 +392,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Configurez votre broker",
-  "guidedConnectIntro": "Nous testerons chaque étape de la connexion et afficherons vos appareils Zigbee.",
+  "guidedConnectIntro": "Nous testerons votre connexion MQTT et rechercherons les appareils sur votre broker.",
   "guidedBaseTopic": "Topic de base",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Tester et connecter",
@@ -1097,5 +1097,16 @@
   "setupIsolatedHint": "Votre téléphone ne voit presque rien d'autre sur ce Wi-Fi. Il est peut-être sur un réseau invité, ou le routeur isole les appareils (souvent appelé isolation des clients ou de l'AP). Rejoignez votre Wi-Fi principal ou désactivez cela, puis réessayez.",
   "setupAuthTrust": "Votre identifiant reste sur ce téléphone et ne va qu'à votre propre broker. ZigDash n'a ni serveur ni compte, et toute app MQTT se connecte ainsi. Le plus sûr : un utilisateur MQTT dédié à ZigDash, que vous pouvez supprimer à tout moment.",
   "setupAuthWhatKept": "Ce que ZigDash garde",
-  "setupAuthDemoFirst": "Essayer d'abord la démo"
+  "setupAuthDemoFirst": "Essayer d'abord la démo",
+  "discoverWirenBoardHint": "Les modules détectés sont ajoutés automatiquement à ce tableau de bord. Utilisez + pour les équipements intégrés, ou dépliez un appareil pour choisir ses commandes.",
+  "discoverWirenBoardNone": "Aucune commande Wiren Board trouvée. Vérifiez l’accès de l’utilisateur MQTT aux métadonnées /devices et la publication des métadonnées conservées par les pilotes.",
+  "wbControllerBuiltins": "Équipements intégrés au contrôleur",
+  "wbAddedModules": "Modules ajoutés",
+  "wbAddWholeDevice": "Ajouter l’appareil entier",
+  "wbControlCount": "Commandes : {count}",
+  "wbSearch": "Rechercher des appareils et commandes",
+  "wbClearSearch": "Effacer la recherche",
+  "wbAutoAdded": "Modules ajoutés : {count}.",
+  "wbAutoAddFailed": "Impossible d’ajouter les appareils détectés. Relancez la recherche.",
+  "wbBuiltinsAvailable": "Les équipements intégrés au contrôleur restent disponibles dans Tous les appareils."
 }
