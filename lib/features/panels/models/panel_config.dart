@@ -608,7 +608,7 @@ class GaugeBand {
 /// A gauge may carry at most this many bands.
 const gaugeMaxBands = 3;
 
-/// A reading tile: one numeric value at [jsonPath] of the subscribed
+/// A reading tile: one numeric value at [jsonPath] (empty for a raw scalar) of the subscribed
 /// payload, shown with [unit], as a plain value or as a gauge.
 class ReadingConfig extends PanelConfig {
   const ReadingConfig({

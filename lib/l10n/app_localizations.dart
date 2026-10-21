@@ -6689,6 +6689,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import .conf file'**
   String get wgImport;
+
+  /// No description provided for @discoverWirenBoardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover controls from retained /devices MQTT metadata. Select a control to add a tile.'**
+  String get discoverWirenBoardHint;
+
+  /// No description provided for @discoverWirenBoardNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.'**
+  String get discoverWirenBoardNone;
 }
 
 class _AppLocalizationsDelegate

@@ -282,6 +282,13 @@ class _State extends ConsumerState<PanelFormScreen> {
     _topicPrefixOverride.text = suggestion.topicPrefixOverride;
     _topic.text = suggestion.publishTopicSuffix;
     _subscribeTopic.text = suggestion.subscribeTopicSuffix;
+    _commandEdited = suggestion.publishTopicSuffix !=
+        commandFor(suggestion.subscribeTopicSuffix);
+
+    if (suggestion.config case final config?) {
+      _applyConfig(config);
+      return;
+    }
 
     switch (suggestion.type) {
       case PanelType.toggle:
@@ -356,6 +363,11 @@ class _State extends ConsumerState<PanelFormScreen> {
     _retain = p.retain;
     _qos = p.qos;
     final cfg = PanelConfig.decode(p.type, p.config);
+    _applyConfig(cfg);
+    setState(() => _loaded = true);
+  }
+
+  void _applyConfig(PanelConfig cfg) {
     if (cfg is ToggleConfig) {
       _onPayload.text = cfg.onPayload;
       _offPayload.text = cfg.offPayload;
@@ -427,7 +439,6 @@ class _State extends ConsumerState<PanelFormScreen> {
         _bandRows.add(_BandRow(from: b.from, to: b.to, tone: b.tone));
       }
     }
-    setState(() => _loaded = true);
   }
 
   void _seedDefaultsForType() {
@@ -585,9 +596,7 @@ class _State extends ConsumerState<PanelFormScreen> {
       PanelType.device => _deviceConfig ??
           PanelConfig.defaultFor(PanelType.device) as DeviceTileConfig,
       PanelType.reading => ReadingConfig(
-          jsonPath: _readingJsonPath.text.trim().isEmpty
-              ? 'value'
-              : _readingJsonPath.text.trim(),
+          jsonPath: _readingJsonPath.text.trim(),
           unit: nullIfBlank(_readingUnit.text),
           style: _readingStyle,
           min: double.tryParse(_readingMin.text.trim()),

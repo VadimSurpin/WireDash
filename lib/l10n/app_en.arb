@@ -1313,5 +1313,7 @@
   "wgSecretHint": "Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.",
   "wgHide": "Hide configuration",
   "wgShow": "Show configuration",
-  "wgImport": "Import .conf file"
+  "wgImport": "Import .conf file",
+  "discoverWirenBoardHint": "Discover controls from retained /devices MQTT metadata. Select a control to add a tile.",
+  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata."
 }

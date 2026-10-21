@@ -119,6 +119,15 @@ class _AddTileScreenState extends ConsumerState<AddTileScreen> {
     children.addAll([
       const Divider(height: 32),
       ListTile(
+        leading: const Icon(Icons.radar),
+        title: const Text('Wiren Board'),
+        subtitle: Text(l10n.discoverWirenBoardHint),
+        onTap: () => context.pushReplacement(
+          '/connections/${widget.connectionId}/dashboards/'
+          '${widget.dashboardId}/discover?source=wirenboard',
+        ),
+      ),
+      ListTile(
         leading: const Icon(Icons.speed),
         title: Text(l10n.addTileReading),
         subtitle: Text(l10n.addTileReadingSubtitle),

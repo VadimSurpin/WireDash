@@ -28,6 +28,8 @@ MQTT.
 
 - **Zigbee2MQTT auto-discovery** — scan your Z2M bridge and create a panel for
   every device with a single tap. JSON-path extraction on every panel.
+- **[Wiren Board discovery](docs/WIRENBOARD_DISCOVERY.md)** — add controls from
+  retained MQTT metadata, with scalar commands and sensor readings.
 - **16 panel types** — toggle, button, slider, cover (open/stop/close with
   presets), multi-state, combo, radio, LED indicator, node status, progress,
   text input, text log, scene, schedule, auto-close rule, Z2M discovery.

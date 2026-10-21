@@ -3755,4 +3755,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wgImport => 'Import .conf file';
+
+  @override
+  String get discoverWirenBoardHint =>
+      'Обнаружение контролов по сохранённым MQTT-метаданным /devices. Выберите контрол, чтобы добавить плитку.';
+
+  @override
+  String get discoverWirenBoardNone =>
+      'Контролы Wiren Board не найдены. Проверьте доступ MQTT-пользователя к метаданным /devices и публикацию метаданных с флагом retained драйверами.';
 }

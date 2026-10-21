@@ -46,7 +46,7 @@ jobs:
         run: flutter build apk --debug --flavor foss --target-platform android-arm64
       - uses: actions/upload-artifact@v4
         with:
-          name: zigdash-wireguard-debug-arm64
+          name: zigdash-wireguard-wirenboard-debug-arm64
           path: build/app/outputs/flutter-apk/app-foss-debug.apk
           if-no-files-found: error
 
