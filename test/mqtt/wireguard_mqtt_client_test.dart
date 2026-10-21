@@ -166,7 +166,14 @@ void _mqtt(
 }
 
 void main() {
-  setUp(MqttManager.useProtocolRules);
+  final previousHttpOverrides = HttpOverrides.current;
+  setUp(() {
+    // The suite-wide golden binding replaces HTTP with a canned 400. These
+    // transport tests deliberately use only local HTTP/WebSocket servers.
+    HttpOverrides.global = null;
+    MqttManager.useProtocolRules();
+  });
+  tearDown(() => HttpOverrides.global = previousHttpOverrides);
 
   for (final secure in [false, true]) {
     test(

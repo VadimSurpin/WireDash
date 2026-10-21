@@ -33,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 /android/app/libs/wireguard.aar
+/android/app/libs/wireguard-sources.jar
 
 # Local brainstorming companion artifacts
 .superpowers/

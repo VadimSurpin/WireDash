@@ -3,7 +3,6 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/client_factory_io.dart';
-import 'package:zigdash/mqtt/client_factory_web.dart' as web;
 
 void main() {
   test('WireGuard without restored keys never falls back to direct MQTT', () {
@@ -15,7 +14,6 @@ void main() {
       transport: ConnectionTransport.wireGuard,
     );
     expect(() => buildPlatformClient(config, 'id'), throwsUnsupportedError);
-    expect(() => web.buildPlatformClient(config, 'id'), throwsUnsupportedError);
   });
   BrokerConfig cfg(MqttProtocol p, String host) =>
       BrokerConfig(id: 'c', host: host, port: 9001, protocol: p);

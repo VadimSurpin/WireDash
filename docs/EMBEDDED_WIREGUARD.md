@@ -27,6 +27,8 @@ store, separately from the connection database. Dashboard exports contain no
 WireGuard configuration. If Android restores the database without its keys,
 the home still requires WireGuard and cannot connect until you import the
 configuration again. Deleting a home deletes its stored WireGuard keys.
+Editing or deleting a home also closes its cached dashboard and shortcut
+connections so the next connection uses the current settings.
 
 The tunnel lives as long as its MQTT connection and is recreated on reconnect.
 The app and Android shortcuts share a native device for the same configuration.

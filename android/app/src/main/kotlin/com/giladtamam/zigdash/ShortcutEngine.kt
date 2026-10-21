@@ -52,6 +52,11 @@ object ShortcutEngine {
     fun scene(ctx: Context, connectionId: String, sceneId: String, done: (String) -> Unit) =
         call(ctx, "scene", mapOf("connectionId" to connectionId, "sceneId" to sceneId), done)
 
+    fun forgetHome(ctx: Context, connectionId: String, done: (String) -> Unit) {
+        if (channel == null) done("{}")
+        else call(ctx, "forgetHome", mapOf("connectionId" to connectionId), done)
+    }
+
     private fun call(ctx: Context, method: String, args: Map<String, Any>, done: (String) -> Unit) {
         ensure(ctx.applicationContext)
         val run = {

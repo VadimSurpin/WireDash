@@ -6647,6 +6647,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try the demo first'**
   String get setupAuthDemoFirst;
+
+  /// No description provided for @wgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use embedded WireGuard'**
+  String get wgTitle;
+
+  /// No description provided for @wgDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.'**
+  String get wgDescription;
+
+  /// No description provided for @wgConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'WireGuard configuration'**
+  String get wgConfiguration;
+
+  /// No description provided for @wgSecretHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.'**
+  String get wgSecretHint;
+
+  /// No description provided for @wgHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide configuration'**
+  String get wgHide;
+
+  /// No description provided for @wgShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show configuration'**
+  String get wgShow;
+
+  /// No description provided for @wgImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import .conf file'**
+  String get wgImport;
 }
 
 class _AppLocalizationsDelegate

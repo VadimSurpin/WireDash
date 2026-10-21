@@ -51,6 +51,9 @@ void shortcutEngine() {
   channel.setMethodCallHandler((call) async {
     final args = Map<String, Object?>.from(call.arguments as Map? ?? {});
     switch (call.method) {
+      case 'forgetHome':
+        await engine.forgetHome(args['connectionId'] as String);
+        return '{}';
       case 'toggle':
         return jsonEncode(
           await engine.toggle(
@@ -150,6 +153,20 @@ class ShortcutEngine {
   /// Per home, the setup in progress: two quick taps wait for one setup
   /// instead of each creating a manager.
   final _setups = <String, Future<MqttManager?>>{};
+
+  /// Serialize with shortcut taps, so a settings change cannot leave a
+  /// cached connection using the old direct route or an old private key.
+  Future<void> forgetHome(String connectionId) async {
+    final previous = _setups[connectionId] ?? Future<MqttManager?>.value();
+    final Future<MqttManager?> next = previous
+        .catchError((Object _) => null)
+        .then((_) async {
+          await _managers.remove(connectionId)?.mgr.dispose();
+          return null;
+        });
+    _setups[connectionId] = next;
+    await next;
+  }
 
   Future<MqttManager?> _manager(String connectionId) {
     final previous = _setups[connectionId] ?? Future<MqttManager?>.value();
@@ -410,8 +427,9 @@ class ShortcutEngine {
   Future<String> _homeBase(String connectionId) async {
     final db = await _database;
     final conn = await ConnectionDao(db).getById(connectionId);
-    final first = (await DashboardDao(db).getByConnection(connectionId))
-        .firstOrNull;
+    final first = (await DashboardDao(
+      db,
+    ).getByConnection(connectionId)).firstOrNull;
     return z2mBase(first?.topicPrefix, homeBase: conn?.z2mBaseTopic);
   }
 

@@ -15,6 +15,7 @@ import '../../../data/repositories/connection_repo.dart';
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../../mqtt/wireguard/backend.dart';
+import '../../../shortcuts/shortcut_service.dart' show forgetShortcutHome;
 import '../diagnostics/connect_diagnostics.dart';
 import '../diagnostics/connect_diagnostics_provider.dart';
 import '../widgets/broker_fields.dart';
@@ -184,6 +185,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               : _remoteHost.text.trim(),
         );
         ref.invalidate(mqttManagerProvider(widget.connectionId!));
+        await forgetShortcutHome(widget.connectionId!);
       } else {
         final id = await repo.create(
           transport: _transport,

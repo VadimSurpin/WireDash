@@ -3741,4 +3741,27 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Nejdřív vyzkoušej demo';
+
+  @override
+  String get wgTitle => 'Use embedded WireGuard';
+
+  @override
+  String get wgDescription =>
+      'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.';
+
+  @override
+  String get wgConfiguration => 'WireGuard configuration';
+
+  @override
+  String get wgSecretHint =>
+      'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.';
+
+  @override
+  String get wgHide => 'Hide configuration';
+
+  @override
+  String get wgShow => 'Show configuration';
+
+  @override
+  String get wgImport => 'Import .conf file';
 }

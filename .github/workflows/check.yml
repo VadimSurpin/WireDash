@@ -31,6 +31,24 @@ jobs:
           log-accepted-android-sdk-licenses: false
       - run: sdkmanager 'platforms;android-36' 'ndk;27.0.12077973'
       - run: bash tool/build_wireguard_android.sh
+      - name: Read pinned Flutter version
+        id: flutter_android
+        run: echo "version=$(sed -n 's/.*"flutter"[^"]*"\([^"]*\)".*/\1/p' .fvmrc)" >> "$GITHUB_OUTPUT"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.flutter_android.outputs.version }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - name: Build Android debug APK
+        run: flutter build apk --debug --flavor foss --target-platform android-arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zigdash-wireguard-debug-arm64
+          path: build/app/outputs/flutter-apk/app-foss-debug.apk
+          if-no-files-found: error
 
   analyze-and-test:
     runs-on: ubuntu-latest
