@@ -11,6 +11,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../shortcuts/shortcut_service.dart' show appChannel;
 import '../../connections/discovery/address_check.dart';
 import '../../connections/discovery/hub_probe.dart';
+import '../../connections/widgets/wireguard_fields.dart';
 import '../../connections/discovery/no_network.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
 import '../../settings/screens/settings_screen.dart' show privacyPolicyUrl;
@@ -316,6 +317,10 @@ class _WelcomeState extends ConsumerState<_Welcome> {
         ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+        if (supportsEmbeddedWireGuard) TextButton.icon(
+          onPressed: () => _then(() => context.push('${Routes.guidedConnect}?wireguard=1')),
+          icon: const Icon(Icons.vpn_key_outlined), label: Text(l10n.wgConnect),
+        ),
         const SizedBox(height: 24),
         Text(
           l10n.setupWelcomeNoZ2m,

@@ -542,28 +542,73 @@
   "setupPlatformPi": "Raspberry Pi ou Docker",
   "setupPlatformNotSure": "Je ne sais pas",
   "setupScanProgress": "{checked} adresses sur {total} vérifiées",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "Recherche de Home Assistant et de son broker MQTT…",
   "setupScanHintSmlight": "Recherche de votre hub SMLIGHT…",
   "setupScanHintPi": "Recherche d'un broker MQTT sur votre réseau…",
   "setupHubSeenHa": "Home Assistant trouvé à l'adresse {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "Zigbee2MQTT trouvé à l'adresse {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "Votre hub SMLIGHT trouvé à l'adresse {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "Recherche de son broker MQTT en cours…",
   "setupNoBrokerHaTitle": "Home Assistant trouvé, mais aucun broker MQTT",
   "setupNoBrokerHaBody": "Home Assistant est à l'adresse {host}, mais rien ne répond sur le port MQTT 1883. Dans Home Assistant, ouvrez Paramètres › Modules complémentaires, installez et démarrez le module Mosquitto broker, puis réessayez.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "Vous utilisez le Zigbee intégré de Home Assistant (ZHA) plutôt que Zigbee2MQTT ? ZigDash ne fonctionne qu'avec Zigbee2MQTT et ne voit donc pas les appareils ZHA. La démo montre ce que vous obtiendriez.",
   "setupVpnHint": "Un VPN est actif et peut masquer votre réseau domestique à la recherche. Si vous êtes chez vous, coupez le VPN et touchez Réessayer.",
   "setupNoBrokerZ2mTitle": "Zigbee2MQTT trouvé, mais son broker est injoignable",
   "setupNoBrokerZ2mBody": "Zigbee2MQTT est à l'adresse {host}, mais son broker MQTT n'accepte pas les connexions de votre téléphone. Mosquitto 2 n'écoute que sur le hub lui-même tant que sa configuration ne contient pas 'listener 1883' et 'allow_anonymous true' (ou un identifiant). Redémarrez-le, puis réessayez.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "Hub SMLIGHT trouvé, mais MQTT est désactivé",
   "setupNoBrokerSmlightBody": "Votre hub est à l'adresse {host}, mais son broker MQTT est injoignable. Dans l'interface web du hub, ouvrez Settings › MQTT, activez Allow External et vérifiez que Zigbee2MQTT fonctionne. Puis réessayez.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "On demande à Zigbee2MQTT où se trouve son broker…",
   "setupZ2mLocalOnlyTitle": "Votre broker n'accepte que les connexions de sa propre machine",
   "setupZ2mLocalOnlyBody": "Zigbee2MQTT utilise {server}, et rien n'y répond depuis votre téléphone. Mosquitto 2 fait cela par défaut. Ajoutez ces deux lignes à mosquitto.conf, redémarrez Mosquitto, puis réessayez :",
@@ -573,7 +618,13 @@
   "setupZ2mTokenRequired": "La page web de Zigbee2MQTT est protégée par un jeton, l'application n'a donc pas pu lire où se trouve son broker. Saisissez l'adresse du broker indiquée dans Zigbee2MQTT › Settings › MQTT.",
   "setupZ2mUnreachable": "Zigbee2MQTT utilise le broker à {server}, mais il n'a pas répondu à votre téléphone. Vérifiez que le broker tourne et que votre téléphone est sur le même réseau.",
   "setupConnectTo": "Se connecter à {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "Aucun Home Assistant trouvé sur ce réseau. Vérifiez que votre téléphone est sur le même Wi-Fi que Home Assistant (pas un réseau invité), puis réessayez. Si vous connaissez son adresse, saisissez-la ci-dessous.",
   "setupNotFoundSmlight": "Aucun hub SMLIGHT trouvé sur ce réseau. Vérifiez que le hub est allumé et que votre téléphone est sur le même Wi-Fi, puis réessayez. Si vous connaissez son adresse, saisissez-la ci-dessous.",
   "setupNotFoundPi": "Aucun broker MQTT trouvé sur ce réseau. Vérifiez que Mosquitto fonctionne et écoute sur le réseau (port 1883) et que votre téléphone est sur le même Wi-Fi. Puis réessayez.",
@@ -597,7 +648,16 @@
   "setupChoiceOtherSub": "Un Wi-Fi invité ou un second routeur",
   "setupChoiceOtherNote": "Votre téléphone doit pouvoir joindre votre hub. Un Wi-Fi invité, ou un second routeur avec son propre Wi-Fi, les sépare. Connectez-vous au Wi-Fi de votre hub et touchez Réessayer. Ou saisissez ci-dessous l'adresse IP du hub, ou essayez l'un de ces noms courants :",
   "guidedHostYourPhone": "Votre téléphone est en {ip}, le hub commence donc généralement par {prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "Vous utilisez Home Assistant ? L'hôte est l'adresse avec laquelle vous ouvrez Home Assistant, port 1883.",
   "demoBannerText": "Vous êtes en mode démo",
   "demoBannerAction": "Connecter votre maison",
@@ -1002,7 +1062,11 @@
   "wallNightFrom": "De",
   "wallNightTo": "à",
   "wallDimMinutes": "{minutes} min",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "Verrou kiosque",
   "kioskLockSubtitle": "Seuls les tableaux de bord de cette maison et leurs commandes restent accessibles. Appui long sur le titre pour quitter.",
   "kioskPin": "Code PIN",
@@ -1280,5 +1344,14 @@
   "remotePairDone": "Contrôle à distance activé pour {home}",
   "remoteReconnectHub": "Reconnecter le hub",
   "remoteTurnOffConfirm": "Ce téléphone quitte le contrôle à distance et votre hub se déconnecte du relais. Une sauvegarde de clé enregistrée depuis ce téléphone ne fonctionne plus ; les autres téléphones gardent leur accès jusqu'à ce que vous les retiriez.",
-  "remoteHomeId": "ID de la maison {id}"
+  "remoteHomeId": "ID de la maison {id}",
+  "wgShow": "Afficher la configuration",
+  "wgInvalidConfiguration": "Configuration WireGuard incorrecte. Vérifiez le fichier de configuration et réessayez.",
+  "wgConnect": "Se connecter via WireGuard",
+  "wgSecretHint": "Stockée chiffrée sur ce téléphone. Non incluse dans les exports de tableaux de bord. À réimporter après la restauration des données de l’application.",
+  "wgConfiguration": "Configuration WireGuard",
+  "wgHide": "Masquer la configuration",
+  "wgImport": "Importer un fichier .conf",
+  "wgTitle": "Utiliser WireGuard intégré",
+  "wgDescription": "Connectez ce domicile via WireGuard dans ZigDash. Les autres applications conservent leur propre connexion."
 }

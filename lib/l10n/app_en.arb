@@ -2247,5 +2247,7 @@
       }
     }
   },
-  "wbClearSearch": "Clear search"
+  "wbClearSearch": "Clear search",
+  "wgInvalidConfiguration": "Invalid WireGuard configuration. Check the configuration file and try again.",
+  "wgConnect": "Connect through WireGuard"
 }
