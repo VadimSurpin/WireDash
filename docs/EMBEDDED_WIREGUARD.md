@@ -11,6 +11,8 @@ existing MQTT broker and WireGuard peer still need to be running.
    the server would keep moving that peer's endpoint between the two clients.
 2. Open the home's connection settings and expand **Advanced**.
 3. Enable **Use embedded WireGuard**, then import its `.conf` file or paste it.
+   The eye button shows a saved configuration for editing; the hidden field
+   is read-only so Android cannot flatten a pasted multi-line configuration.
 4. Enter the broker's IP address inside your VPN, or a hostname resolvable by
    the `DNS` servers in the configuration. `AllowedIPs` must cover the broker
    and those DNS servers. Multicast `.local` discovery is not forwarded.
