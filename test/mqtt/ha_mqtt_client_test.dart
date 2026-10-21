@@ -12,16 +12,10 @@ import 'package:zigdash/mqtt/ha_token.dart';
 
 /// What the fake Home Assistant does.
 class _FakeHa {
-  _FakeHa({
-    this.accessToken = 'access',
-    this.refreshToken = 'refresh',
-    this.admin = true,
-    this.mqtt = true,
-    this.refreshWorks = true,
-  });
+  _FakeHa({this.admin = true, this.mqtt = true, this.refreshWorks = true});
 
-  final String accessToken;
-  final String refreshToken;
+  final String accessToken = 'access';
+  final String refreshToken = 'refresh';
   final bool admin;
   final bool mqtt;
   final bool refreshWorks;
