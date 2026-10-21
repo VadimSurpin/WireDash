@@ -481,6 +481,8 @@
   "setupVerifyingTitle": "Verifica della connessione…",
   "setupReviewTitle": "I tuoi dispositivi",
   "setupReviewSubtitle": "{count, plural, =1{Trovato 1 dispositivo.} other{Trovati {count} dispositivi.}} Scegli cosa mettere nella tua prima dashboard.",
+  "setupReviewNoneSelected": "Non è ancora selezionato nulla. Seleziona i dispositivi che vuoi nella dashboard, oppure creala vuota e aggiungi i riquadri più tardi.",
+  "setupCreateEmpty": "Crea una dashboard vuota",
   "setupCreateWithCount": "Crea la dashboard con {count}",
   "setupGroupOther": "Altri dispositivi",
   "setupGroupUnsupported": "Dispositivi non supportati",

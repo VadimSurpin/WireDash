@@ -1635,6 +1635,13 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'עדיין לא סומן דבר. סמנו את המכשירים שתרצו בלוח, או צרו אותו ריק והוסיפו אריחים אחר כך.';
+
+  @override
+  String get setupCreateEmpty => 'צרו לוח ריק';
+
+  @override
   String get setupGroupOther => 'מכשירים אחרים';
 
   @override

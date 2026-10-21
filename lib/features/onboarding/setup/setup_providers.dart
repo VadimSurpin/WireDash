@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/app_l10n.dart';
 import '../../../data/database/daos/device_registry_dao.dart';
 import '../../../data/database/database.dart';
@@ -19,6 +20,7 @@ import '../../support/support_details.dart';
 import '../../support/support_log.dart';
 import '../first_run.dart';
 import '../../ha_import/ha_import_offer.dart';
+import 'setup_analytics.dart';
 import 'setup_coordinator.dart';
 import 'setup_creator.dart';
 import 'z2m_probe.dart';
@@ -30,6 +32,8 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
   final scanner = ref.watch(brokerScanServiceProvider);
   final fetcher = Z2mProbeFetcher();
   final support = ref.read(supportLogProvider);
+  // Read now: `ref.read` is not allowed once the provider is disposing.
+  final analytics = ref.read(analyticsProvider);
   // The interface the scan runs on, kept only as a kind (Wi-Fi, Ethernet).
   String? network;
   late final SetupCoordinator coordinator;
@@ -92,6 +96,12 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
     }
   });
   ref.onDispose(failures.cancel);
+  // 2.10.2: back out of setup while the list is up (to a demo home, say)
+  // is the other way to leave the review without a dashboard.
+  ref.onDispose(() {
+    final s = coordinator.state;
+    if (s is SetupReview) analytics.track(reviewLeftStep(s, coordinator));
+  });
   ref.onDispose(coordinator.dispose);
   return coordinator;
 });

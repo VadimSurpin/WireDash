@@ -551,6 +551,8 @@
   "setupVerifyingTitle": "Sprawdzanie połączenia…",
   "setupReviewTitle": "Twoje urządzenia",
   "setupReviewSubtitle": "Znalezione urządzenia: {count}. Wybierz, co trafi na pierwszy dashboard.",
+  "setupReviewNoneSelected": "Nic nie jest jeszcze zaznaczone. Zaznacz urządzenia, które chcesz mieć na dashboardzie, albo utwórz go pusty i dodaj kafelki później.",
+  "setupCreateEmpty": "Utwórz pusty dashboard",
   "setupCreateWithCount": "Utwórz dashboard (urządzenia: {count})",
   "setupGroupOther": "Inne urządzenia",
   "setupGroupUnsupported": "Nieobsługiwane urządzenia",

@@ -1659,6 +1659,13 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Noch nichts ausgewählt. Wähle die Geräte für dein Dashboard aus, oder erstelle es leer und füge Kacheln später hinzu.';
+
+  @override
+  String get setupCreateEmpty => 'Leeres Dashboard erstellen';
+
+  @override
   String get setupGroupOther => 'Andere Geräte';
 
   @override

@@ -556,6 +556,8 @@
   "setupVerifyingTitle": "Verbindung wird geprüft…",
   "setupReviewTitle": "Deine Geräte",
   "setupReviewSubtitle": "{count, plural, =1{1 Gerät gefunden.} other{{count} Geräte gefunden.}} Wähle, was auf dein erstes Dashboard kommt.",
+  "setupReviewNoneSelected": "Noch nichts ausgewählt. Wähle die Geräte für dein Dashboard aus, oder erstelle es leer und füge Kacheln später hinzu.",
+  "setupCreateEmpty": "Leeres Dashboard erstellen",
   "setupCreateWithCount": "Dashboard mit {count} erstellen",
   "setupGroupOther": "Andere Geräte",
   "setupGroupUnsupported": "Nicht unterstützte Geräte",

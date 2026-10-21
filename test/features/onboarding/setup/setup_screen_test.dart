@@ -947,6 +947,68 @@ void main() {
     },
   );
 
+  // 2.10.2: a list with nothing preselected (only "other" or unsupported
+  // devices) says so and still creates the home, with an empty dashboard.
+  testWidgets('nothing preselected: says so, creates an empty dashboard', (
+    tester,
+  ) async {
+    final sent = <(String, Map<String, String>)>[];
+    await _pump(
+      tester,
+      fetch: const Z2mFetchResult(
+        detected: true,
+        devices: [_batterySensor, _mystery],
+      ),
+      extra: [
+        analyticsProvider.overrideWithValue(
+          Analytics(_RecordingSink(sent), enabled: true),
+        ),
+      ],
+    );
+    await tester.tap(find.text('Find my setup'));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump();
+    }
+    expect(find.textContaining('Nothing is ticked yet'), findsOneWidget);
+    expect(find.text('Create an empty dashboard'), findsOneWidget);
+    expect(
+      sent.where((e) => e.$2['step'] == 'review').single.$2['selected'],
+      '0',
+    );
+    await tester.tap(find.text('Create an empty dashboard'));
+    await tester.pumpAndSettle();
+    expect(find.text('dashboards of c1'), findsOneWidget);
+    expect(sent.where((e) => e.$2['step'] == 'review_left'), isEmpty);
+  });
+
+  testWidgets('leaving the review without a dashboard is counted', (
+    tester,
+  ) async {
+    final sent = <(String, Map<String, String>)>[];
+    final coordinator = await _pump(
+      tester,
+      extra: [
+        analyticsProvider.overrideWithValue(
+          Analytics(_RecordingSink(sent), enabled: true),
+        ),
+      ],
+    );
+    await tester.tap(find.text('Find my setup'));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump();
+    }
+    expect(find.text('Create dashboard with 1'), findsOneWidget);
+    // Setup starts over while the list is up.
+    unawaited(coordinator.startScan());
+    await tester.pump();
+    final steps = [for (final e in sent) e.$2['step']];
+    final at = steps.indexOf('review');
+    expect(steps.sublist(at, at + 3), ['review', 'review_left', 'started']);
+    final left = sent.firstWhere((e) => e.$2['step'] == 'review_left').$2;
+    expect(left['devices'], '1-5');
+    expect(left['selected'], '1-5');
+  });
+
   // First-run decision: no "Creating…" or "ready" screens; selecting
   // devices lands directly on the generated dashboard.
   // 2.9.7: where setup stops, a reminder a day later; gone once it works.

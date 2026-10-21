@@ -1655,6 +1655,13 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Nic nie jest jeszcze zaznaczone. Zaznacz urządzenia, które chcesz mieć na dashboardzie, albo utwórz go pusty i dodaj kafelki później.';
+
+  @override
+  String get setupCreateEmpty => 'Utwórz pusty dashboard';
+
+  @override
   String get setupGroupOther => 'Inne urządzenia';
 
   @override

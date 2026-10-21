@@ -556,6 +556,8 @@
   "setupVerifyingTitle": "Verbinding controleren…",
   "setupReviewTitle": "Je apparaten",
   "setupReviewSubtitle": "{count, plural, =1{1 apparaat gevonden.} other{{count} apparaten gevonden.}} Kies wat op je eerste dashboard komt.",
+  "setupReviewNoneSelected": "Er is nog niets aangevinkt. Vink de apparaten aan die je op het dashboard wilt, of maak het leeg aan en voeg later tegels toe.",
+  "setupCreateEmpty": "Leeg dashboard maken",
   "setupCreateWithCount": "Dashboard maken met {count}",
   "setupGroupOther": "Andere apparaten",
   "setupGroupUnsupported": "Niet-ondersteunde apparaten",

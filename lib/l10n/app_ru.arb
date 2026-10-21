@@ -551,6 +551,8 @@
   "setupVerifyingTitle": "Проверка подключения…",
   "setupReviewTitle": "Ваши устройства",
   "setupReviewSubtitle": "Найдено устройств: {count}. Выберите, что будет на первом дашборде.",
+  "setupReviewNoneSelected": "Пока ничего не отмечено. Отметьте устройства для дашборда или создайте его пустым и добавьте плитки позже.",
+  "setupCreateEmpty": "Создать пустой дашборд",
   "setupCreateWithCount": "Создать дашборд ({count})",
   "setupGroupOther": "Другие устройства",
   "setupGroupUnsupported": "Неподдерживаемые устройства",

@@ -1648,6 +1648,13 @@ class AppLocalizationsNb extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Ingenting er valgt ennå. Velg enhetene du vil ha på dashbordet, eller lag det tomt og legg til fliser senere.';
+
+  @override
+  String get setupCreateEmpty => 'Lag et tomt dashbord';
+
+  @override
   String get setupGroupOther => 'Andre enheter';
 
   @override

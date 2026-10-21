@@ -60,6 +60,15 @@ class SetupScreen extends ConsumerWidget {
     ref.listen(setupStateProvider, (previous, next) {
       final s = next.valueOrNull;
       if (s == null) return;
+      final before = previous?.valueOrNull;
+      // 2.10.2: leaving the list by starting over is counted on its own;
+      // the step that follows (started, say) is counted as usual.
+      if (before is SetupReview &&
+          s is! SetupReview &&
+          s is! SetupCreating &&
+          s is! SetupComplete) {
+        ref.read(analyticsProvider).track(reviewLeftStep(before, coordinator));
+      }
       final step = setupStepFor(
         previous?.valueOrNull,
         s,
@@ -1565,17 +1574,39 @@ class _Review extends StatelessWidget {
             ],
           ),
         ),
+        // 2.10.2: nothing ticked (only "other" or unsupported devices) is
+        // said, and the dashboard can still be created, empty, instead of
+        // a disabled button with no way on.
         Padding(
           padding: const EdgeInsets.all(16),
-          child: FilledButton.icon(
-            onPressed: state.selectedCount > 0 && !busy ? onCreate : null,
-            icon: busy
-                ? const SizedBox.square(
-                    dimension: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.dashboard_outlined),
-            label: Text(l10n.setupCreateWithCount(state.selectedCount)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (state.selectedCount == 0) ...[
+                Text(
+                  l10n.setupReviewNoneSelected,
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 12),
+              ],
+              Center(
+                child: FilledButton.icon(
+                  onPressed: busy ? null : onCreate,
+                  icon: busy
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.dashboard_outlined),
+                  label: Text(
+                    state.selectedCount == 0
+                        ? l10n.setupCreateEmpty
+                        : l10n.setupCreateWithCount(state.selectedCount),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

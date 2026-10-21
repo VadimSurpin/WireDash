@@ -481,6 +481,8 @@
   "setupVerifyingTitle": "Vérification de la connexion…",
   "setupReviewTitle": "Vos appareils",
   "setupReviewSubtitle": "{count, plural, =1{1 appareil trouvé.} other{{count} appareils trouvés.}} Choisissez ce qui ira sur votre premier tableau de bord.",
+  "setupReviewNoneSelected": "Rien n'est coché pour l'instant. Cochez les appareils que vous voulez sur le tableau de bord, ou créez-le vide et ajoutez des tuiles plus tard.",
+  "setupCreateEmpty": "Créer un tableau de bord vide",
   "setupCreateWithCount": "Créer le tableau de bord avec {count}",
   "setupGroupOther": "Autres appareils",
   "setupGroupUnsupported": "Appareils non pris en charge",

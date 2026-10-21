@@ -1651,6 +1651,13 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Пока ничего не отмечено. Отметьте устройства для дашборда или создайте его пустым и добавьте плитки позже.';
+
+  @override
+  String get setupCreateEmpty => 'Создать пустой дашборд';
+
+  @override
   String get setupGroupOther => 'Другие устройства';
 
   @override

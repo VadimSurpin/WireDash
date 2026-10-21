@@ -90,6 +90,7 @@ SetupStep? setupStepFor(
   SetupReview(:final rows) when previous is! SetupReview => SetupStep(
     SetupStepKind.review,
     devices: rows.length,
+    selected: rows.where((r) => r.selected).length,
     platform: platform,
   ),
   SetupComplete(:final result) => SetupStep(
@@ -99,6 +100,17 @@ SetupStep? setupStepFor(
   ),
   _ => null,
 };
+
+/// The review was left without a dashboard (2.10.2): what the list held
+/// and how much of it was ticked, so a review nobody can finish (nothing
+/// preselected) shows up as `review_left` with `selected: 0`.
+SetupStep reviewLeftStep(SetupReview review, SetupCoordinator coordinator) =>
+    SetupStep(
+      SetupStepKind.reviewLeft,
+      devices: review.rows.length,
+      selected: review.selectedCount,
+      platform: coordinator.platform,
+    );
 
 /// The private range the phone's address is in, never the address itself.
 String? subnetShape(String? ip) {

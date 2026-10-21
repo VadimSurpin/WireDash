@@ -556,6 +556,8 @@
   "setupVerifyingTitle": "Kontrollerar anslutningen…",
   "setupReviewTitle": "Dina enheter",
   "setupReviewSubtitle": "{count, plural, =1{1 enhet hittades.} other{{count} enheter hittades.}} Välj vad som hamnar på din första dashboard.",
+  "setupReviewNoneSelected": "Inget är markerat ännu. Markera enheterna du vill ha på dashboarden, eller skapa den tom och lägg till brickor senare.",
+  "setupCreateEmpty": "Skapa en tom dashboard",
   "setupCreateWithCount": "Skapa dashboard med {count}",
   "setupGroupOther": "Andra enheter",
   "setupGroupUnsupported": "Enheter som inte stöds",
