@@ -2,6 +2,7 @@
 package wgbridge
 
 import (
+	"context"
 	"crypto/ecdh"
 	"crypto/rand"
 	"encoding/base64"
@@ -50,6 +51,29 @@ func TestConfig(t *testing.T) {
 	err = Validate(strings.Replace(testConfig(), "PrivateKey = ", "PrivateKey = "+secret, 1))
 	if err == nil || strings.Contains(err.Error(), secret) {
 		t.Fatal("errors must not expose secret values")
+	}
+}
+
+func TestEndpointResolution(t *testing.T) {
+	for _, endpoint := range []string{"127.0.0.1:51820", "[::1]:51820"} {
+		c, err := parseConfig(strings.ReplaceAll(testConfig(), "localhost:51820", endpoint), true)
+		if err != nil || !strings.Contains(c.uapi, "endpoint="+endpoint+"\n") {
+			t.Fatalf("literal endpoint must preserve its address family: %v", err)
+		}
+	}
+	previous := net.DefaultResolver
+	net.DefaultResolver = &net.Resolver{PreferGo: true, Dial: func(ctx context.Context, _, _ string) (net.Conn, error) {
+		<-ctx.Done()
+		return nil, ctx.Err()
+	}}
+	defer func() { net.DefaultResolver = previous }()
+	start := time.Now()
+	_, err := parseConfig(strings.ReplaceAll(testConfig(), "localhost:51820", "wg-resolution-test.invalid:51820"), true)
+	if err == nil || err.Error() != "cannot resolve WireGuard endpoint" {
+		t.Fatalf("expected a redacted resolution failure: %v", err)
+	}
+	if time.Since(start) > 7*time.Second {
+		t.Fatal("endpoint resolution exceeded its timeout")
 	}
 }
 
