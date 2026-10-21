@@ -7,6 +7,7 @@ import 'client_factory.dart';
 import 'ha_address.dart';
 import 'ha_mqtt_client.dart';
 import 'wireguard/wireguard_mqtt_client.dart';
+import 'wireguard/backend.dart';
 
 mc.MqttClient buildPlatformClient(
   BrokerConfig config,
@@ -15,12 +16,16 @@ mc.MqttClient buildPlatformClient(
 }) {
   final target = host ?? config.host;
   if (config.viaWireGuard) {
+    final backend = createWireGuardBackend();
+    if (!backend.supported) {
+      throw UnsupportedError('Embedded WireGuard is available on Android only.');
+    }
     if (config.wireGuardConfig?.trim().isNotEmpty != true) {
       throw UnsupportedError(
         'WireGuard configuration is missing. Import it in the home connection settings.',
       );
     }
-    return WireGuardMqttClient(config, target, clientId);
+    return WireGuardMqttClient(config, target, clientId, backend: backend);
   }
   if (config.viaHomeAssistant) {
     final base = haBaseUri(target);
