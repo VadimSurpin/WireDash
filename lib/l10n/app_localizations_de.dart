@@ -3753,25 +3753,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String get setupAuthDemoFirst => 'Erst die Demo ansehen';
 
   @override
-  String get wgTitle => 'Use embedded WireGuard';
+  String get wgTitle => 'Integriertes WireGuard verwenden';
 
   @override
   String get wgDescription =>
-      'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.';
+      'Dieses Zuhause über WireGuard direkt in ZigDash verbinden. Andere Apps behalten ihre eigene Verbindung.';
 
   @override
-  String get wgConfiguration => 'WireGuard configuration';
+  String get wgConfiguration => 'WireGuard-Konfiguration';
 
   @override
   String get wgSecretHint =>
-      'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.';
+      'Auf diesem Telefon verschlüsselt gespeichert. Nicht in Dashboard-Exporten enthalten. Nach dem Wiederherstellen der App-Daten erneut importieren.';
 
   @override
-  String get wgHide => 'Hide configuration';
+  String get wgHide => 'Konfiguration ausblenden';
 
   @override
-  String get wgShow => 'Show configuration';
+  String get wgShow => 'Konfiguration anzeigen';
 
   @override
-  String get wgImport => 'Import .conf file';
+  String get wgImport => '.conf-Datei importieren';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Ungültige WireGuard-Konfiguration. Konfigurationsdatei prüfen und erneut versuchen.';
+
+  @override
+  String get wgConnect => 'Über WireGuard verbinden';
 }

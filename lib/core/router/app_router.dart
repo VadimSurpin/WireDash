@@ -88,6 +88,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'manual',
             pageBuilder: (_, state) => _slideUp(
               GuidedConnectScreen(
+                initialWireGuard: state.uri.queryParameters['wireguard'] == '1',
                 initialHost: state.uri.queryParameters['host'],
                 initialPort: int.tryParse(
                   state.uri.queryParameters['port'] ?? '',

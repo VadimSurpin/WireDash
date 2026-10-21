@@ -1313,5 +1313,7 @@
   "wgSecretHint": "Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.",
   "wgHide": "Hide configuration",
   "wgShow": "Show configuration",
-  "wgImport": "Import .conf file"
+  "wgImport": "Import .conf file",
+  "wgInvalidConfiguration": "Invalid WireGuard configuration. Check the configuration file and try again.",
+  "wgConnect": "Connect through WireGuard"
 }

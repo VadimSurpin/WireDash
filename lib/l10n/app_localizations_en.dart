@@ -3755,4 +3755,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wgImport => 'Import .conf file';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Invalid WireGuard configuration. Check the configuration file and try again.';
+
+  @override
+  String get wgConnect => 'Connect through WireGuard';
 }

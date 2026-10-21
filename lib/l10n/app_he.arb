@@ -1241,5 +1241,14 @@
   "setupIsolatedHint": "הטלפון שלכם כמעט לא רואה שום דבר אחר ברשת ה-Wi-Fi הזו. ייתכן שהוא ברשת אורחים, או שהנתב מפריד בין המכשירים (נקרא לרוב client isolation או AP isolation). התחברו ל-Wi-Fi הראשי או כבו את זה, ונסו שוב.",
   "setupAuthTrust": "פרטי ההתחברות נשארים בטלפון הזה ועוברים רק ל-broker שלכם. ל-ZigDash אין שרת ואין חשבון, וכל אפליקציית MQTT מתחברת כך. הכי בטוח: משתמש MQTT נפרד רק ל-ZigDash, שאפשר למחוק בכל רגע.",
   "setupAuthWhatKept": "מה ZigDash שומר",
-  "setupAuthDemoFirst": "לנסות קודם את ההדגמה"
+  "setupAuthDemoFirst": "לנסות קודם את ההדגמה",
+  "wgTitle": "שימוש ב־WireGuard המובנה",
+  "wgDescription": "חיבור הבית הזה דרך WireGuard בתוך ZigDash. יישומים אחרים ממשיכים להשתמש בחיבור שלהם.",
+  "wgConfiguration": "תצורת WireGuard",
+  "wgSecretHint": "נשמרת בהצפנה בטלפון הזה. אינה נכללת בייצוא לוחות בקרה. לאחר שחזור נתוני היישום יש לייבא אותה שוב.",
+  "wgHide": "הסתרת התצורה",
+  "wgShow": "הצגת התצורה",
+  "wgImport": "ייבוא קובץ ‎.conf",
+  "wgInvalidConfiguration": "תצורת WireGuard אינה תקינה. יש לבדוק את קובץ התצורה ולנסות שוב.",
+  "wgConnect": "חיבור דרך WireGuard"
 }
