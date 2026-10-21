@@ -22,6 +22,9 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        if (!flutterEngine.plugins.has(WireGuardPlugin::class.java)) {
+            flutterEngine.plugins.add(WireGuardPlugin())
+        }
         ProBilling.register(this, flutterEngine.dartExecutor.binaryMessenger)
         val ch = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "zigdash/app")
         ch.setMethodCallHandler { call, result ->

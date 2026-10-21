@@ -6,6 +6,7 @@ import 'broker_config.dart';
 import 'client_factory.dart';
 import 'ha_address.dart';
 import 'ha_mqtt_client.dart';
+import 'wireguard/wireguard_mqtt_client.dart';
 
 mc.MqttClient buildPlatformClient(
   BrokerConfig config,
@@ -13,6 +14,14 @@ mc.MqttClient buildPlatformClient(
   String? host,
 }) {
   final target = host ?? config.host;
+  if (config.viaWireGuard) {
+    if (config.wireGuardConfig?.trim().isNotEmpty != true) {
+      throw UnsupportedError(
+        'WireGuard configuration is missing. Import it in the home connection settings.',
+      );
+    }
+    return WireGuardMqttClient(config, target, clientId);
+  }
   if (config.viaHomeAssistant) {
     final base = haBaseUri(target);
     if (base == null) {

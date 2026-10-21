@@ -96,7 +96,18 @@ flutter {
     source = "../.."
 }
 
+// Build the JNI bridge from pinned Go sources; no prebuilt VPN binaries.
+val buildWireGuard by tasks.registering(Exec::class) {
+    workingDir(rootProject.projectDir.parentFile)
+    commandLine("bash", "tool/build_wireguard_android.sh")
+    inputs.dir(rootProject.file("../native/wireguard"))
+    inputs.file(rootProject.file("../tool/build_wireguard_android.sh"))
+    outputs.file(file("libs/wireguard.aar"))
+}
+tasks.named("preBuild") { dependsOn(buildWireGuard) }
+
 dependencies {
+    implementation(files("libs/wireguard.aar"))
     // Alerts arrive through Google's push with ZigDash as its own UnifiedPush
     // distributor: no Firebase project, no second app (alerts-2.3.md).
     implementation("org.unifiedpush.android:embedded-fcm-distributor:3.1.0")

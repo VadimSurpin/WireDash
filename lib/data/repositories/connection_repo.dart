@@ -16,6 +16,7 @@ class ConnectionRepo {
   Stream<List<Connection>> watchAll() => _dao.watchAll();
   Future<Connection?> getById(String id) => _dao.getById(id);
   Future<String?> readPassword(String id) => _secure.readPassword(id);
+  Future<String?> readWireGuard(String id) => _secure.readWireGuard(id);
 
   /// Inserts a new connection and stores its password (if any) in secure storage.
   /// Returns the generated ID.
@@ -30,9 +31,14 @@ class ConnectionRepo {
     bool autoConnect = false,
     String? remoteHost,
     ConnectionTransport? transport,
+    String? wireGuardConfig,
   }) async {
     final id = newId();
     final now = DateTime.now();
+    // Persist secrets before the row becomes visible to connection providers.
+    if (wireGuardConfig != null) {
+      await _secure.writeWireGuard(id, wireGuardConfig);
+    }
     await _dao.insertRow(
       ConnectionsCompanion.insert(
         id: id,
@@ -69,7 +75,11 @@ class ConnectionRepo {
     bool autoConnect = false,
     String? remoteHost,
     ConnectionTransport? transport,
+    String? wireGuardConfig,
   }) async {
+    if (wireGuardConfig != null) {
+      await _secure.writeWireGuard(id, wireGuardConfig);
+    }
     await _dao.updateById(
       id,
       ConnectionsCompanion(
@@ -143,6 +153,7 @@ class ConnectionRepo {
   Future<void> delete(String id) async {
     await _dao.deleteById(id);
     await _secure.deletePassword(id);
+    await _secure.deleteWireGuard(id);
   }
 }
 

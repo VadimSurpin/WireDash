@@ -107,6 +107,9 @@ helps too.
 
 ## Build & test
 
+The Android build also needs Go 1.26+ for the optional embedded WireGuard
+transport. See [embedded WireGuard setup and build notes](docs/EMBEDDED_WIREGUARD.md).
+
 Requires the Flutter SDK (stable channel).
 
 ```bash

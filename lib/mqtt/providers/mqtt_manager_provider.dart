@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../data/database/tables/connections.dart';
 
 import '../../core/storage/secure_storage.dart';
@@ -58,6 +59,9 @@ final mqttManagerProvider = FutureProvider.family<MqttManager, String>((
       keepAliveSeconds: conn.keepAliveSeconds,
       remoteHost: conn.remoteHost,
       transport: transportOf(conn.transport),
+      wireGuardConfig: await ref
+          .read(secureStorageProvider)
+          .readWireGuard(connectionId),
     ),
     password: password,
   );

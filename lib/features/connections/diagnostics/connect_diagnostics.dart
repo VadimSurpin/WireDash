@@ -56,8 +56,11 @@ class DiagnosticsReport {
 }
 
 typedef HostLookup = Future<List<String>> Function(String host);
-typedef TcpProbe =
-    Future<void> Function(String host, int port, Duration timeout);
+typedef TcpProbe = Future<void> Function(
+  String host,
+  int port,
+  Duration timeout,
+);
 
 /// Names the machine at a host from its web pages ([identifyHost]).
 typedef HostIdentifier = Future<HubKind?> Function(String host);
@@ -146,6 +149,10 @@ class ConnectDiagnostics {
 
     // --- resolve ---
     try {
+      // A private broker name must never be sent to the phone's DNS.
+      // The tunnel's own DNS and TCP dial are checked by the MQTT connect.
+      if (config.viaWireGuard)
+        throw UnsupportedError('Resolved inside WireGuard');
       await _hostLookup(cand.host).timeout(budget);
       steps.add(
         StepResult(step: DiagnosticStep.resolve, status: StepStatus.pass),
@@ -179,6 +186,8 @@ class ConnectDiagnostics {
 
     // --- tcp ---
     try {
+      if (config.viaWireGuard)
+        throw UnsupportedError('Connected inside WireGuard');
       await _tcpProbe(cand.host, config.port, budget);
       steps.add(StepResult(step: DiagnosticStep.tcp, status: StepStatus.pass));
     } on UnsupportedError {
@@ -302,7 +311,9 @@ class ConnectDiagnostics {
         StepResult(
           step: DiagnosticStep.auth,
           status: StepStatus.fail,
-          detailKey: await _kindOf(cand.host) == HubKind.homeAssistant
+          detailKey:
+              !config.viaWireGuard &&
+                  await _kindOf(cand.host) == HubKind.homeAssistant
               ? 'diagAuthRejectedHa'
               : 'diagAuthRejected',
         ),
