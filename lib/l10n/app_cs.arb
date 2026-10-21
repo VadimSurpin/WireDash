@@ -1087,5 +1087,14 @@
   "setupIsolatedHint": "Tvůj telefon v této Wi-Fi nevidí skoro nic jiného. Může být v síti pro hosty, nebo router drží zařízení odděleně (často se tomu říká izolace klientů nebo AP). Připoj se k hlavní Wi-Fi, nebo to vypni, a zkus to znovu.",
   "setupAuthTrust": "Tvoje přihlášení zůstává v tomto telefonu a jde jen na tvůj vlastní broker. ZigDash nemá server ani účet a každá MQTT aplikace se přihlašuje stejně. Nejbezpečnější: samostatný MQTT uživatel jen pro ZigDash, kterého můžeš kdykoli odstranit.",
   "setupAuthWhatKept": "Co si ZigDash uchovává",
-  "setupAuthDemoFirst": "Nejdřív vyzkoušej demo"
+  "setupAuthDemoFirst": "Nejdřív vyzkoušej demo",
+  "wgTitle": "Použít vestavěný WireGuard",
+  "wgDescription": "Připojte tuto domácnost přes WireGuard přímo v ZigDash. Ostatní aplikace používají vlastní připojení.",
+  "wgConfiguration": "Konfigurace WireGuard",
+  "wgSecretHint": "Uloženo šifrovaně v tomto telefonu. Není součástí exportu nástěnky. Po obnovení dat aplikace konfiguraci znovu importujte.",
+  "wgHide": "Skrýt konfiguraci",
+  "wgShow": "Zobrazit konfiguraci",
+  "wgImport": "Importovat soubor .conf",
+  "wgInvalidConfiguration": "Neplatná konfigurace WireGuard. Zkontrolujte konfigurační soubor a zkuste to znovu.",
+  "wgConnect": "Připojit přes WireGuard"
 }

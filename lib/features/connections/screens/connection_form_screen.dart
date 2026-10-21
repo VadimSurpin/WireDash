@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,11 +11,11 @@ import '../../../data/database/tables/connections.dart';
 import '../../../data/repositories/connection_repo.dart';
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
-import '../../../mqtt/wireguard/backend.dart';
 import '../../../shortcuts/shortcut_service.dart' show forgetShortcutHome;
 import '../diagnostics/connect_diagnostics.dart';
 import '../diagnostics/connect_diagnostics_provider.dart';
 import '../widgets/broker_fields.dart';
+import '../widgets/wireguard_fields.dart';
 import '../widgets/diagnostics_ladder_view.dart';
 import '../widgets/protocol_dropdown.dart';
 import 'broker_help_sheet.dart';
@@ -45,10 +42,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   final _keepAlive = TextEditingController(text: '60');
   final _remoteHost = TextEditingController();
   final _wireGuard = TextEditingController();
-  bool _showWireGuard = false;
   bool get _useWireGuard => _transport == ConnectionTransport.wireGuard;
-  bool get _supportsWireGuard =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
   MqttProtocol _protocol = MqttProtocol.tcp;
   bool _autoConnect = false;
@@ -94,7 +88,6 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       _autoConnect = c.autoConnect;
       _transport = transportOf(c.transport);
       _wireGuard.text = wireGuard ?? '';
-      _showWireGuard = _useWireGuard && _wireGuard.text.isEmpty;
       _loaded = true;
     });
   }
@@ -102,35 +95,6 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   void _onProtocolChanged(MqttProtocol p) {
     applyProtocolPortDefault(_port, _protocol, p);
     setState(() => _protocol = p);
-  }
-
-  Future<void> _importWireGuard() async {
-    try {
-      final picked = await FilePicker.pickFiles(
-        // Android often labels .conf as text/plain or octet-stream. Let the
-        // native validator check the contents instead of hiding these files.
-        withData: true,
-      );
-      if (picked == null || !mounted) return;
-      final bytes = picked.files.single.bytes;
-      if (bytes == null) {
-        throw const FormatException('Cannot read configuration');
-      }
-      final text = utf8.decode(bytes);
-      await createWireGuardBackend().validate(text);
-      if (mounted) {
-        setState(() {
-          _wireGuard.text = text;
-          _showWireGuard = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.connTestFailed(e.toString()))),
-        );
-      }
-    }
   }
 
   /// Opens the network scan; on a tapped result, fills host/port/protocol.
@@ -169,7 +133,10 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
 
     try {
       if (_useWireGuard) {
-        await createWireGuardBackend().validate(_wireGuard.text);
+        if (!await validateWireGuardForForm(context, _wireGuard.text)) {
+          if (mounted) setState(() => _testing = false);
+          return;
+        }
       }
       if (_isEdit) {
         await repo.update(
@@ -250,7 +217,10 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
 
     try {
       if (_useWireGuard) {
-        await createWireGuardBackend().validate(_wireGuard.text);
+        if (!await validateWireGuardForForm(context, _wireGuard.text)) {
+          if (mounted) setState(() => _testing = false);
+          return;
+        }
       }
       final password = _password.text.isEmpty && _isEdit
           ? await ref
@@ -427,7 +397,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
                   TextButton.icon(
                     icon: const Icon(Icons.wifi_find, size: 18),
                     label: Text(context.l10n.connFindBrokers),
-                    onPressed: _findBrokers,
+                    onPressed: _useWireGuard ? null : _findBrokers,
                   ),
                   const Spacer(),
                   TextButton(
@@ -479,63 +449,17 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               ),
               const SizedBox(height: 4),
             ],
+            if (!_viaHa) WireGuardFields(
+              controller: _wireGuard,
+              enabled: _useWireGuard,
+              busy: _saving || _testing,
+              onChanged: (value) => setState(() => _transport = value
+                  ? ConnectionTransport.wireGuard : ConnectionTransport.mqtt),
+            ),
             ExpansionTile(
               tilePadding: EdgeInsets.zero,
               title: Text(context.l10n.advanced),
               children: [
-                if (!_viaHa && (_supportsWireGuard || _useWireGuard)) ...[
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(context.l10n.wgTitle),
-                    subtitle: Text(context.l10n.wgDescription),
-                    value: _useWireGuard,
-                    onChanged: _supportsWireGuard
-                        ? (enabled) => setState(() {
-                            _transport = enabled
-                                ? ConnectionTransport.wireGuard
-                                : ConnectionTransport.mqtt;
-                            _showWireGuard = enabled && _wireGuard.text.isEmpty;
-                          })
-                        : null,
-                  ),
-                  if (_useWireGuard) ...[
-                    TextFormField(
-                      controller: _wireGuard,
-                      readOnly: !_showWireGuard,
-                      obscureText: !_showWireGuard,
-                      maxLines: _showWireGuard ? 8 : 1,
-                      autocorrect: false,
-                      enableSuggestions: false,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.wgConfiguration,
-                        helperText: context.l10n.wgSecretHint,
-                        helperMaxLines: 3,
-                        suffixIcon: IconButton(
-                          tooltip: _showWireGuard
-                              ? context.l10n.wgHide
-                              : context.l10n.wgShow,
-                          icon: Icon(
-                            _showWireGuard
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () =>
-                              setState(() => _showWireGuard = !_showWireGuard),
-                        ),
-                      ),
-                      validator: (v) =>
-                          _useWireGuard && (v == null || v.trim().isEmpty)
-                          ? context.l10n.fieldRequired
-                          : null,
-                    ),
-                    TextButton.icon(
-                      onPressed: _saving || _testing ? null : _importWireGuard,
-                      icon: const Icon(Icons.file_open_outlined),
-                      label: Text(context.l10n.wgImport),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ],
                 TextFormField(
                   controller: _remoteHost,
                   decoration: InputDecoration(

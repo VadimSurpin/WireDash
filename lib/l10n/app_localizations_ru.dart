@@ -3734,27 +3734,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupAuthDemoFirst => 'Сначала попробовать демо';
 
   @override
-  String get wgTitle => 'Use embedded WireGuard';
+  String get wgTitle => 'Использовать встроенный WireGuard';
 
   @override
   String get wgDescription =>
-      'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.';
+      'Подключение к этому дому через WireGuard внутри ZigDash. Другие приложения используют своё подключение.';
 
   @override
-  String get wgConfiguration => 'WireGuard configuration';
+  String get wgConfiguration => 'Конфигурация WireGuard';
 
   @override
   String get wgSecretHint =>
-      'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.';
+      'Хранится на этом телефоне в зашифрованном виде. Не включается в экспорт панелей. После восстановления данных приложения импортируйте её заново.';
 
   @override
-  String get wgHide => 'Hide configuration';
+  String get wgHide => 'Скрыть конфигурацию';
 
   @override
-  String get wgShow => 'Show configuration';
+  String get wgShow => 'Показать конфигурацию';
 
   @override
-  String get wgImport => 'Import .conf file';
+  String get wgImport => 'Импортировать файл .conf';
 
   @override
   String get discoverWirenBoardHint =>
@@ -3783,4 +3783,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Очистить поиск';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Некорректная конфигурация WireGuard. Проверьте файл конфигурации и попробуйте снова.';
+
+  @override
+  String get wgConnect => 'Подключиться через WireGuard';
 }

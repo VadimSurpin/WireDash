@@ -1322,5 +1322,7 @@
   "wbControlCount": "{count} controls",
   "@wbControlCount": {"placeholders": {"count": {"type": "int"}}},
   "wbSearch": "Search devices and controls",
-  "wbClearSearch": "Clear search"
+  "wbClearSearch": "Clear search",
+  "wgInvalidConfiguration": "Invalid WireGuard configuration. Check the configuration file and try again.",
+  "wgConnect": "Connect through WireGuard"
 }

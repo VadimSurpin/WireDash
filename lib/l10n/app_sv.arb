@@ -1172,5 +1172,14 @@
   "setupIsolatedHint": "Telefonen ser nästan inget annat på det här wifi-nätet. Den kan vara på ett gästnät, eller så håller routern enheterna isär (kallas ofta klient- eller AP-isolering). Anslut till ditt huvudwifi eller stäng av det och försök igen.",
   "setupAuthTrust": "Din inloggning stannar på den här telefonen och går bara till din egen broker. ZigDash har ingen server och inget konto, och alla MQTT-appar loggar in så här. Säkrast: en egen MQTT-användare bara för ZigDash, som du kan ta bort när som helst.",
   "setupAuthWhatKept": "Vad ZigDash sparar",
-  "setupAuthDemoFirst": "Prova demon först"
+  "setupAuthDemoFirst": "Prova demon först",
+  "wgTitle": "Använd inbyggd WireGuard",
+  "wgDescription": "Anslut detta hem via WireGuard i ZigDash. Andra appar behåller sin egen anslutning.",
+  "wgConfiguration": "WireGuard-konfiguration",
+  "wgSecretHint": "Lagras krypterat på den här telefonen. Ingår inte i exporter av kontrollpaneler. Importera den igen efter att appdata har återställts.",
+  "wgHide": "Dölj konfiguration",
+  "wgShow": "Visa konfiguration",
+  "wgImport": "Importera .conf-fil",
+  "wgInvalidConfiguration": "Ogiltig WireGuard-konfiguration. Kontrollera konfigurationsfilen och försök igen.",
+  "wgConnect": "Anslut via WireGuard"
 }

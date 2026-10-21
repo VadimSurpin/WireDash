@@ -1087,5 +1087,14 @@
   "setupIsolatedHint": "Il tuo telefono non vede quasi nient'altro su questo Wi-Fi. Potrebbe essere su una rete ospiti, oppure il router tiene separati i dispositivi (spesso si chiama isolamento client o AP). Collegati al Wi-Fi principale, o disattiva l'isolamento, poi riprova.",
   "setupAuthTrust": "Il tuo login resta su questo telefono e va solo al tuo broker. ZigDash non ha server né account, e ogni app MQTT accede così. La scelta più sicura: un utente MQTT separato solo per ZigDash, che puoi rimuovere quando vuoi.",
   "setupAuthWhatKept": "Cosa conserva ZigDash",
-  "setupAuthDemoFirst": "Prima prova la demo"
+  "setupAuthDemoFirst": "Prima prova la demo",
+  "wgTitle": "Usa WireGuard integrato",
+  "wgDescription": "Collega questa casa tramite WireGuard all’interno di ZigDash. Le altre app mantengono la propria connessione.",
+  "wgConfiguration": "Configurazione WireGuard",
+  "wgSecretHint": "Salvata con crittografia su questo telefono. Non è inclusa nelle esportazioni delle dashboard. Importala di nuovo dopo aver ripristinato i dati dell’app.",
+  "wgHide": "Nascondi configurazione",
+  "wgShow": "Mostra configurazione",
+  "wgImport": "Importa file .conf",
+  "wgInvalidConfiguration": "Configurazione WireGuard non valida. Controlla il file di configurazione e riprova.",
+  "wgConnect": "Connetti tramite WireGuard"
 }

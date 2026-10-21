@@ -6737,6 +6737,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear search'**
   String get wbClearSearch;
+
+  /// No description provided for @wgInvalidConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid WireGuard configuration. Check the configuration file and try again.'**
+  String get wgInvalidConfiguration;
+
+  /// No description provided for @wgConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect through WireGuard'**
+  String get wgConnect;
 }
 
 class _AppLocalizationsDelegate

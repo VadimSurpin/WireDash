@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +32,8 @@ class _MemSecure implements SecureStore {
   @override
   Future<String?> readWireGuard(String id) async => _wireGuard[id];
   @override
-  Future<void> writeWireGuard(String id, String config) async => _wireGuard[id] = config;
+  Future<void> writeWireGuard(String id, String config) async =>
+      _wireGuard[id] = config;
   @override
   Future<void> deleteWireGuard(String id) async => _wireGuard.remove(id);
 
@@ -52,6 +55,7 @@ class _FakeDiagnostics extends ConnectDiagnostics {
 
   final List<DiagnosticsReport> results;
   int calls = 0;
+  BrokerConfig? lastConfig;
 
   @override
   Future<DiagnosticsReport> run({
@@ -59,6 +63,7 @@ class _FakeDiagnostics extends ConnectDiagnostics {
     required String password,
     String base = 'zigbee2mqtt',
   }) async {
+    lastConfig = config;
     final i = calls < results.length ? calls : results.length - 1;
     calls++;
     return results[i];
@@ -220,6 +225,81 @@ Widget _wrap({
 void main() {
   setUp(() => _firstRun = _RecordingFirstRun());
 
+  for (final invalid in [false, true]) {
+    testWidgets(
+      'initial WireGuard form ${invalid ? 'rejects invalid configuration' : 'persists and probes the tunnel'}',
+      (tester) async {
+        _tall(tester);
+        debugDefaultTargetPlatformOverride = TargetPlatform.android;
+        addTearDown(() => debugDefaultTargetPlatformOverride = null);
+        const channel = MethodChannel('zigdash/wireguard');
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          (call) async {
+            if (invalid) throw PlatformException(code: 'invalid');
+            return null;
+          },
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            channel,
+            null,
+          ),
+        );
+        final db = AppDatabase.test(NativeDatabase.memory());
+        addTearDown(db.close);
+        final storage = _MemSecure();
+        final diagnostics = _FakeDiagnostics([_successReport(count: 0)]);
+        await tester.pumpWidget(
+          _wrap(
+            db: db,
+            diagnostics: diagnostics,
+            extraOverrides: {
+              'storage': secureStorageProvider.overrideWithValue(storage),
+              'status': connectionStatusProvider.overrideWith((ref, _) => Stream.value(MqttStatus.disconnected)),
+            },
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Use embedded WireGuard'), findsOneWidget);
+        await tester.tap(find.text('Use embedded WireGuard'));
+        await tester.pumpAndSettle();
+        final field = find.byWidgetPredicate(
+          (widget) =>
+              widget is TextField &&
+              widget.decoration?.labelText == 'WireGuard configuration',
+        );
+        const configuration =
+            '[Interface]\nPrivateKey = test\nAddress = 10.0.0.2/32\n[Peer]\nEndpoint = example.com:51820';
+        await tester.enterText(field, configuration);
+        final connect = find.text('Test & connect');
+        await tester.ensureVisible(connect);
+        await tester.pumpAndSettle();
+        await tester.tap(connect);
+        await tester.pumpAndSettle();
+        if (invalid) {
+          expect(
+            find.text(
+              'Invalid WireGuard configuration. Check the configuration file and try again.',
+            ),
+            findsOneWidget,
+          );
+          expect(diagnostics.calls, 0);
+          expect(await db.select(db.connections).get(), isEmpty);
+        } else {
+          expect(diagnostics.lastConfig!.viaWireGuard, isTrue);
+          expect(diagnostics.lastConfig!.wireGuardConfig, configuration);
+          final saved = (await db.select(db.connections).get()).single;
+          expect(saved.transport, ConnectionTransport.wireGuard);
+          expect(await storage.readWireGuard(saved.id), configuration);
+        }
+        await tester.pumpWidget(const SizedBox());
+        await tester.pumpAndSettle();
+        debugDefaultTargetPlatformOverride = null;
+      },
+    );
+  }
+
   // 2.5: an empty host, with where to find it, instead of "localhost".
   testWidgets('starts empty, with hints on where the address is', (
     tester,
@@ -248,7 +328,10 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.textContaining('Using Home Assistant? The host'), findsOneWidget);
+    expect(
+      find.textContaining('Using Home Assistant? The host'),
+      findsOneWidget,
+    );
     expect(find.text('Still stuck? Get help'), findsOneWidget);
 
     await tester.tap(find.text('Test & connect'));

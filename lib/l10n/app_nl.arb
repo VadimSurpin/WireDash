@@ -1172,5 +1172,14 @@
   "setupIsolatedHint": "Je telefoon ziet bijna niets anders op deze wifi. Hij zit misschien op een gastnetwerk, of de router houdt apparaten gescheiden (vaak client- of AP-isolatie genoemd). Verbind met je hoofdwifi of zet dat uit, en probeer het opnieuw.",
   "setupAuthTrust": "Je login blijft op deze telefoon en gaat alleen naar je eigen broker. ZigDash heeft geen server en geen account, en elke MQTT-app logt zo in. Het veiligst: een aparte MQTT-gebruiker alleen voor ZigDash, die je altijd kunt verwijderen.",
   "setupAuthWhatKept": "Wat ZigDash bewaart",
-  "setupAuthDemoFirst": "Eerst de demo proberen"
+  "setupAuthDemoFirst": "Eerst de demo proberen",
+  "wgTitle": "Ingebouwde WireGuard gebruiken",
+  "wgDescription": "Verbind dit huis via WireGuard binnen ZigDash. Andere apps behouden hun eigen verbinding.",
+  "wgConfiguration": "WireGuard-configuratie",
+  "wgSecretHint": "Versleuteld opgeslagen op deze telefoon. Niet opgenomen in dashboardexports. Importeer opnieuw nadat appgegevens zijn hersteld.",
+  "wgHide": "Configuratie verbergen",
+  "wgShow": "Configuratie tonen",
+  "wgImport": ".conf-bestand importeren",
+  "wgInvalidConfiguration": "Ongeldige WireGuard-configuratie. Controleer het configuratiebestand en probeer het opnieuw.",
+  "wgConnect": "Verbinden via WireGuard"
 }

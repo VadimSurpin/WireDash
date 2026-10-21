@@ -3749,27 +3749,27 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupAuthDemoFirst => 'Eerst de demo proberen';
 
   @override
-  String get wgTitle => 'Use embedded WireGuard';
+  String get wgTitle => 'Ingebouwde WireGuard gebruiken';
 
   @override
   String get wgDescription =>
-      'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.';
+      'Verbind dit huis via WireGuard binnen ZigDash. Andere apps behouden hun eigen verbinding.';
 
   @override
-  String get wgConfiguration => 'WireGuard configuration';
+  String get wgConfiguration => 'WireGuard-configuratie';
 
   @override
   String get wgSecretHint =>
-      'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.';
+      'Versleuteld opgeslagen op deze telefoon. Niet opgenomen in dashboardexports. Importeer opnieuw nadat appgegevens zijn hersteld.';
 
   @override
-  String get wgHide => 'Hide configuration';
+  String get wgHide => 'Configuratie verbergen';
 
   @override
-  String get wgShow => 'Show configuration';
+  String get wgShow => 'Configuratie tonen';
 
   @override
-  String get wgImport => 'Import .conf file';
+  String get wgImport => '.conf-bestand importeren';
 
   @override
   String get discoverWirenBoardHint =>
@@ -3798,4 +3798,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Clear search';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Ongeldige WireGuard-configuratie. Controleer het configuratiebestand en probeer het opnieuw.';
+
+  @override
+  String get wgConnect => 'Verbinden via WireGuard';
 }

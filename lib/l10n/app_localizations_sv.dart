@@ -3735,27 +3735,27 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupAuthDemoFirst => 'Prova demon först';
 
   @override
-  String get wgTitle => 'Use embedded WireGuard';
+  String get wgTitle => 'Använd inbyggd WireGuard';
 
   @override
   String get wgDescription =>
-      'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.';
+      'Anslut detta hem via WireGuard i ZigDash. Andra appar behåller sin egen anslutning.';
 
   @override
-  String get wgConfiguration => 'WireGuard configuration';
+  String get wgConfiguration => 'WireGuard-konfiguration';
 
   @override
   String get wgSecretHint =>
-      'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.';
+      'Lagras krypterat på den här telefonen. Ingår inte i exporter av kontrollpaneler. Importera den igen efter att appdata har återställts.';
 
   @override
-  String get wgHide => 'Hide configuration';
+  String get wgHide => 'Dölj konfiguration';
 
   @override
-  String get wgShow => 'Show configuration';
+  String get wgShow => 'Visa konfiguration';
 
   @override
-  String get wgImport => 'Import .conf file';
+  String get wgImport => 'Importera .conf-fil';
 
   @override
   String get discoverWirenBoardHint =>
@@ -3784,4 +3784,11 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Clear search';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Ogiltig WireGuard-konfiguration. Kontrollera konfigurationsfilen och försök igen.';
+
+  @override
+  String get wgConnect => 'Anslut via WireGuard';
 }

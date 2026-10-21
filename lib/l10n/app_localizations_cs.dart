@@ -3743,27 +3743,27 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupAuthDemoFirst => 'Nejdřív vyzkoušej demo';
 
   @override
-  String get wgTitle => 'Use embedded WireGuard';
+  String get wgTitle => 'Použít vestavěný WireGuard';
 
   @override
   String get wgDescription =>
-      'Connect this home through WireGuard inside ZigDash. Other apps keep their own connection.';
+      'Připojte tuto domácnost přes WireGuard přímo v ZigDash. Ostatní aplikace používají vlastní připojení.';
 
   @override
-  String get wgConfiguration => 'WireGuard configuration';
+  String get wgConfiguration => 'Konfigurace WireGuard';
 
   @override
   String get wgSecretHint =>
-      'Stored encrypted on this phone. Not included in dashboard exports. Re-import it after restoring app data.';
+      'Uloženo šifrovaně v tomto telefonu. Není součástí exportu nástěnky. Po obnovení dat aplikace konfiguraci znovu importujte.';
 
   @override
-  String get wgHide => 'Hide configuration';
+  String get wgHide => 'Skrýt konfiguraci';
 
   @override
-  String get wgShow => 'Show configuration';
+  String get wgShow => 'Zobrazit konfiguraci';
 
   @override
-  String get wgImport => 'Import .conf file';
+  String get wgImport => 'Importovat soubor .conf';
 
   @override
   String get discoverWirenBoardHint =>
@@ -3792,4 +3792,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Clear search';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Neplatná konfigurace WireGuard. Zkontrolujte konfigurační soubor a zkuste to znovu.';
+
+  @override
+  String get wgConnect => 'Připojit přes WireGuard';
 }
