@@ -10,8 +10,11 @@ converter is required. The connection must allow subscriptions to:
 ```
 
 Create an MQTT connection and a dashboard, then choose **Add tile → Wiren
-Board**. Expand a device and select a control. Review the suggested tile and
-save it. The discovery screen also has a Zigbee2MQTT source selector.
+Board**. Devices start collapsed and are grouped into added modules and controller
+built-ins. Search matches both device and control names. Use the + button next
+to a device to add it as one panel, or expand it and select an individual
+control. Review the suggested tile and save it. Tap a whole-device panel to
+open its full, scrollable set of controls. The discovery screen also has a Zigbee2MQTT source selector.
 
 Discovery listens for retained metadata and subsequent changes. It supports
 both current JSON `/meta` messages and legacy `/meta/type`, `/meta/readonly`,
@@ -21,7 +24,17 @@ controls are omitted. Titles use the app's language, then English, Russian,
 another available translation, and finally the topic identifier. Clearing a
 retained metadata topic removes that metadata from the discovery list.
 
-Each control becomes a separate tile:
+A whole-device panel caches its metadata for offline use and follows live
+metadata when available. Its controls use the same connection and read-only
+checks as individual tiles. A whole-device panel creates one dashboard row;
+its controls are not separate stored tiles.
+
+Built-in grouping uses exact standard device IDs (`hwmon`, `wb-gpio`, `wb-adc`,
+`power_status`, etc.). Other module and virtual device IDs appear under added
+modules. MQTT metadata does not identify the physical controller for arbitrary
+custom device names. Expansion state is preserved while metadata updates.
+
+Individual controls use these suggested tiles:
 
 | Control | Suggested tile |
 | --- | --- |
@@ -60,4 +73,6 @@ flutter test test/features/discovery test/features/panels/panel_form_topics_test
 Tests exercise JSON and legacy retained metadata, updates/removal, malformed
 messages, translated titles, read-only/hidden flags, scalar payloads and topic
 composition, cached wildcard replay, subscription cleanup, source selection,
-and saving suggested configurations through the actual tile form.
+and creating/editing suggested configurations through the actual tile form.
+Whole-device tests check config round-trips, read-only controls, scalar
+commands, cached offline controls, grouping, search, and preserved expansion.

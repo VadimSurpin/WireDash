@@ -20,8 +20,8 @@ enum PanelType {
   scene,
   autoClose,
 
-  /// A whole Zigbee2MQTT device of a known class (1.12). Config:
-  /// DeviceTileConfig; the device is `deviceIeee`.
+  /// A whole device: DeviceTileConfig for Zigbee2MQTT (linked by deviceIeee),
+  /// or WirenBoardDeviceConfig with its MQTT identity and cached controls.
   device,
 
   /// One numeric value with its unit (1.12). Config: ReadingConfig.

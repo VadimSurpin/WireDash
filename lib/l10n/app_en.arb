@@ -2227,5 +2227,18 @@
     }
   },
   "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.",
-  "discoverWirenBoardHint": "Discover controls from retained /devices MQTT metadata. Select a control to add a tile."
+  "discoverWirenBoardHint": "Add a whole device with +, or expand it to choose individual controls.",
+  "wbSearch": "Search devices and controls",
+  "@wbControlCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wbClearSearch": "Clear search",
+  "wbAddedModules": "Added modules",
+  "wbControllerBuiltins": "Controller built-ins",
+  "wbAddWholeDevice": "Add whole device",
+  "wbControlCount": "{count} controls"
 }
