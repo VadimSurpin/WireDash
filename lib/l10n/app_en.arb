@@ -1307,6 +1307,13 @@
   "setupAuthTrust": "Your login stays on this phone and goes only to your own broker. ZigDash has no server and no account, and every MQTT app logs in this way. Safest: a separate MQTT user just for ZigDash, which you can remove any time.",
   "setupAuthWhatKept": "What ZigDash keeps",
   "setupAuthDemoFirst": "Try the demo first",
-  "discoverWirenBoardHint": "Discover controls from retained /devices MQTT metadata. Select a control to add a tile.",
-  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata."
+  "discoverWirenBoardHint": "Add a whole device with +, or expand it to choose individual controls.",
+  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.",
+  "wbControllerBuiltins": "Controller built-ins",
+  "wbAddedModules": "Added modules",
+  "wbAddWholeDevice": "Add whole device",
+  "wbControlCount": "{count} controls",
+  "@wbControlCount": {"placeholders": {"count": {"type": "int"}}},
+  "wbSearch": "Search devices and controls",
+  "wbClearSearch": "Clear search"
 }

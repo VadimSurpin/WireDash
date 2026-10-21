@@ -6651,7 +6651,7 @@ abstract class AppLocalizations {
   /// No description provided for @discoverWirenBoardHint.
   ///
   /// In en, this message translates to:
-  /// **'Discover controls from retained /devices MQTT metadata. Select a control to add a tile.'**
+  /// **'Add a whole device with +, or expand it to choose individual controls.'**
   String get discoverWirenBoardHint;
 
   /// No description provided for @discoverWirenBoardNone.
@@ -6659,6 +6659,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.'**
   String get discoverWirenBoardNone;
+
+  /// No description provided for @wbControllerBuiltins.
+  ///
+  /// In en, this message translates to:
+  /// **'Controller built-ins'**
+  String get wbControllerBuiltins;
+
+  /// No description provided for @wbAddedModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Added modules'**
+  String get wbAddedModules;
+
+  /// No description provided for @wbAddWholeDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add whole device'**
+  String get wbAddWholeDevice;
+
+  /// No description provided for @wbControlCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} controls'**
+  String wbControlCount(int count);
+
+  /// No description provided for @wbSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search devices and controls'**
+  String get wbSearch;
+
+  /// No description provided for @wbClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get wbClearSearch;
 }
 
 class _AppLocalizationsDelegate

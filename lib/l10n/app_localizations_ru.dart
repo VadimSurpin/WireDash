@@ -3735,9 +3735,29 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Обнаружение контролов по сохранённым MQTT-метаданным /devices. Выберите контрол, чтобы добавить плитку.';
+      'Нажмите +, чтобы добавить устройство целиком, или раскройте его для выбора отдельных контролов.';
 
   @override
   String get discoverWirenBoardNone =>
       'Контролы Wiren Board не найдены. Проверьте доступ MQTT-пользователя к метаданным /devices и публикацию метаданных с флагом retained драйверами.';
+
+  @override
+  String get wbControllerBuiltins => 'Встроенные устройства контроллера';
+
+  @override
+  String get wbAddedModules => 'Добавленные модули';
+
+  @override
+  String get wbAddWholeDevice => 'Добавить устройство целиком';
+
+  @override
+  String wbControlCount(int count) {
+    return 'Контролов: $count';
+  }
+
+  @override
+  String get wbSearch => 'Поиск устройств и контролов';
+
+  @override
+  String get wbClearSearch => 'Очистить поиск';
 }

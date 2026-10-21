@@ -3,6 +3,18 @@ import '../../panels/models/panel_config.dart';
 import 'device_panel_suggestion.dart';
 import 'wirenboard_device.dart';
 
+PanelSuggestion suggestWirenBoardDevicePanel(
+  WirenBoardDevice device, {
+  String language = 'en',
+}) => PanelSuggestion(
+  type: PanelType.device,
+  name: device.title(language),
+  topicPrefixOverride: '/devices/${device.id}',
+  publishTopicSuffix: '',
+  subscribeTopicSuffix: '',
+  config: WirenBoardDeviceConfig(device: device),
+);
+
 /// WB controls use raw scalar payloads, with writes on `<control>/on`.
 PanelSuggestion suggestWirenBoardPanel(
   WirenBoardDevice device,

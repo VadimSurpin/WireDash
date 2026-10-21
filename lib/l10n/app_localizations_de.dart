@@ -3754,9 +3754,29 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get discoverWirenBoardHint =>
-      'Discover controls from retained /devices MQTT metadata. Select a control to add a tile.';
+      'Add a whole device with +, or expand it to choose individual controls.';
 
   @override
   String get discoverWirenBoardNone =>
       'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
+
+  @override
+  String get wbControllerBuiltins => 'Controller built-ins';
+
+  @override
+  String get wbAddedModules => 'Added modules';
+
+  @override
+  String get wbAddWholeDevice => 'Add whole device';
+
+  @override
+  String wbControlCount(int count) {
+    return '$count controls';
+  }
+
+  @override
+  String get wbSearch => 'Search devices and controls';
+
+  @override
+  String get wbClearSearch => 'Clear search';
 }

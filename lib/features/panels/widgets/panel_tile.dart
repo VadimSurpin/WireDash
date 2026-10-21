@@ -31,6 +31,7 @@ import 'schedule_panel.dart';
 import 'text_log_panel.dart';
 import 'tile_actions_sheet.dart';
 import 'toggle_panel.dart';
+import 'wirenboard_device_panel.dart';
 
 enum PanelSubscriptionMode { none, readOnly, interactive }
 
@@ -143,7 +144,7 @@ String? panelReliabilityValueLabel(PanelConfig config, Object? value) {
     CoverConfig config => _coverReliabilityValueLabel(config, value),
     TextLogConfig() => _textLogReliabilityValueLabel(value),
     // The tile reads its own state line; the raw payload is JSON.
-    DeviceTileConfig() => null,
+    DeviceTileConfig() || WirenBoardDeviceConfig() => null,
     _ => value.toString(),
   };
 }
@@ -212,7 +213,7 @@ class PanelTile extends ConsumerWidget {
     final connectionStatus = ref
         .watch(connectionStatusProvider(connectionId))
         .valueOrNull;
-    final snapshot = reliability.subscribes
+    final snapshot = reliability.subscribes && config is! WirenBoardDeviceConfig
         ? ref
               .watch(
                 panelValueSnapshotProvider(
@@ -331,13 +332,26 @@ class PanelTile extends ConsumerWidget {
             reliability.controlGate == PanelControlGate.autoClose &&
             connectionStatus == MqttStatus.connected,
       ),
-      PanelType.device => DeviceTilePanel(
-        connectionId: connectionId,
-        publishTopic: publishTopic,
-        subscribeTopic: subscribeTopic,
-        panel: panel,
-        config: config as DeviceTileConfig,
-      ),
+      PanelType.device => config is WirenBoardDeviceConfig
+          ? WirenBoardDevicePanel(
+              connectionId: connectionId,
+              panel: panel,
+              config: config,
+              controlBuilder: (control) => PanelTile(
+                connectionId: connectionId,
+                dashboardId: dashboardId,
+                topicPrefix: null,
+                panel: control,
+                locked: true,
+              ),
+            )
+          : DeviceTilePanel(
+              connectionId: connectionId,
+              publishTopic: publishTopic,
+              subscribeTopic: subscribeTopic,
+              panel: panel,
+              config: config as DeviceTileConfig,
+            ),
       PanelType.reading => ReadingPanel(
         connectionId: connectionId,
         subscribeTopic: subscribeTopic,

@@ -157,7 +157,7 @@ class _State extends ConsumerState<PanelFormScreen> {
   String _sceneId = '';
   // Device tile config — preserved as loaded; its topics and exposes are
   // managed from the device, so the form edits only name and size.
-  DeviceTileConfig? _deviceConfig;
+  PanelConfig? _deviceConfig;
 
   // Reading fields
   final _readingJsonPath = TextEditingController(text: 'temperature');
@@ -427,7 +427,7 @@ class _State extends ConsumerState<PanelFormScreen> {
       _autoCloseEnabled = cfg.enabled;
     } else if (cfg is SceneConfig) {
       _sceneId = cfg.sceneId;
-    } else if (cfg is DeviceTileConfig) {
+    } else if (cfg is DeviceTileConfig || cfg is WirenBoardDeviceConfig) {
       _deviceConfig = cfg;
     } else if (cfg is ReadingConfig) {
       _readingJsonPath.text = cfg.jsonPath;
@@ -594,7 +594,7 @@ class _State extends ConsumerState<PanelFormScreen> {
           enabled: _autoCloseEnabled,
         ),
       PanelType.device => _deviceConfig ??
-          PanelConfig.defaultFor(PanelType.device) as DeviceTileConfig,
+          PanelConfig.defaultFor(PanelType.device),
       PanelType.reading => ReadingConfig(
           jsonPath: _readingJsonPath.text.trim(),
           unit: nullIfBlank(_readingUnit.text),
