@@ -32,6 +32,7 @@ import '../../data/repositories/panel_repo.dart';
 import '../../data/repositories/section_repo.dart';
 import '../devices/devices_providers.dart';
 import '../discovery/models/z2m_device.dart';
+import '../discovery/models/wirenboard_device.dart';
 import '../discovery/providers/discovery_provider.dart';
 import '../onboarding/first_run.dart';
 import '../onboarding/setup/recommendation_policy.dart';
@@ -237,6 +238,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   /// as it is.
   Future<void> _buildFirstDashboard(String connectionId) async {
     final base = _baseTopic;
+    final wirenBoardDevices = _report?.wirenBoardDevices ?? const <WirenBoardDevice>[];
     // The language this screen shows, for the dashboard and section names.
     final l10n = context.l10n;
     try {
@@ -253,13 +255,14 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       );
       final List<Z2mDevice> devices;
       try {
-        devices = await ref.read(discoveredDevicesProvider(args).future);
+        devices = wirenBoardDevices.isNotEmpty && (_report?.deviceNames.isEmpty ?? true) ? const [] :
+            await ref.read(discoveredDevicesProvider(args).future);
       } finally {
         keepAlive.close();
       }
       final rows = recommendDevices(devices, base: base);
       final selected = rows.where((r) => r.selected).toList();
-      if (selected.isEmpty) return;
+      if (selected.isEmpty && wirenBoardDevices.isEmpty) return;
       final creator = SetupCreator(
         connections: ref.read(connectionRepoProvider),
         dashboards: ref.read(dashboardRepoProvider),
@@ -272,6 +275,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
         connectionId: connectionId,
         base: base,
         selected: selected,
+        wirenBoardDevices: wirenBoardDevices,
         notSelected: rows.where((r) => !r.selected).toList(),
       );
     } catch (_) {
@@ -490,7 +494,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     final report = _report!;
     final l10n = context.l10n;
     final cs = Theme.of(context).colorScheme;
-    final count = report.deviceNames.length;
+    final wbDevices = report.wirenBoardDevices;
+    final names = [...report.deviceNames,
+      for (final device in wbDevices) device.title(l10n.localeName)];
+    final count = names.length;
     final zeroDevices = count == 0;
 
     return ListView(
@@ -505,17 +512,17 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          zeroDevices ? l10n.noDevicesHint : l10n.foundDevicesHint,
+          zeroDevices ? l10n.noDevicesHint : wbDevices.isNotEmpty ? l10n.wbBuiltinsAvailable : l10n.foundDevicesHint,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        if (!zeroDevices && report.deviceNames.isNotEmpty) ...[
+        if (!zeroDevices && names.isNotEmpty) ...[
           const SizedBox(height: 16),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final name in report.deviceNames.take(8))
+              for (final name in names.take(8))
                 Chip(label: Text(name)),
             ],
           ),

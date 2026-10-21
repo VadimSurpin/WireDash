@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +13,7 @@ import 'package:zigdash/features/panels/models/panel_config.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
 import 'package:zigdash/features/panels/widgets/panel_reliability_frame.dart';
 import 'package:zigdash/features/panels/widgets/panel_tile.dart';
+import 'package:zigdash/features/panels/widgets/text_input_panel.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/mqtt_manager.dart';
@@ -83,8 +85,13 @@ Panel _panel(WirenBoardDevice device) => Panel(
   updatedAt: DateTime(2026),
 );
 
-Widget _app(_Recorder mgr, {bool metadataAvailable = true}) {
-  final device = _device();
+Widget _app(
+  _Recorder mgr, {
+  bool metadataAvailable = true,
+  WirenBoardDevice? initialDevice,
+  Stream<List<WirenBoardDevice>>? updates,
+}) {
+  final device = initialDevice ?? _device();
   String value(String topic) => topic.endsWith('/Temperature') ? '23.5' : '0';
   return ProviderScope(
     overrides: [
@@ -96,7 +103,8 @@ Widget _app(_Recorder mgr, {bool metadataAvailable = true}) {
       ),
       wirenBoardDevicesProvider.overrideWith(
         (ref, _) =>
-            metadataAvailable ? Stream.value([device]) : const Stream.empty(),
+            updates ??
+            (metadataAvailable ? Stream.value([device]) : const Stream.empty()),
       ),
       panelValueProvider.overrideWith(
         (ref, key) => Stream.value(value(key.topic)),
@@ -213,6 +221,74 @@ void main() {
       ));
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();
+      await mgr.dispose();
+    },
+  );
+
+  testWidgets(
+    'typed text follows its control when live metadata reorders the sheet',
+    (tester) async {
+      final discovery = WirenBoardDiscovery()
+        ..apply(
+          '/devices/board/controls/Alpha/meta',
+          '{"type":"text","order":1}',
+        )
+        ..apply(
+          '/devices/board/controls/Beta/meta',
+          '{"type":"text","order":2}',
+        );
+      final updates = StreamController<List<WirenBoardDevice>>.broadcast();
+      final mgr = _Recorder();
+      await tester.pumpWidget(
+        _app(
+          mgr,
+          initialDevice: discovery.devices.single,
+          updates: updates.stream,
+        ),
+      );
+      await tester.pumpAndSettle();
+      updates.add(discovery.devices);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Relay module'));
+      await tester.pumpAndSettle();
+      Finder inputFor(String label) => find.descendant(
+        of: find.ancestor(
+          of: find.text(label),
+          matching: find.byType(TextInputPanel),
+        ),
+        matching: find.byType(TextField),
+      );
+      await tester.enterText(inputFor('Alpha'), 'pending command');
+      discovery.apply(
+        '/devices/board/controls/Alpha/meta',
+        '{"type":"text","order":3}',
+      );
+      updates.add(discovery.devices);
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(inputFor('Alpha')).controller!.text,
+        'pending command',
+      );
+      expect(
+        tester.widget<TextField>(inputFor('Beta')).controller!.text,
+        isEmpty,
+      );
+      final alpha = find.ancestor(
+        of: find.text('Alpha'),
+        matching: find.byType(TextInputPanel),
+      );
+      await tester.tap(
+        find.descendant(of: alpha, matching: find.byIcon(Icons.send)),
+      );
+      await tester.pumpAndSettle();
+      expect(mgr.sent.single, (
+        '/devices/board/controls/Alpha/on',
+        'pending command',
+        false,
+      ));
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await updates.close();
       await mgr.dispose();
     },
   );

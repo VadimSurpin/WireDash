@@ -47,7 +47,7 @@ class WirenBoardDevicePanel extends ConsumerWidget {
           isScrollControlled: true,
           useSafeArea: true,
           showDragHandle: true,
-          builder: (_) => _WirenBoardControls(
+          builder: (_) => WirenBoardDeviceControls(
             connectionId: connectionId,
             panel: panel,
             config: config,
@@ -148,8 +148,9 @@ WirenBoardDevice _currentDevice(
         .firstOrNull ??
     cached;
 
-class _WirenBoardControls extends ConsumerWidget {
-  const _WirenBoardControls({
+class WirenBoardDeviceControls extends ConsumerWidget {
+  const WirenBoardDeviceControls({
+    super.key,
     required this.connectionId,
     required this.panel,
     required this.config,
@@ -165,6 +166,9 @@ class _WirenBoardControls extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final device = _currentDevice(ref, connectionId, config.device);
     final language = Localizations.localeOf(context).languageCode;
+    final indexes = {
+      for (var i = 0; i < device.controls.length; i++) device.controls[i].id: i,
+    };
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
@@ -182,6 +186,8 @@ class _WirenBoardControls extends ConsumerWidget {
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
                   itemCount: device.controls.length,
+                  findChildIndexCallback: (key) =>
+                      key is ValueKey<String> ? indexes[key.value] : null,
                   itemBuilder: (context, index) {
                     final control = device.controls[index];
                     final suggestion = suggestWirenBoardPanel(
@@ -191,17 +197,20 @@ class _WirenBoardControls extends ConsumerWidget {
                     );
                     // Render controls without creating DB rows or exposing tile-edit
                     // actions for these temporary children.
-                    return controlBuilder(
-                      panel.copyWith(
-                        id: '${panel.id}/${control.id}',
-                        name: control.title(language),
-                        type: suggestion.type,
-                        topicPrefixOverride: Value(control.topic),
-                        topic: suggestion.publishTopicSuffix,
-                        subscribeTopic: const Value(''),
-                        deviceIeee: const Value(null),
-                        retain: false,
-                        config: suggestion.config!.encode(),
+                    return KeyedSubtree(
+                      key: ValueKey(control.id),
+                      child: controlBuilder(
+                        panel.copyWith(
+                          id: '${panel.id}/${control.id}',
+                          name: control.title(language),
+                          type: suggestion.type,
+                          topicPrefixOverride: Value(control.topic),
+                          topic: suggestion.publishTopicSuffix,
+                          subscribeTopic: const Value(''),
+                          deviceIeee: const Value(null),
+                          retain: false,
+                          config: suggestion.config!.encode(),
+                        ),
                       ),
                     );
                   },

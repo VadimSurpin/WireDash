@@ -2475,7 +2475,7 @@ abstract class AppLocalizations {
   /// No description provided for @guidedConnectIntro.
   ///
   /// In en, this message translates to:
-  /// **'We\'ll test each step of the connection and show your Zigbee devices.'**
+  /// **'We\'ll test your MQTT connection and discover devices on your broker.'**
   String get guidedConnectIntro;
 
   /// No description provided for @guidedBaseTopic.
@@ -6648,6 +6648,72 @@ abstract class AppLocalizations {
   /// **'Try the demo first'**
   String get setupAuthDemoFirst;
 
+  /// No description provided for @discoverWirenBoardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovered modules are added to this dashboard automatically. Use + for built-ins, or expand a device to choose individual controls.'**
+  String get discoverWirenBoardHint;
+
+  /// No description provided for @discoverWirenBoardNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that drivers have published retained metadata.'**
+  String get discoverWirenBoardNone;
+
+  /// No description provided for @wbControllerBuiltins.
+  ///
+  /// In en, this message translates to:
+  /// **'Controller built-ins'**
+  String get wbControllerBuiltins;
+
+  /// No description provided for @wbAddedModules.
+  ///
+  /// In en, this message translates to:
+  /// **'Added modules'**
+  String get wbAddedModules;
+
+  /// No description provided for @wbAddWholeDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add whole device'**
+  String get wbAddWholeDevice;
+
+  /// No description provided for @wbControlCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} controls'**
+  String wbControlCount(int count);
+
+  /// No description provided for @wbSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search devices and controls'**
+  String get wbSearch;
+
+  /// No description provided for @wbClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get wbClearSearch;
+
+  /// No description provided for @wbAutoAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Modules added: {count}.'**
+  String wbAutoAdded(int count);
+
+  /// No description provided for @wbAutoAddFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add discovered devices. Try discovery again.'**
+  String get wbAutoAddFailed;
+
+  /// No description provided for @wbBuiltinsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Controller built-ins remain available in All devices.'**
+  String get wbBuiltinsAvailable;
+
   /// No description provided for @wgTitle.
   ///
   /// In en, this message translates to:
@@ -6689,54 +6755,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import .conf file'**
   String get wgImport;
-
-  /// No description provided for @discoverWirenBoardHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a whole device with +, or expand it to choose individual controls.'**
-  String get discoverWirenBoardHint;
-
-  /// No description provided for @discoverWirenBoardNone.
-  ///
-  /// In en, this message translates to:
-  /// **'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.'**
-  String get discoverWirenBoardNone;
-
-  /// No description provided for @wbControllerBuiltins.
-  ///
-  /// In en, this message translates to:
-  /// **'Controller built-ins'**
-  String get wbControllerBuiltins;
-
-  /// No description provided for @wbAddedModules.
-  ///
-  /// In en, this message translates to:
-  /// **'Added modules'**
-  String get wbAddedModules;
-
-  /// No description provided for @wbAddWholeDevice.
-  ///
-  /// In en, this message translates to:
-  /// **'Add whole device'**
-  String get wbAddWholeDevice;
-
-  /// No description provided for @wbControlCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} controls'**
-  String wbControlCount(int count);
-
-  /// No description provided for @wbSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search devices and controls'**
-  String get wbSearch;
-
-  /// No description provided for @wbClearSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear search'**
-  String get wbClearSearch;
 
   /// No description provided for @wgInvalidConfiguration.
   ///

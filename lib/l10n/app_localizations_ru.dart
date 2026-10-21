@@ -1329,7 +1329,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Мы проверим каждый этап подключения и покажем ваши Zigbee-устройства.';
+      'Проверим подключение MQTT и найдём устройства на вашем брокере.';
 
   @override
   String get guidedBaseTopic => 'Базовый топик';
@@ -3734,31 +3734,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupAuthDemoFirst => 'Сначала попробовать демо';
 
   @override
-  String get wgTitle => 'Использовать встроенный WireGuard';
-
-  @override
-  String get wgDescription =>
-      'Подключение к этому дому через WireGuard внутри ZigDash. Другие приложения используют своё подключение.';
-
-  @override
-  String get wgConfiguration => 'Конфигурация WireGuard';
-
-  @override
-  String get wgSecretHint =>
-      'Хранится на этом телефоне в зашифрованном виде. Не включается в экспорт панелей. После восстановления данных приложения импортируйте её заново.';
-
-  @override
-  String get wgHide => 'Скрыть конфигурацию';
-
-  @override
-  String get wgShow => 'Показать конфигурацию';
-
-  @override
-  String get wgImport => 'Импортировать файл .conf';
-
-  @override
   String get discoverWirenBoardHint =>
-      'Нажмите +, чтобы добавить устройство целиком, или раскройте его для выбора отдельных контролов.';
+      'Обнаруженные модули добавляются на эту панель автоматически. Нажмите + для встроенных устройств или раскройте устройство для выбора отдельных контролов.';
 
   @override
   String get discoverWirenBoardNone =>
@@ -3783,6 +3760,42 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wbClearSearch => 'Очистить поиск';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Добавлено модулей: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Не удалось добавить обнаруженные устройства. Повторите поиск.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Встроенные устройства контроллера остаются доступными в списке всех устройств.';
+
+  @override
+  String get wgTitle => 'Использовать встроенный WireGuard';
+
+  @override
+  String get wgDescription =>
+      'Подключение к этому дому через WireGuard внутри ZigDash. Другие приложения используют своё подключение.';
+
+  @override
+  String get wgConfiguration => 'Конфигурация WireGuard';
+
+  @override
+  String get wgSecretHint =>
+      'Хранится на этом телефоне в зашифрованном виде. Не включается в экспорт панелей. После восстановления данных приложения импортируйте её заново.';
+
+  @override
+  String get wgHide => 'Скрыть конфигурацию';
+
+  @override
+  String get wgShow => 'Показать конфигурацию';
+
+  @override
+  String get wgImport => 'Импортировать файл .conf';
 
   @override
   String get wgInvalidConfiguration =>

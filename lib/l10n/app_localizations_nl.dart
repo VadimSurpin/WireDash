@@ -1322,7 +1322,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'We testen elke stap van de verbinding en tonen uw Zigbee-apparaten.';
+      'We testen je MQTT-verbinding en zoeken apparaten op je broker.';
 
   @override
   String get guidedBaseTopic => 'Basis-topic';
@@ -3749,6 +3749,47 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupAuthDemoFirst => 'Eerst de demo proberen';
 
   @override
+  String get discoverWirenBoardHint =>
+      'Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen.';
+
+  @override
+  String get discoverWirenBoardNone =>
+      'Geen Wiren Board-bedieningselementen gevonden. Controleer of de MQTT-gebruiker /devices-metadata kan lezen en of de stuurprogramma’s behouden metadata publiceren.';
+
+  @override
+  String get wbControllerBuiltins => 'Ingebouwde controllerapparaten';
+
+  @override
+  String get wbAddedModules => 'Toegevoegde modules';
+
+  @override
+  String get wbAddWholeDevice => 'Volledig apparaat toevoegen';
+
+  @override
+  String wbControlCount(int count) {
+    return 'Bedieningselementen: $count';
+  }
+
+  @override
+  String get wbSearch => 'Apparaten en bedieningselementen zoeken';
+
+  @override
+  String get wbClearSearch => 'Zoekopdracht wissen';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Modules toegevoegd: $count.';
+  }
+
+  @override
+  String get wbAutoAddFailed =>
+      'Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.';
+
+  @override
   String get wgTitle => 'Ingebouwde WireGuard gebruiken';
 
   @override
@@ -3770,34 +3811,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get wgImport => '.conf-bestand importeren';
-
-  @override
-  String get discoverWirenBoardHint =>
-      'Add a whole device with +, or expand it to choose individual controls.';
-
-  @override
-  String get discoverWirenBoardNone =>
-      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
-
-  @override
-  String get wbControllerBuiltins => 'Controller built-ins';
-
-  @override
-  String get wbAddedModules => 'Added modules';
-
-  @override
-  String get wbAddWholeDevice => 'Add whole device';
-
-  @override
-  String wbControlCount(int count) {
-    return '$count controls';
-  }
-
-  @override
-  String get wbSearch => 'Search devices and controls';
-
-  @override
-  String get wbClearSearch => 'Clear search';
 
   @override
   String get wgInvalidConfiguration =>

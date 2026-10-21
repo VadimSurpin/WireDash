@@ -11,6 +11,7 @@ import '../../connections/discovery/hub_probe.dart';
 import '../../connections/discovery/no_network.dart';
 import '../../connections/discovery/z2m_frontend.dart';
 import '../../discovery/models/z2m_device.dart';
+import '../../discovery/models/wirenboard_device.dart';
 import 'recommendation_policy.dart';
 import 'setup_candidate.dart';
 import 'setup_creator.dart';
@@ -23,12 +24,14 @@ class Z2mFetchResult {
     required this.detected,
     required this.devices,
     this.otherBases = const [],
+    this.wirenBoardDevices = const [],
   });
 
   /// True only after `$base/bridge/...` topics verified Zigbee2MQTT — the UI
   /// may not claim Z2M was found before this.
   final bool detected;
   final List<Z2mDevice> devices;
+  final List<WirenBoardDevice> wirenBoardDevices;
 
   /// Other base topics with a Zigbee2MQTT bridge on the same broker (their
   /// `<base>/bridge/state`), for a Zigbee2MQTT set up with its own base
@@ -255,11 +258,13 @@ class SetupFailed extends SetupState {
 
 /// Devices verified — the user reviews the grouped, preselected rows.
 class SetupReview extends SetupState {
-  const SetupReview(this.candidate, this.rows);
+  const SetupReview(this.candidate, this.rows, {this.wirenBoardDevices = const []});
+  final List<WirenBoardDevice> wirenBoardDevices;
   final SetupCandidate candidate;
   final List<ReviewRow> rows;
 
-  int get selectedCount => rows.where((r) => r.selected).length;
+  int get selectedCount => rows.where((r) => r.selected).length +
+      wirenBoardDevices.where((d) => !d.isControllerBuiltin).length;
 }
 
 /// Saving connection + dashboard + panels. Carries the [review] so the list
@@ -392,6 +397,7 @@ class SetupCoordinator {
   String? _username;
   String? _password;
   List<ReviewRow>? _rows;
+  List<WirenBoardDevice> _wirenBoardDevices = const [];
   var _op = 0;
 
   SetupState get state => _state;
@@ -775,7 +781,7 @@ class SetupCoordinator {
             : r,
     ];
     _rows = rows;
-    _emit(SetupReview(s.candidate, rows));
+    _emit(SetupReview(s.candidate, rows, wirenBoardDevices: s.wirenBoardDevices));
   }
 
   Future<void> createDashboard() async {
@@ -783,7 +789,7 @@ class SetupCoordinator {
     final candidate = _candidate;
     if (rows == null || candidate == null) return;
     final op = ++_op;
-    _emit(SetupCreating(SetupReview(candidate, rows)));
+    _emit(SetupCreating(SetupReview(candidate, rows, wirenBoardDevices: _wirenBoardDevices)));
     try {
       final result = await _creator.create(
         host: candidate.host,
@@ -795,6 +801,7 @@ class SetupCoordinator {
         selected: rows.where((r) => r.selected).toList(),
         notSelected: rows.where((r) => !r.selected).toList(),
         transport: candidate.transport,
+        wirenBoardDevices: _wirenBoardDevices,
       );
       if (op != _op) return;
       _createdOn = candidate.host;
@@ -853,6 +860,7 @@ class SetupCoordinator {
     _username = null;
     _password = null;
     _rows = null;
+    _wirenBoardDevices = const [];
     _platform = null;
     _emit(const SetupIdle());
   }
@@ -975,7 +983,7 @@ class SetupCoordinator {
       return;
     }
     if (op != _op) return;
-    if (!fetch.detected) {
+    if (!fetch.detected && fetch.wirenBoardDevices.isEmpty) {
       // Zigbee2MQTT under another base topic: use it and check again, once.
       final other = fetch.otherBases.where((b) => b != _base).firstOrNull;
       if (other != null && !_triedOtherBase) {
@@ -987,12 +995,13 @@ class SetupCoordinator {
       _emit(SetupFailed(SetupErrorKind.notZigbee2Mqtt, candidate: candidate));
       return;
     }
-    if (fetch.devices.isEmpty) {
+    if (fetch.devices.isEmpty && fetch.wirenBoardDevices.isEmpty) {
       _emit(SetupFailed(SetupErrorKind.noDevices, candidate: candidate));
       return;
     }
     final rows = recommendDevices(fetch.devices, base: base);
     _rows = rows;
-    _emit(SetupReview(candidate, rows));
+    _wirenBoardDevices = fetch.wirenBoardDevices;
+    _emit(SetupReview(candidate, rows, wirenBoardDevices: _wirenBoardDevices));
   }
 }
