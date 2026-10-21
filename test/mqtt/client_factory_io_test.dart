@@ -3,21 +3,37 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/client_factory_io.dart';
+import 'package:zigdash/mqtt/client_factory_web.dart' as web;
 
 void main() {
+  test('WireGuard without restored keys never falls back to direct MQTT', () {
+    const config = BrokerConfig(
+      id: 'wg',
+      host: 'broker.internal',
+      port: 1883,
+      protocol: MqttProtocol.tcp,
+      transport: ConnectionTransport.wireGuard,
+    );
+    expect(() => buildPlatformClient(config, 'id'), throwsUnsupportedError);
+    expect(() => web.buildPlatformClient(config, 'id'), throwsUnsupportedError);
+  });
   BrokerConfig cfg(MqttProtocol p, String host) =>
       BrokerConfig(id: 'c', host: host, port: 9001, protocol: p);
 
   test('WebSocket clients get a ws:// URL (bare host was rejected)', () {
-    final c = buildPlatformClient(cfg(MqttProtocol.ws, '192.168.1.20'), 'id')
-        as MqttServerClient;
+    final c = buildPlatformClient(
+      cfg(MqttProtocol.ws, '192.168.1.20'),
+      'id',
+    ) as MqttServerClient;
     expect(c.server, 'ws://192.168.1.20');
     expect(c.useWebSocket, isTrue);
   });
 
   test('secure WebSocket gets wss://', () {
-    expect(webSocketServer(MqttProtocol.wss, 'home.example'),
-        'wss://home.example');
+    expect(
+      webSocketServer(MqttProtocol.wss, 'home.example'),
+      'wss://home.example',
+    );
   });
 
   test('a scheme the user typed is kept', () {
@@ -25,8 +41,10 @@ void main() {
   });
 
   test('TCP keeps the bare host', () {
-    final c = buildPlatformClient(cfg(MqttProtocol.tcp, '192.168.1.20'), 'id')
-        as MqttServerClient;
+    final c = buildPlatformClient(
+      cfg(MqttProtocol.tcp, '192.168.1.20'),
+      'id',
+    ) as MqttServerClient;
     expect(c.server, '192.168.1.20');
   });
 }

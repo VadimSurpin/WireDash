@@ -15,6 +15,7 @@ class BrokerConfig {
     this.remoteHost,
     this.transport = ConnectionTransport.mqtt,
     this.relay,
+    this.wireGuardConfig,
   });
 
   final String id;
@@ -32,6 +33,12 @@ class BrokerConfig {
   /// (and [remoteHost]) are Home Assistant addresses and the password slot
   /// carries the sign-in (see `HaMqttClient`).
   final ConnectionTransport transport;
+
+  /// Loaded from encrypted storage, never the connection row or a backup.
+  /// A WireGuard transport with a missing config fails closed.
+  final String? wireGuardConfig;
+
+  bool get viaWireGuard => transport == ConnectionTransport.wireGuard;
 
   bool get viaHomeAssistant => transport == ConnectionTransport.homeAssistant;
 

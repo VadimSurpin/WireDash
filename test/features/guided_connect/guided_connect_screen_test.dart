@@ -26,6 +26,14 @@ import 'package:zigdash/mqtt/mqtt_status.dart';
 import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _MemSecure implements SecureStore {
+  final _wireGuard = <String, String>{};
+  @override
+  Future<String?> readWireGuard(String id) async => _wireGuard[id];
+  @override
+  Future<void> writeWireGuard(String id, String config) async => _wireGuard[id] = config;
+  @override
+  Future<void> deleteWireGuard(String id) async => _wireGuard.remove(id);
+
   final _m = <String, String>{};
 
   @override

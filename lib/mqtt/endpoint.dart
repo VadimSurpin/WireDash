@@ -22,6 +22,7 @@ const int standardConnectTimeoutMs = 5000;
 /// A Home Assistant connect is a token refresh, TLS, the sign-in and a
 /// probe subscription, often over the internet: more than an MQTT CONNECT.
 const int homeAssistantConnectTimeoutMs = 12000;
+const int wireGuardConnectTimeoutMs = 15000;
 
 /// Local-first ordered candidates for [config]. With a remote host set, the LAN
 /// host is tried first with a short timeout, then the remote host. Without one,
@@ -37,6 +38,8 @@ List<MqttCandidate> endpointCandidates(BrokerConfig config) {
   final remote = config.remoteHost?.trim();
   final standard = config.viaHomeAssistant
       ? homeAssistantConnectTimeoutMs
+      : config.viaWireGuard
+      ? wireGuardConnectTimeoutMs
       : standardConnectTimeoutMs;
   final relay = config.relay != null && !config.viaHomeAssistant
       ? [(kind: MqttEndpoint.relay, host: relayCandidateHost, timeoutMs: relayConnectTimeoutMs)]
@@ -57,7 +60,9 @@ List<MqttCandidate> endpointCandidates(BrokerConfig config) {
     (
       kind: MqttEndpoint.local,
       host: config.host,
-      timeoutMs: localProbeTimeoutMs,
+      timeoutMs: config.viaWireGuard
+          ? wireGuardConnectTimeoutMs
+          : localProbeTimeoutMs,
     ),
     (kind: MqttEndpoint.remote, host: remote, timeoutMs: standard),
     ...relay,

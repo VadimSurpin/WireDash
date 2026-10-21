@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +13,8 @@ import '../../onboarding/first_run.dart';
 import '../../../data/database/tables/connections.dart';
 import '../../../data/repositories/connection_repo.dart';
 import '../../../mqtt/broker_config.dart';
+import '../../../mqtt/providers/mqtt_manager_provider.dart';
+import '../../../mqtt/wireguard/backend.dart';
 import '../diagnostics/connect_diagnostics.dart';
 import '../diagnostics/connect_diagnostics_provider.dart';
 import '../widgets/broker_fields.dart';
@@ -38,6 +43,11 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   final _password = TextEditingController();
   final _keepAlive = TextEditingController(text: '60');
   final _remoteHost = TextEditingController();
+  final _wireGuard = TextEditingController();
+  bool _showWireGuard = false;
+  bool get _useWireGuard => _transport == ConnectionTransport.wireGuard;
+  bool get _supportsWireGuard =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
   MqttProtocol _protocol = MqttProtocol.tcp;
   bool _autoConnect = false;
@@ -69,6 +79,8 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
     final c = await repo.getById(widget.connectionId!);
     if (c == null || !mounted) return;
     final pw = await repo.readPassword(c.id);
+    final wireGuard = await repo.readWireGuard(c.id);
+    if (!mounted) return;
     setState(() {
       _name.text = c.name;
       _host.text = c.host;
@@ -80,6 +92,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       _remoteHost.text = c.remoteHost ?? '';
       _autoConnect = c.autoConnect;
       _transport = transportOf(c.transport);
+      _wireGuard.text = wireGuard ?? '';
       _loaded = true;
     });
   }
@@ -87,6 +100,29 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   void _onProtocolChanged(MqttProtocol p) {
     applyProtocolPortDefault(_port, _protocol, p);
     setState(() => _protocol = p);
+  }
+
+  Future<void> _importWireGuard() async {
+    try {
+      final picked = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['conf'],
+        withData: true,
+      );
+      if (picked == null || !mounted) return;
+      final bytes = picked.files.single.bytes;
+      if (bytes == null)
+        throw const FormatException('Cannot read configuration');
+      final text = utf8.decode(bytes);
+      await createWireGuardBackend().validate(text);
+      if (mounted) setState(() => _wireGuard.text = text);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.connTestFailed(e.toString()))),
+        );
+      }
+    }
   }
 
   /// Opens the network scan; on a tapped result, fills host/port/protocol.
@@ -124,9 +160,13 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
         : _password.text;
 
     try {
+      if (_useWireGuard)
+        await createWireGuardBackend().validate(_wireGuard.text);
       if (_isEdit) {
         await repo.update(
           id: widget.connectionId!,
+          transport: _transport,
+          wireGuardConfig: _useWireGuard ? _wireGuard.text : null,
           name: _name.text.trim(),
           host: _host.text.trim(),
           port: port,
@@ -141,8 +181,11 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               ? null
               : _remoteHost.text.trim(),
         );
+        ref.invalidate(mqttManagerProvider(widget.connectionId!));
       } else {
         final id = await repo.create(
+          transport: _transport,
+          wireGuardConfig: _useWireGuard ? _wireGuard.text : null,
           name: _name.text.trim(),
           host: _host.text.trim(),
           port: port,
@@ -164,6 +207,12 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
         } catch (_) {}
       }
       if (mounted) context.pop();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.connTestFailed(e.toString()))),
+        );
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -175,6 +224,8 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
     setState(() => _testing = true);
 
     final cfg = BrokerConfig(
+      transport: _transport,
+      wireGuardConfig: _useWireGuard ? _wireGuard.text : null,
       id: 'test-${DateTime.now().microsecondsSinceEpoch}',
       host: _host.text.trim(),
       port: int.parse(_port.text),
@@ -188,10 +239,15 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
     final diagnostics = ref.read(connectDiagnosticsProvider);
 
     try {
-      final report = await diagnostics.run(
-        config: cfg,
-        password: _password.text,
-      );
+      if (_useWireGuard)
+        await createWireGuardBackend().validate(_wireGuard.text);
+      final password = _password.text.isEmpty && _isEdit
+          ? await ref
+                    .read(connectionRepoProvider)
+                    .readPassword(widget.connectionId!) ??
+                ''
+          : _password.text;
+      final report = await diagnostics.run(config: cfg, password: password);
       if (!mounted) return;
       setState(() => _testing = false);
       _showLadderSheet(report);
@@ -265,6 +321,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
 
   @override
   void dispose() {
+    _wireGuard.dispose();
     _name.dispose();
     _host.dispose();
     _remoteHost.dispose();
@@ -415,6 +472,57 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               tilePadding: EdgeInsets.zero,
               title: Text(context.l10n.advanced),
               children: [
+                if (!_viaHa && (_supportsWireGuard || _useWireGuard)) ...[
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(context.l10n.wgTitle),
+                    subtitle: Text(context.l10n.wgDescription),
+                    value: _useWireGuard,
+                    onChanged: _supportsWireGuard
+                        ? (enabled) => setState(() {
+                            _transport = enabled
+                                ? ConnectionTransport.wireGuard
+                                : ConnectionTransport.mqtt;
+                          })
+                        : null,
+                  ),
+                  if (_useWireGuard) ...[
+                    TextFormField(
+                      controller: _wireGuard,
+                      obscureText: !_showWireGuard,
+                      maxLines: _showWireGuard ? 8 : 1,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.wgConfiguration,
+                        helperText: context.l10n.wgSecretHint,
+                        helperMaxLines: 3,
+                        suffixIcon: IconButton(
+                          tooltip: _showWireGuard
+                              ? context.l10n.wgHide
+                              : context.l10n.wgShow,
+                          icon: Icon(
+                            _showWireGuard
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () =>
+                              setState(() => _showWireGuard = !_showWireGuard),
+                        ),
+                      ),
+                      validator: (v) =>
+                          _useWireGuard && (v == null || v.trim().isEmpty)
+                          ? context.l10n.fieldRequired
+                          : null,
+                    ),
+                    TextButton.icon(
+                      onPressed: _saving || _testing ? null : _importWireGuard,
+                      icon: const Icon(Icons.file_open_outlined),
+                      label: Text(context.l10n.wgImport),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ],
                 TextFormField(
                   controller: _remoteHost,
                   decoration: InputDecoration(

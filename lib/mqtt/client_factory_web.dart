@@ -10,6 +10,9 @@ mc.MqttClient buildPlatformClient(
   String clientId, {
   String? host,
 }) {
+  if (config.viaWireGuard) {
+    throw UnsupportedError('Embedded WireGuard is available on Android only.');
+  }
   if (config.viaHomeAssistant) {
     throw UnsupportedError(
       'Connecting through Home Assistant needs the Android app.',

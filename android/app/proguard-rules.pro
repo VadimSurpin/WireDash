@@ -7,6 +7,10 @@
 -keep class io.flutter.plugins.** { *; }
 -dontwarn io.flutter.embedding.**
 
+# gomobile calls these by name from JNI.
+-keep class go.** { *; }
+-keep class com.giladtamam.zigdash.wireguard.** { *; }
+
 # Keep JNI native method names (sqlite3_flutter_libs and other native plugins).
 -keepclasseswithmembernames class * {
     native <methods>;

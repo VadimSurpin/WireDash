@@ -73,6 +73,7 @@ object ShortcutEngine {
         loader.startInitialization(app)
         loader.ensureInitializationComplete(app, null)
         val engine = FlutterEngine(app)
+        engine.plugins.add(WireGuardPlugin())
         val ch = MethodChannel(engine.dartExecutor.binaryMessenger, "zigdash/shortcuts")
         ch.setMethodCallHandler { call, result ->
             if (call.method == "ready") {

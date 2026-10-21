@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import '../data/database/tables/connections.dart';
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show DartPluginRegistrant, Locale;
@@ -163,6 +165,9 @@ class ShortcutEngine {
     final conn = await ConnectionDao(db).getById(connectionId);
     if (conn == null) return null;
     final password = await createSecureStore().readPassword(connectionId) ?? '';
+    final wireGuardConfig = await createSecureStore().readWireGuard(
+      connectionId,
+    );
     final key = [
       conn.host,
       conn.port,
@@ -172,6 +177,7 @@ class ShortcutEngine {
       conn.remoteHost,
       transportOf(conn.transport).name,
       password,
+      wireGuardConfig,
     ].join('|');
     final cached = _managers[connectionId];
     if (cached != null && cached.key == key) return cached.mgr;
@@ -186,6 +192,7 @@ class ShortcutEngine {
         keepAliveSeconds: conn.keepAliveSeconds,
         remoteHost: conn.remoteHost,
         transport: transportOf(conn.transport),
+        wireGuardConfig: wireGuardConfig,
       ),
       password: password,
     );
@@ -403,9 +410,8 @@ class ShortcutEngine {
   Future<String> _homeBase(String connectionId) async {
     final db = await _database;
     final conn = await ConnectionDao(db).getById(connectionId);
-    final first = (await DashboardDao(
-      db,
-    ).getByConnection(connectionId)).firstOrNull;
+    final first = (await DashboardDao(db).getByConnection(connectionId))
+        .firstOrNull;
     return z2mBase(first?.topicPrefix, homeBase: conn?.z2mBaseTopic);
   }
 

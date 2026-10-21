@@ -99,6 +99,46 @@ class _FakeClient extends mc.MqttClient {
 }
 
 void main() {
+  test(
+    'WireGuard diagnostics do not resolve or probe outside the tunnel',
+    () async {
+      var nativeProbeCalls = 0;
+      final runner = ConnectDiagnostics(
+        deviceWindow: Duration.zero,
+        hostLookup: (_) async {
+          nativeProbeCalls++;
+          throw StateError('DNS leak');
+        },
+        tcpProbe: (_, __, ___) async {
+          nativeProbeCalls++;
+          throw StateError('TCP leak');
+        },
+        identify: (_) async {
+          nativeProbeCalls++;
+          return null;
+        },
+        clientFactory: (config, id, {host}) =>
+            _FakeClient(host!, _ConnectBehavior.authRejected),
+      );
+      final report = await runner.run(
+        config: const BrokerConfig(
+          id: 'wg',
+          host: 'broker.internal',
+          port: 1883,
+          protocol: MqttProtocol.tcp,
+          transport: ConnectionTransport.wireGuard,
+          wireGuardConfig: 'stored config',
+        ),
+        password: 'test',
+      );
+      expect(report.connected, isFalse);
+      expect(nativeProbeCalls, 0);
+      expect(
+        report.steps.take(2).map((s) => s.status),
+        everyElement(StepStatus.skipped),
+      );
+    },
+  );
   const host = '192.168.1.50';
   const remoteHost = '100.64.0.1';
   const base = 'zigbee2mqtt';
