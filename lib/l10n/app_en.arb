@@ -2232,5 +2232,7 @@
   "wgTitle": "Use embedded WireGuard",
   "wgImport": "Import .conf file",
   "wgHide": "Hide configuration",
-  "wgConfiguration": "WireGuard configuration"
+  "wgConfiguration": "WireGuard configuration",
+  "wgInvalidConfiguration": "Invalid WireGuard configuration. Check the configuration file and try again.",
+  "wgConnect": "Connect through WireGuard"
 }

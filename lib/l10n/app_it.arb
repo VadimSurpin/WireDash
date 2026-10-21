@@ -1270,5 +1270,14 @@
   "remotePairDone": "Controllo remoto attivo per {home}",
   "remoteReconnectHub": "Ricollega l'hub",
   "remoteTurnOffConfirm": "Questo telefono lascia il controllo remoto e l'hub si scollega dal relay. Un backup della chiave salvato da questo telefono smette di funzionare; gli altri telefoni mantengono l'accesso finché non li rimuovi.",
-  "remoteHomeId": "ID della casa {id}"
+  "remoteHomeId": "ID della casa {id}",
+  "wgShow": "Mostra configurazione",
+  "wgInvalidConfiguration": "Configurazione WireGuard non valida. Controlla il file di configurazione e riprova.",
+  "wgConnect": "Connetti tramite WireGuard",
+  "wgSecretHint": "Salvata con crittografia su questo telefono. Non è inclusa nelle esportazioni delle dashboard. Importala di nuovo dopo aver ripristinato i dati dell’app.",
+  "wgConfiguration": "Configurazione WireGuard",
+  "wgHide": "Nascondi configurazione",
+  "wgImport": "Importa file .conf",
+  "wgTitle": "Usa WireGuard integrato",
+  "wgDescription": "Collega questa casa tramite WireGuard all’interno di ZigDash. Le altre app mantengono la propria connessione."
 }

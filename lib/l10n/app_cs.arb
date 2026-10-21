@@ -1270,5 +1270,14 @@
   "remotePairDone": "Dálkové ovládání zapnuto pro {home}",
   "remoteReconnectHub": "Znovu připojit hub",
   "remoteTurnOffConfirm": "Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete.",
-  "remoteHomeId": "ID domova {id}"
+  "remoteHomeId": "ID domova {id}",
+  "wgShow": "Zobrazit konfiguraci",
+  "wgInvalidConfiguration": "Neplatná konfigurace WireGuard. Zkontrolujte konfigurační soubor a zkuste to znovu.",
+  "wgConnect": "Připojit přes WireGuard",
+  "wgSecretHint": "Uloženo šifrovaně v tomto telefonu. Není součástí exportu nástěnky. Po obnovení dat aplikace konfiguraci znovu importujte.",
+  "wgConfiguration": "Konfigurace WireGuard",
+  "wgHide": "Skrýt konfiguraci",
+  "wgImport": "Importovat soubor .conf",
+  "wgTitle": "Použít vestavěný WireGuard",
+  "wgDescription": "Připojte tuto domácnost přes WireGuard přímo v ZigDash. Ostatní aplikace používají vlastní připojení."
 }

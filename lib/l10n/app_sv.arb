@@ -25,7 +25,11 @@
   "languageFrench": "Français",
   "connectionsTitle": "Hem",
   "connLoadFailed": "Kunde inte ladda: {error}",
-  "@connLoadFailed": { "placeholders": { "error": {} } },
+  "@connLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "connAddBroker": "Lägg till broker",
   "connEmpty": "Inga anslutningar ännu.\nTryck på „Lägg till broker” för att peka ZigDash mot din MQTT-server.",
   "connNew": "Ny anslutning",
@@ -43,9 +47,19 @@
   "connRescan": "Skanna igen",
   "connBrokerNeedsLogin": "Inloggning krävs",
   "connFindBrokersScanning": "Skannar {subnet}…",
-  "@connFindBrokersScanning": { "placeholders": { "subnet": {} } },
+  "@connFindBrokersScanning": {
+    "placeholders": {
+      "subnet": {}
+    }
+  },
   "connFindBrokersFound": "{count} broker(s) hittade – tryck för att använda",
-  "@connFindBrokersFound": { "placeholders": { "count": { "type": "int" } } },
+  "@connFindBrokersFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "connFindBrokersNone": "Inga brokers hittades på ditt Wi-Fi.",
   "connFindBrokersNoIp": "Kunde inte läsa din Wi-Fi-adress. Kontrollera att Wi-Fi är på och försök igen.",
   "connHelpTitle": "Hitta din brokers IP",
@@ -74,23 +88,28 @@
   "cancel": "Avbryt",
   "connDeleteTitle": "Ta bort anslutningen?",
   "connDeleteContent": "Tar bort „{name}”, dess dashboards/paneler och det sparade lösenordet.",
-  "@connDeleteContent": { "placeholders": { "name": {} } },
+  "@connDeleteContent": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "statusDisconnected": "Frånkopplad",
   "statusConnecting": "Ansluter…",
   "statusConnected": "Ansluten",
   "statusReconnecting": "Återansluter…",
   "statusError": "Fel",
   "statusConnectedRemote": "Ansluten · Extern",
-
   "dashPlaceholder": "Öppna en broker från fliken Brokers för att se och hantera dess dashboards.",
-
   "dashAddDashboard": "Lägg till dashboard",
   "dashEditDashboard": "Redigera dashboard",
   "dashAddPanel": "Lägg till panel",
   "dashEmpty": "Inga dashboards ännu.\nTryck på „Lägg till dashboard” för att skapa en för den här brokern.",
   "dashLoadFailed": "Fel: {error}",
-  "@dashLoadFailed": { "placeholders": { "error": {} } },
-
+  "@dashLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "panelPickerTitle": "Lägg till panel",
   "panelPickerSectionControl": "Kontroll",
   "panelPickerSectionState": "Status",
@@ -124,7 +143,6 @@
   "panelPickerProgressSubtitle": "Numerisk stapel för batteri, länkkvalitet osv.",
   "panelPickerTextLogTitle": "Textlogg",
   "panelPickerTextLogSubtitle": "Rullande meddelandehistorik för ett ämne",
-
   "dashExportMenu": "Exportera dashboards",
   "dashImportMenu": "Importera dashboards",
   "dashExportTitle": "Exportera dashboards",
@@ -135,10 +153,19 @@
   "dashImportHint": "Klistra in exporterad JSON här",
   "dashImportButton": "Importera",
   "dashImportSuccess": "{count,plural, =1{1 dashboard importerad} other{{count} dashboards importerade}}",
-  "@dashImportSuccess": { "placeholders": { "count": { "type": "int" } } },
+  "@dashImportSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashImportFailed": "Importen misslyckades: {error}",
-  "@dashImportFailed": { "placeholders": { "error": {} } },
-
+  "@dashImportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "dashFormNew": "Ny dashboard",
   "dashFormEdit": "Redigera dashboard",
   "dashFormName": "Namn",
@@ -154,12 +181,18 @@
   "dashDeleteTitle": "Ta bort den här dashboarden?",
   "dashDeleteContent": "Alla paneler under den tas också bort.",
   "dashDeleteConfirm": "Ta bort",
-
   "panelFormNew": "Ny {type}",
-  "@panelFormNew": { "placeholders": { "type": {} } },
+  "@panelFormNew": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelFormEdit": "Redigera {type}",
-  "@panelFormEdit": { "placeholders": { "type": {} } },
-
+  "@panelFormEdit": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelTypeButton": "Knapp",
   "panelTypeToggle": "Strömbrytare",
   "panelTypeSlider": "Reglage",
@@ -176,10 +209,13 @@
   "panelTypeAutoClose": "Auto-stäng",
   "panelTypeDevice": "Enhet",
   "panelTypeReading": "Mätvärde",
-
   "panelFormName": "Namn",
   "panelFormDashboardPrefix": "Dashboardprefix: {prefix}/ (används om det inte åsidosätts nedan)",
-  "@panelFormDashboardPrefix": { "placeholders": { "prefix": {} } },
+  "@panelFormDashboardPrefix": {
+    "placeholders": {
+      "prefix": {}
+    }
+  },
   "panelFormTopicPrefixOverride": "Åsidosätt ämnesprefix (valfritt)",
   "panelFormTopicPrefixOverrideHint": "zigbee2mqtt/rullgardin",
   "panelFormTopicPrefixOverrideHelper": "Använd en annan enhet på den här dashboarden. Tomt = använd dashboardprefixet.",
@@ -199,14 +235,12 @@
   "panelFormQos1": "1 – minst en gång",
   "panelFormQos2": "2 – exakt en gång",
   "panelFormRetain": "Retain",
-
   "panelToggleOnPayload": "På-payload",
   "panelToggleOffPayload": "Av-payload",
   "panelToggleJsonPath": "JSON-sökväg (valfritt)",
   "panelToggleJsonPathHint": "state",
   "panelToggleOnMatch": "På-matchning",
   "panelToggleOnMatchHelper": "Värde på JSON-sökvägen som betyder „på” (t.ex. „ON”)",
-
   "panelSliderMin": "Min",
   "panelSliderMax": "Max",
   "panelSliderStep": "Steg",
@@ -214,9 +248,7 @@
   "panelSliderTemplateHelper": "Använd ordet value som platshållare – det ersätts med reglagets värde",
   "panelSliderJsonPath": "JSON-sökväg (valfritt)",
   "panelSliderJsonPathHint": "brightness",
-
   "panelButtonPayload": "Payload",
-
   "panelLedJsonPath": "JSON-sökväg (valfritt)",
   "panelLedJsonPathHint": "contact",
   "panelLedJsonPathHelper": "t.ex. „contact”, „occupancy”, „water_leak”",
@@ -226,12 +258,10 @@
   "panelLedOnLabelHint": "ON",
   "panelLedOffLabel": "Av-etikett (valfritt)",
   "panelLedOffLabelHint": "OFF",
-
   "panelNodeOnlinePayload": "Online-payload",
   "panelNodeOnlinePayloadHelper": "Värde som betyder „online” (Z2M-standard: „online”)",
   "panelNodeJsonPath": "JSON-sökväg (valfritt)",
   "panelNodeJsonPathHelper": "Lämna tomt för Z2M-standard (rå „online”/„offline”-sträng)",
-
   "panelProgressMin": "Min",
   "panelProgressMax": "Max",
   "panelProgressUnit": "Enhet",
@@ -239,7 +269,6 @@
   "panelProgressJsonPath": "JSON-sökväg (valfritt)",
   "panelProgressJsonPathHint": "battery",
   "panelProgressJsonPathHelper": "t.ex. „battery”, „linkquality”",
-
   "panelOptionsJsonPath": "JSON-sökväg (valfritt)",
   "panelOptionsJsonPathHint": "state",
   "panelOptionsJsonPathHelper": "Fält i den mottagna payloaden som innehåller aktuellt värde",
@@ -248,24 +277,20 @@
   "panelOptionsPayload": "Payload",
   "panelOptionsMatch": "Matchning (aktuellt värde)",
   "panelOptionsAdd": "Lägg till alternativ",
-
   "panelCoverDescription": "ÖPPEN-/STOPP-/STÄNGD-knappar plus en rad positionsförinställningar. Använder standard Z2M-rullgardin-payloads (state och position).",
   "panelCoverPresets": "Positionsförinställningar",
   "panelCoverPresetsHint": "0, 25, 50, 100",
   "panelCoverPresetsHelper": "Kommaavgränsade procenttal (0–100). Tomt = ingen förinställningsrad.",
   "panelCoverShowSlider": "Visa positionsreglage",
-
   "panelTextInputHint": "Ledtext (valfritt)",
   "panelTextInputHintHint": "Skriv ett värde…",
   "panelTextInputTemplate": "Mall",
   "panelTextInputTemplateHelper": "Använd ordet value som platshållare – det ersätts med den inskrivna texten. Standard publicerar råtexten.",
   "panelTextInputClearAfterSend": "Rensa efter sändning",
-
   "panelTextLogMaxLines": "Max rader",
   "panelTextLogMaxLinesHelper": "Hur många senaste meddelanden som behålls",
   "panelTextLogJsonPath": "JSON-sökväg (valfritt)",
   "panelTextLogJsonPathHelper": "Logga bara det här fältet i stället för hela payloaden",
-
   "panelScheduleDescription": "Körs på SMHUB via Node-RED – även när den här telefonen är avstängd. Publiceringsämnet ovan är målet för rullgardinskommandon.",
   "panelScheduleOpenTime": "Öppningstid",
   "panelScheduleCloseTime": "Stängningstid",
@@ -273,7 +298,6 @@
   "panelScheduleClosePayload": "Stäng-payload",
   "panelScheduleEnabled": "Aktiverad",
   "panelScheduleSavedOffline": "Sparat – inte ansluten; schemat synkroniseras när du är online.",
-
   "panelAutoCloseDescription": "Körs på SMHUB via Node-RED – även när den här telefonen är avstängd. Publiceringsämnet ovan är enhetens kommandomål (t.ex. dörr).",
   "panelAutoCloseTriggerPath": "Utlösarens JSON-sökväg",
   "panelAutoCloseTriggerPathHelper": "Fält i enhetens status-JSON att bevaka (standard: state)",
@@ -284,49 +308,59 @@
   "panelAutoCloseDelaySecondsHelper": "1–3600. Tid att vänta efter att enheten sätts på innan stäng-payloaden publiceras.",
   "panelAutoCloseEnabled": "Aktiverad",
   "panelAutoCloseSavedOffline": "Sparat – inte ansluten; regeln synkroniseras när du är online.",
-
   "panelTileEdit": "Redigera panel",
   "panelTileDuplicate": "Duplicera panel",
   "panelTileMoveUp": "Flytta upp",
   "panelTileMoveDown": "Flytta ned",
   "panelTileDelete": "Ta bort panel",
-
   "panelCoverOpen": "Öppna",
   "panelCoverStop": "Stopp",
   "panelCoverClose": "Stäng",
-
   "panelToggleNoState": "(ingen status)",
   "panelToggleError": "fel",
-
   "panelStateOn": "ON",
   "panelStateOff": "OFF",
-
   "panelNodeStatusOnline": "online",
   "panelNodeStatusOffline": "offline",
   "panelNodeStatusUnknown": "okänd",
   "panelNodeStatusError": "fel",
-
   "panelMultiStateNoOptions": "Inga alternativ konfigurerade",
-
   "panelTextInputDefaultHint": "Skriv ett värde…",
-
   "panelTextLogWaiting": "Väntar på meddelanden…",
-
   "panelScheduleOpensAt": "Öppnar {time}",
-  "@panelScheduleOpensAt": { "placeholders": { "time": {} } },
+  "@panelScheduleOpensAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleClosesAt": "Stänger {time}",
-  "@panelScheduleClosesAt": { "placeholders": { "time": {} } },
+  "@panelScheduleClosesAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleOfflineWarning": "Schemaläggaren offline – körs inte",
   "panelScheduleDisabled": "Inaktiverad",
   "panelScheduleNext": "Nästa: {action} kl. {at}",
-  "@panelScheduleNext": { "placeholders": { "action": {}, "at": {} } },
+  "@panelScheduleNext": {
+    "placeholders": {
+      "action": {},
+      "at": {}
+    }
+  },
   "panelScheduleActionOpen": "öppna",
   "panelScheduleActionClose": "stäng",
   "panelAutoCloseIdle": "Inaktiv",
   "panelAutoCloseDisabled": "Inaktiverad",
   "panelAutoCloseOffline": "Automatisering offline – regeln körs inte",
   "panelAutoCloseClosingIn": "Stänger om {seconds}s",
-  "@panelAutoCloseClosingIn": { "placeholders": { "seconds": { "type": "int" } } },
+  "@panelAutoCloseClosingIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "panelAutoCloseClosingNow": "Stänger nu…",
   "panelGridEmpty": "Inga rutor ännu.\nTryck på Lägg till ruta för att lägga dina enheter här.",
   "panelsOffline": "Offline – visar senaste värden",
@@ -336,7 +370,6 @@
   "connectionFailed": "Anslutningen misslyckades",
   "connectionAutomaticRetry": "Automatiska försök fortsätter",
   "connectionReconnectNow": "Anslut igen nu",
-
   "settingsAbout": "Om",
   "settingsHelp": "Hjälp & guide",
   "settingsVersion": "Version",
@@ -356,7 +389,6 @@
   "reportProblemEmailPrompt": "Vad hände, och vad förväntade du dig?",
   "settingsBuyCoffee": "Bjud mig på en kaffe",
   "settingsBuyCoffeeSubtitle": "Gratis & öppen källkod — dricks håller kaffet varmt.",
-
   "a11yBackupMenu": "Säkerhetskopiera & återställ",
   "a11ySelectColor": "Välj färg",
   "a11ySelectIcon": "Välj ikon",
@@ -365,9 +397,7 @@
   "a11yMoreOptions": "Fler alternativ",
   "a11yRefresh": "Uppdatera",
   "a11yDeleteConnection": "Ta bort anslutning",
-
   "controlNotConnected": "Inte ansluten – ändringen skickades inte",
-
   "discoverFromDevice": "Lägg till från en enhet…",
   "discoverFromDeviceSubtitle": "Identifiera en Zigbee2MQTT-enhet automatiskt",
   "discoverTitle": "Lägg till från enhet",
@@ -391,19 +421,27 @@
     }
   },
   "previewNoValue": "(inget värde på den här sökvägen)",
-
   "connErrorTitle": "Anslutningsfel",
   "connErrorUnknown": "Inga feluppgifter tillgängliga.",
   "connTestButton": "Testa anslutning",
   "connTestOk": "Anslutningen lyckades",
   "connTestFailed": "Anslutningen misslyckades: {error}",
-  "@connTestFailed": { "placeholders": { "error": {} } },
-
+  "@connTestFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "devicesTitle": "Enheter",
   "devicesAddButton": "Lägg till enhet",
   "devicesPairingTitle": "Parar – tryck på enhetens knapp",
   "devicesPairingHint": "Söker efter nya enheter… {seconds}s",
-  "@devicesPairingHint": { "placeholders": { "seconds": { "type": "int" } } },
+  "@devicesPairingHint": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "devicesPairingStop": "Stopp",
   "devicesNone": "Inga enheter hittades.",
   "devicesListMissing": "Zigbee2MQTT har inte skickat sin enhetslista. Det kan hända när MQTT-brokern har startats om.",
@@ -414,13 +452,21 @@
   "devicesOnline": "Online",
   "devicesOffline": "Offline",
   "devicesPaired": "Redo: {name}",
-  "@devicesPaired": { "placeholders": { "name": {} } },
+  "@devicesPaired": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "devicesPairedHint": "Tillagd i ditt nätverk. För att sätta den på en dashboard, använd „Lägg till från en enhet” på den dashboarden.",
   "scenesTitle": "Scener",
   "scenesNone": "Inga scener ännu. Ställ in dina enheter som du vill och spara dem sedan som en scen.",
   "scenesNewButton": "Ny scen",
   "scenesActivated": "{name} aktiverad",
-  "@scenesActivated": { "placeholders": { "name": {} } },
+  "@scenesActivated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "scenesActivateOffline": "Inte ansluten – scenen kan inte aktiveras",
   "sceneFormNewTitle": "Ny scen",
   "sceneFormEditTitle": "Redigera scen",
@@ -433,19 +479,39 @@
   "sceneCtrlBrightness": "Ljusstyrka",
   "sceneCtrlPosition": "Position",
   "sceneFormSelectedCount": "{count} valda",
-  "@sceneFormSelectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneFormSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sceneFormNoDevicesSelected": "Välj minst en enhet att fånga.",
   "sceneFormNothingCaptured": "Inget inställningsbart kunde fångas från de valda enheterna.",
   "sceneDeleteTitle": "Ta bort scenen?",
   "sceneDeleteMessage": "„{name}” tas bort. Enheterna behåller sin aktuella status.",
-  "@sceneDeleteMessage": { "placeholders": { "name": {} } },
+  "@sceneDeleteMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneEditAction": "Redigera",
   "sceneDeleteAction": "Ta bort",
   "sceneAddToDashboard": "Lägg till på dashboard",
   "sceneAddedToDashboard": "Tillagd på {name}",
-  "@sceneAddedToDashboard": { "placeholders": { "name": {} } },
+  "@sceneAddedToDashboard": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneActionsCount": "{count} enheter",
-  "@sceneActionsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneActionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "scenesAllShutters": "Alla jalusier",
   "sceneCloseAllShutters": "Stäng alla jalusier",
   "sceneOpenAllShutters": "Öppna alla jalusier",
@@ -459,11 +525,6 @@
   "panelPickerSceneSubtitle": "Ett tryck aktiverar en sparad scen",
   "panelSceneChoose": "Scen",
   "panelSceneMissing": "Scenen hittades inte – välj igen",
-  "languageGerman": "Deutsch",
-  "languageDutch": "Nederlands",
-  "languageSwedish": "Svenska",
-  "languageNorwegian": "Norsk",
-  "languageSpanish": "Español",
   "guidedConnectTitle": "Konfigurera broker",
   "guidedConnectIntro": "Vi testar varje steg i anslutningen och visar dina Zigbee-enheter.",
   "guidedBaseTopic": "Bastopic",
@@ -490,7 +551,13 @@
   "diagTcpZ2mNoBroker": "Zigbee2MQTT körs på den här adressen, men dess MQTT-broker tar inte emot anslutningar från andra enheter. Mosquitto lyssnar bara på sin egen dator tills du lägger till raderna ”listener 1883” och ”allow_anonymous true” i mosquitto.conf (eller ställer in ett lösenord). Starta om Mosquitto och försök igen.",
   "diagAuthRejectedHa": "Home Assistants broker nekade inloggningen. Använd namn och lösenord för en Home Assistant-användare (Inställningar › Personer › Användare); helst en egen användare bara för MQTT.",
   "foundDevices": "{count, plural, =1{Hittade 1 enhet} other{Hittade {count} enheter}}",
-  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
+  "@foundDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "foundDevicesHint": "Dina Zigbee-enheter är synliga. Fortsätt till din instrumentpanel.",
   "noDevicesTitle": "Ansluten – inga enheter hittade ännu",
   "noDevicesHint": "ZigDash ser servern men har ännu inte hittat några Zigbee-enheter. Du kan starta ihopparning.",
@@ -503,7 +570,11 @@
   "guidedStuckTelegram": "Fråga i Telegram",
   "guidedStuckHelp": "Tips och e-post",
   "ladderTriedHint": "Försökte {count} adresser",
-  "@ladderTriedHint": { "placeholders": {"count": {}} },
+  "@ladderTriedHint": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "guidedSaveFailed": "Det gick inte att spara anslutningen. Försök igen.",
   "setupWelcomeTitle": "Välkommen till ZigDash",
   "setupWelcomeHeadline": "Ditt Zigbee-hem, i mobilen",
@@ -617,28 +688,73 @@
   "setupPlatformPi": "Raspberry Pi eller Docker",
   "setupPlatformNotSure": "Vet inte",
   "setupScanProgress": "Kontrollerade {checked} av {total} adresser",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "Letar efter Home Assistant och dess MQTT-broker…",
   "setupScanHintSmlight": "Letar efter din SMLIGHT-hubb…",
   "setupScanHintPi": "Letar efter en MQTT-broker i ditt nätverk…",
   "setupHubSeenHa": "Hittade Home Assistant på {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "Hittade Zigbee2MQTT på {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "Hittade din SMLIGHT-hubb på {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "Letar fortfarande efter dess MQTT-broker…",
   "setupNoBrokerHaTitle": "Hittade Home Assistant, men ingen MQTT-broker",
   "setupNoBrokerHaBody": "Home Assistant finns på {host}, men inget svarar på MQTT-port 1883. Öppna Inställningar › Tillägg i Home Assistant, installera och starta tillägget Mosquitto broker och försök igen.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "Använder du Home Assistants inbyggda Zigbee (ZHA) i stället för Zigbee2MQTT? ZigDash fungerar bara med Zigbee2MQTT och ser därför inte ZHA-enheter. Demon visar vad du skulle få.",
   "setupVpnHint": "En VPN är på, och den kan dölja ditt hemnätverk för sökningen. Är du hemma, stäng av VPN:en och tryck på Försök igen.",
   "setupNoBrokerZ2mTitle": "Hittade Zigbee2MQTT, men dess broker går inte att nå",
   "setupNoBrokerZ2mBody": "Zigbee2MQTT finns på {host}, men dess MQTT-broker tar inte emot anslutningar från din telefon. Mosquitto 2 lyssnar bara på själva hubben tills konfigurationen har 'listener 1883' och 'allow_anonymous true' (eller en inloggning). Starta om den och försök igen.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "Hittade din SMLIGHT-hubb, men MQTT är av",
   "setupNoBrokerSmlightBody": "Din hubb finns på {host}, men dess MQTT-broker går inte att nå. Öppna Settings › MQTT i hubbens webbgränssnitt, slå på Allow External och kontrollera att Zigbee2MQTT kör. Försök sedan igen.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "Frågar Zigbee2MQTT var dess broker finns…",
   "setupZ2mLocalOnlyTitle": "Din broker tar bara emot anslutningar från sin egen maskin",
   "setupZ2mLocalOnlyBody": "Zigbee2MQTT använder {server}, och inget svarar där från din telefon. Mosquitto 2 gör så som standard. Lägg till de här två raderna i mosquitto.conf, starta om Mosquitto och försök igen:",
@@ -648,7 +764,13 @@
   "setupZ2mTokenRequired": "Zigbee2MQTT:s webbsida är skyddad med en token, så appen kunde inte läsa var dess broker finns. Skriv in broker-adressen från Zigbee2MQTT › Settings › MQTT.",
   "setupZ2mUnreachable": "Zigbee2MQTT använder brokern på {server}, men den svarade inte din telefon. Kontrollera att brokern körs och att telefonen är på samma nätverk.",
   "setupConnectTo": "Anslut till {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "Ingen Home Assistant hittades på det här nätverket. Kontrollera att telefonen är på samma Wi-Fi som Home Assistant (inte ett gästnät) och försök igen. Vet du adressen, ange den nedan.",
   "setupNotFoundSmlight": "Ingen SMLIGHT-hubb hittades på det här nätverket. Kontrollera att hubben är på och att telefonen är på samma Wi-Fi, och försök igen. Vet du adressen, ange den nedan.",
   "setupNotFoundPi": "Ingen MQTT-broker hittades i det här nätverket. Kontrollera att Mosquitto kör och lyssnar på nätverket (port 1883) och att telefonen är på samma Wi-Fi. Försök sedan igen.",
@@ -672,7 +794,16 @@
   "setupChoiceOtherSub": "Ett gästnätverk eller en andra router",
   "setupChoiceOtherNote": "Telefonen måste nå din hubb. Ett gästnätverk, eller en andra router med eget wifi, håller dem isär. Anslut till det wifi som hubben är på och tryck på Försök igen. Eller ange hubbens IP-adress nedan, eller prova något av dessa vanliga namn:",
   "guidedHostYourPhone": "Din telefon är {ip}, så hubben börjar oftast med {prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "Använder du Home Assistant? Värden är adressen du öppnar Home Assistant med, port 1883.",
   "demoBannerText": "Du är i demoläge",
   "demoBannerAction": "Anslut ditt hem",
@@ -1077,7 +1208,11 @@
   "wallNightFrom": "Från",
   "wallNightTo": "till",
   "wallDimMinutes": "{minutes} min",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "Kiosklås",
   "kioskLockSubtitle": "Bara det här hemmets paneler och deras reglage går att nå. Håll in titeln för att avsluta.",
   "kioskPin": "PIN",
@@ -1355,5 +1490,14 @@
   "remotePairDone": "Fjärrstyrning är på för {home}",
   "remoteReconnectHub": "Anslut hubben igen",
   "remoteTurnOffConfirm": "Den här telefonen lämnar fjärrstyrningen och hubben kopplas från reläet. En nyckelbackup sparad från den här telefonen slutar fungera; andra telefoner behåller sin åtkomst tills du tar bort dem.",
-  "remoteHomeId": "Hem-ID {id}"
+  "remoteHomeId": "Hem-ID {id}",
+  "wgShow": "Visa konfiguration",
+  "wgInvalidConfiguration": "Ogiltig WireGuard-konfiguration. Kontrollera konfigurationsfilen och försök igen.",
+  "wgConnect": "Anslut via WireGuard",
+  "wgSecretHint": "Lagras krypterat på den här telefonen. Ingår inte i exporter av kontrollpaneler. Importera den igen efter att appdata har återställts.",
+  "wgConfiguration": "WireGuard-konfiguration",
+  "wgHide": "Dölj konfiguration",
+  "wgImport": "Importera .conf-fil",
+  "wgTitle": "Använd inbyggd WireGuard",
+  "wgDescription": "Anslut detta hem via WireGuard i ZigDash. Andra appar behåller sin egen anslutning."
 }

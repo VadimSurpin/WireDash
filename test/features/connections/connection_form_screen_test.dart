@@ -106,15 +106,15 @@ void main() {
     addTearDown(db.close);
     await tester.pumpWidget(_wrap(db));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Advanced'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Advanced'));
-    await tester.pumpAndSettle();
     final toggle = find.widgetWithText(
       SwitchListTile,
       'Use embedded WireGuard',
     );
-    await tester.ensureVisible(toggle);
+    await tester.scrollUntilVisible(
+      toggle,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(toggle);
     await tester.pumpAndSettle();

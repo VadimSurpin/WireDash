@@ -14,6 +14,7 @@ import '../../core/router/routes.dart';
 import '../../data/database/tables/connections.dart';
 import '../../data/repositories/connection_repo.dart';
 import '../../mqtt/broker_config.dart';
+import '../connections/widgets/wireguard_fields.dart';
 import '../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../mqtt/mqtt_status.dart';
 import '../connections/diagnostics/connect_diagnostics.dart';
@@ -43,10 +44,11 @@ enum _Phase { form, running, failed, success }
 /// [initialHost] and [initialPort] fill the form in (2.5: a hub the scan
 /// found but whose broker didn't answer).
 class GuidedConnectScreen extends ConsumerStatefulWidget {
-  const GuidedConnectScreen({super.key, this.initialHost, this.initialPort});
+  const GuidedConnectScreen({super.key, this.initialHost, this.initialPort, this.initialWireGuard = false});
 
   final String? initialHost;
   final int? initialPort;
+  final bool initialWireGuard;
 
   @override
   ConsumerState<GuidedConnectScreen> createState() =>
@@ -62,6 +64,8 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   final _base = TextEditingController(text: 'zigbee2mqtt');
   final _username = TextEditingController();
   final _password = TextEditingController();
+  final _wireGuard = TextEditingController();
+  late bool _useWireGuard = widget.initialWireGuard && supportsEmbeddedWireGuard;
 
   MqttProtocol _protocol = MqttProtocol.tcp;
   _Phase _phase = _Phase.form;
@@ -84,6 +88,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     _base.dispose();
     _username.dispose();
     _password.dispose();
+    _wireGuard.dispose();
     super.dispose();
   }
 
@@ -120,6 +125,8 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       );
       if (!_formKey.currentState!.validate()) return;
     }
+    if (_useWireGuard && !await validateWireGuardForForm(context, _wireGuard.text)) return;
+    if (!mounted) return;
     final host = _host.text.trim();
     final port = int.parse(_port.text);
     final base = _base.text.trim();
@@ -131,6 +138,8 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       protocol: _protocol,
       username: _username.text.trim().isEmpty ? null : _username.text.trim(),
       keepAliveSeconds: 60,
+      transport: _useWireGuard ? ConnectionTransport.wireGuard : ConnectionTransport.mqtt,
+      wireGuardConfig: _useWireGuard ? _wireGuard.text : null,
     );
     final diagnostics = ref.read(connectDiagnosticsProvider);
 
@@ -211,6 +220,8 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
         username: cfg.username,
         password: _password.text.isEmpty ? null : _password.text,
         autoConnect: true,
+        transport: cfg.transport,
+        wireGuardConfig: cfg.wireGuardConfig,
       );
       // A custom base topic belongs to the home, so Devices and later
       // dashboards find the bridge too (as setup does).
@@ -374,11 +385,13 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
             obscureText: true,
             decoration: InputDecoration(labelText: l10n.connPasswordOptional),
           ),
+          WireGuardFields(controller: _wireGuard, enabled: _useWireGuard,
+            onChanged: (value) => setState(() => _useWireGuard = value)),
           const SizedBox(height: 8),
           TextButton.icon(
             icon: const Icon(Icons.wifi_find, size: 18),
             label: Text(l10n.connFindBrokers),
-            onPressed: _findBrokers,
+            onPressed: _useWireGuard ? null : _findBrokers,
           ),
           GetHelpLink(
             onPressed: () =>

@@ -553,7 +553,9 @@
   "foundDevices": "{count, plural, =1{נמצא מכשיר אחד} other{נמצאו {count} מכשירים}}",
   "@foundDevices": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "foundDevicesHint": "מכשירי הזיגבי שלכם נראים. המשיכו לבניית לוח המחוונים.",
@@ -686,28 +688,73 @@
   "setupPlatformPi": "Raspberry Pi או Docker",
   "setupPlatformNotSure": "לא בטוח",
   "setupScanProgress": "נבדקו {checked} מתוך {total} כתובות",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "מחפשים את Home Assistant ואת ה-MQTT broker שלו…",
   "setupScanHintSmlight": "מחפשים את רכזת ה-SMLIGHT שלכם…",
   "setupScanHintPi": "מחפשים MQTT broker ברשת שלכם…",
   "setupHubSeenHa": "נמצא Home Assistant בכתובת {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "נמצא Zigbee2MQTT בכתובת {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "נמצאה רכזת SMLIGHT בכתובת {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "עדיין מחפשים את ה-MQTT broker שלו…",
   "setupNoBrokerHaTitle": "נמצא Home Assistant, אבל אין MQTT broker",
   "setupNoBrokerHaBody": "Home Assistant נמצא בכתובת {host}, אבל שום דבר לא עונה בפורט MQTT 1883. ב-Home Assistant פתחו הגדרות › תוספים, התקינו והפעילו את התוסף Mosquitto broker ונסו שוב.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "משתמשים ב-Zigbee המובנה של Home Assistant ‏(ZHA) במקום Zigbee2MQTT? ZigDash עובד רק עם Zigbee2MQTT, ולכן לא רואה מכשירי ZHA. ההדגמה מראה מה הייתם מקבלים.",
   "setupVpnHint": "VPN פועל, והוא יכול להסתיר את הרשת הביתית מהסריקה. אם אתם בבית, כבו את ה-VPN והקישו על נסו שוב.",
   "setupNoBrokerZ2mTitle": "נמצא Zigbee2MQTT, אבל אי אפשר להגיע ל-broker שלו",
   "setupNoBrokerZ2mBody": "Zigbee2MQTT נמצא בכתובת {host}, אבל ה-MQTT broker שלו לא מקבל חיבורים מהטלפון. Mosquitto 2 מאזין רק ברכזת עצמה עד שבקובץ ההגדרות יופיעו 'listener 1883' ו-'allow_anonymous true' (או פרטי התחברות). הפעילו אותו מחדש ונסו שוב.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "נמצאה רכזת SMLIGHT, אבל MQTT כבוי",
   "setupNoBrokerSmlightBody": "הרכזת נמצאת בכתובת {host}, אבל אי אפשר להגיע ל-MQTT broker שלה. בממשק הווב של הרכזת פתחו Settings › MQTT, הפעילו Allow External ובדקו ש-Zigbee2MQTT פועל. אחר כך נסו שוב.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "שואלים את Zigbee2MQTT איפה ה-broker שלו…",
   "setupZ2mLocalOnlyTitle": "ה-broker שלכם מקבל חיבורים רק מהמכשיר שעליו הוא רץ",
   "setupZ2mLocalOnlyBody": "Zigbee2MQTT משתמש ב-{server}, ומהטלפון שלכם שום דבר לא עונה שם. כך Mosquitto 2 מתנהג כברירת מחדל. הוסיפו את שתי השורות האלה ל-mosquitto.conf, הפעילו מחדש את Mosquitto ונסו שוב:",
@@ -717,7 +764,13 @@
   "setupZ2mTokenRequired": "עמוד האינטרנט של Zigbee2MQTT מוגן בטוקן, ולכן האפליקציה לא הצליחה לקרוא היכן הברוקר שלו. הקלידו את כתובת הברוקר מתוך Zigbee2MQTT › Settings › MQTT.",
   "setupZ2mUnreachable": "Zigbee2MQTT משתמש ב-broker בכתובת {server}, אבל הוא לא ענה לטלפון שלכם. בדקו שה-broker פועל ושהטלפון באותה רשת.",
   "setupConnectTo": "התחברות אל {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "לא נמצא Home Assistant ברשת הזו. ודאו שהטלפון מחובר לאותה רשת Wi-Fi כמו Home Assistant (לא רשת אורחים), ונסו שוב. אם אתם יודעים את הכתובת, הזינו אותה למטה.",
   "setupNotFoundSmlight": "לא נמצא hub של SMLIGHT ברשת הזו. ודאו שה‑hub דולק ושהטלפון מחובר לאותה רשת Wi-Fi, ונסו שוב. אם אתם יודעים את הכתובת, הזינו אותה למטה.",
   "setupNotFoundPi": "לא נמצא MQTT broker ברשת הזו. בדקו ש-Mosquitto פועל ומאזין ברשת (פורט 1883) ושהטלפון מחובר לאותו Wi-Fi. אחר כך נסו שוב.",
@@ -741,7 +794,16 @@
   "setupChoiceOtherSub": "Wi-Fi לאורחים או נתב שני",
   "setupChoiceOtherNote": "הטלפון צריך להגיע לרכזת. Wi-Fi לאורחים, או נתב שני עם Wi-Fi משלו, מפריד ביניהם. התחברו ל-Wi-Fi שהרכזת נמצאת בו והקישו על נסו שוב. אפשר גם להזין למטה את כתובת ה‑IP של הרכזת, או לנסות אחד מהשמות המקובלים האלה:",
   "guidedHostYourPhone": "הטלפון שלכם הוא {ip}, אז הרכזת מתחילה בדרך כלל ב-{prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "משתמשים ב-Home Assistant? המארח הוא הכתובת שבה אתם פותחים את Home Assistant, פורט 1883.",
   "demoBannerText": "את/ה במצב הדגמה",
   "demoBannerAction": "חיבור הבית שלך",
@@ -1146,7 +1208,11 @@
   "wallNightFrom": "מ-",
   "wallNightTo": "עד",
   "wallDimMinutes": "{minutes} דק׳",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "נעילת קיוסק",
   "kioskLockSubtitle": "רק לוחות הבית הזה והפקדים שלהם נשארים זמינים. לחיצה ארוכה על הכותרת כדי לצאת.",
   "kioskPin": "קוד PIN",
@@ -1424,5 +1490,14 @@
   "remotePairDone": "שליטה מרחוק פעילה עבור {home}",
   "remoteReconnectHub": "חיבור הרכזת מחדש",
   "remoteTurnOffConfirm": "הטלפון הזה יוצא מהשליטה מרחוק והרכזת מתנתקת מהממסר. גיבוי מפתח שנשמר מהטלפון הזה יפסיק לעבוד; טלפונים אחרים שומרים על הגישה עד שמסירים אותם.",
-  "remoteHomeId": "מזהה בית {id}"
+  "remoteHomeId": "מזהה בית {id}",
+  "wgShow": "הצגת התצורה",
+  "wgInvalidConfiguration": "תצורת WireGuard אינה תקינה. יש לבדוק את קובץ התצורה ולנסות שוב.",
+  "wgConnect": "חיבור דרך WireGuard",
+  "wgSecretHint": "נשמרת בהצפנה בטלפון הזה. אינה נכללת בייצוא לוחות בקרה. לאחר שחזור נתוני היישום יש לייבא אותה שוב.",
+  "wgConfiguration": "תצורת WireGuard",
+  "wgHide": "הסתרת התצורה",
+  "wgImport": "ייבוא קובץ ‎.conf",
+  "wgTitle": "שימוש ב־WireGuard המובנה",
+  "wgDescription": "חיבור הבית הזה דרך WireGuard בתוך ZigDash. יישומים אחרים ממשיכים להשתמש בחיבור שלהם."
 }

@@ -19,7 +19,11 @@
   "languageHebrew": "עברית",
   "connectionsTitle": "Casas",
   "connLoadFailed": "Falha ao carregar: {error}",
-  "@connLoadFailed": { "placeholders": { "error": {} } },
+  "@connLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "connAddBroker": "Adicionar broker",
   "connEmpty": "Nenhuma conexão ainda.\nToque em \"Adicionar broker\" para apontar o ZigDash para seu servidor MQTT.",
   "connNew": "Nova conexão",
@@ -37,9 +41,19 @@
   "connRescan": "Procurar de novo",
   "connBrokerNeedsLogin": "Requer login",
   "connFindBrokersScanning": "Verificando {subnet}…",
-  "@connFindBrokersScanning": { "placeholders": { "subnet": {} } },
+  "@connFindBrokersScanning": {
+    "placeholders": {
+      "subnet": {}
+    }
+  },
   "connFindBrokersFound": "{count} broker(s) encontrado(s) — toque para usar",
-  "@connFindBrokersFound": { "placeholders": { "count": { "type": "int" } } },
+  "@connFindBrokersFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "connFindBrokersNone": "Nenhum broker encontrado no seu Wi-Fi.",
   "connFindBrokersNoIp": "Não foi possível ler o endereço do seu Wi-Fi. Verifique se o Wi-Fi está ligado e tente de novo.",
   "connHelpTitle": "Como encontrar o IP do broker",
@@ -68,7 +82,11 @@
   "cancel": "Cancelar",
   "connDeleteTitle": "Excluir conexão?",
   "connDeleteContent": "Remove \"{name}\", seus painéis/blocos e a senha salva.",
-  "@connDeleteContent": { "placeholders": { "name": {} } },
+  "@connDeleteContent": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "statusDisconnected": "Desconectado",
   "statusConnecting": "Conectando",
   "statusConnected": "Conectado",
@@ -81,7 +99,11 @@
   "dashAddPanel": "Adicionar bloco",
   "dashEmpty": "Nenhum painel ainda.\nToque em \"Adicionar painel\" para criar um para este broker.",
   "dashLoadFailed": "Falha: {error}",
-  "@dashLoadFailed": { "placeholders": { "error": {} } },
+  "@dashLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "panelPickerTitle": "Adicionar um bloco",
   "panelPickerSectionControl": "Controle",
   "panelPickerSectionState": "Estado",
@@ -125,9 +147,19 @@
   "dashImportHint": "Cole aqui o JSON exportado",
   "dashImportButton": "Importar",
   "dashImportSuccess": "{count,plural, =1{1 painel importado} other{{count} painéis importados}}",
-  "@dashImportSuccess": { "placeholders": { "count": { "type": "int" } } },
+  "@dashImportSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashImportFailed": "Falha na importação: {error}",
-  "@dashImportFailed": { "placeholders": { "error": {} } },
+  "@dashImportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "dashFormNew": "Novo painel",
   "dashFormEdit": "Editar painel",
   "dashFormName": "Nome",
@@ -144,9 +176,17 @@
   "dashDeleteContent": "Todos os blocos dele também serão removidos.",
   "dashDeleteConfirm": "Excluir",
   "panelFormNew": "Novo: {type}",
-  "@panelFormNew": { "placeholders": { "type": {} } },
+  "@panelFormNew": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelFormEdit": "Editar {type}",
-  "@panelFormEdit": { "placeholders": { "type": {} } },
+  "@panelFormEdit": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelTypeButton": "Botão",
   "panelTypeToggle": "Interruptor",
   "panelTypeSlider": "Controle deslizante",
@@ -165,7 +205,11 @@
   "panelTypeReading": "Leitura",
   "panelFormName": "Nome",
   "panelFormDashboardPrefix": "Prefixo do painel: {prefix}/ (usado, a menos que substituído abaixo)",
-  "@panelFormDashboardPrefix": { "placeholders": { "prefix": {} } },
+  "@panelFormDashboardPrefix": {
+    "placeholders": {
+      "prefix": {}
+    }
+  },
   "panelFormTopicPrefixOverride": "Substituir prefixo de tópico (opcional)",
   "panelFormTopicPrefixOverrideHint": "zigbee2mqtt/shutter",
   "panelFormTopicPrefixOverrideHelper": "Use outro dispositivo neste painel. Em branco = usar o prefixo do painel.",
@@ -278,20 +322,39 @@
   "panelTextInputDefaultHint": "Digite um valor…",
   "panelTextLogWaiting": "Aguardando mensagens…",
   "panelScheduleOpensAt": "Abre às {time}",
-  "@panelScheduleOpensAt": { "placeholders": { "time": {} } },
+  "@panelScheduleOpensAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleClosesAt": "Fecha às {time}",
-  "@panelScheduleClosesAt": { "placeholders": { "time": {} } },
+  "@panelScheduleClosesAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleOfflineWarning": "Agendador offline — não vai rodar",
   "panelScheduleDisabled": "Desativado",
   "panelScheduleNext": "Próximo: {action} às {at}",
-  "@panelScheduleNext": { "placeholders": { "action": {}, "at": {} } },
+  "@panelScheduleNext": {
+    "placeholders": {
+      "action": {},
+      "at": {}
+    }
+  },
   "panelScheduleActionOpen": "abrir",
   "panelScheduleActionClose": "fechar",
   "panelAutoCloseIdle": "Inativo",
   "panelAutoCloseDisabled": "Desativado",
   "panelAutoCloseOffline": "Automação offline — a regra não vai rodar",
   "panelAutoCloseClosingIn": "Fechando em {seconds}s",
-  "@panelAutoCloseClosingIn": { "placeholders": { "seconds": { "type": "int" } } },
+  "@panelAutoCloseClosingIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "panelAutoCloseClosingNow": "Fechando agora…",
   "panelGridEmpty": "Nenhum bloco ainda.\nToque em Adicionar bloco para colocar seus dispositivos aqui.",
   "panelsOffline": "Offline — mostrando os últimos valores",
@@ -357,12 +420,22 @@
   "connTestButton": "Testar conexão",
   "connTestOk": "Conexão bem-sucedida",
   "connTestFailed": "Falha na conexão: {error}",
-  "@connTestFailed": { "placeholders": { "error": {} } },
+  "@connTestFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "devicesTitle": "Dispositivos",
   "devicesAddButton": "Adicionar dispositivo",
   "devicesPairingTitle": "Pareando — pressione o botão do dispositivo",
   "devicesPairingHint": "Procurando novos dispositivos… {seconds}s",
-  "@devicesPairingHint": { "placeholders": { "seconds": { "type": "int" } } },
+  "@devicesPairingHint": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "devicesPairingStop": "Parar",
   "devicesNone": "Nenhum dispositivo encontrado.",
   "devicesListMissing": "O Zigbee2MQTT não enviou a lista de dispositivos. Isso pode acontecer depois que o broker MQTT reinicia.",
@@ -373,13 +446,21 @@
   "devicesOnline": "Online",
   "devicesOffline": "Offline",
   "devicesPaired": "Pronto: {name}",
-  "@devicesPaired": { "placeholders": { "name": {} } },
+  "@devicesPaired": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "devicesPairedHint": "Adicionado à sua rede. Para colocá-lo em um painel, use 'Adicionar de um dispositivo' nesse painel.",
   "scenesTitle": "Cenas",
   "scenesNone": "Nenhuma cena ainda. Deixe seus dispositivos do jeito que você gosta e salve-os como uma cena.",
   "scenesNewButton": "Nova cena",
   "scenesActivated": "{name} ativada",
-  "@scenesActivated": { "placeholders": { "name": {} } },
+  "@scenesActivated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "scenesActivateOffline": "Sem conexão — não é possível ativar a cena",
   "sceneFormNewTitle": "Nova cena",
   "sceneFormEditTitle": "Editar cena",
@@ -392,19 +473,39 @@
   "sceneCtrlBrightness": "Brilho",
   "sceneCtrlPosition": "Posição",
   "sceneFormSelectedCount": "{count} selecionado(s)",
-  "@sceneFormSelectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneFormSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sceneFormNoDevicesSelected": "Selecione pelo menos um dispositivo para capturar.",
   "sceneFormNothingCaptured": "Nada ajustável foi capturado dos dispositivos selecionados.",
   "sceneDeleteTitle": "Excluir cena?",
   "sceneDeleteMessage": "\"{name}\" será removida. Os dispositivos mantêm o estado atual.",
-  "@sceneDeleteMessage": { "placeholders": { "name": {} } },
+  "@sceneDeleteMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneEditAction": "Editar",
   "sceneDeleteAction": "Excluir",
   "sceneAddToDashboard": "Adicionar ao painel",
   "sceneAddedToDashboard": "Adicionada a {name}",
-  "@sceneAddedToDashboard": { "placeholders": { "name": {} } },
+  "@sceneAddedToDashboard": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneActionsCount": "{count} dispositivos",
-  "@sceneActionsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneActionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "scenesAllShutters": "Todas as persianas",
   "sceneCloseAllShutters": "Fechar todas as persianas",
   "sceneOpenAllShutters": "Abrir todas as persianas",
@@ -450,7 +551,13 @@
   "diagTcpZ2mNoBroker": "O Zigbee2MQTT está rodando neste endereço, mas o broker MQTT dele não aceita conexões de outros dispositivos. O Mosquitto só escuta na própria máquina até você adicionar as linhas \"listener 1883\" e \"allow_anonymous true\" ao mosquitto.conf (ou configurar uma senha). Reinicie o Mosquitto e tente novamente.",
   "diagAuthRejectedHa": "O broker do Home Assistant recusou este início de sessão. Use o nome e a palavra-passe de um utilizador do Home Assistant (Definições › Pessoas › Utilizadores); de preferência um utilizador só para MQTT.",
   "foundDevices": "{count, plural, =1{1 dispositivo encontrado} other{{count} dispositivos encontrados}}",
-  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
+  "@foundDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "foundDevicesHint": "Seus dispositivos Zigbee estão visíveis. Continue para montar seu painel.",
   "noDevicesTitle": "Conectado — nenhum dispositivo encontrado ainda",
   "noDevicesHint": "O ZigDash vê seu broker, mas ainda não encontrou dispositivos Zigbee. Você pode iniciar o pareamento para adicioná-los.",
@@ -463,7 +570,11 @@
   "guidedStuckTelegram": "Perguntar no Telegram",
   "guidedStuckHelp": "Dicas e e-mail",
   "ladderTriedHint": "{count} endereços testados",
-  "@ladderTriedHint": { "placeholders": {"count": {}} },
+  "@ladderTriedHint": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "guidedSaveFailed": "Não foi possível salvar a conexão. Tente de novo.",
   "setupWelcomeTitle": "Boas-vindas ao ZigDash",
   "setupWelcomeHeadline": "Sua casa Zigbee, no seu celular",
@@ -577,28 +688,73 @@
   "setupPlatformPi": "Raspberry Pi ou Docker",
   "setupPlatformNotSure": "Não sei",
   "setupScanProgress": "{checked} de {total} endereços verificados",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "À procura do Home Assistant e do seu broker MQTT…",
   "setupScanHintSmlight": "À procura do seu hub SMLIGHT…",
   "setupScanHintPi": "À procura de um broker MQTT na sua rede…",
   "setupHubSeenHa": "Home Assistant encontrado em {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "Zigbee2MQTT encontrado em {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "O seu hub SMLIGHT foi encontrado em {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "Ainda à procura do seu broker MQTT…",
   "setupNoBrokerHaTitle": "Home Assistant encontrado, mas sem broker MQTT",
   "setupNoBrokerHaBody": "O Home Assistant está em {host}, mas nada responde na porta MQTT 1883. No Home Assistant, abra Definições › Add-ons, instale e inicie o add-on Mosquitto broker e tente novamente.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "Usa o Zigbee próprio do Home Assistant (ZHA) em vez do Zigbee2MQTT? O ZigDash só funciona com o Zigbee2MQTT, então não enxerga dispositivos ZHA. A demonstração mostra o que você teria.",
   "setupVpnHint": "Há uma VPN ligada, e ela pode esconder sua rede de casa da busca. Se você estiver em casa, desligue a VPN e toque em Tentar de novo.",
   "setupNoBrokerZ2mTitle": "Zigbee2MQTT encontrado, mas o seu broker não está acessível",
   "setupNoBrokerZ2mBody": "O Zigbee2MQTT está em {host}, mas o seu broker MQTT não aceita ligações do seu telemóvel. O Mosquitto 2 só escuta no próprio hub até a configuração ter 'listener 1883' e 'allow_anonymous true' (ou um login). Reinicie-o e tente novamente.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "Hub SMLIGHT encontrado, mas o MQTT está desligado",
   "setupNoBrokerSmlightBody": "O seu hub está em {host}, mas o seu broker MQTT não está acessível. Na interface web do hub, abra Settings › MQTT, ative Allow External e verifique que o Zigbee2MQTT está a correr. Depois tente novamente.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "A perguntar ao Zigbee2MQTT onde está o broker…",
   "setupZ2mLocalOnlyTitle": "O seu broker só aceita ligações da própria máquina",
   "setupZ2mLocalOnlyBody": "O Zigbee2MQTT usa {server}, e do seu telefone nada responde aí. O Mosquitto 2 faz isto por omissão. Adicione estas duas linhas ao mosquitto.conf, reinicie o Mosquitto e tente de novo:",
@@ -608,7 +764,13 @@
   "setupZ2mTokenRequired": "A página web do Zigbee2MQTT está protegida por um token, então o app não conseguiu ler onde está o broker. Digite o endereço do broker que aparece em Zigbee2MQTT › Settings › MQTT.",
   "setupZ2mUnreachable": "O Zigbee2MQTT usa o broker em {server}, mas ele não respondeu ao seu telefone. Verifique se o broker está a correr e se o telefone está na mesma rede.",
   "setupConnectTo": "Ligar a {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "Nenhum Home Assistant encontrado nesta rede. Confira se o celular está no mesmo Wi-Fi que o Home Assistant (não uma rede de convidados) e tente de novo. Se souber o endereço, digite-o abaixo.",
   "setupNotFoundSmlight": "Nenhum hub SMLIGHT encontrado nesta rede. Confira se o hub está ligado e o celular no mesmo Wi-Fi, e tente de novo. Se souber o endereço, digite-o abaixo.",
   "setupNotFoundPi": "Nenhum broker MQTT encontrado nesta rede. Verifique que o Mosquitto está a correr e a escutar na rede (porta 1883) e que o seu telemóvel está no mesmo Wi-Fi. Depois tente novamente.",
@@ -632,7 +794,16 @@
   "setupChoiceOtherSub": "Uma rede Wi-Fi de convidados ou um segundo roteador",
   "setupChoiceOtherNote": "Seu telefone precisa alcançar o hub. Uma rede Wi-Fi de convidados, ou um segundo roteador com Wi-Fi próprio, separa os dois. Entre na rede Wi-Fi em que o hub está e toque em Tentar de novo. Ou digite abaixo o endereço IP do hub, ou tente um destes nomes comuns:",
   "guidedHostYourPhone": "O seu telemóvel é {ip}, por isso o hub costuma começar por {prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "Usa o Home Assistant? O host é o endereço com que abre o Home Assistant, porta 1883.",
   "demoBannerText": "Você está no modo demo",
   "demoBannerAction": "Conectar sua casa",
@@ -1037,7 +1208,11 @@
   "wallNightFrom": "Das",
   "wallNightTo": "às",
   "wallDimMinutes": "{minutes} min",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "Bloqueio de quiosque",
   "kioskLockSubtitle": "Só os painéis desta casa e seus controles continuam acessíveis. Segure o título para sair.",
   "kioskPin": "PIN",
@@ -1315,5 +1490,14 @@
   "remotePairDone": "Controle remoto ativado para {home}",
   "remoteReconnectHub": "Reconectar o hub",
   "remoteTurnOffConfirm": "Este celular sai do controle remoto e seu hub se desconecta do relay. Um backup de chave salvo deste celular para de funcionar; os outros celulares mantêm o acesso até você removê-los.",
-  "remoteHomeId": "ID da casa {id}"
+  "remoteHomeId": "ID da casa {id}",
+  "wgShow": "Mostrar configuração",
+  "wgInvalidConfiguration": "Configuração do WireGuard inválida. Verifique o arquivo de configuração e tente novamente.",
+  "wgConnect": "Conectar pelo WireGuard",
+  "wgSecretHint": "Armazenada de forma criptografada neste telefone. Não é incluída nas exportações de painéis. Importe novamente após restaurar os dados do aplicativo.",
+  "wgConfiguration": "Configuração do WireGuard",
+  "wgHide": "Ocultar configuração",
+  "wgImport": "Importar arquivo .conf",
+  "wgTitle": "Usar WireGuard integrado",
+  "wgDescription": "Conecte esta casa pelo WireGuard dentro do ZigDash. Outros aplicativos mantêm sua própria conexão."
 }
