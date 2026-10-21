@@ -1,0 +1,1 @@
+ZigDash 2.10.2: när installationen hittar enheter men inte markerar någon i förväg säger den det och låter dig skapa en tom dashboard och lägga till brickor senare, i stället för en knapp som förblir grå.

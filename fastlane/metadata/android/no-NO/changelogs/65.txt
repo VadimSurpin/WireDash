@@ -1,0 +1,1 @@
+ZigDash 2.10.2: når oppsettet finner enheter men ikke velger noen på forhånd, sier det ifra og lar deg lage et tomt dashbord og legge til fliser senere, i stedet for en knapp som forblir grå.

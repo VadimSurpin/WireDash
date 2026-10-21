@@ -1,0 +1,1 @@
+ZigDash 2.10.2: als de installatie apparaten vindt maar er vooraf geen aanvinkt, zegt ze dat en kun je een leeg dashboard maken en later tegels toevoegen, in plaats van een knop die grijs blijft.

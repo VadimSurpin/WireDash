@@ -1,0 +1,1 @@
+ZigDash 2.10.2: quando a configuração encontra dispositivos mas não marca nenhum de antemão, ela avisa e permite criar um painel vazio e adicionar blocos depois, em vez de um botão que fica cinza.
