@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/mqtt_manager.dart';
@@ -167,13 +166,18 @@ void main() {
     test(
       'MQTT ${secure ? "TLS" : "TCP"} uses the route and preserves the private hostname',
       () async {
-        final ServerSocket broker = secure
+        final plain = secure
+            ? null
+            : await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+        final tls = secure
             ? await SecureServerSocket.bind(
                 InternetAddress.loopbackIPv4,
                 0,
                 _serverContext(),
               )
-            : await ServerSocket.bind(InternetAddress.loopbackIPv4, 0);
+            : null;
+        final Stream<Socket> broker = secure ? tls! : plain!;
+        final brokerPort = tls?.port ?? plain!.port;
         final sockets = <Socket>[];
         broker.listen((socket) {
           sockets.add(socket);
@@ -183,9 +187,10 @@ void main() {
           for (final socket in sockets) {
             socket.destroy();
           }
-          await broker.close();
+          await tls?.close();
+          await plain?.close();
         });
-        final backend = _Backend(broker.port);
+        final backend = _Backend(brokerPort);
         addTearDown(backend.close);
         final config = BrokerConfig(
           id: 'wg',

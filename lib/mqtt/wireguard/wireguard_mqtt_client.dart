@@ -64,8 +64,8 @@ class WireGuardMqttClient extends mc.MqttClient {
 }
 
 class _Handler extends mc.MqttConnectionHandlerBase {
-  _Handler(mc.MqttEventBus bus, _Connection wire, int timeoutMs)
-    : super(bus, maxConnectionAttempts: 1) {
+  _Handler(super.clientEventBus, _Connection wire, int timeoutMs)
+    : super(maxConnectionAttempts: 1) {
     connection = wire;
     connectTimer = mc.MqttCancellableAsyncSleep(timeoutMs);
     initialiseListeners();
@@ -199,8 +199,9 @@ class _Connection extends MqttServerConnection<Object> {
   @override
   StreamSubscription onListen() {
     final stream = client;
-    if (stream is Socket)
+    if (stream is Socket) {
       return stream.listen(onData, onDone: onDone, onError: onError);
+    }
     return (stream as WebSocket).listen(
       onData,
       onDone: onDone,
@@ -234,8 +235,9 @@ class _Connection extends MqttServerConnection<Object> {
     _http?.close(force: true);
     final forwarder = _forwarder;
     _forwarder = null;
-    if (forwarder != null)
+    if (forwarder != null) {
       unawaited(forwarder.close().catchError((Object _) {}));
+    }
   }
 
   @override

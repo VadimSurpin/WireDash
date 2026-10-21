@@ -11,7 +11,8 @@ class _AndroidBackend implements WireGuardBackend {
   static const _channel = MethodChannel('zigdash/wireguard');
 
   @override
-  bool get supported => !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  bool get supported =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
   void _checkPlatform() {
     if (!supported) {
