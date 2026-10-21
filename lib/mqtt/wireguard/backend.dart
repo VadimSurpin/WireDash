@@ -10,6 +10,7 @@ abstract interface class WireGuardForwarder {
 }
 
 abstract interface class WireGuardBackend {
+  bool get supported;
   Future<void> validate(String config);
   Future<WireGuardForwarder> open(
     String config,

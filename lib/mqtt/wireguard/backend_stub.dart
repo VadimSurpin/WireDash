@@ -4,6 +4,8 @@ WireGuardBackend createBackend() => _UnsupportedBackend();
 
 class _UnsupportedBackend implements WireGuardBackend {
   @override
+  bool get supported => false;
+  @override
   Future<void> validate(String config) async => throw UnsupportedError(
     'Embedded WireGuard is available on Android only.',
   );

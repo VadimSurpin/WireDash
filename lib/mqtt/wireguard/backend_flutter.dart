@@ -10,8 +10,11 @@ WireGuardBackend createBackend() => _AndroidBackend();
 class _AndroidBackend implements WireGuardBackend {
   static const _channel = MethodChannel('zigdash/wireguard');
 
+  @override
+  bool get supported => !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
   void _checkPlatform() {
-    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+    if (!supported) {
       throw UnsupportedError(
         'Embedded WireGuard is available on Android only.',
       );

@@ -14,6 +14,8 @@ import 'package:zigdash/mqtt/wireguard/wireguard_mqtt_client.dart';
 // to a local broker. The app must use this socket for an unresolvable private
 // broker name, including TLS SNI and certificate verification.
 class _Backend implements WireGuardBackend {
+  @override
+  bool get supported => true;
   _Backend(this.brokerPort);
   final int brokerPort;
   final routes = <_Route>[];

@@ -10,6 +10,7 @@ import 'ha_address.dart';
 import 'endpoint.dart';
 import 'ha_mqtt_client.dart';
 import 'wireguard/wireguard_mqtt_client.dart';
+import 'wireguard/backend.dart';
 import 'relay_mqtt_client.dart';
 
 /// Whether something answers TCP at [host]:[port] within [timeout]: used to
@@ -25,6 +26,7 @@ Future<bool> probeTcp(String host, int port, {Duration timeout = const Duration(
 }
 
 
+
 mc.MqttClient buildPlatformClient(
   BrokerConfig config,
   String clientId, {
@@ -32,12 +34,16 @@ mc.MqttClient buildPlatformClient(
 }) {
   final target = host ?? config.host;
   if (config.viaWireGuard) {
+    final backend = createWireGuardBackend();
+    if (!backend.supported) {
+      throw UnsupportedError('Embedded WireGuard is available on Android only.');
+    }
     if (config.wireGuardConfig?.trim().isNotEmpty != true) {
       throw UnsupportedError(
         'WireGuard configuration is missing. Import it in the home connection settings.',
       );
     }
-    return WireGuardMqttClient(config, target, clientId);
+    return WireGuardMqttClient(config, target, clientId, backend: backend);
   }
   final relay = config.relay;
   if (target == relayCandidateHost && relay != null) {
