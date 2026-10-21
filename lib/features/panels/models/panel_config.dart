@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show immutable;
 
 import '../../../data/database/tables/panels.dart';
 import '../../devices/device_profile.dart';
+import '../../discovery/models/wirenboard_device.dart';
 
 /// Type-specific configuration stored as JSON in `Panels.config`. Decoded
 /// on the fly in panel widgets. Refactor to a freezed sealed union once
@@ -34,7 +35,9 @@ sealed class PanelConfig {
       PanelType.schedule => ScheduleConfig.fromJson(j),
       PanelType.scene => SceneConfig.fromJson(j),
       PanelType.autoClose => AutoCloseConfig.fromJson(j),
-      PanelType.device => DeviceTileConfig.fromJson(j),
+      PanelType.device => j['protocol'] == 'wirenboard'
+          ? WirenBoardDeviceConfig.fromJson(j)
+          : DeviceTileConfig.fromJson(j),
       PanelType.reading => ReadingConfig.fromJson(j),
     };
   }
@@ -553,6 +556,24 @@ class DeviceTileConfig extends PanelConfig {
         profile: DeviceProfile.fromJson(j['profile']),
         model: j['model'] as String?,
       );
+}
+
+/// A whole WB device. Cache metadata so its controls remain accessible when
+/// offline; values are subscribed to independently on their scalar topics.
+class WirenBoardDeviceConfig extends PanelConfig {
+  const WirenBoardDeviceConfig({required this.device});
+
+  final WirenBoardDevice device;
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'protocol': 'wirenboard',
+    'device': device.toJson(),
+  };
+
+  static WirenBoardDeviceConfig fromJson(Map<String, dynamic> json) =>
+      WirenBoardDeviceConfig(device: WirenBoardDevice.fromJson(
+        Map<String, dynamic>.from(json['device'] as Map)));
 }
 
 /// How a reading tile draws its value (docs/design/gauge-2.4.md).

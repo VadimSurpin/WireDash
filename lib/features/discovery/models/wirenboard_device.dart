@@ -138,6 +138,41 @@ class WirenBoardDevice {
   final Map<String, Object?> metadata;
   final List<WirenBoardControl> controls;
 
+  /// Match standard controller device IDs exactly. External Modbus modules
+  /// also commonly start with `wb-`, so a prefix match misclassifies them.
+  bool get isControllerBuiltin => const {
+    'buzzer',
+    'hwmon',
+    'network',
+    'power_status',
+    'system',
+    'metrics',
+    'wb-adc',
+    'wb-dac',
+    'wb-gpio',
+    'wb-w1',
+    'wb-mcu',
+    'wb-v1',
+    'wbrules',
+  }.contains(id);
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'metadata': metadata,
+    'controls': [for (final control in controls) control.toJson()],
+  };
+
+  factory WirenBoardDevice.fromJson(
+    Map<String, dynamic> json,
+  ) => WirenBoardDevice(
+    id: json['id'] as String,
+    metadata: Map<String, Object?>.from(json['metadata'] as Map? ?? const {}),
+    controls: [
+      for (final control in json['controls'] as List? ?? const [])
+        WirenBoardControl.fromJson(Map<String, dynamic>.from(control as Map)),
+    ],
+  );
+
   String title(String language) => wirenBoardTitle(
     metadata['title'],
     language,
@@ -154,6 +189,19 @@ class WirenBoardControl {
   final String deviceId;
   final String id;
   final Map<String, Object?> metadata;
+
+  Map<String, dynamic> toJson() => {
+    'deviceId': deviceId,
+    'id': id,
+    'metadata': metadata,
+  };
+
+  factory WirenBoardControl.fromJson(Map<String, dynamic> json) =>
+      WirenBoardControl(
+        deviceId: json['deviceId'] as String,
+        id: json['id'] as String,
+        metadata: Map<String, Object?>.from(json['metadata'] as Map),
+      );
 
   String get topic => '/devices/$deviceId/controls/$id';
   String get type => metadata['type'] as String;
