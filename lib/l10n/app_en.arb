@@ -536,7 +536,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Set up your broker",
-  "guidedConnectIntro": "We'll test each step of the connection and show your Zigbee devices.",
+  "guidedConnectIntro": "We'll test your MQTT connection and discover devices on your broker.",
   "guidedBaseTopic": "Base topic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Test & connect",
@@ -2226,8 +2226,8 @@
       "id": {}
     }
   },
-  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.",
-  "discoverWirenBoardHint": "Add a whole device with +, or expand it to choose individual controls.",
+  "discoverWirenBoardNone": "No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that drivers have published retained metadata.",
+  "discoverWirenBoardHint": "Discovered modules are added to this dashboard automatically. Use + for built-ins, or expand a device to choose individual controls.",
   "wbSearch": "Search devices and controls",
   "@wbControlCount": {
     "placeholders": {
@@ -2240,5 +2240,15 @@
   "wbAddedModules": "Added modules",
   "wbControllerBuiltins": "Controller built-ins",
   "wbAddWholeDevice": "Add whole device",
-  "wbControlCount": "{count} controls"
+  "wbControlCount": "{count} controls",
+  "@wbAutoAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wbBuiltinsAvailable": "Controller built-ins remain available in All devices.",
+  "wbAutoAddFailed": "Could not add discovered devices. Try discovery again.",
+  "wbAutoAdded": "Modules added: {count}."
 }

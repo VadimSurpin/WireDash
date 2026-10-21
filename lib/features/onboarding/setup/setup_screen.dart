@@ -1684,11 +1684,18 @@ class _Review extends StatelessWidget {
               Semantics(
                 liveRegion: true,
                 child: Text(
-                  l10n.setupReviewSubtitle(rows.length),
+                  l10n.setupReviewSubtitle(rows.length + state.wirenBoardDevices.length),
                   style: theme.textTheme.titleMedium,
                 ),
               ),
               const SizedBox(height: 8),
+              if (state.wirenBoardDevices.isNotEmpty) ...[
+                _GroupHeader(title: l10n.wbAddedModules),
+                for (final device in state.wirenBoardDevices.where((d) => !d.isControllerBuiltin))
+                  ListTile(leading: const Icon(Icons.developer_board_outlined),
+                    title: Text(device.title(l10n.localeName)), trailing: const Icon(Icons.check)),
+                Text(l10n.wbBuiltinsAvailable),
+              ],
               for (var i = 0; i < rows.length; i++) ...[
                 if (i == firstOther) _GroupHeader(title: l10n.setupGroupOther),
                 if (i == firstUnsupported)
@@ -1707,7 +1714,7 @@ class _Review extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (state.selectedCount == 0) ...[
+              if (state.selectedCount == 0 && state.wirenBoardDevices.isEmpty) ...[
                 Text(
                   l10n.setupReviewNoneSelected,
                   style: theme.textTheme.bodyMedium,
@@ -1725,12 +1732,13 @@ class _Review extends StatelessWidget {
                       : const Icon(Icons.dashboard_outlined),
                   label: Text(
                     state.selectedCount == 0
-                        ? l10n.setupCreateEmpty
+                        ? (state.wirenBoardDevices.isEmpty ? l10n.setupCreateEmpty : l10n.continueToDashboard)
                         : l10n.setupCreateWithCount(state.selectedCount),
                   ),
                 ),
               ),
             ],
+
           ),
         ),
       ],

@@ -114,6 +114,44 @@ void main() {
   Future<List<String>> okLookup(String h) async => <String>[h];
   Future<void> okProbe(String h, int p, Duration t) async {}
 
+  test(
+    'discovery collects WB retained metadata without requiring Z2M topics',
+    () {
+      fakeAsync((async) {
+        final client = _FakeClient(host, _ConnectBehavior.connected);
+        final diagnostics = ConnectDiagnostics(
+          clientFactory: (c, id, {host}) => client,
+          hostLookup: okLookup,
+          tcpProbe: okProbe,
+          deviceWindow: const Duration(seconds: 1),
+        );
+        DiagnosticsReport? result;
+        diagnostics
+            .run(config: config(), password: '')
+            .then((value) => result = value);
+        async.flushMicrotasks();
+        expect(
+          client.subscribedTopics,
+          contains('/devices/+/controls/+/meta/#'),
+        );
+        client.emit('/devices/hwmon/controls/CPU/meta/type', 'temperature');
+        client.emit(
+          '/devices/wb-mr6_10/controls/Relay 1/meta',
+          '{"type":"switch"}',
+        );
+        async.flushMicrotasks();
+        async.elapse(const Duration(seconds: 1));
+        expect(result!.connected, isTrue);
+        expect(result!.deviceNames, isEmpty);
+        expect(result!.wirenBoardDevices.map((d) => d.id), [
+          'hwmon',
+          'wb-mr6_10',
+        ]);
+        expect(result!.steps.last.deviceCount, 2);
+      });
+    },
+  );
+
   ConnectDiagnostics diagnostics({
     _ConnectBehavior behavior = _ConnectBehavior.connected,
     _ConnectBehavior? remoteBehavior,

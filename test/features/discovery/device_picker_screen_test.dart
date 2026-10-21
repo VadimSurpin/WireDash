@@ -1,3 +1,4 @@
+import 'package:zigdash/features/discovery/wirenboard_dashboard_importer.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -40,7 +41,13 @@ final _fixtureDevices = [
 // ---------------------------------------------------------------------------
 
 Widget _wrap({required List<Override> overrides}) => ProviderScope(
-  overrides: overrides,
+  overrides: [
+    wirenBoardDashboardImporterProvider.overrideWith(
+      (ref, _) => _NoopWbImporter(),
+    ),
+    wirenBoardDashboardIdsProvider.overrideWith((ref, _) => {}),
+    ...overrides,
+  ],
   child: MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
@@ -51,6 +58,16 @@ Widget _wrap({required List<Override> overrides}) => ProviderScope(
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
+
+class _NoopWbImporter implements WirenBoardDashboardImporter {
+  @override
+  Future<int> importDevices(
+    List<WirenBoardDevice> devices, {
+    bool includeBuiltins = false,
+  }) async => 0;
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   testWidgets('Wiren Board source lists retained controls and live changes', (
@@ -164,7 +181,7 @@ void main() {
     (tester) async {
       final devices =
           (WirenBoardDiscovery()..apply(
-                '/devices/relay/controls/Relay 1/meta',
+                '/devices/hwmon/controls/Relay 1/meta',
                 '{"type":"switch"}',
               ))
               .devices;
@@ -192,6 +209,10 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            wirenBoardDashboardImporterProvider.overrideWith(
+              (ref, _) => _NoopWbImporter(),
+            ),
+            wirenBoardDashboardIdsProvider.overrideWith((ref, _) => {}),
             wirenBoardDevicesProvider.overrideWith(
               (ref, _) => Stream.value(devices),
             ),
@@ -208,8 +229,8 @@ void main() {
       await tester.tap(find.byTooltip('Add whole device'));
       await tester.pumpAndSettle();
       expect(picked!.type, PanelType.device);
-      expect((picked!.config as WirenBoardDeviceConfig).device.id, 'relay');
-      expect(picked!.topicPrefixOverride, '/devices/relay');
+      expect((picked!.config as WirenBoardDeviceConfig).device.id, 'hwmon');
+      expect(picked!.topicPrefixOverride, '/devices/hwmon');
     },
   );
 

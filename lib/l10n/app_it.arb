@@ -392,7 +392,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Configura il tuo broker",
-  "guidedConnectIntro": "Proveremo ogni passaggio della connessione e mostreremo i tuoi dispositivi Zigbee.",
+  "guidedConnectIntro": "Verificheremo la connessione MQTT e cercheremo i dispositivi sul tuo broker.",
   "guidedBaseTopic": "Topic base",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Prova e connetti",
@@ -1270,5 +1270,16 @@
   "remotePairDone": "Controllo remoto attivo per {home}",
   "remoteReconnectHub": "Ricollega l'hub",
   "remoteTurnOffConfirm": "Questo telefono lascia il controllo remoto e l'hub si scollega dal relay. Un backup della chiave salvato da questo telefono smette di funzionare; gli altri telefoni mantengono l'accesso finché non li rimuovi.",
-  "remoteHomeId": "ID della casa {id}"
+  "remoteHomeId": "ID della casa {id}",
+  "wbClearSearch": "Cancella ricerca",
+  "wbAutoAdded": "Moduli aggiunti: {count}.",
+  "wbAddWholeDevice": "Aggiungi dispositivo completo",
+  "discoverWirenBoardHint": "I moduli rilevati vengono aggiunti automaticamente a questa dashboard. Usa + per i dispositivi integrati oppure espandi un dispositivo per scegliere i singoli controlli.",
+  "wbAddedModules": "Moduli aggiunti",
+  "wbControllerBuiltins": "Dispositivi integrati nel controller",
+  "discoverWirenBoardNone": "Nessun controllo Wiren Board trovato. Verifica l’accesso dell’utente MQTT ai metadati /devices e la pubblicazione dei metadati mantenuti dai driver.",
+  "wbSearch": "Cerca dispositivi e controlli",
+  "wbBuiltinsAvailable": "I dispositivi integrati nel controller restano disponibili in Tutti i dispositivi.",
+  "wbControlCount": "Controlli: {count}",
+  "wbAutoAddFailed": "Impossibile aggiungere i dispositivi rilevati. Ripeti la ricerca."
 }

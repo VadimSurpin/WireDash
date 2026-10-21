@@ -25,7 +25,11 @@
   "languageFrench": "Français",
   "connectionsTitle": "Hjem",
   "connLoadFailed": "Kunne ikke laste inn: {error}",
-  "@connLoadFailed": { "placeholders": { "error": {} } },
+  "@connLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "connAddBroker": "Legg til broker",
   "connEmpty": "Ingen tilkoblinger ennå.\nTrykk på „Legg til broker” for å peke ZigDash mot MQTT-serveren din.",
   "connNew": "Ny tilkobling",
@@ -43,9 +47,19 @@
   "connRescan": "Skann på nytt",
   "connBrokerNeedsLogin": "Innlogging kreves",
   "connFindBrokersScanning": "Skanner {subnet}…",
-  "@connFindBrokersScanning": { "placeholders": { "subnet": {} } },
+  "@connFindBrokersScanning": {
+    "placeholders": {
+      "subnet": {}
+    }
+  },
   "connFindBrokersFound": "{count} broker(e) funnet – trykk for å bruke",
-  "@connFindBrokersFound": { "placeholders": { "count": { "type": "int" } } },
+  "@connFindBrokersFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "connFindBrokersNone": "Fant ingen brokere på Wi-Fi-nettverket ditt.",
   "connFindBrokersNoIp": "Kunne ikke lese Wi-Fi-adressen din. Kontroller at Wi-Fi er på, og prøv igjen.",
   "connHelpTitle": "Finne brokerens IP",
@@ -74,23 +88,28 @@
   "cancel": "Avbryt",
   "connDeleteTitle": "Slette tilkoblingen?",
   "connDeleteContent": "Fjerner „{name}”, dashbordene/panelene og det lagrede passordet.",
-  "@connDeleteContent": { "placeholders": { "name": {} } },
+  "@connDeleteContent": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "statusDisconnected": "Frakoblet",
   "statusConnecting": "Kobler til…",
   "statusConnected": "Tilkoblet",
   "statusReconnecting": "Kobler til på nytt…",
   "statusError": "Feil",
   "statusConnectedRemote": "Tilkoblet · Ekstern",
-
   "dashPlaceholder": "Åpne en broker fra Brokere-fanen for å se og administrere dashbordene.",
-
   "dashAddDashboard": "Legg til dashbord",
   "dashEditDashboard": "Rediger dashbord",
   "dashAddPanel": "Legg til panel",
   "dashEmpty": "Ingen dashbord ennå.\nTrykk på „Legg til dashbord” for å opprette ett for denne brokeren.",
   "dashLoadFailed": "Feil: {error}",
-  "@dashLoadFailed": { "placeholders": { "error": {} } },
-
+  "@dashLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "panelPickerTitle": "Legg til panel",
   "panelPickerSectionControl": "Kontroll",
   "panelPickerSectionState": "Status",
@@ -124,7 +143,6 @@
   "panelPickerProgressSubtitle": "Numerisk stolpe for batteri, koblingskvalitet osv.",
   "panelPickerTextLogTitle": "Tekstlogg",
   "panelPickerTextLogSubtitle": "Rullerende meldingshistorikk for et emne",
-
   "dashExportMenu": "Eksporter dashbord",
   "dashImportMenu": "Importer dashbord",
   "dashExportTitle": "Eksporter dashbord",
@@ -135,10 +153,19 @@
   "dashImportHint": "Lim inn eksportert JSON her",
   "dashImportButton": "Importer",
   "dashImportSuccess": "{count,plural, =1{1 dashbord importert} other{{count} dashbord importert}}",
-  "@dashImportSuccess": { "placeholders": { "count": { "type": "int" } } },
+  "@dashImportSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashImportFailed": "Importen mislyktes: {error}",
-  "@dashImportFailed": { "placeholders": { "error": {} } },
-
+  "@dashImportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "dashFormNew": "Nytt dashbord",
   "dashFormEdit": "Rediger dashbord",
   "dashFormName": "Navn",
@@ -154,12 +181,18 @@
   "dashDeleteTitle": "Slette dette dashbordet?",
   "dashDeleteContent": "Alle panelene under det fjernes også.",
   "dashDeleteConfirm": "Slett",
-
   "panelFormNew": "Nytt {type}",
-  "@panelFormNew": { "placeholders": { "type": {} } },
+  "@panelFormNew": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelFormEdit": "Rediger {type}",
-  "@panelFormEdit": { "placeholders": { "type": {} } },
-
+  "@panelFormEdit": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelTypeButton": "Knapp",
   "panelTypeToggle": "Bryter",
   "panelTypeSlider": "Glidebryter",
@@ -176,10 +209,13 @@
   "panelTypeAutoClose": "Auto-lukk",
   "panelTypeDevice": "Enhet",
   "panelTypeReading": "Måling",
-
   "panelFormName": "Navn",
   "panelFormDashboardPrefix": "Dashbordprefiks: {prefix}/ (brukes med mindre det overstyres nedenfor)",
-  "@panelFormDashboardPrefix": { "placeholders": { "prefix": {} } },
+  "@panelFormDashboardPrefix": {
+    "placeholders": {
+      "prefix": {}
+    }
+  },
   "panelFormTopicPrefixOverride": "Overstyr emneprefiks (valgfritt)",
   "panelFormTopicPrefixOverrideHint": "zigbee2mqtt/persienne",
   "panelFormTopicPrefixOverrideHelper": "Bruk en annen enhet på dette dashbordet. Tomt = bruk dashbordprefiks.",
@@ -199,14 +235,12 @@
   "panelFormQos1": "1 – minst én gang",
   "panelFormQos2": "2 – nøyaktig én gang",
   "panelFormRetain": "Retain",
-
   "panelToggleOnPayload": "På-payload",
   "panelToggleOffPayload": "Av-payload",
   "panelToggleJsonPath": "JSON-sti (valgfritt)",
   "panelToggleJsonPathHint": "state",
   "panelToggleOnMatch": "På-matching",
   "panelToggleOnMatchHelper": "Verdi på JSON-stien som betyr „på” (f.eks. „ON”)",
-
   "panelSliderMin": "Min",
   "panelSliderMax": "Maks",
   "panelSliderStep": "Trinn",
@@ -214,9 +248,7 @@
   "panelSliderTemplateHelper": "Bruk ordet value som plassholder – det erstattes med glidebryterverdien",
   "panelSliderJsonPath": "JSON-sti (valgfritt)",
   "panelSliderJsonPathHint": "brightness",
-
   "panelButtonPayload": "Payload",
-
   "panelLedJsonPath": "JSON-sti (valgfritt)",
   "panelLedJsonPathHint": "contact",
   "panelLedJsonPathHelper": "f.eks. „contact”, „occupancy”, „water_leak”",
@@ -226,12 +258,10 @@
   "panelLedOnLabelHint": "ON",
   "panelLedOffLabel": "Av-etikett (valgfritt)",
   "panelLedOffLabelHint": "OFF",
-
   "panelNodeOnlinePayload": "Online-payload",
   "panelNodeOnlinePayloadHelper": "Verdi som betyr „online” (Z2M-standard: „online”)",
   "panelNodeJsonPath": "JSON-sti (valgfritt)",
   "panelNodeJsonPathHelper": "La stå tomt for Z2M-standard (rå „online”/„offline”-streng)",
-
   "panelProgressMin": "Min",
   "panelProgressMax": "Maks",
   "panelProgressUnit": "Enhet",
@@ -239,7 +269,6 @@
   "panelProgressJsonPath": "JSON-sti (valgfritt)",
   "panelProgressJsonPathHint": "battery",
   "panelProgressJsonPathHelper": "f.eks. „battery”, „linkquality”",
-
   "panelOptionsJsonPath": "JSON-sti (valgfritt)",
   "panelOptionsJsonPathHint": "state",
   "panelOptionsJsonPathHelper": "Felt i den mottatte payloaden som inneholder gjeldende verdi",
@@ -248,24 +277,20 @@
   "panelOptionsPayload": "Payload",
   "panelOptionsMatch": "Matching (gjeldende verdi)",
   "panelOptionsAdd": "Legg til alternativ",
-
   "panelCoverDescription": "ÅPEN-/STOPP-/LUKKET-knapper pluss en rad med posisjonsforhåndsinnstillinger. Bruker standard Z2M-persienne-payloads (state og position).",
   "panelCoverPresets": "Posisjonsforhåndsinnstillinger",
   "panelCoverPresetsHint": "0, 25, 50, 100",
   "panelCoverPresetsHelper": "Kommaatskilte prosenttall (0–100). Tomt = ingen forhåndsinnstillingsrad.",
   "panelCoverShowSlider": "Vis posisjonsregulator",
-
   "panelTextInputHint": "Ledetekst (valgfritt)",
   "panelTextInputHintHint": "Skriv inn en verdi…",
   "panelTextInputTemplate": "Mal",
   "panelTextInputTemplateHelper": "Bruk ordet value som plassholder – det erstattes med den innskrevne teksten. Standard publiserer råteksten.",
   "panelTextInputClearAfterSend": "Tøm etter sending",
-
   "panelTextLogMaxLines": "Maks. linjer",
   "panelTextLogMaxLinesHelper": "Hvor mange siste meldinger som beholdes",
   "panelTextLogJsonPath": "JSON-sti (valgfritt)",
   "panelTextLogJsonPathHelper": "Logg bare dette feltet i stedet for hele payloaden",
-
   "panelScheduleDescription": "Kjører på SMHUB via Node-RED – selv når denne telefonen er av. Publiseringsemnet ovenfor er målet for persiennekommandoer.",
   "panelScheduleOpenTime": "Åpningstid",
   "panelScheduleCloseTime": "Lukketid",
@@ -273,7 +298,6 @@
   "panelScheduleClosePayload": "Lukk-payload",
   "panelScheduleEnabled": "Aktivert",
   "panelScheduleSavedOffline": "Lagret – ikke tilkoblet; planen synkroniseres når du er online.",
-
   "panelAutoCloseDescription": "Kjører på SMHUB via Node-RED – selv når denne telefonen er av. Publiseringsemnet ovenfor er enhetens kommandomål (f.eks. dør).",
   "panelAutoCloseTriggerPath": "Triggerens JSON-sti",
   "panelAutoCloseTriggerPathHelper": "Felt i enhetens status-JSON å overvåke (standard: state)",
@@ -284,49 +308,59 @@
   "panelAutoCloseDelaySecondsHelper": "1–3600. Tid å vente etter at enheten slås på før lukk-payloaden publiseres.",
   "panelAutoCloseEnabled": "Aktivert",
   "panelAutoCloseSavedOffline": "Lagret – ikke tilkoblet; regelen synkroniseres når du er online.",
-
   "panelTileEdit": "Rediger panel",
   "panelTileDuplicate": "Dupliser panel",
   "panelTileMoveUp": "Flytt opp",
   "panelTileMoveDown": "Flytt ned",
   "panelTileDelete": "Slett panel",
-
   "panelCoverOpen": "Åpne",
   "panelCoverStop": "Stopp",
   "panelCoverClose": "Lukk",
-
   "panelToggleNoState": "(ingen status)",
   "panelToggleError": "feil",
-
   "panelStateOn": "ON",
   "panelStateOff": "OFF",
-
   "panelNodeStatusOnline": "online",
   "panelNodeStatusOffline": "offline",
   "panelNodeStatusUnknown": "ukjent",
   "panelNodeStatusError": "feil",
-
   "panelMultiStateNoOptions": "Ingen alternativer konfigurert",
-
   "panelTextInputDefaultHint": "Skriv inn en verdi…",
-
   "panelTextLogWaiting": "Venter på meldinger…",
-
   "panelScheduleOpensAt": "Åpner {time}",
-  "@panelScheduleOpensAt": { "placeholders": { "time": {} } },
+  "@panelScheduleOpensAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleClosesAt": "Lukker {time}",
-  "@panelScheduleClosesAt": { "placeholders": { "time": {} } },
+  "@panelScheduleClosesAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleOfflineWarning": "Planleggeren er offline – kjører ikke",
   "panelScheduleDisabled": "Deaktivert",
   "panelScheduleNext": "Neste: {action} kl. {at}",
-  "@panelScheduleNext": { "placeholders": { "action": {}, "at": {} } },
+  "@panelScheduleNext": {
+    "placeholders": {
+      "action": {},
+      "at": {}
+    }
+  },
   "panelScheduleActionOpen": "åpne",
   "panelScheduleActionClose": "lukke",
   "panelAutoCloseIdle": "Inaktiv",
   "panelAutoCloseDisabled": "Deaktivert",
   "panelAutoCloseOffline": "Automatisering offline – regelen kjører ikke",
   "panelAutoCloseClosingIn": "Lukker om {seconds}s",
-  "@panelAutoCloseClosingIn": { "placeholders": { "seconds": { "type": "int" } } },
+  "@panelAutoCloseClosingIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "panelAutoCloseClosingNow": "Lukker nå…",
   "panelGridEmpty": "Ingen fliser ennå.\nTrykk på Legg til flis for å legge enhetene dine her.",
   "panelsOffline": "Offline – viser siste verdier",
@@ -336,7 +370,6 @@
   "connectionFailed": "Tilkoblingen mislyktes",
   "connectionAutomaticRetry": "Automatiske forsøk fortsetter",
   "connectionReconnectNow": "Koble til på nytt nå",
-
   "settingsAbout": "Om",
   "settingsHelp": "Hjelp & veiledning",
   "settingsVersion": "Versjon",
@@ -356,7 +389,6 @@
   "reportProblemEmailPrompt": "Hva skjedde, og hva forventet du?",
   "settingsBuyCoffee": "Kjøp meg en kaffe",
   "settingsBuyCoffeeSubtitle": "Gratis og åpen kildekode — tips holder kaffen varm.",
-
   "a11yBackupMenu": "Sikkerhetskopier & gjenopprett",
   "a11ySelectColor": "Velg farge",
   "a11ySelectIcon": "Velg ikon",
@@ -365,9 +397,7 @@
   "a11yMoreOptions": "Flere alternativer",
   "a11yRefresh": "Oppdater",
   "a11yDeleteConnection": "Slett tilkobling",
-
   "controlNotConnected": "Ikke tilkoblet – endringen ble ikke sendt",
-
   "discoverFromDevice": "Legg til fra en enhet…",
   "discoverFromDeviceSubtitle": "Oppdag en Zigbee2MQTT-enhet automatisk",
   "discoverTitle": "Legg til fra enhet",
@@ -391,19 +421,27 @@
     }
   },
   "previewNoValue": "(ingen verdi på denne stien)",
-
   "connErrorTitle": "Tilkoblingsfeil",
   "connErrorUnknown": "Ingen feildetaljer tilgjengelige.",
   "connTestButton": "Test tilkobling",
   "connTestOk": "Tilkoblingen lyktes",
   "connTestFailed": "Tilkoblingen mislyktes: {error}",
-  "@connTestFailed": { "placeholders": { "error": {} } },
-
+  "@connTestFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "devicesTitle": "Enheter",
   "devicesAddButton": "Legg til enhet",
   "devicesPairingTitle": "Parer – trykk på enhetens knapp",
   "devicesPairingHint": "Søker etter nye enheter… {seconds}s",
-  "@devicesPairingHint": { "placeholders": { "seconds": { "type": "int" } } },
+  "@devicesPairingHint": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "devicesPairingStop": "Stopp",
   "devicesNone": "Fant ingen enheter.",
   "devicesListMissing": "Zigbee2MQTT har ikke sendt enhetslisten sin. Det kan skje etter at MQTT-brokeren er startet på nytt.",
@@ -414,13 +452,21 @@
   "devicesOnline": "Online",
   "devicesOffline": "Offline",
   "devicesPaired": "Klar: {name}",
-  "@devicesPaired": { "placeholders": { "name": {} } },
+  "@devicesPaired": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "devicesPairedHint": "Lagt til i nettverket ditt. For å sette den på et dashbord, bruk „Legg til fra en enhet” på det dashbordet.",
   "scenesTitle": "Scener",
   "scenesNone": "Ingen scener ennå. Still inn enhetene dine slik du vil, og lagre dem deretter som en scene.",
   "scenesNewButton": "Ny scene",
   "scenesActivated": "{name} aktivert",
-  "@scenesActivated": { "placeholders": { "name": {} } },
+  "@scenesActivated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "scenesActivateOffline": "Ikke tilkoblet – scenen kan ikke aktiveres",
   "sceneFormNewTitle": "Ny scene",
   "sceneFormEditTitle": "Rediger scene",
@@ -433,19 +479,39 @@
   "sceneCtrlBrightness": "Lysstyrke",
   "sceneCtrlPosition": "Posisjon",
   "sceneFormSelectedCount": "{count} valgt",
-  "@sceneFormSelectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneFormSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sceneFormNoDevicesSelected": "Velg minst én enhet å fange.",
   "sceneFormNothingCaptured": "Ingenting innstillbart ble fanget fra de valgte enhetene.",
   "sceneDeleteTitle": "Slette scenen?",
   "sceneDeleteMessage": "„{name}” fjernes. Enhetene beholder sin gjeldende status.",
-  "@sceneDeleteMessage": { "placeholders": { "name": {} } },
+  "@sceneDeleteMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneEditAction": "Rediger",
   "sceneDeleteAction": "Slett",
   "sceneAddToDashboard": "Legg til på dashbord",
   "sceneAddedToDashboard": "Lagt til på {name}",
-  "@sceneAddedToDashboard": { "placeholders": { "name": {} } },
+  "@sceneAddedToDashboard": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneActionsCount": "{count} enheter",
-  "@sceneActionsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneActionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "scenesAllShutters": "Alle persienner",
   "sceneCloseAllShutters": "Lukk alle persienner",
   "sceneOpenAllShutters": "Åpne alle persienner",
@@ -459,13 +525,8 @@
   "panelPickerSceneSubtitle": "Ett trykk aktiverer en lagret scene",
   "panelSceneChoose": "Scene",
   "panelSceneMissing": "Scenen ble ikke funnet – velg på nytt",
-  "languageGerman": "Deutsch",
-  "languageDutch": "Nederlands",
-  "languageSwedish": "Svenska",
-  "languageNorwegian": "Norsk",
-  "languageSpanish": "Español",
   "guidedConnectTitle": "Sett opp broker",
-  "guidedConnectIntro": "Vi tester hvert trinn i tilkoblingen og viser Zigbee-enhetene dine.",
+  "guidedConnectIntro": "Vi tester MQTT-tilkoblingen og finner enheter på meldingsmegleren din.",
   "guidedBaseTopic": "Basistemae",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Test og koble til",
@@ -490,7 +551,13 @@
   "diagTcpZ2mNoBroker": "Zigbee2MQTT kjører på denne adressen, men MQTT-megleren godtar ikke tilkoblinger fra andre enheter. Mosquitto lytter bare på sin egen maskin til du legger linjene «listener 1883» og «allow_anonymous true» til i mosquitto.conf (eller setter opp et passord). Start Mosquitto på nytt og prøv igjen.",
   "diagAuthRejectedHa": "Megleren i Home Assistant avviste denne påloggingen. Bruk navnet og passordet til en Home Assistant-bruker (Innstillinger › Personer › Brukere); helst en egen bruker bare for MQTT.",
   "foundDevices": "{count, plural, =1{Fant 1 enhet} other{Fant {count} enheter}}",
-  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
+  "@foundDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "foundDevicesHint": "Zigbee-enhetene dine er synlige. Fortsett til dashbordet.",
   "noDevicesTitle": "Tilkoblet – ingen enheter funnet ennå",
   "noDevicesHint": "ZigDash ser brokeren, men har ennå ikke funnet noen Zigbee-enheter. Du kan starte paring.",
@@ -503,7 +570,11 @@
   "guidedStuckTelegram": "Spør i Telegram",
   "guidedStuckHelp": "Tips og e-post",
   "ladderTriedHint": "Prøvde {count} adresser",
-  "@ladderTriedHint": { "placeholders": {"count": {}} },
+  "@ladderTriedHint": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "guidedSaveFailed": "Kunne ikke lagre tilkoblingen. Prøv igjen.",
   "setupWelcomeTitle": "Velkommen til ZigDash",
   "setupWelcomeHeadline": "Zigbee-hjemmet ditt, på mobilen",
@@ -617,28 +688,73 @@
   "setupPlatformPi": "Raspberry Pi eller Docker",
   "setupPlatformNotSure": "Ikke sikker",
   "setupScanProgress": "Sjekket {checked} av {total} adresser",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "Leter etter Home Assistant og MQTT-brokeren…",
   "setupScanHintSmlight": "Leter etter SMLIGHT-huben din…",
   "setupScanHintPi": "Leter etter en MQTT-broker på nettverket ditt…",
   "setupHubSeenHa": "Fant Home Assistant på {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "Fant Zigbee2MQTT på {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "Fant SMLIGHT-huben din på {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "Leter fortsatt etter MQTT-brokeren…",
   "setupNoBrokerHaTitle": "Fant Home Assistant, men ingen MQTT-broker",
   "setupNoBrokerHaBody": "Home Assistant er på {host}, men ingenting svarer på MQTT-port 1883. Åpne Innstillinger › Tillegg i Home Assistant, installer og start tillegget Mosquitto broker, og prøv igjen.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "Bruker du Home Assistants innebygde Zigbee (ZHA) i stedet for Zigbee2MQTT? ZigDash fungerer bare med Zigbee2MQTT og ser derfor ikke ZHA-enheter. Demoen viser hva du ville fått.",
   "setupVpnHint": "Et VPN er på, og det kan skjule hjemmenettet ditt for søket. Er du hjemme, slå av VPN-et og trykk Prøv igjen.",
   "setupNoBrokerZ2mTitle": "Fant Zigbee2MQTT, men brokeren kan ikke nås",
   "setupNoBrokerZ2mBody": "Zigbee2MQTT er på {host}, men MQTT-brokeren godtar ikke tilkoblinger fra telefonen din. Mosquitto 2 lytter bare på huben selv til oppsettet har 'listener 1883' og 'allow_anonymous true' (eller en innlogging). Start den på nytt og prøv igjen.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "Fant SMLIGHT-huben din, men MQTT er av",
   "setupNoBrokerSmlightBody": "Huben din er på {host}, men MQTT-brokeren kan ikke nås. Åpne Settings › MQTT i hubens nettgrensesnitt, slå på Allow External og sjekk at Zigbee2MQTT kjører. Prøv så igjen.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "Spør Zigbee2MQTT hvor brokeren er…",
   "setupZ2mLocalOnlyTitle": "Brokeren godtar bare tilkoblinger fra sin egen maskin",
   "setupZ2mLocalOnlyBody": "Zigbee2MQTT bruker {server}, og ingenting svarer der fra telefonen din. Mosquitto 2 gjør dette som standard. Legg til disse to linjene i mosquitto.conf, start Mosquitto på nytt og prøv igjen:",
@@ -648,7 +764,13 @@
   "setupZ2mTokenRequired": "Nettsiden til Zigbee2MQTT er beskyttet med et token, så appen kunne ikke lese hvor brokeren er. Skriv inn broker-adressen fra Zigbee2MQTT › Settings › MQTT.",
   "setupZ2mUnreachable": "Zigbee2MQTT bruker brokeren på {server}, men den svarte ikke telefonen din. Sjekk at brokeren kjører og at telefonen er på samme nettverk.",
   "setupConnectTo": "Koble til {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "Fant ingen Home Assistant på dette nettverket. Sjekk at telefonen er på samme Wi-Fi som Home Assistant (ikke et gjestenett), og prøv igjen. Vet du adressen, skriv den inn nedenfor.",
   "setupNotFoundSmlight": "Fant ingen SMLIGHT-hub på dette nettverket. Sjekk at huben er på og at telefonen er på samme Wi-Fi, og prøv igjen. Vet du adressen, skriv den inn nedenfor.",
   "setupNotFoundPi": "Fant ingen MQTT-broker på dette nettverket. Sjekk at Mosquitto kjører og lytter på nettverket (port 1883), og at telefonen er på samme Wi-Fi. Prøv så igjen.",
@@ -672,7 +794,16 @@
   "setupChoiceOtherSub": "Et gjestenett eller en ekstra ruter",
   "setupChoiceOtherNote": "Telefonen må nå huben din. Et gjestenett, eller en ekstra ruter med eget Wi-Fi, holder dem adskilt. Koble til Wi-Fi-nettet huben er på, og trykk på Prøv igjen. Eller skriv inn hubens IP-adresse nedenfor, eller prøv et av disse vanlige navnene:",
   "guidedHostYourPhone": "Telefonen din er {ip}, så huben begynner vanligvis med {prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "Bruker du Home Assistant? Verten er adressen du åpner Home Assistant med, port 1883.",
   "demoBannerText": "Du er i demomodus",
   "demoBannerAction": "Koble til hjemmet ditt",
@@ -1077,7 +1208,11 @@
   "wallNightFrom": "Fra",
   "wallNightTo": "til",
   "wallDimMinutes": "{minutes} min",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "Kiosklås",
   "kioskLockSubtitle": "Bare dette hjemmets dashbord og kontrollene deres er tilgjengelige. Hold inne tittelen for å avslutte.",
   "kioskPin": "PIN",
@@ -1355,5 +1490,16 @@
   "remotePairDone": "Fjernstyring er på for {home}",
   "remoteReconnectHub": "Koble til huben igjen",
   "remoteTurnOffConfirm": "Denne telefonen forlater fjernstyringen, og huben kobles fra reléet. En nøkkelsikkerhetskopi lagret fra denne telefonen slutter å virke; andre telefoner beholder tilgangen til du fjerner dem.",
-  "remoteHomeId": "Hjem-ID {id}"
+  "remoteHomeId": "Hjem-ID {id}",
+  "wbClearSearch": "Tøm søk",
+  "wbAutoAdded": "Moduler lagt til: {count}.",
+  "wbAddWholeDevice": "Legg til hele enheten",
+  "discoverWirenBoardHint": "Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller.",
+  "wbAddedModules": "Tillagte moduler",
+  "wbControllerBuiltins": "Kontrollerens innebygde enheter",
+  "discoverWirenBoardNone": "Fant ingen Wiren Board-kontroller. Kontroller at MQTT-brukeren kan lese /devices-metadata, og at driverne har publisert beholdte metadata.",
+  "wbSearch": "Søk etter enheter og kontroller",
+  "wbBuiltinsAvailable": "Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter.",
+  "wbControlCount": "Kontroller: {count}",
+  "wbAutoAddFailed": "Kunne ikke legge til oppdagede enheter. Prøv søket på nytt."
 }

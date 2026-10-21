@@ -392,7 +392,7 @@
   "languageSpanish": "Español",
   "languageFrench": "Français",
   "guidedConnectTitle": "Nastav svůj broker",
-  "guidedConnectIntro": "Otestujeme každý krok připojení a ukážeme tvoje zařízení Zigbee.",
+  "guidedConnectIntro": "Otestujeme připojení MQTT a vyhledáme zařízení na vašem brokeru.",
   "guidedBaseTopic": "Základní téma",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Otestovat a připojit",
@@ -1270,5 +1270,16 @@
   "remotePairDone": "Dálkové ovládání zapnuto pro {home}",
   "remoteReconnectHub": "Znovu připojit hub",
   "remoteTurnOffConfirm": "Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete.",
-  "remoteHomeId": "ID domova {id}"
+  "remoteHomeId": "ID domova {id}",
+  "wbClearSearch": "Vymazat hledání",
+  "wbAutoAdded": "Přidané moduly: {count}.",
+  "wbAddWholeDevice": "Přidat celé zařízení",
+  "discoverWirenBoardHint": "Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky.",
+  "wbAddedModules": "Přidané moduly",
+  "wbControllerBuiltins": "Vestavěná zařízení kontroléru",
+  "discoverWirenBoardNone": "Nebyly nalezeny žádné ovládací prvky Wiren Board. Zkontrolujte přístup MQTT uživatele k metadatům /devices a publikování metadat s příznakem retained.",
+  "wbSearch": "Hledat zařízení a ovládací prvky",
+  "wbBuiltinsAvailable": "Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.",
+  "wbControlCount": "Ovládací prvky: {count}",
+  "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu."
 }

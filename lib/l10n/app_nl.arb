@@ -25,7 +25,11 @@
   "languageFrench": "Français",
   "connectionsTitle": "Huizen",
   "connLoadFailed": "Laden mislukt: {error}",
-  "@connLoadFailed": { "placeholders": { "error": {} } },
+  "@connLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "connAddBroker": "Broker toevoegen",
   "connEmpty": "Nog geen verbindingen.\nTik op „Broker toevoegen” om ZigDash op je MQTT-server te richten.",
   "connNew": "Nieuwe verbinding",
@@ -43,9 +47,19 @@
   "connRescan": "Opnieuw scannen",
   "connBrokerNeedsLogin": "Inloggen vereist",
   "connFindBrokersScanning": "Scannen van {subnet}…",
-  "@connFindBrokersScanning": { "placeholders": { "subnet": {} } },
+  "@connFindBrokersScanning": {
+    "placeholders": {
+      "subnet": {}
+    }
+  },
   "connFindBrokersFound": "{count} broker(s) gevonden — tik om te gebruiken",
-  "@connFindBrokersFound": { "placeholders": { "count": { "type": "int" } } },
+  "@connFindBrokersFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "connFindBrokersNone": "Geen brokers gevonden op je wifi.",
   "connFindBrokersNoIp": "Je wifi-adres kon niet worden gelezen. Zorg dat wifi aanstaat en probeer het opnieuw.",
   "connHelpTitle": "Het IP-adres van je broker vinden",
@@ -74,23 +88,28 @@
   "cancel": "Annuleren",
   "connDeleteTitle": "Verbinding verwijderen?",
   "connDeleteContent": "Verwijdert „{name}”, de dashboards/panelen en het opgeslagen wachtwoord.",
-  "@connDeleteContent": { "placeholders": { "name": {} } },
+  "@connDeleteContent": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "statusDisconnected": "Verbroken",
   "statusConnecting": "Verbinden…",
   "statusConnected": "Verbonden",
   "statusReconnecting": "Opnieuw verbinden…",
   "statusError": "Fout",
   "statusConnectedRemote": "Verbonden · Extern",
-
   "dashPlaceholder": "Open een broker via het tabblad Brokers om de dashboards te bekijken en beheren.",
-
   "dashAddDashboard": "Dashboard toevoegen",
   "dashEditDashboard": "Dashboard bewerken",
   "dashAddPanel": "Paneel toevoegen",
   "dashEmpty": "Nog geen dashboards.\nTik op „Dashboard toevoegen” om er een voor deze broker te maken.",
   "dashLoadFailed": "Fout: {error}",
-  "@dashLoadFailed": { "placeholders": { "error": {} } },
-
+  "@dashLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "panelPickerTitle": "Paneel toevoegen",
   "panelPickerSectionControl": "Bediening",
   "panelPickerSectionState": "Status",
@@ -124,7 +143,6 @@
   "panelPickerProgressSubtitle": "Numerieke balk voor batterij, verbindingskwaliteit, enz.",
   "panelPickerTextLogTitle": "Tekstlogboek",
   "panelPickerTextLogSubtitle": "Doorlopende berichtgeschiedenis op een topic",
-
   "dashExportMenu": "Dashboards exporteren",
   "dashImportMenu": "Dashboards importeren",
   "dashExportTitle": "Dashboards exporteren",
@@ -135,10 +153,19 @@
   "dashImportHint": "Plak hier geëxporteerde JSON",
   "dashImportButton": "Importeren",
   "dashImportSuccess": "{count,plural, =1{1 dashboard geïmporteerd} other{{count} dashboards geïmporteerd}}",
-  "@dashImportSuccess": { "placeholders": { "count": { "type": "int" } } },
+  "@dashImportSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashImportFailed": "Importeren mislukt: {error}",
-  "@dashImportFailed": { "placeholders": { "error": {} } },
-
+  "@dashImportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "dashFormNew": "Nieuw dashboard",
   "dashFormEdit": "Dashboard bewerken",
   "dashFormName": "Naam",
@@ -154,12 +181,18 @@
   "dashDeleteTitle": "Dit dashboard verwijderen?",
   "dashDeleteContent": "Alle panelen eronder worden ook verwijderd.",
   "dashDeleteConfirm": "Verwijderen",
-
   "panelFormNew": "Nieuw {type}",
-  "@panelFormNew": { "placeholders": { "type": {} } },
+  "@panelFormNew": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelFormEdit": "{type} bewerken",
-  "@panelFormEdit": { "placeholders": { "type": {} } },
-
+  "@panelFormEdit": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelTypeButton": "Knop",
   "panelTypeToggle": "Schakelaar",
   "panelTypeSlider": "Schuifregelaar",
@@ -176,10 +209,13 @@
   "panelTypeAutoClose": "Auto-sluiten",
   "panelTypeDevice": "Apparaat",
   "panelTypeReading": "Meetwaarde",
-
   "panelFormName": "Naam",
   "panelFormDashboardPrefix": "Dashboard-voorvoegsel: {prefix}/ (gebruikt tenzij hieronder overschreven)",
-  "@panelFormDashboardPrefix": { "placeholders": { "prefix": {} } },
+  "@panelFormDashboardPrefix": {
+    "placeholders": {
+      "prefix": {}
+    }
+  },
   "panelFormTopicPrefixOverride": "Topic-voorvoegsel overschrijven (optioneel)",
   "panelFormTopicPrefixOverrideHint": "zigbee2mqtt/rolluik",
   "panelFormTopicPrefixOverrideHelper": "Een ander apparaat op dit dashboard gebruiken. Leeg = dashboard-voorvoegsel gebruiken.",
@@ -199,14 +235,12 @@
   "panelFormQos1": "1 — minstens één keer",
   "panelFormQos2": "2 — precies één keer",
   "panelFormRetain": "Retain",
-
   "panelToggleOnPayload": "Aan-payload",
   "panelToggleOffPayload": "Uit-payload",
   "panelToggleJsonPath": "JSON-pad (optioneel)",
   "panelToggleJsonPathHint": "state",
   "panelToggleOnMatch": "Aan-matching",
   "panelToggleOnMatchHelper": "Waarde op het JSON-pad die „aan” betekent (bijv. „ON”)",
-
   "panelSliderMin": "Min",
   "panelSliderMax": "Max",
   "panelSliderStep": "Stap",
@@ -214,9 +248,7 @@
   "panelSliderTemplateHelper": "Gebruik het woord value als placeholder — het wordt vervangen door de schuifwaarde",
   "panelSliderJsonPath": "JSON-pad (optioneel)",
   "panelSliderJsonPathHint": "brightness",
-
   "panelButtonPayload": "Payload",
-
   "panelLedJsonPath": "JSON-pad (optioneel)",
   "panelLedJsonPathHint": "contact",
   "panelLedJsonPathHelper": "bijv. „contact”, „occupancy”, „water_leak”",
@@ -226,12 +258,10 @@
   "panelLedOnLabelHint": "ON",
   "panelLedOffLabel": "Uit-label (optioneel)",
   "panelLedOffLabelHint": "OFF",
-
   "panelNodeOnlinePayload": "Online-payload",
   "panelNodeOnlinePayloadHelper": "Waarde die „online” betekent (Z2M-standaard: „online”)",
   "panelNodeJsonPath": "JSON-pad (optioneel)",
   "panelNodeJsonPathHelper": "Leeg laten voor de Z2M-standaard (ruwe „online”/„offline”-string)",
-
   "panelProgressMin": "Min",
   "panelProgressMax": "Max",
   "panelProgressUnit": "Eenheid",
@@ -239,7 +269,6 @@
   "panelProgressJsonPath": "JSON-pad (optioneel)",
   "panelProgressJsonPathHint": "battery",
   "panelProgressJsonPathHelper": "bijv. „battery”, „linkquality”",
-
   "panelOptionsJsonPath": "JSON-pad (optioneel)",
   "panelOptionsJsonPathHint": "state",
   "panelOptionsJsonPathHelper": "Veld in de ontvangen payload dat de huidige waarde bevat",
@@ -248,24 +277,20 @@
   "panelOptionsPayload": "Payload",
   "panelOptionsMatch": "Matching (huidige waarde)",
   "panelOptionsAdd": "Optie toevoegen",
-
   "panelCoverDescription": "OPEN-/STOP-/DICHT-knoppen plus een rij positievoorinstellingen. Gebruikt de standaard Z2M-rolluik-payloads (state en position).",
   "panelCoverPresets": "Positievoorinstellingen",
   "panelCoverPresetsHint": "0, 25, 50, 100",
   "panelCoverPresetsHelper": "Kommascheiding, percentages (0–100). Leeg = geen voorinstellingenrij.",
   "panelCoverShowSlider": "Positieregelaar tonen",
-
   "panelTextInputHint": "Hint (optioneel)",
   "panelTextInputHintHint": "Typ een waarde…",
   "panelTextInputTemplate": "Sjabloon",
   "panelTextInputTemplateHelper": "Gebruik het woord value als placeholder — het wordt vervangen door de getypte tekst. Standaard wordt de ruwe tekst gepubliceerd.",
   "panelTextInputClearAfterSend": "Leegmaken na verzenden",
-
   "panelTextLogMaxLines": "Max. regels",
   "panelTextLogMaxLinesHelper": "Hoeveel recente berichten worden bewaard",
   "panelTextLogJsonPath": "JSON-pad (optioneel)",
   "panelTextLogJsonPathHelper": "Alleen dit veld loggen in plaats van de hele payload",
-
   "panelScheduleDescription": "Draait op de SMHUB via Node-RED — ook als deze telefoon uitstaat. Het publicatie-topic hierboven is het doel voor rolluikcommando's.",
   "panelScheduleOpenTime": "Opentijd",
   "panelScheduleCloseTime": "Sluitijd",
@@ -273,7 +298,6 @@
   "panelScheduleClosePayload": "Sluit-payload",
   "panelScheduleEnabled": "Ingeschakeld",
   "panelScheduleSavedOffline": "Opgeslagen — niet verbonden; het schema wordt gesynchroniseerd zodra online.",
-
   "panelAutoCloseDescription": "Draait op de SMHUB via Node-RED — ook als deze telefoon uitstaat. Het publicatie-topic hierboven is het commando-doel van het apparaat (bijv. deur).",
   "panelAutoCloseTriggerPath": "Trigger-JSON-pad",
   "panelAutoCloseTriggerPathHelper": "Veld in de status-JSON van het apparaat om te volgen (standaard: state)",
@@ -284,49 +308,59 @@
   "panelAutoCloseDelaySecondsHelper": "1–3600. Tijd wachten nadat het apparaat aangaat voordat de sluit-payload wordt gepubliceerd.",
   "panelAutoCloseEnabled": "Ingeschakeld",
   "panelAutoCloseSavedOffline": "Opgeslagen — niet verbonden; de regel wordt gesynchroniseerd zodra online.",
-
   "panelTileEdit": "Paneel bewerken",
   "panelTileDuplicate": "Paneel dupliceren",
   "panelTileMoveUp": "Naar boven",
   "panelTileMoveDown": "Naar beneden",
   "panelTileDelete": "Paneel verwijderen",
-
   "panelCoverOpen": "Openen",
   "panelCoverStop": "Stoppen",
   "panelCoverClose": "Sluiten",
-
   "panelToggleNoState": "(geen status)",
   "panelToggleError": "fout",
-
   "panelStateOn": "ON",
   "panelStateOff": "OFF",
-
   "panelNodeStatusOnline": "online",
   "panelNodeStatusOffline": "offline",
   "panelNodeStatusUnknown": "onbekend",
   "panelNodeStatusError": "fout",
-
   "panelMultiStateNoOptions": "Geen opties geconfigureerd",
-
   "panelTextInputDefaultHint": "Typ een waarde…",
-
   "panelTextLogWaiting": "Wachten op berichten…",
-
   "panelScheduleOpensAt": "Opent {time}",
-  "@panelScheduleOpensAt": { "placeholders": { "time": {} } },
+  "@panelScheduleOpensAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleClosesAt": "Sluit {time}",
-  "@panelScheduleClosesAt": { "placeholders": { "time": {} } },
+  "@panelScheduleClosesAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleOfflineWarning": "Scheduler offline — draait niet",
   "panelScheduleDisabled": "Uitgeschakeld",
   "panelScheduleNext": "Volgende: {action} om {at}",
-  "@panelScheduleNext": { "placeholders": { "action": {}, "at": {} } },
+  "@panelScheduleNext": {
+    "placeholders": {
+      "action": {},
+      "at": {}
+    }
+  },
   "panelScheduleActionOpen": "openen",
   "panelScheduleActionClose": "sluiten",
   "panelAutoCloseIdle": "Inactief",
   "panelAutoCloseDisabled": "Uitgeschakeld",
   "panelAutoCloseOffline": "Automatisering offline — regel draait niet",
   "panelAutoCloseClosingIn": "Sluit over {seconds}s",
-  "@panelAutoCloseClosingIn": { "placeholders": { "seconds": { "type": "int" } } },
+  "@panelAutoCloseClosingIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "panelAutoCloseClosingNow": "Sluiten…",
   "panelGridEmpty": "Nog geen tegels.\nTik op Tegel toevoegen om je apparaten hier te zetten.",
   "panelsOffline": "Offline — laatste waarden worden getoond",
@@ -336,7 +370,6 @@
   "connectionFailed": "Verbinding mislukt",
   "connectionAutomaticRetry": "Automatisch opnieuw proberen gaat door",
   "connectionReconnectNow": "Nu opnieuw verbinden",
-
   "settingsAbout": "Over",
   "settingsHelp": "Help & Handleiding",
   "settingsVersion": "Versie",
@@ -356,7 +389,6 @@
   "reportProblemEmailPrompt": "Wat gebeurde er, en wat verwachtte je?",
   "settingsBuyCoffee": "Trakteer me op een koffie",
   "settingsBuyCoffeeSubtitle": "Gratis & open source — fooien houden de koffie stromen.",
-
   "a11yBackupMenu": "Back-up & herstel",
   "a11ySelectColor": "Kleur selecteren",
   "a11ySelectIcon": "Pictogram selecteren",
@@ -365,9 +397,7 @@
   "a11yMoreOptions": "Meer opties",
   "a11yRefresh": "Vernieuwen",
   "a11yDeleteConnection": "Verbinding verwijderen",
-
   "controlNotConnected": "Niet verbonden — wijziging niet verzonden",
-
   "discoverFromDevice": "Toevoegen vanaf een apparaat…",
   "discoverFromDeviceSubtitle": "Een Zigbee2MQTT-apparaat automatisch detecteren",
   "discoverTitle": "Toevoegen vanaf apparaat",
@@ -391,19 +421,27 @@
     }
   },
   "previewNoValue": "(geen waarde op dit pad)",
-
   "connErrorTitle": "Verbindingsfout",
   "connErrorUnknown": "Geen foutdetails beschikbaar.",
   "connTestButton": "Verbinding testen",
   "connTestOk": "Verbinding geslaagd",
   "connTestFailed": "Verbinding mislukt: {error}",
-  "@connTestFailed": { "placeholders": { "error": {} } },
-
+  "@connTestFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "devicesTitle": "Apparaten",
   "devicesAddButton": "Apparaat toevoegen",
   "devicesPairingTitle": "Koppelen — druk op de knop van het apparaat",
   "devicesPairingHint": "Zoeken naar nieuwe apparaten… {seconds}s",
-  "@devicesPairingHint": { "placeholders": { "seconds": { "type": "int" } } },
+  "@devicesPairingHint": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "devicesPairingStop": "Stoppen",
   "devicesNone": "Geen apparaten gevonden.",
   "devicesListMissing": "Zigbee2MQTT heeft zijn apparatenlijst niet verstuurd. Dat kan gebeuren nadat de MQTT-broker opnieuw is gestart.",
@@ -414,13 +452,21 @@
   "devicesOnline": "Online",
   "devicesOffline": "Offline",
   "devicesPaired": "Klaar: {name}",
-  "@devicesPaired": { "placeholders": { "name": {} } },
+  "@devicesPaired": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "devicesPairedHint": "Toegevoegd aan je netwerk. Om het op een dashboard te zetten, gebruik je op dat dashboard „Toevoegen vanaf een apparaat”.",
   "scenesTitle": "Scènes",
   "scenesNone": "Nog geen scènes. Zet je apparaten naar wens en leg ze daarna vast als scène.",
   "scenesNewButton": "Nieuwe scène",
   "scenesActivated": "{name} geactiveerd",
-  "@scenesActivated": { "placeholders": { "name": {} } },
+  "@scenesActivated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "scenesActivateOffline": "Niet verbonden — de scène kan niet worden geactiveerd",
   "sceneFormNewTitle": "Nieuwe scène",
   "sceneFormEditTitle": "Scène bewerken",
@@ -433,19 +479,39 @@
   "sceneCtrlBrightness": "Helderheid",
   "sceneCtrlPosition": "Positie",
   "sceneFormSelectedCount": "{count} geselecteerd",
-  "@sceneFormSelectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneFormSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sceneFormNoDevicesSelected": "Selecteer minstens één apparaat om vast te leggen.",
   "sceneFormNothingCaptured": "Er kon niets instelbaars worden vastgelegd van de geselecteerde apparaten.",
   "sceneDeleteTitle": "Scène verwijderen?",
   "sceneDeleteMessage": "„{name}” wordt verwijderd. Apparaten behouden hun huidige status.",
-  "@sceneDeleteMessage": { "placeholders": { "name": {} } },
+  "@sceneDeleteMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneEditAction": "Bewerken",
   "sceneDeleteAction": "Verwijderen",
   "sceneAddToDashboard": "Aan dashboard toevoegen",
   "sceneAddedToDashboard": "Toegevoegd aan {name}",
-  "@sceneAddedToDashboard": { "placeholders": { "name": {} } },
+  "@sceneAddedToDashboard": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneActionsCount": "{count} apparaten",
-  "@sceneActionsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneActionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "scenesAllShutters": "Alle rolluiken",
   "sceneCloseAllShutters": "Alle rolluiken sluiten",
   "sceneOpenAllShutters": "Alle rolluiken openen",
@@ -459,13 +525,8 @@
   "panelPickerSceneSubtitle": "Eén tik activeert een opgeslagen scène",
   "panelSceneChoose": "Scène",
   "panelSceneMissing": "Scène niet gevonden — kies opnieuw",
-  "languageGerman": "Deutsch",
-  "languageDutch": "Nederlands",
-  "languageSwedish": "Svenska",
-  "languageNorwegian": "Norsk",
-  "languageSpanish": "Español",
   "guidedConnectTitle": "Broker instellen",
-  "guidedConnectIntro": "We testen elke stap van de verbinding en tonen uw Zigbee-apparaten.",
+  "guidedConnectIntro": "We testen je MQTT-verbinding en zoeken apparaten op je broker.",
   "guidedBaseTopic": "Basis-topic",
   "guidedBaseTopicHint": "zigbee2mqtt",
   "guidedConnect": "Testen en verbinden",
@@ -490,7 +551,13 @@
   "diagTcpZ2mNoBroker": "Op dit adres draait Zigbee2MQTT, maar de MQTT-broker accepteert geen verbindingen van andere apparaten. Mosquitto luistert alleen op zijn eigen machine tot je de regels \"listener 1883\" en \"allow_anonymous true\" aan mosquitto.conf toevoegt (of een wachtwoord instelt). Herstart Mosquitto en probeer het opnieuw.",
   "diagAuthRejectedHa": "De broker van Home Assistant weigerde deze aanmelding. Gebruik de naam en het wachtwoord van een Home Assistant-gebruiker (Instellingen › Personen › Gebruikers); het liefst een aparte gebruiker alleen voor MQTT.",
   "foundDevices": "{count, plural, =1{1 apparaat gevonden} other{{count} apparaten gevonden}}",
-  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
+  "@foundDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "foundDevicesHint": "Uw Zigbee-apparaten zijn zichtbaar. Ga verder met uw dashboard.",
   "noDevicesTitle": "Verbonden – nog geen apparaten gevonden",
   "noDevicesHint": "ZigDash ziet de broker, maar heeft nog geen Zigbee-apparaten gevonden. U kunt het koppelen starten.",
@@ -503,7 +570,11 @@
   "guidedStuckTelegram": "Vragen in Telegram",
   "guidedStuckHelp": "Tips en e-mail",
   "ladderTriedHint": "{count} adressen geprobeerd",
-  "@ladderTriedHint": { "placeholders": {"count": {}} },
+  "@ladderTriedHint": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "guidedSaveFailed": "De verbinding kon niet worden opgeslagen. Probeer het opnieuw.",
   "setupWelcomeTitle": "Welkom bij ZigDash",
   "setupWelcomeHeadline": "Je Zigbee-huis, op je telefoon",
@@ -617,28 +688,73 @@
   "setupPlatformPi": "Raspberry Pi of Docker",
   "setupPlatformNotSure": "Weet ik niet",
   "setupScanProgress": "{checked} van {total} adressen gecontroleerd",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "Zoeken naar Home Assistant en zijn MQTT-broker…",
   "setupScanHintSmlight": "Zoeken naar je SMLIGHT-hub…",
   "setupScanHintPi": "Zoeken naar een MQTT-broker in je netwerk…",
   "setupHubSeenHa": "Home Assistant gevonden op {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "Zigbee2MQTT gevonden op {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "Je SMLIGHT-hub gevonden op {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "Nog op zoek naar zijn MQTT-broker…",
   "setupNoBrokerHaTitle": "Home Assistant gevonden, maar geen MQTT-broker",
   "setupNoBrokerHaBody": "Home Assistant staat op {host}, maar niets antwoordt op MQTT-poort 1883. Open in Home Assistant Instellingen › Add-ons, installeer en start de Mosquitto broker-add-on en probeer het opnieuw.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "Gebruik je de ingebouwde Zigbee van Home Assistant (ZHA) in plaats van Zigbee2MQTT? ZigDash werkt alleen met Zigbee2MQTT en ziet ZHA-apparaten dus niet. De demo laat zien wat je zou krijgen.",
   "setupVpnHint": "Er staat een VPN aan, en die kan je thuisnetwerk voor de scan verbergen. Ben je thuis, zet de VPN dan uit en tik op Opnieuw proberen.",
   "setupNoBrokerZ2mTitle": "Zigbee2MQTT gevonden, maar zijn broker is niet bereikbaar",
   "setupNoBrokerZ2mBody": "Zigbee2MQTT staat op {host}, maar zijn MQTT-broker accepteert geen verbindingen van je telefoon. Mosquitto 2 luistert alleen op de hub zelf totdat de configuratie 'listener 1883' en 'allow_anonymous true' (of een login) bevat. Herstart hem en probeer het opnieuw.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "SMLIGHT-hub gevonden, maar MQTT staat uit",
   "setupNoBrokerSmlightBody": "Je hub staat op {host}, maar zijn MQTT-broker is niet bereikbaar. Open in de webinterface van de hub Settings › MQTT, zet Allow External aan en controleer of Zigbee2MQTT draait. Probeer het daarna opnieuw.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "Zigbee2MQTT vragen waar zijn broker is…",
   "setupZ2mLocalOnlyTitle": "Je broker accepteert alleen verbindingen van zijn eigen machine",
   "setupZ2mLocalOnlyBody": "Zigbee2MQTT gebruikt {server}, en vanaf je telefoon antwoordt daar niets. Mosquitto 2 doet dit standaard. Voeg deze twee regels toe aan mosquitto.conf, herstart Mosquitto en probeer het opnieuw:",
@@ -648,7 +764,13 @@
   "setupZ2mTokenRequired": "De webpagina van Zigbee2MQTT is beveiligd met een token, dus de app kon niet lezen waar zijn broker is. Typ het broker-adres uit Zigbee2MQTT › Settings › MQTT.",
   "setupZ2mUnreachable": "Zigbee2MQTT gebruikt de broker op {server}, maar die antwoordde je telefoon niet. Controleer of de broker draait en je telefoon op hetzelfde netwerk zit.",
   "setupConnectTo": "Verbinden met {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "Geen Home Assistant gevonden op dit netwerk. Controleer of je telefoon op dezelfde wifi zit als Home Assistant (geen gastnetwerk) en probeer het opnieuw. Ken je het adres, vul het dan hieronder in.",
   "setupNotFoundSmlight": "Geen SMLIGHT-hub gevonden op dit netwerk. Controleer of de hub aanstaat en je telefoon op dezelfde wifi zit, en probeer het opnieuw. Ken je het adres, vul het dan hieronder in.",
   "setupNotFoundPi": "Geen MQTT-broker gevonden in dit netwerk. Controleer of Mosquitto draait en op het netwerk luistert (poort 1883) en of je telefoon op dezelfde wifi zit. Probeer het daarna opnieuw.",
@@ -672,7 +794,16 @@
   "setupChoiceOtherSub": "Een gastnetwerk of een tweede router",
   "setupChoiceOtherNote": "Je telefoon moet je hub kunnen bereiken. Een gastnetwerk, of een tweede router met eigen wifi, houdt ze gescheiden. Verbind met de wifi waarop je hub zit en tik op Opnieuw proberen. Of vul hieronder het IP-adres van de hub in, of probeer een van deze gebruikelijke namen:",
   "guidedHostYourPhone": "Je telefoon is {ip}, dus de hub begint meestal met {prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "Gebruik je Home Assistant? De host is het adres waarmee je Home Assistant opent, poort 1883.",
   "demoBannerText": "Je zit in demomodus",
   "demoBannerAction": "Verbind je huis",
@@ -1077,7 +1208,11 @@
   "wallNightFrom": "Van",
   "wallNightTo": "tot",
   "wallDimMinutes": "{minutes} min",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "Kioskvergrendeling",
   "kioskLockSubtitle": "Alleen de dashboards van dit huis en hun bediening blijven bereikbaar. Houd de titel ingedrukt om te stoppen.",
   "kioskPin": "Pincode",
@@ -1355,5 +1490,16 @@
   "remotePairDone": "Bediening op afstand staat aan voor {home}",
   "remoteReconnectHub": "Hub opnieuw verbinden",
   "remoteTurnOffConfirm": "Deze telefoon stopt met bediening op afstand en je hub verbreekt de verbinding met de relay. Een sleutelback-up van deze telefoon werkt dan niet meer; andere telefoons houden hun toegang tot je ze verwijdert.",
-  "remoteHomeId": "Huis-ID {id}"
+  "remoteHomeId": "Huis-ID {id}",
+  "wbClearSearch": "Zoekopdracht wissen",
+  "wbAutoAdded": "Modules toegevoegd: {count}.",
+  "wbAddWholeDevice": "Volledig apparaat toevoegen",
+  "discoverWirenBoardHint": "Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen.",
+  "wbAddedModules": "Toegevoegde modules",
+  "wbControllerBuiltins": "Ingebouwde controllerapparaten",
+  "discoverWirenBoardNone": "Geen Wiren Board-bedieningselementen gevonden. Controleer of de MQTT-gebruiker /devices-metadata kan lezen en of de stuurprogramma’s behouden metadata publiceren.",
+  "wbSearch": "Apparaten en bedieningselementen zoeken",
+  "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.",
+  "wbControlCount": "Bedieningselementen: {count}",
+  "wbAutoAddFailed": "Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw."
 }

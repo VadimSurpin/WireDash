@@ -13,6 +13,8 @@ import '../../../data/database/tables/panels.dart';
 import '../../devices/device_profile.dart';
 import '../../devices/device_tiles.dart';
 import '../../discovery/models/device_panel_suggestion.dart';
+import '../../discovery/models/wirenboard_device.dart';
+import '../../discovery/wirenboard_dashboard_importer.dart';
 import '../../panels/models/panel_config.dart';
 import '../demo_service.dart' show isDemoConnection;
 import 'recommendation_policy.dart';
@@ -45,6 +47,7 @@ abstract class SetupStore {
     int dashboardIcon,
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected,
+    List<WirenBoardDevice> wirenBoardDevices = const [],
     ConnectionTransport transport,
   });
 }
@@ -93,6 +96,7 @@ class SetupCreator implements SetupStore {
     int dashboardIcon = 0xe318, // Icons.home in Flutter's MaterialIcons font
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    List<WirenBoardDevice> wirenBoardDevices = const [],
     ConnectionTransport transport = ConnectionTransport.mqtt,
   }) async {
     final done = _done;
@@ -123,6 +127,7 @@ class SetupCreator implements SetupStore {
         dashboardIcon: dashboardIcon,
         selected: selected,
         notSelected: notSelected,
+        wirenBoardDevices: wirenBoardDevices,
       );
     } catch (_) {
       // Roll back; createDashboard already removed its own dashboard. The
@@ -151,6 +156,7 @@ extension SetupDashboard on SetupCreator {
     int dashboardIcon = 0xe318, // Icons.home in Flutter's MaterialIcons font
     required List<ReviewRow> selected,
     List<ReviewRow> notSelected = const [],
+    List<WirenBoardDevice> wirenBoardDevices = const [],
   }) async {
     String? dashboardId;
     try {
@@ -161,7 +167,12 @@ extension SetupDashboard on SetupCreator {
         colorSeed: dashboardColor,
         iconCodepoint: dashboardIcon,
       );
-      final count = await _createTiles(dashboardId, base, selected);
+      var count = await _createTiles(dashboardId, base, selected);
+      if (wirenBoardDevices.isNotEmpty) {
+        count += await WirenBoardDashboardImporter(dashboardId: dashboardId,
+          panels: _panels, sections: _sections, l10n: _l10n)
+          .importDevices(wirenBoardDevices);
+      }
       // Devices left out on purpose are not "new": only later pairings
       // raise the Devices dot.
       final registry = _registry;
