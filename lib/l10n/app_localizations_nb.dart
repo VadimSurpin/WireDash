@@ -3731,4 +3731,12 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Prøv demoen først';
+
+  @override
+  String get discoverWirenBoardHint =>
+      'Discover controls from retained /devices MQTT metadata. Select a control to add a tile.';
+
+  @override
+  String get discoverWirenBoardNone =>
+      'No Wiren Board controls found. Check that your MQTT user can read /devices metadata and that the drivers have published retained metadata.';
 }
