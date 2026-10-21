@@ -218,6 +218,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   DevicePickerScreen(
                     connectionId: state.pathParameters['id']!,
                     dashboardId: state.pathParameters['dashboardId']!,
+                    initialWirenBoard: state.uri.queryParameters['source'] == 'wirenboard',
                   ),
                 ),
               ),

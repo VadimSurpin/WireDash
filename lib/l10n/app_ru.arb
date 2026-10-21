@@ -19,7 +19,11 @@
   "languageHebrew": "עברית",
   "connectionsTitle": "Дома",
   "connLoadFailed": "Не удалось загрузить: {error}",
-  "@connLoadFailed": { "placeholders": { "error": {} } },
+  "@connLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "connAddBroker": "Добавить брокер",
   "connEmpty": "Подключений пока нет.\nНажмите «Добавить брокер», чтобы подключить ZigDash к вашему MQTT-серверу.",
   "connNew": "Новое подключение",
@@ -37,9 +41,19 @@
   "connRescan": "Искать снова",
   "connBrokerNeedsLogin": "Нужен вход",
   "connFindBrokersScanning": "Сканирование {subnet}…",
-  "@connFindBrokersScanning": { "placeholders": { "subnet": {} } },
+  "@connFindBrokersScanning": {
+    "placeholders": {
+      "subnet": {}
+    }
+  },
   "connFindBrokersFound": "Найдено брокеров: {count} — нажмите, чтобы выбрать",
-  "@connFindBrokersFound": { "placeholders": { "count": { "type": "int" } } },
+  "@connFindBrokersFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "connFindBrokersNone": "В вашей сети Wi-Fi брокеры не найдены.",
   "connFindBrokersNoIp": "Не удалось определить ваш адрес в Wi-Fi. Убедитесь, что Wi-Fi включён, и повторите попытку.",
   "connHelpTitle": "Как найти IP брокера",
@@ -68,23 +82,28 @@
   "cancel": "Отмена",
   "connDeleteTitle": "Удалить подключение?",
   "connDeleteContent": "Будут удалены «{name}», его дашборды и панели, а также сохранённый пароль.",
-  "@connDeleteContent": { "placeholders": { "name": {} } },
+  "@connDeleteContent": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "statusDisconnected": "Отключено",
   "statusConnecting": "Подключение",
   "statusConnected": "Подключено",
   "statusReconnecting": "Переподключение",
   "statusError": "Ошибка",
   "statusConnectedRemote": "Подключено · Удалённо",
-
   "dashPlaceholder": "Откройте брокер на вкладке «Брокеры», чтобы просматривать его дашборды и управлять ими.",
-
   "dashAddDashboard": "Добавить дашборд",
   "dashEditDashboard": "Изменить дашборд",
   "dashAddPanel": "Добавить панель",
   "dashEmpty": "Дашбордов пока нет.\nНажмите «Добавить дашборд», чтобы создать его для этого брокера.",
   "dashLoadFailed": "Ошибка: {error}",
-  "@dashLoadFailed": { "placeholders": { "error": {} } },
-
+  "@dashLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "panelPickerTitle": "Добавить панель",
   "panelPickerSectionControl": "Управление",
   "panelPickerSectionState": "Состояние",
@@ -118,7 +137,6 @@
   "panelPickerProgressSubtitle": "Числовая шкала для батареи, качества связи и т. п.",
   "panelPickerTextLogTitle": "Текстовый журнал",
   "panelPickerTextLogSubtitle": "Прокручиваемая история сообщений топика",
-
   "dashExportMenu": "Экспорт дашбордов",
   "dashImportMenu": "Импорт дашбордов",
   "dashExportTitle": "Экспорт дашбордов",
@@ -129,10 +147,19 @@
   "dashImportHint": "Вставьте сюда экспортированный JSON",
   "dashImportButton": "Импортировать",
   "dashImportSuccess": "{count,plural, one{Импортирован {count} дашборд} few{Импортировано {count} дашборда} many{Импортировано {count} дашбордов} other{Импортировано {count} дашборда}}",
-  "@dashImportSuccess": { "placeholders": { "count": { "type": "int" } } },
+  "@dashImportSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashImportFailed": "Ошибка импорта: {error}",
-  "@dashImportFailed": { "placeholders": { "error": {} } },
-
+  "@dashImportFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "dashFormNew": "Новый дашборд",
   "dashFormEdit": "Изменить дашборд",
   "dashFormName": "Название",
@@ -148,12 +175,18 @@
   "dashDeleteTitle": "Удалить этот дашборд?",
   "dashDeleteContent": "Все его панели тоже будут удалены.",
   "dashDeleteConfirm": "Удалить",
-
   "panelFormNew": "Новая панель: {type}",
-  "@panelFormNew": { "placeholders": { "type": {} } },
+  "@panelFormNew": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelFormEdit": "Изменить: {type}",
-  "@panelFormEdit": { "placeholders": { "type": {} } },
-
+  "@panelFormEdit": {
+    "placeholders": {
+      "type": {}
+    }
+  },
   "panelTypeButton": "Кнопка",
   "panelTypeToggle": "Переключатель",
   "panelTypeSlider": "Ползунок",
@@ -170,10 +203,13 @@
   "panelTypeAutoClose": "Автозакрытие",
   "panelTypeDevice": "Устройство",
   "panelTypeReading": "Показание",
-
   "panelFormName": "Название",
   "panelFormDashboardPrefix": "Префикс дашборда: {prefix}/ (если не переопределён ниже)",
-  "@panelFormDashboardPrefix": { "placeholders": { "prefix": {} } },
+  "@panelFormDashboardPrefix": {
+    "placeholders": {
+      "prefix": {}
+    }
+  },
   "panelFormTopicPrefixOverride": "Свой префикс топика (необязательно)",
   "panelFormTopicPrefixOverrideHint": "zigbee2mqtt/shutter",
   "panelFormTopicPrefixOverrideHelper": "Другое устройство на этом дашборде. Пусто = префикс дашборда.",
@@ -193,14 +229,12 @@
   "panelFormQos1": "1 — хотя бы один раз",
   "panelFormQos2": "2 — ровно один раз",
   "panelFormRetain": "Retain",
-
   "panelToggleOnPayload": "Payload «вкл»",
   "panelToggleOffPayload": "Payload «выкл»",
   "panelToggleJsonPath": "Путь JSON (необязательно)",
   "panelToggleJsonPathHint": "state",
   "panelToggleOnMatch": "Значение «вкл»",
   "panelToggleOnMatchHelper": "Значение по пути JSON, означающее «вкл» (например, \"ON\")",
-
   "panelSliderMin": "Мин.",
   "panelSliderMax": "Макс.",
   "panelSliderStep": "Шаг",
@@ -208,9 +242,7 @@
   "panelSliderTemplateHelper": "Слово value — подстановка: оно заменяется значением ползунка",
   "panelSliderJsonPath": "Путь JSON (необязательно)",
   "panelSliderJsonPathHint": "brightness",
-
   "panelButtonPayload": "Payload",
-
   "panelLedJsonPath": "Путь JSON (необязательно)",
   "panelLedJsonPathHint": "contact",
   "panelLedJsonPathHelper": "например, \"contact\", \"occupancy\", \"water_leak\"",
@@ -220,12 +252,10 @@
   "panelLedOnLabelHint": "ВКЛ",
   "panelLedOffLabel": "Подпись «выкл» (необязательно)",
   "panelLedOffLabelHint": "ВЫКЛ",
-
   "panelNodeOnlinePayload": "Payload «онлайн»",
   "panelNodeOnlinePayloadHelper": "Значение, означающее «онлайн» (по умолчанию в Z2M: \"online\")",
   "panelNodeJsonPath": "Путь JSON (необязательно)",
   "panelNodeJsonPathHelper": "Оставьте пустым для значения Z2M по умолчанию (строка \"online\"/\"offline\")",
-
   "panelProgressMin": "Мин.",
   "panelProgressMax": "Макс.",
   "panelProgressUnit": "Единица",
@@ -233,7 +263,6 @@
   "panelProgressJsonPath": "Путь JSON (необязательно)",
   "panelProgressJsonPathHint": "battery",
   "panelProgressJsonPathHelper": "например, \"battery\", \"linkquality\"",
-
   "panelOptionsJsonPath": "Путь JSON (необязательно)",
   "panelOptionsJsonPathHint": "state",
   "panelOptionsJsonPathHelper": "Поле полученного payload с текущим значением",
@@ -242,24 +271,20 @@
   "panelOptionsPayload": "Payload",
   "panelOptionsMatch": "Совпадение (текущее значение)",
   "panelOptionsAdd": "Добавить вариант",
-
   "panelCoverDescription": "Кнопки «Открыть / Стоп / Закрыть» и ряд предустановок положения. Использует стандартные payload штор Z2M (state и position).",
   "panelCoverPresets": "Предустановки положения",
   "panelCoverPresetsHint": "0, 25, 50, 100",
   "panelCoverPresetsHelper": "Проценты через запятую (0–100). Пусто = без ряда предустановок.",
   "panelCoverShowSlider": "Показывать ползунок положения",
-
   "panelTextInputHint": "Подсказка (необязательно)",
   "panelTextInputHintHint": "Введите значение…",
   "panelTextInputTemplate": "Шаблон",
   "panelTextInputTemplateHelper": "Слово value — подстановка: оно заменяется введённым текстом. По умолчанию публикуется сам текст.",
   "panelTextInputClearAfterSend": "Очищать после отправки",
-
   "panelTextLogMaxLines": "Макс. строк",
   "panelTextLogMaxLinesHelper": "Сколько последних сообщений хранить",
   "panelTextLogJsonPath": "Путь JSON (необязательно)",
   "panelTextLogJsonPathHelper": "Записывать только это поле, а не весь payload",
-
   "panelScheduleDescription": "Выполняется на SMHUB через Node-RED — срабатывает, даже когда телефон выключен. Топик публикации выше — адрес команд для штор.",
   "panelScheduleOpenTime": "Время открытия",
   "panelScheduleCloseTime": "Время закрытия",
@@ -267,7 +292,6 @@
   "panelScheduleClosePayload": "Payload закрытия",
   "panelScheduleEnabled": "Включено",
   "panelScheduleSavedOffline": "Сохранено — нет подключения; расписание синхронизируется, когда появится связь.",
-
   "panelAutoCloseDescription": "Выполняется на SMHUB через Node-RED — срабатывает, даже когда телефон выключен. Топик публикации выше — адрес команд устройства (например, двери).",
   "panelAutoCloseTriggerPath": "Путь JSON триггера",
   "panelAutoCloseTriggerPathHelper": "Поле JSON состояния устройства для отслеживания (по умолчанию: state)",
@@ -278,49 +302,59 @@
   "panelAutoCloseDelaySecondsHelper": "1-3600. Сколько ждать после включения устройства перед публикацией payload закрытия.",
   "panelAutoCloseEnabled": "Включено",
   "panelAutoCloseSavedOffline": "Сохранено — нет подключения; правило синхронизируется, когда появится связь.",
-
   "panelTileEdit": "Изменить панель",
   "panelTileDuplicate": "Дублировать панель",
   "panelTileMoveUp": "Переместить вверх",
   "panelTileMoveDown": "Переместить вниз",
   "panelTileDelete": "Удалить панель",
-
   "panelCoverOpen": "Открыть",
   "panelCoverStop": "Стоп",
   "panelCoverClose": "Закрыть",
-
   "panelToggleNoState": "(нет состояния)",
   "panelToggleError": "ошибка",
-
   "panelStateOn": "ВКЛ",
   "panelStateOff": "ВЫКЛ",
-
   "panelNodeStatusOnline": "онлайн",
   "panelNodeStatusOffline": "офлайн",
   "panelNodeStatusUnknown": "неизвестно",
   "panelNodeStatusError": "ошибка",
-
   "panelMultiStateNoOptions": "Варианты не настроены",
-
   "panelTextInputDefaultHint": "Введите значение…",
-
   "panelTextLogWaiting": "Ожидание сообщений…",
-
   "panelScheduleOpensAt": "Открытие в {time}",
-  "@panelScheduleOpensAt": { "placeholders": { "time": {} } },
+  "@panelScheduleOpensAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleClosesAt": "Закрытие в {time}",
-  "@panelScheduleClosesAt": { "placeholders": { "time": {} } },
+  "@panelScheduleClosesAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "panelScheduleOfflineWarning": "Планировщик офлайн — не сработает",
   "panelScheduleDisabled": "Отключено",
   "panelScheduleNext": "Далее: {action} в {at}",
-  "@panelScheduleNext": { "placeholders": { "action": {}, "at": {} } },
+  "@panelScheduleNext": {
+    "placeholders": {
+      "action": {},
+      "at": {}
+    }
+  },
   "panelScheduleActionOpen": "открытие",
   "panelScheduleActionClose": "закрытие",
   "panelAutoCloseIdle": "Ожидание",
   "panelAutoCloseDisabled": "Отключено",
   "panelAutoCloseOffline": "Автоматизация офлайн — правило не сработает",
   "panelAutoCloseClosingIn": "Закрытие через {seconds} с",
-  "@panelAutoCloseClosingIn": { "placeholders": { "seconds": { "type": "int" } } },
+  "@panelAutoCloseClosingIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "panelAutoCloseClosingNow": "Закрывается…",
   "panelGridEmpty": "Плиток пока нет.\nНажмите «Добавить плитку», чтобы разместить здесь устройства.",
   "panelsOffline": "Офлайн — показаны последние значения",
@@ -330,7 +364,6 @@
   "connectionFailed": "Не удалось подключиться",
   "connectionAutomaticRetry": "Попытки подключения продолжатся автоматически",
   "connectionReconnectNow": "Подключиться сейчас",
-
   "settingsAbout": "О приложении",
   "settingsHelp": "Помощь и руководство",
   "settingsVersion": "Версия",
@@ -350,7 +383,6 @@
   "reportProblemEmailPrompt": "Что произошло и чего вы ожидали?",
   "settingsBuyCoffee": "Угостить кофе",
   "settingsBuyCoffeeSubtitle": "Бесплатно и с открытым кодом — чаевые помогают развитию.",
-
   "a11yBackupMenu": "Резервная копия",
   "a11ySelectColor": "Выбрать цвет",
   "a11ySelectIcon": "Выбрать значок",
@@ -359,9 +391,7 @@
   "a11yMoreOptions": "Другие параметры",
   "a11yRefresh": "Обновить",
   "a11yDeleteConnection": "Удалить подключение",
-
   "controlNotConnected": "Нет подключения — изменение не отправлено",
-
   "discoverFromDevice": "Добавить из устройства…",
   "discoverFromDeviceSubtitle": "Автоопределение устройства Zigbee2MQTT",
   "discoverTitle": "Добавить из устройства",
@@ -385,19 +415,27 @@
     }
   },
   "previewNoValue": "(нет значения по этому пути)",
-
   "connErrorTitle": "Ошибка подключения",
   "connErrorUnknown": "Подробности ошибки недоступны.",
   "connTestButton": "Проверить подключение",
   "connTestOk": "Подключение успешно",
   "connTestFailed": "Не удалось подключиться: {error}",
-  "@connTestFailed": { "placeholders": { "error": {} } },
-
+  "@connTestFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
   "devicesTitle": "Устройства",
   "devicesAddButton": "Добавить устройство",
   "devicesPairingTitle": "Сопряжение — нажмите кнопку на устройстве",
   "devicesPairingHint": "Поиск новых устройств… {seconds} с",
-  "@devicesPairingHint": { "placeholders": { "seconds": { "type": "int" } } },
+  "@devicesPairingHint": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "devicesPairingStop": "Стоп",
   "devicesNone": "Устройства не найдены.",
   "devicesListMissing": "Zigbee2MQTT не прислал список устройств. Так бывает после перезапуска MQTT-брокера.",
@@ -408,13 +446,21 @@
   "devicesOnline": "Онлайн",
   "devicesOffline": "Офлайн",
   "devicesPaired": "Готово: {name}",
-  "@devicesPaired": { "placeholders": { "name": {} } },
+  "@devicesPaired": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "devicesPairedHint": "Устройство добавлено в сеть. Чтобы разместить его на дашборде, используйте «Добавить из устройства» на этом дашборде.",
   "scenesTitle": "Сцены",
   "scenesNone": "Сцен пока нет. Настройте устройства как нужно и сохраните их состояние как сцену.",
   "scenesNewButton": "Новая сцена",
   "scenesActivated": "Сцена «{name}» включена",
-  "@scenesActivated": { "placeholders": { "name": {} } },
+  "@scenesActivated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "scenesActivateOffline": "Нет подключения — сцену не включить",
   "sceneFormNewTitle": "Новая сцена",
   "sceneFormEditTitle": "Изменить сцену",
@@ -427,19 +473,39 @@
   "sceneCtrlBrightness": "Яркость",
   "sceneCtrlPosition": "Положение",
   "sceneFormSelectedCount": "Выбрано: {count}",
-  "@sceneFormSelectedCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneFormSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sceneFormNoDevicesSelected": "Выберите хотя бы одно устройство.",
   "sceneFormNothingCaptured": "У выбранных устройств не нашлось изменяемых состояний.",
   "sceneDeleteTitle": "Удалить сцену?",
   "sceneDeleteMessage": "Сцена «{name}» будет удалена. Устройства сохранят текущее состояние.",
-  "@sceneDeleteMessage": { "placeholders": { "name": {} } },
+  "@sceneDeleteMessage": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneEditAction": "Изменить",
   "sceneDeleteAction": "Удалить",
   "sceneAddToDashboard": "Добавить на дашборд",
   "sceneAddedToDashboard": "Добавлено на «{name}»",
-  "@sceneAddedToDashboard": { "placeholders": { "name": {} } },
+  "@sceneAddedToDashboard": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "sceneActionsCount": "{count, plural, one{{count} устройство} few{{count} устройства} many{{count} устройств} other{{count} устройства}}",
-  "@sceneActionsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@sceneActionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "scenesAllShutters": "Все рольставни",
   "sceneCloseAllShutters": "Закрыть все рольставни",
   "sceneOpenAllShutters": "Открыть все рольставни",
@@ -485,7 +551,13 @@
   "diagTcpZ2mNoBroker": "По этому адресу работает Zigbee2MQTT, но его MQTT-брокер не принимает подключения с других устройств. Mosquitto слушает только на своей машине, пока вы не добавите в mosquitto.conf строки «listener 1883» и «allow_anonymous true» (или не настроите пароль). Перезапустите Mosquitto и попробуйте снова.",
   "diagAuthRejectedHa": "Брокер Home Assistant отклонил вход. Используйте имя и пароль пользователя Home Assistant (Настройки › Люди › Пользователи); лучше всего отдельного пользователя только для MQTT.",
   "foundDevices": "Найдено устройств: {count}",
-  "@foundDevices": { "placeholders": {"count": {"type": "int"}} },
+  "@foundDevices": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "foundDevicesHint": "Ваши Zigbee-устройства видны. Продолжите, чтобы собрать дашборд.",
   "noDevicesTitle": "Подключено — устройств пока нет",
   "noDevicesHint": "ZigDash видит ваш брокер, но пока не нашёл Zigbee-устройств. Начните сопряжение, чтобы добавить их.",
@@ -498,7 +570,11 @@
   "guidedStuckTelegram": "Спросить в Telegram",
   "guidedStuckHelp": "Советы и почта",
   "ladderTriedHint": "Проверено адресов: {count}",
-  "@ladderTriedHint": { "placeholders": {"count": {}} },
+  "@ladderTriedHint": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "guidedSaveFailed": "Не удалось сохранить подключение. Повторите попытку.",
   "setupWelcomeTitle": "Добро пожаловать в ZigDash",
   "setupWelcomeHeadline": "Ваш дом на Zigbee — в телефоне",
@@ -612,28 +688,73 @@
   "setupPlatformPi": "Raspberry Pi или Docker",
   "setupPlatformNotSure": "Не знаю",
   "setupScanProgress": "Проверено {checked} из {total} адресов",
-  "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},
+  "@setupScanProgress": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "setupScanHintHa": "Ищем Home Assistant и его MQTT-брокер…",
   "setupScanHintSmlight": "Ищем ваш хаб SMLIGHT…",
   "setupScanHintPi": "Ищем MQTT-брокер в вашей сети…",
   "setupHubSeenHa": "Найден Home Assistant по адресу {host}",
-  "@setupHubSeenHa": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenHa": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenZ2m": "Найден Zigbee2MQTT по адресу {host}",
-  "@setupHubSeenZ2m": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenZ2m": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenSmlight": "Найден ваш хаб SMLIGHT по адресу {host}",
-  "@setupHubSeenSmlight": {"placeholders": {"host": {"type": "String"}}},
+  "@setupHubSeenSmlight": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupHubSeenHint": "Всё ещё ищем его MQTT-брокер…",
   "setupNoBrokerHaTitle": "Home Assistant найден, но MQTT-брокера нет",
   "setupNoBrokerHaBody": "Home Assistant находится по адресу {host}, но на MQTT-порту 1883 никто не отвечает. В Home Assistant откройте Настройки › Дополнения, установите и запустите дополнение Mosquitto broker, затем попробуйте снова.",
-  "@setupNoBrokerHaBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerHaBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerHaZha": "Используете встроенный Zigbee в Home Assistant (ZHA) вместо Zigbee2MQTT? ZigDash работает только с Zigbee2MQTT, поэтому не видит устройства ZHA. Демо покажет, что вы получите.",
   "setupVpnHint": "Включён VPN, и он может скрыть домашнюю сеть от поиска. Если вы дома, выключите VPN и нажмите «Повторить».",
   "setupNoBrokerZ2mTitle": "Zigbee2MQTT найден, но его брокер недоступен",
   "setupNoBrokerZ2mBody": "Zigbee2MQTT находится по адресу {host}, но его MQTT-брокер не принимает подключения с вашего телефона. Mosquitto 2 слушает только на самом хабе, пока в его конфигурации нет 'listener 1883' и 'allow_anonymous true' (или логина). Перезапустите его и попробуйте снова.",
-  "@setupNoBrokerZ2mBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerZ2mBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNoBrokerSmlightTitle": "Хаб SMLIGHT найден, но MQTT выключен",
   "setupNoBrokerSmlightBody": "Ваш хаб находится по адресу {host}, но его MQTT-брокер недоступен. В веб-интерфейсе хаба откройте Settings › MQTT, включите Allow External и проверьте, что Zigbee2MQTT запущен. Затем попробуйте снова.",
-  "@setupNoBrokerSmlightBody": {"placeholders": {"host": {"type": "String"}}},
+  "@setupNoBrokerSmlightBody": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupZ2mAsking": "Спрашиваем Zigbee2MQTT, где его брокер…",
   "setupZ2mLocalOnlyTitle": "Ваш брокер принимает подключения только со своей машины",
   "setupZ2mLocalOnlyBody": "Zigbee2MQTT использует {server}, и с вашего телефона там никто не отвечает. Mosquitto 2 так работает по умолчанию. Добавьте эти две строки в mosquitto.conf, перезапустите Mosquitto и попробуйте снова:",
@@ -643,7 +764,13 @@
   "setupZ2mTokenRequired": "Веб-страница Zigbee2MQTT защищена токеном, поэтому приложение не смогло узнать, где её брокер. Введите адрес брокера из настроек Zigbee2MQTT › MQTT.",
   "setupZ2mUnreachable": "Zigbee2MQTT использует брокер по адресу {server}, но он не ответил вашему телефону. Проверьте, что брокер запущен и телефон в той же сети.",
   "setupConnectTo": "Подключиться к {host}",
-  "@setupConnectTo": {"placeholders": {"host": {"type": "String"}}},
+  "@setupConnectTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "setupNotFoundHa": "Home Assistant в этой сети не найден. Проверьте, что телефон в той же сети Wi-Fi, что и Home Assistant (не гостевой), и попробуйте снова. Если знаете адрес, введите его ниже.",
   "setupNotFoundSmlight": "Хаб SMLIGHT в этой сети не найден. Проверьте, что хаб включён и телефон в той же сети Wi-Fi, и попробуйте снова. Если знаете адрес, введите его ниже.",
   "setupNotFoundPi": "MQTT-брокер в этой сети не найден. Проверьте, что Mosquitto запущен и слушает сеть (порт 1883), а телефон подключён к той же сети Wi-Fi. Затем попробуйте снова.",
@@ -667,7 +794,16 @@
   "setupChoiceOtherSub": "Гостевой Wi-Fi или второй роутер",
   "setupChoiceOtherNote": "Телефон должен видеть ваш хаб. Гостевой Wi-Fi или второй роутер со своим Wi-Fi разделяют их. Подключитесь к Wi-Fi, в котором находится хаб, и нажмите Повторить. Или введите ниже IP-адрес хаба, или попробуйте одно из этих обычных имён:",
   "guidedHostYourPhone": "Ваш телефон — {ip}, значит адрес хаба обычно начинается с {prefix}.",
-  "@guidedHostYourPhone": {"placeholders": {"ip": {"type": "String"}, "prefix": {"type": "String"}}},
+  "@guidedHostYourPhone": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "prefix": {
+        "type": "String"
+      }
+    }
+  },
   "guidedHostHa": "Используете Home Assistant? Хост — это адрес, по которому вы открываете Home Assistant, порт 1883.",
   "demoBannerText": "Вы в демо-режиме",
   "demoBannerAction": "Подключить свой дом",
@@ -1072,7 +1208,11 @@
   "wallNightFrom": "С",
   "wallNightTo": "до",
   "wallDimMinutes": "{minutes} мин",
-  "@wallDimMinutes": { "placeholders": { "minutes": {} } },
+  "@wallDimMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
   "kioskLock": "Режим киоска",
   "kioskLockSubtitle": "Доступны только панели этого дома и их элементы управления. Удерживайте заголовок, чтобы выйти.",
   "kioskPin": "PIN-код",
@@ -1350,5 +1490,7 @@
   "remotePairDone": "Удалённое управление включено: {home}",
   "remoteReconnectHub": "Переподключить хаб",
   "remoteTurnOffConfirm": "Этот телефон отключится от удалённого управления, а хаб — от ретранслятора. Копия ключа, сохранённая с этого телефона, перестанет работать; другие телефоны сохранят доступ, пока вы их не удалите.",
-  "remoteHomeId": "ID дома {id}"
+  "remoteHomeId": "ID дома {id}",
+  "discoverWirenBoardHint": "Обнаружение контролов по сохранённым MQTT-метаданным /devices. Выберите контрол, чтобы добавить плитку.",
+  "discoverWirenBoardNone": "Контролы Wiren Board не найдены. Проверьте доступ MQTT-пользователя к метаданным /devices и публикацию метаданных с флагом retained драйверами."
 }
