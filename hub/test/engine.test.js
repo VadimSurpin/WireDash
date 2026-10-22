@@ -379,6 +379,7 @@ async function withRemote() {
   const relay = fakeRelay();
   let opened;
   z.engine.mqttConnect = (url, options) => { opened = { url, options }; return relay; };
+  z.engine.remoteWipeMs = 10;
   await z.engine.start();
   z.mqttIn('zigdash/remote/set', JSON.stringify(remoteCfg));
   relay.emit('connect');
@@ -445,8 +446,30 @@ test('remote: a phone away can switch remote off through the relay, but never se
   assert.equal(z.engine.remote.config.url, 'mqtts://relay.example:8883', 'a new login is refused');
   relay.emit('message', 'homes/h1/c', H.seal(remoteKey, { topic: 'zigdash/remote/set', payload: '{"off":true}', at: Date.now() }));
   assert.equal(z.engine.remote, null);
+  await new Promise((r) => setTimeout(r, 30));
   assert.ok(relay.ended);
   assert.ok(!fs.existsSync(path.join(process.env.ZIGBEE2MQTT_DATA, 'zigdash-remote.json')));
+  await z.engine.stop();
+});
+
+test('remote: turning off deletes the sealed copies on the relay, older ones included', async () => {
+  const { z, relay } = await withRemote();
+  z.z2mPublished('zigbee2mqtt/Kitchen lamp', { state: 'ON' });
+  const lamp = `homes/h1/s/${H.opaqueId(remoteKey, 'zigbee2mqtt/Kitchen lamp')}`;
+  relay.published.length = 0;
+  z.mqttIn('zigdash/remote/set', JSON.stringify({ off: true }));
+  const cleared = () => relay.published.filter((p) => p.payload === '' && p.opts.retain).map((p) => p.topic);
+  assert.deepEqual(cleared().sort(), ['homes/h1/hub', lamp].sort());
+  assert.ok(relay.subscribed.some((s) => s.topic === 'homes/h1/s/#'));
+  assert.ok(!relay.ended, 'stays a moment to hear older copies');
+  // An older copy from before a restart comes back retained: deleted too.
+  relay.emit('message', 'homes/h1/s/0123456789abcdef01234567', Buffer.from('sealed'), { retain: true });
+  relay.emit('message', 'homes/h1/s/0123456789abcdef01234567', Buffer.alloc(0), { retain: true }); // our own delete echoing
+  assert.ok(cleared().includes('homes/h1/s/0123456789abcdef01234567'));
+  assert.equal(cleared().filter((t) => t === 'homes/h1/s/0123456789abcdef01234567').length, 1);
+  await new Promise((r) => setTimeout(r, 30));
+  assert.ok(relay.ended);
+  assert.ok(!z.injected.length, 'nothing reaches Zigbee2MQTT while wiping');
   await z.engine.stop();
 });
 

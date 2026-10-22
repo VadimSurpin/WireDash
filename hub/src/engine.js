@@ -41,7 +41,7 @@
 
 'use strict';
 
-const ENGINE_VERSION = '3.1.2';
+const ENGINE_VERSION = '3.1.3';
 const ROOT = 'zigdash';
 const PREFIX = 'automations';
 const STATE_EVERY_MS = 30000;
@@ -261,6 +261,7 @@ class ZigDashEngine {
     this.clock = () => new Date();
     this.fetch = (...args) => fetch(...args);
     this.mqttConnect = (url, options) => require('mqtt').connect(url, options);
+    this.remoteWipeMs = 3000; // how long "off" listens for older sealed copies to delete
     this.remote = null; // { config, key, client, connected, error }
     this.flowState = {};
     for (const name of Object.keys(FLOWS)) {
@@ -608,8 +609,9 @@ class ZigDashEngine {
   onRemoteSet(message) {
     const fs = require('fs');
     const cfg = message ? JSON.parse(message) : null;
-    this.stopRemote();
-    if (!cfg || cfg.off) {
+    const off = !cfg || cfg.off === true;
+    this.stopRemote({ wipe: off });
+    if (off) {
       try { fs.unlinkSync(this.remoteFilePath()); } catch (_) {}
       this.remote = null;
       this.publishState();
@@ -638,7 +640,7 @@ class ZigDashEngine {
       clean: true,
       will: { topic: `${prefix}/hub`, payload: Buffer.from('offline'), qos: 1, retain: true },
     });
-    const remote = { config: cfg, key, client, prefix, connected: false, error: undefined };
+    const remote = { config: cfg, key, client, prefix, connected: false, error: undefined, sent: new Set() };
     this.remote = remote;
     // An mqtt client without an error listener would crash Zigbee2MQTT.
     const current = () => this.remote === remote;
@@ -669,12 +671,29 @@ class ZigDashEngine {
     this.publishState();
   }
 
-  stopRemote() {
+  /**
+   * Leaves the relay. With [wipe] (remote turned off), first deletes this
+   * Home's sealed copies there: the ones sent since start at once, older ones
+   * as the relay hands them back retained, and the hub's presence flag.
+   */
+  stopRemote({ wipe = false } = {}) {
     const r = this.remote;
     if (!r || !r.client) return;
+    const client = r.client;
     try {
-      if (r.connected) r.client.publish(`${r.prefix}/hub`, 'offline', { qos: 1, retain: true });
-      r.client.end(false);
+      if (wipe && r.connected) {
+        const clear = (t) => client.publish(t, '', { qos: 1, retain: true });
+        r.sent.forEach(clear);
+        clear(`${r.prefix}/hub`);
+        client.on('message', this.guard('remote wipe', (topic, payload, packet) => {
+          if (topic.startsWith(`${r.prefix}/s/`) && payload && payload.length && (!packet || packet.retain)) clear(topic);
+        }));
+        client.subscribe(`${r.prefix}/s/#`, { qos: 1 });
+        setTimeout(this.guard('remote wipe end', () => client.end(false)), this.remoteWipeMs);
+      } else {
+        if (r.connected) client.publish(`${r.prefix}/hub`, 'offline', { qos: 1, retain: true });
+        client.end(false);
+      }
     } catch (_) {}
     r.connected = false;
   }
@@ -686,7 +705,9 @@ class ZigDashEngine {
     const base = this.base();
     if (topic.startsWith(`${base}/bridge/`) || topic.endsWith('/set') || topic.endsWith('/get')) return;
     const body = seal(r.key, { topic, payload: String(payload), at: Date.now() });
-    r.client.publish(`${r.prefix}/s/${opaqueId(r.key, topic)}`, body, { qos: 0, retain: true });
+    const up = `${r.prefix}/s/${opaqueId(r.key, topic)}`;
+    r.sent.add(up);
+    r.client.publish(up, body, { qos: 0, retain: true });
   }
 
   /** A sealed command from a phone away from home. */

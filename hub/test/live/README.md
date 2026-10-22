@@ -12,4 +12,4 @@ plugin, with a simulated phone and a second home's phone. Local only, no TLS.
    client's password in `<dir>/<client>.pw` (the script reads `../broker/`).
 3. In a folder with `mqtt@5` installed: `node relay-live.js <repo>/hub/zigdash-engine.js`.
 
-Verified 2026-10-22 on Mosquitto 2.1.2 and mqtt 5.16.1: all ten checks pass.
+Verified 2026-10-22 on Mosquitto 2.1.2 and mqtt 5.16.1: all eleven checks pass (the wipe on turning off added 2026-10-22).

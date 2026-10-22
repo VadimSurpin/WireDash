@@ -70,7 +70,21 @@ const check = (name, ok) => { results.push(`${ok ? 'PASS' : 'FAIL'} ${name}`); }
   await engine.stop();
   await wait(600);
   check('hub presence turns offline when the Engine stops', got.filter((m) => m.t === 'homes/h1/hub').at(-1)?.p.toString() === 'offline');
+  // Remote turned off after a restart (nothing remembered as sent): every
+  // sealed copy and the presence flag are deleted from the relay.
+  await engine.start();
+  await wait(800);
+  listeners.mqtt.forEach((cb) => cb({ topic: 'zigdash/remote/set', message: '{"off":true}' }));
+  await wait(engine.remoteWipeMs + 800);
+  const fresh = mqtt.connect('mqtt://127.0.0.1:18883', { username: 'phone-h1', password: pw('phone-h1'), protocolVersion: 5, clientId: 'phone-h1-c' });
+  const left = [];
+  fresh.on('message', (t, p) => { if (p.length) left.push(t); });
+  await new Promise((r) => fresh.on('connect', r));
+  await fresh.subscribeAsync(['homes/h1/s/#', 'homes/h1/hub']);
+  await wait(500);
+  check('turning remote off leaves nothing of the home on the relay', left.length === 0);
+  await engine.stop();
   console.log(results.join('\n'));
-  phone.end(); other.end(); late.end();
+  phone.end(); other.end(); late.end(); fresh.end();
   setTimeout(() => process.exit(results.some((r) => r.startsWith('FAIL')) ? 1 : 0), 200);
 })().catch((e) => { console.log('ERROR', e); process.exit(1); });
