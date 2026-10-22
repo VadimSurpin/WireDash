@@ -304,6 +304,5 @@ new effective date.
 ## Contact
 
 The controller for the relay is the developer, Gilad Tamamski, Israel.
-EU representative (Art. 27 GDPR): [NAME AND ADDRESS, ONCE APPOINTED].
 
 Questions about this policy: **giladtamam1@gmail.com**
