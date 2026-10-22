@@ -15,6 +15,7 @@
 //   conditions: [{type:'hours', from:'HH:MM', to:'HH:MM'} | {type:'device', ieee, property, equals}]
 //   action:     {type:'device', commands:[{ieee, payload}], offAfter:minutes}
 //               {type:'scene',  commands:[{ieee, payload}], offAfter:minutes, scene:name}
+//   a command is {ieee, payload}, or {topic, payload} for a /set topic under the base topic
 //   (the app resolves a Scene into its commands when the rule is saved)
 //
 // Safety: Zigbee2MQTT has no crash guard, so every callback and timer here is wrapped.
@@ -251,6 +252,17 @@ class ZigDashEngine {
 
   publishRecent() { this.publish('recent', JSON.stringify(this.recent), true); }
 
+  /** Sends one rule command: to a device by IEEE address, or to a raw /set topic under this base. */
+  send(c) {
+    if (c.ieee) return this.command(c.ieee, c.payload);
+    const base = this.base();
+    if (typeof c.topic === 'string' && c.topic.startsWith(`${base}/`) && c.topic.endsWith('/set')) {
+      this.mqtt.onMessage(c.topic, Buffer.from(JSON.stringify(c.payload || {})));
+      return true;
+    }
+    return false;
+  }
+
   /** Sends [payload] to the device with [ieee] the way an incoming /set would arrive. */
   command(ieee, payload) {
     const entity = this.zigbee.resolveEntity(ieee);
@@ -356,15 +368,15 @@ class ZigDashEngine {
 
   run(id, rule) {
     if (!this.conditionsHold(rule)) return;
-    const sent = rule.action.commands.filter((c) => this.command(c.ieee, c.payload)).length;
+    const sent = rule.action.commands.filter((c) => this.send(c)).length;
     const minutes = rule.action.offAfter || 0;
     if (minutes > 0) {
-      const offs = rule.action.commands.map((c) => ({ ieee: c.ieee, payload: offPayload(c.payload) })).filter((c) => c.payload);
+      const offs = rule.action.commands.map((c) => ({ ieee: c.ieee, topic: c.topic, payload: offPayload(c.payload) })).filter((c) => c.payload);
       if (offs.length) {
         clearTimeout(this.offTimers.get(id));
         this.offTimers.set(id, setTimeout(this.guard('off timer', () => {
           this.offTimers.delete(id);
-          offs.forEach((c) => this.command(c.ieee, c.payload));
+          offs.forEach((c) => this.send(c));
         }), minutes * 60000));
       }
     }

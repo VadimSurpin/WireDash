@@ -189,6 +189,23 @@ test('turn off again after N minutes', async (t) => {
   await z.engine.stop();
 });
 
+test('scene commands: by IEEE address, or a raw /set topic under the base only', async () => {
+  const z = fakeZ2m();
+  await z.engine.start();
+  z.rule('s', {
+    trigger: { type: 'device', ieee: '0xbutton', property: 'action', equals: 'single' },
+    action: { type: 'scene', commands: [
+      { ieee: '0xlight', payload: { state: 'ON', brightness: 120 } },
+      { topic: 'zigbee2mqtt/Old name/set', payload: { state: 'OFF' } },
+      { topic: 'elsewhere/thing/set', payload: { state: 'ON' } },
+    ] },
+  });
+  z.device('0xbutton', { action: 'single' });
+  assert.deepEqual(z.injected.map((i) => i.topic), ['zigbee2mqtt/Hallway light/set', 'zigbee2mqtt/Old name/set']);
+  assert.equal(z.last('recent')[0].commands, 2);
+  await z.engine.stop();
+});
+
 test('a disabled or deleted rule does nothing', async () => {
   const z = fakeZ2m();
   await z.engine.start();
