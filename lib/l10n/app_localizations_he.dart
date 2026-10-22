@@ -3769,4 +3769,13 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get wgConnect => 'חיבור דרך WireGuard';
+
+  @override
+  String get wbOpenControls => 'פתיחת פקדים';
+
+  @override
+  String get wbAddSelected => 'הוספת המאפיינים שנבחרו';
+
+  @override
+  String get wbChooseProperties => 'בחרו מאפיינים להוספה כחלונית אחת.';
 }

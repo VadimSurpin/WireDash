@@ -3802,4 +3802,14 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get wgConnect => 'Koble til via WireGuard';
+
+  @override
+  String get wbOpenControls => 'Åpne kontroller';
+
+  @override
+  String get wbAddSelected => 'Legg til valgte egenskaper';
+
+  @override
+  String get wbChooseProperties =>
+      'Velg egenskaper som skal legges til som ett panel.';
 }

@@ -79,6 +79,53 @@ void main() {
   tearDown(() => db.close());
 
   test(
+    'named property panels survive automatic whole-device imports and custom labels are kept',
+    () async {
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      final module = discovery.devices.firstWhere((d) => d.id == 'wb-mr6_10');
+      await importer.addDevice(
+        module,
+        label: 'Kitchen relay',
+        controlIds: ['Relay 1'],
+      );
+      await importer.importDevices(discovery.devices);
+      var saved = await panels.getByDashboard(dashboard);
+      expect(saved, hasLength(3));
+      final selected = saved.firstWhere((p) => p.name == 'Kitchen relay');
+      var config =
+          PanelConfig.decode(selected.type, selected.config)
+              as WirenBoardDeviceConfig;
+      expect(config.controlIds, ['Relay 1']);
+      await importer.addDevice(module, label: 'All kitchen outputs');
+      discovery.apply(
+        '/devices/wb-mr6_10/controls/Relay 2/meta',
+        '{"type":"switch"}',
+      );
+      await importer.importDevices(discovery.devices);
+      saved = await panels.getByDashboard(dashboard);
+      expect(saved, hasLength(3));
+      expect(saved.any((p) => p.name == 'All kitchen outputs'), isTrue);
+      config =
+          PanelConfig.decode(selected.type, selected.config)
+              as WirenBoardDeviceConfig;
+      expect(
+        config
+            .visibleDevice(
+              discovery.devices.firstWhere((d) => d.id == module.id),
+            )
+            .controls
+            .map((c) => c.id),
+        ['Relay 1'],
+      );
+    },
+  );
+
+  test(
     'auto-import excludes built-ins and repeated/concurrent discovery does not duplicate tiles',
     () async {
       final importer = WirenBoardDashboardImporter(

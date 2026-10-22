@@ -3830,4 +3830,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get wgConnect => 'Se connecter via WireGuard';
+
+  @override
+  String get wbOpenControls => 'Ouvrir les commandes';
+
+  @override
+  String get wbAddSelected => 'Ajouter les propriétés sélectionnées';
+
+  @override
+  String get wbChooseProperties =>
+      'Sélectionnez les propriétés à ajouter dans un seul panneau.';
 }

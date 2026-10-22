@@ -1192,5 +1192,8 @@
   "wgShow": "Visa konfiguration",
   "wgImport": "Importera .conf-fil",
   "wgInvalidConfiguration": "Ogiltig WireGuard-konfiguration. Kontrollera konfigurationsfilen och försök igen.",
-  "wgConnect": "Anslut via WireGuard"
+  "wgConnect": "Anslut via WireGuard",
+  "wbOpenControls": "Öppna kontroller",
+  "wbAddSelected": "Lägg till valda egenskaper",
+  "wbChooseProperties": "Välj egenskaper att lägga till som en panel."
 }

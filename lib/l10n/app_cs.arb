@@ -1107,5 +1107,8 @@
   "wgShow": "Zobrazit konfiguraci",
   "wgImport": "Importovat soubor .conf",
   "wgInvalidConfiguration": "Neplatná konfigurace WireGuard. Zkontrolujte konfigurační soubor a zkuste to znovu.",
-  "wgConnect": "Připojit přes WireGuard"
+  "wgConnect": "Připojit přes WireGuard",
+  "wbOpenControls": "Otevřít ovládací prvky",
+  "wbAddSelected": "Přidat vybrané vlastnosti",
+  "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel."
 }

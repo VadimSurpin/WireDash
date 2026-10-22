@@ -3816,4 +3816,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get wgConnect => 'Conectar pelo WireGuard';
+
+  @override
+  String get wbOpenControls => 'Abrir controles';
+
+  @override
+  String get wbAddSelected => 'Adicionar propriedades selecionadas';
+
+  @override
+  String get wbChooseProperties =>
+      'Selecione as propriedades para adicionar como um único painel.';
 }

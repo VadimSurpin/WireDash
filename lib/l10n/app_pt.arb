@@ -1152,5 +1152,8 @@
   "wgShow": "Mostrar configuração",
   "wgImport": "Importar arquivo .conf",
   "wgInvalidConfiguration": "Configuração do WireGuard inválida. Verifique o arquivo de configuração e tente novamente.",
-  "wgConnect": "Conectar pelo WireGuard"
+  "wgConnect": "Conectar pelo WireGuard",
+  "wbOpenControls": "Abrir controles",
+  "wbAddSelected": "Adicionar propriedades selecionadas",
+  "wbChooseProperties": "Selecione as propriedades para adicionar como um único painel."
 }

@@ -56,11 +56,47 @@ const _doorDevice = Z2mDevice(
   rawExposes: _door,
 );
 
+class _RecordingWbImporter implements WirenBoardDashboardImporter {
+  final calls = <({String label, List<String>? ids})>[];
+  @override
+  Future<void> addDevice(
+    WirenBoardDevice device, {
+    required String label,
+    List<String>? controlIds,
+  }) async {
+    calls.add((label: label, ids: controlIds));
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _Dashboards implements DashboardRepo {
+  @override
+  Future<List<Dashboard>> getByConnection(String id) async => [
+    Dashboard(
+      id: 'd1',
+      connectionId: 'c1',
+      name: 'Home',
+      topicPrefix: null,
+      colorSeed: 0,
+      iconCodepoint: 0,
+      locked: false,
+      sortOrder: 0,
+      createdAt: _stamp,
+      updatedAt: _stamp,
+    ),
+  ];
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 Widget _app({
   AvailabilityConfig availability = AvailabilityConfig.unknown,
   ValueChanged<String>? onSelect,
   List<WirenBoardDevice> wbDevices = const [],
   bool emptyZ2m = false,
+  List<Override> overrides = const [],
 }) {
   final rows = deviceHealthFrom(
     [_deskDevice, _hallDevice, _doorDevice],
@@ -75,6 +111,7 @@ Widget _app({
   );
   return ProviderScope(
     overrides: [
+      ...overrides,
       mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
       wirenBoardDevicesProvider.overrideWith(
         (ref, _) => Stream.value(wbDevices),
@@ -157,6 +194,68 @@ Widget _emptyApp({required bool missing}) => ProviderScope(
 
 void main() {
   testWidgets(
+    'tree selection is preserved when collapsed and adding asks for a valid label',
+    (tester) async {
+      final device =
+          (WirenBoardDiscovery()
+                ..apply('/devices/room/meta/name', 'Room sensor')
+                ..apply(
+                  '/devices/room/controls/Temperature/meta',
+                  '{"type":"temperature","readonly":true}',
+                )
+                ..apply(
+                  '/devices/room/controls/Humidity/meta',
+                  '{"type":"rel_humidity","readonly":true}',
+                ))
+              .devices
+              .single;
+      final importer = _RecordingWbImporter();
+      await tester.pumpWidget(
+        _app(
+          wbDevices: [device],
+          emptyZ2m: true,
+          overrides: [
+            dashboardRepoProvider.overrideWithValue(_Dashboards()),
+            wirenBoardDashboardImporterProvider.overrideWith(
+              (ref, _) => importer,
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(CheckboxListTile), findsNothing);
+      await tester.tap(find.text('Room sensor'));
+      await tester.pumpAndSettle();
+      final temperature = find.byKey(
+        const ValueKey('wb-property:room/Temperature'),
+      );
+      await tester.tap(temperature);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Room sensor'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CheckboxListTile), findsNothing);
+      await tester.tap(find.text('Room sensor'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<CheckboxListTile>(temperature).value, isTrue);
+      await tester.tap(find.byTooltip('Add selected properties'));
+      await tester.pumpAndSettle();
+      final label = find.widgetWithText(TextFormField, 'Name');
+      await tester.enterText(label, '');
+      await tester.tap(find.text('Add'));
+      await tester.pumpAndSettle();
+      expect(find.text('Required'), findsOneWidget);
+      expect(importer.calls, isEmpty);
+      await tester.enterText(label, 'Hall weather');
+      await tester.tap(find.text('Add'));
+      await tester.pumpAndSettle();
+      expect(importer.calls, hasLength(1));
+      expect(importer.calls.single.label, 'Hall weather');
+      expect(importer.calls.single.ids, ['Temperature']);
+      expect(find.byType(BottomSheet), findsNothing);
+    },
+  );
+
+  testWidgets(
     'All devices shows WB modules and built-ins while the Z2M list is missing',
     (tester) async {
       final devices =
@@ -181,6 +280,10 @@ void main() {
       await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
       expect(find.text('Relay 1'), findsOneWidget);
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.byType(CheckboxListTile), findsOneWidget);
+      await tester.tap(find.byTooltip('Open controls').first);
+      await tester.pumpAndSettle();
       expect(find.byType(BottomSheet), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();

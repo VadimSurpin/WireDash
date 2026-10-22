@@ -1187,5 +1187,8 @@
   "wgShow": "Показать конфигурацию",
   "wgImport": "Импортировать файл .conf",
   "wgInvalidConfiguration": "Некорректная конфигурация WireGuard. Проверьте файл конфигурации и попробуйте снова.",
-  "wgConnect": "Подключиться через WireGuard"
+  "wgConnect": "Подключиться через WireGuard",
+  "wbOpenControls": "Открыть управление",
+  "wbAddSelected": "Добавить выбранные свойства",
+  "wbChooseProperties": "Выберите свойства для добавления одной панелью."
 }

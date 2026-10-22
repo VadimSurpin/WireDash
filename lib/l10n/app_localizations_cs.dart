@@ -3812,4 +3812,14 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wgConnect => 'Připojit přes WireGuard';
+
+  @override
+  String get wbOpenControls => 'Otevřít ovládací prvky';
+
+  @override
+  String get wbAddSelected => 'Přidat vybrané vlastnosti';
+
+  @override
+  String get wbChooseProperties =>
+      'Vyberte vlastnosti, které chcete přidat jako jeden panel.';
 }

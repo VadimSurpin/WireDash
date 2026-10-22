@@ -3818,4 +3818,14 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get wgConnect => 'Verbinden via WireGuard';
+
+  @override
+  String get wbOpenControls => 'Bediening openen';
+
+  @override
+  String get wbAddSelected => 'Geselecteerde eigenschappen toevoegen';
+
+  @override
+  String get wbChooseProperties =>
+      'Selecteer eigenschappen om als één paneel toe te voegen.';
 }

@@ -1192,5 +1192,8 @@
   "wgShow": "Configuratie tonen",
   "wgImport": ".conf-bestand importeren",
   "wgInvalidConfiguration": "Ongeldige WireGuard-configuratie. Controleer het configuratiebestand en probeer het opnieuw.",
-  "wgConnect": "Verbinden via WireGuard"
+  "wgConnect": "Verbinden via WireGuard",
+  "wbOpenControls": "Bediening openen",
+  "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
+  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen."
 }

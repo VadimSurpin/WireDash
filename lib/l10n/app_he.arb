@@ -1261,5 +1261,8 @@
   "wgShow": "הצגת התצורה",
   "wgImport": "ייבוא קובץ ‎.conf",
   "wgInvalidConfiguration": "תצורת WireGuard אינה תקינה. יש לבדוק את קובץ התצורה ולנסות שוב.",
-  "wgConnect": "חיבור דרך WireGuard"
+  "wgConnect": "חיבור דרך WireGuard",
+  "wbOpenControls": "פתיחת פקדים",
+  "wbAddSelected": "הוספת המאפיינים שנבחרו",
+  "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת."
 }

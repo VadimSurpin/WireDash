@@ -3810,4 +3810,14 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get wgConnect => 'Połącz przez WireGuard';
+
+  @override
+  String get wbOpenControls => 'Otwórz elementy sterujące';
+
+  @override
+  String get wbAddSelected => 'Dodaj wybrane właściwości';
+
+  @override
+  String get wbChooseProperties =>
+      'Wybierz właściwości do dodania jako jeden panel.';
 }
