@@ -4,10 +4,16 @@
 # Mosquitto for hubs on 8883. See relay/README.md before running anything.
 name: zigdash-relay
 
+# Logs hold errors only; Docker keeps at most 3 x 5 MB per container.
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "5m", max-file: "3" }
+
 services:
   mosquitto:
     image: eclipse-mosquitto:2.1.2-alpine
     restart: unless-stopped
+    logging: *logging
     ports:
       - "8883:8883"          # hubs: MQTT over TLS
     volumes:
@@ -19,6 +25,7 @@ services:
   verifier:
     build: ../verifier
     restart: unless-stopped
+    logging: *logging
     environment:
       PORT: "8787"
       DB: /data/verifier.db
