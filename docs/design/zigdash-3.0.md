@@ -119,6 +119,15 @@ The Engine, Automations, Alerts and History on the Engine do not need any of thi
 - **3.0**: the Engine (install, consent, paused, crash safety, updates), Automations with the three-free ceiling, Alerts and History moved off Node-RED.
 - **3.1**: remote control through the relay and the server engine, after ticket 11.
 
+## Build phases for 3.0
+
+Spike passed 2026-10-22 on Zigbee2MQTT 2.8.0 (branch `spike/z2m-extension`, `spike/z2m-extension/RESULT.md`): save over the frontend WebSocket with no restart, `require('mqtt')` and `crypto` available, a rule fired, a guarded timer error kept Zigbee2MQTT online, the extension survived a restart, remove was clean. The frontend WebSocket path needs no MQTT login.
+
+1. **Engine core**: the extension (`hub/zigdash-engine.js`, CommonJS, guarded, self-disable after three crashes an hour, clears its retained state on `stop()`), the rules contract (section 3), sun formula, Node tests that run the extension against a fake Zigbee2MQTT. App side: install over the frontend WebSocket or MQTT, version and `enable_external_js` check, consent flow, `state` watcher with Automations paused, silent update.
+2. **Automations UI**: list, editor, Recent runs, three-free ceiling and Pro sheet, town picker with the offline city table.
+3. **Alerts and Recorder on the Engine**: same topics, Node-RED handover card, push from the extension, tablet recorder deferral; Node-RED flows no longer offered.
+4. **Release**: privacy clause (the Engine runs on the user's hub; nothing new leaves it), Pro screen lines, 13 locales, store notes, analytics events below.
+
 ## Analytics to add (ADR 0006 buckets, nothing personal)
 
 `engine_setup` with result (installed, gated_consented, gated_refused, too_old, failed) and Zigbee2MQTT minor version; `automation_saved` with trigger kind, condition count bucket and action kind; `engine_paused` with reason (silent, stopped_self). At the Oct 27 review, start recording Zigbee2MQTT version and `enable_external_js` from `bridge/info` to size the gated share.
