@@ -561,6 +561,8 @@
   "@setupReviewSubtitle": { "placeholders": {"count": {"type": "int"}} },
   "setupCreateWithCount": "Create dashboard with {count}",
   "@setupCreateWithCount": { "placeholders": {"count": {}} },
+  "setupReviewNoneSelected": "Nothing is ticked yet. Tick the devices you want on the dashboard, or create it empty and add tiles later.",
+  "setupCreateEmpty": "Create an empty dashboard",
   "setupGroupOther": "Other devices",
   "setupGroupUnsupported": "Unsupported devices",
   "setupCreatingTitle": "Creating your dashboard…",

@@ -556,6 +556,8 @@
   "setupVerifyingTitle": "Sjekker tilkoblingen…",
   "setupReviewTitle": "Enhetene dine",
   "setupReviewSubtitle": "{count, plural, =1{1 enhet funnet.} other{{count} enheter funnet.}} Velg hva som kommer på det første dashbordet ditt.",
+  "setupReviewNoneSelected": "Ingenting er valgt ennå. Velg enhetene du vil ha på dashbordet, eller lag det tomt og legg til fliser senere.",
+  "setupCreateEmpty": "Lag et tomt dashbord",
   "setupCreateWithCount": "Lag dashbord med {count}",
   "setupGroupOther": "Andre enheter",
   "setupGroupUnsupported": "Enheter som ikke støttes",

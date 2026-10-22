@@ -3012,6 +3012,18 @@ abstract class AppLocalizations {
   /// **'Create dashboard with {count}'**
   String setupCreateWithCount(Object count);
 
+  /// No description provided for @setupReviewNoneSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is ticked yet. Tick the devices you want on the dashboard, or create it empty and add tiles later.'**
+  String get setupReviewNoneSelected;
+
+  /// No description provided for @setupCreateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an empty dashboard'**
+  String get setupCreateEmpty;
+
   /// No description provided for @setupGroupOther.
   ///
   /// In en, this message translates to:

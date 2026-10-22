@@ -481,6 +481,8 @@
   "setupVerifyingTitle": "Kontroluji připojení…",
   "setupReviewTitle": "Tvoje zařízení",
   "setupReviewSubtitle": "{count, plural, =1{Nalezeno 1 zařízení.} few{Nalezena {count} zařízení.} other{Nalezeno {count} zařízení.}} Vyber, co bude na tvé první nástěnce.",
+  "setupReviewNoneSelected": "Zatím není nic zaškrtnuto. Zaškrtněte zařízení, která chcete na nástěnce, nebo ji vytvořte prázdnou a dlaždice přidejte později.",
+  "setupCreateEmpty": "Vytvořit prázdnou nástěnku",
   "setupCreateWithCount": "Vytvořit nástěnku ({count})",
   "setupGroupOther": "Další zařízení",
   "setupGroupUnsupported": "Nepodporovaná zařízení",

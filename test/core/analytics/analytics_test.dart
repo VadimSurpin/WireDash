@@ -211,6 +211,22 @@ void main() {
       });
     });
 
+    // 2.10.2: the review's preselection, and leaving it without a dashboard.
+    test('setup_step review carries how many were ticked', () {
+      expect(
+        const SetupStep(SetupStepKind.review, devices: 3, selected: 0).props,
+        {'step': 'review', 'devices': '1-5', 'selected': '0'},
+      );
+      expect(
+        const SetupStep(
+          SetupStepKind.reviewLeft,
+          devices: 3,
+          selected: 2,
+        ).props,
+        {'step': 'review_left', 'devices': '1-5', 'selected': '1-5'},
+      );
+    });
+
     // 2.8: the import from Home Assistant, counts only.
     test('ha_import: the sign-in, by method and outcome', () {
       expect(

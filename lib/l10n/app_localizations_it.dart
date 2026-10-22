@@ -1654,6 +1654,13 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Non è ancora selezionato nulla. Seleziona i dispositivi che vuoi nella dashboard, oppure creala vuota e aggiungi i riquadri più tardi.';
+
+  @override
+  String get setupCreateEmpty => 'Crea una dashboard vuota';
+
+  @override
   String get setupGroupOther => 'Altri dispositivi';
 
   @override

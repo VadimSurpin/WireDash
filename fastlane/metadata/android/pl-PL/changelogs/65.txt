@@ -1,0 +1,1 @@
+ZigDash 2.10.2: gdy konfiguracja znajdzie urządzenia, ale żadnego nie zaznaczy z góry, mówi o tym i pozwala utworzyć pusty dashboard i dodać kafelki później, zamiast przycisku, który pozostaje szary.

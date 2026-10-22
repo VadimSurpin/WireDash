@@ -1653,6 +1653,13 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Zatím není nic zaškrtnuto. Zaškrtněte zařízení, která chcete na nástěnce, nebo ji vytvořte prázdnou a dlaždice přidejte později.';
+
+  @override
+  String get setupCreateEmpty => 'Vytvořit prázdnou nástěnku';
+
+  @override
   String get setupGroupOther => 'Další zařízení';
 
   @override

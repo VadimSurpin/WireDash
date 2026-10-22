@@ -1,0 +1,1 @@
+ZigDash 2.10.2: quando la configurazione trova dispositivi ma non ne seleziona nessuno in anticipo, lo dice e permette di creare una dashboard vuota e aggiungere i riquadri più tardi, invece di un pulsante che resta grigio.

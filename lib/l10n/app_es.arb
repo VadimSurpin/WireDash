@@ -556,6 +556,8 @@
   "setupVerifyingTitle": "Comprobando la conexión…",
   "setupReviewTitle": "Tus dispositivos",
   "setupReviewSubtitle": "{count, plural, =1{1 dispositivo encontrado.} other{{count} dispositivos encontrados.}} Elige qué va en tu primer panel.",
+  "setupReviewNoneSelected": "Aún no hay nada marcado. Marca los dispositivos que quieras en el panel, o créalo vacío y añade mosaicos más tarde.",
+  "setupCreateEmpty": "Crear un panel vacío",
   "setupCreateWithCount": "Crear panel con {count}",
   "setupGroupOther": "Otros dispositivos",
   "setupGroupUnsupported": "Dispositivos no compatibles",

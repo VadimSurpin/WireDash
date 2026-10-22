@@ -1656,6 +1656,13 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Er is nog niets aangevinkt. Vink de apparaten aan die je op het dashboard wilt, of maak het leeg aan en voeg later tegels toe.';
+
+  @override
+  String get setupCreateEmpty => 'Leeg dashboard maken';
+
+  @override
   String get setupGroupOther => 'Andere apparaten';
 
   @override

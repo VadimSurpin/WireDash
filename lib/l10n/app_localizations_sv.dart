@@ -1648,6 +1648,13 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Inget är markerat ännu. Markera enheterna du vill ha på dashboarden, eller skapa den tom och lägg till brickor senare.';
+
+  @override
+  String get setupCreateEmpty => 'Skapa en tom dashboard';
+
+  @override
   String get setupGroupOther => 'Andra enheter';
 
   @override

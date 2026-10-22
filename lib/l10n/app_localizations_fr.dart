@@ -1663,6 +1663,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Rien n\'est coché pour l\'instant. Cochez les appareils que vous voulez sur le tableau de bord, ou créez-le vide et ajoutez des tuiles plus tard.';
+
+  @override
+  String get setupCreateEmpty => 'Créer un tableau de bord vide';
+
+  @override
   String get setupGroupOther => 'Autres appareils';
 
   @override

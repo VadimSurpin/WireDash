@@ -1655,6 +1655,13 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Nada está marcado ainda. Marque os dispositivos que quer no painel, ou crie-o vazio e adicione blocos depois.';
+
+  @override
+  String get setupCreateEmpty => 'Criar um painel vazio';
+
+  @override
   String get setupGroupOther => 'Outros dispositivos';
 
   @override

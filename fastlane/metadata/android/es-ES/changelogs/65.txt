@@ -1,0 +1,1 @@
+ZigDash 2.10.2: cuando la configuración encuentra dispositivos pero no marca ninguno de antemano, lo dice y permite crear un panel vacío y añadir mosaicos más tarde, en lugar de un botón que se queda gris.

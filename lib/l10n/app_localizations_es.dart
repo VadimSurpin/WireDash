@@ -1656,6 +1656,13 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Aún no hay nada marcado. Marca los dispositivos que quieras en el panel, o créalo vacío y añade mosaicos más tarde.';
+
+  @override
+  String get setupCreateEmpty => 'Crear un panel vacío';
+
+  @override
   String get setupGroupOther => 'Otros dispositivos';
 
   @override

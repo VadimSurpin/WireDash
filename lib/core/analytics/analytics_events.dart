@@ -107,6 +107,11 @@ enum SetupStepKind {
   /// A try to connect through Home Assistant (2.10), with its
   /// [SetupStep.result]: ok, or why not (`HaConnectOutcome`).
   haConnect,
+
+  /// The review was left without creating a dashboard (2.10.2): back, or
+  /// setup started over. Carries [SetupStep.devices] and
+  /// [SetupStep.selected], the state of the list when it was left.
+  reviewLeft,
 }
 
 /// What the user tapped on an empty result with no hub found (2.9.6): no
@@ -160,6 +165,7 @@ class SetupStep extends AnalyticsEvent {
     this.tidied,
     this.noNetwork,
     this.choice,
+    this.selected,
   });
 
   final SetupStepKind step;
@@ -195,6 +201,11 @@ class SetupStep extends AnalyticsEvent {
   /// Devices found, at review and complete.
   final int? devices;
 
+  /// Devices ticked at review (2.10.2): the preselection when the list
+  /// appears, the user's choice when the list is left. A 0 is a review
+  /// whose button offered nothing.
+  final int? selected;
+
   /// The user's answer to where Zigbee2MQTT runs, once given.
   final Enum? platform;
 
@@ -220,6 +231,13 @@ class SetupStep extends AnalyticsEvent {
     if (devices != null)
       'devices': bucket(
         devices!,
+        const [0],
+        ranges: const [(1, 5), (6, 20)],
+        top: '21+',
+      ),
+    if (selected != null)
+      'selected': bucket(
+        selected!,
         const [0],
         ranges: const [(1, 5), (6, 20)],
         top: '21+',

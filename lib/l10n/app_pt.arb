@@ -516,6 +516,8 @@
   "setupVerifyingTitle": "Verificando a conexão…",
   "setupReviewTitle": "Seus dispositivos",
   "setupReviewSubtitle": "{count, plural, =1{1 dispositivo encontrado.} other{{count} dispositivos encontrados.}} Escolha o que vai para o seu primeiro painel.",
+  "setupReviewNoneSelected": "Nada está marcado ainda. Marque os dispositivos que quer no painel, ou crie-o vazio e adicione blocos depois.",
+  "setupCreateEmpty": "Criar um painel vazio",
   "setupCreateWithCount": "Criar painel com {count}",
   "setupGroupOther": "Outros dispositivos",
   "setupGroupUnsupported": "Dispositivos sem suporte",

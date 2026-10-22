@@ -1646,6 +1646,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get setupReviewNoneSelected =>
+      'Nothing is ticked yet. Tick the devices you want on the dashboard, or create it empty and add tiles later.';
+
+  @override
+  String get setupCreateEmpty => 'Create an empty dashboard';
+
+  @override
   String get setupGroupOther => 'Other devices';
 
   @override
