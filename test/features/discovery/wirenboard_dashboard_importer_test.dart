@@ -168,6 +168,63 @@ void main() {
   );
 
   test(
+    'writable nonnumeric controls save raw input tiles and readonly ones reject input',
+    () async {
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      for (final type in ['rgb', 'local_time', 'custom']) {
+        final device =
+            (WirenBoardDiscovery()..apply(
+                  '/devices/config/controls/$type/meta',
+                  '{"type":"$type"}',
+                ))
+                .devices
+                .single;
+        await importer.addControl(
+          device,
+          device.controls.single,
+          label: type,
+          widgetType: PanelType.textInput,
+        );
+        final panel = (await panels.getByDashboard(
+          dashboard,
+        )).singleWhere((p) => p.name == type);
+        expect(panel.type, PanelType.textInput);
+        expect(panel.topicPrefixOverride, '/devices/config/controls/$type');
+        expect(panel.topic, 'on');
+        expect(panel.subscribeTopic, '');
+        expect(panel.retain, isFalse);
+        expect(
+          (PanelConfig.decode(panel.type, panel.config) as TextInputConfig)
+              .template,
+          '{value}',
+        );
+        final readonly =
+            (WirenBoardDiscovery()..apply(
+                  '/devices/config/controls/$type/meta',
+                  '{"type":"$type","readonly":true}',
+                ))
+                .devices
+                .single;
+        await expectLater(
+          importer.addControl(
+            readonly,
+            readonly.controls.single,
+            label: 'Invalid',
+            widgetType: PanelType.textInput,
+          ),
+          throwsArgumentError,
+        );
+      }
+      expect(await panels.getByDashboard(dashboard), hasLength(3));
+    },
+  );
+
+  test(
     'rediscovery moves service and mirrored panels while preserving custom labels, subsets and sections',
     () async {
       final importer = WirenBoardDashboardImporter(

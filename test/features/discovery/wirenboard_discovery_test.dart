@@ -20,15 +20,31 @@ void main() {
         '{"type":"temperature","readonly":true}',
         '{"type":"switch","readonly":true}',
         '{"type":"text"}',
+        '{"type":"rgb"}',
+        '{"type":"local_time"}',
+        '{"type":"custom"}',
+        '{"type":"rgb","readonly":true}',
+        '{"type":"local_time","readonly":true}',
       ]) {
         final device =
             (WirenBoardDiscovery()..apply('$topic/meta', meta)).devices.single;
         final control = device.controls.single;
         final suggestion = suggestWirenBoardPanel(device, control);
         expect(suggestion.widgetChoices.first.type, suggestion.type);
+        if (!control.readOnly) {
+          expect(
+            suggestion.widgetChoices.map((choice) => choice.type),
+            contains(PanelType.textInput),
+            reason: meta,
+          );
+        }
         for (final choice in suggestion.widgetChoices) {
           expect(choice.topicPrefixOverride, topic);
           expect(choice.subscribeTopicSuffix, '');
+          expect(choice.publishTopicSuffix, control.readOnly ? '' : 'on');
+          if (choice.config is TextInputConfig) {
+            expect((choice.config as TextInputConfig).template, '{value}');
+          }
           final config = choice.config!;
           if (control.readOnly) {
             expect(
@@ -174,7 +190,10 @@ void main() {
       '{"type":"range","min":10,"max":300}': PanelType.slider,
       '{"type":"range","min":10,"max":5}': PanelType.textInput,
       '{"type":"text"}': PanelType.textInput,
-      '{"type":"rgb"}': PanelType.textLog,
+      '{"type":"rgb"}': PanelType.textInput,
+      '{"type":"local_time"}': PanelType.textInput,
+      '{"type":"custom"}': PanelType.textInput,
+      '{"type":"rgb","readonly":true}': PanelType.textLog,
     };
     for (final entry in cases.entries) {
       final d = WirenBoardDiscovery()..apply('$topic/meta', entry.key);
