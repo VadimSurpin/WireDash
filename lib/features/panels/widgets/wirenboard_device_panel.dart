@@ -62,8 +62,10 @@ class WirenBoardDevicePanel extends ConsumerWidget {
         ),
       );
       if (payload != null) {
-        values[control.id] = numeric
-            ? num.tryParse(payload.toString()) ?? payload
+        final number = numeric ? num.tryParse(payload.toString()) : null;
+        // WB scalar readings can contain NaN/Infinity, unlike JSON numbers.
+        values[control.id] = number != null && number.isFinite
+            ? number
             : payload;
       }
     }
