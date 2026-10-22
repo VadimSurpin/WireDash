@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:mqtt_client/mqtt_server_client.dart';
 
@@ -8,6 +10,18 @@ import 'ha_address.dart';
 import 'endpoint.dart';
 import 'ha_mqtt_client.dart';
 import 'relay_mqtt_client.dart';
+
+/// Whether something answers TCP at [host]:[port] within [timeout]: used to
+/// notice the home network is back while connected through the relay (3.1).
+Future<bool> probeTcp(String host, int port, {Duration timeout = const Duration(seconds: 2)}) async {
+  try {
+    final socket = await Socket.connect(host, port, timeout: timeout);
+    socket.destroy();
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
 
 mc.MqttClient buildPlatformClient(
   BrokerConfig config,

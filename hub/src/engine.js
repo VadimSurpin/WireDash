@@ -41,7 +41,7 @@
 
 'use strict';
 
-const ENGINE_VERSION = '3.1.1';
+const ENGINE_VERSION = '3.1.2';
 const ROOT = 'zigdash';
 const PREFIX = 'automations';
 const STATE_EVERY_MS = 30000;
@@ -695,6 +695,14 @@ class ZigDashEngine {
     const msg = unseal(r.key, payload);
     if (!msg || typeof msg.at !== 'number' || Math.abs(Date.now() - msg.at) > REMOTE_MAX_AGE_MS) return;
     const base = this.base();
+    // A paired phone away from home may switch remote control off (never on,
+    // never a new login): that is how "Turn off" works from the relay.
+    if (msg.topic === `${ROOT}/remote/set`) {
+      let body = null;
+      try { body = typeof msg.payload === 'string' ? JSON.parse(msg.payload) : msg.payload; } catch (_) {}
+      if (body && body.off === true) this.onRemoteSet(JSON.stringify({ off: true }));
+      return;
+    }
     if (!remoteCommandAllowed(base, msg.topic)) return;
     const body = typeof msg.payload === 'string' ? msg.payload : JSON.stringify(msg.payload ?? '');
     if (msg.topic.startsWith(`${base}/`)) {

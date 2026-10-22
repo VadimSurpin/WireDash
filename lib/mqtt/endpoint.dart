@@ -46,7 +46,9 @@ List<MqttCandidate> endpointCandidates(BrokerConfig config) {
       (
         kind: MqttEndpoint.local,
         host: config.host,
-        timeoutMs: relay.isEmpty ? standard : localProbeTimeoutMs,
+        // The relay is a fallback: at home the broker must win, so it keeps
+        // the full budget (a slow hub broker took more than 3 s).
+        timeoutMs: standard,
       ),
       ...relay,
     ];

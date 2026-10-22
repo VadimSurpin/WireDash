@@ -9,6 +9,7 @@ import '../../data/repositories/connection_repo.dart';
 import '../../features/support/support_log.dart';
 import '../broker_config.dart';
 import '../endpoint.dart';
+import '../client_factory.dart' show probeHome;
 import '../mqtt_manager.dart';
 import '../mqtt_status.dart';
 import '../../remote/remote_home.dart';
@@ -63,6 +64,7 @@ final mqttManagerProvider = FutureProvider.family<MqttManager, String>((
       relay: relay,
     ),
     password: password,
+    homeProbe: relay == null ? null : probeHome,
   );
 
   final registry = ref.watch(mqttManagerRegistryProvider);

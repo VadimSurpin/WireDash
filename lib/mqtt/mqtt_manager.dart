@@ -59,7 +59,11 @@ class MqttManager {
     String? clientIdOverride,
     MqttClientFactory? clientFactory,
     Now? now,
-  }) : _clientIdOverride = clientIdOverride,
+    Future<bool> Function(String host, int port)? homeProbe,
+    Duration homeProbeEvery = const Duration(seconds: 60),
+  }) : _homeProbe = homeProbe,
+       _homeProbeEvery = homeProbeEvery,
+       _clientIdOverride = clientIdOverride,
        _clientId = clientIdOverride ?? _shortClientId(config.id),
        _clientFactory = clientFactory ?? buildMqttClient,
        _now = now ?? DateTime.now;
@@ -96,6 +100,27 @@ class MqttManager {
 
   final BrokerConfig config;
   final String password;
+
+  /// While connected through the ZigDash relay, asks every [_homeProbeEvery]
+  /// whether the broker's own address answers again, and switches back to it
+  /// (3.1): at home the broker wins.
+  final Future<bool> Function(String host, int port)? _homeProbe;
+  final Duration _homeProbeEvery;
+  Timer? _homeProbeTimer;
+
+  void _watchForHome(MqttEndpoint kind) {
+    _homeProbeTimer?.cancel();
+    _homeProbeTimer = null;
+    final probe = _homeProbe;
+    if (kind != MqttEndpoint.relay || probe == null) return;
+    _homeProbeTimer = Timer.periodic(_homeProbeEvery, (_) async {
+      if (_disposed || _endpoint.valueOrNull != MqttEndpoint.relay) return;
+      if (!await probe(config.host, config.port)) return;
+      if (_disposed || _endpoint.valueOrNull != MqttEndpoint.relay) return;
+      _dropDeadConnection();
+      unawaited(ensureConnected());
+    });
+  }
   /// The id of the current connection attempt. Each attempt gets a fresh
   /// random part: an abandoned attempt (see [ensureConnected]) can still
   /// reach the broker a moment later, and with the same id it would take over
@@ -350,6 +375,7 @@ class MqttManager {
       _ackSub?.cancel();
       _ackSub = client.published?.listen((_) => _lastActivity = _now());
       _emitEndpoint(cand.kind);
+      _watchForHome(cand.kind);
       _backoffMs = _initialBackoffMs;
       await _updatesSub?.cancel();
       _updatesSub = client.updates?.listen(
@@ -458,6 +484,8 @@ class MqttManager {
   }
 
   void disconnect() {
+    _homeProbeTimer?.cancel();
+    _homeProbeTimer = null;
     _userInitiatedDisconnect = true;
     _reconnectInProgress = false;
     _reconnectTimer?.cancel();
@@ -471,6 +499,7 @@ class MqttManager {
   }
 
   Future<void> dispose() async {
+    _homeProbeTimer?.cancel();
     _disposed = true;
     _hungTimer?.cancel();
     _ackSub?.cancel();

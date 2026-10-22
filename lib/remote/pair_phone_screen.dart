@@ -22,7 +22,15 @@ class PairPhoneScreen extends ConsumerWidget {
     final login = RemotePairing.fromCode(code);
     final homes = ref.watch(connectionsStreamProvider).valueOrNull;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.remotePairTitle)),
+      appBar: AppBar(
+        // Opened from the camera app, so there may be nothing to go back to.
+        leading: IconButton(
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+          icon: const Icon(Icons.close),
+          onPressed: () => context.canPop() ? context.pop() : context.go(Routes.start),
+        ),
+        title: Text(l10n.remotePairTitle),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

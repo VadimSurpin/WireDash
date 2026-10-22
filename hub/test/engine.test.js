@@ -439,6 +439,17 @@ test('remote: sealed commands reach Zigbee2MQTT; anything else is dropped', asyn
   await z.engine.stop();
 });
 
+test('remote: a phone away can switch remote off through the relay, but never set a login', async () => {
+  const { z, relay } = await withRemote();
+  relay.emit('message', 'homes/h1/c', H.seal(remoteKey, { topic: 'zigdash/remote/set', payload: JSON.stringify({ ...remoteCfg, url: 'mqtts://evil.example:8883' }), at: Date.now() }));
+  assert.equal(z.engine.remote.config.url, 'mqtts://relay.example:8883', 'a new login is refused');
+  relay.emit('message', 'homes/h1/c', H.seal(remoteKey, { topic: 'zigdash/remote/set', payload: '{"off":true}', at: Date.now() }));
+  assert.equal(z.engine.remote, null);
+  assert.ok(relay.ended);
+  assert.ok(!fs.existsSync(path.join(process.env.ZIGBEE2MQTT_DATA, 'zigdash-remote.json')));
+  await z.engine.stop();
+});
+
 test('remote: the saved config reconnects after a restart; off removes it', async () => {
   const { z } = await withRemote();
   await z.engine.stop();
