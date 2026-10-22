@@ -3813,4 +3813,7 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get wbChooseProperties =>
       'Выберите свойства для добавления одной панелью.';
+
+  @override
+  String get wbZ2mDevices => 'Устройства Z2M Wirenboard';
 }

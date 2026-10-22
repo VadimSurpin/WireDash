@@ -8,12 +8,14 @@ import 'dart:ui' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
+import 'package:zigdash/data/database/tables/panels.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/data/repositories/dashboard_repo.dart';
 import 'package:zigdash/data/repositories/panel_repo.dart';
 import 'package:zigdash/data/repositories/section_repo.dart';
 import 'package:zigdash/core/storage/secure_storage.dart';
 import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
+import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/discovery/wirenboard_dashboard_importer.dart';
 import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
 import 'package:zigdash/features/panels/models/panel_config.dart';
@@ -77,6 +79,88 @@ void main() {
       );
   });
   tearDown(() => db.close());
+
+  test(
+    'rediscovery moves service and mirrored panels while preserving custom labels, subsets and sections',
+    () async {
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      final mirrorDiscovery = WirenBoardDiscovery()
+        ..apply('/devices/room_lamp/controls/state/meta', '{"type":"switch"}');
+      final mirror = mirrorDiscovery.devices.single;
+      await importer.importDevices([mirror]);
+      await importer.addDevice(
+        mirror,
+        label: 'Only the light',
+        controlIds: ['state'],
+      );
+      await importer.addDevice(
+        mirror,
+        label: 'My custom group',
+        controlIds: ['state'],
+      );
+      var saved = await panels.getByDashboard(dashboard);
+      final customPanel = saved.firstWhere((p) => p.name == 'My custom group');
+      final customSection = await sections.create(
+        dashboardId: dashboard,
+        name: 'Kitchen',
+        sortOrder: 1,
+      );
+      await panels.setSection(customPanel.id, customSection);
+      final modules = (await sections.getByDashboard(
+        dashboard,
+      )).firstWhere((s) => s.name == 'Added modules');
+      final service =
+          (WirenBoardDiscovery()..apply(
+                '/devices/cloud_status/controls/status/meta',
+                '{"type":"text","readonly":true}',
+              ))
+              .devices
+              .single;
+      final serviceId = await panels.create(
+        dashboardId: dashboard,
+        name: 'My cloud status',
+        type: PanelType.device,
+        topic: '',
+        sectionId: modules.id,
+        config: WirenBoardDeviceConfig(device: service),
+      );
+      final classified = classifyWirenBoardDevices(
+        [mirror, service],
+        const [Z2mDevice(friendlyName: 'room/lamp', type: 'Router')],
+      );
+      expect(await importer.importDevices(classified), 0);
+      expect(await importer.importDevices(classified), 0);
+      saved = await panels.getByDashboard(dashboard);
+      expect(saved, hasLength(4));
+      final sectionList = await sections.getByDashboard(dashboard);
+      final mirrorSection = sectionList.singleWhere(
+        (s) => s.name == 'Wirenboard Z2M devices',
+      );
+      final builtinSection = sectionList.singleWhere(
+        (s) => s.name == 'Controller built-ins',
+      );
+      expect(
+        saved.singleWhere((p) => p.id == serviceId).sectionId,
+        builtinSection.id,
+      );
+      final subset = saved.singleWhere((p) => p.name == 'Only the light');
+      expect(subset.sectionId, mirrorSection.id);
+      final subsetConfig =
+          PanelConfig.decode(subset.type, subset.config)
+              as WirenBoardDeviceConfig;
+      expect(subsetConfig.controlIds, ['state']);
+      expect(subsetConfig.device.isZ2mMirror, isTrue);
+      expect(
+        saved.singleWhere((p) => p.id == customPanel.id).sectionId,
+        customSection,
+      );
+    },
+  );
 
   test(
     'named property panels survive automatic whole-device imports and custom labels are kept',

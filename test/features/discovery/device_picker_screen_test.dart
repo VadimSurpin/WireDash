@@ -1,3 +1,5 @@
+import 'package:zigdash/features/devices/devices_providers.dart'
+    show homeBaseTopicProvider;
 import 'package:zigdash/features/discovery/wirenboard_dashboard_importer.dart';
 import 'dart:async';
 
@@ -40,20 +42,22 @@ final _fixtureDevices = [
 // Helper
 // ---------------------------------------------------------------------------
 
-Widget _wrap({required List<Override> overrides}) => ProviderScope(
-  overrides: [
-    wirenBoardDashboardImporterProvider.overrideWith(
-      (ref, _) => _NoopWbImporter(),
-    ),
-    wirenBoardDashboardIdsProvider.overrideWith((ref, _) => {}),
-    ...overrides,
-  ],
-  child: MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    home: const DevicePickerScreen(connectionId: 'c1', dashboardId: 'd1'),
-  ),
-);
+Widget _wrap({required List<Override> overrides, String? homeBase}) =>
+    ProviderScope(
+      overrides: [
+        homeBaseTopicProvider.overrideWith((ref, _) => homeBase),
+        wirenBoardDashboardImporterProvider.overrideWith(
+          (ref, _) => _NoopWbImporter(),
+        ),
+        wirenBoardDashboardIdsProvider.overrideWith((ref, _) => {}),
+        ...overrides,
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const DevicePickerScreen(connectionId: 'c1', dashboardId: 'd1'),
+      ),
+    );
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -70,6 +74,40 @@ class _NoopWbImporter implements WirenBoardDashboardImporter {
 }
 
 void main() {
+  testWidgets(
+    'WB copies use the home custom native Z2M base for their section',
+    (tester) async {
+      final wb =
+          (WirenBoardDiscovery()..apply(
+                '/devices/room_lamp/controls/state/meta',
+                '{"type":"switch"}',
+              ))
+              .devices;
+      await tester.pumpWidget(
+        _wrap(
+          homeBase: 'home/z2m',
+          overrides: [
+            discoveredDevicesProvider.overrideWith((ref, _) async => []),
+            wirenBoardDevicesProvider.overrideWith(
+              (ref, _) => Stream.value(wb),
+            ),
+            bridgeDevicesStreamProvider.overrideWith((ref, args) {
+              expect(args.base, 'home/z2m');
+              return Stream.value(const [
+                Z2mDevice(friendlyName: 'room/lamp', type: 'Router'),
+              ]);
+            }),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Wiren Board'));
+      await tester.pumpAndSettle();
+      expect(find.text('Wirenboard Z2M devices'), findsOneWidget);
+      expect(find.text('Added modules'), findsNothing);
+    },
+  );
+
   testWidgets('Wiren Board source lists retained controls and live changes', (
     tester,
   ) async {
@@ -82,6 +120,9 @@ void main() {
         overrides: [
           discoveredDevicesProvider.overrideWith(
             (ref, _) async => _fixtureDevices,
+          ),
+          bridgeDevicesStreamProvider.overrideWith(
+            (ref, _) => Stream.value(const []),
           ),
           wirenBoardDevicesProvider.overrideWith((ref, _) => updates.stream),
         ],
@@ -130,6 +171,9 @@ void main() {
         _wrap(
           overrides: [
             discoveredDevicesProvider.overrideWith((ref, _) async => []),
+            bridgeDevicesStreamProvider.overrideWith(
+              (ref, _) => Stream.value(const []),
+            ),
             wirenBoardDevicesProvider.overrideWith((ref, _) => updates.stream),
           ],
         ),
@@ -209,10 +253,14 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            homeBaseTopicProvider.overrideWith((ref, _) => null),
             wirenBoardDashboardImporterProvider.overrideWith(
               (ref, _) => _NoopWbImporter(),
             ),
             wirenBoardDashboardIdsProvider.overrideWith((ref, _) => {}),
+            bridgeDevicesStreamProvider.overrideWith(
+              (ref, _) => Stream.value(const []),
+            ),
             wirenBoardDevicesProvider.overrideWith(
               (ref, _) => Stream.value(devices),
             ),

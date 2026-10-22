@@ -1195,5 +1195,6 @@
   "wgConnect": "Anslut via WireGuard",
   "wbOpenControls": "Öppna kontroller",
   "wbAddSelected": "Lägg till valda egenskaper",
-  "wbChooseProperties": "Välj egenskaper att lägga till som en panel."
+  "wbChooseProperties": "Välj egenskaper att lägga till som en panel.",
+  "wbZ2mDevices": "Wirenboard Z2M-enheter"
 }

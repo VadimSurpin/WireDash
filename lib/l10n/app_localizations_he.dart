@@ -3778,4 +3778,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get wbChooseProperties => 'בחרו מאפיינים להוספה כחלונית אחת.';
+
+  @override
+  String get wbZ2mDevices => 'התקני Z2M של Wirenboard';
 }

@@ -3822,4 +3822,7 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get wbChooseProperties =>
       'Vyberte vlastnosti, které chcete přidat jako jeden panel.';
+
+  @override
+  String get wbZ2mDevices => 'Zařízení Z2M ve Wirenboardu';
 }

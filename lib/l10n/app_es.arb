@@ -1195,5 +1195,6 @@
   "wgConnect": "Conectar mediante WireGuard",
   "wbOpenControls": "Abrir controles",
   "wbAddSelected": "Añadir propiedades seleccionadas",
-  "wbChooseProperties": "Selecciona las propiedades que quieras añadir como un solo panel."
+  "wbChooseProperties": "Selecciona las propiedades que quieras añadir como un solo panel.",
+  "wbZ2mDevices": "Dispositivos Z2M de Wirenboard"
 }

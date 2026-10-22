@@ -1264,5 +1264,6 @@
   "wgConnect": "חיבור דרך WireGuard",
   "wbOpenControls": "פתיחת פקדים",
   "wbAddSelected": "הוספת המאפיינים שנבחרו",
-  "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת."
+  "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת.",
+  "wbZ2mDevices": "התקני Z2M של Wirenboard"
 }

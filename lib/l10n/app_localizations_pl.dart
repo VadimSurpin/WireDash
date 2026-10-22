@@ -3820,4 +3820,7 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get wbChooseProperties =>
       'Wybierz właściwości do dodania jako jeden panel.';
+
+  @override
+  String get wbZ2mDevices => 'Urządzenia Z2M w Wirenboard';
 }
