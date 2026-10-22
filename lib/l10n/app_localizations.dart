@@ -5469,7 +5469,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Alerts are paused: the ZigDash helper on your hub isn\'t reporting'**
+  /// **'Alerts are paused: ZigDash Engine on your hub isn\'t reporting'**
   String get alertsStatusPaused;
 
   /// Alerts screen.
@@ -5487,7 +5487,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. The ZigDash helper on your hub watches the devices; ZigDash sets it up.'**
+  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. ZigDash Engine on your hub watches the devices; ZigDash sets it up.'**
   String get alertsIntro;
 
   /// Alerts screen.
@@ -5541,7 +5541,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Zigbee2MQTT didn\'t accept the ZigDash helper'**
+  /// **'Zigbee2MQTT didn\'t accept ZigDash Engine'**
   String get alertsHubFailed;
 
   /// Alerts screen.
@@ -6219,7 +6219,7 @@ abstract class AppLocalizations {
   /// No description provided for @historySetupBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash has no server, so the ZigDash helper on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
+  /// **'ZigDash has no server, so ZigDash Engine on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
   String get historySetupBody;
 
   /// No description provided for @historySetupAction.
@@ -6363,7 +6363,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyRecordHereHint.
   ///
   /// In en, this message translates to:
-  /// **'Can\'t use the helper on your hub? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
+  /// **'Can\'t use ZigDash Engine on your hub? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
   String get historyRecordHereHint;
 
   /// No description provided for @historyRecordingHere.
@@ -6381,7 +6381,7 @@ abstract class AppLocalizations {
   /// No description provided for @wallRecordHistorySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when the helper on your hub records.'**
+  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when ZigDash Engine on your hub records.'**
   String get wallRecordHistorySubtitle;
 
   /// No description provided for @historyNeedsPassword.
@@ -6393,7 +6393,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyNotConnected.
   ///
   /// In en, this message translates to:
-  /// **'The recorder isn\'t reporting. Open Automations to check the ZigDash helper on your hub.'**
+  /// **'The recorder isn\'t reporting. Open Automations to check ZigDash Engine on your hub.'**
   String get historyNotConnected;
 
   /// No description provided for @historyPersistence.
@@ -6717,7 +6717,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash puts a small helper inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.'**
+  /// **'ZigDash puts ZigDash Engine inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.'**
   String get engineIntroBody;
 
   /// No description provided for @engineIntroNothingByHand.
@@ -6771,7 +6771,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineConsentBody.
   ///
   /// In en, this message translates to:
-  /// **'Your Zigbee2MQTT blocks add-ons like the ZigDash helper, as new installs do. To run automations on your hub, ZigDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.'**
+  /// **'Your Zigbee2MQTT blocks add-ons like ZigDash Engine, as new installs do. To run automations on your hub, ZigDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.'**
   String get engineConsentBody;
 
   /// No description provided for @engineConsentOutage.
@@ -6783,7 +6783,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineConsentOpen.
   ///
   /// In en, this message translates to:
-  /// **'The helper is open source. You can read it on your Zigbee2MQTT page under Extensions.'**
+  /// **'ZigDash Engine is open source. You can read it on your Zigbee2MQTT page under Extensions.'**
   String get engineConsentOpen;
 
   /// No description provided for @engineConsentUndo.
@@ -6825,7 +6825,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineStoppedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Automations paused: the helper stopped itself'**
+  /// **'Automations paused: ZigDash Engine stopped itself'**
   String get engineStoppedTitle;
 
   /// No description provided for @engineStoppedBody.
@@ -6867,13 +6867,13 @@ abstract class AppLocalizations {
   /// No description provided for @engineRulesUnknown.
   ///
   /// In en, this message translates to:
-  /// **'Rules the helper on your hub can\'t run yet: {count}. Update the helper by reinstalling it.'**
+  /// **'Rules ZigDash Engine on your hub can\'t run yet: {count}. Update it by reinstalling.'**
   String engineRulesUnknown(Object count);
 
   /// No description provided for @engineInstallRefused.
   ///
   /// In en, this message translates to:
-  /// **'Zigbee2MQTT refused the helper: {error}'**
+  /// **'Zigbee2MQTT refused ZigDash Engine: {error}'**
   String engineInstallRefused(Object error);
 
   /// No description provided for @engineInstallNoAnswer.
@@ -7413,13 +7413,13 @@ abstract class AppLocalizations {
   /// No description provided for @engineRemoveTitle.
   ///
   /// In en, this message translates to:
-  /// **'Remove the helper from your hub?'**
+  /// **'Remove ZigDash Engine from your hub?'**
   String get engineRemoveTitle;
 
   /// No description provided for @engineRemoveBody.
   ///
   /// In en, this message translates to:
-  /// **'Automations stop running. Your rules stay on the hub, so installing the helper again brings them back.'**
+  /// **'Automations stop running. Your rules stay on the hub, so installing ZigDash Engine again brings them back.'**
   String get engineRemoveBody;
 
   /// No description provided for @autoNoTargets.

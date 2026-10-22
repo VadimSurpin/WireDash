@@ -91,7 +91,7 @@ void main() {
 
   testWidgets('stopped itself offers Start again', (tester) async {
     final link = await _pump(tester, const EngineView(phase: HubEnginePhase.stoppedSelf, hub: _hub));
-    expect(find.text('Automations paused: the helper stopped itself'), findsOneWidget);
+    expect(find.text('Automations paused: ZigDash Engine stopped itself'), findsOneWidget);
     await tester.tap(find.text('Start again'));
     await tester.pumpAndSettle();
     expect(link.published.single.$1, EngineTopics.control);

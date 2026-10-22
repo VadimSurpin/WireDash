@@ -3068,7 +3068,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Alarme pausiert: Der ZigDash-Helfer auf Ihrem Hub meldet sich nicht';
+      'Alarme pausiert: ZigDash Engine auf Ihrem Hub meldet sich nicht';
 
   @override
   String get alertsStatusNotSetUp => 'Nicht eingerichtet';
@@ -3079,7 +3079,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Erhalten Sie eine Benachrichtigung auf diesem Telefon bei Leck, Rauch, geöffneter Tür oder schwacher Batterie, auch wenn ZigDash geschlossen ist. Der ZigDash-Helfer auf Ihrem Hub beobachtet die Geräte; ZigDash richtet ihn ein.';
+      'Erhalten Sie eine Benachrichtigung auf diesem Telefon bei Leck, Rauch, geöffneter Tür oder schwacher Batterie, auch wenn ZigDash geschlossen ist. ZigDash Engine auf Ihrem Hub beobachtet die Geräte; ZigDash richtet es ein.';
 
   @override
   String get alertsSetUpHub => 'Alarme auf dem Hub einrichten';
@@ -3111,7 +3111,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertsHubFailed =>
-      'Zigbee2MQTT hat den ZigDash-Helfer nicht angenommen';
+      'Zigbee2MQTT hat ZigDash Engine nicht angenommen';
 
   @override
   String get alertsRecent => 'Letzte Alarme';
@@ -3484,7 +3484,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash hat keinen Server, also zeichnet der ZigDash-Helfer auf Ihrem Hub die Werte Ihrer Dashboards alle 15 Minuten auf. Er behält 30 Tage, auf Ihrem eigenen Broker.';
+      'ZigDash hat keinen Server, also zeichnet ZigDash Engine auf Ihrem Hub die Werte Ihrer Dashboards alle 15 Minuten auf. Es behält 30 Tage, auf Ihrem eigenen Broker.';
 
   @override
   String get historySetupAction => 'Auf dem Hub einrichten';
@@ -3574,7 +3574,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Helfer auf dem Hub nicht möglich? ZigDash kann auf einem Telefon oder Tablet aufzeichnen, das offen bleibt, etwa einem Wandtablet. Jedes Telefon dieses Zuhauses sieht den Verlauf.';
+      'ZigDash Engine auf dem Hub nicht möglich? ZigDash kann auf einem Telefon oder Tablet aufzeichnen, das offen bleibt, etwa einem Wandtablet. Jedes Telefon dieses Zuhauses sieht den Verlauf.';
 
   @override
   String get historyRecordingHere =>
@@ -3585,7 +3585,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Alle 15 Minuten, solange ZigDash offen ist, für jedes Telefon dieses Zuhauses. Nicht nötig, wenn der Helfer auf Ihrem Hub aufzeichnet.';
+      'Alle 15 Minuten, solange ZigDash offen ist, für jedes Telefon dieses Zuhauses. Nicht nötig, wenn ZigDash Engine auf Ihrem Hub aufzeichnet.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3594,7 +3594,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Die Aufzeichnung meldet sich nicht. Öffnen Sie Automationen, um den ZigDash-Helfer auf Ihrem Hub zu prüfen.';
+      'Die Aufzeichnung meldet sich nicht. Öffnen Sie Automationen, um ZigDash Engine auf Ihrem Hub zu prüfen.';
 
   @override
   String get historyPersistence =>
@@ -3794,7 +3794,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash legt einen kleinen Helfer in Zigbee2MQTT auf Ihrem Hub. Er beobachtet Ihre Geräte und führt Ihre Regeln aus, damit das Licht angeht, wenn die Tür aufgeht, auch bei ausgeschaltetem Telefon und ohne Internet.';
+      'ZigDash legt ZigDash Engine in Zigbee2MQTT auf Ihrem Hub. Es beobachtet Ihre Geräte und führt Ihre Regeln aus, damit das Licht angeht, wenn die Tür aufgeht, auch bei ausgeschaltetem Telefon und ohne Internet.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3828,7 +3828,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Ihr Zigbee2MQTT blockiert Erweiterungen wie den ZigDash-Helfer, wie es neue Installationen tun. Damit Automationen auf dem Hub laufen, würde ZigDash in Zigbee2MQTT „Externes JavaScript erlauben“ einschalten und es neu starten.';
+      'Ihr Zigbee2MQTT blockiert Erweiterungen wie ZigDash Engine, wie es neue Installationen tun. Damit Automationen auf dem Hub laufen, würde ZigDash in Zigbee2MQTT „Externes JavaScript erlauben“ einschalten und es neu starten.';
 
   @override
   String get engineConsentOutage =>
@@ -3836,7 +3836,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'Der Helfer ist Open Source. Sie können ihn auf der Zigbee2MQTT-Seite unter Erweiterungen lesen.';
+      'ZigDash Engine ist Open Source. Sie können es auf der Zigbee2MQTT-Seite unter Erweiterungen lesen.';
 
   @override
   String get engineConsentUndo =>
@@ -3860,7 +3860,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automationen pausiert: Der Helfer hat sich selbst gestoppt';
+      'Automationen pausiert: ZigDash Engine hat sich selbst gestoppt';
 
   @override
   String get engineStoppedBody =>
@@ -3886,12 +3886,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Regeln, die der Helfer auf Ihrem Hub noch nicht ausführen kann: $count. Installieren Sie den Helfer neu, um ihn zu aktualisieren.';
+    return 'Regeln, die ZigDash Engine auf Ihrem Hub noch nicht ausführen kann: $count. Installieren Sie es neu, um es zu aktualisieren.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT hat den Helfer abgelehnt: $error';
+    return 'Zigbee2MQTT hat ZigDash Engine abgelehnt: $error';
   }
 
   @override
@@ -4205,11 +4205,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get engineRemove => 'Vom Hub entfernen';
 
   @override
-  String get engineRemoveTitle => 'Den Helfer vom Hub entfernen?';
+  String get engineRemoveTitle => 'ZigDash Engine vom Hub entfernen?';
 
   @override
   String get engineRemoveBody =>
-      'Automationen laufen nicht mehr. Ihre Regeln bleiben auf dem Hub, eine Neuinstallation bringt sie zurück.';
+      'Automationen laufen nicht mehr. Ihre Regeln bleiben auf dem Hub, eine Neuinstallation von ZigDash Engine bringt sie zurück.';
 
   @override
   String get autoNoTargets =>

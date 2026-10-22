@@ -3053,7 +3053,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Varsler satt på pause: ZigDash-hjelperen på huben melder seg ikke';
+      'Varsler satt på pause: ZigDash Engine på huben melder seg ikke';
 
   @override
   String get alertsStatusNotSetUp => 'Ikke satt opp';
@@ -3063,7 +3063,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Få varsel på denne telefonen ved lekkasje, røyk, åpnet dør eller lavt batteri, selv når ZigDash er lukket. ZigDash-hjelperen på huben følger med på enhetene; ZigDash setter den opp.';
+      'Få varsel på denne telefonen ved lekkasje, røyk, åpnet dør eller lavt batteri, selv når ZigDash er lukket. ZigDash Engine på huben følger med på enhetene; ZigDash setter det opp.';
 
   @override
   String get alertsSetUpHub => 'Sett opp varsler på huben';
@@ -3094,7 +3094,7 @@ class AppLocalizationsNb extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT godtok ikke ZigDash-hjelperen';
+  String get alertsHubFailed => 'Zigbee2MQTT godtok ikke ZigDash Engine';
 
   @override
   String get alertsRecent => 'Siste varsler';
@@ -3465,7 +3465,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash har ingen server, så ZigDash-hjelperen på huben lagrer verdiene fra dashbordene dine hvert 15. minutt. Den beholder 30 dager, på din egen broker.';
+      'ZigDash har ingen server, så ZigDash Engine på huben lagrer verdiene fra dashbordene dine hvert 15. minutt. Det beholder 30 dager, på din egen broker.';
 
   @override
   String get historySetupAction => 'Sett opp på huben';
@@ -3555,7 +3555,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Går det ikke å bruke hjelperen på huben? ZigDash kan lagre på en telefon eller et nettbrett som står åpent, som et veggnettbrett. Alle telefonene i hjemmet ser historikken.';
+      'Går det ikke å bruke ZigDash Engine på huben? ZigDash kan lagre på en telefon eller et nettbrett som står åpent, som et veggnettbrett. Alle telefonene i hjemmet ser historikken.';
 
   @override
   String get historyRecordingHere =>
@@ -3566,7 +3566,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Hvert 15. minutt mens ZigDash er åpent, for alle telefonene i hjemmet. Ikke nødvendig når hjelperen på huben lagrer.';
+      'Hvert 15. minutt mens ZigDash er åpent, for alle telefonene i hjemmet. Ikke nødvendig når ZigDash Engine på huben lagrer.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3575,7 +3575,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Opptaket melder seg ikke. Åpne Automasjoner for å sjekke ZigDash-hjelperen på huben.';
+      'Opptaket melder seg ikke. Åpne Automasjoner for å sjekke ZigDash Engine på huben.';
 
   @override
   String get historyPersistence =>
@@ -3773,7 +3773,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash legger en liten hjelper inn i Zigbee2MQTT på huben din. Den følger med på enhetene og kjører reglene dine, så en lampe tennes når døren åpnes selv med telefonen av og uten internett.';
+      'ZigDash legger ZigDash Engine inn i Zigbee2MQTT på huben din. Det følger med på enhetene og kjører reglene dine, så en lampe tennes når døren åpnes selv med telefonen av og uten internett.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3806,7 +3806,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Zigbee2MQTT blokkerer tillegg som ZigDash-hjelperen, slik nye installasjoner gjør. For å kjøre automasjoner på huben ville ZigDash slå på «Tillat ekstern JavaScript» i Zigbee2MQTT og starte det på nytt.';
+      'Zigbee2MQTT blokkerer tillegg som ZigDash Engine, slik nye installasjoner gjør. For å kjøre automasjoner på huben ville ZigDash slå på «Tillat ekstern JavaScript» i Zigbee2MQTT og starte det på nytt.';
 
   @override
   String get engineConsentOutage =>
@@ -3814,7 +3814,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'Hjelperen er åpen kildekode. Du kan lese den på Zigbee2MQTT-siden under Utvidelser.';
+      'ZigDash Engine er åpen kildekode. Du kan lese det på Zigbee2MQTT-siden under Utvidelser.';
 
   @override
   String get engineConsentUndo =>
@@ -3838,7 +3838,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automasjoner satt på pause: hjelperen stoppet seg selv';
+      'Automasjoner satt på pause: ZigDash Engine stoppet seg selv';
 
   @override
   String get engineStoppedBody =>
@@ -3864,12 +3864,12 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Regler hjelperen på huben ikke kan kjøre ennå: $count. Installer den på nytt for å oppdatere.';
+    return 'Regler ZigDash Engine på huben ikke kan kjøre ennå: $count. Installer det på nytt for å oppdatere.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT avviste hjelperen: $error';
+    return 'Zigbee2MQTT avviste ZigDash Engine: $error';
   }
 
   @override
@@ -4182,11 +4182,11 @@ class AppLocalizationsNb extends AppLocalizations {
   String get engineRemove => 'Fjern fra huben';
 
   @override
-  String get engineRemoveTitle => 'Fjerne hjelperen fra huben?';
+  String get engineRemoveTitle => 'Fjerne ZigDash Engine fra huben?';
 
   @override
   String get engineRemoveBody =>
-      'Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon henter dem tilbake.';
+      'Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon av ZigDash Engine henter dem tilbake.';
 
   @override
   String get autoNoTargets =>

@@ -3053,7 +3053,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Larm pausade: ZigDash-hjälparen på hubben hör inte av sig';
+      'Larm pausade: ZigDash Engine på hubben hör inte av sig';
 
   @override
   String get alertsStatusNotSetUp => 'Inte inställt';
@@ -3063,7 +3063,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Få en avisering på den här telefonen vid läcka, rök, öppnad dörr eller svagt batteri, även när ZigDash är stängt. ZigDash-hjälparen på hubben bevakar enheterna; ZigDash ställer in den.';
+      'Få en avisering på den här telefonen vid läcka, rök, öppnad dörr eller svagt batteri, även när ZigDash är stängt. ZigDash Engine på hubben bevakar enheterna; ZigDash ställer in det.';
 
   @override
   String get alertsSetUpHub => 'Ställ in larm på hubben';
@@ -3094,7 +3094,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT tog inte emot ZigDash-hjälparen';
+  String get alertsHubFailed => 'Zigbee2MQTT tog inte emot ZigDash Engine';
 
   @override
   String get alertsRecent => 'Senaste larmen';
@@ -3466,7 +3466,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash har ingen server, så ZigDash-hjälparen på hubben sparar värdena från dina instrumentpaneler var 15:e minut. Den sparar 30 dagar, på din egen broker.';
+      'ZigDash har ingen server, så ZigDash Engine på hubben sparar värdena från dina instrumentpaneler var 15:e minut. Det sparar 30 dagar, på din egen broker.';
 
   @override
   String get historySetupAction => 'Ställ in på hubben';
@@ -3556,7 +3556,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Går hjälparen inte att använda på hubben? ZigDash kan spara på en telefon eller platta som är öppen, som en väggplatta. Alla telefoner i hemmet ser historiken.';
+      'Går ZigDash Engine inte att använda på hubben? ZigDash kan spara på en telefon eller platta som är öppen, som en väggplatta. Alla telefoner i hemmet ser historiken.';
 
   @override
   String get historyRecordingHere =>
@@ -3567,7 +3567,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Var 15:e minut medan ZigDash är öppet, för alla telefoner i hemmet. Behövs inte när hjälparen på hubben sparar.';
+      'Var 15:e minut medan ZigDash är öppet, för alla telefoner i hemmet. Behövs inte när ZigDash Engine på hubben sparar.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3576,7 +3576,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Inspelningen hör inte av sig. Öppna Automationer för att kontrollera ZigDash-hjälparen på hubben.';
+      'Inspelningen hör inte av sig. Öppna Automationer för att kontrollera ZigDash Engine på hubben.';
 
   @override
   String get historyPersistence =>
@@ -3775,7 +3775,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash lägger en liten hjälpare i Zigbee2MQTT på din hubb. Den bevakar dina enheter och kör dina regler, så att en lampa tänds när dörren öppnas även med telefonen avstängd och utan internet.';
+      'ZigDash lägger ZigDash Engine i Zigbee2MQTT på din hubb. Det bevakar dina enheter och kör dina regler, så att en lampa tänds när dörren öppnas även med telefonen avstängd och utan internet.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3808,7 +3808,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Din Zigbee2MQTT blockerar tillägg som ZigDash-hjälparen, som nya installationer gör. För att köra automationer på hubben skulle ZigDash slå på ”Tillåt extern JavaScript” i Zigbee2MQTT och starta om det.';
+      'Din Zigbee2MQTT blockerar tillägg som ZigDash Engine, som nya installationer gör. För att köra automationer på hubben skulle ZigDash slå på ”Tillåt extern JavaScript” i Zigbee2MQTT och starta om det.';
 
   @override
   String get engineConsentOutage =>
@@ -3816,7 +3816,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'Hjälparen är öppen källkod. Du kan läsa den på Zigbee2MQTT-sidan under Tillägg.';
+      'ZigDash Engine är öppen källkod. Du kan läsa det på Zigbee2MQTT-sidan under Tillägg.';
 
   @override
   String get engineConsentUndo =>
@@ -3840,7 +3840,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automationer pausade: hjälparen stoppade sig själv';
+      'Automationer pausade: ZigDash Engine stoppade sig själv';
 
   @override
   String get engineStoppedBody =>
@@ -3866,12 +3866,12 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Regler som hjälparen på hubben inte kan köra än: $count. Installera om den för att uppdatera.';
+    return 'Regler som ZigDash Engine på hubben inte kan köra än: $count. Installera om det för att uppdatera.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT avvisade hjälparen: $error';
+    return 'Zigbee2MQTT avvisade ZigDash Engine: $error';
   }
 
   @override
@@ -4184,11 +4184,11 @@ class AppLocalizationsSv extends AppLocalizations {
   String get engineRemove => 'Ta bort från hubben';
 
   @override
-  String get engineRemoveTitle => 'Ta bort hjälparen från hubben?';
+  String get engineRemoveTitle => 'Ta bort ZigDash Engine från hubben?';
 
   @override
   String get engineRemoveBody =>
-      'Automationerna slutar köras. Dina regler ligger kvar på hubben, så en ny installation tar tillbaka dem.';
+      'Automationerna slutar köras. Dina regler ligger kvar på hubben, så en ny installation av ZigDash Engine tar tillbaka dem.';
 
   @override
   String get autoNoTargets =>

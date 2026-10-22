@@ -3057,7 +3057,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Upozornění pozastavena: pomocník ZigDash na hubu se nehlásí';
+      'Upozornění pozastavena: ZigDash Engine na hubu se nehlásí';
 
   @override
   String get alertsStatusNotSetUp => 'Nenastaveno';
@@ -3067,7 +3067,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Dostanete upozornění na tento telefon při úniku vody, kouři, otevřených dveřích nebo slabé baterii, i když je ZigDash zavřený. Pomocník ZigDash na hubu sleduje zařízení; ZigDash ho nastaví.';
+      'Dostanete upozornění na tento telefon při úniku vody, kouři, otevřených dveřích nebo slabé baterii, i když je ZigDash zavřený. ZigDash Engine na hubu sleduje zařízení; ZigDash ho nastaví.';
 
   @override
   String get alertsSetUpHub => 'Nastavit upozornění na hubu';
@@ -3098,7 +3098,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT pomocníka ZigDash nepřijal';
+  String get alertsHubFailed => 'Zigbee2MQTT nepřijal ZigDash Engine';
 
   @override
   String get alertsRecent => 'Nedávná upozornění';
@@ -3471,7 +3471,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash nemá server, takže pomocník ZigDash na hubu každých 15 minut zaznamenává hodnoty z vašich nástěnek. Uchovává 30 dní, na vašem brokeru.';
+      'ZigDash nemá server, takže ZigDash Engine na hubu každých 15 minut zaznamenává hodnoty z vašich nástěnek. Uchovává 30 dní, na vašem brokeru.';
 
   @override
   String get historySetupAction => 'Nastavit na hubu';
@@ -3561,7 +3561,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Pomocníka na hubu nelze použít? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstane otevřený, třeba na nástěnném tabletu. Historii vidí každý telefon této domácnosti.';
+      'ZigDash Engine na hubu nelze použít? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstane otevřený, třeba na nástěnném tabletu. Historii vidí každý telefon této domácnosti.';
 
   @override
   String get historyRecordingHere =>
@@ -3572,7 +3572,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Každých 15 minut, dokud je ZigDash otevřený, pro každý telefon této domácnosti. Není potřeba, když zaznamenává pomocník na hubu.';
+      'Každých 15 minut, dokud je ZigDash otevřený, pro každý telefon této domácnosti. Není potřeba, když zaznamenává ZigDash Engine na hubu.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3581,7 +3581,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Záznam se nehlásí. Otevřete Automatizace a zkontrolujte pomocníka ZigDash na hubu.';
+      'Záznam se nehlásí. Otevřete Automatizace a zkontrolujte ZigDash Engine na hubu.';
 
   @override
   String get historyPersistence =>
@@ -3782,7 +3782,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash vloží do Zigbee2MQTT na vašem hubu malého pomocníka. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
+      'ZigDash vloží ZigDash Engine do Zigbee2MQTT na vašem hubu. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3815,7 +3815,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Váš Zigbee2MQTT blokuje rozšíření jako pomocníka ZigDash, jak to dělají nové instalace. Aby automatizace běžely na hubu, ZigDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
+      'Váš Zigbee2MQTT blokuje rozšíření jako ZigDash Engine, jak to dělají nové instalace. Aby automatizace běžely na hubu, ZigDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
 
   @override
   String get engineConsentOutage =>
@@ -3823,7 +3823,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'Pomocník má otevřený kód. Můžete si ho přečíst na stránce Zigbee2MQTT v části Rozšíření.';
+      'ZigDash Engine má otevřený kód. Můžete si ho přečíst na stránce Zigbee2MQTT v části Rozšíření.';
 
   @override
   String get engineConsentUndo =>
@@ -3847,7 +3847,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automatizace pozastaveny: pomocník se sám zastavil';
+      'Automatizace pozastaveny: ZigDash Engine se sám zastavil';
 
   @override
   String get engineStoppedBody =>
@@ -3873,12 +3873,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Pravidla, která pomocník na hubu zatím neumí spustit: $count. Nainstalujte ho znovu, aby se aktualizoval.';
+    return 'Pravidla, která ZigDash Engine na hubu zatím neumí spustit: $count. Nainstalujte ho znovu, aby se aktualizoval.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT pomocníka odmítl: $error';
+    return 'Zigbee2MQTT odmítl ZigDash Engine: $error';
   }
 
   @override
@@ -4191,11 +4191,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get engineRemove => 'Odebrat z hubu';
 
   @override
-  String get engineRemoveTitle => 'Odebrat pomocníka z hubu?';
+  String get engineRemoveTitle => 'Odebrat ZigDash Engine z hubu?';
 
   @override
   String get engineRemoveBody =>
-      'Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace pomocníka vrátí.';
+      'Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace ZigDash Engine vrátí.';
 
   @override
   String get autoNoTargets =>

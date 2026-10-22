@@ -3056,7 +3056,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Оповещения приостановлены: помощник ZigDash на хабе не выходит на связь';
+      'Оповещения приостановлены: ZigDash Engine на хабе не выходит на связь';
 
   @override
   String get alertsStatusNotSetUp => 'Не настроено';
@@ -3066,7 +3066,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Получайте уведомление на этот телефон о протечке, дыме, открытой двери или разряде батареи, даже когда ZigDash закрыт. Помощник ZigDash на хабе следит за устройствами; ZigDash его настраивает.';
+      'Получайте уведомление на этот телефон о протечке, дыме, открытой двери или разряде батареи, даже когда ZigDash закрыт. ZigDash Engine на хабе следит за устройствами; ZigDash его настраивает.';
 
   @override
   String get alertsSetUpHub => 'Настроить тревоги на хабе';
@@ -3097,7 +3097,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT не принял помощника ZigDash';
+  String get alertsHubFailed => 'Zigbee2MQTT не принял ZigDash Engine';
 
   @override
   String get alertsRecent => 'Последние тревоги';
@@ -3471,7 +3471,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'У ZigDash нет сервера, поэтому помощник ZigDash на хабе каждые 15 минут записывает показания с ваших панелей. Хранит 30 дней, на вашем брокере.';
+      'У ZigDash нет сервера, поэтому ZigDash Engine на хабе каждые 15 минут записывает показания с ваших панелей. Хранит 30 дней, на вашем брокере.';
 
   @override
   String get historySetupAction => 'Настроить на хабе';
@@ -3560,7 +3560,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Не получается использовать помощника на хабе? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном. Все телефоны этого дома видят историю.';
+      'Не получается использовать ZigDash Engine на хабе? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном. Все телефоны этого дома видят историю.';
 
   @override
   String get historyRecordingHere =>
@@ -3571,7 +3571,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает помощник на хабе.';
+      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает ZigDash Engine на хабе.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3580,7 +3580,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Запись не выходит на связь. Откройте «Автоматизации», чтобы проверить помощника ZigDash на хабе.';
+      'Запись не выходит на связь. Откройте «Автоматизации», чтобы проверить ZigDash Engine на хабе.';
 
   @override
   String get historyPersistence =>
@@ -3774,7 +3774,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash добавляет небольшого помощника в Zigbee2MQTT на вашем хабе. Он следит за устройствами и выполняет ваши правила, так что свет включится при открытии двери, даже если телефон выключен и нет интернета.';
+      'ZigDash добавляет ZigDash Engine в Zigbee2MQTT на вашем хабе. Он следит за устройствами и выполняет ваши правила, так что свет включится при открытии двери, даже если телефон выключен и нет интернета.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3808,7 +3808,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Ваш Zigbee2MQTT блокирует расширения вроде помощника ZigDash, как делают новые установки. Чтобы автоматизации работали на хабе, ZigDash включит в Zigbee2MQTT «Разрешить внешний JavaScript» и перезапустит его.';
+      'Ваш Zigbee2MQTT блокирует расширения вроде ZigDash Engine, как делают новые установки. Чтобы автоматизации работали на хабе, ZigDash включит в Zigbee2MQTT «Разрешить внешний JavaScript» и перезапустит его.';
 
   @override
   String get engineConsentOutage =>
@@ -3816,7 +3816,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'Помощник с открытым кодом. Его можно прочитать на странице Zigbee2MQTT в разделе «Расширения».';
+      'ZigDash Engine с открытым кодом. Его можно прочитать на странице Zigbee2MQTT в разделе «Расширения».';
 
   @override
   String get engineConsentUndo =>
@@ -3840,7 +3840,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Автоматизации приостановлены: помощник остановился сам';
+      'Автоматизации приостановлены: ZigDash Engine остановился сам';
 
   @override
   String get engineStoppedBody =>
@@ -3866,12 +3866,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Правил, которые помощник на хабе пока не умеет выполнять: $count. Переустановите его, чтобы обновить.';
+    return 'Правил, которые ZigDash Engine на хабе пока не умеет выполнять: $count. Переустановите его, чтобы обновить.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT отклонил помощника: $error';
+    return 'Zigbee2MQTT отклонил ZigDash Engine: $error';
   }
 
   @override
@@ -4184,11 +4184,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get engineRemove => 'Удалить с хаба';
 
   @override
-  String get engineRemoveTitle => 'Удалить помощника с хаба?';
+  String get engineRemoveTitle => 'Удалить ZigDash Engine с хаба?';
 
   @override
   String get engineRemoveBody =>
-      'Автоматизации перестанут работать. Правила останутся на хабе, и после переустановки помощника вернутся.';
+      'Автоматизации перестанут работать. Правила останутся на хабе и вернутся после переустановки ZigDash Engine.';
 
   @override
   String get autoNoTargets =>

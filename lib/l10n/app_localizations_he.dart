@@ -3028,7 +3028,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'ההתראות מושהות: העוזר של ZigDash ברכזת לא מדווח';
+      'ההתראות מושהות: ZigDash Engine ברכזת לא מדווח';
 
   @override
   String get alertsStatusNotSetUp => 'לא הוגדר';
@@ -3038,7 +3038,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'קבלת התראה בטלפון הזה על נזילה, עשן, דלת שנפתחה או סוללה חלשה, גם כש־ZigDash סגור. העוזר של ZigDash ברכזת עוקב אחרי המכשירים; ZigDash מגדיר אותו.';
+      'קבלת התראה בטלפון הזה על נזילה, עשן, דלת שנפתחה או סוללה חלשה, גם כש־ZigDash סגור. ZigDash Engine ברכזת עוקב אחרי המכשירים; ZigDash מגדיר אותו.';
 
   @override
   String get alertsSetUpHub => 'הגדרת התראות על הרכזת';
@@ -3069,7 +3069,7 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT לא קיבל את העוזר של ZigDash';
+  String get alertsHubFailed => 'Zigbee2MQTT לא קיבל את ZigDash Engine';
 
   @override
   String get alertsRecent => 'התראות אחרונות';
@@ -3437,7 +3437,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ל־ZigDash אין שרת, ולכן העוזר של ZigDash ברכזת שומר את הערכים מלוחות הבקרה כל 15 דקות. הוא שומר 30 יום, בברוקר שלך.';
+      'ל־ZigDash אין שרת, ולכן ZigDash Engine ברכזת שומר את הערכים מלוחות הבקרה כל 15 דקות. הוא שומר 30 יום, בברוקר שלך.';
 
   @override
   String get historySetupAction => 'התקנה ב-hub';
@@ -3525,7 +3525,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'אי אפשר להשתמש בעוזר ברכזת? ZigDash יכול לשמור בטלפון או בטאבלט שנשאר פתוח, כמו טאבלט קיר. כל הטלפונים של הבית רואים את ההיסטוריה.';
+      'אי אפשר להשתמש ב־ZigDash Engine ברכזת? ZigDash יכול לשמור בטלפון או בטאבלט שנשאר פתוח, כמו טאבלט קיר. כל הטלפונים של הבית רואים את ההיסטוריה.';
 
   @override
   String get historyRecordingHere =>
@@ -3536,7 +3536,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'כל 15 דקות כש־ZigDash פתוח, לכל הטלפונים של הבית. לא נחוץ כשהעוזר ברכזת שומר.';
+      'כל 15 דקות כש־ZigDash פתוח, לכל הטלפונים של הבית. לא נחוץ כש־ZigDash Engine ברכזת שומר.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3545,7 +3545,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'השמירה לא מדווחת. אפשר לפתוח את „אוטומציות” כדי לבדוק את העוזר של ZigDash ברכזת.';
+      'השמירה לא מדווחת. אפשר לפתוח את „אוטומציות” כדי לבדוק את ZigDash Engine ברכזת.';
 
   @override
   String get historyPersistence =>
@@ -3740,7 +3740,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash מוסיף עוזר קטן בתוך Zigbee2MQTT ברכזת. הוא עוקב אחרי המכשירים ומריץ את הכללים, כך שאור נדלק כשהדלת נפתחת גם כשהטלפון כבוי ואין אינטרנט.';
+      'ZigDash מוסיף את ZigDash Engine בתוך Zigbee2MQTT ברכזת. הוא עוקב אחרי המכשירים ומריץ את הכללים, כך שאור נדלק כשהדלת נפתחת גם כשהטלפון כבוי ואין אינטרנט.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3772,7 +3772,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Zigbee2MQTT שלך חוסם תוספים כמו העוזר של ZigDash, כמו בהתקנות חדשות. כדי להריץ אוטומציות ברכזת, ZigDash יפעיל ב־Zigbee2MQTT את „אפשר JavaScript חיצוני” ויפעיל אותו מחדש.';
+      'Zigbee2MQTT שלך חוסם תוספים כמו ZigDash Engine, כמו בהתקנות חדשות. כדי להריץ אוטומציות ברכזת, ZigDash יפעיל ב־Zigbee2MQTT את „אפשר JavaScript חיצוני” ויפעיל אותו מחדש.';
 
   @override
   String get engineConsentOutage =>
@@ -3780,7 +3780,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'העוזר בקוד פתוח. אפשר לקרוא אותו בעמוד של Zigbee2MQTT, תחת Extensions.';
+      'ZigDash Engine בקוד פתוח. אפשר לקרוא אותו בעמוד של Zigbee2MQTT, תחת Extensions.';
 
   @override
   String get engineConsentUndo =>
@@ -3803,7 +3803,8 @@ class AppLocalizationsHe extends AppLocalizations {
   String get engineReinstall => 'התקנה מחדש ברכזת';
 
   @override
-  String get engineStoppedTitle => 'האוטומציות מושהות: העוזר עצר את עצמו';
+  String get engineStoppedTitle =>
+      'האוטומציות מושהות: ZigDash Engine עצר את עצמו';
 
   @override
   String get engineStoppedBody =>
@@ -3829,12 +3830,12 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'כללים שהעוזר ברכזת עוד לא יודע להריץ: $count. יש להתקין אותו מחדש כדי לעדכן.';
+    return 'כללים ש־ZigDash Engine ברכזת עוד לא יודע להריץ: $count. יש להתקין אותו מחדש כדי לעדכן.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT דחה את העוזר: $error';
+    return 'Zigbee2MQTT דחה את ZigDash Engine: $error';
   }
 
   @override
@@ -4147,11 +4148,11 @@ class AppLocalizationsHe extends AppLocalizations {
   String get engineRemove => 'הסרה מהרכזת';
 
   @override
-  String get engineRemoveTitle => 'להסיר את העוזר מהרכזת?';
+  String get engineRemoveTitle => 'להסיר את ZigDash Engine מהרכזת?';
 
   @override
   String get engineRemoveBody =>
-      'האוטומציות יפסיקו לרוץ. הכללים נשארים ברכזת, כך שהתקנה מחדש של העוזר תחזיר אותם.';
+      'האוטומציות יפסיקו לרוץ. הכללים נשארים ברכזת, כך שהתקנה מחדש של ZigDash Engine תחזיר אותם.';
 
   @override
   String get autoNoTargets => 'בבית הזה עוד אין אור, שקע, מתג או תריס לשליטה.';

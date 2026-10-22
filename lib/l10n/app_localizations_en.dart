@@ -3051,7 +3051,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Alerts are paused: the ZigDash helper on your hub isn\'t reporting';
+      'Alerts are paused: ZigDash Engine on your hub isn\'t reporting';
 
   @override
   String get alertsStatusNotSetUp => 'Not set up';
@@ -3061,7 +3061,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. The ZigDash helper on your hub watches the devices; ZigDash sets it up.';
+      'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. ZigDash Engine on your hub watches the devices; ZigDash sets it up.';
 
   @override
   String get alertsSetUpHub => 'Set up alerts on the hub';
@@ -3092,7 +3092,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT didn\'t accept the ZigDash helper';
+  String get alertsHubFailed => 'Zigbee2MQTT didn\'t accept ZigDash Engine';
 
   @override
   String get alertsRecent => 'Recent alerts';
@@ -3463,7 +3463,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash has no server, so the ZigDash helper on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.';
+      'ZigDash has no server, so ZigDash Engine on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.';
 
   @override
   String get historySetupAction => 'Set up on the hub';
@@ -3553,7 +3553,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Can\'t use the helper on your hub? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.';
+      'Can\'t use ZigDash Engine on your hub? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.';
 
   @override
   String get historyRecordingHere =>
@@ -3564,7 +3564,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when the helper on your hub records.';
+      'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when ZigDash Engine on your hub records.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3573,7 +3573,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'The recorder isn\'t reporting. Open Automations to check the ZigDash helper on your hub.';
+      'The recorder isn\'t reporting. Open Automations to check ZigDash Engine on your hub.';
 
   @override
   String get historyPersistence =>
@@ -3774,7 +3774,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash puts a small helper inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.';
+      'ZigDash puts ZigDash Engine inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3807,7 +3807,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Your Zigbee2MQTT blocks add-ons like the ZigDash helper, as new installs do. To run automations on your hub, ZigDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.';
+      'Your Zigbee2MQTT blocks add-ons like ZigDash Engine, as new installs do. To run automations on your hub, ZigDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.';
 
   @override
   String get engineConsentOutage =>
@@ -3815,7 +3815,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'The helper is open source. You can read it on your Zigbee2MQTT page under Extensions.';
+      'ZigDash Engine is open source. You can read it on your Zigbee2MQTT page under Extensions.';
 
   @override
   String get engineConsentUndo =>
@@ -3839,7 +3839,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automations paused: the helper stopped itself';
+      'Automations paused: ZigDash Engine stopped itself';
 
   @override
   String get engineStoppedBody =>
@@ -3865,12 +3865,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Rules the helper on your hub can\'t run yet: $count. Update the helper by reinstalling it.';
+    return 'Rules ZigDash Engine on your hub can\'t run yet: $count. Update it by reinstalling.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT refused the helper: $error';
+    return 'Zigbee2MQTT refused ZigDash Engine: $error';
   }
 
   @override
@@ -4183,11 +4183,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get engineRemove => 'Remove from hub';
 
   @override
-  String get engineRemoveTitle => 'Remove the helper from your hub?';
+  String get engineRemoveTitle => 'Remove ZigDash Engine from your hub?';
 
   @override
   String get engineRemoveBody =>
-      'Automations stop running. Your rules stay on the hub, so installing the helper again brings them back.';
+      'Automations stop running. Your rules stay on the hub, so installing ZigDash Engine again brings them back.';
 
   @override
   String get autoNoTargets =>
