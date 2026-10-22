@@ -3758,4 +3758,145 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Prima prova la demo';
+
+  @override
+  String get automationsTitle => 'Automazioni';
+
+  @override
+  String get engineRunningOnHub => 'Sull\'hub';
+
+  @override
+  String get engineChecking => 'Controllo dell\'hub…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash ora non raggiunge il broker di questa casa. Le automazioni si configurano da connessi, a casa.';
+
+  @override
+  String get engineRestarting =>
+      'Riavvio di Zigbee2MQTT… I dispositivi tornano in circa 30 secondi.';
+
+  @override
+  String get engineInstalling => 'Installazione sull\'hub…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT va aggiornato';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Il tuo Zigbee2MQTT è la versione $version. Le automazioni richiedono la 2.4 o successiva. Aggiorna Zigbee2MQTT sull\'hub, poi torna qui.';
+  }
+
+  @override
+  String get engineIntroTitle =>
+      'Le automazioni girano sull\'hub, non sul telefono';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash mette un piccolo aiutante dentro Zigbee2MQTT sul tuo hub. Osserva i dispositivi ed esegue le tue regole, così una luce si accende quando la porta si apre anche col telefono spento e senza internet.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Niente da installare a mano. ZigDash lo fa tramite la rete di casa.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Il tuo Zigbee2MQTT è la versione $version.';
+  }
+
+  @override
+  String get engineIntroRemove =>
+      'Puoi rimuoverlo quando vuoi da questa schermata.';
+
+  @override
+  String get engineInstall => 'Installa sull\'hub';
+
+  @override
+  String get engineDeclinedTitle => 'Nessuna automazione su questo hub';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT sul tuo hub non consente estensioni, quindi niente può eseguire le tue regole quando il telefono è lontano. Scene, avvisi e dashboard funzionano come prima.';
+
+  @override
+  String get engineAllowAfterAll => 'Consenti le estensioni';
+
+  @override
+  String get engineConsentTitle => 'Zigbee2MQTT deve cambiare un\'impostazione';
+
+  @override
+  String get engineConsentBody =>
+      'Il tuo Zigbee2MQTT blocca estensioni come l\'aiutante di ZigDash, come fanno le nuove installazioni. Per eseguire automazioni sull\'hub, ZigDash attiverebbe «Consenti JavaScript esterno» in Zigbee2MQTT e lo riavvierebbe.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT si riavvia una volta. Luci e sensori non sono raggiungibili per circa 30 secondi.';
+
+  @override
+  String get engineConsentOpen =>
+      'L\'aiutante è open source. Puoi leggerlo nella pagina di Zigbee2MQTT, in Estensioni.';
+
+  @override
+  String get engineConsentUndo =>
+      'Puoi disattivare l\'impostazione più tardi. Le automazioni allora si fermano.';
+
+  @override
+  String get engineConsentYes => 'Cambia l\'impostazione e riavvia';
+
+  @override
+  String get engineConsentNo => 'Non ora';
+
+  @override
+  String get automationsPausedTitle => 'Automazioni in pausa';
+
+  @override
+  String get automationsPausedBody =>
+      'Il tuo hub non dà notizie da oltre un minuto, quindi nessuna automazione può partire finché non torna. Le tue regole restano.';
+
+  @override
+  String get engineReinstall => 'Reinstalla sull\'hub';
+
+  @override
+  String get engineStoppedTitle =>
+      'Automazioni in pausa: l\'aiutante si è fermato';
+
+  @override
+  String get engineStoppedBody =>
+      'Ha avuto errori tre volte in un\'ora e si è spento perché Zigbee2MQTT continui a funzionare. Le tue regole restano.';
+
+  @override
+  String get engineStartAgain => 'Avvia di nuovo';
+
+  @override
+  String get engineReportProblem => 'Segnala un problema';
+
+  @override
+  String get engineRunningTitle => 'Il tuo hub è pronto per le automazioni';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Regole caricate sull\'hub: $count. La creazione delle automazioni arriva nel prossimo passo di questa versione.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'L\'orologio del tuo hub sbaglia di oltre cinque minuti. Le automazioni a orario partiranno all\'ora sbagliata finché non viene corretto.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Regole che l\'aiutante sull\'hub non sa ancora eseguire: $count. Reinstallalo per aggiornarlo.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT ha rifiutato l\'aiutante: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT non ha risposto. Controlla che la casa sia connessa e riprova.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT non ha accettato la modifica o non è tornato. Controlla l\'hub e riprova.';
 }

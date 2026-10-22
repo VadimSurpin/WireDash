@@ -3705,4 +3705,142 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'לנסות קודם את ההדגמה';
+
+  @override
+  String get automationsTitle => 'אוטומציות';
+
+  @override
+  String get engineRunningOnHub => 'פועל ברכזת';
+
+  @override
+  String get engineChecking => 'בודק את הרכזת…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash לא מצליח להגיע כרגע לברוקר של הבית הזה. אוטומציות מגדירים בבית, עם חיבור.';
+
+  @override
+  String get engineRestarting =>
+      'מפעיל מחדש את Zigbee2MQTT… המכשירים יחזרו בעוד כ־30 שניות.';
+
+  @override
+  String get engineInstalling => 'מתקין ברכזת…';
+
+  @override
+  String get engineTooOldTitle => 'צריך לעדכן את Zigbee2MQTT';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'גרסת Zigbee2MQTT שלך היא $version. אוטומציות דורשות 2.4 ומעלה. יש לעדכן את Zigbee2MQTT ברכזת ולחזור לכאן.';
+  }
+
+  @override
+  String get engineIntroTitle => 'אוטומציות רצות ברכזת, לא בטלפון';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash מוסיף עוזר קטן בתוך Zigbee2MQTT ברכזת. הוא עוקב אחרי המכשירים ומריץ את הכללים, כך שאור נדלק כשהדלת נפתחת גם כשהטלפון כבוי ואין אינטרנט.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'אין מה להתקין ידנית. ZigDash עושה את זה דרך הרשת הביתית.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'גרסת Zigbee2MQTT שלך היא $version.';
+  }
+
+  @override
+  String get engineIntroRemove => 'אפשר להסיר אותו בכל עת מהמסך הזה.';
+
+  @override
+  String get engineInstall => 'התקנה ברכזת';
+
+  @override
+  String get engineDeclinedTitle => 'אין אוטומציות ברכזת הזו';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT ברכזת לא מאפשר תוספים, כך ששום דבר לא יריץ את הכללים כשהטלפון לא בבית. סצנות, התראות ולוח הבקרה עובדים כרגיל.';
+
+  @override
+  String get engineAllowAfterAll => 'בכל זאת לאפשר תוספים';
+
+  @override
+  String get engineConsentTitle => 'צריך לשנות הגדרה אחת ב־Zigbee2MQTT';
+
+  @override
+  String get engineConsentBody =>
+      'Zigbee2MQTT שלך חוסם תוספים כמו העוזר של ZigDash, כמו בהתקנות חדשות. כדי להריץ אוטומציות ברכזת, ZigDash יפעיל ב־Zigbee2MQTT את „אפשר JavaScript חיצוני” ויפעיל אותו מחדש.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT יופעל מחדש פעם אחת. האורות והחיישנים לא יהיו זמינים כ־30 שניות.';
+
+  @override
+  String get engineConsentOpen =>
+      'העוזר בקוד פתוח. אפשר לקרוא אותו בעמוד של Zigbee2MQTT, תחת Extensions.';
+
+  @override
+  String get engineConsentUndo =>
+      'אפשר לכבות את ההגדרה מאוחר יותר. אז האוטומציות ייעצרו.';
+
+  @override
+  String get engineConsentYes => 'לשנות את ההגדרה ולהפעיל מחדש';
+
+  @override
+  String get engineConsentNo => 'לא עכשיו';
+
+  @override
+  String get automationsPausedTitle => 'האוטומציות מושהות';
+
+  @override
+  String get automationsPausedBody =>
+      'הרכזת לא דיווחה כבר יותר מדקה, כך שאף אוטומציה לא תרוץ עד שתחזור. הכללים נשמרים.';
+
+  @override
+  String get engineReinstall => 'התקנה מחדש ברכזת';
+
+  @override
+  String get engineStoppedTitle => 'האוטומציות מושהות: העוזר עצר את עצמו';
+
+  @override
+  String get engineStoppedBody =>
+      'הוא נתקל בשגיאות שלוש פעמים בשעה ונכבה כדי ש־Zigbee2MQTT ימשיך לפעול. הכללים נשמרים.';
+
+  @override
+  String get engineStartAgain => 'להפעיל שוב';
+
+  @override
+  String get engineReportProblem => 'דיווח על בעיה';
+
+  @override
+  String get engineRunningTitle => 'הרכזת מוכנה לאוטומציות';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'כללים שנטענו ברכזת: $count. יצירת אוטומציות מגיעה בשלב הבא של הגרסה.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'השעון של הרכזת סוטה ביותר מחמש דקות. אוטומציות לפי שעה ירוצו בזמן הלא נכון עד שזה יתוקן.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'כללים שהעוזר ברכזת עוד לא יודע להריץ: $count. יש להתקין אותו מחדש כדי לעדכן.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT דחה את העוזר: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT לא ענה. יש לוודא שהבית מחובר ולנסות שוב.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT לא קיבל את השינוי או לא חזר. יש לבדוק את הרכזת ולנסות שוב.';
 }

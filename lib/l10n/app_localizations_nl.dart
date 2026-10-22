@@ -3754,4 +3754,145 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Eerst de demo proberen';
+
+  @override
+  String get automationsTitle => 'Automatiseringen';
+
+  @override
+  String get engineRunningOnHub => 'Draait op de hub';
+
+  @override
+  String get engineChecking => 'Hub controleren…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash bereikt de broker van dit huis nu niet. Automatiseringen stel je thuis in, met verbinding.';
+
+  @override
+  String get engineRestarting =>
+      'Zigbee2MQTT herstart… Je apparaten zijn over ongeveer 30 seconden terug.';
+
+  @override
+  String get engineInstalling => 'Installeren op de hub…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT moet worden bijgewerkt';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Je Zigbee2MQTT is versie $version. Automatiseringen hebben 2.4 of nieuwer nodig. Werk Zigbee2MQTT op de hub bij en kom dan hier terug.';
+  }
+
+  @override
+  String get engineIntroTitle =>
+      'Automatiseringen draaien op je hub, niet op je telefoon';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash zet een kleine helper in Zigbee2MQTT op je hub. Die let op je apparaten en voert je regels uit, zodat een lamp aangaat als de deur opengaat, ook met je telefoon uit en zonder internet.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Niets met de hand te installeren. ZigDash doet het via je thuisnetwerk.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Je Zigbee2MQTT is versie $version.';
+  }
+
+  @override
+  String get engineIntroRemove =>
+      'Je kunt hem altijd vanaf dit scherm verwijderen.';
+
+  @override
+  String get engineInstall => 'Installeren op de hub';
+
+  @override
+  String get engineDeclinedTitle => 'Geen automatiseringen op deze hub';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT op je hub staat geen uitbreidingen toe, dus niets kan je regels uitvoeren als je telefoon weg is. Scènes, meldingen en het dashboard werken als voorheen.';
+
+  @override
+  String get engineAllowAfterAll => 'Uitbreidingen toch toestaan';
+
+  @override
+  String get engineConsentTitle => 'Zigbee2MQTT moet één instelling wijzigen';
+
+  @override
+  String get engineConsentBody =>
+      'Je Zigbee2MQTT blokkeert uitbreidingen zoals de ZigDash-helper, zoals nieuwe installaties doen. Om automatiseringen op de hub te draaien zou ZigDash „Externe JavaScript toestaan” in Zigbee2MQTT aanzetten en het herstarten.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT herstart één keer. Lampen en sensoren zijn ongeveer 30 seconden onbereikbaar.';
+
+  @override
+  String get engineConsentOpen =>
+      'De helper is open source. Je kunt hem lezen op de Zigbee2MQTT-pagina onder Extensies.';
+
+  @override
+  String get engineConsentUndo =>
+      'Je kunt de instelling later weer uitzetten. Dan stoppen de automatiseringen.';
+
+  @override
+  String get engineConsentYes => 'Instelling wijzigen en herstarten';
+
+  @override
+  String get engineConsentNo => 'Niet nu';
+
+  @override
+  String get automationsPausedTitle => 'Automatiseringen gepauzeerd';
+
+  @override
+  String get automationsPausedBody =>
+      'Je hub heeft zich al meer dan een minuut niet gemeld, dus geen automatisering kan draaien tot hij dat weer doet. Je regels blijven bewaard.';
+
+  @override
+  String get engineReinstall => 'Opnieuw installeren op de hub';
+
+  @override
+  String get engineStoppedTitle =>
+      'Automatiseringen gepauzeerd: de helper is zelf gestopt';
+
+  @override
+  String get engineStoppedBody =>
+      'Hij liep drie keer binnen een uur tegen fouten aan en schakelde zich uit zodat Zigbee2MQTT blijft draaien. Je regels blijven bewaard.';
+
+  @override
+  String get engineStartAgain => 'Opnieuw starten';
+
+  @override
+  String get engineReportProblem => 'Probleem melden';
+
+  @override
+  String get engineRunningTitle => 'Je hub is klaar voor automatiseringen';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Regels geladen op de hub: $count. Automatiseringen maken komt in de volgende stap van deze versie.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'De klok van je hub loopt meer dan vijf minuten verkeerd. Tijdgebonden automatiseringen draaien op het verkeerde moment tot dat is opgelost.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Regels die de helper op je hub nog niet kan uitvoeren: $count. Installeer de helper opnieuw om hem bij te werken.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT weigerde de helper: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT antwoordde niet. Controleer of het huis verbonden is en probeer opnieuw.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT nam de wijziging niet over of kwam niet terug. Controleer je hub en probeer opnieuw.';
 }

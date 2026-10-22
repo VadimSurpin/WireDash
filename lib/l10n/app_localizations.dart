@@ -6659,6 +6659,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try the demo first'**
   String get setupAuthDemoFirst;
+
+  /// No description provided for @automationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations'**
+  String get automationsTitle;
+
+  /// No description provided for @engineRunningOnHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Running on hub'**
+  String get engineRunningOnHub;
+
+  /// No description provided for @engineChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your hub…'**
+  String get engineChecking;
+
+  /// No description provided for @engineNoConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash can\'t reach this Home\'s broker right now. Automations are set up while connected at home.'**
+  String get engineNoConnection;
+
+  /// No description provided for @engineRestarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting Zigbee2MQTT… Your devices are back in about 30 seconds.'**
+  String get engineRestarting;
+
+  /// No description provided for @engineInstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing on your hub…'**
+  String get engineInstalling;
+
+  /// No description provided for @engineTooOldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT needs an update'**
+  String get engineTooOldTitle;
+
+  /// No description provided for @engineTooOldBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT is version {version}. Automations need 2.4 or newer. Update Zigbee2MQTT on your hub, then come back here.'**
+  String engineTooOldBody(Object version);
+
+  /// No description provided for @engineIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations run on your hub, not on your phone'**
+  String get engineIntroTitle;
+
+  /// No description provided for @engineIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash puts a small helper inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.'**
+  String get engineIntroBody;
+
+  /// No description provided for @engineIntroNothingByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to install by hand. ZigDash does it over your home network.'**
+  String get engineIntroNothingByHand;
+
+  /// No description provided for @engineIntroVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT is version {version}.'**
+  String engineIntroVersion(Object version);
+
+  /// No description provided for @engineIntroRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'You can remove it any time from this screen.'**
+  String get engineIntroRemove;
+
+  /// No description provided for @engineInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install on hub'**
+  String get engineInstall;
+
+  /// No description provided for @engineDeclinedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No automations on this hub'**
+  String get engineDeclinedTitle;
+
+  /// No description provided for @engineDeclinedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT on your hub doesn\'t allow add-ons, so nothing can run your rules while your phone is away. Scenes, alerts and the dashboard work as before.'**
+  String get engineDeclinedBody;
+
+  /// No description provided for @engineAllowAfterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow add-ons after all'**
+  String get engineAllowAfterAll;
+
+  /// No description provided for @engineConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT needs one setting changed'**
+  String get engineConsentTitle;
+
+  /// No description provided for @engineConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT blocks add-ons like the ZigDash helper, as new installs do. To run automations on your hub, ZigDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.'**
+  String get engineConsentBody;
+
+  /// No description provided for @engineConsentOutage.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT restarts once. Your lights and sensors can\'t be reached for about 30 seconds.'**
+  String get engineConsentOutage;
+
+  /// No description provided for @engineConsentOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'The helper is open source. You can read it on your Zigbee2MQTT page under Extensions.'**
+  String get engineConsentOpen;
+
+  /// No description provided for @engineConsentUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'You can turn the setting off again later. Automations stop then.'**
+  String get engineConsentUndo;
+
+  /// No description provided for @engineConsentYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the setting and restart'**
+  String get engineConsentYes;
+
+  /// No description provided for @engineConsentNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get engineConsentNo;
+
+  /// No description provided for @automationsPausedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations paused'**
+  String get automationsPausedTitle;
+
+  /// No description provided for @automationsPausedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub hasn\'t reported in for over a minute, so no automation can run until it does. Your rules are kept.'**
+  String get automationsPausedBody;
+
+  /// No description provided for @engineReinstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Reinstall on hub'**
+  String get engineReinstall;
+
+  /// No description provided for @engineStoppedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations paused: the helper stopped itself'**
+  String get engineStoppedTitle;
+
+  /// No description provided for @engineStoppedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It ran into errors three times in an hour and switched off so Zigbee2MQTT keeps running. Your rules are kept.'**
+  String get engineStoppedBody;
+
+  /// No description provided for @engineStartAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Start again'**
+  String get engineStartAgain;
+
+  /// No description provided for @engineReportProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get engineReportProblem;
+
+  /// No description provided for @engineRunningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub is ready for automations'**
+  String get engineRunningTitle;
+
+  /// No description provided for @engineRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules loaded on the hub: {count}. Creating automations comes in the next step of this release.'**
+  String engineRunningBody(Object count);
+
+  /// No description provided for @engineClockOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub\'s clock is more than five minutes off. Time-based automations will run at the wrong time until it is fixed.'**
+  String get engineClockOff;
+
+  /// No description provided for @engineRulesUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules the helper on your hub can\'t run yet: {count}. Update the helper by reinstalling it.'**
+  String engineRulesUnknown(Object count);
+
+  /// No description provided for @engineInstallRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT refused the helper: {error}'**
+  String engineInstallRefused(Object error);
+
+  /// No description provided for @engineInstallNoAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT didn\'t answer. Check that the Home is connected and try again.'**
+  String get engineInstallNoAnswer;
+
+  /// No description provided for @engineConsentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT didn\'t accept the change or didn\'t come back. Check your hub and try again.'**
+  String get engineConsentFailed;
 }
 
 class _AppLocalizationsDelegate

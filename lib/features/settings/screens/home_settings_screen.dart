@@ -69,6 +69,12 @@ class HomeSettingsScreen extends ConsumerWidget {
                 onTap: () => _editBase(context, ref, home, base),
               ),
               ListTile(
+                leading: const Icon(Icons.bolt_outlined),
+                title: Text(l10n.automationsTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(Routes.homeAutomations(home.id)),
+              ),
+              ListTile(
                 leading: const Icon(Icons.notifications_outlined),
                 title: Text(l10n.alertsTitle),
                 trailing: const Icon(Icons.chevron_right),

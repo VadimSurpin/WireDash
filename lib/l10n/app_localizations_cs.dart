@@ -3748,4 +3748,144 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Nejdřív vyzkoušej demo';
+
+  @override
+  String get automationsTitle => 'Automatizace';
+
+  @override
+  String get engineRunningOnHub => 'Běží na hubu';
+
+  @override
+  String get engineChecking => 'Kontrola hubu…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash teď nedosáhne na broker této domácnosti. Automatizace se nastavují doma, s připojením.';
+
+  @override
+  String get engineRestarting =>
+      'Restart Zigbee2MQTT… Zařízení budou zpět asi za 30 sekund.';
+
+  @override
+  String get engineInstalling => 'Instalace na hub…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT potřebuje aktualizaci';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Váš Zigbee2MQTT má verzi $version. Automatizace vyžadují 2.4 nebo novější. Aktualizujte Zigbee2MQTT na hubu a vraťte se sem.';
+  }
+
+  @override
+  String get engineIntroTitle => 'Automatizace běží na hubu, ne v telefonu';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash vloží do Zigbee2MQTT na vašem hubu malého pomocníka. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Nic se neinstaluje ručně. ZigDash to udělá přes domácí síť.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Váš Zigbee2MQTT má verzi $version.';
+  }
+
+  @override
+  String get engineIntroRemove => 'Kdykoli ho můžete odebrat z této obrazovky.';
+
+  @override
+  String get engineInstall => 'Nainstalovat na hub';
+
+  @override
+  String get engineDeclinedTitle => 'Na tomto hubu nejsou automatizace';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT na vašem hubu nepovoluje rozšíření, takže nic nespustí vaše pravidla, když telefon není doma. Scény, upozornění a nástěnka fungují jako dřív.';
+
+  @override
+  String get engineAllowAfterAll => 'Přece jen povolit rozšíření';
+
+  @override
+  String get engineConsentTitle =>
+      'Zigbee2MQTT potřebuje změnit jedno nastavení';
+
+  @override
+  String get engineConsentBody =>
+      'Váš Zigbee2MQTT blokuje rozšíření jako pomocníka ZigDash, jak to dělají nové instalace. Aby automatizace běžely na hubu, ZigDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT se jednou restartuje. Světla a senzory budou asi 30 sekund nedostupné.';
+
+  @override
+  String get engineConsentOpen =>
+      'Pomocník má otevřený kód. Můžete si ho přečíst na stránce Zigbee2MQTT v části Rozšíření.';
+
+  @override
+  String get engineConsentUndo =>
+      'Nastavení můžete později zase vypnout. Automatizace se pak zastaví.';
+
+  @override
+  String get engineConsentYes => 'Změnit nastavení a restartovat';
+
+  @override
+  String get engineConsentNo => 'Teď ne';
+
+  @override
+  String get automationsPausedTitle => 'Automatizace pozastaveny';
+
+  @override
+  String get automationsPausedBody =>
+      'Hub se přes minutu neozval, takže žádná automatizace nepoběží, dokud se neozve. Vaše pravidla zůstávají.';
+
+  @override
+  String get engineReinstall => 'Znovu nainstalovat na hub';
+
+  @override
+  String get engineStoppedTitle =>
+      'Automatizace pozastaveny: pomocník se sám zastavil';
+
+  @override
+  String get engineStoppedBody =>
+      'Během hodiny třikrát narazil na chybu a vypnul se, aby Zigbee2MQTT dál běžel. Vaše pravidla zůstávají.';
+
+  @override
+  String get engineStartAgain => 'Spustit znovu';
+
+  @override
+  String get engineReportProblem => 'Nahlásit problém';
+
+  @override
+  String get engineRunningTitle => 'Váš hub je připraven na automatizace';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Pravidel načtených na hubu: $count. Vytváření automatizací přijde v dalším kroku této verze.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'Hodiny hubu se liší o víc než pět minut. Časové automatizace poběží ve špatnou dobu, dokud se to neopraví.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Pravidla, která pomocník na hubu zatím neumí spustit: $count. Nainstalujte ho znovu, aby se aktualizoval.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT pomocníka odmítl: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT neodpověděl. Zkontrolujte, že je domácnost připojená, a zkuste to znovu.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT změnu nepřijal nebo se nevrátil. Zkontrolujte hub a zkuste to znovu.';
 }

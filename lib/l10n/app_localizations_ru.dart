@@ -3739,4 +3739,146 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Сначала попробовать демо';
+
+  @override
+  String get automationsTitle => 'Автоматизации';
+
+  @override
+  String get engineRunningOnHub => 'Работает на хабе';
+
+  @override
+  String get engineChecking => 'Проверка хаба…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash сейчас не может связаться с брокером этого дома. Автоматизации настраиваются дома, при подключении.';
+
+  @override
+  String get engineRestarting =>
+      'Перезапуск Zigbee2MQTT… Устройства вернутся примерно через 30 секунд.';
+
+  @override
+  String get engineInstalling => 'Установка на хаб…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT нужно обновить';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Ваш Zigbee2MQTT версии $version. Для автоматизаций нужна 2.4 или новее. Обновите Zigbee2MQTT на хабе и вернитесь сюда.';
+  }
+
+  @override
+  String get engineIntroTitle =>
+      'Автоматизации работают на хабе, а не на телефоне';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash добавляет небольшого помощника в Zigbee2MQTT на вашем хабе. Он следит за устройствами и выполняет ваши правила, так что свет включится при открытии двери, даже если телефон выключен и нет интернета.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Ничего не нужно ставить вручную. ZigDash сделает это через домашнюю сеть.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Ваш Zigbee2MQTT версии $version.';
+  }
+
+  @override
+  String get engineIntroRemove =>
+      'Удалить его можно в любой момент на этом экране.';
+
+  @override
+  String get engineInstall => 'Установить на хаб';
+
+  @override
+  String get engineDeclinedTitle => 'На этом хабе нет автоматизаций';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT на вашем хабе не разрешает расширения, поэтому никто не выполнит ваши правила, пока телефона нет рядом. Сцены, оповещения и панель работают как раньше.';
+
+  @override
+  String get engineAllowAfterAll => 'Всё же разрешить расширения';
+
+  @override
+  String get engineConsentTitle =>
+      'В Zigbee2MQTT нужно изменить одну настройку';
+
+  @override
+  String get engineConsentBody =>
+      'Ваш Zigbee2MQTT блокирует расширения вроде помощника ZigDash, как делают новые установки. Чтобы автоматизации работали на хабе, ZigDash включит в Zigbee2MQTT «Разрешить внешний JavaScript» и перезапустит его.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT перезапустится один раз. Свет и датчики будут недоступны около 30 секунд.';
+
+  @override
+  String get engineConsentOpen =>
+      'Помощник с открытым кодом. Его можно прочитать на странице Zigbee2MQTT в разделе «Расширения».';
+
+  @override
+  String get engineConsentUndo =>
+      'Настройку можно потом выключить. Тогда автоматизации остановятся.';
+
+  @override
+  String get engineConsentYes => 'Изменить настройку и перезапустить';
+
+  @override
+  String get engineConsentNo => 'Не сейчас';
+
+  @override
+  String get automationsPausedTitle => 'Автоматизации приостановлены';
+
+  @override
+  String get automationsPausedBody =>
+      'Хаб не выходит на связь больше минуты, поэтому ни одна автоматизация не сработает, пока он не вернётся. Ваши правила сохранены.';
+
+  @override
+  String get engineReinstall => 'Переустановить на хаб';
+
+  @override
+  String get engineStoppedTitle =>
+      'Автоматизации приостановлены: помощник остановился сам';
+
+  @override
+  String get engineStoppedBody =>
+      'Он трижды за час столкнулся с ошибками и выключился, чтобы Zigbee2MQTT продолжал работать. Ваши правила сохранены.';
+
+  @override
+  String get engineStartAgain => 'Запустить снова';
+
+  @override
+  String get engineReportProblem => 'Сообщить о проблеме';
+
+  @override
+  String get engineRunningTitle => 'Хаб готов к автоматизациям';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Правил загружено на хаб: $count. Создание автоматизаций появится на следующем шаге этой версии.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'Часы хаба отстают или спешат больше чем на пять минут. Автоматизации по времени будут срабатывать не вовремя, пока это не исправить.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Правил, которые помощник на хабе пока не умеет выполнять: $count. Переустановите его, чтобы обновить.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT отклонил помощника: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT не ответил. Проверьте, что дом подключён, и попробуйте снова.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT не принял изменение или не вернулся. Проверьте хаб и попробуйте снова.';
 }
