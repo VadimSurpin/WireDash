@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 3.0 is published (replaces the policy published with ZigDash 2.10.2)
+**Effective date:** the day ZigDash 3.1 is published (replaces the policy published with ZigDash 3.0)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -10,7 +10,12 @@ the app does and does not do with your data.
 
 ZigDash does **not** collect or share personal data. Your broker settings,
 passwords, devices, topics and their values stay on your device. There is no
-advertising and no user account, and the developer runs no server of their own.
+advertising and no user account.
+
+The developer runs one server, the ZigDash relay. It is used only if you turn
+on **Remote control** (part of ZigDash Pro), and it carries your home's data
+encrypted, so the developer cannot read it. See
+[Remote control](#remote-control-from-31).
 
 Unless you **opt out**, ZigDash sends a short list of **anonymous usage
 events** (which setup steps fail, which features get used) to Aptabase, an
@@ -66,10 +71,11 @@ or by uninstalling the app.
 
 ## Network communication
 
-ZigDash communicates **only** with the MQTT broker(s) you configure, using the
+ZigDash communicates with the MQTT broker(s) you configure, using the
 address and credentials you provide. MQTT messages flow directly between your
-device and your broker. The developer neither operates an intermediary server
-nor receives any of this traffic.
+device and your broker. Only if you turn on Remote control does your hub also
+connect to the ZigDash relay, and your phone uses it while you are away; what
+passes through it is encrypted (see [Remote control](#remote-control-from-31)).
 
 The app requests the **INTERNET** permission to connect to your broker and,
 unless you opt out, to send the anonymous usage events described below. On
@@ -216,10 +222,66 @@ network: no copy is sent to the developer or anyone else.
 
 ZigDash Pro is an optional one-time purchase in the Google Play version.
 Google Play handles the payment under Google's privacy policy; ZigDash never
-sees your payment details and stores nothing about the purchase on your device
-or anywhere else: the app asks Google Play whether Pro was bought. Versions
+sees your payment details and stores nothing about the purchase on your device:
+the app asks Google Play whether Pro was bought. If you turn on Remote control,
+the relay keeps a one-way hash of the purchase token, as described there. Versions
 from GitHub, IzzyOnDroid and F-Droid contain no billing code and have Pro
 unlocked.
+
+## Remote control (from 3.1)
+
+Remote control is off until you turn it on for a Home (Settings › Home ›
+Remote control). It is part of ZigDash Pro in the Google Play version. When
+you turn it on:
+
+- **How it works.** ZigDash Engine on your hub keeps one connection open to
+  the ZigDash relay at relay.zigdash.app, a server the developer runs at
+  netcup in Vienna, Austria (EU). Away from home, your phone reaches your hub
+  through it. At home, your phone talks to your broker directly, as before.
+- **Encrypted end to end.** Your hub and your phones seal every device state
+  and every command with a key made on your phone (AES-256-GCM). The key is
+  kept only on your hub and your phones, never on the relay. Device and topic
+  names are replaced by ids that reveal nothing. The relay sees only the
+  sealed data, its size and timing, and whether your hub is online.
+- **Checking Pro.** When you turn it on, the app sends the Google Play
+  purchase token of your Pro purchase to the relay, and the relay asks Google
+  Play whether it is a completed purchase of Pro. The relay keeps only a
+  one-way hash (SHA-256) of the token, so the same purchase brings back the
+  same Home after a reinstall. It never receives your name, email address or
+  payment details.
+- **What the relay stores**, for each Home: a random Home ID, the hash of the
+  purchase token and when the Home was created; logins for the hub and for up
+  to five phones (random user names, with passwords kept only as salted
+  hashes, and the date each phone was added); and the latest sealed state of
+  each device and whether the hub is online, so a phone sees them at once.
+- **Your IP address** reaches the relay while your hub or phone is connected,
+  as with any internet connection. It is not stored. The relay keeps no
+  connection or access logs, only its own error messages, which are capped
+  at a few megabytes and overwritten. To stop abuse, attempts to turn remote
+  control on are counted per IP address in memory for one hour.
+- **Adding a phone** with the QR code passes the login straight from one of
+  your phones to the other. A **key backup** is a file encrypted with your
+  passphrase (PBKDF2, AES-256-GCM) that you save where you choose, for
+  example Google Drive. Neither the relay nor the developer ever sees it.
+- **Turning it off** deletes this phone's login, and your hub deletes all its
+  sealed copies and its online flag from the relay. Removing a phone under
+  "Phones with remote access" deletes that phone's login. The Home ID, the
+  purchase-token hash and the hub's login stay, so you can turn remote
+  control on again with the same purchase. Email us to have them deleted
+  too; we do so within 30 days.
+- **Why we may process it:** to provide the feature you bought (Art. 6(1)(b)
+  GDPR). It is shared with no one; only the purchase check goes to Google
+  Play, under Google's privacy policy.
+- **Fair use.** Remote control is included with Pro while the relay runs, for
+  one Home, up to five phones and normal household use. It may change or end
+  with notice.
+
+## Your rights
+
+For the data on the relay, you can ask for access, correction, deletion or
+a copy, or object, by email (below). Give the Home ID shown in the app, as
+the relay holds nothing else that identifies you. You can also complain to a
+data protection authority in the EU country where you live.
 
 ## The zigdash.app website
 
@@ -240,5 +302,8 @@ If this policy changes, the updated version will be published at this URL with a
 new effective date.
 
 ## Contact
+
+The controller for the relay is the developer, Gilad Tamamski, Israel.
+EU representative (Art. 27 GDPR): [NAME AND ADDRESS, ONCE APPOINTED].
 
 Questions about this policy: **giladtamam1@gmail.com**
