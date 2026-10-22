@@ -35,12 +35,14 @@ class WireGuardFields extends StatefulWidget {
     required this.enabled,
     required this.onChanged,
     this.busy = false,
+    this.showDisabledFields = false,
   });
 
   final TextEditingController controller;
   final bool enabled;
   final ValueChanged<bool> onChanged;
   final bool busy;
+  final bool showDisabledFields;
 
   @override
   State<WireGuardFields> createState() => _WireGuardFieldsState();
@@ -95,8 +97,10 @@ class _WireGuardFieldsState extends State<WireGuardFields> {
                   widget.onChanged(value);
                 },
         ),
-        if (widget.enabled) ...[
+        if (widget.enabled || widget.showDisabledFields) ...[
           TextFormField(
+            enabled:
+                widget.enabled && !widget.busy && supportsEmbeddedWireGuard,
             controller: widget.controller,
             readOnly: !_show,
             obscureText: !_show,
@@ -110,7 +114,9 @@ class _WireGuardFieldsState extends State<WireGuardFields> {
               suffixIcon: IconButton(
                 tooltip: _show ? l10n.wgHide : l10n.wgShow,
                 icon: Icon(_show ? Icons.visibility_off : Icons.visibility),
-                onPressed: () => setState(() => _show = !_show),
+                onPressed: widget.enabled && !widget.busy
+                    ? () => setState(() => _show = !_show)
+                    : null,
               ),
             ),
             validator: (value) =>
@@ -119,7 +125,7 @@ class _WireGuardFieldsState extends State<WireGuardFields> {
                 : null,
           ),
           TextButton.icon(
-            onPressed: widget.busy ? null : _import,
+            onPressed: widget.enabled && !widget.busy ? _import : null,
             icon: const Icon(Icons.file_open_outlined),
             label: Text(l10n.wgImport),
           ),
