@@ -1111,5 +1111,6 @@
   "wbBuiltinsAvailable": "Les équipements intégrés au contrôleur restent disponibles dans Tous les appareils.",
   "wbOpenControls": "Ouvrir les commandes",
   "wbAddSelected": "Ajouter les propriétés sélectionnées",
-  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau."
+  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau.",
+  "wbZ2mDevices": "Appareils Z2M de Wirenboard"
 }

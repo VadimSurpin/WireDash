@@ -1186,5 +1186,6 @@
   "wbBuiltinsAvailable": "Integrierte Controller-Geräte bleiben unter „Alle Geräte“ verfügbar.",
   "wbOpenControls": "Steuerelemente öffnen",
   "wbAddSelected": "Ausgewählte Eigenschaften hinzufügen",
-  "wbChooseProperties": "Eigenschaften auswählen, die als ein Panel hinzugefügt werden sollen."
+  "wbChooseProperties": "Eigenschaften auswählen, die als ein Panel hinzugefügt werden sollen.",
+  "wbZ2mDevices": "Wirenboard-Z2M-Geräte"
 }

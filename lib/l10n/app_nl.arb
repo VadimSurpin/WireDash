@@ -1186,5 +1186,6 @@
   "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.",
   "wbOpenControls": "Bediening openen",
   "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
-  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen."
+  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen.",
+  "wbZ2mDevices": "Wirenboard Z2M-apparaten"
 }

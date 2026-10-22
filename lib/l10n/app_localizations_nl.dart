@@ -3798,4 +3798,7 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get wbChooseProperties =>
       'Selecteer eigenschappen om als één paneel toe te voegen.';
+
+  @override
+  String get wbZ2mDevices => 'Wirenboard Z2M-apparaten';
 }

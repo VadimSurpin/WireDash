@@ -10,6 +10,8 @@ import '../providers/discovery_provider.dart';
 import '../models/wirenboard_panel_suggestion.dart';
 import '../providers/wirenboard_discovery_provider.dart';
 import '../wirenboard_dashboard_importer.dart';
+import '../wirenboard_device_groups.dart';
+import '../../devices/devices_providers.dart' show homeBaseTopicProvider;
 
 class DevicePickerScreen extends ConsumerStatefulWidget {
   const DevicePickerScreen({
@@ -30,6 +32,7 @@ class DevicePickerScreen extends ConsumerStatefulWidget {
 class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
   final _baseController = TextEditingController(text: 'zigbee2mqtt');
   String _base = 'zigbee2mqtt';
+  bool _baseEdited = false;
   final _wbSearch = TextEditingController();
   final _expandedWbDevices = <String>{};
   final _collapsedWbSearchDevices = <String>{};
@@ -53,7 +56,10 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
     if (newBase.isEmpty) return;
     final args = (connectionId: widget.connectionId, base: newBase);
     ref.invalidate(discoveredDevicesProvider(args));
-    setState(() => _base = newBase);
+    setState(() {
+      _baseEdited = true;
+      _base = newBase;
+    });
   }
 
   IconData _iconForType(PanelType type) => switch (type) {
@@ -79,6 +85,11 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final homeBase = ref.watch(homeBaseTopicProvider(widget.connectionId));
+    if (!_baseEdited && homeBase != null && homeBase != _base) {
+      _base = homeBase;
+      _baseController.text = homeBase;
+    }
     final args = (connectionId: widget.connectionId, base: _base);
     final devicesAsync = _wirenBoard
         ? null
@@ -226,7 +237,12 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
       wirenBoardDashboardIdsProvider(widget.dashboardId),
     );
     return ref
-        .watch(wirenBoardDevicesProvider(widget.connectionId))
+        .watch(
+          classifiedWirenBoardDevicesProvider((
+            connectionId: widget.connectionId,
+            base: _base,
+          )),
+        )
         .when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, __) => Center(
@@ -269,21 +285,17 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
                         .compareTo(b.title(language).toLowerCase()),
                   );
             final rows = <({String key, WidgetBuilder builder})>[];
-            for (final builtins in [false, true]) {
-              final group = visible.where(
-                (d) => d.isControllerBuiltin == builtins,
-              );
+            for (final category in WirenBoardDeviceGroup.values) {
+              final group = visible.where((d) => d.group == category);
               if (group.isEmpty) continue;
               rows.add((
-                key: 'group:$builtins',
+                key: 'group:$category',
                 builder: (context) => Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Semantics(
                     header: true,
                     child: Text(
-                      builtins
-                          ? l10n.wbControllerBuiltins
-                          : l10n.wbAddedModules,
+                      wirenBoardGroupLabel(category, l10n),
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),

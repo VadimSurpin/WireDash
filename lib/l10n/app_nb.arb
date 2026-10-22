@@ -1186,5 +1186,6 @@
   "wbBuiltinsAvailable": "Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter.",
   "wbOpenControls": "Åpne kontroller",
   "wbAddSelected": "Legg til valgte egenskaper",
-  "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel."
+  "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel.",
+  "wbZ2mDevices": "Wirenboard Z2M-enheter"
 }

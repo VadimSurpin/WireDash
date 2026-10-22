@@ -6731,6 +6731,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select properties to add as one panel.'**
   String get wbChooseProperties;
+
+  /// No description provided for @wbZ2mDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Wirenboard Z2M devices'**
+  String get wbZ2mDevices;
 }
 
 class _AppLocalizationsDelegate

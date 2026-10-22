@@ -1181,5 +1181,6 @@
   "wbBuiltinsAvailable": "Wbudowane urządzenia kontrolera pozostają dostępne na liście wszystkich urządzeń.",
   "wbOpenControls": "Otwórz elementy sterujące",
   "wbAddSelected": "Dodaj wybrane właściwości",
-  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel."
+  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel.",
+  "wbZ2mDevices": "Urządzenia Z2M w Wirenboard"
 }

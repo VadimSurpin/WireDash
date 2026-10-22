@@ -1146,5 +1146,6 @@
   "wbBuiltinsAvailable": "Os dispositivos integrados ao controlador continuam disponíveis em Todos os dispositivos.",
   "wbOpenControls": "Abrir controles",
   "wbAddSelected": "Adicionar propriedades selecionadas",
-  "wbChooseProperties": "Selecione as propriedades para adicionar como um único painel."
+  "wbChooseProperties": "Selecione as propriedades para adicionar como um único painel.",
+  "wbZ2mDevices": "Dispositivos Z2M do Wirenboard"
 }

@@ -13,6 +13,7 @@ import '../../discovery/models/z2m_device.dart';
 import '../../discovery/models/wirenboard_device.dart';
 import '../../discovery/providers/wirenboard_discovery_provider.dart';
 import '../../discovery/wirenboard_dashboard_importer.dart';
+import '../../discovery/wirenboard_device_groups.dart';
 import '../../panels/models/panel_config.dart';
 import '../../panels/widgets/wirenboard_device_panel.dart';
 import '../../../data/database/database.dart';
@@ -303,7 +304,14 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     };
     final all = healthAsync.valueOrNull ?? const <DeviceHealth>[];
     final wbDevices =
-        ref.watch(wirenBoardDevicesProvider(widget.connectionId)).valueOrNull ??
+        ref
+            .watch(
+              classifiedWirenBoardDevicesProvider((
+                connectionId: widget.connectionId,
+                base: base,
+              )),
+            )
+            .valueOrNull ??
         const <WirenBoardDevice>[];
     final wbLinked = ref.watch(
       linkedWirenBoardIdsProvider(widget.connectionId),
@@ -468,16 +476,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                     ),
                   ),
                 ),
-              for (final builtin in [false, true]) ...[
-                if (wbShown.any((d) => d.isControllerBuiltin == builtin))
-                  ListTile(
-                    title: Text(
-                      builtin ? l10n.wbControllerBuiltins : l10n.wbAddedModules,
-                    ),
-                  ),
-                for (final device in wbShown.where(
-                  (d) => d.isControllerBuiltin == builtin,
-                ))
+              for (final group in WirenBoardDeviceGroup.values) ...[
+                if (wbShown.any((d) => d.group == group))
+                  ListTile(title: Text(wirenBoardGroupLabel(group, l10n))),
+                for (final device in wbShown.where((d) => d.group == group))
                   ..._wirenBoardTree(device, q, wbLinked.contains(device.id)),
               ],
               if (rows.isNotEmpty && !availability.any)
