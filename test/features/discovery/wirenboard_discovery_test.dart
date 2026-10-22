@@ -200,6 +200,48 @@ void main() {
     },
   );
 
+  test(
+    'command override offers scalar toggle without changing read-only discovery metadata',
+    () {
+      final discovery = WirenBoardDiscovery()
+        ..apply(
+          '/devices/wb-mr6c_12/controls/K1/meta',
+          '{"type":"switch","readonly":true}',
+        );
+      final device = discovery.devices.single;
+      final control = device.controls.single;
+      final initial = suggestWirenBoardPanel(device, control);
+      expect(initial.type, PanelType.led);
+      expect(initial.widgetChoices.map((c) => c.type), [
+        PanelType.led,
+        PanelType.textLog,
+      ]);
+      expect(
+        initial.commandWidgetChoices.map((c) => c.type),
+        contains(PanelType.toggle),
+      );
+      expect(
+        () => suggestWirenBoardPanel(
+          device,
+          control,
+          widgetType: PanelType.toggle,
+        ),
+        throwsArgumentError,
+      );
+      final overridden = suggestWirenBoardPanel(
+        device,
+        control,
+        widgetType: PanelType.toggle,
+        allowCommands: true,
+      );
+      expect(overridden.publishTopicSuffix, 'on');
+      final config = overridden.config as ToggleConfig;
+      expect((config.onPayload, config.offPayload), ('1', '0'));
+      expect(control.readOnly, isTrue);
+      expect(suggestWirenBoardPanel(device, control).type, PanelType.led);
+    },
+  );
+
   test('hidden, reordered, deleted and malformed retained metadata', () {
     final d = WirenBoardDiscovery();
     d.apply('$topic/meta', '{"type":"switch","order":2}');

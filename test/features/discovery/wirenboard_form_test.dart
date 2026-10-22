@@ -68,6 +68,8 @@ void main() {
     'reading selector': '{"type":"value","units":"V","readonly":true}',
     'device': '{"type":"switch"}',
     'switch': '{"type":"switch"}',
+    'switch override': '{"type":"switch","readonly":true}',
+    'switch override reset': '{"type":"switch","readonly":true}',
     'switch input selector': '{"type":"switch"}',
     'rgb': '{"type":"rgb"}',
     'local time': '{"type":"local_time"}',
@@ -212,6 +214,27 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }
       }
+      final overriding = entry.key.startsWith('switch override');
+      final resetOverride = entry.key == 'switch override reset';
+      if (overriding) {
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Name'),
+          'Kitchen relay',
+        );
+        final overrideSwitch = find.text(
+          lookupAppLocalizations(const Locale('en')).panelAllowCommands,
+        );
+        await tester.tap(overrideSwitch);
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        if (resetOverride) {
+          await tester.tap(overrideSwitch);
+          for (var i = 0; i < 5; i++) {
+            await tester.pump(const Duration(milliseconds: 100));
+          }
+        }
+      }
       final selectingInput = entry.key == 'switch input selector';
       if (entry.key == 'reading selector' || selectingInput) {
         final name = find.widgetWithText(TextFormField, 'Name');
@@ -259,6 +282,14 @@ void main() {
         if (config is WirenBoardDeviceConfig) {
           expect(config.controlIds, isNull);
         }
+      } else if (overriding && !resetOverride) {
+        expect(saved[#config], isA<ToggleConfig>());
+        final config = saved[#config] as ToggleConfig;
+        expect(config.onPayload, '1');
+        expect(config.offPayload, '0');
+        expect(config.jsonPath, isNull);
+        expect(saved[#topic], 'on');
+        expect(saved[#name], 'Kitchen relay');
       } else if (selectingInput) {
         expect(saved[#config], isA<TextInputConfig>());
         expect((saved[#config] as TextInputConfig).template, '{value}');
@@ -275,7 +306,9 @@ void main() {
       if (!editing) {
         expect(
           saved[#type],
-          selectingInput
+          overriding && !resetOverride
+              ? PanelType.toggle
+              : selectingInput
               ? PanelType.textInput
               : entry.key == 'reading selector'
               ? PanelType.progress

@@ -32,28 +32,48 @@ class PropertyWidgetSelector extends StatelessWidget {
     required this.choices,
     required this.value,
     required this.onChanged,
+    this.showCommandOverride = false,
+    this.allowCommands = false,
+    this.onAllowCommandsChanged,
   });
   final List<PanelSuggestion> choices;
   final PanelType value;
   final ValueChanged<PanelType>? onChanged;
+  final bool showCommandOverride;
+  final bool allowCommands;
+  final ValueChanged<bool>? onAllowCommandsChanged;
 
   @override
-  Widget build(BuildContext context) => DropdownButtonFormField<PanelType>(
-    key: ValueKey(value),
-    initialValue: value,
-    isExpanded: true,
-    decoration: InputDecoration(labelText: context.l10n.panelPropertyWidget),
-    items: [
-      for (final choice in choices)
-        DropdownMenuItem(
-          value: choice.type,
-          child: Text(panelWidgetLabel(choice.type, context.l10n)),
+  Widget build(BuildContext context) => Column(
+    children: [
+      if (showCommandOverride)
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(context.l10n.panelAllowCommands),
+          subtitle: Text(context.l10n.panelAllowCommandsHint),
+          value: allowCommands,
+          onChanged: onAllowCommandsChanged,
         ),
+      DropdownButtonFormField<PanelType>(
+        key: ValueKey(value),
+        initialValue: value,
+        isExpanded: true,
+        decoration: InputDecoration(
+          labelText: context.l10n.panelPropertyWidget,
+        ),
+        items: [
+          for (final choice in choices)
+            DropdownMenuItem(
+              value: choice.type,
+              child: Text(panelWidgetLabel(choice.type, context.l10n)),
+            ),
+        ],
+        onChanged: onChanged == null
+            ? null
+            : (value) {
+                if (value != null) onChanged!(value);
+              },
+      ),
     ],
-    onChanged: onChanged == null
-        ? null
-        : (value) {
-            if (value != null) onChanged!(value);
-          },
   );
 }

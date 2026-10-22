@@ -1510,5 +1510,7 @@
   "panelDisplayReset": "Karteninhalt und Beschriftungen zurücksetzen",
   "panelDisplayHint": "Wählen Sie die Eigenschaften für diese Karte. Eigene Beschriftungen gelten nur für dieses Panel. Öffnen Sie die Karte, um alle Gerätesteuerungen zu sehen.",
   "panelDisplayTitle": "Karteninhalt",
-  "panelDisplayLabel": "Eigene Beschriftung (optional)"
+  "panelDisplayLabel": "Eigene Beschriftung (optional)",
+  "panelAllowCommandsHint": "Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel.",
+  "panelAllowCommands": "Befehle erlauben"
 }

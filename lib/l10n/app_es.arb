@@ -1510,5 +1510,7 @@
   "panelDisplayReset": "Restablecer contenido y etiquetas",
   "panelDisplayHint": "Elige las propiedades que muestra esta tarjeta. Las etiquetas personalizadas solo se aplican a este panel. Abre la tarjeta para ver todos los controles del dispositivo.",
   "panelDisplayTitle": "Contenido de la tarjeta",
-  "panelDisplayLabel": "Etiqueta personalizada (opcional)"
+  "panelDisplayLabel": "Etiqueta personalizada (opcional)",
+  "panelAllowCommandsHint": "Ofrecer widgets editables aunque la detección marque esta propiedad como de solo lectura. Solo se aplica a este panel.",
+  "panelAllowCommands": "Permitir comandos"
 }

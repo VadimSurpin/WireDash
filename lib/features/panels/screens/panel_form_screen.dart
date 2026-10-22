@@ -197,6 +197,7 @@ class _State extends ConsumerState<PanelFormScreen> {
   int _qos = 1;
   bool _loaded = false;
   bool _saving = false;
+  bool _allowPropertyCommands = false;
   String? _topicPrefixHint;
 
   /// The device this tile shows (`panels.deviceIeee`), set by "Pick a
@@ -845,16 +846,37 @@ class _State extends ConsumerState<PanelFormScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             if (widget.suggestion case final suggestion?
-                when suggestion.widgetChoices.length > 1) ...[
+                when suggestion.widgetChoices.length > 1 ||
+                    suggestion.commandWidgetChoices.isNotEmpty) ...[
               PropertyWidgetSelector(
-                choices: suggestion.widgetChoices,
+                choices: _allowPropertyCommands
+                    ? suggestion.commandWidgetChoices
+                    : suggestion.widgetChoices,
+                showCommandOverride: suggestion.commandWidgetChoices.isNotEmpty,
+                allowCommands: _allowPropertyCommands,
+                onAllowCommandsChanged: _saving
+                    ? null
+                    : (value) => setState(() {
+                        _allowPropertyCommands = value;
+                        final options = value
+                            ? suggestion.commandWidgetChoices
+                            : suggestion.widgetChoices;
+                        final option = options.first;
+                        _type = option.type;
+                        _topic.text = option.publishTopicSuffix;
+                        _subscribeTopic.text = option.subscribeTopicSuffix;
+                        _commandEdited = true;
+                        _applyConfig(option.config!);
+                      }),
                 value: _type,
                 onChanged: _saving
                     ? null
                     : (type) => setState(() {
-                        final option = suggestion.widgetChoices.firstWhere(
-                          (c) => c.type == type,
-                        );
+                        final option =
+                            (_allowPropertyCommands
+                                    ? suggestion.commandWidgetChoices
+                                    : suggestion.widgetChoices)
+                                .firstWhere((c) => c.type == type);
                         _type = type;
                         _applyConfig(option.config!);
                       }),

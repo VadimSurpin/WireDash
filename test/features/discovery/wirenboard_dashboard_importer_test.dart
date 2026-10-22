@@ -219,6 +219,54 @@ void main() {
   );
 
   test(
+    'explicit command override saves a K1 toggle without changing device metadata',
+    () async {
+      final device =
+          (WirenBoardDiscovery()..apply(
+                '/devices/wb-mr6c_12/controls/K1/meta',
+                '{"type":"switch","readonly":true}',
+              ))
+              .devices
+              .single;
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      await importer.addControl(
+        device,
+        device.controls.single,
+        label: 'Kitchen relay',
+        widgetType: PanelType.toggle,
+        allowCommands: true,
+      );
+      final saved = (await panels.getByDashboard(dashboard)).single;
+      expect(saved.name, 'Kitchen relay');
+      expect(saved.type, PanelType.toggle);
+      expect(saved.topicPrefixOverride, '/devices/wb-mr6c_12/controls/K1');
+      expect(saved.topic, 'on');
+      expect(saved.subscribeTopic, '');
+      expect(saved.retain, isFalse);
+      final config =
+          PanelConfig.decode(saved.type, saved.config) as ToggleConfig;
+      expect((config.onPayload, config.offPayload), ('1', '0'));
+      expect(config.jsonPath, isNull);
+      expect(device.controls.single.readOnly, isTrue);
+      await expectLater(
+        importer.addControl(
+          device,
+          device.controls.single,
+          label: 'Without override',
+          widgetType: PanelType.toggle,
+        ),
+        throwsArgumentError,
+      );
+      expect(await panels.getByDashboard(dashboard), hasLength(1));
+    },
+  );
+
+  test(
     'rediscovery moves service and mirrored panels while preserving custom labels, subsets and sections',
     () async {
       final importer = WirenBoardDashboardImporter(

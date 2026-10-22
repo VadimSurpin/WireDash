@@ -1510,5 +1510,7 @@
   "panelDisplayReset": "Redefinir conteúdo e etiquetas",
   "panelDisplayHint": "Escolha as propriedades mostradas neste cartão. As etiquetas personalizadas valem apenas para este painel. Abra o cartão para acessar todos os controles do dispositivo.",
   "panelDisplayTitle": "Conteúdo do cartão",
-  "panelDisplayLabel": "Etiqueta personalizada (opcional)"
+  "panelDisplayLabel": "Etiqueta personalizada (opcional)",
+  "panelAllowCommandsHint": "Oferecer widgets editáveis mesmo quando a descoberta marcar esta propriedade como somente leitura. Aplica-se apenas a este bloco.",
+  "panelAllowCommands": "Permitir comandos"
 }

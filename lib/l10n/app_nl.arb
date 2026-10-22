@@ -1510,5 +1510,7 @@
   "panelDisplayReset": "Kaartinhoud en labels herstellen",
   "panelDisplayHint": "Kies welke eigenschappen op deze kaart staan. Aangepaste labels gelden alleen voor dit paneel. Open de kaart voor alle apparaatbedieningen.",
   "panelDisplayTitle": "Kaartinhoud",
-  "panelDisplayLabel": "Aangepast label (optioneel)"
+  "panelDisplayLabel": "Aangepast label (optioneel)",
+  "panelAllowCommandsHint": "Bied bewerkbare widgets aan, ook als deze eigenschap bij detectie als alleen-lezen is gemarkeerd. Geldt alleen voor deze tegel.",
+  "panelAllowCommands": "Opdrachten toestaan"
 }

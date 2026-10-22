@@ -63,6 +63,7 @@ class WirenBoardDashboardImporter {
     WirenBoardControl control, {
     required String label,
     PanelType? widgetType,
+    bool allowCommands = false,
   }) {
     final operation = _pending.then((_) async {
       if (control.deviceId != device.id ||
@@ -74,6 +75,7 @@ class WirenBoardDashboardImporter {
         control,
         language: _l10n.localeName.split('_').first,
         widgetType: widgetType,
+        allowCommands: allowCommands,
       );
       final tiles = await _panels.getByDashboard(_dashboardId);
       await _panels.create(

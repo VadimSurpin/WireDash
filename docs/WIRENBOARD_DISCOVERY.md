@@ -133,6 +133,11 @@ the control: numeric readings can use a reading or progress bar; writable
 ranges can also use a slider or input; switches offer toggles, indicators and
 explicit choices where supported. Every writable control offers text input for
 raw scalar commands, including RGB, local time and custom control types.
-Read-only controls offer display widgets.
+Read-only controls offer display widgets by default. If a property is writable
+in WB but discovery marks it read-only, enable **Allow commands** to unlock
+editable widgets (for example **Toggle** for MR6C K1–K6). This is an explicit
+setting for the tile being added, available in both add screens. Commands use
+the property's `/on` topic; it does not change discovered metadata or other
+panels. Turning the option off restores the read-only choices.
 The discovery tile form also offers this selector, with editable widget
 settings. Switching widgets preserves the label and WB scalar MQTT topics.
