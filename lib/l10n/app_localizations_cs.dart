@@ -1391,6 +1391,10 @@ class AppLocalizationsCs extends AppLocalizations {
       'Tohle je tvůj hub SMLIGHT, ale jeho MQTT broker nepřijímá připojení z jiných zařízení. Na webové stránce hubu otevři Settings › MQTT, zapni Allow External, ulož a zkus to znovu.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Na této adrese běží Zigbee2MQTT, ale ke svému brokeru se připojuje pod jiným jménem (viz Zigbee2MQTT › Settings › MQTT › Server). Pokud je to jiný počítač, zadejte jeho adresu, obvykle s portem 1883. Pokud je to kontejner na tomto počítači, zveřejněte jeho port (ports: \"1883:1883\") a povolte mu naslouchat v síti, pak to zkuste znovu.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Na této adrese běží Zigbee2MQTT, ale jeho MQTT broker nepřijímá připojení z jiných zařízení. Mosquitto naslouchá jen na svém vlastním počítači, dokud do mosquitto.conf nepřidáš řádky \"listener 1883\" a \"allow_anonymous true\" (nebo nenastavíš heslo). Restartuj Mosquitto a zkus to znovu.';
 
@@ -1924,6 +1928,19 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Chceš raději přihlášení než otevřený přístup? Místo allow_anonymous použij password_file.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT se ke svému brokeru připojuje pod jménem, které váš telefon nemůže použít';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT používá $server. „$name“ je jméno, které zná jen počítač se Zigbee2MQTT, služba Dockeru nebo název hostitele. Zadejte místo něj IP adresu počítače s brokerem a port $port. Pokud broker běží v kontejneru, musí být jeho port také zveřejněn na počítači (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Webová stránka Zigbee2MQTT je chráněna tokenem, takže aplikace nemohla zjistit, kde je její broker. Zadejte adresu brokeru z nastavení Zigbee2MQTT › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

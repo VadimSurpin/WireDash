@@ -32,28 +32,29 @@ class DiagnosticsLadderView extends StatelessWidget {
       };
 
   String? _detail(BuildContext context, String? key) => switch (key) {
-        'diagResolveFail' => context.l10n.diagResolveFail,
-        'diagResolveTimeout' => context.l10n.diagResolveTimeout,
-        'diagResolveLocalName' => context.l10n.diagResolveLocalName,
-        'diagTcpHaNoBroker' => context.l10n.diagTcpHaNoBroker,
-        'diagTcpSmlightClosed' => context.l10n.diagTcpSmlightClosed,
-        'diagTcpZ2mNoBroker' => context.l10n.diagTcpZ2mNoBroker,
-        'diagAuthRejectedHa' => context.l10n.diagAuthRejectedHa,
-        'diagTcpFail' => context.l10n.diagTcpFail,
-        'diagTcpTimeout' => context.l10n.diagTcpTimeout,
-        'diagConnackFail' => context.l10n.diagConnackFail,
-        'diagLoginNoAnswer' => context.l10n.diagLoginNoAnswer,
-        'diagAuthRejected' => context.l10n.diagAuthRejected,
-        'diagAuthRefused' => context.l10n.diagAuthRefused,
-        _ => null,
-      };
+    'diagResolveFail' => context.l10n.diagResolveFail,
+    'diagResolveTimeout' => context.l10n.diagResolveTimeout,
+    'diagResolveLocalName' => context.l10n.diagResolveLocalName,
+    'diagTcpHaNoBroker' => context.l10n.diagTcpHaNoBroker,
+    'diagTcpSmlightClosed' => context.l10n.diagTcpSmlightClosed,
+    'diagTcpZ2mNoBroker' => context.l10n.diagTcpZ2mNoBroker,
+    'diagTcpZ2mBrokerElsewhere' => context.l10n.diagTcpZ2mBrokerElsewhere,
+    'diagAuthRejectedHa' => context.l10n.diagAuthRejectedHa,
+    'diagTcpFail' => context.l10n.diagTcpFail,
+    'diagTcpTimeout' => context.l10n.diagTcpTimeout,
+    'diagConnackFail' => context.l10n.diagConnackFail,
+    'diagLoginNoAnswer' => context.l10n.diagLoginNoAnswer,
+    'diagAuthRejected' => context.l10n.diagAuthRejected,
+    'diagAuthRefused' => context.l10n.diagAuthRefused,
+    _ => null,
+  };
 
   IconData _icon(StepStatus s) => switch (s) {
-        StepStatus.pass => Icons.check_circle,
-        StepStatus.fail => Icons.cancel,
-        StepStatus.skipped => Icons.remove_circle_outline,
-        StepStatus.pending || StepStatus.running => Icons.radio_button_unchecked,
-      };
+    StepStatus.pass => Icons.check_circle,
+    StepStatus.fail => Icons.cancel,
+    StepStatus.skipped => Icons.remove_circle_outline,
+    StepStatus.pending || StepStatus.running => Icons.radio_button_unchecked,
+  };
 
   Color _color(BuildContext context, StepStatus s) {
     final cs = Theme.of(context).colorScheme;
@@ -78,8 +79,8 @@ class DiagnosticsLadderView extends StatelessWidget {
             child: Text(
               l10n.ladderTriedHint(candidatesTried),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
           ),
       ],
@@ -94,19 +95,19 @@ class DiagnosticsLadderView extends StatelessWidget {
         break;
       }
     }
-    final status = result?.status ??
-        (running ? StepStatus.running : StepStatus.pending);
+    final status =
+        result?.status ?? (running ? StepStatus.running : StepStatus.pending);
     final cs = Theme.of(context).colorScheme;
     final detail = _detail(context, result?.detailKey);
-    final trailing = (step == DiagnosticStep.devices &&
+    final trailing =
+        (step == DiagnosticStep.devices &&
             result?.status == StepStatus.pass &&
             result?.deviceCount != null)
         ? Text(
             '${result!.deviceCount}',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: cs.tertiary),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: cs.tertiary),
           )
         : null;
 
@@ -121,16 +122,18 @@ class DiagnosticsLadderView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_stepLabel(context, step),
-                    style: Theme.of(context).textTheme.bodyLarge),
+                Text(
+                  _stepLabel(context, step),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 if (detail != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
                       detail,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: cs.error,
-                          ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: cs.error),
                     ),
                   ),
               ],

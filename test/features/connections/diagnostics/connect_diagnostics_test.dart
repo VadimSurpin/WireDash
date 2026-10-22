@@ -7,6 +7,7 @@ import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:zigdash/core/analytics/analytics_events.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 
@@ -119,6 +120,7 @@ void main() {
     HostLookup? hostLookup,
     TcpProbe? tcpProbe,
     HostIdentifier? identify,
+    Z2mBrokerAsk? askZ2m,
     List<String>? builtHosts,
   }) {
     final seen = builtHosts ?? <String>[];
@@ -126,6 +128,7 @@ void main() {
       hostLookup: hostLookup ?? okLookup,
       tcpProbe: tcpProbe ?? okProbe,
       identify: identify,
+      askZ2m: askZ2m,
       clientFactory: (cfg, clientId, {host}) {
         seen.add(host ?? cfg.host);
         final h = host ?? cfg.host;
@@ -459,8 +462,7 @@ void main() {
       });
     });
 
-    test('refused where only Zigbee2MQTT answers: Mosquitto is local only',
-        () {
+    test('refused where only Zigbee2MQTT answers: Mosquitto is local only', () {
       fakeAsync((async) {
         final d = diagnostics(
           tcpProbe: (h, p, t) async => throw Exception('refused'),
@@ -471,6 +473,41 @@ void main() {
         async.flushMicrotasks();
         expect(report!.steps[1].detailKey, 'diagTcpZ2mNoBroker');
         expect(manualTestResult(report!), ManualTestResult.z2mNoBroker);
+      });
+    });
+
+    // 2.10.4: Zigbee2MQTT's own settings name the broker elsewhere, so
+    // "open Mosquitto here" would be wrong (a German Docker user, 2026-10-22).
+    test('refused on a Zigbee2MQTT machine whose broker is elsewhere', () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          tcpProbe: (h, p, t) async => throw Exception('refused'),
+          identify: (h) async => HubKind.zigbee2mqtt,
+          askZ2m: (h, p) async => z2mBrokerSetting({
+            'server': 'mqtt://mosquitto:1883',
+          }, frontendHost: h),
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: '').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpZ2mBrokerElsewhere');
+        expect(manualTestResult(report!), ManualTestResult.z2mBrokerElsewhere);
+      });
+    });
+
+    test('a broker on the same machine keeps the local-only message', () {
+      fakeAsync((async) {
+        final d = diagnostics(
+          tcpProbe: (h, p, t) async => throw Exception('refused'),
+          identify: (h) async => HubKind.zigbee2mqtt,
+          askZ2m: (h, p) async => z2mBrokerSetting({
+            'server': 'mqtt://localhost:1883',
+          }, frontendHost: h),
+        );
+        DiagnosticsReport? report;
+        d.run(config: config(), password: '').then((r) => report = r);
+        async.flushMicrotasks();
+        expect(report!.steps[1].detailKey, 'diagTcpZ2mNoBroker');
       });
     });
 

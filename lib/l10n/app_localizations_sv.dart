@@ -1388,6 +1388,10 @@ class AppLocalizationsSv extends AppLocalizations {
       'Det här är din SMLIGHT-hubb, men dess MQTT-broker tar inte emot anslutningar från andra enheter. Öppna Settings › MQTT på hubbens webbsida, slå på Allow External, spara och försök igen.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Zigbee2MQTT kör på den här adressen men når sin broker under ett annat namn (se Zigbee2MQTT › Settings › MQTT › Server). Är det en annan maskin, skriv in dess adress, oftast med port 1883. Är det en container på den här maskinen, publicera dess port (ports: \"1883:1883\") och låt den lyssna på nätverket, och försök sedan igen.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Zigbee2MQTT körs på den här adressen, men dess MQTT-broker tar inte emot anslutningar från andra enheter. Mosquitto lyssnar bara på sin egen dator tills du lägger till raderna ”listener 1883” och ”allow_anonymous true” i mosquitto.conf (eller ställer in ett lösenord). Starta om Mosquitto och försök igen.';
 
@@ -1920,6 +1924,19 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Hellre inloggning än öppen åtkomst? Använd en password_file i stället för allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT når sin broker via ett namn som din telefon inte kan använda';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT använder $server. ”$name” är ett namn som bara Zigbee2MQTT:s maskin känner till, en Docker-tjänst eller ett värdnamn. Skriv i stället in broker-maskinens IP-adress med port $port. Kör brokern i en container måste dess port också publiceras på maskinen (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Zigbee2MQTT:s webbsida är skyddad med en token, så appen kunde inte läsa var dess broker finns. Skriv in broker-adressen från Zigbee2MQTT › Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

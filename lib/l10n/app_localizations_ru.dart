@@ -1403,6 +1403,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Это ваш хаб SMLIGHT, но его MQTT-брокер не принимает подключения с других устройств. На веб-странице хаба откройте Settings › MQTT, включите Allow External, сохраните и попробуйте снова.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'По этому адресу работает Zigbee2MQTT, но к брокеру он обращается по другому имени (см. Zigbee2MQTT › Settings › MQTT › Server). Если это другая машина, введите её адрес, обычно с портом 1883. Если это контейнер на этой машине, опубликуйте его порт (ports: \"1883:1883\") и разрешите ему слушать сеть, затем попробуйте снова.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'По этому адресу работает Zigbee2MQTT, но его MQTT-брокер не принимает подключения с других устройств. Mosquitto слушает только на своей машине, пока вы не добавите в mosquitto.conf строки «listener 1883» и «allow_anonymous true» (или не настроите пароль). Перезапустите Mosquitto и попробуйте снова.';
 
@@ -1921,6 +1925,19 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Нужен логин вместо открытого доступа? Используйте password_file вместо allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT обращается к брокеру по имени, которое телефон использовать не может';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT использует $server. «$name» — имя, известное только машине с Zigbee2MQTT: сервис Docker или имя хоста. Введите вместо него IP-адрес машины с брокером и порт $port. Если брокер работает в контейнере, его порт должен быть также опубликован на машине (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Веб-страница Zigbee2MQTT защищена токеном, поэтому приложение не смогло узнать, где её брокер. Введите адрес брокера из настроек Zigbee2MQTT › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

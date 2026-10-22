@@ -167,6 +167,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
             result: manualTestResult(report),
             devices: report.connected ? report.deviceNames.length : null,
             tidied: tidied,
+            portClass: portClassOf(port),
           ),
         );
 

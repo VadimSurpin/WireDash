@@ -988,6 +988,27 @@ void main() {
       ));
     });
 
+    // 2.10.4: a Docker service or hostname only Zigbee2MQTT's machine knows.
+    test('a name the phone cannot use is said, with its port', () async {
+      final h = await emptyScanWith([
+        z2mPage,
+      ], answer: (_, _) => setting('mqtt://mosquitto:1884'));
+      expect((h.coordinator.state as SetupScanEmpty).z2m, (
+        status: Z2mAnswerStatus.nameOnly,
+        server: 'mqtt://mosquitto:1884',
+      ));
+    });
+
+    test('a page protected by a token is said, not silent', () async {
+      final h = await emptyScanWith([
+        z2mPage,
+      ], answer: (_, _) => throw const Z2mPageLocked());
+      expect((h.coordinator.state as SetupScanEmpty).z2m, (
+        status: Z2mAnswerStatus.tokenRequired,
+        server: '',
+      ));
+    });
+
     test('the page does not answer: the result stays as it was', () async {
       final h = await emptyScanWith([z2mPage]);
       expect((h.coordinator.state as SetupScanEmpty).z2m, (

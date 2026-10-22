@@ -211,6 +211,27 @@ void main() {
       });
     });
 
+    // 2.10.4: the class of the port typed on the broker form, never the port.
+    test('manual_test carries the port class', () {
+      expect(portClassOf(1883), '1883');
+      expect(portClassOf(8883), '8883');
+      expect(portClassOf(8080), 'web');
+      expect(portClassOf(8123), 'web');
+      expect(portClassOf(1884), 'other');
+      expect(
+        const SetupStep(
+          SetupStepKind.manualTest,
+          result: ManualTestResult.z2mBrokerElsewhere,
+          portClass: 'web',
+        ).props,
+        {
+          'step': 'manual_test',
+          'result': 'z2m_broker_elsewhere',
+          'port': 'web',
+        },
+      );
+    });
+
     // 2.10.2: the review's preselection, and leaving it without a dashboard.
     test('setup_step review carries how many were ticked', () {
       expect(

@@ -1388,6 +1388,10 @@ class AppLocalizationsNb extends AppLocalizations {
       'Dette er SMLIGHT-huben din, men MQTT-megleren på den godtar ikke tilkoblinger fra andre enheter. Åpne Settings › MQTT på hubens nettside, slå på Allow External, lagre og prøv igjen.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Zigbee2MQTT kjører på denne adressen, men når brokeren sin under et annet navn (se Zigbee2MQTT › Settings › MQTT › Server). Er det en annen maskin, skriv inn adressen dens, vanligvis med port 1883. Er det en container på denne maskinen, publiser porten (ports: \"1883:1883\") og la den lytte på nettverket, og prøv igjen.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Zigbee2MQTT kjører på denne adressen, men MQTT-megleren godtar ikke tilkoblinger fra andre enheter. Mosquitto lytter bare på sin egen maskin til du legger linjene «listener 1883» og «allow_anonymous true» til i mosquitto.conf (eller setter opp et passord). Start Mosquitto på nytt og prøv igjen.';
 
@@ -1921,6 +1925,19 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Vil du heller ha innlogging enn åpen tilgang? Bruk en password_file i stedet for allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT når brokeren sin via et navn telefonen din ikke kan bruke';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT bruker $server. «$name» er et navn bare maskinen til Zigbee2MQTT kjenner, en Docker-tjeneste eller et vertsnavn. Skriv inn IP-adressen til broker-maskinen med port $port i stedet. Kjører brokeren i en container, må porten også publiseres på maskinen (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Nettsiden til Zigbee2MQTT er beskyttet med et token, så appen kunne ikke lese hvor brokeren er. Skriv inn broker-adressen fra Zigbee2MQTT › Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

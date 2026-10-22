@@ -199,7 +199,19 @@ class SetupScanEmpty extends SetupState {
 /// Asking Zigbee2MQTT's web page where its broker is (2.7.2), and what came
 /// of it. [broker] leaves the empty result for verification; the others stay
 /// on it.
-enum Z2mAnswerStatus { asking, broker, localOnly, unreachable, noAnswer }
+enum Z2mAnswerStatus {
+  asking,
+  broker,
+  localOnly,
+
+  /// The server is a bare name only Zigbee2MQTT's machine knows (2.10.4).
+  nameOnly,
+  unreachable,
+
+  /// The page is protected by a token, so it could not be asked (2.10.4).
+  tokenRequired,
+  noAnswer,
+}
 
 /// [server] is the broker as Zigbee2MQTT names it (`mqtt://localhost:1883`),
 /// empty while asking or when nothing answered.
@@ -547,10 +559,13 @@ class SetupCoordinator {
     if (pages.isEmpty) return;
     final op = ++_op;
     _emit(s.copyWith(z2m: (status: Z2mAnswerStatus.asking, server: '')));
+    var locked = false;
     for (final (host, port) in pages) {
       Z2mBrokerSetting? setting;
       try {
         setting = await ask(host, port);
+      } on Z2mPageLocked {
+        locked = true;
       } catch (_) {}
       if (op != _op) return;
       if (setting == null) continue;
@@ -579,6 +594,8 @@ class SetupCoordinator {
           z2m: (
             status: setting.sameMachine
                 ? Z2mAnswerStatus.localOnly
+                : setting.bareName
+                ? Z2mAnswerStatus.nameOnly
                 : Z2mAnswerStatus.unreachable,
             server: setting.server,
           ),
@@ -589,7 +606,14 @@ class SetupCoordinator {
     final current = _state;
     if (current is SetupScanEmpty) {
       _emit(
-        current.copyWith(z2m: (status: Z2mAnswerStatus.noAnswer, server: '')),
+        current.copyWith(
+          z2m: (
+            status: locked
+                ? Z2mAnswerStatus.tokenRequired
+                : Z2mAnswerStatus.noAnswer,
+            server: '',
+          ),
+        ),
       );
     }
   }

@@ -1408,6 +1408,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'To jest Twój hub SMLIGHT, ale jego broker MQTT nie przyjmuje połączeń z innych urządzeń. Na stronie internetowej huba otwórz Settings › MQTT, włącz Allow External, zapisz i spróbuj ponownie.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Pod tym adresem działa Zigbee2MQTT, ale ze swoim brokerem łączy się pod inną nazwą (zobacz Zigbee2MQTT › Settings › MQTT › Server). Jeśli to inna maszyna, wpisz jej adres, zwykle z portem 1883. Jeśli to kontener na tej maszynie, opublikuj jego port (ports: \"1883:1883\") i pozwól mu nasłuchiwać w sieci, a potem spróbuj ponownie.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Pod tym adresem działa Zigbee2MQTT, ale jego broker MQTT nie przyjmuje połączeń z innych urządzeń. Mosquitto nasłuchuje tylko na własnym komputerze, dopóki nie dodasz do mosquitto.conf linii „listener 1883” i „allow_anonymous true” (albo nie ustawisz hasła). Uruchom ponownie Mosquitto i spróbuj jeszcze raz.';
 
@@ -1927,6 +1931,19 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Wolisz logowanie zamiast otwartego dostępu? Użyj password_file zamiast allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT łączy się ze swoim brokerem pod nazwą, której Twój telefon nie może użyć';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT używa $server. „$name” to nazwa, którą zna tylko maszyna Zigbee2MQTT, usługa Dockera lub nazwa hosta. Wpisz zamiast niej adres IP maszyny z brokerem i port $port. Jeśli broker działa w kontenerze, jego port musi być też opublikowany na maszynie (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Strona Zigbee2MQTT jest chroniona tokenem, więc aplikacja nie mogła odczytać, gdzie jest jej broker. Wpisz adres brokera z ustawień Zigbee2MQTT › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {
