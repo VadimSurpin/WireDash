@@ -116,6 +116,16 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
+    expect(find.byType(ExpansionTile), findsNothing);
+    expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+    expect(
+      tester
+          .widget<TextFormField>(
+            find.widgetWithText(TextFormField, 'WireGuard configuration'),
+          )
+          .enabled,
+      isFalse,
+    );
     await tester.tap(toggle);
     await tester.pumpAndSettle();
     final field = find.widgetWithText(TextFormField, 'WireGuard configuration');
