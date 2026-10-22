@@ -3053,7 +3053,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Larmen är pausade: Node-RED på hubben kör inte';
+      'Larm pausade: ZigDash-hjälparen på hubben hör inte av sig';
 
   @override
   String get alertsStatusNotSetUp => 'Inte inställt';
@@ -3063,13 +3063,13 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Få en avisering på den här telefonen vid läcka, rök, en öppnad dörr eller lågt batteri, även när ZigDash är stängt. Node-RED på din hubb vakar över enheterna; ZigDash ställer in det.';
+      'Få en avisering på den här telefonen vid läcka, rök, öppnad dörr eller svagt batteri, även när ZigDash är stängt. ZigDash-hjälparen på hubben bevakar enheterna; ZigDash ställer in den.';
 
   @override
   String get alertsSetUpHub => 'Ställ in larm på hubben';
 
   @override
-  String get alertsHubInstalled => 'Larmflödet är installerat på hubben';
+  String get alertsHubInstalled => 'Larm är inställda på hubben';
 
   @override
   String get alertsHubUpdated => 'Larmflödet på hubben är uppdaterat';
@@ -3094,7 +3094,7 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED avvisade flödet';
+  String get alertsHubFailed => 'Zigbee2MQTT tog inte emot ZigDash-hjälparen';
 
   @override
   String get alertsRecent => 'Senaste larmen';
@@ -3466,7 +3466,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash har ingen server, så ett litet Node-RED-flöde på hubben sparar siffrorna på dina instrumentpaneler var 15:e minut. Det behåller 30 dagar, på din egen broker.';
+      'ZigDash har ingen server, så ZigDash-hjälparen på hubben sparar värdena från dina instrumentpaneler var 15:e minut. Den sparar 30 dagar, på din egen broker.';
 
   @override
   String get historySetupAction => 'Ställ in på hubben';
@@ -3556,7 +3556,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Ingen Node-RED? ZigDash kan spela in på en telefon eller surfplatta som står öppen, som en väggsurfplatta. Alla telefoner i det här hemmet ser historiken.';
+      'Går hjälparen inte att använda på hubben? ZigDash kan spara på en telefon eller platta som är öppen, som en väggplatta. Alla telefoner i hemmet ser historiken.';
 
   @override
   String get historyRecordingHere =>
@@ -3567,7 +3567,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Var 15:e minut medan ZigDash är öppen, för alla telefoner i det här hemmet. Behövs inte när Node-RED spelar in.';
+      'Var 15:e minut medan ZigDash är öppet, för alla telefoner i hemmet. Behövs inte när hjälparen på hubben sparar.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3576,7 +3576,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Inspelaren är installerad men har inte anslutit till din broker. Kräver brokern inloggning, skriv dess lösenord i Node-RED-noden ”ZigDash history broker” och klicka på Deploy.';
+      'Inspelningen hör inte av sig. Öppna Automationer för att kontrollera ZigDash-hjälparen på hubben.';
 
   @override
   String get historyPersistence =>

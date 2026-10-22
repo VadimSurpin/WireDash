@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert' show JsonEncoder;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,7 +9,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../core/analytics/analytics.dart';
 import '../core/l10n/l10n_ext.dart';
 import '../core/router/routes.dart';
-import '../data/repositories/connection_repo.dart';
 import '../features/devices/devices_providers.dart';
 import '../l10n/app_localizations.dart';
 import 'alert_push.dart';
@@ -22,7 +19,7 @@ import 'alert_editor_screen.dart' show alertKindsOf;
 import '../features/devices/device_profile.dart' show classifyExposes;
 import '../features/discovery/providers/discovery_provider.dart';
 import '../features/panels/providers/panel_value_provider.dart' show composeTopic;
-import 'node_red_installer.dart';
+import '../engine/engine_setup.dart';
 import 'share_alerts_sheet.dart';
 
 /// A Home's alerts (docs/design/alerts-2.3.md, "Alerts screen"): status,
@@ -213,79 +210,28 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     }
   }
 
+  /// Alerts run in the ZigDash Engine on the hub (zigdash-3.0.md §4).
   Future<bool> _install(AppLocalizations l10n) async {
     final messenger = ScaffoldMessenger.of(context);
-    final conn = ref.read(connectionByIdProvider(_id)).valueOrNull;
-    if (conn == null) return false;
-    final base = ref.read(homeBaseTopicProvider(_id)) ?? 'zigbee2mqtt';
     setState(() => _busy = true);
     try {
-      final r = await NodeRedInstaller(host: conn.host).install(
-          brokerHost: conn.host,
-          brokerPort: conn.port,
-          username: conn.username,
-          baseTopic: base);
+      final r = await ensureEngine(context, ref, _id);
       if (!mounted) return false;
       switch (r) {
-        case NodeRedInstall.installed:
+        case EngineSetup.ready:
           _track(const AlertsSetup(AlertsSetupStep.flowInstalled));
           messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubInstalled)));
           await ref.read(alertsServiceProvider).publish(_id);
           return true;
-        case NodeRedInstall.updated:
-          messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubUpdated)));
-          await ref.read(alertsServiceProvider).publish(_id);
-          return true;
-        case NodeRedInstall.needsLogin:
-          _track(const AlertsSetup(AlertsSetupStep.flowManual));
-          await _manualSteps(l10n, conn.host, conn.port, conn.username, base);
-          return true;
-        case NodeRedInstall.notInstalled:
-          _track(const AlertsSetup(AlertsSetupStep.noNodeRed));
-          await _say(l10n.alertsNoNodeRed(conn.host));
+        case EngineSetup.needsUser:
           return false;
-        case NodeRedInstall.failed:
+        case EngineSetup.failed:
           messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubFailed)));
           return false;
       }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
-  }
-
-  Future<void> _manualSteps(AppLocalizations l10n, String host, int port,
-      String? username, String base) async {
-    final flow = await DefaultAssetBundle.of(context)
-        .loadString(NodeRedInstaller.flowAsset);
-    if (!mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.alertsSetUpHub),
-        content: Text('${l10n.alertsHubNeedsLogin}\n\n${l10n.alertsHubManualSteps}'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              // The import format: the tab and its nodes, broker filled in.
-              final tab = NodeRedInstaller.tabFor(flow,
-                  brokerHost: host, brokerPort: port, username: username, baseTopic: base);
-              await Clipboard.setData(ClipboardData(
-                  text: const JsonEncoder.withIndent(' ').convert([
-                    {'id': 'zigdash_alerts_tab', 'type': 'tab', 'label': tab['label'], 'info': tab['info']},
-                    for (final n in tab['configs'] as List) n,
-                    for (final n in tab['nodes'] as List) {...n as Map, 'z': 'zigdash_alerts_tab'},
-                  ])));
-              messenger.showSnackBar(SnackBar(content: Text(l10n.alertsFlowCopied)));
-            },
-            child: Text(l10n.alertsCopyFlow),
-          ),
-          TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(MaterialLocalizations.of(ctx).okButtonLabel)),
-        ],
-      ),
-    );
   }
 
   Future<void> _thisPhone(bool on, AppLocalizations l10n) async {
@@ -342,17 +288,6 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     if (yes == true) await ref.read(alertsServiceProvider).turnOff(_id);
   }
 
-  Future<void> _say(String text) => showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          content: Text(text),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(MaterialLocalizations.of(ctx).okButtonLabel)),
-          ],
-        ),
-      );
 
   String _age(BuildContext context, DateTime at) {
     final m = MaterialLocalizations.of(context);

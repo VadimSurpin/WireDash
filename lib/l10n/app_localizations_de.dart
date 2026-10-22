@@ -3068,7 +3068,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Alarme pausiert: Node-RED auf dem Hub läuft nicht';
+      'Alarme pausiert: Der ZigDash-Helfer auf Ihrem Hub meldet sich nicht';
 
   @override
   String get alertsStatusNotSetUp => 'Nicht eingerichtet';
@@ -3079,13 +3079,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Erhalte eine Benachrichtigung auf diesem Handy bei einem Leck, Rauch, einer geöffneten Tür oder einer schwachen Batterie, auch wenn ZigDash geschlossen ist. Node-RED auf deinem Hub überwacht die Geräte; ZigDash richtet es ein.';
+      'Erhalten Sie eine Benachrichtigung auf diesem Telefon bei Leck, Rauch, geöffneter Tür oder schwacher Batterie, auch wenn ZigDash geschlossen ist. Der ZigDash-Helfer auf Ihrem Hub beobachtet die Geräte; ZigDash richtet ihn ein.';
 
   @override
   String get alertsSetUpHub => 'Alarme auf dem Hub einrichten';
 
   @override
-  String get alertsHubInstalled => 'Der Alarm-Flow ist auf dem Hub installiert';
+  String get alertsHubInstalled => 'Alarme sind auf Ihrem Hub eingerichtet';
 
   @override
   String get alertsHubUpdated => 'Der Alarm-Flow auf dem Hub ist aktuell';
@@ -3110,7 +3110,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED hat den Flow abgelehnt';
+  String get alertsHubFailed =>
+      'Zigbee2MQTT hat den ZigDash-Helfer nicht angenommen';
 
   @override
   String get alertsRecent => 'Letzte Alarme';
@@ -3483,7 +3484,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash hat keinen Server, deshalb zeichnet ein kleiner Node-RED-Flow auf deinem Hub alle 15 Minuten die Zahlen deiner Dashboards auf. Er behält 30 Tage, auf deinem eigenen Broker.';
+      'ZigDash hat keinen Server, also zeichnet der ZigDash-Helfer auf Ihrem Hub die Werte Ihrer Dashboards alle 15 Minuten auf. Er behält 30 Tage, auf Ihrem eigenen Broker.';
 
   @override
   String get historySetupAction => 'Auf dem Hub einrichten';
@@ -3573,7 +3574,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Kein Node-RED? ZigDash kann auf einem Handy oder Tablet aufzeichnen, das geöffnet bleibt, etwa einem Wandtablet. Jedes Handy dieses Zuhauses sieht den Verlauf.';
+      'Helfer auf dem Hub nicht möglich? ZigDash kann auf einem Telefon oder Tablet aufzeichnen, das offen bleibt, etwa einem Wandtablet. Jedes Telefon dieses Zuhauses sieht den Verlauf.';
 
   @override
   String get historyRecordingHere =>
@@ -3584,7 +3585,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Alle 15 Minuten, solange ZigDash geöffnet ist, für jedes Handy dieses Zuhauses. Nicht nötig, wenn Node-RED aufzeichnet.';
+      'Alle 15 Minuten, solange ZigDash offen ist, für jedes Telefon dieses Zuhauses. Nicht nötig, wenn der Helfer auf Ihrem Hub aufzeichnet.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3593,7 +3594,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Der Recorder ist installiert, hat sich aber nicht mit deinem Broker verbunden. Wenn der Broker eine Anmeldung braucht, gib sein Passwort im Node-RED-Knoten „ZigDash history broker“ ein und klicke auf Deploy.';
+      'Die Aufzeichnung meldet sich nicht. Öffnen Sie Automationen, um den ZigDash-Helfer auf Ihrem Hub zu prüfen.';
 
   @override
   String get historyPersistence =>

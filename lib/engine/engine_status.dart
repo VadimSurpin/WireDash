@@ -27,6 +27,7 @@ class EngineReport {
     required this.rulesUnknown,
     required this.stoppedSelf,
     required this.at,
+    this.flows = const {},
   });
 
   final String version;
@@ -34,6 +35,10 @@ class EngineReport {
   final int rulesLoaded;
   final List<String> rulesUnknown;
   final bool stoppedSelf;
+
+  /// Alerts and history in the Engine: "active", or "passive" while a
+  /// Node-RED copy still runs them.
+  final Map<String, String> flows;
 
   /// The hub's clock when it reported.
   final DateTime? at;
@@ -50,6 +55,7 @@ class EngineReport {
         rulesUnknown: [for (final r in (j['rules_unknown'] as List? ?? const [])) '$r'],
         stoppedSelf: j['stopped_self'] == true,
         at: DateTime.tryParse('${j['at'] ?? ''}'),
+        flows: {for (final e in ((j['flows'] as Map?) ?? const {}).entries) '${e.key}': '${e.value}'},
       );
     } catch (_) {
       return null;

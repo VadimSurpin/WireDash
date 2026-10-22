@@ -3057,7 +3057,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Upozornění jsou pozastavená: Node-RED na hubu neběží';
+      'Upozornění pozastavena: pomocník ZigDash na hubu se nehlásí';
 
   @override
   String get alertsStatusNotSetUp => 'Nenastaveno';
@@ -3067,13 +3067,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Dostaneš oznámení na tento telefon, když se nahlásí únik vody, kouř, otevřené dveře nebo slabá baterie, i když je ZigDash zavřený. Zařízení hlídá Node-RED na tvém hubu; ZigDash ho nastaví.';
+      'Dostanete upozornění na tento telefon při úniku vody, kouři, otevřených dveřích nebo slabé baterii, i když je ZigDash zavřený. Pomocník ZigDash na hubu sleduje zařízení; ZigDash ho nastaví.';
 
   @override
   String get alertsSetUpHub => 'Nastavit upozornění na hubu';
 
   @override
-  String get alertsHubInstalled => 'Flow upozornění je na hubu nainstalovaný';
+  String get alertsHubInstalled => 'Upozornění jsou na hubu nastavena';
 
   @override
   String get alertsHubUpdated => 'Flow upozornění na hubu je aktuální';
@@ -3098,7 +3098,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED flow odmítl';
+  String get alertsHubFailed => 'Zigbee2MQTT pomocníka ZigDash nepřijal';
 
   @override
   String get alertsRecent => 'Nedávná upozornění';
@@ -3471,7 +3471,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash nemá server, takže čísla z tvých nástěnek zaznamenává každých 15 minut malý flow Node-RED na tvém hubu. Uchovává 30 dní, na tvém vlastním brokeru.';
+      'ZigDash nemá server, takže pomocník ZigDash na hubu každých 15 minut zaznamenává hodnoty z vašich nástěnek. Uchovává 30 dní, na vašem brokeru.';
 
   @override
   String get historySetupAction => 'Nastavit na hubu';
@@ -3561,7 +3561,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Nemáš Node-RED? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstává otevřený, třeba na tabletu na zdi. Historii uvidí všechny telefony tohoto domova.';
+      'Pomocníka na hubu nelze použít? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstane otevřený, třeba na nástěnném tabletu. Historii vidí každý telefon této domácnosti.';
 
   @override
   String get historyRecordingHere =>
@@ -3572,7 +3572,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Každých 15 minut, dokud je ZigDash otevřený, pro všechny telefony tohoto domova. Není potřeba, když zaznamenává Node-RED.';
+      'Každých 15 minut, dokud je ZigDash otevřený, pro každý telefon této domácnosti. Není potřeba, když zaznamenává pomocník na hubu.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3581,7 +3581,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Záznamník je nainstalovaný, ale nepřipojil se k tvému brokeru. Pokud broker vyžaduje přihlášení, zadej jeho heslo v uzlu „ZigDash history broker“ v Node-RED a dej Deploy.';
+      'Záznam se nehlásí. Otevřete Automatizace a zkontrolujte pomocníka ZigDash na hubu.';
 
   @override
   String get historyPersistence =>

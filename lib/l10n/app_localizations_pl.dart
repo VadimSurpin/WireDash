@@ -3062,7 +3062,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Alarmy wstrzymane: Node-RED na hubie nie działa';
+      'Alerty wstrzymane: pomocnik ZigDash na hubie się nie odzywa';
 
   @override
   String get alertsStatusNotSetUp => 'Nie skonfigurowano';
@@ -3072,14 +3072,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Dostawaj powiadomienie na tym telefonie przy wycieku, dymie, otwartych drzwiach lub słabej baterii, nawet gdy ZigDash jest zamknięty. Node-RED na hubie pilnuje urządzeń; ZigDash go konfiguruje.';
+      'Otrzymuj powiadomienie na tym telefonie o wycieku, dymie, otwartych drzwiach lub słabej baterii, nawet gdy ZigDash jest zamknięty. Pomocnik ZigDash na hubie obserwuje urządzenia; ZigDash go konfiguruje.';
 
   @override
   String get alertsSetUpHub => 'Skonfiguruj alarmy na hubie';
 
   @override
-  String get alertsHubInstalled =>
-      'Przepływ alarmów jest zainstalowany na hubie';
+  String get alertsHubInstalled => 'Alerty są skonfigurowane na hubie';
 
   @override
   String get alertsHubUpdated => 'Przepływ alarmów na hubie jest aktualny';
@@ -3104,7 +3103,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED odrzucił przepływ';
+  String get alertsHubFailed => 'Zigbee2MQTT nie przyjął pomocnika ZigDash';
 
   @override
   String get alertsRecent => 'Ostatnie alarmy';
@@ -3478,7 +3477,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash nie ma serwera, więc mały przepływ Node-RED na hubie co 15 minut zapisuje liczby z twoich pulpitów. Przechowuje 30 dni, na twoim własnym brokerze.';
+      'ZigDash nie ma serwera, więc pomocnik ZigDash na hubie co 15 minut zapisuje wartości z Twoich pulpitów. Przechowuje 30 dni, na Twoim brokerze.';
 
   @override
   String get historySetupAction => 'Skonfiguruj na hubie';
@@ -3566,7 +3565,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Brak Node-RED? ZigDash może nagrywać na telefonie lub tablecie, który pozostaje otwarty, np. tablecie na ścianie. Każdy telefon tego domu widzi historię.';
+      'Nie da się użyć pomocnika na hubie? ZigDash może zapisywać na telefonie lub tablecie, który zostaje otwarty, np. na tablecie na ścianie. Każdy telefon tego domu widzi historię.';
 
   @override
   String get historyRecordingHere =>
@@ -3577,7 +3576,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Co 15 minut, gdy ZigDash jest otwarty, dla każdego telefonu tego domu. Niepotrzebne, gdy nagrywa Node-RED.';
+      'Co 15 minut, gdy ZigDash jest otwarty, dla każdego telefonu tego domu. Niepotrzebne, gdy zapisuje pomocnik na hubie.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3586,7 +3585,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Rejestrator jest zainstalowany, ale nie połączył się z brokerem. Jeśli broker wymaga logowania, wpisz hasło w węźle „ZigDash history broker” w Node-RED i kliknij Deploy.';
+      'Zapis się nie odzywa. Otwórz Automatyzacje, aby sprawdzić pomocnika ZigDash na hubie.';
 
   @override
   String get historyPersistence =>

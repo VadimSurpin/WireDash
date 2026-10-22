@@ -5469,7 +5469,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Alerts are paused: Node-RED on the hub isn\'t running'**
+  /// **'Alerts are paused: the ZigDash helper on your hub isn\'t reporting'**
   String get alertsStatusPaused;
 
   /// Alerts screen.
@@ -5487,7 +5487,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. Node-RED on your hub watches the devices; ZigDash sets it up.'**
+  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. The ZigDash helper on your hub watches the devices; ZigDash sets it up.'**
   String get alertsIntro;
 
   /// Alerts screen.
@@ -5499,7 +5499,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'The alerts flow is installed on the hub'**
+  /// **'Alerts are set up on your hub'**
   String get alertsHubInstalled;
 
   /// Alerts screen.
@@ -5541,7 +5541,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Node-RED refused the flow'**
+  /// **'Zigbee2MQTT didn\'t accept the ZigDash helper'**
   String get alertsHubFailed;
 
   /// Alerts screen.
@@ -6219,7 +6219,7 @@ abstract class AppLocalizations {
   /// No description provided for @historySetupBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
+  /// **'ZigDash has no server, so the ZigDash helper on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
   String get historySetupBody;
 
   /// No description provided for @historySetupAction.
@@ -6363,7 +6363,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyRecordHereHint.
   ///
   /// In en, this message translates to:
-  /// **'No Node-RED? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
+  /// **'Can\'t use the helper on your hub? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
   String get historyRecordHereHint;
 
   /// No description provided for @historyRecordingHere.
@@ -6381,7 +6381,7 @@ abstract class AppLocalizations {
   /// No description provided for @wallRecordHistorySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when Node-RED records.'**
+  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when the helper on your hub records.'**
   String get wallRecordHistorySubtitle;
 
   /// No description provided for @historyNeedsPassword.
@@ -6393,7 +6393,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyNotConnected.
   ///
   /// In en, this message translates to:
-  /// **'The recorder is installed but hasn\'t connected to your broker. If the broker needs a login, enter its password in Node-RED\'s \"ZigDash history broker\" node and Deploy.'**
+  /// **'The recorder isn\'t reporting. Open Automations to check the ZigDash helper on your hub.'**
   String get historyNotConnected;
 
   /// No description provided for @historyPersistence.

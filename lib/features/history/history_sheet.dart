@@ -2,11 +2,10 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../alerts/node_red_installer.dart';
+import '../../engine/engine_setup.dart';
 import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/review/review_prompt_controller.dart';
@@ -288,59 +287,30 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     );
   }
 
+  /// The recorder runs in the ZigDash Engine on the hub (zigdash-3.0.md §4):
+  /// inside Zigbee2MQTT, so no Node-RED and no broker password.
   Future<void> _install(AppLocalizations l10n) async {
     final service = ref.read(historyServiceProvider);
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      final r = await service.installRecorder(widget.connectionId);
+      final r = await ensureEngine(context, ref, widget.connectionId);
       if (!mounted) return;
       switch (r) {
-        case NodeRedInstall.installed:
-        case NodeRedInstall.updated:
-          _track(
-            r == NodeRedInstall.installed
-                ? HistorySetupResult.installed
-                : HistorySetupResult.updated,
-          );
-          if (await service.brokerHasLogin(widget.connectionId)) {
-            final host = await service.hostOf(widget.connectionId) ?? '';
-            if (!mounted) return;
-            await showDialog<void>(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: Text(l10n.historyInstalled),
-                content: Text(l10n.historyNeedsPassword(host)),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            messenger.showSnackBar(
-              SnackBar(content: Text(l10n.historyInstalled)),
-            );
-          }
+        case EngineSetup.ready:
+          _track(HistorySetupResult.installed);
+          await service.publishConfig(widget.connectionId);
+          messenger.showSnackBar(SnackBar(content: Text(l10n.historyInstalled)));
           // A happy moment (2.8.1): the review policy still decides.
-          await ref
-              .read(reviewPromptControllerProvider)
-              .recordSuccessfulSession();
-        case NodeRedInstall.needsLogin:
-          _track(HistorySetupResult.manual);
-          await _manualSteps(l10n);
-        case NodeRedInstall.notInstalled:
-          _track(HistorySetupResult.noNodeRed);
-          final host = await service.hostOf(widget.connectionId) ?? '';
-          if (!mounted) return;
+          await ref.read(reviewPromptControllerProvider).recordSuccessfulSession();
+        case EngineSetup.needsUser:
+          break;
+        case EngineSetup.failed:
+          _track(HistorySetupResult.failed);
           final here = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
-              content: Text(
-                '${l10n.historyNoNodeRed(host)}\n\n${l10n.historyRecordHereHint}',
-              ),
+              content: Text('${l10n.alertsHubFailed}\n\n${l10n.historyRecordHereHint}'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
@@ -354,9 +324,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
             ),
           );
           if (here == true) await _recordHere(l10n);
-        case NodeRedInstall.failed:
-          _track(HistorySetupResult.failed);
-          messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubFailed)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -376,40 +343,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
   void _track(HistorySetupResult r) =>
       ref.read(analyticsProvider).track(HistorySetup(r));
 
-  Future<void> _manualSteps(AppLocalizations l10n) async {
-    final flow = await DefaultAssetBundle.of(
-      context,
-    ).loadString(NodeRedInstaller.historyFlowAsset);
-    if (!mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
-    final service = ref.read(historyServiceProvider);
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.historySetupTitle),
-        content: Text(
-          '${l10n.alertsHubNeedsLogin}\n\n${l10n.alertsHubManualSteps}',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final json = await service.importJson(widget.connectionId, flow);
-              if (json == null) return;
-              await Clipboard.setData(ClipboardData(text: json));
-              messenger.showSnackBar(
-                SnackBar(content: Text(l10n.alertsFlowCopied)),
-              );
-            },
-            child: Text(l10n.alertsCopyFlow),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 /// No recorder yet: what it is, and the one-tap install.

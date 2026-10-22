@@ -3027,7 +3027,8 @@ class AppLocalizationsHe extends AppLocalizations {
   String get alertsStatusOn => 'ההתראות פועלות';
 
   @override
-  String get alertsStatusPaused => 'ההתראות מושהות: Node-RED על הרכזת לא רץ';
+  String get alertsStatusPaused =>
+      'ההתראות מושהות: העוזר של ZigDash ברכזת לא מדווח';
 
   @override
   String get alertsStatusNotSetUp => 'לא הוגדר';
@@ -3037,13 +3038,13 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'קבלו התראה בטלפון הזה כשמדווחים על נזילה, עשן, דלת פתוחה או סוללה חלשה, גם כש-ZigDash סגורה. Node-RED על הרכזת עוקב אחרי המכשירים; ZigDash מגדירה אותו.';
+      'קבלת התראה בטלפון הזה על נזילה, עשן, דלת שנפתחה או סוללה חלשה, גם כש־ZigDash סגור. העוזר של ZigDash ברכזת עוקב אחרי המכשירים; ZigDash מגדיר אותו.';
 
   @override
   String get alertsSetUpHub => 'הגדרת התראות על הרכזת';
 
   @override
-  String get alertsHubInstalled => 'זרימת ההתראות מותקנת על הרכזת';
+  String get alertsHubInstalled => 'ההתראות מוגדרות ברכזת';
 
   @override
   String get alertsHubUpdated => 'זרימת ההתראות על הרכזת מעודכנת';
@@ -3068,7 +3069,7 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED דחה את הזרימה';
+  String get alertsHubFailed => 'Zigbee2MQTT לא קיבל את העוזר של ZigDash';
 
   @override
   String get alertsRecent => 'התראות אחרונות';
@@ -3436,7 +3437,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ל-ZigDash אין שרת, לכן flow קטן של Node-RED ב-hub שומר כל 15 דקות את המספרים שבלוחות הבקרה. הוא שומר 30 יום, ב-broker שלכם.';
+      'ל־ZigDash אין שרת, ולכן העוזר של ZigDash ברכזת שומר את הערכים מלוחות הבקרה כל 15 דקות. הוא שומר 30 יום, בברוקר שלך.';
 
   @override
   String get historySetupAction => 'התקנה ב-hub';
@@ -3524,7 +3525,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'אין Node-RED? ZigDash יכול להקליט בטלפון או בטאבלט שנשאר פתוח, כמו טאבלט על הקיר. כל הטלפונים של הבית הזה רואים את ההיסטוריה.';
+      'אי אפשר להשתמש בעוזר ברכזת? ZigDash יכול לשמור בטלפון או בטאבלט שנשאר פתוח, כמו טאבלט קיר. כל הטלפונים של הבית רואים את ההיסטוריה.';
 
   @override
   String get historyRecordingHere =>
@@ -3535,7 +3536,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'כל 15 דקות כל עוד ZigDash פתוח, לכל הטלפונים של הבית הזה. לא נחוץ כש-Node-RED מקליט.';
+      'כל 15 דקות כש־ZigDash פתוח, לכל הטלפונים של הבית. לא נחוץ כשהעוזר ברכזת שומר.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3544,7 +3545,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'המקליט מותקן אבל לא התחבר ל-broker. אם ה-broker דורש התחברות, הקלידו את הסיסמה שלו ב-node בשם \"ZigDash history broker\" ב-Node-RED ולחצו Deploy.';
+      'השמירה לא מדווחת. אפשר לפתוח את „אוטומציות” כדי לבדוק את העוזר של ZigDash ברכזת.';
 
   @override
   String get historyPersistence =>

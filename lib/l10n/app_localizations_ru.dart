@@ -3056,7 +3056,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Тревоги приостановлены: Node-RED на хабе не запущен';
+      'Оповещения приостановлены: помощник ZigDash на хабе не выходит на связь';
 
   @override
   String get alertsStatusNotSetUp => 'Не настроено';
@@ -3066,13 +3066,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Получайте уведомление на этом телефоне о протечке, дыме, открытой двери или низком заряде, даже когда ZigDash закрыт. Node-RED на вашем хабе следит за устройствами; ZigDash его настраивает.';
+      'Получайте уведомление на этот телефон о протечке, дыме, открытой двери или разряде батареи, даже когда ZigDash закрыт. Помощник ZigDash на хабе следит за устройствами; ZigDash его настраивает.';
 
   @override
   String get alertsSetUpHub => 'Настроить тревоги на хабе';
 
   @override
-  String get alertsHubInstalled => 'Поток тревог установлен на хабе';
+  String get alertsHubInstalled => 'Оповещения настроены на хабе';
 
   @override
   String get alertsHubUpdated => 'Поток тревог на хабе обновлён';
@@ -3097,7 +3097,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED отклонил поток';
+  String get alertsHubFailed => 'Zigbee2MQTT не принял помощника ZigDash';
 
   @override
   String get alertsRecent => 'Последние тревоги';
@@ -3471,7 +3471,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'У ZigDash нет сервера, поэтому небольшой поток Node-RED на хабе каждые 15 минут записывает числа с ваших панелей. Он хранит 30 дней на вашем собственном брокере.';
+      'У ZigDash нет сервера, поэтому помощник ZigDash на хабе каждые 15 минут записывает показания с ваших панелей. Хранит 30 дней, на вашем брокере.';
 
   @override
   String get historySetupAction => 'Настроить на хабе';
@@ -3560,7 +3560,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Нет Node-RED? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном планшете. Историю видят все телефоны этого дома.';
+      'Не получается использовать помощника на хабе? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном. Все телефоны этого дома видят историю.';
 
   @override
   String get historyRecordingHere =>
@@ -3571,7 +3571,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает Node-RED.';
+      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает помощник на хабе.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3580,7 +3580,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Запись установлена, но не подключилась к брокеру. Если брокер требует вход, введите его пароль в узле «ZigDash history broker» в Node-RED и нажмите Deploy.';
+      'Запись не выходит на связь. Откройте «Автоматизации», чтобы проверить помощника ZigDash на хабе.';
 
   @override
   String get historyPersistence =>
