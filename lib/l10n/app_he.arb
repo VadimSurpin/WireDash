@@ -1378,5 +1378,21 @@
   "autoNoTargets": "בבית הזה עוד אין אור, שקע, מתג או תריס לשליטה.",
   "proGetAutomations": "אוטומציות ללא הגבלה; שלוש לכל בית בחינם",
   "autoDeleteConfirm": "למחוק את האוטומציה הזו? היא תפסיק לרוץ ברכזת.",
-  "statusConnectedRelay": "מחובר · מחוץ לבית דרך ZigDash"
+  "statusConnectedRelay": "מחובר · מחוץ לבית דרך ZigDash",
+  "remoteTitle": "שליטה מרחוק",
+  "remoteSettingsSubtitle": "שליטה בבית הזה מכל מקום, עם Pro",
+  "remoteIntroTitle": "שליטה בבית מכל מקום",
+  "remoteIntroBody": "הרכזת שומרת חיבור אחד לממסר של ZigDash. מחוץ לבית, הטלפון הזה מגיע למכשירים דרכו. הכול מוצפן ברכזת ובטלפון, כך שהממסר לא יכול לקרוא את המכשירים או מה הם עושים.",
+  "remoteNeedsEngine": "שליטה מרחוק רצה ב־ZigDash Engine. יש להתקין אותו קודם תחת „אוטומציות”.",
+  "remoteSetUp": "הפעלת שליטה מרחוק",
+  "remoteNeedsPro": "שליטה מרחוק היא חלק מ־Pro.",
+  "remoteNotAtHome": "יש להפעיל את זה בבית, כשמחוברים לברוקר.",
+  "remoteUnreachable": "הממסר של ZigDash לא ענה. אפשר לנסות שוב מאוחר יותר.",
+  "remoteRefused": "הממסר סירב. אפשר לנסות שוב או לדווח על בעיה.",
+  "remoteOnTitle": "שליטה מרחוק פעילה",
+  "remoteOnBody": "מחוץ לבית, ZigDash מתחבר דרך הממסר לבד.",
+  "remoteHubOnline": "הרכזת מחוברת לממסר",
+  "remoteHubOffline": "הרכזת לא מחוברת לממסר",
+  "remoteTurnOff": "כיבוי שליטה מרחוק",
+  "remoteViaRelayNow": "הטלפון הזה מחובר עכשיו דרך הממסר."
 }

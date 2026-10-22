@@ -1309,5 +1309,21 @@
   "autoNoTargets": "Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.",
   "proGetAutomations": "Onbeperkte automatiseringen; drie per huis zijn gratis",
   "autoDeleteConfirm": "Deze automatisering verwijderen? Hij draait dan niet meer op je hub.",
-  "statusConnectedRelay": "Verbonden · Onderweg via ZigDash"
+  "statusConnectedRelay": "Verbonden · Onderweg via ZigDash",
+  "remoteTitle": "Bediening op afstand",
+  "remoteSettingsSubtitle": "Bedien dit huis overal, met Pro",
+  "remoteIntroTitle": "Bedien je huis overal",
+  "remoteIntroBody": "Je hub houdt één verbinding met de relay van ZigDash. Onderweg bereikt deze telefoon je apparaten daarlangs. Alles wordt versleuteld op je hub en je telefoon, dus de relay kan je apparaten en wat ze doen niet lezen.",
+  "remoteNeedsEngine": "Bediening op afstand draait in ZigDash Engine. Installeer het eerst onder Automatiseringen.",
+  "remoteSetUp": "Bediening op afstand aanzetten",
+  "remoteNeedsPro": "Bediening op afstand hoort bij Pro.",
+  "remoteNotAtHome": "Zet dit thuis aan, verbonden met je broker.",
+  "remoteUnreachable": "De relay van ZigDash antwoordde niet. Probeer het later opnieuw.",
+  "remoteRefused": "De relay weigerde. Probeer opnieuw of meld een probleem.",
+  "remoteOnTitle": "Bediening op afstand staat aan",
+  "remoteOnBody": "Onderweg verbindt ZigDash vanzelf via de relay.",
+  "remoteHubOnline": "Je hub is verbonden met de relay",
+  "remoteHubOffline": "Je hub is niet verbonden met de relay",
+  "remoteTurnOff": "Bediening op afstand uitzetten",
+  "remoteViaRelayNow": "Deze telefoon is nu via de relay verbonden."
 }

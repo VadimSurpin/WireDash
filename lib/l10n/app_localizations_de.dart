@@ -4242,4 +4242,60 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Verbunden · Unterwegs über ZigDash';
+
+  @override
+  String get remoteTitle => 'Fernsteuerung';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Dieses Zuhause von überall steuern, mit Pro';
+
+  @override
+  String get remoteIntroTitle => 'Steuern Sie Ihr Zuhause von überall';
+
+  @override
+  String get remoteIntroBody =>
+      'Ihr Hub hält eine Verbindung zum Relay von ZigDash. Unterwegs erreicht dieses Telefon Ihre Geräte darüber. Alles wird auf Hub und Telefon verschlüsselt, das Relay kann Ihre Geräte und was sie tun nicht lesen.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Die Fernsteuerung läuft in ZigDash Engine. Installieren Sie es zuerst unter Automationen.';
+
+  @override
+  String get remoteSetUp => 'Fernsteuerung einschalten';
+
+  @override
+  String get remoteNeedsPro => 'Die Fernsteuerung gehört zu Pro.';
+
+  @override
+  String get remoteNotAtHome =>
+      'Schalten Sie das zu Hause ein, mit Verbindung zu Ihrem Broker.';
+
+  @override
+  String get remoteUnreachable =>
+      'Das Relay von ZigDash hat nicht geantwortet. Versuchen Sie es später erneut.';
+
+  @override
+  String get remoteRefused =>
+      'Das Relay hat abgelehnt. Versuchen Sie es erneut oder melden Sie ein Problem.';
+
+  @override
+  String get remoteOnTitle => 'Die Fernsteuerung ist an';
+
+  @override
+  String get remoteOnBody =>
+      'Unterwegs verbindet sich ZigDash von selbst über das Relay.';
+
+  @override
+  String get remoteHubOnline => 'Ihr Hub ist mit dem Relay verbunden';
+
+  @override
+  String get remoteHubOffline => 'Ihr Hub ist nicht mit dem Relay verbunden';
+
+  @override
+  String get remoteTurnOff => 'Fernsteuerung ausschalten';
+
+  @override
+  String get remoteViaRelayNow =>
+      'Dieses Telefon ist gerade über das Relay verbunden.';
 }

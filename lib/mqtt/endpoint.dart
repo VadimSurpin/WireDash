@@ -26,7 +26,14 @@ const int homeAssistantConnectTimeoutMs = 12000;
 /// Local-first ordered candidates for [config]. With a remote host set, the LAN
 /// host is tried first with a short timeout, then the remote host. Without one,
 /// a single local candidate with the standard timeout (unchanged behavior).
+/// Test builds only (--dart-define=ZIGDASH_FORCE_RELAY=true): skip the
+/// broker's own addresses when a relay login exists, to try "away" at home.
+const forceRelay = bool.fromEnvironment('ZIGDASH_FORCE_RELAY');
+
 List<MqttCandidate> endpointCandidates(BrokerConfig config) {
+  if (forceRelay && config.relay != null && !config.viaHomeAssistant) {
+    return [(kind: MqttEndpoint.relay, host: relayCandidateHost, timeoutMs: relayConnectTimeoutMs)];
+  }
   final remote = config.remoteHost?.trim();
   final standard = config.viaHomeAssistant
       ? homeAssistantConnectTimeoutMs

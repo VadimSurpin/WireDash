@@ -1309,5 +1309,21 @@
   "autoNoTargets": "Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre.",
   "proGetAutomations": "Ubegrensede automasjoner; tre per hjem er gratis",
   "autoDeleteConfirm": "Slette denne automasjonen? Den slutter å kjøre på huben.",
-  "statusConnectedRelay": "Tilkoblet · Borte via ZigDash"
+  "statusConnectedRelay": "Tilkoblet · Borte via ZigDash",
+  "remoteTitle": "Fjernstyring",
+  "remoteSettingsSubtitle": "Styr dette hjemmet fra hvor som helst, med Pro",
+  "remoteIntroTitle": "Styr hjemmet fra hvor som helst",
+  "remoteIntroBody": "Huben holder én tilkobling til ZigDash sitt relé. Borte når denne telefonen enhetene dine gjennom det. Alt krypteres på huben og telefonen, så reléet kan ikke lese enhetene eller hva de gjør.",
+  "remoteNeedsEngine": "Fjernstyring kjører i ZigDash Engine. Installer det først under Automasjoner.",
+  "remoteSetUp": "Slå på fjernstyring",
+  "remoteNeedsPro": "Fjernstyring er en del av Pro.",
+  "remoteNotAtHome": "Slå det på hjemme, tilkoblet brokeren din.",
+  "remoteUnreachable": "ZigDash sitt relé svarte ikke. Prøv igjen senere.",
+  "remoteRefused": "Reléet avviste. Prøv igjen, eller rapporter et problem.",
+  "remoteOnTitle": "Fjernstyring er på",
+  "remoteOnBody": "Borte kobler ZigDash seg til via reléet av seg selv.",
+  "remoteHubOnline": "Huben er koblet til reléet",
+  "remoteHubOffline": "Huben er ikke koblet til reléet",
+  "remoteTurnOff": "Slå av fjernstyring",
+  "remoteViaRelayNow": "Denne telefonen er koblet til via reléet akkurat nå."
 }

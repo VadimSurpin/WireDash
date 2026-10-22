@@ -1269,5 +1269,21 @@
   "autoNoTargets": "Esta casa ainda não tem luz, tomada, interruptor ou persiana para controlar.",
   "proGetAutomations": "Automações ilimitadas; três por casa são grátis",
   "autoDeleteConfirm": "Excluir esta automação? Ela para de rodar no seu hub.",
-  "statusConnectedRelay": "Conectado · Fora de casa via ZigDash"
+  "statusConnectedRelay": "Conectado · Fora de casa via ZigDash",
+  "remoteTitle": "Controle remoto",
+  "remoteSettingsSubtitle": "Controle esta casa de qualquer lugar, com Pro",
+  "remoteIntroTitle": "Controle sua casa de qualquer lugar",
+  "remoteIntroBody": "Seu hub mantém uma conexão com o relay do ZigDash. Fora de casa, este celular chega aos seus dispositivos por ele. Tudo é criptografado no hub e no celular, então o relay não consegue ler seus dispositivos nem o que eles fazem.",
+  "remoteNeedsEngine": "O controle remoto roda no ZigDash Engine. Instale-o antes em Automações.",
+  "remoteSetUp": "Ativar o controle remoto",
+  "remoteNeedsPro": "O controle remoto faz parte do Pro.",
+  "remoteNotAtHome": "Ative em casa, conectado ao seu broker.",
+  "remoteUnreachable": "O relay do ZigDash não respondeu. Tente mais tarde.",
+  "remoteRefused": "O relay recusou. Tente de novo ou relate um problema.",
+  "remoteOnTitle": "O controle remoto está ativado",
+  "remoteOnBody": "Fora de casa, o ZigDash se conecta pelo relay sozinho.",
+  "remoteHubOnline": "Seu hub está conectado ao relay",
+  "remoteHubOffline": "Seu hub não está conectado ao relay",
+  "remoteTurnOff": "Desativar o controle remoto",
+  "remoteViaRelayNow": "Este celular está conectado pelo relay agora."
 }

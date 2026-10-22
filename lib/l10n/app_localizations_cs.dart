@@ -4228,4 +4228,57 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Připojeno · Mimo domov přes ZigDash';
+
+  @override
+  String get remoteTitle => 'Dálkové ovládání';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Ovládejte tuto domácnost odkudkoli, s Pro';
+
+  @override
+  String get remoteIntroTitle => 'Ovládejte domácnost odkudkoli';
+
+  @override
+  String get remoteIntroBody =>
+      'Hub drží jedno spojení s relé ZigDash. Mimo domov se tento telefon dostane k zařízením přes něj. Vše se šifruje na hubu a v telefonu, takže relé nemůže číst vaše zařízení ani co dělají.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Dálkové ovládání běží v ZigDash Engine. Nejdřív ho nainstalujte v Automatizacích.';
+
+  @override
+  String get remoteSetUp => 'Zapnout dálkové ovládání';
+
+  @override
+  String get remoteNeedsPro => 'Dálkové ovládání je součástí Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Zapněte to doma, připojení k brokeru.';
+
+  @override
+  String get remoteUnreachable =>
+      'Relé ZigDash neodpovědělo. Zkuste to později.';
+
+  @override
+  String get remoteRefused =>
+      'Relé odmítlo. Zkuste to znovu nebo nahlaste problém.';
+
+  @override
+  String get remoteOnTitle => 'Dálkové ovládání je zapnuté';
+
+  @override
+  String get remoteOnBody => 'Mimo domov se ZigDash připojí přes relé sám.';
+
+  @override
+  String get remoteHubOnline => 'Hub je připojen k relé';
+
+  @override
+  String get remoteHubOffline => 'Hub není připojen k relé';
+
+  @override
+  String get remoteTurnOff => 'Vypnout dálkové ovládání';
+
+  @override
+  String get remoteViaRelayNow => 'Tento telefon je teď připojen přes relé.';
 }

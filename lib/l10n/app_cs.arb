@@ -1224,5 +1224,21 @@
   "autoNoTargets": "Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.",
   "proGetAutomations": "Neomezené automatizace; tři na domácnost jsou zdarma",
   "autoDeleteConfirm": "Smazat tuto automatizaci? Přestane běžet na hubu.",
-  "statusConnectedRelay": "Připojeno · Mimo domov přes ZigDash"
+  "statusConnectedRelay": "Připojeno · Mimo domov přes ZigDash",
+  "remoteTitle": "Dálkové ovládání",
+  "remoteSettingsSubtitle": "Ovládejte tuto domácnost odkudkoli, s Pro",
+  "remoteIntroTitle": "Ovládejte domácnost odkudkoli",
+  "remoteIntroBody": "Hub drží jedno spojení s relé ZigDash. Mimo domov se tento telefon dostane k zařízením přes něj. Vše se šifruje na hubu a v telefonu, takže relé nemůže číst vaše zařízení ani co dělají.",
+  "remoteNeedsEngine": "Dálkové ovládání běží v ZigDash Engine. Nejdřív ho nainstalujte v Automatizacích.",
+  "remoteSetUp": "Zapnout dálkové ovládání",
+  "remoteNeedsPro": "Dálkové ovládání je součástí Pro.",
+  "remoteNotAtHome": "Zapněte to doma, připojení k brokeru.",
+  "remoteUnreachable": "Relé ZigDash neodpovědělo. Zkuste to později.",
+  "remoteRefused": "Relé odmítlo. Zkuste to znovu nebo nahlaste problém.",
+  "remoteOnTitle": "Dálkové ovládání je zapnuté",
+  "remoteOnBody": "Mimo domov se ZigDash připojí přes relé sám.",
+  "remoteHubOnline": "Hub je připojen k relé",
+  "remoteHubOffline": "Hub není připojen k relé",
+  "remoteTurnOff": "Vypnout dálkové ovládání",
+  "remoteViaRelayNow": "Tento telefon je teď připojen přes relé."
 }

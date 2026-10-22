@@ -48,6 +48,7 @@ class ProBilling(private val activity: Activity, messenger: BinaryMessenger) :
                 "status" -> status { reply(result, it) }
                 "buy" -> buy(result)
                 "price" -> price { reply(result, it) }
+                "token" -> token { reply(result, it) }
                 else -> result.notImplemented()
             }
         }
@@ -119,6 +120,23 @@ class ProBilling(private val activity: Activity, messenger: BinaryMessenger) :
                     done("pending")
                 else -> product { done(if (it == null) "unavailable" else "locked") }
             }
+        }
+    }
+
+    /** The purchase token of an owned Pro, for the ZigDash relay (3.1); "" if none. */
+    private fun token(done: (String) -> Unit) = connected { ok ->
+        if (!ok) {
+            done("")
+            return@connected
+        }
+        client.queryPurchasesAsync(
+            QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP).build()
+        ) { r, purchases ->
+            val owned = purchases.firstOrNull {
+                PRODUCT in it.products && it.purchaseState == Purchase.PurchaseState.PURCHASED
+            }
+            done(if (r.responseCode == BillingClient.BillingResponseCode.OK && owned != null) owned.purchaseToken else "")
         }
     }
 

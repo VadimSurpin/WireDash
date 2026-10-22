@@ -148,6 +148,8 @@ void main() {
       'label': 'Hallway light',
     });
     expect(j['name'], contains('Hallway motion'));
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 4)); // the manager's unsubscribe grace
   });
 
   testWidgets('a sunrise rule needs a town first', (tester) async {

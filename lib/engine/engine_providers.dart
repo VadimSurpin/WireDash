@@ -70,7 +70,7 @@ class EngineView {
 /// "paused" without a new message. Silently re-saves an older Engine.
 final engineViewProvider =
     StreamProvider.autoDispose.family<EngineView, String>((ref, connectionId) async* {
-  final mgr = await ref.read(mqttManagerProvider(connectionId).future);
+  final mgr = await ref.watch(mqttManagerProvider(connectionId).future);
   final base = ref.read(homeBaseTopicProvider(connectionId)) ?? 'zigbee2mqtt';
   final prefs = ref.read(sharedPreferencesProvider);
   final link = MqttHubLink(mgr);
@@ -149,7 +149,7 @@ Future<void> _updateIfOutdated(Ref ref, HubLink link, String base, EngineReport?
 /// The installer for a Home, over its live broker connection.
 final engineInstallerProvider =
     FutureProvider.autoDispose.family<EngineInstaller, String>((ref, connectionId) async {
-  final mgr = await ref.read(mqttManagerProvider(connectionId).future);
+  final mgr = await ref.watch(mqttManagerProvider(connectionId).future);
   final base = ref.read(homeBaseTopicProvider(connectionId)) ?? 'zigbee2mqtt';
   return EngineInstaller(MqttHubLink(mgr), base: base);
 });

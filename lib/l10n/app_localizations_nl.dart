@@ -4236,4 +4236,56 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Verbonden · Onderweg via ZigDash';
+
+  @override
+  String get remoteTitle => 'Bediening op afstand';
+
+  @override
+  String get remoteSettingsSubtitle => 'Bedien dit huis overal, met Pro';
+
+  @override
+  String get remoteIntroTitle => 'Bedien je huis overal';
+
+  @override
+  String get remoteIntroBody =>
+      'Je hub houdt één verbinding met de relay van ZigDash. Onderweg bereikt deze telefoon je apparaten daarlangs. Alles wordt versleuteld op je hub en je telefoon, dus de relay kan je apparaten en wat ze doen niet lezen.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Bediening op afstand draait in ZigDash Engine. Installeer het eerst onder Automatiseringen.';
+
+  @override
+  String get remoteSetUp => 'Bediening op afstand aanzetten';
+
+  @override
+  String get remoteNeedsPro => 'Bediening op afstand hoort bij Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Zet dit thuis aan, verbonden met je broker.';
+
+  @override
+  String get remoteUnreachable =>
+      'De relay van ZigDash antwoordde niet. Probeer het later opnieuw.';
+
+  @override
+  String get remoteRefused =>
+      'De relay weigerde. Probeer opnieuw of meld een probleem.';
+
+  @override
+  String get remoteOnTitle => 'Bediening op afstand staat aan';
+
+  @override
+  String get remoteOnBody => 'Onderweg verbindt ZigDash vanzelf via de relay.';
+
+  @override
+  String get remoteHubOnline => 'Je hub is verbonden met de relay';
+
+  @override
+  String get remoteHubOffline => 'Je hub is niet verbonden met de relay';
+
+  @override
+  String get remoteTurnOff => 'Bediening op afstand uitzetten';
+
+  @override
+  String get remoteViaRelayNow => 'Deze telefoon is nu via de relay verbonden.';
 }

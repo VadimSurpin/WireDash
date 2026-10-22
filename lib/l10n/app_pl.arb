@@ -1304,5 +1304,21 @@
   "autoNoTargets": "Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania.",
   "proGetAutomations": "Bez limitu automatyzacji; trzy na dom są darmowe",
   "autoDeleteConfirm": "Usunąć tę automatyzację? Przestanie działać na hubie.",
-  "statusConnectedRelay": "Połączono · Poza domem przez ZigDash"
+  "statusConnectedRelay": "Połączono · Poza domem przez ZigDash",
+  "remoteTitle": "Sterowanie zdalne",
+  "remoteSettingsSubtitle": "Steruj tym domem z dowolnego miejsca, z Pro",
+  "remoteIntroTitle": "Steruj domem z dowolnego miejsca",
+  "remoteIntroBody": "Hub utrzymuje jedno połączenie z przekaźnikiem ZigDash. Poza domem ten telefon dociera przez niego do urządzeń. Wszystko jest szyfrowane na hubie i telefonie, więc przekaźnik nie może odczytać urządzeń ani tego, co robią.",
+  "remoteNeedsEngine": "Sterowanie zdalne działa w ZigDash Engine. Najpierw zainstaluj go w Automatyzacjach.",
+  "remoteSetUp": "Włącz sterowanie zdalne",
+  "remoteNeedsPro": "Sterowanie zdalne jest częścią Pro.",
+  "remoteNotAtHome": "Włącz to w domu, z połączeniem z brokerem.",
+  "remoteUnreachable": "Przekaźnik ZigDash nie odpowiedział. Spróbuj później.",
+  "remoteRefused": "Przekaźnik odmówił. Spróbuj ponownie lub zgłoś problem.",
+  "remoteOnTitle": "Sterowanie zdalne jest włączone",
+  "remoteOnBody": "Poza domem ZigDash sam łączy się przez przekaźnik.",
+  "remoteHubOnline": "Hub jest połączony z przekaźnikiem",
+  "remoteHubOffline": "Hub nie jest połączony z przekaźnikiem",
+  "remoteTurnOff": "Wyłącz sterowanie zdalne",
+  "remoteViaRelayNow": "Ten telefon jest teraz połączony przez przekaźnik."
 }

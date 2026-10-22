@@ -4238,4 +4238,59 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Conectado · Fuera, vía ZigDash';
+
+  @override
+  String get remoteTitle => 'Control remoto';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Controla este hogar desde cualquier lugar, con Pro';
+
+  @override
+  String get remoteIntroTitle => 'Controla tu hogar desde cualquier lugar';
+
+  @override
+  String get remoteIntroBody =>
+      'Tu hub mantiene una conexión con el relé de ZigDash. Fuera de casa, este teléfono llega a tus dispositivos a través de él. Todo se cifra en tu hub y tu teléfono, así que el relé no puede leer tus dispositivos ni lo que hacen.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'El control remoto funciona en ZigDash Engine. Instálalo antes en Automatizaciones.';
+
+  @override
+  String get remoteSetUp => 'Activar el control remoto';
+
+  @override
+  String get remoteNeedsPro => 'El control remoto es parte de Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Actívalo en casa, conectado a tu broker.';
+
+  @override
+  String get remoteUnreachable =>
+      'El relé de ZigDash no respondió. Inténtalo más tarde.';
+
+  @override
+  String get remoteRefused =>
+      'El relé lo rechazó. Inténtalo de nuevo o informa del problema.';
+
+  @override
+  String get remoteOnTitle => 'El control remoto está activado';
+
+  @override
+  String get remoteOnBody =>
+      'Fuera de casa, ZigDash se conecta por el relé solo.';
+
+  @override
+  String get remoteHubOnline => 'Tu hub está conectado al relé';
+
+  @override
+  String get remoteHubOffline => 'Tu hub no está conectado al relé';
+
+  @override
+  String get remoteTurnOff => 'Desactivar el control remoto';
+
+  @override
+  String get remoteViaRelayNow =>
+      'Este teléfono está conectado por el relé ahora mismo.';
 }

@@ -41,7 +41,7 @@
 
 'use strict';
 
-const ENGINE_VERSION = '3.0.0';
+const ENGINE_VERSION = '3.1.1';
 const ROOT = 'zigdash';
 const PREFIX = 'automations';
 const STATE_EVERY_MS = 30000;
@@ -385,7 +385,7 @@ class ZigDashEngine {
     this.eventBus.onMQTTMessage(this, this.guard('mqtt message', this.onMqtt));
     this.eventBus.onPublishEntityState(this, this.guard('device message', this.onDevice));
     this.eventBus.onMQTTMessagePublished(this, this.guard('published', this.onPublished));
-    for (const filter of [`${ROOT}/${PREFIX}/#`, ...Object.keys(FLOWS).map((n) => `${ROOT}/${n}/#`)]) {
+    for (const filter of [`${ROOT}/${PREFIX}/#`, `${ROOT}/remote/set`, ...Object.keys(FLOWS).map((n) => `${ROOT}/${n}/#`)]) {
       const sub = this.mqtt.subscribe(filter);
       if (sub && typeof sub.catch === 'function') sub.catch((e) => this.caught('subscribe', e));
     }
@@ -412,7 +412,7 @@ class ZigDashEngine {
     this.timers = [];
     this.offTimers.clear();
     try { this.eventBus.removeListeners(this); } catch (_) {}
-    for (const filter of [`${ROOT}/${PREFIX}/#`, ...Object.keys(FLOWS).map((n) => `${ROOT}/${n}/#`)]) {
+    for (const filter of [`${ROOT}/${PREFIX}/#`, `${ROOT}/remote/set`, ...Object.keys(FLOWS).map((n) => `${ROOT}/${n}/#`)]) {
       try { await this.mqtt.unsubscribe(filter); } catch (_) {}
     }
     for (const [name, def] of Object.entries(FLOWS)) {

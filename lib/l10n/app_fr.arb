@@ -1234,5 +1234,21 @@
   "autoNoTargets": "Ce domicile n'a encore aucune lumière, prise, interrupteur ou volet à commander.",
   "proGetAutomations": "Automatisations illimitées ; trois par domicile sont gratuites",
   "autoDeleteConfirm": "Supprimer cette automatisation ? Elle ne tournera plus sur votre hub.",
-  "statusConnectedRelay": "Connecté · À distance via ZigDash"
+  "statusConnectedRelay": "Connecté · À distance via ZigDash",
+  "remoteTitle": "Contrôle à distance",
+  "remoteSettingsSubtitle": "Commandez ce domicile de partout, avec Pro",
+  "remoteIntroTitle": "Commandez votre domicile de partout",
+  "remoteIntroBody": "Votre hub garde une connexion au relais de ZigDash. Hors de chez vous, ce téléphone atteint vos appareils par ce relais. Tout est chiffré sur votre hub et votre téléphone : le relais ne peut lire ni vos appareils ni ce qu'ils font.",
+  "remoteNeedsEngine": "Le contrôle à distance tourne dans ZigDash Engine. Installez-le d'abord dans Automatisations.",
+  "remoteSetUp": "Activer le contrôle à distance",
+  "remoteNeedsPro": "Le contrôle à distance fait partie de Pro.",
+  "remoteNotAtHome": "Activez-le chez vous, connecté à votre broker.",
+  "remoteUnreachable": "Le relais de ZigDash n'a pas répondu. Réessayez plus tard.",
+  "remoteRefused": "Le relais a refusé. Réessayez ou signalez un problème.",
+  "remoteOnTitle": "Le contrôle à distance est activé",
+  "remoteOnBody": "Hors de chez vous, ZigDash passe par le relais tout seul.",
+  "remoteHubOnline": "Votre hub est connecté au relais",
+  "remoteHubOffline": "Votre hub n'est pas connecté au relais",
+  "remoteTurnOff": "Désactiver le contrôle à distance",
+  "remoteViaRelayNow": "Ce téléphone passe par le relais en ce moment."
 }

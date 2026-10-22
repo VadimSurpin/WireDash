@@ -28,6 +28,7 @@ class EngineReport {
     required this.stoppedSelf,
     required this.at,
     this.flows = const {},
+    this.remoteConnected,
   });
 
   final String version;
@@ -39,6 +40,10 @@ class EngineReport {
   /// Alerts and history in the Engine: "active", or "passive" while a
   /// Node-RED copy still runs them.
   final Map<String, String> flows;
+
+  /// Whether the Engine is connected to the ZigDash relay (3.1); null when
+  /// remote control isn't set up on the hub.
+  final bool? remoteConnected;
 
   /// The hub's clock when it reported.
   final DateTime? at;
@@ -56,6 +61,7 @@ class EngineReport {
         stoppedSelf: j['stopped_self'] == true,
         at: DateTime.tryParse('${j['at'] ?? ''}'),
         flows: {for (final e in ((j['flows'] as Map?) ?? const {}).entries) '${e.key}': '${e.value}'},
+        remoteConnected: (j['remote'] as Map?)?['connected'] as bool?,
       );
     } catch (_) {
       return null;

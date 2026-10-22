@@ -33,6 +33,8 @@ class Routes {
   static const settingsLanguage = '/settings/language';
   static String settingsHome(String connectionId) =>
       '/settings/home/$connectionId';
+  static String homeRemote(String connectionId) =>
+      '/settings/home/$connectionId/remote';
   static String homeAutomations(String connectionId) =>
       '/settings/home/$connectionId/automations';
   static String homeAlerts(String connectionId) =>

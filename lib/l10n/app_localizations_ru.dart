@@ -4221,4 +4221,59 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Подключено · Вне дома через ZigDash';
+
+  @override
+  String get remoteTitle => 'Удалённое управление';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Управляйте этим домом откуда угодно, с Pro';
+
+  @override
+  String get remoteIntroTitle => 'Управляйте домом откуда угодно';
+
+  @override
+  String get remoteIntroBody =>
+      'Хаб держит одно соединение с ретранслятором ZigDash. Вне дома этот телефон достаёт до устройств через него. Всё шифруется на хабе и в телефоне, поэтому ретранслятор не может прочитать ни устройства, ни что они делают.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Удалённое управление работает в ZigDash Engine. Сначала установите его в разделе «Автоматизации».';
+
+  @override
+  String get remoteSetUp => 'Включить удалённое управление';
+
+  @override
+  String get remoteNeedsPro => 'Удалённое управление входит в Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Включите это дома, при подключении к брокеру.';
+
+  @override
+  String get remoteUnreachable =>
+      'Ретранслятор ZigDash не ответил. Попробуйте позже.';
+
+  @override
+  String get remoteRefused =>
+      'Ретранслятор отказал. Попробуйте снова или сообщите о проблеме.';
+
+  @override
+  String get remoteOnTitle => 'Удалённое управление включено';
+
+  @override
+  String get remoteOnBody =>
+      'Вне дома ZigDash сам подключается через ретранслятор.';
+
+  @override
+  String get remoteHubOnline => 'Хаб подключён к ретранслятору';
+
+  @override
+  String get remoteHubOffline => 'Хаб не подключён к ретранслятору';
+
+  @override
+  String get remoteTurnOff => 'Выключить удалённое управление';
+
+  @override
+  String get remoteViaRelayNow =>
+      'Этот телефон сейчас подключён через ретранслятор.';
 }

@@ -4219,4 +4219,59 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Tilkoblet · Borte via ZigDash';
+
+  @override
+  String get remoteTitle => 'Fjernstyring';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Styr dette hjemmet fra hvor som helst, med Pro';
+
+  @override
+  String get remoteIntroTitle => 'Styr hjemmet fra hvor som helst';
+
+  @override
+  String get remoteIntroBody =>
+      'Huben holder én tilkobling til ZigDash sitt relé. Borte når denne telefonen enhetene dine gjennom det. Alt krypteres på huben og telefonen, så reléet kan ikke lese enhetene eller hva de gjør.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Fjernstyring kjører i ZigDash Engine. Installer det først under Automasjoner.';
+
+  @override
+  String get remoteSetUp => 'Slå på fjernstyring';
+
+  @override
+  String get remoteNeedsPro => 'Fjernstyring er en del av Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Slå det på hjemme, tilkoblet brokeren din.';
+
+  @override
+  String get remoteUnreachable =>
+      'ZigDash sitt relé svarte ikke. Prøv igjen senere.';
+
+  @override
+  String get remoteRefused =>
+      'Reléet avviste. Prøv igjen, eller rapporter et problem.';
+
+  @override
+  String get remoteOnTitle => 'Fjernstyring er på';
+
+  @override
+  String get remoteOnBody =>
+      'Borte kobler ZigDash seg til via reléet av seg selv.';
+
+  @override
+  String get remoteHubOnline => 'Huben er koblet til reléet';
+
+  @override
+  String get remoteHubOffline => 'Huben er ikke koblet til reléet';
+
+  @override
+  String get remoteTurnOff => 'Slå av fjernstyring';
+
+  @override
+  String get remoteViaRelayNow =>
+      'Denne telefonen er koblet til via reléet akkurat nå.';
 }

@@ -15,6 +15,7 @@ const H = Engine.helpers;
 function fakeZ2m() {
   const listeners = { mqtt: [], entity: [], published: [] };
   const published = [];
+  const subscribed = [];
   const injected = [];
   const devices = {
     '0xmotion': { name: 'Hallway motion', ieeeAddr: '0xmotion', isDevice: () => true },
@@ -31,7 +32,7 @@ function fakeZ2m() {
   };
   const mqtt = {
     publish: (topic, payload, options) => { published.push({ topic: `${options.baseTopic}/${topic}`, payload, retain: options.clientOptions.retain, receive: options.skipReceive === false }); return Promise.resolve(); },
-    subscribe: () => Promise.resolve(),
+    subscribe: (topic) => { subscribed.push(topic); return Promise.resolve(); },
     unsubscribe: () => Promise.resolve(),
     onMessage: (topic, buf) => injected.push({ topic, payload: JSON.parse(buf.toString()) }),
   };
@@ -40,7 +41,7 @@ function fakeZ2m() {
   const logger = { info() {}, warning() {}, error() {}, debug() {} };
   const engine = new Engine(zigbee, mqtt, {}, null, eventBus, null, null, null, settings, logger);
   return {
-    engine, published, injected, devices,
+    engine, published, injected, devices, subscribed,
     rule: (id, rule) => listeners.mqtt.forEach((cb) => cb({ topic: `zigdash/automations/rules/${id}`, message: rule ? JSON.stringify({ v: 1, enabled: true, conditions: [], ...rule }) : '' })),
     meta: (m) => listeners.mqtt.forEach((cb) => cb({ topic: 'zigdash/automations/meta', message: JSON.stringify(m) })),
     control: (m) => listeners.mqtt.forEach((cb) => cb({ topic: 'zigdash/automations/control', message: JSON.stringify(m) })),
@@ -383,6 +384,13 @@ async function withRemote() {
   relay.emit('connect');
   return { z, relay, opened: () => opened };
 }
+
+test('the Engine subscribes to everything the app sends it, the relay login included', async () => {
+  const z = fakeZ2m();
+  await z.engine.start();
+  assert.deepEqual(z.subscribed.sort(), ['zigdash/alerts/#', 'zigdash/automations/#', 'zigdash/history/#', 'zigdash/remote/set']);
+  await z.engine.stop();
+});
 
 test('remote: connects with the will, announces the hub, subscribes to commands without echo', async () => {
   const { z, relay, opened } = await withRemote();

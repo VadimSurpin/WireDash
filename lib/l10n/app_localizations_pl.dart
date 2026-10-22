@@ -4227,4 +4227,59 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Połączono · Poza domem przez ZigDash';
+
+  @override
+  String get remoteTitle => 'Sterowanie zdalne';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Steruj tym domem z dowolnego miejsca, z Pro';
+
+  @override
+  String get remoteIntroTitle => 'Steruj domem z dowolnego miejsca';
+
+  @override
+  String get remoteIntroBody =>
+      'Hub utrzymuje jedno połączenie z przekaźnikiem ZigDash. Poza domem ten telefon dociera przez niego do urządzeń. Wszystko jest szyfrowane na hubie i telefonie, więc przekaźnik nie może odczytać urządzeń ani tego, co robią.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Sterowanie zdalne działa w ZigDash Engine. Najpierw zainstaluj go w Automatyzacjach.';
+
+  @override
+  String get remoteSetUp => 'Włącz sterowanie zdalne';
+
+  @override
+  String get remoteNeedsPro => 'Sterowanie zdalne jest częścią Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Włącz to w domu, z połączeniem z brokerem.';
+
+  @override
+  String get remoteUnreachable =>
+      'Przekaźnik ZigDash nie odpowiedział. Spróbuj później.';
+
+  @override
+  String get remoteRefused =>
+      'Przekaźnik odmówił. Spróbuj ponownie lub zgłoś problem.';
+
+  @override
+  String get remoteOnTitle => 'Sterowanie zdalne jest włączone';
+
+  @override
+  String get remoteOnBody =>
+      'Poza domem ZigDash sam łączy się przez przekaźnik.';
+
+  @override
+  String get remoteHubOnline => 'Hub jest połączony z przekaźnikiem';
+
+  @override
+  String get remoteHubOffline => 'Hub nie jest połączony z przekaźnikiem';
+
+  @override
+  String get remoteTurnOff => 'Wyłącz sterowanie zdalne';
+
+  @override
+  String get remoteViaRelayNow =>
+      'Ten telefon jest teraz połączony przez przekaźnik.';
 }

@@ -7469,6 +7469,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connected · Away via ZigDash'**
   String get statusConnectedRelay;
+
+  /// No description provided for @remoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control'**
+  String get remoteTitle;
+
+  /// No description provided for @remoteSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control this home from anywhere, with Pro'**
+  String get remoteSettingsSubtitle;
+
+  /// No description provided for @remoteIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control your home from anywhere'**
+  String get remoteIntroTitle;
+
+  /// No description provided for @remoteIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub keeps one connection to ZigDash\'s relay. Away from home, this phone reaches your devices through it. Everything is encrypted on your hub and your phone, so the relay can\'t read your devices or what they do.'**
+  String get remoteIntroBody;
+
+  /// No description provided for @remoteNeedsEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control runs in ZigDash Engine. Install it under Automations first.'**
+  String get remoteNeedsEngine;
+
+  /// No description provided for @remoteSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on remote control'**
+  String get remoteSetUp;
+
+  /// No description provided for @remoteNeedsPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is part of Pro.'**
+  String get remoteNeedsPro;
+
+  /// No description provided for @remoteNotAtHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn this on at home, connected to your broker.'**
+  String get remoteNotAtHome;
+
+  /// No description provided for @remoteUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash\'s relay didn\'t answer. Try again later.'**
+  String get remoteUnreachable;
+
+  /// No description provided for @remoteRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'The relay refused. Try again, or report a problem.'**
+  String get remoteRefused;
+
+  /// No description provided for @remoteOnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is on'**
+  String get remoteOnTitle;
+
+  /// No description provided for @remoteOnBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Away from home, ZigDash connects through the relay by itself.'**
+  String get remoteOnBody;
+
+  /// No description provided for @remoteHubOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub is connected to the relay'**
+  String get remoteHubOnline;
+
+  /// No description provided for @remoteHubOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub isn\'t connected to the relay'**
+  String get remoteHubOffline;
+
+  /// No description provided for @remoteTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off remote control'**
+  String get remoteTurnOff;
+
+  /// No description provided for @remoteViaRelayNow.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is connected through the relay right now.'**
+  String get remoteViaRelayNow;
 }
 
 class _AppLocalizationsDelegate

@@ -1309,5 +1309,21 @@
   "autoNoTargets": "Det här hemmet har ännu ingen lampa, kontakt, strömbrytare eller rullgardin att styra.",
   "proGetAutomations": "Obegränsade automationer; tre per hem är gratis",
   "autoDeleteConfirm": "Ta bort den här automationen? Den slutar köras på hubben.",
-  "statusConnectedRelay": "Ansluten · Borta via ZigDash"
+  "statusConnectedRelay": "Ansluten · Borta via ZigDash",
+  "remoteTitle": "Fjärrstyrning",
+  "remoteSettingsSubtitle": "Styr det här hemmet var du än är, med Pro",
+  "remoteIntroTitle": "Styr ditt hem var du än är",
+  "remoteIntroBody": "Hubben håller en anslutning till ZigDashs relä. Borta når den här telefonen dina enheter genom det. Allt krypteras på hubben och telefonen, så reläet kan inte läsa dina enheter eller vad de gör.",
+  "remoteNeedsEngine": "Fjärrstyrning körs i ZigDash Engine. Installera det först under Automationer.",
+  "remoteSetUp": "Slå på fjärrstyrning",
+  "remoteNeedsPro": "Fjärrstyrning ingår i Pro.",
+  "remoteNotAtHome": "Slå på det hemma, ansluten till din broker.",
+  "remoteUnreachable": "ZigDashs relä svarade inte. Försök igen senare.",
+  "remoteRefused": "Reläet nekade. Försök igen eller rapportera ett problem.",
+  "remoteOnTitle": "Fjärrstyrning är på",
+  "remoteOnBody": "Borta ansluter ZigDash själv via reläet.",
+  "remoteHubOnline": "Hubben är ansluten till reläet",
+  "remoteHubOffline": "Hubben är inte ansluten till reläet",
+  "remoteTurnOff": "Stäng av fjärrstyrning",
+  "remoteViaRelayNow": "Den här telefonen är ansluten via reläet just nu."
 }

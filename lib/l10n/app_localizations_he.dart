@@ -4183,4 +4183,55 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'מחובר · מחוץ לבית דרך ZigDash';
+
+  @override
+  String get remoteTitle => 'שליטה מרחוק';
+
+  @override
+  String get remoteSettingsSubtitle => 'שליטה בבית הזה מכל מקום, עם Pro';
+
+  @override
+  String get remoteIntroTitle => 'שליטה בבית מכל מקום';
+
+  @override
+  String get remoteIntroBody =>
+      'הרכזת שומרת חיבור אחד לממסר של ZigDash. מחוץ לבית, הטלפון הזה מגיע למכשירים דרכו. הכול מוצפן ברכזת ובטלפון, כך שהממסר לא יכול לקרוא את המכשירים או מה הם עושים.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'שליטה מרחוק רצה ב־ZigDash Engine. יש להתקין אותו קודם תחת „אוטומציות”.';
+
+  @override
+  String get remoteSetUp => 'הפעלת שליטה מרחוק';
+
+  @override
+  String get remoteNeedsPro => 'שליטה מרחוק היא חלק מ־Pro.';
+
+  @override
+  String get remoteNotAtHome => 'יש להפעיל את זה בבית, כשמחוברים לברוקר.';
+
+  @override
+  String get remoteUnreachable =>
+      'הממסר של ZigDash לא ענה. אפשר לנסות שוב מאוחר יותר.';
+
+  @override
+  String get remoteRefused => 'הממסר סירב. אפשר לנסות שוב או לדווח על בעיה.';
+
+  @override
+  String get remoteOnTitle => 'שליטה מרחוק פעילה';
+
+  @override
+  String get remoteOnBody => 'מחוץ לבית, ZigDash מתחבר דרך הממסר לבד.';
+
+  @override
+  String get remoteHubOnline => 'הרכזת מחוברת לממסר';
+
+  @override
+  String get remoteHubOffline => 'הרכזת לא מחוברת לממסר';
+
+  @override
+  String get remoteTurnOff => 'כיבוי שליטה מרחוק';
+
+  @override
+  String get remoteViaRelayNow => 'הטלפון הזה מחובר עכשיו דרך הממסר.';
 }

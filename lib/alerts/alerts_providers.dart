@@ -14,7 +14,7 @@ import 'alerts_config.dart';
 /// its retained heartbeat on `zigdash/alerts/bridge/state`.
 final alertsBridgeOnlineProvider =
     StreamProvider.autoDispose.family<bool, String>((ref, connectionId) async* {
-  final mgr = await ref.read(mqttManagerProvider(connectionId).future);
+  final mgr = await ref.watch(mqttManagerProvider(connectionId).future);
   const topic = AlertsConfig.bridgeStateTopic;
   final stream = mgr.subscribe(topic);
   ref.onDispose(() => mgr.unsubscribe(topic));
@@ -26,7 +26,7 @@ final alertsBridgeOnlineProvider =
 /// The last alerts that fired, kept by the hub (CONTEXT.md: Recent alerts).
 final recentAlertsProvider = StreamProvider.autoDispose
     .family<List<AlertEvent>, String>((ref, connectionId) async* {
-  final mgr = await ref.read(mqttManagerProvider(connectionId).future);
+  final mgr = await ref.watch(mqttManagerProvider(connectionId).future);
   const topic = AlertsConfig.recentTopic;
   final stream = mgr.subscribe(topic);
   ref.onDispose(() => mgr.unsubscribe(topic));
@@ -50,7 +50,7 @@ final recentAlertsProvider = StreamProvider.autoDispose
 /// Phones the hub could no longer reach (their push registration is gone).
 final deadPhonesProvider = StreamProvider.autoDispose
     .family<Set<String>, String>((ref, connectionId) async* {
-  final mgr = await ref.read(mqttManagerProvider(connectionId).future);
+  final mgr = await ref.watch(mqttManagerProvider(connectionId).future);
   const topic = AlertsConfig.stateTopic;
   final stream = mgr.subscribe(topic);
   ref.onDispose(() => mgr.unsubscribe(topic));

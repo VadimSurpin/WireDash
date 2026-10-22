@@ -1309,5 +1309,21 @@
   "autoNoTargets": "Dieses Zuhause hat noch kein Licht, keine Steckdose, keinen Schalter und keinen Rollladen zum Steuern.",
   "proGetAutomations": "Unbegrenzte Automationen; drei pro Zuhause sind kostenlos",
   "autoDeleteConfirm": "Diese Automation löschen? Sie läuft dann nicht mehr auf Ihrem Hub.",
-  "statusConnectedRelay": "Verbunden · Unterwegs über ZigDash"
+  "statusConnectedRelay": "Verbunden · Unterwegs über ZigDash",
+  "remoteTitle": "Fernsteuerung",
+  "remoteSettingsSubtitle": "Dieses Zuhause von überall steuern, mit Pro",
+  "remoteIntroTitle": "Steuern Sie Ihr Zuhause von überall",
+  "remoteIntroBody": "Ihr Hub hält eine Verbindung zum Relay von ZigDash. Unterwegs erreicht dieses Telefon Ihre Geräte darüber. Alles wird auf Hub und Telefon verschlüsselt, das Relay kann Ihre Geräte und was sie tun nicht lesen.",
+  "remoteNeedsEngine": "Die Fernsteuerung läuft in ZigDash Engine. Installieren Sie es zuerst unter Automationen.",
+  "remoteSetUp": "Fernsteuerung einschalten",
+  "remoteNeedsPro": "Die Fernsteuerung gehört zu Pro.",
+  "remoteNotAtHome": "Schalten Sie das zu Hause ein, mit Verbindung zu Ihrem Broker.",
+  "remoteUnreachable": "Das Relay von ZigDash hat nicht geantwortet. Versuchen Sie es später erneut.",
+  "remoteRefused": "Das Relay hat abgelehnt. Versuchen Sie es erneut oder melden Sie ein Problem.",
+  "remoteOnTitle": "Die Fernsteuerung ist an",
+  "remoteOnBody": "Unterwegs verbindet sich ZigDash von selbst über das Relay.",
+  "remoteHubOnline": "Ihr Hub ist mit dem Relay verbunden",
+  "remoteHubOffline": "Ihr Hub ist nicht mit dem Relay verbunden",
+  "remoteTurnOff": "Fernsteuerung ausschalten",
+  "remoteViaRelayNow": "Dieses Telefon ist gerade über das Relay verbunden."
 }

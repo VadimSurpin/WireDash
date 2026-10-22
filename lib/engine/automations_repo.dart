@@ -154,11 +154,15 @@ final automationsRepoProvider = Provider<AutomationsRepo>((ref) => AutomationsRe
       ref.watch(sharedPreferencesProvider),
     ));
 
-final automationsProvider = StreamProvider.autoDispose.family<List<Automation>, String>(
-    (ref, connectionId) => ref.watch(automationsRepoProvider).watch(connectionId));
+final automationsProvider = StreamProvider.autoDispose.family<List<Automation>, String>((ref, connectionId) {
+  ref.watch(mqttManagerProvider(connectionId)); // follow a rebuilt connection
+  return ref.watch(automationsRepoProvider).watch(connectionId);
+});
 
-final automationRunsProvider = StreamProvider.autoDispose.family<List<AutomationRun>, String>(
-    (ref, connectionId) => ref.watch(automationsRepoProvider).watchRuns(connectionId));
+final automationRunsProvider = StreamProvider.autoDispose.family<List<AutomationRun>, String>((ref, connectionId) {
+  ref.watch(mqttManagerProvider(connectionId));
+  return ref.watch(automationsRepoProvider).watchRuns(connectionId);
+});
 
 /// A new rule id: short, unique enough per Home, safe as a topic level.
 String newAutomationId() => DateTime.now().microsecondsSinceEpoch.toRadixString(36);
