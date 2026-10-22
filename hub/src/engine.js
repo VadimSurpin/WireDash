@@ -24,6 +24,15 @@
 // that flow stays passive (keeps its memory, sends and publishes nothing);
 // 90 s after the last foreign beat it takes over.
 //
+// Remote (3.1, zigdash-3.0.md §5): when the app hands the Engine relay credentials
+// and a home key (zigdash/remote/set, non-retained; kept in the data folder, never
+// published), the Engine keeps one outbound MQTT connection to the ZigDash relay.
+// Up: each device state Zigbee2MQTT publishes goes to homes/<id>/s/<opaque id>,
+// retained, AES-256-GCM sealed with the home key; the real topic travels only
+// inside the seal; bridge topics never leave. Down: commands arrive sealed on
+// homes/<id>/c and are accepted only for <base>/.../set|get and automation rules,
+// within five minutes of being sealed. Presence: homes/<id>/hub online/offline.
+//
 // This file is BUILT from hub/src/engine.js by hub/build.mjs. Edit the source.
 //
 // Safety: Zigbee2MQTT has no crash guard, so every callback and timer here is wrapped.
@@ -187,6 +196,48 @@ function outputsOf(r) {
   return r.map((o) => (o === null || o === undefined ? [] : Array.isArray(o) ? o : [o]));
 }
 
+// ---------- remote: sealing and topics ----------
+
+const REMOTE_FILE = 'zigdash-remote.json';
+const REMOTE_MAX_AGE_MS = 5 * 60000;
+
+/** AES-256-GCM: iv(12) | ciphertext | tag(16). */
+function seal(key, obj) {
+  const crypto = require('crypto');
+  const iv = crypto.randomBytes(12);
+  const c = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const body = Buffer.concat([c.update(Buffer.from(JSON.stringify(obj))), c.final()]);
+  return Buffer.concat([iv, body, c.getAuthTag()]);
+}
+
+/** The object inside [buf], or null when it was not sealed with [key]. */
+function unseal(key, buf) {
+  try {
+    const crypto = require('crypto');
+    const b = Buffer.isBuffer(buf) ? buf : Buffer.from(buf);
+    if (b.length < 29) return null;
+    const d = crypto.createDecipheriv('aes-256-gcm', key, b.subarray(0, 12));
+    d.setAuthTag(b.subarray(b.length - 16));
+    return JSON.parse(Buffer.concat([d.update(b.subarray(12, b.length - 16)), d.final()]).toString());
+  } catch (_) {
+    return null;
+  }
+}
+
+/** A topic name the relay can't read: HMAC of the real topic with the home key. */
+function opaqueId(key, topic) {
+  return require('crypto').createHmac('sha256', key).update(topic).digest('hex').slice(0, 24);
+}
+
+/** Commands a phone may send from away: device set/get under [base], and automation rules. */
+function remoteCommandAllowed(base, topic) {
+  if (typeof topic !== 'string' || topic.includes('#') || topic.includes('+')) return false;
+  if (topic.startsWith(`${base}/`) && !topic.startsWith(`${base}/bridge/`)) {
+    return topic.endsWith('/set') || topic.endsWith('/get');
+  }
+  return /^zigdash\/automations\/rules\/[A-Za-z0-9_-]+$/.test(topic);
+}
+
 // ---------- the extension ----------
 
 class ZigDashEngine {
@@ -209,6 +260,8 @@ class ZigDashEngine {
     this.offTimers = new Map();
     this.clock = () => new Date();
     this.fetch = (...args) => fetch(...args);
+    this.mqttConnect = (url, options) => require('mqtt').connect(url, options);
+    this.remote = null; // { config, key, client, connected, error }
     this.flowState = {};
     for (const name of Object.keys(FLOWS)) {
       this.flowState[name] = { store: {}, active: false, startedAt: 0, foreignAt: 0, ownAt: 0 };
@@ -297,6 +350,7 @@ class ZigDashEngine {
       rules_loaded: this.rules.size,
       rules_unknown: Object.keys(this.unknown),
       stopped_self: this.stoppedSelf,
+      remote: this.remote ? { connected: !!this.remote.connected, error: this.remote.error || undefined } : undefined,
       flows: Object.fromEntries(Object.entries(this.flowState).map(([n, f]) => [n, f.active ? 'active' : 'passive'])),
       at: this.clock().toISOString(),
     }), true);
@@ -345,6 +399,8 @@ class ZigDashEngine {
       }
     }
     this.timers.push(setInterval(this.guard('flow takeover', this.checkTakeover), 5000));
+    const saved = this.readRemoteConfig();
+    if (saved) this.startRemote(saved);
     this.timers.push(setInterval(this.guard('state timer', this.publishState), STATE_EVERY_MS));
     this.timers.push(setInterval(this.guard('clock timer', this.onTick), TICK_MS));
     this.publishState();
@@ -362,12 +418,14 @@ class ZigDashEngine {
     for (const [name, def] of Object.entries(FLOWS)) {
       if (this.flowState[name].active) this.publishFull(def.heartbeat, 'offline', true, true);
     }
+    this.stopRemote();
     this.publish('state', '', true);
   }
 
   // ----- inputs -----
 
   onMqtt(data) {
+    if (data.topic === `${ROOT}/remote/set`) return this.onRemoteSet(data.message);
     this.flowInput(data.topic, data.message);
     const prefix = `${ROOT}/${PREFIX}/`;
     if (!data.topic.startsWith(prefix)) return;
@@ -432,6 +490,7 @@ class ZigDashEngine {
   onPublished(data) {
     const base = this.base();
     if (!data || typeof data.topic !== 'string' || !data.topic.startsWith(`${base}/`)) return;
+    this.remoteUp(data.topic, data.payload);
     for (const [name, def] of Object.entries(FLOWS)) {
       for (const input of def.inputs) {
         if (input.devices) this.deliver(name, input.to, { topic: data.topic, payload: String(data.payload) });
@@ -528,6 +587,123 @@ class ZigDashEngine {
       .catch((e) => done(0, String(e && e.message)));
   }
 
+  // ----- remote -----
+
+  remoteFilePath() {
+    const path = require('path');
+    return path.join(process.env.ZIGBEE2MQTT_DATA || path.join(__dirname, '..'), REMOTE_FILE);
+  }
+
+  readRemoteConfig() {
+    try {
+      const fs = require('fs');
+      if (!fs.existsSync(this.remoteFilePath())) return null;
+      return JSON.parse(fs.readFileSync(this.remoteFilePath(), 'utf8'));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /** zigdash/remote/set from the app at home: {url, homeId, username, password, key} or {off: true}. */
+  onRemoteSet(message) {
+    const fs = require('fs');
+    const cfg = message ? JSON.parse(message) : null;
+    this.stopRemote();
+    if (!cfg || cfg.off) {
+      try { fs.unlinkSync(this.remoteFilePath()); } catch (_) {}
+      this.remote = null;
+      this.publishState();
+      return;
+    }
+    if (!cfg.url || !cfg.homeId || !cfg.username || !cfg.password || !cfg.key) return;
+    fs.writeFileSync(this.remoteFilePath(), JSON.stringify(cfg), { mode: 0o600 });
+    this.startRemote(cfg);
+  }
+
+  startRemote(cfg) {
+    const key = Buffer.from(cfg.key, 'base64');
+    if (key.length !== 32) {
+      this.remote = { config: cfg, connected: false, error: 'bad key' };
+      this.publishState();
+      return;
+    }
+    const prefix = `homes/${cfg.homeId}`;
+    const client = this.mqttConnect(cfg.url, {
+      username: cfg.username,
+      password: cfg.password,
+      clientId: `hub-${cfg.homeId}`,
+      protocolVersion: 5,
+      reconnectPeriod: 15000,
+      connectTimeout: 20000,
+      clean: true,
+      will: { topic: `${prefix}/hub`, payload: Buffer.from('offline'), qos: 1, retain: true },
+    });
+    const remote = { config: cfg, key, client, prefix, connected: false, error: undefined };
+    this.remote = remote;
+    // An mqtt client without an error listener would crash Zigbee2MQTT.
+    const current = () => this.remote === remote;
+    client.on('error', this.guard('remote error', (e) => {
+      if (!current()) return;
+      remote.error = String((e && (e.code || e.message)) || 'error').slice(0, 60);
+      this.publishState();
+    }));
+    client.on('connect', this.guard('remote connect', () => {
+      if (!current()) return;
+      remote.connected = true;
+      remote.error = undefined;
+      client.publish(`${prefix}/hub`, 'online', { qos: 1, retain: true });
+      client.subscribe(`${prefix}/c`, { qos: 1, nl: true });
+      this.publishState();
+    }));
+    client.on('close', this.guard('remote close', () => {
+      if (!current()) return;
+      if (remote.connected) {
+        remote.connected = false;
+        this.publishState();
+      }
+    }));
+    client.on('message', this.guard('remote message', (topic, payload) => {
+      if (!current()) return;
+      if (topic === `${prefix}/c`) this.remoteDown(payload);
+    }));
+    this.publishState();
+  }
+
+  stopRemote() {
+    const r = this.remote;
+    if (!r || !r.client) return;
+    try {
+      if (r.connected) r.client.publish(`${r.prefix}/hub`, 'offline', { qos: 1, retain: true });
+      r.client.end(false);
+    } catch (_) {}
+    r.connected = false;
+  }
+
+  /** A device state Zigbee2MQTT published: sealed up to the relay, retained. */
+  remoteUp(topic, payload) {
+    const r = this.remote;
+    if (!r || !r.connected) return;
+    const base = this.base();
+    if (topic.startsWith(`${base}/bridge/`) || topic.endsWith('/set') || topic.endsWith('/get')) return;
+    const body = seal(r.key, { topic, payload: String(payload), at: Date.now() });
+    r.client.publish(`${r.prefix}/s/${opaqueId(r.key, topic)}`, body, { qos: 0, retain: true });
+  }
+
+  /** A sealed command from a phone away from home. */
+  remoteDown(payload) {
+    const r = this.remote;
+    const msg = unseal(r.key, payload);
+    if (!msg || typeof msg.at !== 'number' || Math.abs(Date.now() - msg.at) > REMOTE_MAX_AGE_MS) return;
+    const base = this.base();
+    if (!remoteCommandAllowed(base, msg.topic)) return;
+    const body = typeof msg.payload === 'string' ? msg.payload : JSON.stringify(msg.payload ?? '');
+    if (msg.topic.startsWith(`${base}/`)) {
+      this.mqtt.onMessage(msg.topic, Buffer.from(body));
+    } else {
+      this.publishFull(msg.topic, body, true);
+    }
+  }
+
   // ----- running a rule -----
 
   conditionsHold(rule) {
@@ -561,5 +737,5 @@ class ZigDashEngine {
 
 ZigDashEngine.ENGINE_VERSION = ENGINE_VERSION;
 ZigDashEngine.FLOWS = FLOWS;
-ZigDashEngine.helpers = { topicMatches, outputsOf,  localParts, withinHours, sunTimeUtc, triggerTime, matchesValue, deviceTriggerFires, validateRule, offPayload, toMinutes, fromMinutes };
+ZigDashEngine.helpers = { seal, unseal, opaqueId, remoteCommandAllowed, topicMatches, outputsOf,  localParts, withinHours, sunTimeUtc, triggerTime, matchesValue, deviceTriggerFires, validateRule, offPayload, toMinutes, fromMinutes };
 module.exports = ZigDashEngine;

@@ -355,3 +355,100 @@ test('hub/zigdash-engine.js is built from the current sources', () => {
   const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, '..', 'build.mjs'), '--check']);
   assert.equal(r.status, 0, String(r.stderr));
 });
+
+// ---------- remote (3.1) ----------
+
+const { EventEmitter } = require('events');
+
+function fakeRelay() {
+  const client = new EventEmitter();
+  client.published = [];
+  client.subscribed = [];
+  client.publish = (topic, payload, opts) => client.published.push({ topic, payload, opts });
+  client.subscribe = (topic, opts) => client.subscribed.push({ topic, opts });
+  client.end = () => { client.ended = true; };
+  return client;
+}
+
+const remoteKey = crypto.randomBytes(32);
+const remoteCfg = { url: 'mqtts://relay.example:8883', homeId: 'h1', username: 'hub-h1', password: 'pw', key: remoteKey.toString('base64') };
+
+async function withRemote() {
+  const z = fakeZ2m();
+  const relay = fakeRelay();
+  let opened;
+  z.engine.mqttConnect = (url, options) => { opened = { url, options }; return relay; };
+  await z.engine.start();
+  z.mqttIn('zigdash/remote/set', JSON.stringify(remoteCfg));
+  relay.emit('connect');
+  return { z, relay, opened: () => opened };
+}
+
+test('remote: connects with the will, announces the hub, subscribes to commands without echo', async () => {
+  const { z, relay, opened } = await withRemote();
+  assert.equal(opened().url, 'mqtts://relay.example:8883');
+  assert.deepEqual(opened().options.will.topic, 'homes/h1/hub');
+  assert.equal(opened().options.protocolVersion, 5);
+  assert.deepEqual(relay.published[0], { topic: 'homes/h1/hub', payload: 'online', opts: { qos: 1, retain: true } });
+  assert.deepEqual(relay.subscribed[0], { topic: 'homes/h1/c', opts: { qos: 1, nl: true } });
+  assert.equal(z.last('state').remote.connected, true);
+  assert.ok(fs.existsSync(path.join(process.env.ZIGBEE2MQTT_DATA, 'zigdash-remote.json')));
+  assert.ok(!z.published.some((p) => String(p.payload).includes('pw')), 'the password is never published locally');
+  await z.engine.stop();
+  assert.ok(relay.ended);
+  assert.deepEqual(relay.published.at(-1), { topic: 'homes/h1/hub', payload: 'offline', opts: { qos: 1, retain: true } });
+});
+
+test('remote: device states go up sealed under an opaque id; bridge topics never leave', async () => {
+  const { z, relay } = await withRemote();
+  z.z2mPublished('zigbee2mqtt/Kitchen lamp', { state: 'ON', brightness: 120 });
+  z.z2mPublished('zigbee2mqtt/bridge/devices', [{ big: true }]);
+  z.z2mPublished('zigbee2mqtt/Kitchen lamp/set', { state: 'OFF' });
+  const up = relay.published.filter((p) => p.topic.startsWith('homes/h1/s/'));
+  assert.equal(up.length, 1);
+  assert.ok(!up[0].topic.includes('Kitchen'), 'the relay never sees a device name');
+  assert.equal(up[0].opts.retain, true);
+  assert.ok(!up[0].payload.toString('latin1').includes('Kitchen'));
+  const inside = H.unseal(remoteKey, up[0].payload);
+  assert.equal(inside.topic, 'zigbee2mqtt/Kitchen lamp');
+  assert.deepEqual(JSON.parse(inside.payload), { state: 'ON', brightness: 120 });
+  assert.equal(up[0].topic, `homes/h1/s/${H.opaqueId(remoteKey, 'zigbee2mqtt/Kitchen lamp')}`);
+  await z.engine.stop();
+});
+
+test('remote: sealed commands reach Zigbee2MQTT; anything else is dropped', async () => {
+  const { z, relay } = await withRemote();
+  const send = (obj, key = remoteKey) => relay.emit('message', 'homes/h1/c', H.seal(key, obj));
+  send({ topic: 'zigbee2mqtt/Hallway light/set', payload: { state: 'ON' }, at: Date.now() });
+  send({ topic: 'zigbee2mqtt/bridge/request/restart', payload: {}, at: Date.now() }); // not allowed
+  send({ topic: 'zigbee2mqtt/Hallway light/set', payload: { state: 'OFF' }, at: Date.now() - 10 * 60000 }); // too old
+  send({ topic: 'zigbee2mqtt/Hallway light/set', payload: { state: 'OFF' }, at: Date.now() }, crypto.randomBytes(32)); // wrong key
+  relay.emit('message', 'homes/h1/c', Buffer.from('{"topic":"zigbee2mqtt/x/set"}')); // not sealed
+  send({ topic: 'zigdash/automations/rules/a1', payload: '{"v":1}', at: Date.now() });
+  assert.deepEqual(z.injected.map((i) => [i.topic, i.payload.state]), [['zigbee2mqtt/Hallway light/set', 'ON']]);
+  const rule = z.published.find((p) => p.topic === 'zigdash/automations/rules/a1');
+  assert.ok(rule && rule.retain);
+  await z.engine.stop();
+});
+
+test('remote: the saved config reconnects after a restart; off removes it', async () => {
+  const { z } = await withRemote();
+  await z.engine.stop();
+  const z2 = fakeZ2m();
+  const relay2 = fakeRelay();
+  let reopened = false;
+  z2.engine.mqttConnect = () => { reopened = true; return relay2; };
+  await z2.engine.start();
+  assert.ok(reopened);
+  z2.mqttIn('zigdash/remote/set', JSON.stringify({ off: true }));
+  assert.ok(!fs.existsSync(path.join(process.env.ZIGBEE2MQTT_DATA, 'zigdash-remote.json')));
+  assert.equal(z2.last('state').remote, undefined);
+  await z2.engine.stop();
+});
+
+test('remote: an error from the relay connection is caught and reported, never thrown', async () => {
+  const { z, relay } = await withRemote();
+  assert.doesNotThrow(() => relay.emit('error', Object.assign(new Error('nope'), { code: 'ECONNREFUSED' })));
+  assert.equal(z.last('state').remote.error, 'ECONNREFUSED');
+  await z.engine.stop();
+});
