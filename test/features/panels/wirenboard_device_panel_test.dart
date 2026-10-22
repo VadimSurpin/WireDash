@@ -89,11 +89,13 @@ Panel _panel(WirenBoardDevice device) => Panel(
 Widget _app(
   _Recorder mgr, {
   bool metadataAvailable = true,
+  String temperatureValue = '23.5',
   WirenBoardDevice? initialDevice,
   Stream<List<WirenBoardDevice>>? updates,
 }) {
   final device = initialDevice ?? _device();
-  String value(String topic) => topic.endsWith('/Temperature') ? '23.5' : '0';
+  String value(String topic) =>
+      topic.endsWith('/Temperature') ? temperatureValue : '0';
   return ProviderScope(
     overrides: [
       mqttManagerProvider.overrideWith((ref, _) async => mgr),
@@ -286,6 +288,21 @@ void main() {
       await mgr.dispose();
     },
   );
+
+  testWidgets('non-finite scalar readings do not crash the summary card', (
+    tester,
+  ) async {
+    final manager = _Recorder();
+    for (final value in ['NaN', 'Infinity', '-Infinity']) {
+      await tester.pumpWidget(_app(manager, temperatureValue: value));
+      await tester.pumpAndSettle();
+      expect(find.byType(DeviceSummaryCard), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+    }
+    await manager.dispose();
+  });
 
   testWidgets(
     'inline enum and range controls publish scalar commands on their own topics',
