@@ -1308,5 +1308,6 @@
   "engineRemoveBody": "Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon av ZigDash Engine henter dem tilbake.",
   "autoNoTargets": "Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre.",
   "proGetAutomations": "Ubegrensede automasjoner; tre per hjem er gratis",
-  "autoDeleteConfirm": "Slette denne automasjonen? Den slutter å kjøre på huben."
+  "autoDeleteConfirm": "Slette denne automasjonen? Den slutter å kjøre på huben.",
+  "statusConnectedRelay": "Tilkoblet · Borte via ZigDash"
 }

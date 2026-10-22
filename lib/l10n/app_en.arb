@@ -1466,5 +1466,6 @@
   "engineRemoveBody": "Automations stop running. Your rules stay on the hub, so installing ZigDash Engine again brings them back.",
   "autoNoTargets": "This Home has no light, plug, switch or shutter to control yet.",
   "proGetAutomations": "Unlimited automations; three per home are free",
-  "autoDeleteConfirm": "Delete this automation? It stops running on your hub."
+  "autoDeleteConfirm": "Delete this automation? It stops running on your hub.",
+  "statusConnectedRelay": "Connected · Away via ZigDash"
 }

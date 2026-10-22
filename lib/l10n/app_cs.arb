@@ -1223,5 +1223,6 @@
   "engineRemoveBody": "Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace ZigDash Engine vrátí.",
   "autoNoTargets": "Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.",
   "proGetAutomations": "Neomezené automatizace; tři na domácnost jsou zdarma",
-  "autoDeleteConfirm": "Smazat tuto automatizaci? Přestane běžet na hubu."
+  "autoDeleteConfirm": "Smazat tuto automatizaci? Přestane běžet na hubu.",
+  "statusConnectedRelay": "Připojeno · Mimo domov přes ZigDash"
 }

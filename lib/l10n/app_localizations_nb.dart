@@ -4216,4 +4216,7 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'Slette denne automasjonen? Den slutter å kjøre på huben.';
+
+  @override
+  String get statusConnectedRelay => 'Tilkoblet · Borte via ZigDash';
 }

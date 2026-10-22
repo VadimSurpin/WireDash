@@ -4239,4 +4239,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'Diese Automation löschen? Sie läuft dann nicht mehr auf Ihrem Hub.';
+
+  @override
+  String get statusConnectedRelay => 'Verbunden · Unterwegs über ZigDash';
 }

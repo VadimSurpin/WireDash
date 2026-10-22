@@ -1,7 +1,13 @@
 import 'broker_config.dart';
 
 /// Which address a live MQTT connection is using.
-enum MqttEndpoint { local, remote }
+enum MqttEndpoint { local, remote, relay }
+
+/// The candidate host that means "through the ZigDash relay" (3.1).
+const relayCandidateHost = 'zigdash-relay';
+
+/// A relay connect is TLS over WebSocket to a server on the internet.
+const int relayConnectTimeoutMs = 10000;
 
 /// One ordered connect attempt: a host and the timeout to give it.
 typedef MqttCandidate = ({MqttEndpoint kind, String host, int timeoutMs});
@@ -25,8 +31,18 @@ List<MqttCandidate> endpointCandidates(BrokerConfig config) {
   final standard = config.viaHomeAssistant
       ? homeAssistantConnectTimeoutMs
       : standardConnectTimeoutMs;
+  final relay = config.relay != null && !config.viaHomeAssistant
+      ? [(kind: MqttEndpoint.relay, host: relayCandidateHost, timeoutMs: relayConnectTimeoutMs)]
+      : const <MqttCandidate>[];
   if (remote == null || remote.isEmpty) {
-    return [(kind: MqttEndpoint.local, host: config.host, timeoutMs: standard)];
+    return [
+      (
+        kind: MqttEndpoint.local,
+        host: config.host,
+        timeoutMs: relay.isEmpty ? standard : localProbeTimeoutMs,
+      ),
+      ...relay,
+    ];
   }
   return [
     (
@@ -35,5 +51,6 @@ List<MqttCandidate> endpointCandidates(BrokerConfig config) {
       timeoutMs: localProbeTimeoutMs,
     ),
     (kind: MqttEndpoint.remote, host: remote, timeoutMs: standard),
+    ...relay,
   ];
 }

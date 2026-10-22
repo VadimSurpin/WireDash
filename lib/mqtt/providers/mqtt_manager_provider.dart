@@ -11,6 +11,7 @@ import '../broker_config.dart';
 import '../endpoint.dart';
 import '../mqtt_manager.dart';
 import '../mqtt_status.dart';
+import '../../remote/remote_home.dart';
 
 /// Tracks every live [MqttManager] so app-lifecycle code can act on all of them
 /// at once — currently to force an immediate reconnect when the app returns to
@@ -48,6 +49,7 @@ final mqttManagerProvider = FutureProvider.family<MqttManager, String>((
   }
   final password =
       await ref.watch(secureStorageProvider).readPassword(connectionId) ?? '';
+  final relay = await ref.watch(remoteHomeStoreProvider).read(connectionId);
   final manager = MqttManager(
     config: BrokerConfig(
       id: conn.id,
@@ -58,6 +60,7 @@ final mqttManagerProvider = FutureProvider.family<MqttManager, String>((
       keepAliveSeconds: conn.keepAliveSeconds,
       remoteHost: conn.remoteHost,
       transport: transportOf(conn.transport),
+      relay: relay,
     ),
     password: password,
   );

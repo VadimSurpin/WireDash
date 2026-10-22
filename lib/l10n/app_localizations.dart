@@ -7463,6 +7463,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete this automation? It stops running on your hub.'**
   String get autoDeleteConfirm;
+
+  /// No description provided for @statusConnectedRelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · Away via ZigDash'**
+  String get statusConnectedRelay;
 }
 
 class _AppLocalizationsDelegate

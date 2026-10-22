@@ -4180,4 +4180,7 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'למחוק את האוטומציה הזו? היא תפסיק לרוץ ברכזת.';
+
+  @override
+  String get statusConnectedRelay => 'מחובר · מחוץ לבית דרך ZigDash';
 }

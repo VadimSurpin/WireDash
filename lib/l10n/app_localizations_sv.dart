@@ -4218,4 +4218,7 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'Ta bort den här automationen? Den slutar köras på hubben.';
+
+  @override
+  String get statusConnectedRelay => 'Ansluten · Borta via ZigDash';
 }

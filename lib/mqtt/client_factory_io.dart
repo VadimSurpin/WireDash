@@ -5,7 +5,9 @@ import '../data/database/tables/connections.dart';
 import 'broker_config.dart';
 import 'client_factory.dart';
 import 'ha_address.dart';
+import 'endpoint.dart';
 import 'ha_mqtt_client.dart';
+import 'relay_mqtt_client.dart';
 
 mc.MqttClient buildPlatformClient(
   BrokerConfig config,
@@ -13,6 +15,10 @@ mc.MqttClient buildPlatformClient(
   String? host,
 }) {
   final target = host ?? config.host;
+  final relay = config.relay;
+  if (target == relayCandidateHost && relay != null) {
+    return RelayMqttClient(relay, clientId);
+  }
   if (config.viaHomeAssistant) {
     final base = haBaseUri(target);
     if (base == null) {

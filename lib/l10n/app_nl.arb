@@ -1308,5 +1308,6 @@
   "engineRemoveBody": "Automatiseringen stoppen. Je regels blijven op de hub, dus ZigDash Engine opnieuw installeren brengt ze terug.",
   "autoNoTargets": "Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.",
   "proGetAutomations": "Onbeperkte automatiseringen; drie per huis zijn gratis",
-  "autoDeleteConfirm": "Deze automatisering verwijderen? Hij draait dan niet meer op je hub."
+  "autoDeleteConfirm": "Deze automatisering verwijderen? Hij draait dan niet meer op je hub.",
+  "statusConnectedRelay": "Verbonden · Onderweg via ZigDash"
 }

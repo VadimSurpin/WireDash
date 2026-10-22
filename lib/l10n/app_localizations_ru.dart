@@ -4218,4 +4218,7 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'Удалить эту автоматизацию? Она перестанет работать на хабе.';
+
+  @override
+  String get statusConnectedRelay => 'Подключено · Вне дома через ZigDash';
 }

@@ -4235,4 +4235,7 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'Eliminare questa automazione? Smette di girare sull\'hub.';
+
+  @override
+  String get statusConnectedRelay => 'Connesso · Fuori casa via ZigDash';
 }

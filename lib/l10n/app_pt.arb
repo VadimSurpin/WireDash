@@ -1268,5 +1268,6 @@
   "engineRemoveBody": "As automações param de rodar. Suas regras ficam no hub, então reinstalar ZigDash Engine as traz de volta.",
   "autoNoTargets": "Esta casa ainda não tem luz, tomada, interruptor ou persiana para controlar.",
   "proGetAutomations": "Automações ilimitadas; três por casa são grátis",
-  "autoDeleteConfirm": "Excluir esta automação? Ela para de rodar no seu hub."
+  "autoDeleteConfirm": "Excluir esta automação? Ela para de rodar no seu hub.",
+  "statusConnectedRelay": "Conectado · Fora de casa via ZigDash"
 }

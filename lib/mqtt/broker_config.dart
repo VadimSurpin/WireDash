@@ -1,4 +1,5 @@
 import '../data/database/tables/connections.dart';
+import '../remote/remote_home.dart';
 
 /// Plain-Dart broker config consumed by [MqttManager]. Decoupled from Drift
 /// so the manager (and the smoke harness in bin/) does not transitively pull
@@ -13,6 +14,7 @@ class BrokerConfig {
     this.keepAliveSeconds = 60,
     this.remoteHost,
     this.transport = ConnectionTransport.mqtt,
+    this.relay,
   });
 
   final String id;
@@ -32,4 +34,8 @@ class BrokerConfig {
   final ConnectionTransport transport;
 
   bool get viaHomeAssistant => transport == ConnectionTransport.homeAssistant;
+
+  /// This phone's login to the ZigDash relay for the Home (3.1), tried after
+  /// the broker's own addresses fail.
+  final RemoteHome? relay;
 }

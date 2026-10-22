@@ -4225,4 +4225,7 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get autoDeleteConfirm =>
       'Smazat tuto automatizaci? Přestane běžet na hubu.';
+
+  @override
+  String get statusConnectedRelay => 'Připojeno · Mimo domov přes ZigDash';
 }
