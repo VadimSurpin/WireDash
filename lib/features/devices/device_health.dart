@@ -53,14 +53,14 @@ class DeviceHealth {
   String get friendlyName => device.friendlyName;
 
   int? get battery => switch (state?['battery']) {
-        final num b => b.round(),
-        _ => null,
-      };
+    final num b => b.round(),
+    _ => null,
+  };
 
   num? get linkQuality => switch (state?['linkquality']) {
-        final num q => q,
-        _ => null,
-      };
+    final num q => q,
+    _ => null,
+  };
 
   bool get lowBattery => state != null && batteryLowIn(state!) == true;
 
@@ -68,7 +68,9 @@ class DeviceHealth {
 
   bool get offline => online == false;
 
-  bool get unsupported => !device.supported;
+  /// No converter and nothing generated: nothing to control (2.10.3: a
+  /// generated definition counts as support).
+  bool get unsupported => !device.usable;
 
   /// Low battery, offline (when tracked), not responding, a failed
   /// interview or an unsupported device.
@@ -119,26 +121,24 @@ List<DeviceHealth> deviceHealthFrom(
   bool Function(String? ieee) tracked = _never,
   Set<String> notResponding = const {},
   Set<String> stale = const {},
-}) =>
-    [
-      for (final d in devices)
-        () {
-          final s = states[d.friendlyName];
-          final state = s == null ? null : parseState(s.payload);
-          final av = availability[d.friendlyName];
-          return DeviceHealth(
-            device: d,
-            state: state,
-            lastHeard: s?.at,
-            online: av != null && tracked(d.ieeeAddress)
-                ? parseAvailability(av)
-                : null,
-            notResponding:
-                state == null && notResponding.contains(d.friendlyName),
-            stale: state != null && stale.contains(d.friendlyName),
-          );
-        }(),
-    ];
+}) => [
+  for (final d in devices)
+    () {
+      final s = states[d.friendlyName];
+      final state = s == null ? null : parseState(s.payload);
+      final av = availability[d.friendlyName];
+      return DeviceHealth(
+        device: d,
+        state: state,
+        lastHeard: s?.at,
+        online: av != null && tracked(d.ieeeAddress)
+            ? parseAvailability(av)
+            : null,
+        notResponding: state == null && notResponding.contains(d.friendlyName),
+        stale: state != null && stale.contains(d.friendlyName),
+      );
+    }(),
+];
 
 bool _never(String? _) => false;
 

@@ -75,6 +75,18 @@ class Z2mDevice {
   /// payloads and hand-built fixtures omit the flag and mean "works fine".
   final bool supported;
 
+  /// `definition.source == "generated"` (2.10.3): Zigbee2MQTT had no
+  /// converter and built a definition from the device's clusters. It
+  /// reports such a device as `supported: false`, yet the definition works
+  /// (a custom ESP32 lamp switched fine from Zigbee2MQTT and Home Assistant
+  /// while ZigDash called it unsupported).
+  final bool generated;
+
+  /// Whether there is anything to offer: a converter, or a generated
+  /// definition that exposes something. What the review, the tile picker
+  /// and the device page go by, instead of [supported] alone.
+  bool get usable => supported || generated || exposes.isNotEmpty;
+
   /// The device's IEEE address, its stable identity across renames. Null
   /// only in hand-built fixtures.
   final String? ieeeAddress;
@@ -117,6 +129,7 @@ class Z2mDevice {
     this.model,
     this.exposes = const [],
     this.supported = true,
+    this.generated = false,
     this.ieeeAddress,
     this.rawExposes = const [],
     this.powerSource,
@@ -163,6 +176,7 @@ List<Z2mDevice> parseBridgeDevices(String jsonString) {
           model: model,
           exposes: exposes,
           supported: supported,
+          generated: definition?['source'] == 'generated',
           ieeeAddress: map['ieee_address'] as String?,
           rawExposes: rawExposes,
           powerSource: map['power_source'] as String?,

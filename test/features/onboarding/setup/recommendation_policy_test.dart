@@ -118,6 +118,21 @@ void main() {
       expect(rows.single.selectable, isFalse);
     });
 
+    // 2.10.3: Z2M's generated definition for a device without a converter.
+    test('a generated On/Off definition is recommended like any switch', () {
+      final rows = recommendDevices([
+        const Z2mDevice(
+          friendlyName: 'esp_lamp',
+          type: 'Router',
+          supported: false,
+          generated: true,
+          exposes: [Z2mExpose(type: 'switch')],
+        ),
+      ]);
+      expect(rows.single.group, ReviewGroup.recommended);
+      expect(rows.single.selected, isTrue);
+    });
+
     test('recommended rows sort before other and unsupported', () {
       final rows = recommendDevices([
         dev(

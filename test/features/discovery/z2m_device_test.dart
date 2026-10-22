@@ -163,6 +163,37 @@ void main() {
       expect(devices.first.model, isNull);
     });
 
+    // 2.10.3: a generated definition is reported as unsupported by
+    // Zigbee2MQTT but exposes working controls.
+    test('a generated definition is unsupported to Z2M but usable here', () {
+      final devices = parseBridgeDevices(r'''
+[
+  {
+    "friendly_name": "esp_lamp",
+    "type": "Router",
+    "ieee_address": "0x1234567890abcdef",
+    "supported": false,
+    "definition": {
+      "vendor": "Espressif",
+      "model": "ZBLightBulb",
+      "source": "generated",
+      "exposes": [
+        {"type": "switch", "features": [
+          {"type": "binary", "name": "state", "property": "state",
+           "access": 7, "value_on": "ON", "value_off": "OFF"}
+        ]}
+      ]
+    }
+  }
+]
+''');
+      final lamp = devices.single;
+      expect(lamp.supported, isFalse);
+      expect(lamp.generated, isTrue);
+      expect(lamp.usable, isTrue);
+      expect(lamp.exposes.map((e) => e.type), contains('switch'));
+    });
+
     test('malformed JSON returns empty list without throwing', () {
       final devices = parseBridgeDevices(_badJson);
       expect(devices, isEmpty);

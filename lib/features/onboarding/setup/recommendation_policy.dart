@@ -11,7 +11,8 @@ enum ReviewGroup {
   /// selectable but not preselected.
   other,
 
-  /// Z2M has no converter for the device. Shown explicitly, not selectable.
+  /// Z2M has no converter for the device and nothing generated either.
+  /// Shown explicitly, not selectable.
   unsupported,
 }
 
@@ -86,7 +87,7 @@ List<ReviewRow> recommendDevices(
 }
 
 ReviewGroup _groupFor(Z2mDevice device) {
-  if (!device.supported) return ReviewGroup.unsupported;
+  if (!device.usable) return ReviewGroup.unsupported;
   final e = device.exposes;
   if (e.any((x) => _recommendedTypes.contains(x.type))) {
     return ReviewGroup.recommended;
