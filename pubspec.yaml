@@ -79,6 +79,8 @@ dependencies:
   pointycastle: ^3.9.1
   # QR code for adding a phone to remote control (3.1); pure Dart.
   qr_flutter: ^4.1.0
+  jsf: ^1.2.1
+
 
 dev_dependencies:
   flutter_test:
