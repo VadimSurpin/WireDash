@@ -3846,4 +3846,27 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Udostępnij edytowalne widżety, nawet jeśli wykryto tę właściwość jako tylko do odczytu. Dotyczy tylko tego kafelka.';
+
+  @override
+  String get displayExpressionTitle => 'Przed wyświetleniem (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value zawiera odebraną wartość. Puste pole pozostawia ją bez zmian. Tylko wyświetlanie; polecenia i zapisana historia pozostają bez zmian.';
+
+  @override
+  String get displayExpressionSample => 'Przykładowa wartość';
+
+  @override
+  String get displayExpressionTest => 'Testuj wyrażenie';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Wynik: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Błąd wyrażenia; wyświetlana jest pierwotna wartość. $error';
+  }
 }

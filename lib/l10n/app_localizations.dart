@@ -6833,6 +6833,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offer editable widgets even when discovery marks this property read-only. Applies only to this tile.'**
   String get panelAllowCommandsHint;
+
+  /// No description provided for @displayExpressionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before display (JavaScript)'**
+  String get displayExpressionTitle;
+
+  /// No description provided for @displayExpressionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use value for the incoming value. Blank keeps it unchanged. Display only; commands and stored history stay unchanged.'**
+  String get displayExpressionHint;
+
+  /// No description provided for @displayExpressionSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample value'**
+  String get displayExpressionSample;
+
+  /// No description provided for @displayExpressionTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Test expression'**
+  String get displayExpressionTest;
+
+  /// No description provided for @displayExpressionResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Result: {value}'**
+  String displayExpressionResult(String value);
+
+  /// No description provided for @displayExpressionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Expression failed; showing the original value. {error}'**
+  String displayExpressionError(String error);
 }
 
 class _AppLocalizationsDelegate

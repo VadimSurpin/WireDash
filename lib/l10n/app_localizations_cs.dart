@@ -3848,4 +3848,27 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici.';
+
+  @override
+  String get displayExpressionTitle => 'Před zobrazením (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'Vstupní hodnota je v proměnné value. Prázdné pole ji nemění. Jen zobrazení; příkazy a uložená historie se nemění.';
+
+  @override
+  String get displayExpressionSample => 'Ukázková hodnota';
+
+  @override
+  String get displayExpressionTest => 'Otestovat výraz';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Výsledek: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Výraz selhal; zobrazuje se původní hodnota. $error';
+  }
 }

@@ -6,6 +6,8 @@ import 'package:mqtt_client/mqtt_client.dart' as mc;
 
 import '../../../data/database/database.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
+import 'display_expression_field.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
 
@@ -92,6 +94,15 @@ class _SliderPanelState extends ConsumerState<SliderPanel> {
         .clamp(widget.config.min, widget.config.max)
         .toDouble();
 
+    final displayed = displayValue(
+      ref,
+      widget.config.valueExpression,
+      _draggingValue ?? valueAsync.valueOrNull ?? clamped,
+    );
+    final valueLabel = displayed.applied
+        ? displayed.text
+        : clamped.round().toString();
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -109,9 +120,12 @@ class _SliderPanelState extends ConsumerState<SliderPanel> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text(
-                  clamped.round().toString(),
-                  style: Theme.of(context).textTheme.titleMedium,
+                DisplayExpressionResult(
+                  result: displayed,
+                  child: Text(
+                    valueLabel,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
@@ -122,7 +136,16 @@ class _SliderPanelState extends ConsumerState<SliderPanel> {
                 child: Slider(
                   // Announce the panel's own number (e.g. brightness 180), not the
                   // default percentage of the track.
-                  semanticFormatterCallback: (v) => v.round().toString(),
+                  semanticFormatterCallback: (v) {
+                    final formatted = displayValue(
+                      ref,
+                      widget.config.valueExpression,
+                      v,
+                    );
+                    return formatted.applied
+                        ? formatted.text
+                        : v.round().toString();
+                  },
                   value: clamped,
                   min: widget.config.min,
                   max: widget.config.max,

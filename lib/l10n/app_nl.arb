@@ -1203,5 +1203,11 @@
   "panelDisplayLabel": "Aangepast label (optioneel)",
   "panelDisplayReset": "Kaartinhoud en labels herstellen",
   "panelAllowCommands": "Opdrachten toestaan",
-  "panelAllowCommandsHint": "Bied bewerkbare widgets aan, ook als deze eigenschap bij detectie als alleen-lezen is gemarkeerd. Geldt alleen voor deze tegel."
+  "panelAllowCommandsHint": "Bied bewerkbare widgets aan, ook als deze eigenschap bij detectie als alleen-lezen is gemarkeerd. Geldt alleen voor deze tegel.",
+  "displayExpressionTitle": "Voor weergave (JavaScript)",
+  "displayExpressionHint": "value bevat de ontvangen waarde. Leeg laat deze ongewijzigd. Alleen weergave; opdrachten en opgeslagen geschiedenis blijven ongewijzigd.",
+  "displayExpressionSample": "Voorbeeldwaarde",
+  "displayExpressionTest": "Expressie testen",
+  "displayExpressionResult": "Resultaat: {value}",
+  "displayExpressionError": "Expressie mislukt; de oorspronkelijke waarde wordt getoond. {error}"
 }

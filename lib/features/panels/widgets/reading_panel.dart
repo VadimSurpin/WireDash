@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/database/database.dart';
 import '../models/gauge_defaults.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
+import 'display_expression_field.dart';
 import '../providers/panel_value_provider.dart';
 import 'device_tile_panel.dart';
 import 'gauge_panel.dart';
@@ -38,8 +40,17 @@ class ReadingPanel extends ConsumerWidget {
           ),
         )
         .valueOrNull;
-    final value = raw is num ? raw : num.tryParse('$raw');
-    final text = value == null
+    final displayed = displayValue(ref, config.valueExpression, raw);
+    final transformed = displayed.value;
+    final parsed = transformed is num
+        ? transformed
+        : num.tryParse('$transformed');
+    final value = parsed?.isFinite == true ? parsed : null;
+    final text = displayed.applied && transformed != null && transformed is! num
+        ? ltr(
+            '${displayed.text}${config.unit == null ? '' : ' ${config.unit}'}',
+          )
+        : value == null
         ? '—'
         : config.decimals == null
         ? formatReading(value, config.unit)
@@ -83,12 +94,15 @@ class ReadingPanel extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                GaugeArc(
-                  value: value,
-                  min: config.min ?? defaults.min,
-                  max: config.max ?? defaults.max,
-                  bands: config.bands,
-                  label: text,
+                DisplayExpressionResult(
+                  result: displayed,
+                  child: GaugeArc(
+                    value: value,
+                    min: config.min ?? defaults.min,
+                    max: config.max ?? defaults.max,
+                    bands: config.bands,
+                    label: text,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 name,
@@ -108,7 +122,10 @@ class ReadingPanel extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(text, style: theme.textTheme.headlineMedium),
+              DisplayExpressionResult(
+                result: displayed,
+                child: Text(text, style: theme.textTheme.headlineMedium),
+              ),
               name,
             ],
           ),

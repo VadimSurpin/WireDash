@@ -3838,4 +3838,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Offer editable widgets even when discovery marks this property read-only. Applies only to this tile.';
+
+  @override
+  String get displayExpressionTitle => 'Before display (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'Use value for the incoming value. Blank keeps it unchanged. Display only; commands and stored history stay unchanged.';
+
+  @override
+  String get displayExpressionSample => 'Sample value';
+
+  @override
+  String get displayExpressionTest => 'Test expression';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Result: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Expression failed; showing the original value. $error';
+  }
 }

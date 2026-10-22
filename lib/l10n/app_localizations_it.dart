@@ -3858,4 +3858,28 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Mostra widget modificabili anche se il rilevamento indica questa proprietà come di sola lettura. Si applica solo a questo riquadro.';
+
+  @override
+  String get displayExpressionTitle =>
+      'Prima della visualizzazione (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value contiene il valore ricevuto. Lasciare vuoto per non modificarlo. Solo visualizzazione; i comandi e la cronologia salvata restano invariati.';
+
+  @override
+  String get displayExpressionSample => 'Valore di esempio';
+
+  @override
+  String get displayExpressionTest => 'Prova espressione';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Risultato: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Espressione non riuscita; viene mostrato il valore originale. $error';
+  }
 }

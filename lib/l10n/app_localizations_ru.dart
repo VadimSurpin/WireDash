@@ -3839,4 +3839,27 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Показать редактируемые виджеты, даже если свойство обнаружено как доступное только для чтения. Только для этой плитки.';
+
+  @override
+  String get displayExpressionTitle => 'Перед отображением (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value — входящее значение. Пустое поле оставляет его без изменений. Влияет только на отображение, не на команды и сохранённую историю.';
+
+  @override
+  String get displayExpressionSample => 'Пример значения';
+
+  @override
+  String get displayExpressionTest => 'Проверить выражение';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Результат: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Ошибка выражения; показано исходное значение. $error';
+  }
 }

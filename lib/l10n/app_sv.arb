@@ -1203,5 +1203,11 @@
   "panelDisplayLabel": "Egen etikett (valfritt)",
   "panelDisplayReset": "Återställ kortinnehåll och etiketter",
   "panelAllowCommands": "Tillåt kommandon",
-  "panelAllowCommandsHint": "Erbjud redigerbara widgetar även om identifieringen markerar den här egenskapen som skrivskyddad. Gäller bara den här panelen."
+  "panelAllowCommandsHint": "Erbjud redigerbara widgetar även om identifieringen markerar den här egenskapen som skrivskyddad. Gäller bara den här panelen.",
+  "displayExpressionTitle": "Före visning (JavaScript)",
+  "displayExpressionHint": "value innehåller det mottagna värdet. Tomt fält lämnar det oförändrat. Endast visning; kommandon och sparad historik ändras inte.",
+  "displayExpressionSample": "Exempelvärde",
+  "displayExpressionTest": "Testa uttryck",
+  "displayExpressionResult": "Resultat: {value}",
+  "displayExpressionError": "Uttrycket misslyckades; det ursprungliga värdet visas. {error}"
 }

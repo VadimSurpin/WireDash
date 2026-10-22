@@ -1272,5 +1272,11 @@
   "panelDisplayLabel": "שם מותאם אישית (לא חובה)",
   "panelDisplayReset": "איפוס תוכן הכרטיס והשמות",
   "panelAllowCommands": "אפשר פקודות",
-  "panelAllowCommandsHint": "הצגת רכיבים הניתנים לעריכה גם כשהגילוי מסמן מאפיין זה לקריאה בלבד. חל רק על אריח זה."
+  "panelAllowCommandsHint": "הצגת רכיבים הניתנים לעריכה גם כשהגילוי מסמן מאפיין זה לקריאה בלבד. חל רק על אריח זה.",
+  "displayExpressionTitle": "לפני התצוגה (JavaScript)",
+  "displayExpressionHint": "value מכיל את הערך הנכנס. שדה ריק משאיר אותו ללא שינוי. לתצוגה בלבד; הפקודות וההיסטוריה השמורה אינן משתנות.",
+  "displayExpressionSample": "ערך לדוגמה",
+  "displayExpressionTest": "בדיקת הביטוי",
+  "displayExpressionResult": "תוצאה: {value}",
+  "displayExpressionError": "הביטוי נכשל; מוצג הערך המקורי. {error}"
 }

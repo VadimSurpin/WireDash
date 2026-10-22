@@ -110,6 +110,7 @@ PanelSuggestion suggestWirenBoardPanel(
   String language = 'en',
   PanelType? widgetType,
   bool allowCommands = false,
+  String? valueExpression,
 }) {
   final readOnly = control.readOnly && !allowCommands;
   final recommended = _defaultWirenBoardPanel(
@@ -198,7 +199,7 @@ PanelSuggestion suggestWirenBoardPanel(
     topicPrefixOverride: control.topic,
     publishTopicSuffix: readOnly ? '' : 'on',
     subscribeTopicSuffix: '',
-    config: configFor(type),
+    config: withDisplayExpression(type, configFor(type), valueExpression),
   );
   final result = option(selected);
   return PanelSuggestion(
@@ -215,6 +216,7 @@ PanelSuggestion suggestWirenBoardPanel(
             control,
             language: language,
             allowCommands: true,
+            valueExpression: valueExpression,
           ).widgetChoices
         : const [],
   );

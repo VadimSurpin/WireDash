@@ -1198,5 +1198,11 @@
   "panelDisplayLabel": "Своя подпись (необязательно)",
   "panelDisplayReset": "Сбросить содержимое и подписи",
   "panelAllowCommands": "Разрешить команды",
-  "panelAllowCommandsHint": "Показать редактируемые виджеты, даже если свойство обнаружено как доступное только для чтения. Только для этой плитки."
+  "panelAllowCommandsHint": "Показать редактируемые виджеты, даже если свойство обнаружено как доступное только для чтения. Только для этой плитки.",
+  "displayExpressionTitle": "Перед отображением (JavaScript)",
+  "displayExpressionHint": "value — входящее значение. Пустое поле оставляет его без изменений. Влияет только на отображение, не на команды и сохранённую историю.",
+  "displayExpressionSample": "Пример значения",
+  "displayExpressionTest": "Проверить выражение",
+  "displayExpressionResult": "Результат: {value}",
+  "displayExpressionError": "Ошибка выражения; показано исходное значение. {error}"
 }

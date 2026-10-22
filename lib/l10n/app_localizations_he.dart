@@ -3804,4 +3804,27 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'הצגת רכיבים הניתנים לעריכה גם כשהגילוי מסמן מאפיין זה לקריאה בלבד. חל רק על אריח זה.';
+
+  @override
+  String get displayExpressionTitle => 'לפני התצוגה (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value מכיל את הערך הנכנס. שדה ריק משאיר אותו ללא שינוי. לתצוגה בלבד; הפקודות וההיסטוריה השמורה אינן משתנות.';
+
+  @override
+  String get displayExpressionSample => 'ערך לדוגמה';
+
+  @override
+  String get displayExpressionTest => 'בדיקת הביטוי';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'תוצאה: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'הביטוי נכשל; מוצג הערך המקורי. $error';
+  }
 }

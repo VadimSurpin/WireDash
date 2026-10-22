@@ -82,6 +82,52 @@ void main() {
     });
   });
 
+  testWidgets(
+    'a before-display expression scales numbers and preserves fixed decimals',
+    (tester) async {
+      await _pump(
+        tester,
+        const ReadingConfig(
+          jsonPath: '',
+          unit: 'V',
+          valueExpression: '(Number(value) / 100).toFixed(2)',
+        ),
+        '1230',
+      );
+      expect(find.text(ltr('12.30 V')), findsOneWidget);
+      await _pump(
+        tester,
+        const ReadingConfig(
+          jsonPath: '',
+          unit: 'V',
+          valueExpression: 'Number(value) / 100',
+          style: ReadingStyle.gauge,
+          min: 0,
+          max: 20,
+        ),
+        '1230',
+      );
+      expect(tester.widget<GaugeArc>(find.byType(GaugeArc)).value, 12.3);
+    },
+  );
+
+  testWidgets(
+    'a bad display expression keeps the reading and exposes an error indicator',
+    (tester) async {
+      await _pump(
+        tester,
+        const ReadingConfig(
+          jsonPath: '',
+          unit: 'V',
+          valueExpression: 'missingValue',
+        ),
+        12,
+      );
+      expect(find.text(ltr('12 V')), findsOneWidget);
+      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+    },
+  );
+
   group('ReadingPanel as a gauge', () {
     const gauge = ReadingConfig(
       jsonPath: 'humidity',

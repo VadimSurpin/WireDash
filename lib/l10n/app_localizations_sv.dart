@@ -3840,4 +3840,27 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Erbjud redigerbara widgetar även om identifieringen markerar den här egenskapen som skrivskyddad. Gäller bara den här panelen.';
+
+  @override
+  String get displayExpressionTitle => 'Före visning (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value innehåller det mottagna värdet. Tomt fält lämnar det oförändrat. Endast visning; kommandon och sparad historik ändras inte.';
+
+  @override
+  String get displayExpressionSample => 'Exempelvärde';
+
+  @override
+  String get displayExpressionTest => 'Testa uttryck';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Resultat: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Uttrycket misslyckades; det ursprungliga värdet visas. $error';
+  }
 }
