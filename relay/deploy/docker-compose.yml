@@ -6,7 +6,7 @@ name: zigdash-relay
 
 services:
   mosquitto:
-    image: eclipse-mosquitto:2.1.2
+    image: eclipse-mosquitto:2.1.2-alpine
     restart: unless-stopped
     ports:
       - "8883:8883"          # hubs: MQTT over TLS
