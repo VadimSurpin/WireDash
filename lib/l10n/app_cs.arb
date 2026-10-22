@@ -1281,5 +1281,8 @@
   "wbSearch": "Hledat zařízení a ovládací prvky",
   "wbBuiltinsAvailable": "Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.",
   "wbControlCount": "Ovládací prvky: {count}",
-  "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu."
+  "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu.",
+  "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel.",
+  "wbAddSelected": "Přidat vybrané vlastnosti",
+  "wbOpenControls": "Otevřít ovládací prvky"
 }

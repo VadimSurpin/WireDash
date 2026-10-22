@@ -1501,5 +1501,8 @@
   "wbSearch": "Buscar dispositivos e controles",
   "wbBuiltinsAvailable": "Os dispositivos integrados ao controlador continuam disponíveis em Todos os dispositivos.",
   "wbControlCount": "Controles: {count}",
-  "wbAutoAddFailed": "Não foi possível adicionar os dispositivos descobertos. Repita a busca."
+  "wbAutoAddFailed": "Não foi possível adicionar os dispositivos descobertos. Repita a busca.",
+  "wbChooseProperties": "Selecione as propriedades para adicionar como um único painel.",
+  "wbAddSelected": "Adicionar propriedades selecionadas",
+  "wbOpenControls": "Abrir controles"
 }

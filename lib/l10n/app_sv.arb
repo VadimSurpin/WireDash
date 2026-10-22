@@ -1501,5 +1501,8 @@
   "wbSearch": "Sök efter enheter och kontroller",
   "wbBuiltinsAvailable": "Styrenhetens inbyggda enheter är fortfarande tillgängliga under Alla enheter.",
   "wbControlCount": "Kontroller: {count}",
-  "wbAutoAddFailed": "Kunde inte lägga till upptäckta enheter. Gör om sökningen."
+  "wbAutoAddFailed": "Kunde inte lägga till upptäckta enheter. Gör om sökningen.",
+  "wbChooseProperties": "Välj egenskaper att lägga till som en panel.",
+  "wbAddSelected": "Lägg till valda egenskaper",
+  "wbOpenControls": "Öppna kontroller"
 }

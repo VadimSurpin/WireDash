@@ -1501,5 +1501,8 @@
   "wbSearch": "Szukaj urządzeń i elementów sterujących",
   "wbBuiltinsAvailable": "Wbudowane urządzenia kontrolera pozostają dostępne na liście wszystkich urządzeń.",
   "wbControlCount": "Elementy sterujące: {count}",
-  "wbAutoAddFailed": "Nie udało się dodać wykrytych urządzeń. Ponów wyszukiwanie."
+  "wbAutoAddFailed": "Nie udało się dodać wykrytych urządzeń. Ponów wyszukiwanie.",
+  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel.",
+  "wbAddSelected": "Dodaj wybrane właściwości",
+  "wbOpenControls": "Otwórz elementy sterujące"
 }

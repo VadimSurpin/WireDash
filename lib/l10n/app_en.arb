@@ -2250,5 +2250,8 @@
   },
   "wbBuiltinsAvailable": "Controller built-ins remain available in All devices.",
   "wbAutoAddFailed": "Could not add discovered devices. Try discovery again.",
-  "wbAutoAdded": "Modules added: {count}."
+  "wbAutoAdded": "Modules added: {count}.",
+  "wbChooseProperties": "Select properties to add as one panel.",
+  "wbAddSelected": "Add selected properties",
+  "wbOpenControls": "Open controls"
 }

@@ -1501,5 +1501,8 @@
   "wbSearch": "Apparaten en bedieningselementen zoeken",
   "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.",
   "wbControlCount": "Bedieningselementen: {count}",
-  "wbAutoAddFailed": "Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw."
+  "wbAutoAddFailed": "Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw.",
+  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen.",
+  "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
+  "wbOpenControls": "Bediening openen"
 }

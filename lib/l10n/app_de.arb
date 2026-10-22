@@ -1501,5 +1501,8 @@
   "wbSearch": "Geräte und Steuerelemente suchen",
   "wbBuiltinsAvailable": "Integrierte Controller-Geräte bleiben unter „Alle Geräte“ verfügbar.",
   "wbControlCount": "Steuerelemente: {count}",
-  "wbAutoAddFailed": "Entdeckte Geräte konnten nicht hinzugefügt werden. Erneut suchen."
+  "wbAutoAddFailed": "Entdeckte Geräte konnten nicht hinzugefügt werden. Erneut suchen.",
+  "wbChooseProperties": "Eigenschaften auswählen, die als ein Panel hinzugefügt werden sollen.",
+  "wbAddSelected": "Ausgewählte Eigenschaften hinzufügen",
+  "wbOpenControls": "Steuerelemente öffnen"
 }

@@ -1501,5 +1501,8 @@
   "wbSearch": "חיפוש התקנים ופקדים",
   "wbBuiltinsAvailable": "ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים.",
   "wbControlCount": "פקדים: {count}",
-  "wbAutoAddFailed": "לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב."
+  "wbAutoAddFailed": "לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב.",
+  "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת.",
+  "wbAddSelected": "הוספת המאפיינים שנבחרו",
+  "wbOpenControls": "פתיחת פקדים"
 }

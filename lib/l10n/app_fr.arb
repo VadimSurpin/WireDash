@@ -1355,5 +1355,8 @@
   "wbSearch": "Rechercher des appareils et commandes",
   "wbBuiltinsAvailable": "Les équipements intégrés au contrôleur restent disponibles dans Tous les appareils.",
   "wbControlCount": "Commandes : {count}",
-  "wbAutoAddFailed": "Impossible d’ajouter les appareils détectés. Relancez la recherche."
+  "wbAutoAddFailed": "Impossible d’ajouter les appareils détectés. Relancez la recherche.",
+  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau.",
+  "wbAddSelected": "Ajouter les propriétés sélectionnées",
+  "wbOpenControls": "Ouvrir les commandes"
 }
