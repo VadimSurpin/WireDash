@@ -13,6 +13,7 @@ import 'package:zigdash/features/panels/models/panel_config.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
 import 'package:zigdash/features/panels/widgets/panel_reliability_frame.dart';
 import 'package:zigdash/features/panels/widgets/panel_tile.dart';
+import 'package:zigdash/features/panels/widgets/device_tile_panel.dart';
 import 'package:zigdash/features/panels/widgets/wirenboard_control_row.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
@@ -209,7 +210,7 @@ void main() {
         _app(manager, initialDevice: discovery.devices.single),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Open controls'));
+      await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
       final first = _inSheet(find.byType(WirenBoardControlRow)).first;
       expect(tester.getSize(first).height, lessThan(80));
@@ -252,48 +253,34 @@ void main() {
   );
 
   testWidgets(
-    'device card has inline controls, a collapsible header and an optional full view',
+    'WB uses the same summary card as Z2M, with scalar quick actions and a controls sheet',
     (tester) async {
       final mgr = _Recorder();
       await tester.pumpWidget(_app(mgr));
       await tester.pumpAndSettle();
-      expect(find.byType(WirenBoardControlRow), findsNWidgets(4));
-      expect(
-        find.byType(Card),
-        findsOneWidget,
-        reason: 'One device frame, no card per property',
-      );
-      expect(find.text('23.5'), findsOneWidget);
-      expect(find.text('°C'), findsOneWidget);
-      await tester.tap(find.text('Relay module'));
-      await tester.pumpAndSettle();
+      expect(find.byType(DeviceSummaryCard), findsOneWidget);
       expect(find.byType(WirenBoardControlRow), findsNothing);
-      await tester.tap(find.text('Relay module'));
-      await tester.pumpAndSettle();
-      expect(find.byType(WirenBoardControlRow), findsNWidgets(4));
-      final writableSwitch = find.byWidgetPredicate(
-        (w) => w is Switch && w.onChanged != null,
-      );
-      expect(
-        writableSwitch,
-        findsOneWidget,
-        reason: 'Input is a read-only switch',
-      );
-      await tester.tap(writableSwitch);
+      expect(find.byType(Card), findsOneWidget);
+      await tester.tap(find.byTooltip('Turn on or off'));
       await tester.pumpAndSettle();
       expect(mgr.sent, [
         ('/devices/wb-mr6c_12/controls/Relay 1/on', '1', false),
       ]);
-      await tester.tap(find.text('Reset'));
+      await tester.tap(find.text('Relay module'));
+      await tester.pumpAndSettle();
+      expect(_inSheet(find.byType(WirenBoardControlRow)), findsNWidgets(4));
+      expect(_inSheet(find.text('23.5')), findsOneWidget);
+      final writableSwitch = _inSheet(
+        find.byWidgetPredicate((w) => w is Switch && w.onChanged != null),
+      );
+      expect(writableSwitch, findsOneWidget);
+      await tester.tap(_inSheet(find.text('Reset')));
       await tester.pumpAndSettle();
       expect(mgr.sent.last, (
         '/devices/wb-mr6c_12/controls/Reset/on',
         '1',
         false,
       ));
-      await tester.tap(find.byTooltip('Open controls'));
-      await tester.pumpAndSettle();
-      expect(_inSheet(find.byType(WirenBoardControlRow)), findsNWidgets(4));
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();
       await mgr.dispose();
@@ -316,6 +303,8 @@ void main() {
       await tester.pumpWidget(
         _app(manager, initialDevice: discovery.devices.single),
       );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
       await tester.tap(find.byType(DropdownButton<String>));
       await tester.pumpAndSettle();
@@ -360,7 +349,7 @@ void main() {
       await tester.pumpAndSettle();
       updates.add(discovery.devices);
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Open controls'));
+      await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
       Finder inputFor(String label) => find.descendant(
         of: find.ancestor(
@@ -410,7 +399,7 @@ void main() {
       final mgr = _Recorder(connected: false);
       await tester.pumpWidget(_app(mgr, metadataAvailable: false));
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Open controls'));
+      await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
       expect(_inSheet(find.byType(Switch)), findsNWidgets(2));
       final switchFrame = tester.widgetList<PanelReliabilityFrame>(

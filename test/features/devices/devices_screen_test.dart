@@ -62,9 +62,17 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
   Future<void> addDevice(
     WirenBoardDevice device, {
     required String label,
-    List<String>? controlIds,
   }) async {
-    calls.add((label: label, ids: controlIds));
+    calls.add((label: label, ids: null));
+  }
+
+  @override
+  Future<void> addControl(
+    WirenBoardDevice device,
+    WirenBoardControl control, {
+    required String label,
+  }) async {
+    calls.add((label: label, ids: [control.id]));
   }
 
   @override
@@ -210,12 +218,30 @@ void main() {
       expect(find.text('Added modules'), findsOneWidget);
       expect(find.text('Wirenboard Z2M devices'), findsOneWidget);
       expect(find.text('Controller built-ins'), findsOneWidget);
+      expect(find.byKey(const ValueKey('wb-device:desk')), findsNothing);
+      expect(
+        find.byKey(const ValueKey('wb-device:system__cloud')),
+        findsNothing,
+      );
+      expect(find.byKey(const ValueKey('wb-device:wb-mr6_10')), findsOneWidget);
+      await tester.tap(find.text('Wirenboard Z2M devices'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('wb-device:desk')), findsOneWidget);
+      await tester.tap(find.text('Controller built-ins'));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('wb-device:system__cloud')),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Added modules'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('wb-device:wb-mr6_10')), findsNothing);
       expect(find.byKey(const ValueKey('wb-device:desk')), findsOneWidget);
     },
   );
 
   testWidgets(
-    'tree selection is preserved when collapsed and adding asks for a valid label',
+    'single property add asks for a label and never offers subset selection',
     (tester) async {
       final device =
           (WirenBoardDiscovery()
@@ -250,15 +276,11 @@ void main() {
       final temperature = find.byKey(
         const ValueKey('wb-property:room/Temperature'),
       );
-      await tester.tap(temperature);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Room sensor'));
-      await tester.pumpAndSettle();
       expect(find.byType(CheckboxListTile), findsNothing);
-      await tester.tap(find.text('Room sensor'));
-      await tester.pumpAndSettle();
-      expect(tester.widget<CheckboxListTile>(temperature).value, isTrue);
-      await tester.tap(find.byTooltip('Add selected properties'));
+      expect(find.text('Add selected properties'), findsNothing);
+      await tester.tap(
+        find.descendant(of: temperature, matching: find.byIcon(Icons.add)),
+      );
       await tester.pumpAndSettle();
       final label = find.widgetWithText(TextFormField, 'Name');
       await tester.enterText(label, '');
@@ -273,6 +295,16 @@ void main() {
       expect(importer.calls.single.label, 'Hall weather');
       expect(importer.calls.single.ids, ['Temperature']);
       expect(find.byType(BottomSheet), findsNothing);
+      await tester.tap(find.byTooltip('Add whole device'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Name'),
+        'Whole room',
+      );
+      await tester.tap(find.text('Add'));
+      await tester.pumpAndSettle();
+      expect(importer.calls, hasLength(2));
+      expect(importer.calls.last, (label: 'Whole room', ids: null));
     },
   );
 
@@ -295,6 +327,9 @@ void main() {
       await tester.pumpWidget(_app(wbDevices: devices, emptyZ2m: true));
       await tester.pumpAndSettle();
       expect(find.text('Relay module'), findsOneWidget);
+      expect(find.text('Hardware monitor'), findsNothing);
+      await tester.tap(find.text('Controller built-ins'));
+      await tester.pumpAndSettle();
       expect(find.text('Hardware monitor'), findsOneWidget);
       expect(find.text('Added modules'), findsOneWidget);
       expect(find.text('Controller built-ins'), findsOneWidget);
@@ -302,12 +337,53 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Relay 1'), findsOneWidget);
       expect(find.byType(BottomSheet), findsNothing);
-      expect(find.byType(CheckboxListTile), findsOneWidget);
+      expect(find.byType(CheckboxListTile), findsNothing);
       await tester.tap(find.byTooltip('Open controls').first);
       await tester.pumpAndSettle();
       expect(find.byType(BottomSheet), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();
+    },
+  );
+
+  testWidgets('native device section collapses and expands', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
+    expect(find.text('desk'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('devices-section:z2m')));
+    await tester.pumpAndSettle();
+    expect(find.text('desk'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('devices-section:z2m')));
+    await tester.pumpAndSettle();
+    expect(find.text('desk'), findsOneWidget);
+  });
+
+  testWidgets(
+    'search reveals collapsed built-ins and restores collapse when cleared',
+    (tester) async {
+      final discovery = WirenBoardDiscovery();
+      for (var i = 0; i < 8; i++) {
+        discovery.apply(
+          '/devices/hwmon/controls/CPU $i/meta',
+          '{"type":"temperature","readonly":true}',
+        );
+      }
+      await tester.pumpWidget(
+        _app(wbDevices: discovery.devices, emptyZ2m: true),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('wb-device:hwmon')), findsNothing);
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'CPU 7');
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('wb-property:hwmon/CPU 7')),
+        findsOneWidget,
+      );
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('wb-device:hwmon')), findsNothing);
     },
   );
 

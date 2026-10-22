@@ -15,13 +15,14 @@ with no duplicates on repeated discovery. This works in initial broker setup,
 the manual connection wizard, and the dashboard discovery screen. Built-ins
 are listed in All devices and can be added manually.
 
-Devices start collapsed and are grouped into added modules and controller
-built-ins. Search matches both device and control names. Added modules show a
-check after automatic import. Use the + button next to a built-in to add it as
-one panel, or expand any device and select an individual control. Review the
-suggested individual tile and save it. Tap a whole-device panel to
-collapse or expand its compact inline controls. The header’s expand-view button
-opens a larger, draggable and scrollable view. The discovery screen also has a Zigbee2MQTT source selector.
+In **All devices**, each section can be collapsed independently. Controller
+built-ins and Wirenboard Z2M devices start collapsed; added modules and native
+Zigbee2MQTT devices start expanded. Search reveals matching devices and
+properties inside collapsed sections, then restores their expansion state when
+cleared. Device rows expand into a property tree. Use the + button next to a
+property to add it as a standard tile, or the device's + button to add the whole
+device. The add sheet asks for a label and target dashboard. The discovery
+screen also has a Zigbee2MQTT source selector.
 
 Discovery listens for retained metadata and subsequent changes. It supports
 both current JSON `/meta` messages and legacy `/meta/type`, `/meta/readonly`,
@@ -101,16 +102,13 @@ commands, cached offline controls, grouping, search, and preserved expansion.
 
 ## Device panels
 
-Device panels follow the layout of [Wiren Board HomeUI cards](https://github.com/wirenboard/homeui/tree/master/frontend/src/components/card)
-and [control cells](https://github.com/wirenboard/homeui/tree/master/frontend/src/components/cell):
-a framed card with a collapsible header, channel names at the left, values and
-units at the right, and inline switches, dropdowns, sliders and explicit input
-confirmation. Read-only channels cannot send commands. The larger view uses
-one scroll controller for the draggable sheet and its contents.
+Wiren Board and Zigbee2MQTT devices use the same dashboard card renderer:
+class icon, switch quick actions where applicable, device label, readings and
+state summary, with the same shapes, colors and typography. Tap a WB card to
+open its draggable, scrollable controls sheet. WB commands still use scalar
+payloads on each control's own `/on` topic; read-only controls cannot send
+commands.
 
-In **All devices**, tap a device to expand its property tree. Check the
-properties to include, then use **Add selected properties**. The add sheet asks
-for a panel name and target dashboard. With no properties checked, the same
-button adds the whole device. Selected-property panels keep their saved subset
-even when new metadata adds more controls. Automatic whole-device imports do
-not overwrite their selection or custom label.
+New tiles can represent one property or a whole device. Creating a selected
+subset as one device panel is unavailable for now. Previously saved subset
+panels remain usable and keep their selections and labels on rediscovery.

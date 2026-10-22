@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../panels/models/panel_config.dart';
 import '../settings/providers/settings_controller.dart';
 import 'models/wirenboard_device.dart';
+import 'models/wirenboard_panel_suggestion.dart';
 import 'wirenboard_device_groups.dart';
 
 /// Serializes imports and recognizes existing whole-device tiles by MQTT ID.
@@ -44,39 +45,51 @@ class WirenBoardDashboardImporter {
     return operation;
   }
 
-  /// A deliberate add asks for a label. Selected-property panels are separate
-  /// from the automatically maintained whole-device panel.
-  Future<void> addDevice(
-    WirenBoardDevice device, {
+  /// A deliberate whole-device add asks for a label.
+  Future<void> addDevice(WirenBoardDevice device, {required String label}) {
+    final operation = _pending.then((_) async {
+      await _import([device], true, labels: {device.id: label});
+    });
+    _pending = operation.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    return operation;
+  }
+
+  /// Adds one property as a standard dashboard control, using WB scalar topics.
+  Future<void> addControl(
+    WirenBoardDevice device,
+    WirenBoardControl control, {
     required String label,
-    List<String>? controlIds,
   }) {
     final operation = _pending.then((_) async {
-      if (controlIds == null) {
-        await _import([device], true, labels: {device.id: label});
-        return;
+      if (control.deviceId != device.id ||
+          !device.controls.any((c) => c.id == control.id)) {
+        throw ArgumentError('Control does not belong to device');
       }
-      final ids = device.controls
-          .where((c) => controlIds.contains(c.id))
-          .map((c) => c.id)
-          .toList();
-      if (ids.isEmpty) throw ArgumentError('No selected controls');
-      final tiles = await _panels.getByDashboard(_dashboardId);
-      final next = tiles.fold<int>(
-        0,
-        (n, p) => p.sortOrder >= n ? p.sortOrder + 1 : n,
+      final suggestion = suggestWirenBoardPanel(
+        device,
+        control,
+        language: _l10n.localeName.split('_').first,
       );
+      final tiles = await _panels.getByDashboard(_dashboardId);
       await _panels.create(
         dashboardId: _dashboardId,
         name: label,
-        type: PanelType.device,
-        topic: '',
-        subscribeTopic: '',
-        topicPrefixOverride: '/devices/${device.id}',
-        width: PanelWidth.wide,
-        sortOrder: next,
+        type: suggestion.type,
+        topic: suggestion.publishTopicSuffix,
+        subscribeTopic: suggestion.subscribeTopicSuffix,
+        topicPrefixOverride: suggestion.topicPrefixOverride,
+        width: suggestion.type == PanelType.slider
+            ? PanelWidth.wide
+            : PanelWidth.small,
+        sortOrder: tiles.fold<int>(
+          0,
+          (n, p) => p.sortOrder >= n ? p.sortOrder + 1 : n,
+        ),
         sectionId: await _sectionFor(device.group),
-        config: WirenBoardDeviceConfig(device: device, controlIds: ids),
+        config: suggestion.config!,
       );
     });
     _pending = operation.then<void>(
