@@ -1,5 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import '../../../mqtt/endpoint.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -349,13 +350,14 @@ class _HomeRow extends ConsumerWidget {
     final status = current
         ? ref.watch(connectionStatusProvider(home.id)).valueOrNull
         : null;
+    final endpoint = current ? ref.watch(connectionEndpointProvider(home.id)).valueOrNull : null;
     return ListTile(
       leading: Icon(current ? Icons.home : Icons.home_outlined,
           color: current ? scheme.primary : null),
       title: Text(home.name),
       subtitle: Text(status == null
           ? address
-          : '$address · ${homeStatusLabel(status, l10n)}'),
+          : '$address · ${homeStatusLabel(status, l10n, endpoint: endpoint)}'),
       trailing: current
           ? Icon(Icons.check, color: scheme.primary, semanticLabel: l10n.homeCurrent)
           : const Icon(Icons.chevron_right),
@@ -364,7 +366,9 @@ class _HomeRow extends ConsumerWidget {
   }
 }
 
-String homeStatusLabel(MqttStatus s, AppLocalizations l10n) => switch (s) {
+String homeStatusLabel(MqttStatus s, AppLocalizations l10n, {MqttEndpoint? endpoint}) => switch (s) {
+      MqttStatus.connected when endpoint == MqttEndpoint.relay => l10n.statusConnectedRelay,
+      MqttStatus.connected when endpoint == MqttEndpoint.remote => l10n.statusConnectedRemote,
       MqttStatus.connected => l10n.statusConnected,
       MqttStatus.connecting => l10n.statusConnecting,
       _ => l10n.statusCantReach,
