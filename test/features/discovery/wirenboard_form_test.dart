@@ -68,6 +68,10 @@ void main() {
     'reading selector': '{"type":"value","units":"V","readonly":true}',
     'device': '{"type":"switch"}',
     'switch': '{"type":"switch"}',
+    'switch input selector': '{"type":"switch"}',
+    'rgb': '{"type":"rgb"}',
+    'local time': '{"type":"local_time"}',
+    'custom': '{"type":"custom"}',
     'range': '{"type":"range","min":10,"max":200}',
     'reading': '{"type":"value","units":"V","readonly":true}',
     'enum': '{"type":"text","enum":{"off":{"en":"Off"},"auto":{"en":"Auto"}}}',
@@ -205,7 +209,8 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }
       }
-      if (entry.key == 'reading selector') {
+      final selectingInput = entry.key == 'switch input selector';
+      if (entry.key == 'reading selector' || selectingInput) {
         final name = find.widgetWithText(TextFormField, 'Name');
         await tester.enterText(name, 'Supply voltage');
         final selector = find.byType(DropdownButtonFormField<PanelType>);
@@ -217,7 +222,13 @@ void main() {
         await tester.tap(
           find
               .text(
-                lookupAppLocalizations(const Locale('en')).panelTypeProgress,
+                selectingInput
+                    ? lookupAppLocalizations(
+                        const Locale('en'),
+                      ).panelTypeTextInput
+                    : lookupAppLocalizations(
+                        const Locale('en'),
+                      ).panelTypeProgress,
               )
               .last,
         );
@@ -245,6 +256,10 @@ void main() {
         if (config is WirenBoardDeviceConfig) {
           expect(config.controlIds, isNull);
         }
+      } else if (selectingInput) {
+        expect(saved[#config], isA<TextInputConfig>());
+        expect((saved[#config] as TextInputConfig).template, '{value}');
+        expect(saved[#name], 'Supply voltage');
       } else if (entry.key == 'reading selector') {
         expect(saved[#config], isA<ProgressConfig>());
         expect((saved[#config] as ProgressConfig).jsonPath, isNull);
@@ -257,7 +272,9 @@ void main() {
       if (!editing) {
         expect(
           saved[#type],
-          entry.key == 'reading selector'
+          selectingInput
+              ? PanelType.textInput
+              : entry.key == 'reading selector'
               ? PanelType.progress
               : suggestion.type,
         );

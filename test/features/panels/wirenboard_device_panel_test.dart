@@ -431,6 +431,60 @@ void main() {
     },
   );
 
+  testWidgets('RGB and local time controls publish editable scalar values', (
+    tester,
+  ) async {
+    final discovery = WirenBoardDiscovery()
+      ..apply('/devices/config/controls/Color/meta', '{"type":"rgb","order":1}')
+      ..apply(
+        '/devices/config/controls/Time/meta',
+        '{"type":"local_time","order":2}',
+      )
+      ..apply(
+        '/devices/config/controls/Readonly/meta',
+        '{"type":"rgb","readonly":true,"order":3}',
+      );
+    final manager = _Recorder();
+    await tester.pumpWidget(
+      _app(manager, initialDevice: discovery.devices.single),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Relay module'));
+    await tester.pumpAndSettle();
+    for (final (label, value) in [
+      ('Color', '255;128;0'),
+      ('Time', '1792627200'),
+    ]) {
+      final row = find.ancestor(
+        of: _inSheet(find.text(label)),
+        matching: find.byType(WirenBoardControlRow),
+      );
+      await tester.enterText(
+        find.descendant(of: row, matching: find.byType(TextField)),
+        value,
+      );
+      await tester.tap(
+        find.descendant(of: row, matching: find.byIcon(Icons.check)),
+      );
+      await tester.pumpAndSettle();
+    }
+    final readonly = find.ancestor(
+      of: _inSheet(find.text('Readonly')),
+      matching: find.byType(WirenBoardControlRow),
+    );
+    expect(
+      find.descendant(of: readonly, matching: find.byType(TextField)),
+      findsNothing,
+    );
+    expect(manager.sent, [
+      ('/devices/config/controls/Color/on', '255;128;0', false),
+      ('/devices/config/controls/Time/on', '1792627200', false),
+    ]);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pumpAndSettle();
+    await manager.dispose();
+  });
+
   testWidgets(
     'typed text follows its control when live metadata reorders the sheet',
     (tester) async {

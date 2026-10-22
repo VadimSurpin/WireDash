@@ -83,7 +83,7 @@ PanelSuggestion _defaultWirenBoardPanel(
       PanelType.reading,
       ReadingConfig(jsonPath: '', unit: control.unit),
     ),
-    _ when !control.readOnly && (control.numeric || control.type == 'text') => (
+    _ when !control.readOnly => (
       PanelType.textInput,
       const TextInputConfig(template: '{value}'),
     ),
@@ -129,7 +129,7 @@ PanelSuggestion suggestWirenBoardPanel(
         PanelType.radio,
         PanelType.multiState,
       ],
-      if (numeric || control.type == 'text') PanelType.textInput,
+      PanelType.textInput,
     ],
     PanelType.textLog,
   };
