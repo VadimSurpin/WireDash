@@ -91,6 +91,35 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
     ref.invalidate(engineViewProvider(widget.connectionId));
   }
 
+  Future<void> _confirmRemove() async {
+    final l10n = context.l10n;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.engineRemoveTitle),
+        content: Text(l10n.engineRemoveBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l10n.engineRemove)),
+        ],
+      ),
+    );
+    if (yes != true || !mounted) return;
+    try {
+      final installer = await ref.read(engineInstallerProvider(widget.connectionId).future);
+      final (answer, error) = await installer.remove();
+      if (!mounted) return;
+      if (answer != HubAnswer.ok) {
+        setState(() => _error = answer == HubAnswer.refused
+            ? l10n.engineInstallRefused(error ?? '')
+            : l10n.engineInstallNoAnswer);
+      }
+    } catch (_) {
+      if (mounted) setState(() => _error = l10n.engineInstallNoAnswer);
+    }
+  }
+
   void _newAutomation() {
     final count = ref.read(automationsProvider(widget.connectionId)).valueOrNull?.length ?? 0;
     if (count >= freeAutomations && ref.read(proStatusProvider) != ProStatus.unlocked) {
@@ -132,8 +161,15 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
         actions: [
           if (view.valueOrNull?.phase == HubEnginePhase.running)
             Padding(
-              padding: const EdgeInsetsDirectional.only(end: 16),
+              padding: const EdgeInsetsDirectional.only(end: 4),
               child: Chip(label: Text(l10n.engineRunningOnHub)),
+            ),
+          if (installed)
+            PopupMenuButton<void>(
+              key: const Key('engine-menu'),
+              itemBuilder: (_) => [
+                PopupMenuItem<void>(onTap: _confirmRemove, child: Text(l10n.engineRemove)),
+              ],
             ),
         ],
       ),

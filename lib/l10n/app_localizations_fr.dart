@@ -4208,4 +4208,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'Voir Pro';
+
+  @override
+  String get engineRemove => 'Retirer du hub';
+
+  @override
+  String get engineRemoveTitle => 'Retirer l\'assistant du hub ?';
+
+  @override
+  String get engineRemoveBody =>
+      'Les automatisations s\'arrêtent. Vos règles restent sur le hub : réinstaller l\'assistant les fait revenir.';
+
+  @override
+  String get autoNoTargets =>
+      'Ce domicile n\'a encore aucune lumière, prise, interrupteur ou volet à commander.';
 }

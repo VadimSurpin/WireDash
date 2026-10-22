@@ -102,7 +102,7 @@ class _TownSheetState extends State<_TownSheet> {
               child: TextField(
                 key: const Key('town-search'),
                 autofocus: true,
-                decoration: InputDecoration(labelText: l10n.autoTownSearch, helperText: l10n.autoTownWhy),
+                decoration: InputDecoration(labelText: l10n.autoTownSearch, helperText: l10n.autoTownWhy, helperMaxLines: 3),
                 onChanged: (v) => setState(() => _query = v),
               ),
             ),

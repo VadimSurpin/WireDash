@@ -4178,4 +4178,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'See Pro';
+
+  @override
+  String get engineRemove => 'Remove from hub';
+
+  @override
+  String get engineRemoveTitle => 'Remove the helper from your hub?';
+
+  @override
+  String get engineRemoveBody =>
+      'Automations stop running. Your rules stay on the hub, so installing the helper again brings them back.';
+
+  @override
+  String get autoNoTargets =>
+      'This Home has no light, plug, switch or shutter to control yet.';
 }

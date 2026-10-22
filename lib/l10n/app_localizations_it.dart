@@ -4197,4 +4197,18 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'Vedi Pro';
+
+  @override
+  String get engineRemove => 'Rimuovi dall\'hub';
+
+  @override
+  String get engineRemoveTitle => 'Rimuovere l\'aiutante dall\'hub?';
+
+  @override
+  String get engineRemoveBody =>
+      'Le automazioni smettono di girare. Le regole restano sull\'hub, quindi reinstallando l\'aiutante tornano.';
+
+  @override
+  String get autoNoTargets =>
+      'Questa casa non ha ancora luci, prese, interruttori o tapparelle da comandare.';
 }

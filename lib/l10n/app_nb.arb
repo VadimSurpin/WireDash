@@ -1298,5 +1298,9 @@
   "autoDeleted": "(slettet)",
   "autoCeilingTitle": "{count} automasjoner er gratis. Vil du ha flere?",
   "autoCeilingBody": "ZigDash er gratis og åpen kildekode, laget av én person. Pro er et engangskjøp: ubegrensede automasjoner, historikk for 7 og 30 dager og ekstrafunksjonene for veggnettbrett. Automasjonene dine fortsetter å kjøre uansett hva du velger.",
-  "autoCeilingSeePro": "Se Pro"
+  "autoCeilingSeePro": "Se Pro",
+  "engineRemove": "Fjern fra huben",
+  "engineRemoveTitle": "Fjerne hjelperen fra huben?",
+  "engineRemoveBody": "Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon henter dem tilbake.",
+  "autoNoTargets": "Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre."
 }

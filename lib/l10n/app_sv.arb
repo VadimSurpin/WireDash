@@ -1298,5 +1298,9 @@
   "autoDeleted": "(borttagen)",
   "autoCeilingTitle": "{count} automationer är gratis. Vill du ha fler?",
   "autoCeilingBody": "ZigDash är gratis och öppen källkod, byggt av en person. Pro är ett engångsköp: obegränsade automationer, historik för 7 och 30 dagar och extrafunktionerna för väggplatta. Dina automationer fortsätter köras vad du än väljer.",
-  "autoCeilingSeePro": "Se Pro"
+  "autoCeilingSeePro": "Se Pro",
+  "engineRemove": "Ta bort från hubben",
+  "engineRemoveTitle": "Ta bort hjälparen från hubben?",
+  "engineRemoveBody": "Automationerna slutar köras. Dina regler ligger kvar på hubben, så en ny installation tar tillbaka dem.",
+  "autoNoTargets": "Det här hemmet har ännu ingen lampa, kontakt, strömbrytare eller rullgardin att styra."
 }

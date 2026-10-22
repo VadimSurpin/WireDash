@@ -7403,6 +7403,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See Pro'**
   String get autoCeilingSeePro;
+
+  /// No description provided for @engineRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from hub'**
+  String get engineRemove;
+
+  /// No description provided for @engineRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the helper from your hub?'**
+  String get engineRemoveTitle;
+
+  /// No description provided for @engineRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations stop running. Your rules stay on the hub, so installing the helper again brings them back.'**
+  String get engineRemoveBody;
+
+  /// No description provided for @autoNoTargets.
+  ///
+  /// In en, this message translates to:
+  /// **'This Home has no light, plug, switch or shutter to control yet.'**
+  String get autoNoTargets;
 }
 
 class _AppLocalizationsDelegate

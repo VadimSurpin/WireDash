@@ -1298,5 +1298,9 @@
   "autoDeleted": "(verwijderd)",
   "autoCeilingTitle": "{count} automatiseringen zijn gratis. Meer nodig?",
   "autoCeilingBody": "ZigDash is gratis en open source, gemaakt door één persoon. Pro is een eenmalige aankoop: onbeperkte automatiseringen, geschiedenis van 7 en 30 dagen en de extra's voor wandtablets. Je automatiseringen blijven draaien, wat je ook kiest.",
-  "autoCeilingSeePro": "Pro bekijken"
+  "autoCeilingSeePro": "Pro bekijken",
+  "engineRemove": "Van de hub verwijderen",
+  "engineRemoveTitle": "De helper van de hub verwijderen?",
+  "engineRemoveBody": "Automatiseringen stoppen. Je regels blijven op de hub, dus opnieuw installeren brengt ze terug.",
+  "autoNoTargets": "Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen."
 }

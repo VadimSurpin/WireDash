@@ -4141,4 +4141,17 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'ל־Pro';
+
+  @override
+  String get engineRemove => 'הסרה מהרכזת';
+
+  @override
+  String get engineRemoveTitle => 'להסיר את העוזר מהרכזת?';
+
+  @override
+  String get engineRemoveBody =>
+      'האוטומציות יפסיקו לרוץ. הכללים נשארים ברכזת, כך שהתקנה מחדש של העוזר תחזיר אותם.';
+
+  @override
+  String get autoNoTargets => 'בבית הזה עוד אין אור, שקע, מתג או תריס לשליטה.';
 }

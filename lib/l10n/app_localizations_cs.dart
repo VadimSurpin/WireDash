@@ -4186,4 +4186,18 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'Zobrazit Pro';
+
+  @override
+  String get engineRemove => 'Odebrat z hubu';
+
+  @override
+  String get engineRemoveTitle => 'Odebrat pomocníka z hubu?';
+
+  @override
+  String get engineRemoveBody =>
+      'Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace pomocníka vrátí.';
+
+  @override
+  String get autoNoTargets =>
+      'Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.';
 }

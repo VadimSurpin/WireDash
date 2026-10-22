@@ -1455,5 +1455,9 @@
   "autoCeilingTitle": "{count} automations are free. Want more?",
   "@autoCeilingTitle": {"placeholders": {"count": {}}},
   "autoCeilingBody": "ZigDash is free and open source, built by one person. Pro is a one-time purchase: unlimited automations, history for 7 and 30 days and the wall tablet extras. Your automations keep running whatever you choose.",
-  "autoCeilingSeePro": "See Pro"
+  "autoCeilingSeePro": "See Pro",
+  "engineRemove": "Remove from hub",
+  "engineRemoveTitle": "Remove the helper from your hub?",
+  "engineRemoveBody": "Automations stop running. Your rules stay on the hub, so installing the helper again brings them back.",
+  "autoNoTargets": "This Home has no light, plug, switch or shutter to control yet."
 }

@@ -4179,4 +4179,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'Подробнее о Pro';
+
+  @override
+  String get engineRemove => 'Удалить с хаба';
+
+  @override
+  String get engineRemoveTitle => 'Удалить помощника с хаба?';
+
+  @override
+  String get engineRemoveBody =>
+      'Автоматизации перестанут работать. Правила останутся на хабе, и после переустановки помощника вернутся.';
+
+  @override
+  String get autoNoTargets =>
+      'В этом доме пока нет света, розетки, выключателя или штор для управления.';
 }

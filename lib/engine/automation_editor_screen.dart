@@ -493,6 +493,8 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
           onChanged: (v) => setState(() => _sceneId = v),
         )
       else ...[
+        if (targets.isEmpty)
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(l10n.autoNoTargets)),
         DropdownButtonFormField<String>(
           key: const Key('auto-action-device'),
           initialValue: target?.ieeeAddress,

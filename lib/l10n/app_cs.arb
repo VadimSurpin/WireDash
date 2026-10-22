@@ -1213,5 +1213,9 @@
   "autoDeleted": "(smazána)",
   "autoCeilingTitle": "Zdarma jsou {count} automatizace. Chcete víc?",
   "autoCeilingBody": "ZigDash je zdarma a s otevřeným kódem, vytváří ho jeden člověk. Pro je jednorázový nákup: neomezené automatizace, historie za 7 a 30 dní a doplňky pro nástěnný tablet. Vaše automatizace poběží dál, ať zvolíte cokoli.",
-  "autoCeilingSeePro": "Zobrazit Pro"
+  "autoCeilingSeePro": "Zobrazit Pro",
+  "engineRemove": "Odebrat z hubu",
+  "engineRemoveTitle": "Odebrat pomocníka z hubu?",
+  "engineRemoveBody": "Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace pomocníka vrátí.",
+  "autoNoTargets": "Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání."
 }

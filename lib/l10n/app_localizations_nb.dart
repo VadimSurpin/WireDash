@@ -4177,4 +4177,18 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'Se Pro';
+
+  @override
+  String get engineRemove => 'Fjern fra huben';
+
+  @override
+  String get engineRemoveTitle => 'Fjerne hjelperen fra huben?';
+
+  @override
+  String get engineRemoveBody =>
+      'Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon henter dem tilbake.';
+
+  @override
+  String get autoNoTargets =>
+      'Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre.';
 }

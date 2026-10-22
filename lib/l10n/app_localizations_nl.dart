@@ -4194,4 +4194,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get autoCeilingSeePro => 'Pro bekijken';
+
+  @override
+  String get engineRemove => 'Van de hub verwijderen';
+
+  @override
+  String get engineRemoveTitle => 'De helper van de hub verwijderen?';
+
+  @override
+  String get engineRemoveBody =>
+      'Automatiseringen stoppen. Je regels blijven op de hub, dus opnieuw installeren brengt ze terug.';
+
+  @override
+  String get autoNoTargets =>
+      'Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.';
 }

@@ -1258,5 +1258,9 @@
   "autoDeleted": "(excluída)",
   "autoCeilingTitle": "{count} automações são grátis. Quer mais?",
   "autoCeilingBody": "O ZigDash é grátis e de código aberto, feito por uma pessoa. O Pro é uma compra única: automações ilimitadas, histórico de 7 e 30 dias e os extras de tablet de parede. Suas automações continuam rodando, seja qual for a sua escolha.",
-  "autoCeilingSeePro": "Ver Pro"
+  "autoCeilingSeePro": "Ver Pro",
+  "engineRemove": "Remover do hub",
+  "engineRemoveTitle": "Remover o ajudante do hub?",
+  "engineRemoveBody": "As automações param de rodar. Suas regras ficam no hub, então reinstalar o ajudante as traz de volta.",
+  "autoNoTargets": "Esta casa ainda não tem luz, tomada, interruptor ou persiana para controlar."
 }

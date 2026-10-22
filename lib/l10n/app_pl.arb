@@ -1293,5 +1293,9 @@
   "autoDeleted": "(usunięta)",
   "autoCeilingTitle": "Darmowe automatyzacje: {count}. Chcesz więcej?",
   "autoCeilingBody": "ZigDash jest darmowy i open source, tworzony przez jedną osobę. Pro to jednorazowy zakup: bez limitu automatyzacji, historia z 7 i 30 dni oraz dodatki do tabletu na ścianie. Twoje automatyzacje działają dalej, cokolwiek wybierzesz.",
-  "autoCeilingSeePro": "Zobacz Pro"
+  "autoCeilingSeePro": "Zobacz Pro",
+  "engineRemove": "Usuń z huba",
+  "engineRemoveTitle": "Usunąć pomocnika z huba?",
+  "engineRemoveBody": "Automatyzacje przestaną działać. Reguły zostają na hubie, więc ponowna instalacja pomocnika je przywróci.",
+  "autoNoTargets": "Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania."
 }

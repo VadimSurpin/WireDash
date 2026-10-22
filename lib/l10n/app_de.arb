@@ -1298,5 +1298,9 @@
   "autoDeleted": "(gelöscht)",
   "autoCeilingTitle": "{count} Automationen sind kostenlos. Mehr gewünscht?",
   "autoCeilingBody": "ZigDash ist kostenlos und Open Source, gebaut von einer Person. Pro ist ein Einmalkauf: unbegrenzte Automationen, Verlauf für 7 und 30 Tage und die Extras für Wandtablets. Ihre Automationen laufen weiter, wie auch immer Sie sich entscheiden.",
-  "autoCeilingSeePro": "Pro ansehen"
+  "autoCeilingSeePro": "Pro ansehen",
+  "engineRemove": "Vom Hub entfernen",
+  "engineRemoveTitle": "Den Helfer vom Hub entfernen?",
+  "engineRemoveBody": "Automationen laufen nicht mehr. Ihre Regeln bleiben auf dem Hub, eine Neuinstallation bringt sie zurück.",
+  "autoNoTargets": "Dieses Zuhause hat noch kein Licht, keine Steckdose, keinen Schalter und keinen Rollladen zum Steuern."
 }
