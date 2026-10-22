@@ -1367,5 +1367,6 @@
   "discoverWirenBoardHint": "Les modules détectés sont ajoutés automatiquement à ce tableau de bord. Utilisez + pour les équipements intégrés, ou dépliez un appareil pour choisir ses commandes.",
   "wbOpenControls": "Ouvrir les commandes",
   "wbAddSelected": "Ajouter les propriétés sélectionnées",
-  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau."
+  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau.",
+  "wbZ2mDevices": "Appareils Z2M de Wirenboard"
 }

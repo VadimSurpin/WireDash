@@ -115,6 +115,12 @@ class PanelRepo {
         ),
       );
 
+  /// Reclassify an imported panel while preserving its placement order.
+  Future<void> setSection(String id, String? sectionId) => _dao.updateById(
+    id,
+    PanelsCompanion(sectionId: Value(sectionId), updatedAt: Value(DateTime.now())),
+  );
+
   Future<void> setWidth(String id, PanelWidth width) => _dao.updateById(
         id,
         PanelsCompanion(

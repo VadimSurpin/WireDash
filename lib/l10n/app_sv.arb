@@ -1513,5 +1513,6 @@
   "discoverWirenBoardHint": "Upptäckta moduler läggs automatiskt till på den här kontrollpanelen. Använd + för inbyggda enheter eller expandera en enhet för att välja enskilda kontroller.",
   "wbOpenControls": "Öppna kontroller",
   "wbAddSelected": "Lägg till valda egenskaper",
-  "wbChooseProperties": "Välj egenskaper att lägga till som en panel."
+  "wbChooseProperties": "Välj egenskaper att lägga till som en panel.",
+  "wbZ2mDevices": "Wirenboard Z2M-enheter"
 }

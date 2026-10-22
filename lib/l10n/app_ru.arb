@@ -1513,5 +1513,6 @@
   "wbAutoAdded": "Добавлено модулей: {count}.",
   "wbOpenControls": "Открыть управление",
   "wbAddSelected": "Добавить выбранные свойства",
-  "wbChooseProperties": "Выберите свойства для добавления одной панелью."
+  "wbChooseProperties": "Выберите свойства для добавления одной панелью.",
+  "wbZ2mDevices": "Устройства Z2M Wirenboard"
 }

@@ -1513,5 +1513,6 @@
   "discoverWirenBoardHint": "Los módulos detectados se añaden automáticamente a este panel. Usa + para los dispositivos integrados o despliega un dispositivo para elegir controles individuales.",
   "wbOpenControls": "Abrir controles",
   "wbAddSelected": "Añadir propiedades seleccionadas",
-  "wbChooseProperties": "Selecciona las propiedades que quieras añadir como un solo panel."
+  "wbChooseProperties": "Selecciona las propiedades que quieras añadir como un solo panel.",
+  "wbZ2mDevices": "Dispositivos Z2M de Wirenboard"
 }

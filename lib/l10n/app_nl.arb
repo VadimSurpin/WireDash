@@ -1513,5 +1513,6 @@
   "discoverWirenBoardHint": "Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen.",
   "wbOpenControls": "Bediening openen",
   "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
-  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen."
+  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen.",
+  "wbZ2mDevices": "Wirenboard Z2M-apparaten"
 }

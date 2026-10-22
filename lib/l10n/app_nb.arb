@@ -1513,5 +1513,6 @@
   "discoverWirenBoardHint": "Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller.",
   "wbOpenControls": "Åpne kontroller",
   "wbAddSelected": "Legg til valgte egenskaper",
-  "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel."
+  "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel.",
+  "wbZ2mDevices": "Wirenboard Z2M-enheter"
 }

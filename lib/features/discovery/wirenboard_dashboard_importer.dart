@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../panels/models/panel_config.dart';
 import '../settings/providers/settings_controller.dart';
 import 'models/wirenboard_device.dart';
+import 'wirenboard_device_groups.dart';
 
 /// Serializes imports and recognizes existing whole-device tiles by MQTT ID.
 /// Replayed retained batches update cached metadata without duplicating tiles.
@@ -29,6 +30,7 @@ class WirenBoardDashboardImporter {
   final SectionRepo _sections;
   final AppLocalizations _l10n;
   Future<void> _pending = Future.value();
+  final _sectionGroups = wirenBoardSectionGroups();
 
   Future<int> importDevices(
     List<WirenBoardDevice> devices, {
@@ -73,6 +75,7 @@ class WirenBoardDashboardImporter {
         topicPrefixOverride: '/devices/${device.id}',
         width: PanelWidth.wide,
         sortOrder: next,
+        sectionId: await _sectionFor(device.group),
         config: WirenBoardDeviceConfig(device: device, controlIds: ids),
       );
     });
@@ -83,23 +86,45 @@ class WirenBoardDashboardImporter {
     return operation;
   }
 
+  Future<String> _sectionFor(WirenBoardDeviceGroup group) async {
+    final sections = await _sections.getByDashboard(_dashboardId);
+    final existing = sections
+        .where((s) => _sectionGroups[s.name] == group)
+        .firstOrNull;
+    if (existing != null) return existing.id;
+    return _sections.create(
+      dashboardId: _dashboardId,
+      name: wirenBoardGroupLabel(group, _l10n),
+      sortOrder: sections.fold<int>(
+        0,
+        (n, s) => s.sortOrder >= n ? s.sortOrder + 1 : n,
+      ),
+    );
+  }
+
   Future<int> _import(
     List<WirenBoardDevice> devices,
     bool includeBuiltins, {
     Map<String, String> labels = const {},
   }) async {
     final tiles = await _panels.getByDashboard(_dashboardId);
-    final existing = <String, Panel>{};
+    final existing =
+        <String, List<({Panel tile, WirenBoardDeviceConfig config})>>{};
     for (final tile in tiles) {
       if (tile.type != PanelType.device) continue;
       final config = PanelConfig.decode(tile.type, tile.config);
-      if (config is WirenBoardDeviceConfig && config.controlIds == null) {
-        existing[config.device.id] = tile;
+      if (config is WirenBoardDeviceConfig) {
+        (existing[config.device.id] ??= []).add((tile: tile, config: config));
       }
     }
     final sections = await _sections.getByDashboard(_dashboardId);
+    final managedIds = {
+      for (final s in sections)
+        if (_sectionGroups.containsKey(s.name)) s.id,
+    };
     final sectionIds = {
-      for (final section in sections) section.name: section.id,
+      for (final s in sections)
+        if (_sectionGroups[s.name] case final group?) group: s.id,
     };
     var nextSection = sections.fold<int>(
       0,
@@ -109,17 +134,49 @@ class WirenBoardDashboardImporter {
       0,
       (n, p) => p.sortOrder >= n ? p.sortOrder + 1 : n,
     );
+    Future<String> sectionFor(WirenBoardDeviceGroup group) async {
+      if (sectionIds[group] case final id?) return id;
+      final id = await _sections.create(
+        dashboardId: _dashboardId,
+        name: wirenBoardGroupLabel(group, _l10n),
+        sortOrder: nextSection++,
+      );
+      sectionIds[group] = id;
+      managedIds.add(id);
+      return id;
+    }
+
     var added = 0;
     final unique = {for (final device in devices) device.id: device};
     for (final device in unique.values) {
-      if (device.isControllerBuiltin && !includeBuiltins) continue;
-      final config = WirenBoardDeviceConfig(device: device);
-      final tile = existing[device.id];
-      if (tile != null) {
-        if (tile.config != config.encode() || labels.containsKey(device.id)) {
+      final previous = existing[device.id] ?? const [];
+      final whole = previous
+          .where((p) => p.config.controlIds == null)
+          .firstOrNull;
+      final create =
+          whole == null && (!device.isControllerBuiltin || includeBuiltins);
+      if (previous.isEmpty && !create) continue;
+      final needsSection =
+          create ||
+          previous.any(
+            (p) =>
+                p.tile.sectionId == null ||
+                managedIds.contains(p.tile.sectionId),
+          );
+      final sectionId = needsSection ? await sectionFor(device.group) : null;
+      for (final entry in previous) {
+        final tile = entry.tile;
+        final config = WirenBoardDeviceConfig(
+          device: device,
+          controlIds: entry.config.controlIds,
+        );
+        final name = tile.id == whole?.tile.id
+            ? labels[device.id] ?? tile.name
+            : tile.name;
+        if (tile.config != config.encode() || tile.name != name) {
           await _panels.update(
             id: tile.id,
-            name: labels[device.id] ?? tile.name,
+            name: name,
             topic: tile.topic,
             subscribeTopic: tile.subscribeTopic,
             topicPrefixOverride: tile.topicPrefixOverride,
@@ -129,16 +186,13 @@ class WirenBoardDashboardImporter {
             config: config,
           );
         }
-        continue;
+        // Only automatic or ungrouped panels move; a user's custom section stays.
+        if ((tile.sectionId == null || managedIds.contains(tile.sectionId)) &&
+            tile.sectionId != sectionId) {
+          await _panels.setSection(tile.id, sectionId);
+        }
       }
-      final group = device.isControllerBuiltin
-          ? _l10n.wbControllerBuiltins
-          : _l10n.wbAddedModules;
-      final section = sectionIds[group] ??= await _sections.create(
-        dashboardId: _dashboardId,
-        name: group,
-        sortOrder: nextSection++,
-      );
+      if (!create) continue;
       await _panels.create(
         dashboardId: _dashboardId,
         name:
@@ -150,8 +204,8 @@ class WirenBoardDashboardImporter {
         topicPrefixOverride: '/devices/${device.id}',
         width: PanelWidth.wide,
         sortOrder: nextTile++,
-        sectionId: section,
-        config: config,
+        sectionId: sectionId,
+        config: WirenBoardDeviceConfig(device: device),
       );
       added++;
     }

@@ -1513,5 +1513,6 @@
   "discoverWirenBoardHint": "Wykryte moduły są automatycznie dodawane do tego pulpitu. Użyj + dla urządzeń wbudowanych lub rozwiń urządzenie, aby wybrać poszczególne elementy sterujące.",
   "wbOpenControls": "Otwórz elementy sterujące",
   "wbAddSelected": "Dodaj wybrane właściwości",
-  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel."
+  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel.",
+  "wbZ2mDevices": "Urządzenia Z2M w Wirenboard"
 }

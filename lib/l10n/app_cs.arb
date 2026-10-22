@@ -1293,5 +1293,6 @@
   "discoverWirenBoardHint": "Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky.",
   "wbOpenControls": "Otevřít ovládací prvky",
   "wbAddSelected": "Přidat vybrané vlastnosti",
-  "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel."
+  "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel.",
+  "wbZ2mDevices": "Zařízení Z2M ve Wirenboardu"
 }

@@ -171,7 +171,7 @@ extension SetupDashboard on SetupCreator {
       if (wirenBoardDevices.isNotEmpty) {
         count += await WirenBoardDashboardImporter(dashboardId: dashboardId,
           panels: _panels, sections: _sections, l10n: _l10n)
-          .importDevices(wirenBoardDevices);
+          .importDevices(classifyWirenBoardDevices(wirenBoardDevices, [for (final row in [...selected, ...notSelected]) row.device]));
       }
       // Devices left out on purpose are not "new": only later pairings
       // raise the Devices dot.

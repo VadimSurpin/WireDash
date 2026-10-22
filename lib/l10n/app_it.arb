@@ -1293,5 +1293,6 @@
   "discoverWirenBoardHint": "I moduli rilevati vengono aggiunti automaticamente a questa dashboard. Usa + per i dispositivi integrati oppure espandi un dispositivo per scegliere i singoli controlli.",
   "wbOpenControls": "Apri controlli",
   "wbAddSelected": "Aggiungi proprietà selezionate",
-  "wbChooseProperties": "Seleziona le proprietà da aggiungere come un unico pannello."
+  "wbChooseProperties": "Seleziona le proprietà da aggiungere come un unico pannello.",
+  "wbZ2mDevices": "Dispositivi Z2M di Wirenboard"
 }
