@@ -62,6 +62,24 @@ void main() {
       expect(s.sameMachine, isFalse);
     });
 
+    // 2.10.4: the phone cannot use such a name; the card says to type the
+    // broker machine's address.
+    test('a bare name is flagged; localhost and an address are not', () {
+      final docker = z2mBrokerSetting({
+        'server': 'mqtt://mosquitto:1883',
+      }, frontendHost: '192.168.1.30')!;
+      expect(docker.bareName, isTrue);
+      expect(docker.sameMachine, isFalse);
+      final local = z2mBrokerSetting({
+        'server': 'mqtt://localhost:1883',
+      }, frontendHost: '192.168.1.30')!;
+      expect(local.bareName, isFalse);
+      final addressed = z2mBrokerSetting({
+        'server': 'mqtt://192.168.1.20:1883',
+      }, frontendHost: '192.168.1.30')!;
+      expect(addressed.bareName, isFalse);
+    });
+
     test('mqtts defaults to 8883 over TLS', () {
       final s = setting('mqtts://broker.lan')!;
       expect(s.port, 8883);

@@ -18,6 +18,7 @@ import 'package:zigdash/features/connections/discovery/hub_probe.dart';
 import 'package:zigdash/features/connections/discovery/no_network.dart';
 import 'package:zigdash/features/discovery/models/z2m_device.dart';
 import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
+import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
 import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
 import 'package:zigdash/features/onboarding/setup/setup_providers.dart';
@@ -137,6 +138,7 @@ Future<SetupCoordinator> _pump(
   bool vpn = false,
   NoNetwork? noNetwork,
   _FakeReminder? reminder,
+  Z2mBrokerLookup? askZ2m,
 }) async {
   // The setup screens are lists that grew in 2.5 (progress, the platform
   // question); a tall view keeps every action built and tappable.
@@ -163,6 +165,8 @@ Future<SetupCoordinator> _pump(
     creator: _FakeStore(),
     checkAddress: checkAddress,
     networkFacts: () async => (kind: 'wifi', vpn: vpn),
+    askZ2m: askZ2m,
+    probeBroker: askZ2m == null ? null : (host, port) async => null,
   );
   addTearDown(coordinator.dispose);
   await tester.pumpWidget(
@@ -946,6 +950,50 @@ void main() {
       expect(find.text('Create dashboard with 2'), findsOneWidget);
     },
   );
+
+  // 2.10.4: Zigbee2MQTT names its broker by a name only its machine knows.
+  testWidgets('a broker name the phone cannot use: card, manual entry with '
+      'the port', (tester) async {
+    await _pump(
+      tester,
+      run: (ip, hubs) => ScanRun(
+        events: Stream.fromIterable([
+          const HubSeen(
+            HubFound(
+              kind: HubKind.zigbee2mqtt,
+              host: '192.168.1.30',
+              port: 8080,
+            ),
+          ),
+        ]),
+        addHub: (_) {},
+      ),
+      askZ2m: (host, port) async => z2mBrokerSetting({
+        'server': 'mqtt://mosquitto:1884',
+      }, frontendHost: host),
+    );
+    await tester.tap(find.text('Find my setup'));
+    for (var i = 0; i < 8; i++) {
+      await tester.pump();
+    }
+    expect(find.textContaining("a name your phone can't use"), findsOneWidget);
+    // The name is wrapped in direction marks; match around it.
+    expect(find.textContaining('is a name only Zigbee2MQTT'), findsOneWidget);
+    expect(find.textContaining('with port 1884'), findsOneWidget);
+    // The card's own button, not the general manual-entry one below it.
+    final card = find
+        .ancestor(
+          of: find.textContaining('is a name only Zigbee2MQTT'),
+          matching: find.byType(Column),
+        )
+        .first;
+    await tester.tap(
+      find.descendant(of: card, matching: find.text('Enter details manually')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.textContaining('manual entry'), findsOneWidget);
+    expect(find.textContaining('port=1884'), findsOneWidget);
+  });
 
   // 2.10.2: a list with nothing preselected (only "other" or unsupported
   // devices) says so and still creates the home, with an empty dashboard.

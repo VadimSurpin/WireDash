@@ -1395,6 +1395,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Questo è il tuo hub SMLIGHT, ma il suo broker MQTT non accetta connessioni da altri dispositivi. Nella pagina web dell\'hub apri Settings › MQTT, attiva Allow External, salva e riprova.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'A questo indirizzo gira Zigbee2MQTT, ma raggiunge il suo broker con un altro nome (vedi Zigbee2MQTT › Settings › MQTT › Server). Se è un\'altra macchina, scrivi il suo indirizzo, di solito con la porta 1883. Se è un container su questa macchina, pubblica la sua porta (ports: \"1883:1883\") e lascialo in ascolto sulla rete, poi riprova.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Zigbee2MQTT gira a questo indirizzo, ma il suo broker MQTT non accetta connessioni da altri dispositivi. Mosquitto ascolta solo sulla propria macchina finché non aggiungi le righe \"listener 1883\" e \"allow_anonymous true\" a mosquitto.conf (o imposti una password). Riavvia Mosquitto e riprova.';
 
@@ -1928,6 +1932,19 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Preferisci un login all\'accesso libero? Usa un password_file al posto di allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT raggiunge il suo broker con un nome che il tuo telefono non può usare';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT usa $server. \"$name\" è un nome che conosce solo la macchina di Zigbee2MQTT, un servizio Docker o un nome host. Scrivi invece l\'indirizzo IP della macchina del broker con la porta $port. Se il broker gira in un container, la sua porta deve anche essere pubblicata sulla macchina (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'La pagina web di Zigbee2MQTT è protetta da un token, quindi l\'app non ha potuto leggere dove si trova il suo broker. Scrivi l\'indirizzo del broker da Zigbee2MQTT › Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

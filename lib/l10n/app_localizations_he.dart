@@ -1376,6 +1376,10 @@ class AppLocalizationsHe extends AppLocalizations {
       'זה ה‑hub של SMLIGHT שלכם, אבל ברוקר ה‑MQTT שלו לא מקבל חיבורים ממכשירים אחרים. בדף האינטרנט של ה‑hub פתחו Settings › MQTT, הפעילו Allow External, שמרו ונסו שוב.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Zigbee2MQTT רץ בכתובת הזו, אבל מגיע לברוקר שלו דרך שם אחר (ראו Zigbee2MQTT › Settings › MQTT › Server). אם זה מחשב אחר, הקלידו את הכתובת שלו, בדרך כלל עם פורט 1883. אם זה קונטיינר על המחשב הזה, פרסמו את הפורט שלו (ports: \"1883:1883\") ואפשרו לו להאזין לרשת, ואז נסו שוב.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'בכתובת הזו פועל Zigbee2MQTT, אבל ברוקר ה‑MQTT שלו לא מקבל חיבורים ממכשירים אחרים. Mosquitto מאזין רק במחשב שלו עד שמוסיפים לקובץ mosquitto.conf את השורות \"listener 1883\" ו‑\"allow_anonymous true\" (או מגדירים סיסמה). הפעילו מחדש את Mosquitto ונסו שוב.';
 
@@ -1903,6 +1907,19 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'מעדיפים התחברות עם סיסמה במקום גישה פתוחה? השתמשו ב-password_file במקום allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT מגיע לברוקר שלו דרך שם שהטלפון שלכם לא יכול להשתמש בו';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT משתמש ב־$server. \"$name\" הוא שם שרק המחשב של Zigbee2MQTT מכיר, שירות Docker או שם מארח. הקלידו במקומו את כתובת ה־IP של מחשב הברוקר עם פורט $port. אם הברוקר רץ בקונטיינר, הפורט שלו חייב להיות מפורסם גם על המחשב (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'עמוד האינטרנט של Zigbee2MQTT מוגן בטוקן, ולכן האפליקציה לא הצליחה לקרוא היכן הברוקר שלו. הקלידו את כתובת הברוקר מתוך Zigbee2MQTT › Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

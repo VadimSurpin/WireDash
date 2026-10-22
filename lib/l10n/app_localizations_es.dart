@@ -1396,6 +1396,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Este es tu hub SMLIGHT, pero su broker MQTT no acepta conexiones de otros dispositivos. En la página web del hub, abre Settings › MQTT, activa Allow External, guarda y vuelve a intentarlo.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'En esta dirección corre Zigbee2MQTT, pero llega a su broker con otro nombre (ver Zigbee2MQTT › Settings › MQTT › Server). Si es otra máquina, escribe su dirección, normalmente con el puerto 1883. Si es un contenedor en esta máquina, publica su puerto (ports: \"1883:1883\") y deja que escuche en la red; luego vuelve a intentarlo.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'En esta dirección funciona Zigbee2MQTT, pero su broker MQTT no acepta conexiones de otros dispositivos. Mosquitto solo escucha en su propia máquina hasta que añades las líneas \"listener 1883\" y \"allow_anonymous true\" a mosquitto.conf (o configuras una contraseña). Reinicia Mosquitto y vuelve a intentarlo.';
 
@@ -1930,6 +1934,19 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       '¿Prefieres usuario y contraseña en lugar de acceso abierto? Usa un password_file en vez de allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT llega a su broker por un nombre que tu teléfono no puede usar';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT usa $server. \"$name\" es un nombre que solo conoce la máquina de Zigbee2MQTT, un servicio de Docker o un nombre de host. Escribe en su lugar la dirección IP de la máquina del broker con el puerto $port. Si el broker corre en un contenedor, su puerto también debe estar publicado en la máquina (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'La página web de Zigbee2MQTT está protegida con un token, así que la app no pudo leer dónde está su broker. Escribe la dirección del broker que aparece en Zigbee2MQTT › Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {

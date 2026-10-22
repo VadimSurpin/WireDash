@@ -12,6 +12,7 @@ class Z2mBrokerSetting {
     required this.tls,
     required this.sameMachine,
     this.user,
+    this.bareName = false,
   });
 
   /// The server as Zigbee2MQTT has it, for the screen: `mqtt://localhost:1883`.
@@ -31,6 +32,17 @@ class Z2mBrokerSetting {
 
   /// The MQTT username Zigbee2MQTT logs in with, if any.
   final String? user;
+
+  /// The server is a bare name (`mosquitto`, `nas`): a Docker service or
+  /// a hostname that only Zigbee2MQTT's machine may know (2.10.4). The
+  /// phone cannot use it; the broker's IP address can be typed instead.
+  final bool bareName;
+}
+
+/// Zigbee2MQTT's web page is protected by a token (`frontend.auth_token`):
+/// it accepts the socket, then closes it with 4401 "Unauthorized" (2.10.4).
+class Z2mPageLocked implements Exception {
+  const Z2mPageLocked();
 }
 
 /// The `mqtt` section of a `bridge/info` frame from Zigbee2MQTT's web API,
@@ -84,6 +96,7 @@ Z2mBrokerSetting? z2mBrokerSetting(
     port: uri.hasPort ? uri.port : (tls ? 8883 : 1883),
     tls: tls,
     sameMachine: same,
+    bareName: maybeSame && !same,
     user: user is String && user.isNotEmpty ? user : null,
   );
 }

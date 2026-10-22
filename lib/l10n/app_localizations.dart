@@ -2598,6 +2598,12 @@ abstract class AppLocalizations {
   /// **'This is your SMLIGHT hub, but its MQTT broker doesn\'t accept connections from other devices. In the hub\'s web page, open Settings › MQTT, turn on Allow External, save, then try again.'**
   String get diagTcpSmlightClosed;
 
+  /// No description provided for @diagTcpZ2mBrokerElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT runs at this address, but it reaches its broker under another name (see Zigbee2MQTT\'s Settings › MQTT › Server). If that is another machine, type its address, usually with port 1883. If it is a container on this machine, publish its port (ports: \"1883:1883\") and let it listen to the network, then try again.'**
+  String get diagTcpZ2mBrokerElsewhere;
+
   /// Broker test: port 1883 refused on a machine serving the Zigbee2MQTT web page (2.9.5). The quoted lines are mosquitto.conf syntax; keep them as is.
   ///
   /// In en, this message translates to:
@@ -3473,6 +3479,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prefer a login over open access? Use a password_file instead of allow_anonymous.'**
   String get setupZ2mLocalOnlyNote;
+
+  /// No description provided for @setupZ2mNameOnlyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT reaches its broker by a name your phone can\'t use'**
+  String get setupZ2mNameOnlyTitle;
+
+  /// No description provided for @setupZ2mNameOnlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT uses {server}. \"{name}\" is a name only Zigbee2MQTT\'s machine knows, a Docker service or a hostname. Type the broker machine\'s IP address with port {port} instead. If the broker runs in a container, its port must also be published on the machine (ports: \"{port}:{port}\").'**
+  String setupZ2mNameOnlyBody(String server, String name, int port);
+
+  /// No description provided for @setupZ2mTokenRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT\'s web page is protected by a token, so the app couldn\'t read where its broker is. Type the broker address from Zigbee2MQTT\'s Settings › MQTT.'**
+  String get setupZ2mTokenRequired;
 
   /// No description provided for @setupZ2mUnreachable.
   ///

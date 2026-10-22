@@ -6,7 +6,9 @@ import 'z2m_frontend.dart';
 /// Reads the `mqtt` settings from Zigbee2MQTT's web API at `ws://host:port/api`.
 /// Zigbee2MQTT sends `bridge/info` among its first frames on connect; the
 /// socket closes as soon as it arrives. Null when nothing answers in
-/// [timeout], or the page wants its own token (it closes the socket then).
+/// [timeout]. Throws [Z2mPageLocked] when the page wants its own token: it
+/// accepts the socket, then closes it with 4401 (2.10.4; before, that
+/// counted as no answer).
 Future<Map<String, dynamic>?> fetchZ2mMqttConfig(
   String host,
   int port, {
@@ -15,11 +17,15 @@ Future<Map<String, dynamic>?> fetchZ2mMqttConfig(
   WebSocket? socket;
   try {
     socket = await WebSocket.connect('ws://$host:$port/api').timeout(timeout);
-    return await socket
+    final mqtt = await socket
         .where((frame) => frame is String)
         .map((frame) => z2mMqttConfigOf(frame as String))
         .firstWhere((mqtt) => mqtt != null, orElse: () => null)
         .timeout(timeout);
+    if (mqtt == null && socket.closeCode == 4401) throw const Z2mPageLocked();
+    return mqtt;
+  } on Z2mPageLocked {
+    rethrow;
   } catch (_) {
     return null;
   } finally {

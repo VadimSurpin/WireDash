@@ -92,6 +92,13 @@ class SetupScreen extends ConsumerWidget {
       context.push(Routes.guidedConnectTo(hub.host, 1883));
     }
 
+    // 2.10.4: manual entry with the port Zigbee2MQTT's page named, the
+    // address left for the user (the page named a host only it knows).
+    void manualPort(int port) {
+      ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.manual));
+      context.push(Routes.guidedConnectTo('', port));
+    }
+
     // 2.9.6: a choice on the empty result, counted before it acts.
     void emptyChoice(ScanEmptyChoice choice) => ref
         .read(analyticsProvider)
@@ -143,6 +150,7 @@ class SetupScreen extends ConsumerWidget {
             onChoice: emptyChoice,
             onManual: manual,
             onManualTo: manualTo,
+            onManualPort: manualPort,
             onDemo: tryDemo,
             onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
           ),
@@ -510,6 +518,7 @@ class _ScanEmpty extends StatelessWidget {
     required this.onCheckAddress,
     required this.onChoice,
     required this.onManualTo,
+    required this.onManualPort,
     required this.onDemo,
     required this.onConnectViaHa,
   });
@@ -520,6 +529,9 @@ class _ScanEmpty extends StatelessWidget {
   final ValueChanged<ScanEmptyChoice> onChoice;
   final VoidCallback onManual;
   final ValueChanged<HubFound> onManualTo;
+
+  /// Manual entry with a port filled in (2.10.4).
+  final ValueChanged<int> onManualPort;
   final VoidCallback onDemo;
 
   /// Connect through Home Assistant (2.10), with the Home Assistant the
@@ -596,6 +608,7 @@ class _ScanEmpty extends StatelessWidget {
         // Once Zigbee2MQTT has said where its broker is (2.7.2), its answer
         // replaces the general guess.
         if (state.z2m?.status != Z2mAnswerStatus.localOnly &&
+            state.z2m?.status != Z2mAnswerStatus.nameOnly &&
             state.z2m?.status != Z2mAnswerStatus.unreachable)
           Text(body, style: theme.textTheme.bodyLarge),
         // 2.6.6: two of the first users to reach this screen left within
@@ -607,7 +620,7 @@ class _ScanEmpty extends StatelessWidget {
         ],
         if (state.z2m case final z?) ...[
           const SizedBox(height: 12),
-          _Z2mAnswerNote(answer: z),
+          _Z2mAnswerNote(answer: z, onManualPort: onManualPort),
         ],
         const SizedBox(height: 12),
         _SetupGuides(only: guideFor),
@@ -847,8 +860,9 @@ class _EmptyChoicesState extends State<_EmptyChoices> {
 /// broker that listens only on its own machine (with the lines that open
 /// it), or one that did not answer where Zigbee2MQTT uses it.
 class _Z2mAnswerNote extends StatelessWidget {
-  const _Z2mAnswerNote({required this.answer});
+  const _Z2mAnswerNote({required this.answer, required this.onManualPort});
   final Z2mAnswer answer;
+  final ValueChanged<int> onManualPort;
 
   @override
   Widget build(BuildContext context) {
@@ -912,8 +926,51 @@ class _Z2mAnswerNote extends StatelessWidget {
           ],
         ),
       ),
+      // 2.10.4: a name only Zigbee2MQTT's machine knows (a Docker service,
+      // a hostname): the phone needs the broker machine's address instead.
+      Z2mAnswerStatus.nameOnly => Builder(
+        builder: (context) {
+          final uri = Uri.tryParse(answer.server);
+          final name = uri?.host ?? answer.server;
+          final port = (uri?.hasPort ?? false) ? uri!.port : 1883;
+          return Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: scheme.tertiaryContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.setupZ2mNameOnlyTitle,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: scheme.onTertiaryContainer,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.setupZ2mNameOnlyBody(server, ltr(name), port),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onTertiaryContainer,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                FilledButton.tonal(
+                  onPressed: () => onManualPort(port),
+                  child: Text(l10n.setupManualEntry),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
       Z2mAnswerStatus.unreachable => Text(
         l10n.setupZ2mUnreachable(server),
+        style: theme.textTheme.bodyMedium,
+      ),
+      Z2mAnswerStatus.tokenRequired => Text(
+        l10n.setupZ2mTokenRequired,
         style: theme.textTheme.bodyMedium,
       ),
       Z2mAnswerStatus.broker ||

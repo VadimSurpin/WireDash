@@ -85,7 +85,9 @@ enum SetupStepKind {
   manualTest,
 
   /// Zigbee2MQTT's web page asked where its broker is (2.7.2), with its
-  /// [SetupStep.result]: broker, local_only, unreachable or no_answer.
+  /// [SetupStep.result]: broker, local_only, unreachable or no_answer;
+  /// from 2.10.4 also name_only (a name only that machine knows) and
+  /// token_required (the page is protected by a token).
   z2mAsked,
 
   /// One of the three choices on the empty result (2.9.6), with its
@@ -138,7 +140,21 @@ enum ManualTestResult {
   haLogin,
   smlightClosed,
   z2mNoBroker,
+
+  /// A Zigbee2MQTT machine whose own settings name the broker elsewhere
+  /// (2.10.4): another machine, or a container on this one.
+  z2mBrokerElsewhere,
 }
+
+/// The port typed on the broker form, as a class (2.10.4): the MQTT
+/// ports, a web port (the Zigbee2MQTT page's, Home Assistant's), or other.
+/// Never the address.
+String portClassOf(int port) => switch (port) {
+  1883 => '1883',
+  8883 => '8883',
+  80 || 443 || 8080 || 8081 || 8099 || 8123 || 8443 => 'web',
+  _ => 'other',
+};
 
 /// Each step of first-run setup: where people get stuck. An empty scan
 /// (2.5) also says what the scan saw: the user's platform answer, the hub
@@ -166,6 +182,7 @@ class SetupStep extends AnalyticsEvent {
     this.noNetwork,
     this.choice,
     this.selected,
+    this.portClass,
   });
 
   final SetupStepKind step;
@@ -215,6 +232,10 @@ class SetupStep extends AnalyticsEvent {
   /// Whether the broker form cleaned up what was typed (a pasted browser
   /// link, a web port), on [SetupStepKind.manualTest].
   final bool? tidied;
+
+  /// The class of the port typed ([portClassOf]), on
+  /// [SetupStepKind.manualTest] (2.10.4).
+  final String? portClass;
   final int? hostsTried;
   final bool? widened;
 
@@ -272,6 +293,7 @@ class SetupStep extends AnalyticsEvent {
     if (network != null) 'net': networkLabel(network!),
     if (result != null) 'result': _snake(result!.name),
     if (tidied != null) 'tidied': tidied! ? 'yes' : 'no',
+    if (portClass != null) 'port': portClass!,
     if (noNetwork != null) 'why': _snake(noNetwork!.name),
     if (choice != null) 'choice': _snake(choice!.name),
   };

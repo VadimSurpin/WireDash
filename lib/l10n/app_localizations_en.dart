@@ -1386,6 +1386,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This is your SMLIGHT hub, but its MQTT broker doesn\'t accept connections from other devices. In the hub\'s web page, open Settings › MQTT, turn on Allow External, save, then try again.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Zigbee2MQTT runs at this address, but it reaches its broker under another name (see Zigbee2MQTT\'s Settings › MQTT › Server). If that is another machine, type its address, usually with port 1883. If it is a container on this machine, publish its port (ports: \"1883:1883\") and let it listen to the network, then try again.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Zigbee2MQTT runs at this address, but its MQTT broker doesn\'t accept connections from other devices. Mosquitto listens only on its own machine until you add the lines \"listener 1883\" and \"allow_anonymous true\" to mosquitto.conf (or set up a password). Restart Mosquitto, then try again.';
 
@@ -1919,6 +1923,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Prefer a login over open access? Use a password_file instead of allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT reaches its broker by a name your phone can\'t use';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT uses $server. \"$name\" is a name only Zigbee2MQTT\'s machine knows, a Docker service or a hostname. Type the broker machine\'s IP address with port $port instead. If the broker runs in a container, its port must also be published on the machine (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Zigbee2MQTT\'s web page is protected by a token, so the app couldn\'t read where its broker is. Type the broker address from Zigbee2MQTT\'s Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {
