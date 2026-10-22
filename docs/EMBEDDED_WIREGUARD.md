@@ -9,7 +9,7 @@ existing MQTT broker and WireGuard peer still need to be running.
 1. Create a dedicated WireGuard peer for ZigDash on your router or VPN server.
    Do not reuse a configuration currently active on another device or VPN app:
    the server would keep moving that peer's endpoint between the two clients.
-2. Open the home's connection settings and expand **WireGuard settings**.
+2. Open the home's connection settings. WireGuard settings are visible and disabled by default; enable them to edit the configuration.
 3. Enable **Use embedded WireGuard**, then import its `.conf` file or paste it.
    The eye button shows a saved configuration for editing; the hidden field
    is read-only so Android cannot flatten a pasted multi-line configuration.
@@ -98,7 +98,7 @@ broker: import, Test connection, subscribe/publish, switch Wi-Fi/mobile data,
 background/resume, use a shortcut while connected, and disable/re-enable the
 option. Also confirm your separately installed system VPN still works.
 
-The welcome screen also offers **Connect through WireGuard** on Android. The
+The welcome screen also offers **Enter details manually** on Android. The
 initial manual connection form includes the same import/paste fields as the
 connection editor. Validation messages and fields are translated in every
 supported app language.

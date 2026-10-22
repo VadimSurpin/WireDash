@@ -449,44 +449,44 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               ),
               const SizedBox(height: 4),
             ],
-            if (!_viaHa) WireGuardFields(
-              controller: _wireGuard,
-              enabled: _useWireGuard,
-              busy: _saving || _testing,
-              onChanged: (value) => setState(() => _transport = value
-                  ? ConnectionTransport.wireGuard : ConnectionTransport.mqtt),
+            if (!_viaHa)
+              WireGuardFields(
+                controller: _wireGuard,
+                enabled: _useWireGuard,
+                busy: _saving || _testing,
+                showDisabledFields: true,
+                onChanged: (value) => setState(
+                  () => _transport = value
+                      ? ConnectionTransport.wireGuard
+                      : ConnectionTransport.mqtt,
+                ),
+              ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _remoteHost,
+              decoration: InputDecoration(
+                labelText: _viaHa
+                    ? context.l10n.haHomeRemote
+                    : context.l10n.connRemoteHost,
+                hintText: _viaHa
+                    ? 'https://xyz.ui.nabu.casa'
+                    : context.l10n.connRemoteHostHint,
+              ),
             ),
-            ExpansionTile(
-              tilePadding: EdgeInsets.zero,
-              title: Text(context.l10n.advanced),
-              children: [
-                TextFormField(
-                  controller: _remoteHost,
-                  decoration: InputDecoration(
-                    labelText: _viaHa
-                        ? context.l10n.haHomeRemote
-                        : context.l10n.connRemoteHost,
-                    hintText: _viaHa
-                        ? 'https://xyz.ui.nabu.casa'
-                        : context.l10n.connRemoteHostHint,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _keepAlive,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: context.l10n.connKeepAlive,
-                  ),
-                  validator: (v) {
-                    final n = int.tryParse(v ?? '');
-                    if (n == null || n < 5 || n > 3600) {
-                      return context.l10n.connKeepAliveRange;
-                    }
-                    return null;
-                  },
-                ),
-              ],
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _keepAlive,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: context.l10n.connKeepAlive,
+              ),
+              validator: (v) {
+                final n = int.tryParse(v ?? '');
+                if (n == null || n < 5 || n > 3600) {
+                  return context.l10n.connKeepAliveRange;
+                }
+                return null;
+              },
             ),
           ],
         ),
