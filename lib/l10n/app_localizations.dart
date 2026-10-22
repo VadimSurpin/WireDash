@@ -7709,6 +7709,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remote control is on for {home}'**
   String remotePairDone(Object home);
+
+  /// No description provided for @remoteReconnectHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect the hub'**
+  String get remoteReconnectHub;
+
+  /// No description provided for @remoteTurnOffConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone leaves remote control and your hub disconnects from the relay. A key backup saved from this phone stops working; other phones keep their access until you remove them.'**
+  String get remoteTurnOffConfirm;
 }
 
 class _AppLocalizationsDelegate

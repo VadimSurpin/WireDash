@@ -1274,5 +1274,7 @@
   "remotePairBody": "Quel domicile est-ce ? ZigDash garde l'accès à distance pour lui.",
   "remotePairNoHomes": "Configurez d'abord ce domicile sur ce téléphone, à la maison. Puis scannez à nouveau le code.",
   "remotePairInvalid": "Ce code n'est pas un code de contrôle à distance ZigDash, ou il a été coupé.",
-  "remotePairDone": "Contrôle à distance activé pour {home}"
+  "remotePairDone": "Contrôle à distance activé pour {home}",
+  "remoteReconnectHub": "Reconnecter le hub",
+  "remoteTurnOffConfirm": "Ce téléphone quitte le contrôle à distance et votre hub se déconnecte du relais. Une sauvegarde de clé enregistrée depuis ce téléphone ne fonctionne plus ; les autres téléphones gardent leur accès jusqu'à ce que vous les retiriez."
 }

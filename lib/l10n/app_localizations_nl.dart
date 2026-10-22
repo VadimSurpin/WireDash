@@ -4373,4 +4373,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Bediening op afstand staat aan voor $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Hub opnieuw verbinden';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Deze telefoon stopt met bediening op afstand en je hub verbreekt de verbinding met de relay. Een sleutelback-up van deze telefoon werkt dan niet meer; andere telefoons houden hun toegang tot je ze verwijdert.';
 }

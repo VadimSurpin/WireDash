@@ -4360,4 +4360,11 @@ class AppLocalizationsNb extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Fjernstyring er på for $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Koble til huben igjen';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Denne telefonen forlater fjernstyringen, og huben kobles fra reléet. En nøkkelsikkerhetskopi lagret fra denne telefonen slutter å virke; andre telefoner beholder tilgangen til du fjerner dem.';
 }

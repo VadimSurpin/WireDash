@@ -199,6 +199,17 @@ export function createVerifier(env = process.env) {
       return send(res, 200, { homeId, hub: { url: cfg.hubUrl, username: `hub-${homeId}`, password: hubPassword }, phone });
     }
 
+    // A paired phone renews the hub's login, to hand it to a hub that lost it
+    // (remote turned off on the hub only, or the Engine reinstalled).
+    if (req.method === 'POST' && parts[0] === 'v1' && parts[1] === 'homes' && parts[2] && parts[3] === 'hub' && parts.length === 4) {
+      const homeId = parts[2];
+      if (!phoneOf(req, homeId)) return send(res, 401, { error: 'not a phone of this home' });
+      const hubPassword = secret();
+      try { await createClient(`hub-${homeId}`, hubPassword, homeId); } catch { /* exists */ }
+      await setPassword(`hub-${homeId}`, hubPassword);
+      return send(res, 200, { hub: { url: cfg.hubUrl, username: `hub-${homeId}`, password: hubPassword } });
+    }
+
     if (parts[0] === 'v1' && parts[1] === 'homes' && parts[2] && parts[3] === 'phones') {
       const homeId = parts[2];
       const me = phoneOf(req, homeId);

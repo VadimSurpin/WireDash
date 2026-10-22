@@ -4384,4 +4384,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Fernsteuerung ist an für $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Hub neu verbinden';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Dieses Telefon verlässt die Fernsteuerung, und Ihr Hub trennt sich vom Relay. Ein von diesem Telefon gespeichertes Schlüssel-Backup funktioniert dann nicht mehr; andere Telefone behalten ihren Zugang, bis Sie sie entfernen.';
 }

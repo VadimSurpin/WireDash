@@ -4392,4 +4392,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Contrôle à distance activé pour $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Reconnecter le hub';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Ce téléphone quitte le contrôle à distance et votre hub se déconnecte du relais. Une sauvegarde de clé enregistrée depuis ce téléphone ne fonctionne plus ; les autres téléphones gardent leur accès jusqu\'à ce que vous les retiriez.';
 }

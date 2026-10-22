@@ -4318,4 +4318,11 @@ class AppLocalizationsHe extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'שליטה מרחוק פעילה עבור $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'חיבור הרכזת מחדש';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'הטלפון הזה יוצא מהשליטה מרחוק והרכזת מתנתקת מהממסר. גיבוי מפתח שנשמר מהטלפון הזה יפסיק לעבוד; טלפונים אחרים שומרים על הגישה עד שמסירים אותם.';
 }

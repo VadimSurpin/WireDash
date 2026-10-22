@@ -1349,5 +1349,7 @@
   "remotePairBody": "¿Qué hogar es este? ZigDash guarda el acceso remoto para él.",
   "remotePairNoHomes": "Configura primero este hogar en este teléfono, en casa. Luego escanea el código otra vez.",
   "remotePairInvalid": "Este código no es de control remoto de ZigDash, o se cortó.",
-  "remotePairDone": "Control remoto activado para {home}"
+  "remotePairDone": "Control remoto activado para {home}",
+  "remoteReconnectHub": "Volver a conectar el hub",
+  "remoteTurnOffConfirm": "Este teléfono deja el control remoto y tu hub se desconecta del relé. Una copia de clave guardada desde este teléfono deja de funcionar; los demás teléfonos conservan su acceso hasta que los quites."
 }

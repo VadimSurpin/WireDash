@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 
 import '../features/pro/pro.dart' show proPurchaseToken;
+import '../mqtt/endpoint.dart';
 import '../mqtt/mqtt_manager.dart';
 import '../mqtt/providers/mqtt_manager_provider.dart';
 import 'remote_home.dart';
@@ -69,7 +70,7 @@ class RemoteSetup {
   /// its own login and the key.
   Future<RemoteSetupResult> setUp(String connectionId) async {
     final mgr = await _managerOf(connectionId);
-    if (!mgr.isConnected) return RemoteSetupResult.notAtHome;
+    if (!mgr.isConnected || mgr.activeEndpoint == MqttEndpoint.relay) return RemoteSetupResult.notAtHome;
     final token = await _purchaseToken() ?? (relayIsTest && kDebugMode ? 'test-pro-$connectionId' : null);
     if (token == null) return RemoteSetupResult.noPro;
     final (status, body) = await _call('POST', '/v1/homes', body: {'purchaseToken': token});
@@ -121,6 +122,24 @@ class RemoteSetup {
     if (home == null) return false;
     final (status, _) = await _call('DELETE', '/v1/homes/${home.homeId}/phones/$username', auth: home);
     return status == 200;
+  }
+
+  /// At home: a fresh hub login from the relay, handed to ZigDash Engine with
+  /// the Home's existing key, so every paired phone keeps working.
+  Future<RemoteSetupResult> reconnectHub(String connectionId) async {
+    final home = await _store.read(connectionId);
+    if (home == null) return RemoteSetupResult.refused;
+    final mgr = await _managerOf(connectionId);
+    if (!mgr.isConnected || mgr.activeEndpoint != MqttEndpoint.local) return RemoteSetupResult.notAtHome;
+    final (status, body) = await _call('POST', '/v1/homes/${home.homeId}/hub', auth: home);
+    if (status == 0) return RemoteSetupResult.unreachable;
+    final hub = body?['hub'] as Map?;
+    if (status != 200 || hub == null) return RemoteSetupResult.refused;
+    mgr.publish(engineRemoteTopic, jsonEncode({
+      'url': hub['url'], 'homeId': home.homeId, 'username': hub['username'], 'password': hub['password'],
+      'key': base64.encode(home.key),
+    }), '', qos: mc.MqttQos.atLeastOnce);
+    return RemoteSetupResult.ready;
   }
 
   /// Keeps a login brought from another phone (QR code or backup file).

@@ -1264,5 +1264,7 @@
   "remotePairBody": "Která je to domácnost? ZigDash pro ni uloží vzdálený přístup.",
   "remotePairNoHomes": "Nejdřív tuto domácnost nastavte na tomto telefonu, doma. Pak kód naskenujte znovu.",
   "remotePairInvalid": "Tento kód není kód dálkového ovládání ZigDash, nebo byl useknutý.",
-  "remotePairDone": "Dálkové ovládání zapnuto pro {home}"
+  "remotePairDone": "Dálkové ovládání zapnuto pro {home}",
+  "remoteReconnectHub": "Znovu připojit hub",
+  "remoteTurnOffConfirm": "Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete."
 }

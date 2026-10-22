@@ -1349,5 +1349,7 @@
   "remotePairBody": "Hvilket hjem er dette? ZigDash lagrer fjernpåloggingen for det.",
   "remotePairNoHomes": "Sett opp hjemmet på denne telefonen først, hjemme. Skann så koden igjen.",
   "remotePairInvalid": "Koden er ikke en fjernstyringskode fra ZigDash, eller den ble kuttet.",
-  "remotePairDone": "Fjernstyring er på for {home}"
+  "remotePairDone": "Fjernstyring er på for {home}",
+  "remoteReconnectHub": "Koble til huben igjen",
+  "remoteTurnOffConfirm": "Denne telefonen forlater fjernstyringen, og huben kobles fra reléet. En nøkkelsikkerhetskopi lagret fra denne telefonen slutter å virke; andre telefoner beholder tilgangen til du fjerner dem."
 }

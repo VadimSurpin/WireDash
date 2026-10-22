@@ -4361,4 +4361,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Remote control is on for $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Reconnect the hub';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'This phone leaves remote control and your hub disconnects from the relay. A key backup saved from this phone stops working; other phones keep their access until you remove them.';
 }

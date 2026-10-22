@@ -1509,5 +1509,7 @@
   "remotePairNoHomes": "Set this home up on this phone first, at home. Then scan the code again.",
   "remotePairInvalid": "This code isn't a ZigDash remote control code, or it was cut off.",
   "remotePairDone": "Remote control is on for {home}",
-  "@remotePairDone": {"placeholders": {"home": {}}}
+  "@remotePairDone": {"placeholders": {"home": {}}},
+  "remoteReconnectHub": "Reconnect the hub",
+  "remoteTurnOffConfirm": "This phone leaves remote control and your hub disconnects from the relay. A key backup saved from this phone stops working; other phones keep their access until you remove them."
 }

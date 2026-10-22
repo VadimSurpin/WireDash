@@ -4367,4 +4367,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Sterowanie zdalne włączone dla: $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Połącz hub ponownie';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Ten telefon opuszcza sterowanie zdalne, a hub rozłącza się z przekaźnikiem. Kopia klucza zapisana z tego telefonu przestanie działać; inne telefony zachowają dostęp, dopóki ich nie usuniesz.';
 }

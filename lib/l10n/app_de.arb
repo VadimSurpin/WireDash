@@ -1349,5 +1349,7 @@
   "remotePairBody": "Welches Zuhause ist das? ZigDash speichert den Fernzugang dafür.",
   "remotePairNoHomes": "Richten Sie dieses Zuhause zuerst auf diesem Telefon ein, zu Hause. Scannen Sie den Code dann erneut.",
   "remotePairInvalid": "Das ist kein Fernsteuerungs-Code von ZigDash, oder er wurde abgeschnitten.",
-  "remotePairDone": "Fernsteuerung ist an für {home}"
+  "remotePairDone": "Fernsteuerung ist an für {home}",
+  "remoteReconnectHub": "Hub neu verbinden",
+  "remoteTurnOffConfirm": "Dieses Telefon verlässt die Fernsteuerung, und Ihr Hub trennt sich vom Relay. Ein von diesem Telefon gespeichertes Schlüssel-Backup funktioniert dann nicht mehr; andere Telefone behalten ihren Zugang, bis Sie sie entfernen."
 }

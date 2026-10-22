@@ -4361,4 +4361,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Удалённое управление включено: $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Переподключить хаб';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Этот телефон отключится от удалённого управления, а хаб — от ретранслятора. Копия ключа, сохранённая с этого телефона, перестанет работать; другие телефоны сохранят доступ, пока вы их не удалите.';
 }

@@ -49,7 +49,39 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     });
   }
 
+  Future<void> _reconnectHub() async {
+    final l10n = context.l10n;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final r = await ref.read(remoteSetupProvider).reconnectHub(widget.connectionId);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _error = switch (r) {
+        RemoteSetupResult.ready => null,
+        RemoteSetupResult.notAtHome => l10n.remoteNotAtHome,
+        RemoteSetupResult.unreachable => l10n.remoteUnreachable,
+        _ => l10n.remoteRefused,
+      };
+    });
+  }
+
   Future<void> _turnOff() async {
+    final l10n = context.l10n;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.remoteTurnOff),
+        content: Text(l10n.remoteTurnOffConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(l10n.remoteTurnOff)),
+        ],
+      ),
+    );
+    if (yes != true || !mounted) return;
     setState(() => _busy = true);
     await ref.read(remoteSetupProvider).turnOff(widget.connectionId);
     if (!mounted) return;
@@ -82,6 +114,16 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               leading: Icon(engine?.report?.remoteConnected == true ? Icons.cloud_done_outlined : Icons.cloud_off_outlined),
               title: Text(engine?.report?.remoteConnected == true ? l10n.remoteHubOnline : l10n.remoteHubOffline),
             ),
+            if (engine?.report != null && engine!.report!.remoteConnected != true && !viaRelay)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  key: const Key('remote-reconnect-hub'),
+                  onPressed: _busy ? null : _reconnectHub,
+                  icon: const Icon(Icons.sync),
+                  label: Text(l10n.remoteReconnectHub),
+                ),
+              ),
             if (viaRelay)
               ListTile(
                 contentPadding: EdgeInsets.zero,

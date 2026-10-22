@@ -4365,4 +4365,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String remotePairDone(Object home) {
     return 'Dálkové ovládání zapnuto pro $home';
   }
+
+  @override
+  String get remoteReconnectHub => 'Znovu připojit hub';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete.';
 }

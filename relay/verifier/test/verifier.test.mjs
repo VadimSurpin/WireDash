@@ -97,6 +97,18 @@ test('verifier against a real broker', { skip }, async (t) => {
     assert.ok(gone.error, 'a removed phone can no longer connect');
   });
 
+  await t.test('a paired phone renews the hub login; the old one stops working', async () => {
+    const current = await api('POST', '/v1/homes', { purchaseToken: 'test-pro-AAA' });
+    const renewed = await api('POST', `/v1/homes/${H}/hub`, null, current.body.phone);
+    assert.equal(renewed.status, 200);
+    const oldHub = await connect(current.body.hub, 'hub-before');
+    assert.ok(oldHub.error);
+    const newHub = await connect(renewed.body.hub, 'hub-after');
+    assert.ok(!newHub.error);
+    newHub.end(true);
+    assert.equal((await api('POST', `/v1/homes/${H}/hub`, null, { username: 'nobody', password: 'x' })).status, 401);
+  });
+
   await t.test('strangers and other homes are refused', async () => {
     assert.equal((await api('POST', `/v1/homes/${H}/phones`, null, { username: first.body.phone.username, password: 'wrong' })).status, 401);
     const other = await api('POST', '/v1/homes', { purchaseToken: 'test-pro-BBB' });
