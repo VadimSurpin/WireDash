@@ -227,6 +227,9 @@ void main() {
       await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
       expect(_inSheet(find.text('12.30')), findsOneWidget);
+      final row = find.ancestor(of: _inSheet(find.text('Temperature')), matching: find.byType(WirenBoardControlRow));
+      final frame = tester.widget<PanelReliabilityFrame>(find.descendant(of: row, matching: find.byType(PanelReliabilityFrame)));
+      expect(frame.valueLabel, '12.30 °C');
       expect(manager.sent, isEmpty);
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();

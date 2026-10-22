@@ -193,6 +193,17 @@ void main() {
     },
   );
 
+  testWidgets('stale accessibility labels use the formatted value without changing freshness', (tester) async {
+    await tester.pumpWidget(_wrap(PanelType.reading, status: MqttStatus.disconnected,
+      freshness: PanelFreshness.stale, snapshotValue: '1230', panelValue: '1230',
+      config: const ReadingConfig(jsonPath: '', valueExpression: '(Number(value) / 100).toFixed(2)')));
+    await tester.pumpAndSettle();
+    final frame = tester.widget<PanelReliabilityFrame>(find.byType(PanelReliabilityFrame));
+    expect(frame.stale, isTrue);
+    expect(frame.receivedAt, DateTime(2026, 8, 14));
+    expect(frame.valueLabel, '12.30');
+  });
+
   test('every panel type has an intentional reliability policy', () {
     const expected = <PanelType, PanelReliabilityPolicy>{
       PanelType.button: PanelReliabilityPolicy.publishOnly(),

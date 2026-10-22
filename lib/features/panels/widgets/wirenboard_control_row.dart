@@ -309,7 +309,11 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
     return PanelReliabilityFrame(
       stale: snapshot?.freshness == PanelFreshness.stale,
       receivedAt: snapshot?.receivedAt,
-      valueLabel: displayedLabel,
+      valueLabel: displayed.applied
+          ? displayed.value == null
+                ? '—'
+                : '${displayed.text}${control.unit == null ? '' : ' ${control.unit}'}'
+          : wirenBoardValueLabel(context, control, raw),
       controlsEnabled: control.readOnly || config is TextLogConfig || connected,
       child: Container(
         constraints: BoxConstraints(

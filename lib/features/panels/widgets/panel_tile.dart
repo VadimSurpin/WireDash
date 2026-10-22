@@ -10,6 +10,7 @@ import '../../../mqtt/mqtt_status.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../../mqtt/json_path.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
 import '../providers/panel_value_provider.dart';
 import '../../dashboards/edit_mode.dart';
 import 'auto_close_panel.dart';
@@ -366,7 +367,8 @@ class PanelTile extends ConsumerWidget {
         child: PanelReliabilityFrame(
           stale: stale,
           controlsEnabled: controlsEnabled,
-          valueLabel: panelReliabilityValueLabel(config, snapshot?.value),
+          valueLabel: panelReliabilityValueLabel(config, snapshot == null ? null
+              : displayValue(ref, config.valueExpression, snapshot.value).value),
           receivedAt: snapshot?.receivedAt,
           child: widget,
         ),
