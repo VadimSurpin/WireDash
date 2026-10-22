@@ -72,6 +72,10 @@
 
 **Automation** — a rule the user sets so the home acts on its own: when a **trigger** happens (a device changes: motion, a door, a button, a reading past a value; or a time comes: a clock time, sunrise or sunset, on chosen days) and its **conditions** hold (within set hours; another device in a given state), an **action** runs: a **Scene**, one device command, or the same turned off again after a set number of minutes. Acts; never tells: telling is an **Alert**. For Zigbee2MQTT homes without Home Assistant; a home with Home Assistant automates there. Three per Home free, unlimited with Pro. From 3.0.
 
+**Engine** — what runs a Home's Automations, Alerts and Recorder while phones are away. Normally on the hub, inside Zigbee2MQTT, installed by the app; for a Pro Home whose hub cannot run it, on ZigDash's server, with the Home's device states sent there in the clear by choice. A free Home never uses the server. Rules run with the internet down wherever the hub runs them. From 3.0.
+
+**Automations paused** — the state when the Engine has not reported in for over a minute, or stopped itself after repeated crashes: no Automation can run, rules stay editable, and the app says so on the Automations screen and the dashboard. Same pattern as **Alerts paused**. From 3.0.
+
 **Alert** — something the user asked to be told about when it happens at home: a leak, smoke, a door or window opening (optionally only within set hours), or a low battery, for chosen devices in one Home. The hub's Node-RED watches for it; the phone does not. Not a schedule: alerts tell, schedules act. Code: `AlertRule` in the config sent to the hub; UI only says "alert".
 
 **Notification** — what reaches the phone when an alert fires: a ZigDash notification, delivered through Google's push service (encrypted end to end) so it arrives with ZigDash closed; or an ntfy notification for phones without Google services and for people sharing a Home's alerts without ZigDash. Leak and smoke also notify when they clear.
