@@ -3908,4 +3908,304 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get engineConsentFailed =>
       'Zigbee2MQTT n\'a pas accepté le changement ou n\'est pas revenu. Vérifiez le hub et réessayez.';
+
+  @override
+  String get autoValMotion => 'mouvement';
+
+  @override
+  String get autoValNoMotion => 'pas de mouvement';
+
+  @override
+  String get autoValClosed => 'fermé';
+
+  @override
+  String get autoValOpened => 'ouvert';
+
+  @override
+  String get autoValLeak => 'fuite';
+
+  @override
+  String get autoValDry => 'sec';
+
+  @override
+  String get autoValSmoke => 'fumée';
+
+  @override
+  String get autoValNoSmoke => 'pas de fumée';
+
+  @override
+  String get autoValOn => 'allumé';
+
+  @override
+  String get autoValOff => 'éteint';
+
+  @override
+  String get autoValToggle => 'basculer';
+
+  @override
+  String get autoValOpen => 'ouvrir';
+
+  @override
+  String get autoValClose => 'fermer';
+
+  @override
+  String get autoValStop => 'arrêter';
+
+  @override
+  String autoWhenAbove(Object device, Object property, Object value) {
+    return 'Quand $device : $property au-dessus de $value';
+  }
+
+  @override
+  String autoWhenBelow(Object device, Object property, Object value) {
+    return 'Quand $device : $property en dessous de $value';
+  }
+
+  @override
+  String autoWhenDevice(Object device, Object what) {
+    return 'Quand $device : $what';
+  }
+
+  @override
+  String autoAtTime(Object time) {
+    return 'À $time';
+  }
+
+  @override
+  String get autoSunrise => 'lever du soleil';
+
+  @override
+  String get autoSunset => 'coucher du soleil';
+
+  @override
+  String autoAfterSun(Object minutes, Object sun) {
+    return '$minutes min après le $sun';
+  }
+
+  @override
+  String autoBeforeSun(Object minutes, Object sun) {
+    return '$minutes min avant le $sun';
+  }
+
+  @override
+  String autoAtSun(Object sun) {
+    return 'Au $sun';
+  }
+
+  @override
+  String get autoEveryDay => 'tous les jours';
+
+  @override
+  String get autoWeekdays => 'en semaine';
+
+  @override
+  String get autoWeekends => 'le week-end';
+
+  @override
+  String autoBetween(Object from, Object to) {
+    return 'entre $from et $to';
+  }
+
+  @override
+  String autoDeviceIs(Object device, Object value) {
+    return '$device est $value';
+  }
+
+  @override
+  String autoRunScene(Object scene) {
+    return 'Lancer « $scene »';
+  }
+
+  @override
+  String autoSetDevice(Object device, Object state) {
+    return '$device : $state';
+  }
+
+  @override
+  String autoOffAfter(Object action, Object minutes) {
+    return '$action, éteint après $minutes min';
+  }
+
+  @override
+  String get autoErrPickTrigger => 'Choisissez un appareil et ce qu\'il fait.';
+
+  @override
+  String get autoErrValue => 'Saisissez un nombre pour la mesure.';
+
+  @override
+  String get autoErrDays => 'Choisissez au moins un jour.';
+
+  @override
+  String get autoErrTown =>
+      'Indiquez votre ville pour le lever et le coucher du soleil.';
+
+  @override
+  String get autoErrPickAction => 'Choisissez ce qui doit se passer.';
+
+  @override
+  String get autoErrEmptyScene => 'Cette scène n\'a rien à envoyer.';
+
+  @override
+  String get autoErrNotConnected =>
+      'ZigDash n\'est pas connecté à ce domicile. Réessayez à la maison.';
+
+  @override
+  String get autoNewTitle => 'Nouvelle automatisation';
+
+  @override
+  String get autoEditTitle => 'Modifier l\'automatisation';
+
+  @override
+  String get autoName => 'Nom';
+
+  @override
+  String get autoNameHint => 'Ce qu\'elle fait (facultatif)';
+
+  @override
+  String get autoWhen => 'Quand';
+
+  @override
+  String get autoOnlyIf => 'Seulement si';
+
+  @override
+  String get autoThen => 'Alors';
+
+  @override
+  String get autoEnabled => 'Activée';
+
+  @override
+  String get autoDelete => 'Supprimer l\'automatisation';
+
+  @override
+  String get autoSave => 'Enregistrer';
+
+  @override
+  String get autoDeviceChanges => 'Un appareil change';
+
+  @override
+  String get autoTimeComes => 'Une heure arrive';
+
+  @override
+  String get autoDevice => 'Appareil';
+
+  @override
+  String get autoAbove => 'au-dessus de';
+
+  @override
+  String get autoBelow => 'en dessous de';
+
+  @override
+  String get autoClockTime => 'Heure';
+
+  @override
+  String get autoAt => 'À';
+
+  @override
+  String get autoShift => 'Décalage en minutes (négatif = avant)';
+
+  @override
+  String get autoTownNone => 'Aucune ville';
+
+  @override
+  String autoTownIs(Object town) {
+    return 'Heures du soleil pour $town';
+  }
+
+  @override
+  String get autoTownSet => 'Choisir la ville';
+
+  @override
+  String get autoTownChange => 'Changer de ville';
+
+  @override
+  String get autoDays => 'Jours';
+
+  @override
+  String get autoNoConditions =>
+      'Aucune condition. Elle s\'exécute à chaque fois.';
+
+  @override
+  String get autoAddHours => 'Entre deux heures';
+
+  @override
+  String get autoFrom => 'De';
+
+  @override
+  String get autoTo => 'À';
+
+  @override
+  String get autoAddDeviceCondition => 'Un appareil est…';
+
+  @override
+  String get autoRunASceneOption => 'Lancer une scène';
+
+  @override
+  String get autoSetADevice => 'Régler un appareil';
+
+  @override
+  String get autoScene => 'Scène';
+
+  @override
+  String get autoTurnOffAgain => 'Éteindre ensuite';
+
+  @override
+  String get autoStaysAsSet => 'Reste ainsi';
+
+  @override
+  String autoOffAfterMinutes(Object minutes) {
+    return '$minutes minutes après';
+  }
+
+  @override
+  String get autoTownSearch => 'Ville';
+
+  @override
+  String get autoTownWhy =>
+      'Sert seulement au lever et au coucher du soleil. Gardée sur votre hub, jamais votre position.';
+
+  @override
+  String get autoNewButton => 'Nouvelle automatisation';
+
+  @override
+  String get autoEmptyBody =>
+      'Rien ne tourne encore. Touchez Nouvelle automatisation pour créer la première.';
+
+  @override
+  String autoOnlyIfList(Object list) {
+    return 'seulement si $list';
+  }
+
+  @override
+  String get autoEdit => 'Modifier';
+
+  @override
+  String get autoNeverRan => 'jamais exécutée';
+
+  @override
+  String autoRanAt(Object time) {
+    return 'exécutée à $time';
+  }
+
+  @override
+  String autoFreeCount(Object count, Object max) {
+    return '$count automatisations gratuites sur $max';
+  }
+
+  @override
+  String get autoRecentRuns => 'Dernières exécutions';
+
+  @override
+  String get autoDeleted => '(supprimée)';
+
+  @override
+  String autoCeilingTitle(Object count) {
+    return '$count automatisations sont gratuites. Envie de plus ?';
+  }
+
+  @override
+  String get autoCeilingBody =>
+      'ZigDash est gratuit et open source, fait par une seule personne. Pro est un achat unique : automatisations illimitées, historique sur 7 et 30 jours et les extras de tablette murale. Vos automatisations continuent quoi que vous choisissiez.';
+
+  @override
+  String get autoCeilingSeePro => 'Voir Pro';
 }

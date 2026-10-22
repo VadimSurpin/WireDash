@@ -102,6 +102,7 @@ flutter:
     - node-red/alerts-flow.json
     - node-red/history-flow.json
     - hub/zigdash-engine.js
+    - assets/geo/
     - assets/fonts/licenses/
   # Signal type (docs/design/signal-2.0.md §2): bundled subsets, cut by
   # tool/fonts/build_fonts.py. Never fetched at runtime.

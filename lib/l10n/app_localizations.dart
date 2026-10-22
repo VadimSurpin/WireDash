@@ -6887,6 +6887,522 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Zigbee2MQTT didn\'t accept the change or didn\'t come back. Check your hub and try again.'**
   String get engineConsentFailed;
+
+  /// No description provided for @autoValMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'motion'**
+  String get autoValMotion;
+
+  /// No description provided for @autoValNoMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'no motion'**
+  String get autoValNoMotion;
+
+  /// No description provided for @autoValClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'closed'**
+  String get autoValClosed;
+
+  /// No description provided for @autoValOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'opened'**
+  String get autoValOpened;
+
+  /// No description provided for @autoValLeak.
+  ///
+  /// In en, this message translates to:
+  /// **'leak'**
+  String get autoValLeak;
+
+  /// No description provided for @autoValDry.
+  ///
+  /// In en, this message translates to:
+  /// **'dry'**
+  String get autoValDry;
+
+  /// No description provided for @autoValSmoke.
+  ///
+  /// In en, this message translates to:
+  /// **'smoke'**
+  String get autoValSmoke;
+
+  /// No description provided for @autoValNoSmoke.
+  ///
+  /// In en, this message translates to:
+  /// **'no smoke'**
+  String get autoValNoSmoke;
+
+  /// No description provided for @autoValOn.
+  ///
+  /// In en, this message translates to:
+  /// **'on'**
+  String get autoValOn;
+
+  /// No description provided for @autoValOff.
+  ///
+  /// In en, this message translates to:
+  /// **'off'**
+  String get autoValOff;
+
+  /// No description provided for @autoValToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'toggle'**
+  String get autoValToggle;
+
+  /// No description provided for @autoValOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get autoValOpen;
+
+  /// No description provided for @autoValClose.
+  ///
+  /// In en, this message translates to:
+  /// **'close'**
+  String get autoValClose;
+
+  /// No description provided for @autoValStop.
+  ///
+  /// In en, this message translates to:
+  /// **'stop'**
+  String get autoValStop;
+
+  /// No description provided for @autoWhenAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device}: {property} above {value}'**
+  String autoWhenAbove(Object device, Object property, Object value);
+
+  /// No description provided for @autoWhenBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device}: {property} below {value}'**
+  String autoWhenBelow(Object device, Object property, Object value);
+
+  /// No description provided for @autoWhenDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device}: {what}'**
+  String autoWhenDevice(Object device, Object what);
+
+  /// No description provided for @autoAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'At {time}'**
+  String autoAtTime(Object time);
+
+  /// No description provided for @autoSunrise.
+  ///
+  /// In en, this message translates to:
+  /// **'sunrise'**
+  String get autoSunrise;
+
+  /// No description provided for @autoSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'sunset'**
+  String get autoSunset;
+
+  /// No description provided for @autoAfterSun.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min after {sun}'**
+  String autoAfterSun(Object minutes, Object sun);
+
+  /// No description provided for @autoBeforeSun.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before {sun}'**
+  String autoBeforeSun(Object minutes, Object sun);
+
+  /// No description provided for @autoAtSun.
+  ///
+  /// In en, this message translates to:
+  /// **'At {sun}'**
+  String autoAtSun(Object sun);
+
+  /// No description provided for @autoEveryDay.
+  ///
+  /// In en, this message translates to:
+  /// **'every day'**
+  String get autoEveryDay;
+
+  /// No description provided for @autoWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'weekdays'**
+  String get autoWeekdays;
+
+  /// No description provided for @autoWeekends.
+  ///
+  /// In en, this message translates to:
+  /// **'weekends'**
+  String get autoWeekends;
+
+  /// No description provided for @autoBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'between {from} and {to}'**
+  String autoBetween(Object from, Object to);
+
+  /// No description provided for @autoDeviceIs.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is {value}'**
+  String autoDeviceIs(Object device, Object value);
+
+  /// No description provided for @autoRunScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Run “{scene}”'**
+  String autoRunScene(Object scene);
+
+  /// No description provided for @autoSetDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}: {state}'**
+  String autoSetDevice(Object device, Object state);
+
+  /// No description provided for @autoOffAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'{action}, off again after {minutes} min'**
+  String autoOffAfter(Object action, Object minutes);
+
+  /// No description provided for @autoErrPickTrigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a device and what it does.'**
+  String get autoErrPickTrigger;
+
+  /// No description provided for @autoErrValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a number for the reading.'**
+  String get autoErrValue;
+
+  /// No description provided for @autoErrDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one day.'**
+  String get autoErrDays;
+
+  /// No description provided for @autoErrTown.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your town for sunrise and sunset.'**
+  String get autoErrTown;
+
+  /// No description provided for @autoErrPickAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick what should happen.'**
+  String get autoErrPickAction;
+
+  /// No description provided for @autoErrEmptyScene.
+  ///
+  /// In en, this message translates to:
+  /// **'That scene has nothing to send.'**
+  String get autoErrEmptyScene;
+
+  /// No description provided for @autoErrNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash isn\'t connected to this Home. Try again at home.'**
+  String get autoErrNotConnected;
+
+  /// No description provided for @autoNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New automation'**
+  String get autoNewTitle;
+
+  /// No description provided for @autoEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit automation'**
+  String get autoEditTitle;
+
+  /// No description provided for @autoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get autoName;
+
+  /// No description provided for @autoNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What this does (optional)'**
+  String get autoNameHint;
+
+  /// No description provided for @autoWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get autoWhen;
+
+  /// No description provided for @autoOnlyIf.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if'**
+  String get autoOnlyIf;
+
+  /// No description provided for @autoThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Then'**
+  String get autoThen;
+
+  /// No description provided for @autoEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get autoEnabled;
+
+  /// No description provided for @autoDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete automation'**
+  String get autoDelete;
+
+  /// No description provided for @autoSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get autoSave;
+
+  /// No description provided for @autoDeviceChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'A device changes'**
+  String get autoDeviceChanges;
+
+  /// No description provided for @autoTimeComes.
+  ///
+  /// In en, this message translates to:
+  /// **'A time comes'**
+  String get autoTimeComes;
+
+  /// No description provided for @autoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get autoDevice;
+
+  /// No description provided for @autoAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'above'**
+  String get autoAbove;
+
+  /// No description provided for @autoBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'below'**
+  String get autoBelow;
+
+  /// No description provided for @autoClockTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock time'**
+  String get autoClockTime;
+
+  /// No description provided for @autoAt.
+  ///
+  /// In en, this message translates to:
+  /// **'At'**
+  String get autoAt;
+
+  /// No description provided for @autoShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift in minutes (minus is before)'**
+  String get autoShift;
+
+  /// No description provided for @autoTownNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No town set'**
+  String get autoTownNone;
+
+  /// No description provided for @autoTownIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun times for {town}'**
+  String autoTownIs(Object town);
+
+  /// No description provided for @autoTownSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set town'**
+  String get autoTownSet;
+
+  /// No description provided for @autoTownChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change town'**
+  String get autoTownChange;
+
+  /// No description provided for @autoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get autoDays;
+
+  /// No description provided for @autoNoConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'No conditions. It runs every time.'**
+  String get autoNoConditions;
+
+  /// No description provided for @autoAddHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Between hours'**
+  String get autoAddHours;
+
+  /// No description provided for @autoFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get autoFrom;
+
+  /// No description provided for @autoTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get autoTo;
+
+  /// No description provided for @autoAddDeviceCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'A device is…'**
+  String get autoAddDeviceCondition;
+
+  /// No description provided for @autoRunASceneOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a scene'**
+  String get autoRunASceneOption;
+
+  /// No description provided for @autoSetADevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a device'**
+  String get autoSetADevice;
+
+  /// No description provided for @autoScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Scene'**
+  String get autoScene;
+
+  /// No description provided for @autoTurnOffAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off again'**
+  String get autoTurnOffAgain;
+
+  /// No description provided for @autoStaysAsSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays as set'**
+  String get autoStaysAsSet;
+
+  /// No description provided for @autoOffAfterMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes after it ran'**
+  String autoOffAfterMinutes(Object minutes);
+
+  /// No description provided for @autoTownSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Town'**
+  String get autoTownSearch;
+
+  /// No description provided for @autoTownWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Used only for sunrise and sunset. Stored on your hub, never your location.'**
+  String get autoTownWhy;
+
+  /// No description provided for @autoNewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'New automation'**
+  String get autoNewButton;
+
+  /// No description provided for @autoEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing runs yet. Tap New automation to make the first one.'**
+  String get autoEmptyBody;
+
+  /// No description provided for @autoOnlyIfList.
+  ///
+  /// In en, this message translates to:
+  /// **'only if {list}'**
+  String autoOnlyIfList(Object list);
+
+  /// No description provided for @autoEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get autoEdit;
+
+  /// No description provided for @autoNeverRan.
+  ///
+  /// In en, this message translates to:
+  /// **'never ran'**
+  String get autoNeverRan;
+
+  /// No description provided for @autoRanAt.
+  ///
+  /// In en, this message translates to:
+  /// **'ran {time}'**
+  String autoRanAt(Object time);
+
+  /// No description provided for @autoFreeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max} free automations'**
+  String autoFreeCount(Object count, Object max);
+
+  /// No description provided for @autoRecentRuns.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent runs'**
+  String get autoRecentRuns;
+
+  /// No description provided for @autoDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'(deleted)'**
+  String get autoDeleted;
+
+  /// No description provided for @autoCeilingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} automations are free. Want more?'**
+  String autoCeilingTitle(Object count);
+
+  /// No description provided for @autoCeilingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash is free and open source, built by one person. Pro is a one-time purchase: unlimited automations, history for 7 and 30 days and the wall tablet extras. Your automations keep running whatever you choose.'**
+  String get autoCeilingBody;
+
+  /// No description provided for @autoCeilingSeePro.
+  ///
+  /// In en, this message translates to:
+  /// **'See Pro'**
+  String get autoCeilingSeePro;
 }
 
 class _AppLocalizationsDelegate

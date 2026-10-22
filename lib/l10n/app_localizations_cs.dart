@@ -3888,4 +3888,302 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get engineConsentFailed =>
       'Zigbee2MQTT změnu nepřijal nebo se nevrátil. Zkontrolujte hub a zkuste to znovu.';
+
+  @override
+  String get autoValMotion => 'pohyb';
+
+  @override
+  String get autoValNoMotion => 'bez pohybu';
+
+  @override
+  String get autoValClosed => 'zavřeno';
+
+  @override
+  String get autoValOpened => 'otevřeno';
+
+  @override
+  String get autoValLeak => 'únik vody';
+
+  @override
+  String get autoValDry => 'sucho';
+
+  @override
+  String get autoValSmoke => 'kouř';
+
+  @override
+  String get autoValNoSmoke => 'bez kouře';
+
+  @override
+  String get autoValOn => 'zap.';
+
+  @override
+  String get autoValOff => 'vyp.';
+
+  @override
+  String get autoValToggle => 'přepnout';
+
+  @override
+  String get autoValOpen => 'otevřít';
+
+  @override
+  String get autoValClose => 'zavřít';
+
+  @override
+  String get autoValStop => 'zastavit';
+
+  @override
+  String autoWhenAbove(Object device, Object property, Object value) {
+    return 'Když $device: $property nad $value';
+  }
+
+  @override
+  String autoWhenBelow(Object device, Object property, Object value) {
+    return 'Když $device: $property pod $value';
+  }
+
+  @override
+  String autoWhenDevice(Object device, Object what) {
+    return 'Když $device: $what';
+  }
+
+  @override
+  String autoAtTime(Object time) {
+    return 'V $time';
+  }
+
+  @override
+  String get autoSunrise => 'východ slunce';
+
+  @override
+  String get autoSunset => 'západ slunce';
+
+  @override
+  String autoAfterSun(Object minutes, Object sun) {
+    return '$minutes min po: $sun';
+  }
+
+  @override
+  String autoBeforeSun(Object minutes, Object sun) {
+    return '$minutes min před: $sun';
+  }
+
+  @override
+  String autoAtSun(Object sun) {
+    return '$sun';
+  }
+
+  @override
+  String get autoEveryDay => 'každý den';
+
+  @override
+  String get autoWeekdays => 'pracovní dny';
+
+  @override
+  String get autoWeekends => 'víkendy';
+
+  @override
+  String autoBetween(Object from, Object to) {
+    return 'mezi $from a $to';
+  }
+
+  @override
+  String autoDeviceIs(Object device, Object value) {
+    return '$device: $value';
+  }
+
+  @override
+  String autoRunScene(Object scene) {
+    return 'Spustit „$scene“';
+  }
+
+  @override
+  String autoSetDevice(Object device, Object state) {
+    return '$device: $state';
+  }
+
+  @override
+  String autoOffAfter(Object action, Object minutes) {
+    return '$action, po $minutes min zase vypnout';
+  }
+
+  @override
+  String get autoErrPickTrigger => 'Vyberte zařízení a co dělá.';
+
+  @override
+  String get autoErrValue => 'Zadejte číslo pro hodnotu.';
+
+  @override
+  String get autoErrDays => 'Vyberte aspoň jeden den.';
+
+  @override
+  String get autoErrTown => 'Nastavte město pro východ a západ slunce.';
+
+  @override
+  String get autoErrPickAction => 'Vyberte, co se má stát.';
+
+  @override
+  String get autoErrEmptyScene => 'Tato scéna nemá co odeslat.';
+
+  @override
+  String get autoErrNotConnected =>
+      'ZigDash není připojen k této domácnosti. Zkuste to znovu doma.';
+
+  @override
+  String get autoNewTitle => 'Nová automatizace';
+
+  @override
+  String get autoEditTitle => 'Upravit automatizaci';
+
+  @override
+  String get autoName => 'Název';
+
+  @override
+  String get autoNameHint => 'Co dělá (nepovinné)';
+
+  @override
+  String get autoWhen => 'Když';
+
+  @override
+  String get autoOnlyIf => 'Jen pokud';
+
+  @override
+  String get autoThen => 'Pak';
+
+  @override
+  String get autoEnabled => 'Zapnuto';
+
+  @override
+  String get autoDelete => 'Smazat automatizaci';
+
+  @override
+  String get autoSave => 'Uložit';
+
+  @override
+  String get autoDeviceChanges => 'Zařízení se změní';
+
+  @override
+  String get autoTimeComes => 'Přijde čas';
+
+  @override
+  String get autoDevice => 'Zařízení';
+
+  @override
+  String get autoAbove => 'nad';
+
+  @override
+  String get autoBelow => 'pod';
+
+  @override
+  String get autoClockTime => 'Čas';
+
+  @override
+  String get autoAt => 'V';
+
+  @override
+  String get autoShift => 'Posun v minutách (mínus je dříve)';
+
+  @override
+  String get autoTownNone => 'Město není nastaveno';
+
+  @override
+  String autoTownIs(Object town) {
+    return 'Časy slunce pro: $town';
+  }
+
+  @override
+  String get autoTownSet => 'Nastavit město';
+
+  @override
+  String get autoTownChange => 'Změnit město';
+
+  @override
+  String get autoDays => 'Dny';
+
+  @override
+  String get autoNoConditions => 'Bez podmínek. Spustí se pokaždé.';
+
+  @override
+  String get autoAddHours => 'Mezi časy';
+
+  @override
+  String get autoFrom => 'Od';
+
+  @override
+  String get autoTo => 'Do';
+
+  @override
+  String get autoAddDeviceCondition => 'Zařízení je…';
+
+  @override
+  String get autoRunASceneOption => 'Spustit scénu';
+
+  @override
+  String get autoSetADevice => 'Nastavit zařízení';
+
+  @override
+  String get autoScene => 'Scéna';
+
+  @override
+  String get autoTurnOffAgain => 'Zase vypnout';
+
+  @override
+  String get autoStaysAsSet => 'Zůstane tak';
+
+  @override
+  String autoOffAfterMinutes(Object minutes) {
+    return '$minutes minut poté';
+  }
+
+  @override
+  String get autoTownSearch => 'Město';
+
+  @override
+  String get autoTownWhy =>
+      'Jen pro východ a západ slunce. Uloží se na hub, nikdy vaše poloha.';
+
+  @override
+  String get autoNewButton => 'Nová automatizace';
+
+  @override
+  String get autoEmptyBody =>
+      'Zatím nic neběží. Klepněte na Nová automatizace a vytvořte první.';
+
+  @override
+  String autoOnlyIfList(Object list) {
+    return 'jen pokud $list';
+  }
+
+  @override
+  String get autoEdit => 'Upravit';
+
+  @override
+  String get autoNeverRan => 'ještě neběžela';
+
+  @override
+  String autoRanAt(Object time) {
+    return 'běžela v $time';
+  }
+
+  @override
+  String autoFreeCount(Object count, Object max) {
+    return '$count z $max automatizací zdarma';
+  }
+
+  @override
+  String get autoRecentRuns => 'Poslední spuštění';
+
+  @override
+  String get autoDeleted => '(smazána)';
+
+  @override
+  String autoCeilingTitle(Object count) {
+    return 'Zdarma jsou $count automatizace. Chcete víc?';
+  }
+
+  @override
+  String get autoCeilingBody =>
+      'ZigDash je zdarma a s otevřeným kódem, vytváří ho jeden člověk. Pro je jednorázový nákup: neomezené automatizace, historie za 7 a 30 dní a doplňky pro nástěnný tablet. Vaše automatizace poběží dál, ať zvolíte cokoli.';
+
+  @override
+  String get autoCeilingSeePro => 'Zobrazit Pro';
 }

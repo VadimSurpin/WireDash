@@ -3881,4 +3881,302 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get engineConsentFailed =>
       'Zigbee2MQTT tog inte emot ändringen eller kom inte tillbaka. Kontrollera hubben och försök igen.';
+
+  @override
+  String get autoValMotion => 'rörelse';
+
+  @override
+  String get autoValNoMotion => 'ingen rörelse';
+
+  @override
+  String get autoValClosed => 'stängd';
+
+  @override
+  String get autoValOpened => 'öppnad';
+
+  @override
+  String get autoValLeak => 'läcka';
+
+  @override
+  String get autoValDry => 'torrt';
+
+  @override
+  String get autoValSmoke => 'rök';
+
+  @override
+  String get autoValNoSmoke => 'ingen rök';
+
+  @override
+  String get autoValOn => 'på';
+
+  @override
+  String get autoValOff => 'av';
+
+  @override
+  String get autoValToggle => 'växla';
+
+  @override
+  String get autoValOpen => 'öppna';
+
+  @override
+  String get autoValClose => 'stäng';
+
+  @override
+  String get autoValStop => 'stopp';
+
+  @override
+  String autoWhenAbove(Object device, Object property, Object value) {
+    return 'När $device: $property över $value';
+  }
+
+  @override
+  String autoWhenBelow(Object device, Object property, Object value) {
+    return 'När $device: $property under $value';
+  }
+
+  @override
+  String autoWhenDevice(Object device, Object what) {
+    return 'När $device: $what';
+  }
+
+  @override
+  String autoAtTime(Object time) {
+    return 'Kl. $time';
+  }
+
+  @override
+  String get autoSunrise => 'soluppgång';
+
+  @override
+  String get autoSunset => 'solnedgång';
+
+  @override
+  String autoAfterSun(Object minutes, Object sun) {
+    return '$minutes min efter $sun';
+  }
+
+  @override
+  String autoBeforeSun(Object minutes, Object sun) {
+    return '$minutes min före $sun';
+  }
+
+  @override
+  String autoAtSun(Object sun) {
+    return 'Vid $sun';
+  }
+
+  @override
+  String get autoEveryDay => 'varje dag';
+
+  @override
+  String get autoWeekdays => 'vardagar';
+
+  @override
+  String get autoWeekends => 'helger';
+
+  @override
+  String autoBetween(Object from, Object to) {
+    return 'mellan $from och $to';
+  }
+
+  @override
+  String autoDeviceIs(Object device, Object value) {
+    return '$device är $value';
+  }
+
+  @override
+  String autoRunScene(Object scene) {
+    return 'Kör ”$scene”';
+  }
+
+  @override
+  String autoSetDevice(Object device, Object state) {
+    return '$device: $state';
+  }
+
+  @override
+  String autoOffAfter(Object action, Object minutes) {
+    return '$action, av igen efter $minutes min';
+  }
+
+  @override
+  String get autoErrPickTrigger => 'Välj en enhet och vad den gör.';
+
+  @override
+  String get autoErrValue => 'Skriv ett tal för mätvärdet.';
+
+  @override
+  String get autoErrDays => 'Välj minst en dag.';
+
+  @override
+  String get autoErrTown => 'Ange din ort för soluppgång och solnedgång.';
+
+  @override
+  String get autoErrPickAction => 'Välj vad som ska hända.';
+
+  @override
+  String get autoErrEmptyScene => 'Den scenen har inget att skicka.';
+
+  @override
+  String get autoErrNotConnected =>
+      'ZigDash är inte anslutet till det här hemmet. Försök igen hemma.';
+
+  @override
+  String get autoNewTitle => 'Ny automation';
+
+  @override
+  String get autoEditTitle => 'Redigera automation';
+
+  @override
+  String get autoName => 'Namn';
+
+  @override
+  String get autoNameHint => 'Vad den gör (valfritt)';
+
+  @override
+  String get autoWhen => 'När';
+
+  @override
+  String get autoOnlyIf => 'Bara om';
+
+  @override
+  String get autoThen => 'Då';
+
+  @override
+  String get autoEnabled => 'Aktiverad';
+
+  @override
+  String get autoDelete => 'Ta bort automation';
+
+  @override
+  String get autoSave => 'Spara';
+
+  @override
+  String get autoDeviceChanges => 'En enhet ändras';
+
+  @override
+  String get autoTimeComes => 'En tid kommer';
+
+  @override
+  String get autoDevice => 'Enhet';
+
+  @override
+  String get autoAbove => 'över';
+
+  @override
+  String get autoBelow => 'under';
+
+  @override
+  String get autoClockTime => 'Klockslag';
+
+  @override
+  String get autoAt => 'Kl.';
+
+  @override
+  String get autoShift => 'Förskjutning i minuter (minus är före)';
+
+  @override
+  String get autoTownNone => 'Ingen ort angiven';
+
+  @override
+  String autoTownIs(Object town) {
+    return 'Soltider för $town';
+  }
+
+  @override
+  String get autoTownSet => 'Ange ort';
+
+  @override
+  String get autoTownChange => 'Byt ort';
+
+  @override
+  String get autoDays => 'Dagar';
+
+  @override
+  String get autoNoConditions => 'Inga villkor. Körs varje gång.';
+
+  @override
+  String get autoAddHours => 'Mellan klockslag';
+
+  @override
+  String get autoFrom => 'Från';
+
+  @override
+  String get autoTo => 'Till';
+
+  @override
+  String get autoAddDeviceCondition => 'En enhet är…';
+
+  @override
+  String get autoRunASceneOption => 'Kör en scen';
+
+  @override
+  String get autoSetADevice => 'Styr en enhet';
+
+  @override
+  String get autoScene => 'Scen';
+
+  @override
+  String get autoTurnOffAgain => 'Stäng av igen';
+
+  @override
+  String get autoStaysAsSet => 'Förblir så';
+
+  @override
+  String autoOffAfterMinutes(Object minutes) {
+    return '$minutes minuter efteråt';
+  }
+
+  @override
+  String get autoTownSearch => 'Ort';
+
+  @override
+  String get autoTownWhy =>
+      'Används bara för soluppgång och solnedgång. Sparas på hubben, aldrig din plats.';
+
+  @override
+  String get autoNewButton => 'Ny automation';
+
+  @override
+  String get autoEmptyBody =>
+      'Inget körs än. Tryck på Ny automation för att skapa den första.';
+
+  @override
+  String autoOnlyIfList(Object list) {
+    return 'bara om $list';
+  }
+
+  @override
+  String get autoEdit => 'Redigera';
+
+  @override
+  String get autoNeverRan => 'har aldrig körts';
+
+  @override
+  String autoRanAt(Object time) {
+    return 'kördes $time';
+  }
+
+  @override
+  String autoFreeCount(Object count, Object max) {
+    return '$count av $max gratis automationer';
+  }
+
+  @override
+  String get autoRecentRuns => 'Senaste körningar';
+
+  @override
+  String get autoDeleted => '(borttagen)';
+
+  @override
+  String autoCeilingTitle(Object count) {
+    return '$count automationer är gratis. Vill du ha fler?';
+  }
+
+  @override
+  String get autoCeilingBody =>
+      'ZigDash är gratis och öppen källkod, byggt av en person. Pro är ett engångsköp: obegränsade automationer, historik för 7 och 30 dagar och extrafunktionerna för väggplatta. Dina automationer fortsätter köras vad du än väljer.';
+
+  @override
+  String get autoCeilingSeePro => 'Se Pro';
 }

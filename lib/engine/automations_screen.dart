@@ -6,6 +6,12 @@ import '../core/l10n/l10n_ext.dart';
 import '../core/router/routes.dart';
 import '../features/settings/providers/settings_controller.dart' show sharedPreferencesProvider;
 import '../l10n/app_localizations.dart';
+import '../features/pro/pro.dart';
+import '../features/pro/pro_screen.dart';
+import 'automation.dart';
+import 'automation_editor_screen.dart';
+import 'automation_text.dart';
+import 'automations_repo.dart';
 import 'engine_installer.dart';
 import 'engine_providers.dart';
 import 'engine_status.dart';
@@ -85,6 +91,23 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
     ref.invalidate(engineViewProvider(widget.connectionId));
   }
 
+  void _newAutomation() {
+    final count = ref.read(automationsProvider(widget.connectionId)).valueOrNull?.length ?? 0;
+    if (count >= freeAutomations && ref.read(proStatusProvider) != ProStatus.unlocked) {
+      showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        builder: (ctx) => _ProCeilingSheet(onPro: () {
+          Navigator.of(ctx).pop();
+          openPro(context);
+        }),
+      );
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (_) => AutomationEditorScreen(connectionId: widget.connectionId)));
+  }
+
   Future<void> _startAgain() async {
     final installer = await ref.read(engineInstallerProvider(widget.connectionId).future);
     installer.startAgain();
@@ -94,7 +117,16 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final view = ref.watch(engineViewProvider(widget.connectionId));
+    final installed = view.valueOrNull?.installed ?? false;
     return Scaffold(
+      floatingActionButton: installed && _busy == _Busy.none
+          ? FloatingActionButton.extended(
+              key: const Key('auto-new'),
+              onPressed: _newAutomation,
+              icon: const Icon(Icons.add),
+              label: Text(l10n.autoNewButton),
+            )
+          : null,
       appBar: AppBar(
         title: Text(l10n.automationsTitle),
         actions: [
@@ -109,9 +141,10 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => _Message(title: l10n.engineChecking, body: l10n.engineNoConnection),
         data: (v) => ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
             ..._body(context, l10n, v),
+            if (v.installed && _busy == _Busy.none) _AutomationsList(connectionId: widget.connectionId),
             if (_error != null) ...[
               const SizedBox(height: 12),
               Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
@@ -204,10 +237,8 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
       case HubEnginePhase.running:
         final r = v.report;
         return [
-          _Message(
-            title: l10n.engineRunningTitle,
-            body: l10n.engineRunningBody(r?.rulesLoaded ?? 0),
-          ),
+          if ((r?.rulesLoaded ?? 0) == 0)
+            _Message(title: l10n.engineRunningTitle, body: l10n.autoEmptyBody),
           if (v.clockOff) ...[
             const SizedBox(height: 12),
             Text(l10n.engineClockOff, style: TextStyle(color: Theme.of(context).colorScheme.error)),
@@ -321,6 +352,112 @@ class _Alert extends StatelessWidget {
                 if (secondary != null) TextButton(onPressed: onSecondary, child: Text(secondary!)),
               ],
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+/// The Home's Automations and Recent runs (zigdash-3.0.md §1).
+class _AutomationsList extends ConsumerWidget {
+  const _AutomationsList({required this.connectionId});
+  final String connectionId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final ml = MaterialLocalizations.of(context);
+    final theme = Theme.of(context);
+    final rules = ref.watch(automationsProvider(connectionId)).valueOrNull ?? const <Automation>[];
+    final runs = ref.watch(automationRunsProvider(connectionId)).valueOrNull ?? const <AutomationRun>[];
+    final pro = ref.watch(proStatusProvider) == ProStatus.unlocked;
+    String time(DateTime t) => MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(t));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 8),
+        for (final r in rules)
+          Card(
+            key: Key('auto-${r.id}'),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    Expanded(child: Text(r.name, style: theme.textTheme.titleMedium)),
+                    Switch(
+                      value: r.enabled,
+                      onChanged: (on) => ref.read(automationsRepoProvider).save(connectionId, r.copyWith(enabled: on)),
+                    ),
+                  ]),
+                  Opacity(
+                    opacity: r.enabled ? 1 : 0.55,
+                    child: Text(
+                      [
+                        triggerText(l10n, ml, r.trigger),
+                        if (r.conditions.isNotEmpty)
+                          l10n.autoOnlyIfList(r.conditions.map((c) => conditionText(l10n, c)).join(', ')),
+                        actionText(l10n, r.action),
+                      ].join('\n'),
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ),
+                  Row(children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                          builder: (_) => AutomationEditorScreen(connectionId: connectionId, existing: r))),
+                      child: Text(l10n.autoEdit),
+                    ),
+                    const Spacer(),
+                    () {
+                      final last = runs.where((x) => x.id == r.id).firstOrNull;
+                      return Chip(label: Text(last == null ? l10n.autoNeverRan : l10n.autoRanAt(time(last.at))));
+                    }(),
+                  ]),
+                ],
+              ),
+            ),
+          ),
+        if (!pro)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(l10n.autoFreeCount(rules.length, freeAutomations),
+                textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
+          ),
+        if (runs.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Text(l10n.autoRecentRuns.toUpperCase(), style: theme.textTheme.labelLarge),
+          const SizedBox(height: 8),
+          for (final run in runs.take(10))
+            Text('${time(run.at)} · ${rules.where((x) => x.id == run.id).firstOrNull?.name ?? l10n.autoDeleted}'),
+        ],
+      ],
+    );
+  }
+}
+
+class _ProCeilingSheet extends StatelessWidget {
+  const _ProCeilingSheet({required this.onPro});
+  final VoidCallback onPro;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.autoCeilingTitle(freeAutomations), style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            Text(l10n.autoCeilingBody),
+            const SizedBox(height: 16),
+            FilledButton(key: const Key('auto-ceiling-pro'), onPressed: onPro, child: Text(l10n.autoCeilingSeePro)),
           ],
         ),
       ),

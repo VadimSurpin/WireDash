@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zigdash/engine/automations_repo.dart';
 import 'package:zigdash/engine/automations_screen.dart';
 import 'package:zigdash/engine/engine_installer.dart';
 import 'package:zigdash/engine/engine_providers.dart';
@@ -33,6 +34,8 @@ Future<FakeLink> _pump(WidgetTester tester, EngineView view, {Map<String, Object
       engineViewProvider.overrideWith((ref, _) => Stream.value(view)),
       engineInstallerProvider.overrideWith((ref, _) async => EngineInstaller(link, base: 'zigbee2mqtt')),
       engineSourceProvider.overrideWith((ref) async => "const ENGINE_VERSION = '3.0.0';"),
+      automationsProvider.overrideWith((ref, _) => Stream.value(const [])),
+      automationRunsProvider.overrideWith((ref, _) => Stream.value(const [])),
     ],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -106,7 +109,6 @@ void main() {
               stoppedSelf: false, at: DateTime(2026)),
         ));
     expect(find.text('Running on hub'), findsOneWidget);
-    expect(find.textContaining('Rules loaded on the hub: 2'), findsOneWidget);
     expect(find.textContaining('more than five minutes off'), findsOneWidget);
   });
 }
