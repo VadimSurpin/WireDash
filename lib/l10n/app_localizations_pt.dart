@@ -4389,4 +4389,9 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Este celular sai do controle remoto e seu hub se desconecta do relay. Um backup de chave salvo deste celular para de funcionar; os outros celulares mantêm o acesso até você removê-los.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID da casa $id';
+  }
 }

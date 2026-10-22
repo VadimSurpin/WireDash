@@ -4332,4 +4332,9 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'הטלפון הזה יוצא מהשליטה מרחוק והרכזת מתנתקת מהממסר. גיבוי מפתח שנשמר מהטלפון הזה יפסיק לעבוד; טלפונים אחרים שומרים על הגישה עד שמסירים אותם.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'מזהה בית $id';
+  }
 }

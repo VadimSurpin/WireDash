@@ -131,6 +131,9 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 title: Text(l10n.remoteViaRelayNow),
               ),
             RemotePhonesSection(connectionId: widget.connectionId),
+            const SizedBox(height: 8),
+            // Quoted when asking for the relay's data about this Home (privacy policy).
+            SelectableText(l10n.remoteHomeId(home.value!.homeId), style: theme.textTheme.bodySmall),
             const SizedBox(height: 16),
             OutlinedButton(
               key: const Key('remote-off'),

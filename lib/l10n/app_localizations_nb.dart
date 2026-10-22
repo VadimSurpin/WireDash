@@ -4375,4 +4375,9 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Denne telefonen forlater fjernstyringen, og huben kobles fra reléet. En nøkkelsikkerhetskopi lagret fra denne telefonen slutter å virke; andre telefoner beholder tilgangen til du fjerner dem.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'Hjem-ID $id';
+  }
 }

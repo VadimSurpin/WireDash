@@ -1353,5 +1353,6 @@
   "remotePairInvalid": "Koden är ingen fjärrstyrningskod från ZigDash, eller så klipptes den av.",
   "remotePairDone": "Fjärrstyrning är på för {home}",
   "remoteReconnectHub": "Anslut hubben igen",
-  "remoteTurnOffConfirm": "Den här telefonen lämnar fjärrstyrningen och hubben kopplas från reläet. En nyckelbackup sparad från den här telefonen slutar fungera; andra telefoner behåller sin åtkomst tills du tar bort dem."
+  "remoteTurnOffConfirm": "Den här telefonen lämnar fjärrstyrningen och hubben kopplas från reläet. En nyckelbackup sparad från den här telefonen slutar fungera; andra telefoner behåller sin åtkomst tills du tar bort dem.",
+  "remoteHomeId": "Hem-ID {id}"
 }

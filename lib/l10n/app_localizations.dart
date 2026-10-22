@@ -7733,6 +7733,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This phone leaves remote control and your hub disconnects from the relay. A key backup saved from this phone stops working; other phones keep their access until you remove them.'**
   String get remoteTurnOffConfirm;
+
+  /// No description provided for @remoteHomeId.
+  ///
+  /// In en, this message translates to:
+  /// **'Home ID {id}'**
+  String remoteHomeId(Object id);
 }
 
 class _AppLocalizationsDelegate

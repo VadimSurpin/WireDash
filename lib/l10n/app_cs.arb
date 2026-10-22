@@ -1268,5 +1268,6 @@
   "remotePairInvalid": "Tento kód není kód dálkového ovládání ZigDash, nebo byl useknutý.",
   "remotePairDone": "Dálkové ovládání zapnuto pro {home}",
   "remoteReconnectHub": "Znovu připojit hub",
-  "remoteTurnOffConfirm": "Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete."
+  "remoteTurnOffConfirm": "Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete.",
+  "remoteHomeId": "ID domova {id}"
 }

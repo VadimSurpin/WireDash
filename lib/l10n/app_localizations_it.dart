@@ -4394,4 +4394,9 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Questo telefono lascia il controllo remoto e l\'hub si scollega dal relay. Un backup della chiave salvato da questo telefono smette di funzionare; gli altri telefoni mantengono l\'accesso finché non li rimuovi.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID della casa $id';
+  }
 }

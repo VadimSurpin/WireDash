@@ -4407,4 +4407,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Ce téléphone quitte le contrôle à distance et votre hub se déconnecte du relais. Une sauvegarde de clé enregistrée depuis ce téléphone ne fonctionne plus ; les autres téléphones gardent leur accès jusqu\'à ce que vous les retiriez.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID de la maison $id';
+  }
 }

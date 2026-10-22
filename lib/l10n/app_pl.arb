@@ -1348,5 +1348,6 @@
   "remotePairInvalid": "To nie jest kod sterowania zdalnego ZigDash albo został ucięty.",
   "remotePairDone": "Sterowanie zdalne włączone dla: {home}",
   "remoteReconnectHub": "Połącz hub ponownie",
-  "remoteTurnOffConfirm": "Ten telefon opuszcza sterowanie zdalne, a hub rozłącza się z przekaźnikiem. Kopia klucza zapisana z tego telefonu przestanie działać; inne telefony zachowają dostęp, dopóki ich nie usuniesz."
+  "remoteTurnOffConfirm": "Ten telefon opuszcza sterowanie zdalne, a hub rozłącza się z przekaźnikiem. Kopia klucza zapisana z tego telefonu przestanie działać; inne telefony zachowają dostęp, dopóki ich nie usuniesz.",
+  "remoteHomeId": "ID domu {id}"
 }

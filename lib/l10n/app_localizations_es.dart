@@ -4394,4 +4394,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Este teléfono deja el control remoto y tu hub se desconecta del relé. Una copia de clave guardada desde este teléfono deja de funcionar; los demás teléfonos conservan su acceso hasta que los quites.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID del hogar $id';
+  }
 }

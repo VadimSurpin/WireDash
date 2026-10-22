@@ -4382,4 +4382,9 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Ten telefon opuszcza sterowanie zdalne, a hub rozłącza się z przekaźnikiem. Kopia klucza zapisana z tego telefonu przestanie działać; inne telefony zachowają dostęp, dopóki ich nie usuniesz.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID domu $id';
+  }
 }

@@ -4376,4 +4376,9 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Этот телефон отключится от удалённого управления, а хаб — от ретранслятора. Копия ключа, сохранённая с этого телефона, перестанет работать; другие телефоны сохранят доступ, пока вы их не удалите.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID дома $id';
+  }
 }

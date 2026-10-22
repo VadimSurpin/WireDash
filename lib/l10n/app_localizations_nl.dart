@@ -4388,4 +4388,9 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Deze telefoon stopt met bediening op afstand en je hub verbreekt de verbinding met de relay. Een sleutelback-up van deze telefoon werkt dan niet meer; andere telefoons houden hun toegang tot je ze verwijdert.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'Huis-ID $id';
+  }
 }

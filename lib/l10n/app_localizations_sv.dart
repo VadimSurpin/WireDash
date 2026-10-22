@@ -4375,4 +4375,9 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Den här telefonen lämnar fjärrstyrningen och hubben kopplas från reläet. En nyckelbackup sparad från den här telefonen slutar fungera; andra telefoner behåller sin åtkomst tills du tar bort dem.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'Hem-ID $id';
+  }
 }

@@ -4376,4 +4376,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'This phone leaves remote control and your hub disconnects from the relay. A key backup saved from this phone stops working; other phones keep their access until you remove them.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'Home ID $id';
+  }
 }

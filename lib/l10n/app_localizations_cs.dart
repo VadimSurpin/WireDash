@@ -4379,4 +4379,9 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID domova $id';
+  }
 }

@@ -4399,4 +4399,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get remoteTurnOffConfirm =>
       'Dieses Telefon verlässt die Fernsteuerung, und Ihr Hub trennt sich vom Relay. Ein von diesem Telefon gespeichertes Schlüssel-Backup funktioniert dann nicht mehr; andere Telefone behalten ihren Zugang, bis Sie sie entfernen.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'Zuhause-ID $id';
+  }
 }
