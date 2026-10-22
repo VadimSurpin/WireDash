@@ -6713,6 +6713,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Controller built-ins remain available in All devices.'**
   String get wbBuiltinsAvailable;
+
+  /// No description provided for @wbOpenControls.
+  ///
+  /// In en, this message translates to:
+  /// **'Open controls'**
+  String get wbOpenControls;
+
+  /// No description provided for @wbAddSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Add selected properties'**
+  String get wbAddSelected;
+
+  /// No description provided for @wbChooseProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Select properties to add as one panel.'**
+  String get wbChooseProperties;
 }
 
 class _AppLocalizationsDelegate

@@ -14,20 +14,17 @@ import '../../discovery/models/wirenboard_device.dart';
 import '../../discovery/providers/wirenboard_discovery_provider.dart';
 import '../../discovery/wirenboard_dashboard_importer.dart';
 import '../../panels/models/panel_config.dart';
-import '../../panels/widgets/panel_tile.dart';
 import '../../panels/widgets/wirenboard_device_panel.dart';
 import '../../../data/database/database.dart';
 import '../../../data/database/tables/panels.dart';
-import '../../../data/repositories/dashboard_repo.dart';
-import '../../../core/theme/dashboard_accent.dart';
+import '../../discovery/widgets/add_wirenboard_panel_sheet.dart';
 import '../../discovery/providers/discovery_provider.dart';
 import '../../home/home_shell.dart';
 import '../../support/get_help_screen.dart' show GetHelpLink;
 import '../../panels/screens/add_tile_screen.dart' show showAddDeviceSheet;
 import '../../panels/widgets/device_tile_panel.dart'
     show deviceClassIcon, deviceStateLine, ltr;
-import '../../panels/widgets/panel_reliability_frame.dart'
-    show formatValueAge;
+import '../../panels/widgets/panel_reliability_frame.dart' show formatValueAge;
 import '../device_health.dart';
 import '../device_profile.dart';
 import '../device_registry.dart';
@@ -61,6 +58,9 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   var _filter = DeviceFilter.all;
   String? _query;
   final _search = TextEditingController();
+  final _expandedWb = <String>{};
+  final _collapsedSearchWb = <String>{};
+  final _selectedWb = <String, Set<String>>{};
 
   @override
   void dispose() {
@@ -81,10 +81,8 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => _PairingSheet(
-        connectionId: widget.connectionId,
-        base: _base,
-      ),
+      builder: (_) =>
+          _PairingSheet(connectionId: widget.connectionId, base: _base),
     );
   }
 
@@ -126,8 +124,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     if (!mounted) return;
     switch (choice) {
       case 'add':
-        await showAddDeviceSheet(context,
-            connectionId: widget.connectionId, device: d);
+        await showAddDeviceSheet(
+          context,
+          connectionId: widget.connectionId,
+          device: d,
+        );
       case 'dismiss':
         await dismissDevices(ref, widget.connectionId, [d]);
     }
@@ -135,75 +136,184 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
 
   void _openWirenBoard(WirenBoardDevice device) {
     final config = WirenBoardDeviceConfig(device: device);
-    final panel = Panel(id: 'wirenboard:${device.id}', dashboardId: '',
+    final panel = Panel(
+      id: 'wirenboard:${device.id}',
+      dashboardId: '',
       name: device.title(Localizations.localeOf(context).languageCode),
-      type: PanelType.device, topic: '', subscribeTopic: '',
-      topicPrefixOverride: '/devices/${device.id}', qos: 1, retain: false,
-      width: PanelWidth.wide, sortOrder: 0, config: config.encode(), mergeFlags: 0,
-      createdAt: DateTime.now(), updatedAt: DateTime.now());
-    showModalBottomSheet<void>(context: context, isScrollControlled: true,
-      useSafeArea: true, showDragHandle: true,
-      builder: (_) => WirenBoardDeviceControls(connectionId: widget.connectionId,
-        panel: panel, config: config,
-        controlBuilder: (control) => PanelTile(connectionId: widget.connectionId,
-          dashboardId: '', topicPrefix: null, panel: control, locked: true)));
+      type: PanelType.device,
+      topic: '',
+      subscribeTopic: '',
+      topicPrefixOverride: '/devices/${device.id}',
+      qos: 1,
+      retain: false,
+      width: PanelWidth.wide,
+      sortOrder: 0,
+      config: config.encode(),
+      mergeFlags: 0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => WirenBoardDeviceControls(
+        connectionId: widget.connectionId,
+        panel: panel,
+        config: config,
+      ),
+    );
   }
 
   Future<void> _addWirenBoard(WirenBoardDevice device) async {
+    final selected = _selectedWb[device.id] ?? const <String>{};
+    final ids = device.controls
+        .where((c) => selected.contains(c.id))
+        .map((c) => c.id)
+        .toList();
+    final added = await showAddWirenBoardPanelSheet(
+      context,
+      connectionId: widget.connectionId,
+      device: device,
+      controlIds: ids.isEmpty ? null : ids,
+    );
+    if (added && mounted) setState(() => _selectedWb.remove(device.id));
+  }
+
+  List<Widget> _wirenBoardTree(
+    WirenBoardDevice device,
+    String query,
+    bool linked,
+  ) {
     final l10n = context.l10n;
-    final repo = ref.read(dashboardRepoProvider);
-    final dashboards = await repo.getByConnection(widget.connectionId);
-    if (!mounted) return;
-    String? dashboardId;
-    if (dashboards.isEmpty) {
-      dashboardId = await repo.create(connectionId: widget.connectionId,
-        name: l10n.dashDefaultName, colorSeed: defaultDashboardSeed,
-        iconCodepoint: Icons.home.codePoint);
-    } else if (dashboards.length == 1) {
-      dashboardId = dashboards.single.id;
-    } else {
-      dashboardId = await showModalBottomSheet<String>(context: context,
-        showDragHandle: true, builder: (ctx) => SafeArea(child: ListView(
-          shrinkWrap: true, children: [
-            ListTile(title: Text(l10n.deviceAddToDashboard)),
-            for (final dashboard in dashboards) ListTile(title: Text(dashboard.name),
-              onTap: () => Navigator.pop(ctx, dashboard.id)),
-          ])));
-    }
-    if (!mounted || dashboardId == null) return;
-    await ref.read(wirenBoardDashboardImporterProvider(dashboardId))
-      .importDevices([device], includeBuiltins: true);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(l10n.deviceAddedTo(dashboards.where((d) => d.id == dashboardId)
-          .firstOrNull?.name ?? l10n.dashDefaultName))));
-    }
+    final language = Localizations.localeOf(context).languageCode;
+    final selected = _selectedWb[device.id] ?? const <String>{};
+    final count = device.controls.where((c) => selected.contains(c.id)).length;
+    final expanded = query.isNotEmpty
+        ? !_collapsedSearchWb.contains(device.id)
+        : _expandedWb.contains(device.id);
+    final deviceMatches =
+        device.id.toLowerCase().contains(query) ||
+        device.title(language).toLowerCase().contains(query);
+    return [
+      ListTile(
+        key: ValueKey('wb-device:${device.id}'),
+        leading: Icon(expanded ? Icons.expand_more : Icons.chevron_right),
+        title: Text(device.title(language)),
+        subtitle: Text(
+          count == 0
+              ? l10n.wbControlCount(device.controls.length)
+              : l10n.sceneFormSelectedCount(count),
+        ),
+        onTap: () => setState(() {
+          final changes = query.isNotEmpty ? _collapsedSearchWb : _expandedWb;
+          if (!changes.add(device.id)) changes.remove(device.id);
+        }),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              tooltip: l10n.wbOpenControls,
+              icon: const Icon(Icons.tune),
+              onPressed: () => _openWirenBoard(device),
+            ),
+            IconButton(
+              tooltip: count == 0 ? l10n.wbAddWholeDevice : l10n.wbAddSelected,
+              icon: Icon(
+                count > 0
+                    ? Icons.playlist_add
+                    : linked
+                    ? Icons.dashboard_outlined
+                    : Icons.add,
+              ),
+              onPressed: () => _addWirenBoard(device),
+            ),
+          ],
+        ),
+      ),
+      if (expanded) ...[
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(48, 0, 16, 4),
+          child: Text(
+            l10n.wbChooseProperties,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ),
+        for (final control in device.controls)
+          if (query.isEmpty ||
+              deviceMatches ||
+              control.id.toLowerCase().contains(query) ||
+              control.title(language).toLowerCase().contains(query))
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 32),
+              child: CheckboxListTile(
+                key: ValueKey('wb-property:${device.id}/${control.id}'),
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Text(control.title(language)),
+                subtitle: control.unit == null ? null : Text(control.unit!),
+                value: selected.contains(control.id),
+                onChanged: (checked) => setState(() {
+                  final ids = _selectedWb.putIfAbsent(
+                    device.id,
+                    () => <String>{},
+                  );
+                  if (checked == true) {
+                    ids.add(control.id);
+                  } else {
+                    ids.remove(control.id);
+                  }
+                }),
+              ),
+            ),
+        if (count > 0)
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton.icon(
+              onPressed: () => _addWirenBoard(device),
+              icon: const Icon(Icons.playlist_add),
+              label: Text(l10n.wbAddSelected),
+            ),
+          ),
+      ],
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final base = ref.watch(homeBaseTopicProvider(widget.connectionId)) ??
-        'zigbee2mqtt';
+    final base =
+        ref.watch(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
     final args = (connectionId: widget.connectionId, base: base);
     final healthAsync = ref.watch(deviceHealthProvider(args));
     final availability =
         ref.watch(availabilityConfigProvider(args)).valueOrNull ??
-            AvailabilityConfig.unknown;
+        AvailabilityConfig.unknown;
     final linked =
         ref.watch(linkedIeeesProvider(widget.connectionId)).valueOrNull ??
-            const <String>{};
+        const <String>{};
     final newIeees = {
       for (final d
-          in ref.watch(unassignedDevicesProvider(widget.connectionId)).valueOrNull ??
+          in ref
+                  .watch(unassignedDevicesProvider(widget.connectionId))
+                  .valueOrNull ??
               const <Z2mDevice>[])
         d.ieeeAddress,
     };
     final all = healthAsync.valueOrNull ?? const <DeviceHealth>[];
-    final wbDevices = ref.watch(wirenBoardDevicesProvider(widget.connectionId)).valueOrNull ?? const <WirenBoardDevice>[];
-    final wbLinked = ref.watch(linkedWirenBoardIdsProvider(widget.connectionId));
-    final searchable = all.length + wbDevices.length >= 8;
-    final visibleHealth = wbDevices.isNotEmpty ? AsyncValue<List<DeviceHealth>>.data(all) : healthAsync;
+    final wbDevices =
+        ref.watch(wirenBoardDevicesProvider(widget.connectionId)).valueOrNull ??
+        const <WirenBoardDevice>[];
+    final wbLinked = ref.watch(
+      linkedWirenBoardIdsProvider(widget.connectionId),
+    );
+    final searchable =
+        all.length + wbDevices.length >= 8 ||
+        wbDevices.any((d) => d.controls.length >= 8);
+    final visibleHealth = wbDevices.isNotEmpty
+        ? AsyncValue<List<DeviceHealth>>.data(all)
+        : healthAsync;
 
     return Scaffold(
       appBar: AppBar(
@@ -215,7 +325,10 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   hintText: l10n.addTileSearch,
                   border: InputBorder.none,
                 ),
-                onChanged: (v) => setState(() => _query = v),
+                onChanged: (v) => setState(() {
+                  _query = v;
+                  _collapsedSearchWb.clear();
+                }),
               )
             : HomeTitle(connectionId: widget.connectionId),
         actions: [
@@ -264,7 +377,9 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               h.device.ieeeAddress != null &&
               !linked.contains(h.device.ieeeAddress);
           final attention = rows.where((h) => h.needsAttention).length;
-          final notOn = rows.where(unassigned).length + wbDevices.where((d) => !wbLinked.contains(d.id)).length;
+          final notOn =
+              rows.where(unassigned).length +
+              wbDevices.where((d) => !wbLinked.contains(d.id)).length;
           final filter = switch (_filter) {
             DeviceFilter.attention when attention == 0 => DeviceFilter.all,
             DeviceFilter.unassigned when notOn == 0 => DeviceFilter.all,
@@ -279,6 +394,25 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   (q.isEmpty || h.friendlyName.toLowerCase().contains(q)))
                 h,
           ]..sort(compareHealth);
+          final wbShown = wbDevices
+              .where(
+                (d) =>
+                    (filter == DeviceFilter.all ||
+                        filter == DeviceFilter.unassigned &&
+                            !wbLinked.contains(d.id)) &&
+                    (q.isEmpty ||
+                        d.id.toLowerCase().contains(q) ||
+                        d.title(l10n.localeName).toLowerCase().contains(q) ||
+                        d.controls.any(
+                          (c) =>
+                              c.id.toLowerCase().contains(q) ||
+                              c
+                                  .title(l10n.localeName)
+                                  .toLowerCase()
+                                  .contains(q),
+                        )),
+              )
+              .toList();
           return ListView(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
             children: [
@@ -311,41 +445,40 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   ],
                 ),
               ),
-              if (shown.isEmpty)
+              if (shown.isEmpty && wbShown.isEmpty)
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(l10n.devicesNoMatch, textAlign: TextAlign.center),
                 ),
-              if (wbDevices.isNotEmpty && shown.isNotEmpty) const ListTile(title: Text('Zigbee2MQTT')),
+              if (wbDevices.isNotEmpty && shown.isNotEmpty)
+                const ListTile(title: Text('Zigbee2MQTT')),
               for (final h in shown)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: DeviceHealthRow(
                     health: h,
                     onDashboard: !unassigned(h),
-                    selected: h.device.ieeeAddress != null &&
+                    selected:
+                        h.device.ieeeAddress != null &&
                         h.device.ieeeAddress == widget.selectedIeee,
                     onTap: () => _open(h.device),
-                    onLongPress: () => _menu(h.device,
-                        isNew: newIeees.contains(h.device.ieeeAddress)),
+                    onLongPress: () => _menu(
+                      h.device,
+                      isNew: newIeees.contains(h.device.ieeeAddress),
+                    ),
                   ),
                 ),
               for (final builtin in [false, true]) ...[
-                if (wbDevices.any((d) => d.isControllerBuiltin == builtin &&
-                    (filter == DeviceFilter.all || filter == DeviceFilter.unassigned && !wbLinked.contains(d.id)) &&
-                    (q.isEmpty || d.id.toLowerCase().contains(q) || d.title(l10n.localeName).toLowerCase().contains(q))))
-                  ListTile(title: Text(builtin ? l10n.wbControllerBuiltins : l10n.wbAddedModules)),
-                for (final d in wbDevices)
-                  if (d.isControllerBuiltin == builtin &&
-                      (filter == DeviceFilter.all || filter == DeviceFilter.unassigned && !wbLinked.contains(d.id)) &&
-                      (q.isEmpty || d.id.toLowerCase().contains(q) || d.title(l10n.localeName).toLowerCase().contains(q)))
-                    ListTile(leading: const Icon(Icons.developer_board_outlined),
-                      title: Text(d.title(l10n.localeName)),
-                      subtitle: Text(l10n.wbControlCount(d.controls.length)),
-                      onTap: () => _openWirenBoard(d),
-                      trailing: IconButton(tooltip: l10n.deviceAddToDashboard,
-                        icon: Icon(wbLinked.contains(d.id) ? Icons.dashboard_outlined : Icons.add),
-                        onPressed: () => _addWirenBoard(d))),
+                if (wbShown.any((d) => d.isControllerBuiltin == builtin))
+                  ListTile(
+                    title: Text(
+                      builtin ? l10n.wbControllerBuiltins : l10n.wbAddedModules,
+                    ),
+                  ),
+                for (final device in wbShown.where(
+                  (d) => d.isControllerBuiltin == builtin,
+                ))
+                  ..._wirenBoardTree(device, q, wbLinked.contains(device.id)),
               ],
               if (rows.isNotEmpty && !availability.any)
                 Padding(
@@ -358,11 +491,13 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           );
         },
       ),
-      floatingActionButton: wbDevices.isNotEmpty && all.isEmpty ? null : FloatingActionButton.extended(
-        onPressed: _openPairing,
-        icon: const Icon(Icons.add),
-        label: Text(l10n.devicesAddButton),
-      ),
+      floatingActionButton: wbDevices.isNotEmpty && all.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: _openPairing,
+              icon: const Icon(Icons.add),
+              label: Text(l10n.devicesAddButton),
+            ),
     );
   }
 }
@@ -398,9 +533,7 @@ class DeviceHealthRow extends StatelessWidget {
     final signal = _signal(context);
 
     return Material(
-      color: selected
-          ? scheme.secondaryContainer
-          : scheme.surfaceContainerHigh,
+      color: selected ? scheme.secondaryContainer : scheme.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(12),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -413,25 +546,34 @@ class DeviceHealthRow extends StatelessWidget {
             child: Row(
               children: [
                 SignalIcon(
-                    deviceClassIcon(profile.deviceClass, alarm: state.alarm),
-                    active: on,
-                    color: on ? SignalColors.of(context).active : null),
+                  deviceClassIcon(profile.deviceClass, alarm: state.alarm),
+                  active: on,
+                  color: on ? SignalColors.of(context).active : null,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(health.friendlyName,
-                          style: theme.textTheme.titleSmall),
-                      Text(line,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                              color: health.needsAttention
-                                  ? scheme.error
-                                  : scheme.onSurfaceVariant)),
+                      Text(
+                        health.friendlyName,
+                        style: theme.textTheme.titleSmall,
+                      ),
+                      Text(
+                        line,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: health.needsAttention
+                              ? scheme.error
+                              : scheme.onSurfaceVariant,
+                        ),
+                      ),
                       if (!onDashboard)
-                        Text(l10n.addTileNotOnDashboard,
-                            style: theme.textTheme.labelMedium
-                                ?.copyWith(color: scheme.primary)),
+                        Text(
+                          l10n.addTileNotOnDashboard,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: scheme.primary,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -448,31 +590,43 @@ class DeviceHealthRow extends StatelessWidget {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
     Widget chip(IconData icon, String text, Color bg, Color fg) => Container(
-          height: 24,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-              color: bg, borderRadius: BorderRadius.circular(8)),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(icon, size: 16, color: fg),
-            const SizedBox(width: 4),
-            Text(text,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(color: fg)),
-          ]),
-        );
+      height: 24,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: fg),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: fg),
+          ),
+        ],
+      ),
+    );
     if (health.lowBattery) {
       final b = health.battery;
-      return chip(Icons.battery_alert, b == null ? l10n.deviceBatteryLow : ltr('$b%'),
-          scheme.errorContainer, scheme.onErrorContainer);
+      return chip(
+        Icons.battery_alert,
+        b == null ? l10n.deviceBatteryLow : ltr('$b%'),
+        scheme.errorContainer,
+        scheme.onErrorContainer,
+      );
     }
     if (health.notResponding || health.offline) {
       return Icon(Icons.cloud_off, size: 20, color: scheme.error);
     }
     if (health.weakLink) {
-      return chip(Symbols.signalCellularAlt1Bar, l10n.deviceLinkWeak,
-          scheme.surfaceContainerHighest, scheme.onSurfaceVariant);
+      return chip(
+        Symbols.signalCellularAlt1Bar,
+        l10n.deviceLinkWeak,
+        scheme.surfaceContainerHighest,
+        scheme.onSurfaceVariant,
+      );
     }
     return null;
   }
@@ -481,7 +635,10 @@ class DeviceHealthRow extends StatelessWidget {
 /// The line under a device's name: why it needs attention, else its state
 /// with the age when the value is not fresh.
 String deviceHealthLine(
-    BuildContext context, DeviceHealth health, DeviceState state) {
+  BuildContext context,
+  DeviceHealth health,
+  DeviceState state,
+) {
   final l10n = context.l10n;
   if (health.unsupported) return l10n.deviceUnsupported;
   if (health.device.interviewFailed) return l10n.deviceInterviewFailed;
@@ -519,7 +676,7 @@ class _NoDevicesState extends ConsumerState<_NoDevices> {
     final l10n = context.l10n;
     final missing =
         ref.watch(bridgeDevicesMissingProvider(widget.args)).valueOrNull ??
-            false;
+        false;
     if (!missing) return Center(child: Text(l10n.devicesNone));
     return Center(
       child: Padding(
@@ -537,9 +694,13 @@ class _NoDevicesState extends ConsumerState<_NoDevices> {
                 child: Text(l10n.devicesRestartZ2m),
               ),
             GetHelpLink(
-                onPressed: () => context.push(Routes.getHelpFrom(
-                    HelpFrom.deviceListMissing.name,
-                    home: widget.args.connectionId))),
+              onPressed: () => context.push(
+                Routes.getHelpFrom(
+                  HelpFrom.deviceListMissing.name,
+                  home: widget.args.connectionId,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -559,21 +720,28 @@ class _AvailabilityNote extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(Icons.info_outline,
-            size: 18, color: theme.colorScheme.onSurfaceVariant),
+        Icon(
+          Icons.info_outline,
+          size: 18,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.devicesAvailabilityOff,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              Text(
+                l10n.devicesAvailabilityOff,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
               TextButton(
                 style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: const Size(48, 40),
-                    alignment: AlignmentDirectional.centerStart),
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(48, 40),
+                  alignment: AlignmentDirectional.centerStart,
+                ),
                 onPressed: onHelp,
                 child: Text(l10n.devicesAvailabilityHow),
               ),
@@ -590,10 +758,7 @@ class _AvailabilityNote extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _PairingSheet extends ConsumerStatefulWidget {
-  const _PairingSheet({
-    required this.connectionId,
-    required this.base,
-  });
+  const _PairingSheet({required this.connectionId, required this.base});
 
   final String connectionId;
   final String base;
@@ -614,12 +779,7 @@ class _PairingSheetState extends ConsumerState<_PairingSheet> {
   }
 
   Future<void> _startPairing() async {
-    await setPermitJoin(
-      ref,
-      widget.connectionId,
-      widget.base,
-      enable: true,
-    );
+    await setPermitJoin(ref, widget.connectionId, widget.base, enable: true);
     if (!mounted) return;
     setState(() {
       _secondsLeft = 254;
@@ -635,12 +795,7 @@ class _PairingSheetState extends ConsumerState<_PairingSheet> {
   Future<void> _stopPairing() async {
     _countdownTimer?.cancel();
     _countdownTimer = null;
-    await setPermitJoin(
-      ref,
-      widget.connectionId,
-      widget.base,
-      enable: false,
-    );
+    await setPermitJoin(ref, widget.connectionId, widget.base, enable: false);
   }
 
   @override
@@ -655,7 +810,8 @@ class _PairingSheetState extends ConsumerState<_PairingSheet> {
     final name = event.friendlyName;
     if (name == null) return;
 
-    final isReady = event.type == BridgeEventType.deviceJoined ||
+    final isReady =
+        event.type == BridgeEventType.deviceJoined ||
         (event.type == BridgeEventType.deviceInterview &&
             event.interviewStatus == 'successful');
 
@@ -677,8 +833,10 @@ class _PairingSheetState extends ConsumerState<_PairingSheet> {
 
     // Listen to bridge events.
     ref.listen(
-      bridgeEventsProvider(
-          (connectionId: widget.connectionId, base: widget.base)),
+      bridgeEventsProvider((
+        connectionId: widget.connectionId,
+        base: widget.base,
+      )),
       (_, next) {
         next.whenData(_handleEvent);
       },

@@ -13,7 +13,7 @@ import 'package:zigdash/features/panels/models/panel_config.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
 import 'package:zigdash/features/panels/widgets/panel_reliability_frame.dart';
 import 'package:zigdash/features/panels/widgets/panel_tile.dart';
-import 'package:zigdash/features/panels/widgets/text_input_panel.dart';
+import 'package:zigdash/features/panels/widgets/wirenboard_control_row.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/mqtt_manager.dart';
@@ -126,20 +126,25 @@ Widget _app(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
-        body: SizedBox(
-          width: 380,
-          child: PanelTile(
-            connectionId: 'c1',
-            dashboardId: 'd1',
-            topicPrefix: 'unrelated',
-            panel: _panel(device),
-            locked: true,
+        body: SingleChildScrollView(
+          child: SizedBox(
+            width: 380,
+            child: PanelTile(
+              connectionId: 'c1',
+              dashboardId: 'd1',
+              topicPrefix: 'unrelated',
+              panel: _panel(device),
+              locked: true,
+            ),
           ),
         ),
       ),
     ),
   );
 }
+
+Finder _inSheet(Finder finder) =>
+    find.descendant(of: find.byType(BottomSheet), matching: finder);
 
 void main() {
   test(
@@ -186,42 +191,148 @@ void main() {
   });
 
   testWidgets(
-    'one tile opens scalar controls and sends commands to the right /on topics',
+    'many compact properties scroll to the end of a small phone sheet',
+    (tester) async {
+      tester.view.physicalSize = const Size(390, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final discovery = WirenBoardDiscovery();
+      for (var i = 0; i < 35; i++) {
+        discovery.apply(
+          '/devices/many/controls/Value $i/meta',
+          '{"type":"temperature","readonly":true,"order":$i}',
+        );
+      }
+      final manager = _Recorder();
+      await tester.pumpWidget(
+        _app(manager, initialDevice: discovery.devices.single),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Open controls'));
+      await tester.pumpAndSettle();
+      final first = _inSheet(find.byType(WirenBoardControlRow)).first;
+      expect(tester.getSize(first).height, lessThan(80));
+      expect(
+        find.descendant(
+          of: find.byType(BottomSheet),
+          matching: find.byType(Card),
+        ),
+        findsNothing,
+      );
+      await tester.scrollUntilVisible(
+        _inSheet(find.text('Value 34')),
+        250,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(_inSheet(find.text('Value 34')).hitTestable(), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await manager.dispose();
+    },
+  );
+
+  test(
+    'selected-property panels keep their subset across serialization and live metadata',
+    () {
+      final device = _device();
+      final config = WirenBoardDeviceConfig(
+        device: device,
+        controlIds: ['Temperature'],
+      );
+      final decoded =
+          PanelConfig.decode(PanelType.device, config.encode())
+              as WirenBoardDeviceConfig;
+      expect(decoded.controlIds, ['Temperature']);
+      expect(decoded.visibleDevice(device).controls.map((c) => c.id), [
+        'Temperature',
+      ]);
+    },
+  );
+
+  testWidgets(
+    'device card has inline controls, a collapsible header and an optional full view',
     (tester) async {
       final mgr = _Recorder();
       await tester.pumpWidget(_app(mgr));
       await tester.pumpAndSettle();
-      expect(find.text('4 controls'), findsOneWidget);
-      expect(find.text('Temperature: 23.5 °C'), findsOneWidget);
-      expect(find.byType(Switch), findsNothing);
+      expect(find.byType(WirenBoardControlRow), findsNWidgets(4));
+      expect(
+        find.byType(Card),
+        findsOneWidget,
+        reason: 'One device frame, no card per property',
+      );
+      expect(find.text('23.5'), findsOneWidget);
+      expect(find.text('°C'), findsOneWidget);
       await tester.tap(find.text('Relay module'));
       await tester.pumpAndSettle();
-      expect(
-        find.byType(Switch),
-        findsOneWidget,
-        reason: 'The input is read-only',
+      expect(find.byType(WirenBoardControlRow), findsNothing);
+      await tester.tap(find.text('Relay module'));
+      await tester.pumpAndSettle();
+      expect(find.byType(WirenBoardControlRow), findsNWidgets(4));
+      final writableSwitch = find.byWidgetPredicate(
+        (w) => w is Switch && w.onChanged != null,
       );
-      await tester.tap(find.byType(Switch));
+      expect(
+        writableSwitch,
+        findsOneWidget,
+        reason: 'Input is a read-only switch',
+      );
+      await tester.tap(writableSwitch);
       await tester.pumpAndSettle();
       expect(mgr.sent, [
         ('/devices/wb-mr6c_12/controls/Relay 1/on', '1', false),
       ]);
-      final reset = find.text('Reset');
-      await tester.scrollUntilVisible(
-        reset,
-        200,
-        scrollable: find.byType(Scrollable).last,
-      );
-      await tester.tap(reset);
+      await tester.tap(find.text('Reset'));
       await tester.pumpAndSettle();
       expect(mgr.sent.last, (
         '/devices/wb-mr6c_12/controls/Reset/on',
         '1',
         false,
       ));
+      await tester.tap(find.byTooltip('Open controls'));
+      await tester.pumpAndSettle();
+      expect(_inSheet(find.byType(WirenBoardControlRow)), findsNWidgets(4));
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();
       await mgr.dispose();
+    },
+  );
+
+  testWidgets(
+    'inline enum and range controls publish scalar commands on their own topics',
+    (tester) async {
+      final discovery = WirenBoardDiscovery()
+        ..apply(
+          '/devices/config/controls/Mode/meta',
+          '{"type":"value","enum":{"0":"Manual","0x10":"Automatic"},"order":1}',
+        )
+        ..apply(
+          '/devices/config/controls/Level/meta',
+          '{"type":"range","min":10,"max":90,"order":2}',
+        );
+      final manager = _Recorder();
+      await tester.pumpWidget(
+        _app(manager, initialDevice: discovery.devices.single),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(DropdownButton<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Automatic').last);
+      await tester.pumpAndSettle();
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.min, 10);
+      expect(slider.max, 90);
+      slider.onChangeEnd!(50);
+      await tester.pumpAndSettle();
+      expect(manager.sent, [
+        ('/devices/config/controls/Mode/on', '16', false),
+        ('/devices/config/controls/Level/on', '50', false),
+      ]);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await manager.dispose();
     },
   );
 
@@ -249,16 +360,16 @@ void main() {
       await tester.pumpAndSettle();
       updates.add(discovery.devices);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Relay module'));
+      await tester.tap(find.byTooltip('Open controls'));
       await tester.pumpAndSettle();
       Finder inputFor(String label) => find.descendant(
         of: find.ancestor(
-          of: find.text(label),
-          matching: find.byType(TextInputPanel),
+          of: _inSheet(find.text(label)),
+          matching: find.byType(WirenBoardControlRow),
         ),
         matching: find.byType(TextField),
       );
-      await tester.enterText(inputFor('Alpha'), 'pending command');
+      await tester.enterText(inputFor('Alpha'), 'pending {value} command');
       discovery.apply(
         '/devices/board/controls/Alpha/meta',
         '{"type":"text","order":3}',
@@ -267,23 +378,23 @@ void main() {
       await tester.pumpAndSettle();
       expect(
         tester.widget<TextField>(inputFor('Alpha')).controller!.text,
-        'pending command',
+        'pending {value} command',
       );
       expect(
         tester.widget<TextField>(inputFor('Beta')).controller!.text,
         isEmpty,
       );
       final alpha = find.ancestor(
-        of: find.text('Alpha'),
-        matching: find.byType(TextInputPanel),
+        of: _inSheet(find.text('Alpha')),
+        matching: find.byType(WirenBoardControlRow),
       );
       await tester.tap(
-        find.descendant(of: alpha, matching: find.byIcon(Icons.send)),
+        find.descendant(of: alpha, matching: find.byIcon(Icons.check)),
       );
       await tester.pumpAndSettle();
       expect(mgr.sent.single, (
         '/devices/board/controls/Alpha/on',
-        'pending command',
+        'pending {value} command',
         false,
       ));
       await tester.pumpWidget(const SizedBox());
@@ -299,12 +410,12 @@ void main() {
       final mgr = _Recorder(connected: false);
       await tester.pumpWidget(_app(mgr, metadataAvailable: false));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Relay module'));
+      await tester.tap(find.byTooltip('Open controls'));
       await tester.pumpAndSettle();
-      expect(find.byType(Switch), findsOneWidget);
+      expect(_inSheet(find.byType(Switch)), findsNWidgets(2));
       final switchFrame = tester.widgetList<PanelReliabilityFrame>(
         find.ancestor(
-          of: find.byType(Switch),
+          of: _inSheet(find.byType(Switch)),
           matching: find.byType(PanelReliabilityFrame),
         ),
       );
@@ -312,7 +423,7 @@ void main() {
       expect(
         find.descendant(
           of: find.byType(BottomSheet),
-          matching: find.textContaining('23.5°C'),
+          matching: find.text('23.5'),
         ),
         findsOneWidget,
       );

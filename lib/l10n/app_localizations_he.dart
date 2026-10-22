@@ -3739,4 +3739,13 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים.';
+
+  @override
+  String get wbOpenControls => 'פתיחת פקדים';
+
+  @override
+  String get wbAddSelected => 'הוספת המאפיינים שנבחרו';
+
+  @override
+  String get wbChooseProperties => 'בחרו מאפיינים להוספה כחלונית אחת.';
 }

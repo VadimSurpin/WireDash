@@ -1183,5 +1183,8 @@
   "wbClearSearch": "Tøm søk",
   "wbAutoAdded": "Moduler lagt til: {count}.",
   "wbAutoAddFailed": "Kunne ikke legge til oppdagede enheter. Prøv søket på nytt.",
-  "wbBuiltinsAvailable": "Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter."
+  "wbBuiltinsAvailable": "Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter.",
+  "wbOpenControls": "Åpne kontroller",
+  "wbAddSelected": "Legg til valgte egenskaper",
+  "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel."
 }

@@ -1183,5 +1183,8 @@
   "wbClearSearch": "Borrar búsqueda",
   "wbAutoAdded": "Módulos añadidos: {count}.",
   "wbAutoAddFailed": "No se pudieron añadir los dispositivos detectados. Repite la búsqueda.",
-  "wbBuiltinsAvailable": "Los dispositivos integrados del controlador siguen disponibles en Todos los dispositivos."
+  "wbBuiltinsAvailable": "Los dispositivos integrados del controlador siguen disponibles en Todos los dispositivos.",
+  "wbOpenControls": "Abrir controles",
+  "wbAddSelected": "Añadir propiedades seleccionadas",
+  "wbChooseProperties": "Selecciona las propiedades que quieras añadir como un solo panel."
 }

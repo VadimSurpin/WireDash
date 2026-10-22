@@ -1183,5 +1183,8 @@
   "wbClearSearch": "Rensa sökning",
   "wbAutoAdded": "Tillagda moduler: {count}.",
   "wbAutoAddFailed": "Kunde inte lägga till upptäckta enheter. Gör om sökningen.",
-  "wbBuiltinsAvailable": "Styrenhetens inbyggda enheter är fortfarande tillgängliga under Alla enheter."
+  "wbBuiltinsAvailable": "Styrenhetens inbyggda enheter är fortfarande tillgängliga under Alla enheter.",
+  "wbOpenControls": "Öppna kontroller",
+  "wbAddSelected": "Lägg till valda egenskaper",
+  "wbChooseProperties": "Välj egenskaper att lägga till som en panel."
 }

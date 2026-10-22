@@ -561,19 +561,38 @@ class DeviceTileConfig extends PanelConfig {
 /// A whole WB device. Cache metadata so its controls remain accessible when
 /// offline; values are subscribed to independently on their scalar topics.
 class WirenBoardDeviceConfig extends PanelConfig {
-  const WirenBoardDeviceConfig({required this.device});
+  const WirenBoardDeviceConfig({required this.device, this.controlIds});
 
   final WirenBoardDevice device;
+
+  /// Null follows all current and future controls; a list pins a user's subset.
+  final List<String>? controlIds;
+
+  WirenBoardDevice visibleDevice(WirenBoardDevice live) => controlIds == null
+      ? live
+      : WirenBoardDevice(
+          id: live.id,
+          metadata: live.metadata,
+          controls: [
+            for (final control in live.controls)
+              if (controlIds!.contains(control.id)) control,
+          ],
+        );
 
   @override
   Map<String, dynamic> toJson() => {
     'protocol': 'wirenboard',
     'device': device.toJson(),
+    if (controlIds != null) 'controlIds': controlIds,
   };
 
   static WirenBoardDeviceConfig fromJson(Map<String, dynamic> json) =>
-      WirenBoardDeviceConfig(device: WirenBoardDevice.fromJson(
-        Map<String, dynamic>.from(json['device'] as Map)));
+      WirenBoardDeviceConfig(
+        device: WirenBoardDevice.fromJson(
+          Map<String, dynamic>.from(json['device'] as Map),
+        ),
+        controlIds: (json['controlIds'] as List?)?.cast<String>(),
+      );
 }
 
 /// How a reading tile draws its value (docs/design/gauge-2.4.md).

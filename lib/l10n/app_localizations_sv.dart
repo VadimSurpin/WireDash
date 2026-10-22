@@ -3774,4 +3774,14 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Styrenhetens inbyggda enheter är fortfarande tillgängliga under Alla enheter.';
+
+  @override
+  String get wbOpenControls => 'Öppna kontroller';
+
+  @override
+  String get wbAddSelected => 'Lägg till valda egenskaper';
+
+  @override
+  String get wbChooseProperties =>
+      'Välj egenskaper att lägga till som en panel.';
 }

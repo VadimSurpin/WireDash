@@ -1183,5 +1183,8 @@
   "wbClearSearch": "Suche löschen",
   "wbAutoAdded": "Hinzugefügte Module: {count}.",
   "wbAutoAddFailed": "Entdeckte Geräte konnten nicht hinzugefügt werden. Erneut suchen.",
-  "wbBuiltinsAvailable": "Integrierte Controller-Geräte bleiben unter „Alle Geräte“ verfügbar."
+  "wbBuiltinsAvailable": "Integrierte Controller-Geräte bleiben unter „Alle Geräte“ verfügbar.",
+  "wbOpenControls": "Steuerelemente öffnen",
+  "wbAddSelected": "Ausgewählte Eigenschaften hinzufügen",
+  "wbChooseProperties": "Eigenschaften auswählen, die als ein Panel hinzugefügt werden sollen."
 }

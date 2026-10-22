@@ -1183,5 +1183,8 @@
   "wbClearSearch": "Zoekopdracht wissen",
   "wbAutoAdded": "Modules toegevoegd: {count}.",
   "wbAutoAddFailed": "Gevonden apparaten konden niet worden toegevoegd. Zoek opnieuw.",
-  "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten."
+  "wbBuiltinsAvailable": "Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.",
+  "wbOpenControls": "Bediening openen",
+  "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
+  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen."
 }

@@ -3773,4 +3773,14 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Встроенные устройства контроллера остаются доступными в списке всех устройств.';
+
+  @override
+  String get wbOpenControls => 'Открыть управление';
+
+  @override
+  String get wbAddSelected => 'Добавить выбранные свойства';
+
+  @override
+  String get wbChooseProperties =>
+      'Выберите свойства для добавления одной панелью.';
 }

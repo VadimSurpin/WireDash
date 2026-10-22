@@ -3782,4 +3782,14 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.';
+
+  @override
+  String get wbOpenControls => 'Otevřít ovládací prvky';
+
+  @override
+  String get wbAddSelected => 'Přidat vybrané vlastnosti';
+
+  @override
+  String get wbChooseProperties =>
+      'Vyberte vlastnosti, které chcete přidat jako jeden panel.';
 }

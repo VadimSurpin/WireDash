@@ -1098,5 +1098,8 @@
   "wbClearSearch": "Vymazat hledání",
   "wbAutoAdded": "Přidané moduly: {count}.",
   "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu.",
-  "wbBuiltinsAvailable": "Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení."
+  "wbBuiltinsAvailable": "Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.",
+  "wbOpenControls": "Otevřít ovládací prvky",
+  "wbAddSelected": "Přidat vybrané vlastnosti",
+  "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel."
 }

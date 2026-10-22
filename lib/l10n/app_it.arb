@@ -1098,5 +1098,8 @@
   "wbClearSearch": "Cancella ricerca",
   "wbAutoAdded": "Moduli aggiunti: {count}.",
   "wbAutoAddFailed": "Impossibile aggiungere i dispositivi rilevati. Ripeti la ricerca.",
-  "wbBuiltinsAvailable": "I dispositivi integrati nel controller restano disponibili in Tutti i dispositivi."
+  "wbBuiltinsAvailable": "I dispositivi integrati nel controller restano disponibili in Tutti i dispositivi.",
+  "wbOpenControls": "Apri controlli",
+  "wbAddSelected": "Aggiungi proprietà selezionate",
+  "wbChooseProperties": "Seleziona le proprietà da aggiungere come un unico pannello."
 }

@@ -3788,4 +3788,14 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Ingebouwde controllerapparaten blijven beschikbaar onder Alle apparaten.';
+
+  @override
+  String get wbOpenControls => 'Bediening openen';
+
+  @override
+  String get wbAddSelected => 'Geselecteerde eigenschappen toevoegen';
+
+  @override
+  String get wbChooseProperties =>
+      'Selecteer eigenschappen om als één paneel toe te voegen.';
 }

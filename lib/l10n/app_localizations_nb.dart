@@ -3772,4 +3772,14 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Kontrollerens innebygde enheter er fortsatt tilgjengelige under Alle enheter.';
+
+  @override
+  String get wbOpenControls => 'Åpne kontroller';
+
+  @override
+  String get wbAddSelected => 'Legg til valgte egenskaper';
+
+  @override
+  String get wbChooseProperties =>
+      'Velg egenskaper som skal legges til som ett panel.';
 }

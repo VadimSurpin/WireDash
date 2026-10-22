@@ -1178,5 +1178,8 @@
   "wbClearSearch": "Wyczyść wyszukiwanie",
   "wbAutoAdded": "Dodane moduły: {count}.",
   "wbAutoAddFailed": "Nie udało się dodać wykrytych urządzeń. Ponów wyszukiwanie.",
-  "wbBuiltinsAvailable": "Wbudowane urządzenia kontrolera pozostają dostępne na liście wszystkich urządzeń."
+  "wbBuiltinsAvailable": "Wbudowane urządzenia kontrolera pozostają dostępne na liście wszystkich urządzeń.",
+  "wbOpenControls": "Otwórz elementy sterujące",
+  "wbAddSelected": "Dodaj wybrane właściwości",
+  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel."
 }

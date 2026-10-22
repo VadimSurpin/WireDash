@@ -3773,4 +3773,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Controller built-ins remain available in All devices.';
+
+  @override
+  String get wbOpenControls => 'Open controls';
+
+  @override
+  String get wbAddSelected => 'Add selected properties';
+
+  @override
+  String get wbChooseProperties => 'Select properties to add as one panel.';
 }

@@ -1252,5 +1252,8 @@
   "wbClearSearch": "ניקוי החיפוש",
   "wbAutoAdded": "מודולים שנוספו: {count}.",
   "wbAutoAddFailed": "לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב.",
-  "wbBuiltinsAvailable": "ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים."
+  "wbBuiltinsAvailable": "ההתקנים המובנים בבקר נשארים זמינים ברשימת כל ההתקנים.",
+  "wbOpenControls": "פתיחת פקדים",
+  "wbAddSelected": "הוספת המאפיינים שנבחרו",
+  "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת."
 }

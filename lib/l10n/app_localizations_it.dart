@@ -3792,4 +3792,14 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'I dispositivi integrati nel controller restano disponibili in Tutti i dispositivi.';
+
+  @override
+  String get wbOpenControls => 'Apri controlli';
+
+  @override
+  String get wbAddSelected => 'Aggiungi proprietà selezionate';
+
+  @override
+  String get wbChooseProperties =>
+      'Seleziona le proprietà da aggiungere come un unico pannello.';
 }

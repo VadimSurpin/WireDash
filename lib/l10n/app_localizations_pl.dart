@@ -3780,4 +3780,14 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get wbBuiltinsAvailable =>
       'Wbudowane urządzenia kontrolera pozostają dostępne na liście wszystkich urządzeń.';
+
+  @override
+  String get wbOpenControls => 'Otwórz elementy sterujące';
+
+  @override
+  String get wbAddSelected => 'Dodaj wybrane właściwości';
+
+  @override
+  String get wbChooseProperties =>
+      'Wybierz właściwości do dodania jako jeden panel.';
 }

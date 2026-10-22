@@ -1108,5 +1108,8 @@
   "wbClearSearch": "Effacer la recherche",
   "wbAutoAdded": "Modules ajoutés : {count}.",
   "wbAutoAddFailed": "Impossible d’ajouter les appareils détectés. Relancez la recherche.",
-  "wbBuiltinsAvailable": "Les équipements intégrés au contrôleur restent disponibles dans Tous les appareils."
+  "wbBuiltinsAvailable": "Les équipements intégrés au contrôleur restent disponibles dans Tous les appareils.",
+  "wbOpenControls": "Ouvrir les commandes",
+  "wbAddSelected": "Ajouter les propriétés sélectionnées",
+  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau."
 }
