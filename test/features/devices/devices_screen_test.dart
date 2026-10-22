@@ -323,6 +323,59 @@ void main() {
   );
 
   testWidgets(
+    'writable RGB property can switch from display back to editable input',
+    (tester) async {
+      final device =
+          (WirenBoardDiscovery()
+                ..apply('/devices/light/controls/Color/meta', '{"type":"rgb"}'))
+              .devices
+              .single;
+      final importer = _RecordingWbImporter();
+      await tester.pumpWidget(
+        _app(
+          wbDevices: [device],
+          emptyZ2m: true,
+          overrides: [
+            dashboardRepoProvider.overrideWithValue(_Dashboards()),
+            wirenBoardDashboardImporterProvider.overrideWith(
+              (ref, _) => importer,
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('light'));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const ValueKey('wb-property:light/Color')),
+          matching: find.byIcon(Icons.add),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final strings = lookupAppLocalizations(const Locale('en'));
+      for (final choice in [
+        strings.panelTypeTextLog,
+        strings.panelTypeTextInput,
+      ]) {
+        await tester.tap(find.byType(DropdownButtonFormField<PanelType>));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(choice).last);
+        await tester.pumpAndSettle();
+      }
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Name'),
+        'Lamp color',
+      );
+      await tester.tap(find.text('Add'));
+      await tester.pumpAndSettle();
+      expect(importer.calls.single.label, 'Lamp color');
+      expect(importer.calls.single.ids, ['Color']);
+      expect(importer.widgetTypes.single, PanelType.textInput);
+    },
+  );
+
+  testWidgets(
     'All devices shows WB modules and built-ins while the Z2M list is missing',
     (tester) async {
       final devices =
