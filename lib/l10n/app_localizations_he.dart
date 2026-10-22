@@ -3475,7 +3475,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'היסטוריה ארוכה יותר ותוספות לטאבלט קיר. תומך בפרויקט הקוד הפתוח.';
+      'אוטומציות ללא הגבלה, היסטוריה ארוכה יותר ותוספות לטאבלט קיר. תומך בפרויקט הקוד הפתוח.';
 
   @override
   String get proUnlocked => 'פתוח. תודה שאתם תומכים ב-ZigDash.';
@@ -3502,7 +3502,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'ההגדרה, הדשבורדים, השליטה בכל מכשיר, הווידג\'טים, אריחי ההגדרות המהירות, ההתראות וטאבלט הקיר עצמו נשארים בחינם. שום דבר שאתם משתמשים בו היום לא ננעל.';
+      'ההגדרה, הדשבורדים, השליטה בכל מכשיר, הווידג\'טים, אריחי ההגדרות המהירות, ההתראות, שלוש אוטומציות לכל בית וטאבלט הקיר עצמו נשארים בחינם. שום דבר שאתם משתמשים בו היום לא ננעל.';
 
   @override
   String get proBuy => 'לקבלת Pro';
@@ -4156,4 +4156,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get autoNoTargets => 'בבית הזה עוד אין אור, שקע, מתג או תריס לשליטה.';
+
+  @override
+  String get proGetAutomations => 'אוטומציות ללא הגבלה; שלוש לכל בית בחינם';
 }

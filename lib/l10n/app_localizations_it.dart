@@ -3519,7 +3519,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Cronologia più lunga ed extra per lo schermo a parete. Sostiene il progetto open source.';
+      'Automazioni illimitate, cronologia più lunga ed extra per lo schermo a parete. Sostiene il progetto open source.';
 
   @override
   String get proUnlocked => 'Sbloccato. Grazie per sostenere ZigDash.';
@@ -3547,7 +3547,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Configurazione, dashboard, il controllo di ogni dispositivo, i widget, i riquadri delle impostazioni rapide, gli avvisi e lo schermo a parete restano gratuiti. Niente di ciò che usi oggi verrà bloccato.';
+      'Configurazione, dashboard, il controllo di ogni dispositivo, i widget, i riquadri delle impostazioni rapide, gli avvisi, tre automazioni per casa e lo schermo a parete restano gratuiti. Niente di ciò che usi oggi verrà bloccato.';
 
   @override
   String get proBuy => 'Ottieni Pro';
@@ -4210,4 +4210,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Questa casa non ha ancora luci, prese, interruttori o tapparelle da comandare.';
+
+  @override
+  String get proGetAutomations =>
+      'Automazioni illimitate; tre per casa sono gratuite';
 }

@@ -3515,7 +3515,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Dłuższa historia i dodatki do tabletu na ścianie. Wspiera projekt open source.';
+      'Bez limitu automatyzacji, dłuższa historia i dodatki do tabletu na ścianie. Wspiera projekt open source.';
 
   @override
   String get proUnlocked => 'Odblokowane. Dziękujemy za wspieranie ZigDash.';
@@ -3542,7 +3542,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Konfiguracja, pulpity, sterowanie każdym urządzeniem, widżety, kafelki szybkich ustawień, alerty i sam tablet na ścianie pozostają darmowe. Nic, czego używasz dziś, nie zostanie zablokowane.';
+      'Konfiguracja, pulpity, sterowanie każdym urządzeniem, widżety, kafelki szybkich ustawień, alerty, trzy automatyzacje na dom i sam tablet na ścianie pozostają darmowe. Nic, czego używasz dziś, nie zostanie zablokowane.';
 
   @override
   String get proBuy => 'Kup Pro';
@@ -4199,4 +4199,8 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania.';
+
+  @override
+  String get proGetAutomations =>
+      'Bez limitu automatyzacji; trzy na dom są darmowe';
 }

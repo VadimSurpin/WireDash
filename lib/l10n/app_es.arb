@@ -1111,7 +1111,7 @@
   "historyLocked": "El historial más largo forma parte de ZigDash Pro, una compra única.",
   "historyUnlock": "Desbloquear",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Más historial y extras para la tablet de pared. Apoya el proyecto de código abierto.",
+  "proAbout": "Automatizaciones ilimitadas, más historial y extras para la tablet de pared. Apoya el proyecto de código abierto.",
   "proUnlocked": "Desbloqueado. Gracias por apoyar ZigDash.",
   "proScreenIntro": "ZigDash es gratis y de código abierto, hecho por una sola persona en su tiempo libre. Pro es una compra única que lo mantiene en marcha.",
   "proWhatYouGet": "Lo que obtienes",
@@ -1119,7 +1119,7 @@
   "proGetWall": "Tablet de pared: lecturas en el reloj, activación por movimiento, horario nocturno y alarmas",
   "proGetFuture": "Todas las funciones Pro que lleguen después, sin coste extra",
   "proFreeTitle": "Gratis para siempre",
-  "proFreeBody": "La configuración, los paneles, el control de cada dispositivo, los widgets, los iconos de ajustes rápidos, las alertas y la tablet de pared siguen siendo gratis. Nada de lo que usas hoy se bloquea.",
+  "proFreeBody": "La configuración, los paneles, el control de cada dispositivo, los widgets, los iconos de ajustes rápidos, las alertas, tres automatizaciones por hogar y la tablet de pared siguen siendo gratis. Nada de lo que usas hoy se bloquea.",
   "proBuy": "Obtener Pro",
   "proBuyPrice": "Obtener Pro · {price}",
   "proOnce": "Un solo pago, sin suscripción. ¿Lo compraste en otro teléfono con la misma cuenta de Google? Se desbloquea solo.",
@@ -1302,5 +1302,6 @@
   "engineRemove": "Quitar del hub",
   "engineRemoveTitle": "¿Quitar ZigDash Engine del hub?",
   "engineRemoveBody": "Las automatizaciones dejan de ejecutarse. Tus reglas se quedan en el hub, así que al reinstalar ZigDash Engine vuelven.",
-  "autoNoTargets": "Este hogar aún no tiene luces, enchufes, interruptores ni persianas que controlar."
+  "autoNoTargets": "Este hogar aún no tiene luces, enchufes, interruptores ni persianas que controlar.",
+  "proGetAutomations": "Automatizaciones ilimitadas; tres por hogar son gratis"
 }

@@ -1241,7 +1241,7 @@
   "historyLocked": "Longer history is part of ZigDash Pro, a one-time purchase.",
   "historyUnlock": "Unlock",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Longer history and wall tablet extras. Supports the open-source project.",
+  "proAbout": "Unlimited automations, longer history and wall tablet extras. Supports the open-source project.",
   "proUnlocked": "Unlocked. Thank you for supporting ZigDash.",
   "proScreenIntro": "ZigDash is free and open source, built by one person in their spare time. Pro is a one-time purchase that keeps it going.",
   "proWhatYouGet": "What you get",
@@ -1249,7 +1249,7 @@
   "proGetWall": "Wall tablet: readings on the clock, wake on motion, a night schedule and alarms",
   "proGetFuture": "Every Pro feature that comes later, at no extra cost",
   "proFreeTitle": "Free forever",
-  "proFreeBody": "Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts and the wall tablet itself stay free. Nothing you use today gets locked.",
+  "proFreeBody": "Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts, three automations per home and the wall tablet itself stay free. Nothing you use today gets locked.",
   "proBuy": "Get Pro",
   "proBuyPrice": "Get Pro · {price}",
   "@proBuyPrice": {"placeholders": {"price": {"type": "String"}}},
@@ -1459,5 +1459,6 @@
   "engineRemove": "Remove from hub",
   "engineRemoveTitle": "Remove ZigDash Engine from your hub?",
   "engineRemoveBody": "Automations stop running. Your rules stay on the hub, so installing ZigDash Engine again brings them back.",
-  "autoNoTargets": "This Home has no light, plug, switch or shutter to control yet."
+  "autoNoTargets": "This Home has no light, plug, switch or shutter to control yet.",
+  "proGetAutomations": "Unlimited automations; three per home are free"
 }

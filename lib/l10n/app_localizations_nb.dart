@@ -3504,7 +3504,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Lengre historikk og ekstra for veggnettbrettet. Støtter åpen kildekode-prosjektet.';
+      'Ubegrensede automasjoner, lengre historikk og ekstra for veggnettbrettet. Støtter åpen kildekode-prosjektet.';
 
   @override
   String get proUnlocked => 'Låst opp. Takk for at du støtter ZigDash.';
@@ -3532,7 +3532,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Oppsett, dashbord, styring av alle enheter, moduler, hurtiginnstillingsfliser, varsler og selve veggnettbrettet forblir gratis. Ingenting du bruker i dag blir låst.';
+      'Oppsett, dashbord, styring av alle enheter, moduler, hurtiginnstillingsfliser, varsler, tre automasjoner per hjem og selve veggnettbrettet forblir gratis. Ingenting du bruker i dag blir låst.';
 
   @override
   String get proBuy => 'Skaff Pro';
@@ -4191,4 +4191,8 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre.';
+
+  @override
+  String get proGetAutomations =>
+      'Ubegrensede automasjoner; tre per hjem er gratis';
 }

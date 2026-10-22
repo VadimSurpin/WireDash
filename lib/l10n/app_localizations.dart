@@ -6279,7 +6279,7 @@ abstract class AppLocalizations {
   /// No description provided for @proAbout.
   ///
   /// In en, this message translates to:
-  /// **'Longer history and wall tablet extras. Supports the open-source project.'**
+  /// **'Unlimited automations, longer history and wall tablet extras. Supports the open-source project.'**
   String get proAbout;
 
   /// No description provided for @proUnlocked.
@@ -6327,7 +6327,7 @@ abstract class AppLocalizations {
   /// No description provided for @proFreeBody.
   ///
   /// In en, this message translates to:
-  /// **'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts and the wall tablet itself stay free. Nothing you use today gets locked.'**
+  /// **'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts, three automations per home and the wall tablet itself stay free. Nothing you use today gets locked.'**
   String get proFreeBody;
 
   /// No description provided for @proBuy.
@@ -7427,6 +7427,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This Home has no light, plug, switch or shutter to control yet.'**
   String get autoNoTargets;
+
+  /// No description provided for @proGetAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited automations; three per home are free'**
+  String get proGetAutomations;
 }
 
 class _AppLocalizationsDelegate

@@ -1026,7 +1026,7 @@
   "historyLocked": "La cronologia più lunga fa parte di ZigDash Pro, un acquisto una tantum.",
   "historyUnlock": "Sblocca",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Cronologia più lunga ed extra per lo schermo a parete. Sostiene il progetto open source.",
+  "proAbout": "Automazioni illimitate, cronologia più lunga ed extra per lo schermo a parete. Sostiene il progetto open source.",
   "proUnlocked": "Sbloccato. Grazie per sostenere ZigDash.",
   "proScreenIntro": "ZigDash è gratuita e open source, creata da una sola persona nel tempo libero. Pro è un acquisto una tantum che la fa andare avanti.",
   "proWhatYouGet": "Cosa ottieni",
@@ -1034,7 +1034,7 @@
   "proGetWall": "Schermo a parete: letture sull'orologio, risveglio al movimento, orario notturno e allarmi",
   "proGetFuture": "Ogni funzione Pro che arriverà in futuro, senza costi aggiuntivi",
   "proFreeTitle": "Gratis per sempre",
-  "proFreeBody": "Configurazione, dashboard, il controllo di ogni dispositivo, i widget, i riquadri delle impostazioni rapide, gli avvisi e lo schermo a parete restano gratuiti. Niente di ciò che usi oggi verrà bloccato.",
+  "proFreeBody": "Configurazione, dashboard, il controllo di ogni dispositivo, i widget, i riquadri delle impostazioni rapide, gli avvisi, tre automazioni per casa e lo schermo a parete restano gratuiti. Niente di ciò che usi oggi verrà bloccato.",
   "proBuy": "Ottieni Pro",
   "proBuyPrice": "Ottieni Pro · {price}",
   "proOnce": "Un solo pagamento, nessun abbonamento. L'hai acquistato su un altro telefono con lo stesso account Google? Si sblocca da solo.",
@@ -1217,5 +1217,6 @@
   "engineRemove": "Rimuovi dall'hub",
   "engineRemoveTitle": "Rimuovere ZigDash Engine dall'hub?",
   "engineRemoveBody": "Le automazioni smettono di girare. Le regole restano sull'hub, quindi reinstallando ZigDash Engine tornano.",
-  "autoNoTargets": "Questa casa non ha ancora luci, prese, interruttori o tapparelle da comandare."
+  "autoNoTargets": "Questa casa non ha ancora luci, prese, interruttori o tapparelle da comandare.",
+  "proGetAutomations": "Automazioni illimitate; tre per casa sono gratuite"
 }

@@ -3517,7 +3517,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Langere geschiedenis en extra\'s voor de wandtablet. Steunt het opensourceproject.';
+      'Onbeperkte automatiseringen, langere geschiedenis en extra\'s voor de wandtablet. Steunt het opensourceproject.';
 
   @override
   String get proUnlocked => 'Ontgrendeld. Bedankt dat je ZigDash steunt.';
@@ -3546,7 +3546,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.';
+      'Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen, drie automatiseringen per huis en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.';
 
   @override
   String get proBuy => 'Pro nemen';
@@ -4208,4 +4208,8 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.';
+
+  @override
+  String get proGetAutomations =>
+      'Onbeperkte automatiseringen; drie per huis zijn gratis';
 }

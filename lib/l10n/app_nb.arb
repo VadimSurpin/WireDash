@@ -1111,7 +1111,7 @@
   "historyLocked": "Lengre historikk er en del av ZigDash Pro, et engangskjøp.",
   "historyUnlock": "Lås opp",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Lengre historikk og ekstra for veggnettbrettet. Støtter åpen kildekode-prosjektet.",
+  "proAbout": "Ubegrensede automasjoner, lengre historikk og ekstra for veggnettbrettet. Støtter åpen kildekode-prosjektet.",
   "proUnlocked": "Låst opp. Takk for at du støtter ZigDash.",
   "proScreenIntro": "ZigDash er gratis og åpen kildekode, laget av én person på fritiden. Pro er et engangskjøp som holder prosjektet i gang.",
   "proWhatYouGet": "Dette får du",
@@ -1119,7 +1119,7 @@
   "proGetWall": "Veggnettbrett: målinger på klokken, vekking ved bevegelse, nattplan og alarmer",
   "proGetFuture": "Alle Pro-funksjoner som kommer senere, uten ekstra kostnad",
   "proFreeTitle": "Gratis for alltid",
-  "proFreeBody": "Oppsett, dashbord, styring av alle enheter, moduler, hurtiginnstillingsfliser, varsler og selve veggnettbrettet forblir gratis. Ingenting du bruker i dag blir låst.",
+  "proFreeBody": "Oppsett, dashbord, styring av alle enheter, moduler, hurtiginnstillingsfliser, varsler, tre automasjoner per hjem og selve veggnettbrettet forblir gratis. Ingenting du bruker i dag blir låst.",
   "proBuy": "Skaff Pro",
   "proBuyPrice": "Skaff Pro · {price}",
   "proOnce": "Én betaling, ikke abonnement. Kjøpt på en annen telefon med samme Google-konto? Det låses opp automatisk.",
@@ -1302,5 +1302,6 @@
   "engineRemove": "Fjern fra huben",
   "engineRemoveTitle": "Fjerne ZigDash Engine fra huben?",
   "engineRemoveBody": "Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon av ZigDash Engine henter dem tilbake.",
-  "autoNoTargets": "Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre."
+  "autoNoTargets": "Dette hjemmet har ennå ingen lampe, stikkontakt, bryter eller persienne å styre.",
+  "proGetAutomations": "Ubegrensede automasjoner; tre per hjem er gratis"
 }

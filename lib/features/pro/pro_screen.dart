@@ -59,6 +59,7 @@ class _ProScreenState extends ConsumerState<ProScreen> {
             const SizedBox(height: 24),
             Text(l10n.proWhatYouGet, style: theme.textTheme.titleMedium),
             const SizedBox(height: 4),
+            item(Icons.bolt_outlined, l10n.proGetAutomations),
             item(Icons.show_chart, l10n.proGetHistory),
             item(Icons.tablet_outlined, l10n.proGetWall),
             item(Icons.auto_awesome_outlined, l10n.proGetFuture),

@@ -1036,7 +1036,7 @@
   "historyLocked": "L'historique plus long fait partie de ZigDash Pro, un achat unique.",
   "historyUnlock": "Débloquer",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Historique plus long et extras pour la tablette murale. Soutient le projet open source.",
+  "proAbout": "Automatisations illimitées, historique plus long et extras pour la tablette murale. Soutient le projet open source.",
   "proUnlocked": "Débloqué. Merci de soutenir ZigDash.",
   "proScreenIntro": "ZigDash est gratuit et open source, créé par une seule personne sur son temps libre. Pro est un achat unique qui le fait vivre.",
   "proWhatYouGet": "Ce que vous obtenez",
@@ -1044,7 +1044,7 @@
   "proGetWall": "Tablette murale : mesures sur l'horloge, réveil au mouvement, horaire de nuit et alarmes",
   "proGetFuture": "Toutes les fonctions Pro à venir, sans supplément",
   "proFreeTitle": "Gratuit pour toujours",
-  "proFreeBody": "La configuration, les tableaux de bord, le contrôle de chaque appareil, les widgets, les tuiles des réglages rapides, les alertes et la tablette murale elle-même restent gratuits. Rien de ce que vous utilisez aujourd'hui ne sera verrouillé.",
+  "proFreeBody": "La configuration, les tableaux de bord, le contrôle de chaque appareil, les widgets, les tuiles des réglages rapides, les alertes, trois automatisations par domicile et la tablette murale elle-même restent gratuits. Rien de ce que vous utilisez aujourd'hui ne sera verrouillé.",
   "proBuy": "Obtenir Pro",
   "proBuyPrice": "Obtenir Pro · {price}",
   "proOnce": "Un seul paiement, sans abonnement. Acheté sur un autre téléphone avec le même compte Google ? Il se débloque automatiquement.",
@@ -1227,5 +1227,6 @@
   "engineRemove": "Retirer du hub",
   "engineRemoveTitle": "Retirer ZigDash Engine du hub ?",
   "engineRemoveBody": "Les automatisations s'arrêtent. Vos règles restent sur le hub : réinstaller ZigDash Engine les fait revenir.",
-  "autoNoTargets": "Ce domicile n'a encore aucune lumière, prise, interrupteur ou volet à commander."
+  "autoNoTargets": "Ce domicile n'a encore aucune lumière, prise, interrupteur ou volet à commander.",
+  "proGetAutomations": "Automatisations illimitées ; trois par domicile sont gratuites"
 }

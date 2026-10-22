@@ -3502,7 +3502,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Longer history and wall tablet extras. Supports the open-source project.';
+      'Unlimited automations, longer history and wall tablet extras. Supports the open-source project.';
 
   @override
   String get proUnlocked => 'Unlocked. Thank you for supporting ZigDash.';
@@ -3530,7 +3530,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts and the wall tablet itself stay free. Nothing you use today gets locked.';
+      'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts, three automations per home and the wall tablet itself stay free. Nothing you use today gets locked.';
 
   @override
   String get proBuy => 'Get Pro';
@@ -4192,4 +4192,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'This Home has no light, plug, switch or shutter to control yet.';
+
+  @override
+  String get proGetAutomations =>
+      'Unlimited automations; three per home are free';
 }

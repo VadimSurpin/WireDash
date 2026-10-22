@@ -1111,7 +1111,7 @@
   "historyLocked": "Längre historik ingår i ZigDash Pro, ett engångsköp.",
   "historyUnlock": "Lås upp",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Längre historik och extra för väggplattan. Stöder projektet med öppen källkod.",
+  "proAbout": "Obegränsade automationer, längre historik och extra för väggplattan. Stöder projektet med öppen källkod.",
   "proUnlocked": "Upplåst. Tack för att du stöder ZigDash.",
   "proScreenIntro": "ZigDash är gratis och öppen källkod, byggd av en person på fritiden. Pro är ett engångsköp som håller projektet igång.",
   "proWhatYouGet": "Det här får du",
@@ -1119,7 +1119,7 @@
   "proGetWall": "Väggplatta: mätvärden på klockan, väckning vid rörelse, nattschema och alarm",
   "proGetFuture": "Alla Pro-funktioner som kommer senare, utan extra kostnad",
   "proFreeTitle": "Gratis för alltid",
-  "proFreeBody": "Konfiguration, instrumentpaneler, styrning av alla enheter, widgetar, snabbinställningsrutor, aviseringar och själva väggplattan förblir gratis. Inget du använder i dag låses.",
+  "proFreeBody": "Konfiguration, instrumentpaneler, styrning av alla enheter, widgetar, snabbinställningsrutor, aviseringar, tre automationer per hem och själva väggplattan förblir gratis. Inget du använder i dag låses.",
   "proBuy": "Skaffa Pro",
   "proBuyPrice": "Skaffa Pro · {price}",
   "proOnce": "En betalning, ingen prenumeration. Köpt på en annan telefon med samma Google-konto? Det låses upp automatiskt.",
@@ -1302,5 +1302,6 @@
   "engineRemove": "Ta bort från hubben",
   "engineRemoveTitle": "Ta bort ZigDash Engine från hubben?",
   "engineRemoveBody": "Automationerna slutar köras. Dina regler ligger kvar på hubben, så en ny installation av ZigDash Engine tar tillbaka dem.",
-  "autoNoTargets": "Det här hemmet har ännu ingen lampa, kontakt, strömbrytare eller rullgardin att styra."
+  "autoNoTargets": "Det här hemmet har ännu ingen lampa, kontakt, strömbrytare eller rullgardin att styra.",
+  "proGetAutomations": "Obegränsade automationer; tre per hem är gratis"
 }

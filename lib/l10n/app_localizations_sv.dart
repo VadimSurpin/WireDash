@@ -3505,7 +3505,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Längre historik och extra för väggplattan. Stöder projektet med öppen källkod.';
+      'Obegränsade automationer, längre historik och extra för väggplattan. Stöder projektet med öppen källkod.';
 
   @override
   String get proUnlocked => 'Upplåst. Tack för att du stöder ZigDash.';
@@ -3533,7 +3533,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Konfiguration, instrumentpaneler, styrning av alla enheter, widgetar, snabbinställningsrutor, aviseringar och själva väggplattan förblir gratis. Inget du använder i dag låses.';
+      'Konfiguration, instrumentpaneler, styrning av alla enheter, widgetar, snabbinställningsrutor, aviseringar, tre automationer per hem och själva väggplattan förblir gratis. Inget du använder i dag låses.';
 
   @override
   String get proBuy => 'Skaffa Pro';
@@ -4193,4 +4193,8 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Det här hemmet har ännu ingen lampa, kontakt, strömbrytare eller rullgardin att styra.';
+
+  @override
+  String get proGetAutomations =>
+      'Obegränsade automationer; tre per hem är gratis';
 }

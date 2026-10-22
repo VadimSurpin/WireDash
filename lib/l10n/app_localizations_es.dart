@@ -3520,7 +3520,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Más historial y extras para la tablet de pared. Apoya el proyecto de código abierto.';
+      'Automatizaciones ilimitadas, más historial y extras para la tablet de pared. Apoya el proyecto de código abierto.';
 
   @override
   String get proUnlocked => 'Desbloqueado. Gracias por apoyar ZigDash.';
@@ -3548,7 +3548,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'La configuración, los paneles, el control de cada dispositivo, los widgets, los iconos de ajustes rápidos, las alertas y la tablet de pared siguen siendo gratis. Nada de lo que usas hoy se bloquea.';
+      'La configuración, los paneles, el control de cada dispositivo, los widgets, los iconos de ajustes rápidos, las alertas, tres automatizaciones por hogar y la tablet de pared siguen siendo gratis. Nada de lo que usas hoy se bloquea.';
 
   @override
   String get proBuy => 'Obtener Pro';
@@ -4210,4 +4210,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Este hogar aún no tiene luces, enchufes, interruptores ni persianas que controlar.';
+
+  @override
+  String get proGetAutomations =>
+      'Automatizaciones ilimitadas; tres por hogar son gratis';
 }

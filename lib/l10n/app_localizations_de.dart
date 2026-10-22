@@ -3523,7 +3523,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Längerer Verlauf und Extras fürs Wandtablet. Unterstützt das Open-Source-Projekt.';
+      'Unbegrenzte Automationen, längerer Verlauf und Extras fürs Wandtablet. Unterstützt das Open-Source-Projekt.';
 
   @override
   String get proUnlocked =>
@@ -3551,7 +3551,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Einrichtung, Dashboards, jede Gerätesteuerung, Widgets, Schnelleinstellungen-Kacheln, Warnungen und das Wandtablet selbst bleiben kostenlos. Nichts, was Sie heute nutzen, wird gesperrt.';
+      'Einrichtung, Dashboards, jede Gerätesteuerung, Widgets, Schnelleinstellungen-Kacheln, Warnungen, drei Automationen pro Zuhause und das Wandtablet selbst bleiben kostenlos. Nichts, was Sie heute nutzen, wird gesperrt.';
 
   @override
   String get proBuy => 'Pro holen';
@@ -4214,4 +4214,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Dieses Zuhause hat noch kein Licht, keine Steckdose, keinen Schalter und keinen Rollladen zum Steuern.';
+
+  @override
+  String get proGetAutomations =>
+      'Unbegrenzte Automationen; drei pro Zuhause sind kostenlos';
 }

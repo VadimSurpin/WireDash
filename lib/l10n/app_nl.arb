@@ -1111,7 +1111,7 @@
   "historyLocked": "Langere geschiedenis hoort bij ZigDash Pro, een eenmalige aankoop.",
   "historyUnlock": "Ontgrendelen",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Langere geschiedenis en extra's voor de wandtablet. Steunt het opensourceproject.",
+  "proAbout": "Onbeperkte automatiseringen, langere geschiedenis en extra's voor de wandtablet. Steunt het opensourceproject.",
   "proUnlocked": "Ontgrendeld. Bedankt dat je ZigDash steunt.",
   "proScreenIntro": "ZigDash is gratis en open source, gemaakt door één persoon in de vrije tijd. Pro is een eenmalige aankoop die het project draaiende houdt.",
   "proWhatYouGet": "Wat je krijgt",
@@ -1119,7 +1119,7 @@
   "proGetWall": "Wandtablet: metingen op de klok, wakker worden bij beweging, een nachtschema en alarmen",
   "proGetFuture": "Elke Pro-functie die later komt, zonder extra kosten",
   "proFreeTitle": "Altijd gratis",
-  "proFreeBody": "Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.",
+  "proFreeBody": "Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen, drie automatiseringen per huis en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.",
   "proBuy": "Pro nemen",
   "proBuyPrice": "Pro nemen · {price}",
   "proOnce": "Eén betaling, geen abonnement. Gekocht op een andere telefoon met hetzelfde Google-account? Het wordt automatisch ontgrendeld.",
@@ -1302,5 +1302,6 @@
   "engineRemove": "Van de hub verwijderen",
   "engineRemoveTitle": "ZigDash Engine van de hub verwijderen?",
   "engineRemoveBody": "Automatiseringen stoppen. Je regels blijven op de hub, dus ZigDash Engine opnieuw installeren brengt ze terug.",
-  "autoNoTargets": "Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen."
+  "autoNoTargets": "Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.",
+  "proGetAutomations": "Onbeperkte automatiseringen; drie per huis zijn gratis"
 }

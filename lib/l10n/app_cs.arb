@@ -1026,7 +1026,7 @@
   "historyLocked": "Delší historie je součástí ZigDash Pro, jednorázového nákupu.",
   "historyUnlock": "Odemknout",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.",
+  "proAbout": "Neomezené automatizace, delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.",
   "proUnlocked": "Odemčeno. Děkuju, že podporuješ ZigDash.",
   "proScreenIntro": "ZigDash je zdarma a open source a ve volném čase ho vyvíjí jeden člověk. Pro je jednorázový nákup, který ho drží při životě.",
   "proWhatYouGet": "Co dostaneš",
@@ -1034,7 +1034,7 @@
   "proGetWall": "Tablet na zdi: měření na hodinách, probuzení pohybem, noční plán a alarmy",
   "proGetFuture": "Každá funkce Pro, která přijde později, bez příplatku",
   "proFreeTitle": "Navždy zdarma",
-  "proFreeBody": "Nastavení, nástěnky, ovládání všech zařízení, widgety, dlaždice Rychlého nastavení, upozornění i samotný tablet na zdi zůstávají zdarma. Nic, co dnes používáš, se nezamkne.",
+  "proFreeBody": "Nastavení, nástěnky, ovládání všech zařízení, widgety, dlaždice Rychlého nastavení, upozornění, tři automatizace na domácnost i samotný tablet na zdi zůstávají zdarma. Nic, co dnes používáš, se nezamkne.",
   "proBuy": "Získat Pro",
   "proBuyPrice": "Získat Pro · {price}",
   "proOnce": "Jedna platba, žádné předplatné. Koupil jsi to na jiném telefonu se stejným účtem Google? Odemkne se automaticky.",
@@ -1217,5 +1217,6 @@
   "engineRemove": "Odebrat z hubu",
   "engineRemoveTitle": "Odebrat ZigDash Engine z hubu?",
   "engineRemoveBody": "Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace ZigDash Engine vrátí.",
-  "autoNoTargets": "Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání."
+  "autoNoTargets": "Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.",
+  "proGetAutomations": "Neomezené automatizace; tři na domácnost jsou zdarma"
 }

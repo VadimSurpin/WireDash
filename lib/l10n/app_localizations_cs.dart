@@ -3510,7 +3510,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.';
+      'Neomezené automatizace, delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.';
 
   @override
   String get proUnlocked => 'Odemčeno. Děkuju, že podporuješ ZigDash.';
@@ -3538,7 +3538,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Nastavení, nástěnky, ovládání všech zařízení, widgety, dlaždice Rychlého nastavení, upozornění i samotný tablet na zdi zůstávají zdarma. Nic, co dnes používáš, se nezamkne.';
+      'Nastavení, nástěnky, ovládání všech zařízení, widgety, dlaždice Rychlého nastavení, upozornění, tři automatizace na domácnost i samotný tablet na zdi zůstávají zdarma. Nic, co dnes používáš, se nezamkne.';
 
   @override
   String get proBuy => 'Získat Pro';
@@ -4200,4 +4200,8 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get autoNoTargets =>
       'Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.';
+
+  @override
+  String get proGetAutomations =>
+      'Neomezené automatizace; tři na domácnost jsou zdarma';
 }

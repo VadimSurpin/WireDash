@@ -1106,7 +1106,7 @@
   "historyLocked": "Dłuższa historia jest częścią ZigDash Pro, jednorazowego zakupu.",
   "historyUnlock": "Odblokuj",
   "proTitle": "ZigDash Pro",
-  "proAbout": "Dłuższa historia i dodatki do tabletu na ścianie. Wspiera projekt open source.",
+  "proAbout": "Bez limitu automatyzacji, dłuższa historia i dodatki do tabletu na ścianie. Wspiera projekt open source.",
   "proUnlocked": "Odblokowane. Dziękujemy za wspieranie ZigDash.",
   "proScreenIntro": "ZigDash jest darmowy i open source, tworzony przez jedną osobę w wolnym czasie. Pro to jednorazowy zakup, dzięki któremu projekt może trwać.",
   "proWhatYouGet": "Co dostajesz",
@@ -1114,7 +1114,7 @@
   "proGetWall": "Tablet na ścianie: odczyty na zegarze, wybudzanie ruchem, harmonogram nocny i alarmy",
   "proGetFuture": "Każdą przyszłą funkcję Pro bez dopłaty",
   "proFreeTitle": "Za darmo na zawsze",
-  "proFreeBody": "Konfiguracja, pulpity, sterowanie każdym urządzeniem, widżety, kafelki szybkich ustawień, alerty i sam tablet na ścianie pozostają darmowe. Nic, czego używasz dziś, nie zostanie zablokowane.",
+  "proFreeBody": "Konfiguracja, pulpity, sterowanie każdym urządzeniem, widżety, kafelki szybkich ustawień, alerty, trzy automatyzacje na dom i sam tablet na ścianie pozostają darmowe. Nic, czego używasz dziś, nie zostanie zablokowane.",
   "proBuy": "Kup Pro",
   "proBuyPrice": "Kup Pro · {price}",
   "proOnce": "Jedna płatność, bez subskrypcji. Kupione na innym telefonie z tym samym kontem Google? Odblokuje się automatycznie.",
@@ -1297,5 +1297,6 @@
   "engineRemove": "Usuń z huba",
   "engineRemoveTitle": "Usunąć ZigDash Engine z huba?",
   "engineRemoveBody": "Automatyzacje przestaną działać. Reguły zostają na hubie, więc ponowna instalacja ZigDash Engine je przywróci.",
-  "autoNoTargets": "Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania."
+  "autoNoTargets": "Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania.",
+  "proGetAutomations": "Bez limitu automatyzacji; trzy na dom są darmowe"
 }
