@@ -4213,4 +4213,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Unlimited automations; three per home are free';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Delete this automation? It stops running on your hub.';
 }

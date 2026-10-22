@@ -4221,4 +4221,8 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Neomezené automatizace; tři na domácnost jsou zdarma';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Smazat tuto automatizaci? Přestane běžet na hubu.';
 }

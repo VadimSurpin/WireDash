@@ -1376,5 +1376,6 @@
   "engineRemoveTitle": "להסיר את ZigDash Engine מהרכזת?",
   "engineRemoveBody": "האוטומציות יפסיקו לרוץ. הכללים נשארים ברכזת, כך שהתקנה מחדש של ZigDash Engine תחזיר אותם.",
   "autoNoTargets": "בבית הזה עוד אין אור, שקע, מתג או תריס לשליטה.",
-  "proGetAutomations": "אוטומציות ללא הגבלה; שלוש לכל בית בחינם"
+  "proGetAutomations": "אוטומציות ללא הגבלה; שלוש לכל בית בחינם",
+  "autoDeleteConfirm": "למחוק את האוטומציה הזו? היא תפסיק לרוץ ברכזת."
 }

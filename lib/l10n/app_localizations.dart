@@ -7457,6 +7457,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlimited automations; three per home are free'**
   String get proGetAutomations;
+
+  /// No description provided for @autoDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this automation? It stops running on your hub.'**
+  String get autoDeleteConfirm;
 }
 
 class _AppLocalizationsDelegate

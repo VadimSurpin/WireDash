@@ -4231,4 +4231,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Automazioni illimitate; tre per casa sono gratuite';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Eliminare questa automazione? Smette di girare sull\'hub.';
 }

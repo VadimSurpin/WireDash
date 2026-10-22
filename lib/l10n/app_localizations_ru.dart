@@ -4214,4 +4214,8 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Автоматизации без ограничений; три на дом бесплатно';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Удалить эту автоматизацию? Она перестанет работать на хабе.';
 }

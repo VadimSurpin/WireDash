@@ -1232,5 +1232,6 @@
   "engineRemoveTitle": "Retirer ZigDash Engine du hub ?",
   "engineRemoveBody": "Les automatisations s'arrêtent. Vos règles restent sur le hub : réinstaller ZigDash Engine les fait revenir.",
   "autoNoTargets": "Ce domicile n'a encore aucune lumière, prise, interrupteur ou volet à commander.",
-  "proGetAutomations": "Automatisations illimitées ; trois par domicile sont gratuites"
+  "proGetAutomations": "Automatisations illimitées ; trois par domicile sont gratuites",
+  "autoDeleteConfirm": "Supprimer cette automatisation ? Elle ne tournera plus sur votre hub."
 }
