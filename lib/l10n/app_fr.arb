@@ -1364,5 +1364,8 @@
   "wbAutoAdded": "Modules ajoutés : {count}.",
   "discoverWirenBoardNone": "Aucune commande Wiren Board trouvée. Vérifiez l’accès de l’utilisateur MQTT aux métadonnées /devices et la publication des métadonnées conservées par les pilotes.",
   "wbClearSearch": "Effacer la recherche",
-  "discoverWirenBoardHint": "Les modules détectés sont ajoutés automatiquement à ce tableau de bord. Utilisez + pour les équipements intégrés, ou dépliez un appareil pour choisir ses commandes."
+  "discoverWirenBoardHint": "Les modules détectés sont ajoutés automatiquement à ce tableau de bord. Utilisez + pour les équipements intégrés, ou dépliez un appareil pour choisir ses commandes.",
+  "wbOpenControls": "Ouvrir les commandes",
+  "wbAddSelected": "Ajouter les propriétés sélectionnées",
+  "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau."
 }

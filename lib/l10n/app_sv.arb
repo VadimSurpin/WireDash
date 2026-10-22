@@ -1510,5 +1510,8 @@
   "wbAutoAdded": "Tillagda moduler: {count}.",
   "discoverWirenBoardNone": "Inga Wiren Board-kontroller hittades. Kontrollera att MQTT-användaren kan läsa /devices-metadata och att drivrutinerna har publicerat behållna metadata.",
   "wbClearSearch": "Rensa sökning",
-  "discoverWirenBoardHint": "Upptäckta moduler läggs automatiskt till på den här kontrollpanelen. Använd + för inbyggda enheter eller expandera en enhet för att välja enskilda kontroller."
+  "discoverWirenBoardHint": "Upptäckta moduler läggs automatiskt till på den här kontrollpanelen. Använd + för inbyggda enheter eller expandera en enhet för att välja enskilda kontroller.",
+  "wbOpenControls": "Öppna kontroller",
+  "wbAddSelected": "Lägg till valda egenskaper",
+  "wbChooseProperties": "Välj egenskaper att lägga till som en panel."
 }

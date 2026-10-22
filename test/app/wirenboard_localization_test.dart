@@ -18,6 +18,9 @@ void main() {
       'wbAutoAdded',
       'wbAutoAddFailed',
       'wbBuiltinsAvailable',
+      'wbOpenControls',
+      'wbAddSelected',
+      'wbChooseProperties',
     ];
     final english =
         jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync()) as Map;

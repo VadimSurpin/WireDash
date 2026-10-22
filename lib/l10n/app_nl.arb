@@ -1510,5 +1510,8 @@
   "wbAutoAdded": "Modules toegevoegd: {count}.",
   "discoverWirenBoardNone": "Geen Wiren Board-bedieningselementen gevonden. Controleer of de MQTT-gebruiker /devices-metadata kan lezen en of de stuurprogramma’s behouden metadata publiceren.",
   "wbClearSearch": "Zoekopdracht wissen",
-  "discoverWirenBoardHint": "Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen."
+  "discoverWirenBoardHint": "Gevonden modules worden automatisch aan dit dashboard toegevoegd. Gebruik + voor ingebouwde apparaten, of vouw een apparaat uit om afzonderlijke bedieningselementen te kiezen.",
+  "wbOpenControls": "Bediening openen",
+  "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
+  "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen."
 }

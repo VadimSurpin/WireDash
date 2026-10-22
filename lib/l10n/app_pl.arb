@@ -1510,5 +1510,8 @@
   "wbAutoAdded": "Dodane moduły: {count}.",
   "discoverWirenBoardNone": "Nie znaleziono elementów sterujących Wiren Board. Sprawdź dostęp użytkownika MQTT do metadanych /devices oraz publikowanie metadanych z flagą retained przez sterowniki.",
   "wbClearSearch": "Wyczyść wyszukiwanie",
-  "discoverWirenBoardHint": "Wykryte moduły są automatycznie dodawane do tego pulpitu. Użyj + dla urządzeń wbudowanych lub rozwiń urządzenie, aby wybrać poszczególne elementy sterujące."
+  "discoverWirenBoardHint": "Wykryte moduły są automatycznie dodawane do tego pulpitu. Użyj + dla urządzeń wbudowanych lub rozwiń urządzenie, aby wybrać poszczególne elementy sterujące.",
+  "wbOpenControls": "Otwórz elementy sterujące",
+  "wbAddSelected": "Dodaj wybrane właściwości",
+  "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel."
 }

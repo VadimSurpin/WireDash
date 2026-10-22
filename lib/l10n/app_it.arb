@@ -1290,5 +1290,8 @@
   "wbAutoAdded": "Moduli aggiunti: {count}.",
   "discoverWirenBoardNone": "Nessun controllo Wiren Board trovato. Verifica l’accesso dell’utente MQTT ai metadati /devices e la pubblicazione dei metadati mantenuti dai driver.",
   "wbClearSearch": "Cancella ricerca",
-  "discoverWirenBoardHint": "I moduli rilevati vengono aggiunti automaticamente a questa dashboard. Usa + per i dispositivi integrati oppure espandi un dispositivo per scegliere i singoli controlli."
+  "discoverWirenBoardHint": "I moduli rilevati vengono aggiunti automaticamente a questa dashboard. Usa + per i dispositivi integrati oppure espandi un dispositivo per scegliere i singoli controlli.",
+  "wbOpenControls": "Apri controlli",
+  "wbAddSelected": "Aggiungi proprietà selezionate",
+  "wbChooseProperties": "Seleziona le proprietà da aggiungere come un unico pannello."
 }

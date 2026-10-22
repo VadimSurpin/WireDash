@@ -1290,5 +1290,8 @@
   "wbAutoAdded": "Přidané moduly: {count}.",
   "discoverWirenBoardNone": "Nebyly nalezeny žádné ovládací prvky Wiren Board. Zkontrolujte přístup MQTT uživatele k metadatům /devices a publikování metadat s příznakem retained.",
   "wbClearSearch": "Vymazat hledání",
-  "discoverWirenBoardHint": "Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky."
+  "discoverWirenBoardHint": "Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky.",
+  "wbOpenControls": "Otevřít ovládací prvky",
+  "wbAddSelected": "Přidat vybrané vlastnosti",
+  "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel."
 }

@@ -1510,5 +1510,8 @@
   "wbAutoAdded": "Moduler lagt til: {count}.",
   "discoverWirenBoardNone": "Fant ingen Wiren Board-kontroller. Kontroller at MQTT-brukeren kan lese /devices-metadata, og at driverne har publisert beholdte metadata.",
   "wbClearSearch": "Tøm søk",
-  "discoverWirenBoardHint": "Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller."
+  "discoverWirenBoardHint": "Oppdagede moduler legges automatisk til på dette dashbordet. Bruk + for innebygde enheter, eller utvid en enhet for å velge enkeltkontroller.",
+  "wbOpenControls": "Åpne kontroller",
+  "wbAddSelected": "Legg til valgte egenskaper",
+  "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel."
 }

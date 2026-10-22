@@ -20,7 +20,8 @@ built-ins. Search matches both device and control names. Added modules show a
 check after automatic import. Use the + button next to a built-in to add it as
 one panel, or expand any device and select an individual control. Review the
 suggested individual tile and save it. Tap a whole-device panel to
-open its full, scrollable set of controls. The discovery screen also has a Zigbee2MQTT source selector.
+collapse or expand its compact inline controls. The header’s expand-view button
+opens a larger, draggable and scrollable view. The discovery screen also has a Zigbee2MQTT source selector.
 
 Discovery listens for retained metadata and subsequent changes. It supports
 both current JSON `/meta` messages and legacy `/meta/type`, `/meta/readonly`,
@@ -80,3 +81,19 @@ composition, cached wildcard replay, subscription cleanup, source selection,
 and creating/editing suggested configurations through the actual tile form.
 Whole-device tests check config round-trips, read-only controls, scalar
 commands, cached offline controls, grouping, search, and preserved expansion.
+
+## Device panels
+
+Device panels follow the layout of [Wiren Board HomeUI cards](https://github.com/wirenboard/homeui/tree/master/frontend/src/components/card)
+and [control cells](https://github.com/wirenboard/homeui/tree/master/frontend/src/components/cell):
+a framed card with a collapsible header, channel names at the left, values and
+units at the right, and inline switches, dropdowns, sliders and explicit input
+confirmation. Read-only channels cannot send commands. The larger view uses
+one scroll controller for the draggable sheet and its contents.
+
+In **All devices**, tap a device to expand its property tree. Check the
+properties to include, then use **Add selected properties**. The add sheet asks
+for a panel name and target dashboard. With no properties checked, the same
+button adds the whole device. Selected-property panels keep their saved subset
+even when new metadata adds more controls. Automatic whole-device imports do
+not overwrite their selection or custom label.

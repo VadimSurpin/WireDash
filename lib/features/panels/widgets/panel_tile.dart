@@ -334,16 +334,10 @@ class PanelTile extends ConsumerWidget {
       ),
       PanelType.device => config is WirenBoardDeviceConfig
           ? WirenBoardDevicePanel(
+              key: ValueKey(panel.id),
               connectionId: connectionId,
               panel: panel,
               config: config,
-              controlBuilder: (control) => PanelTile(
-                connectionId: connectionId,
-                dashboardId: dashboardId,
-                topicPrefix: null,
-                panel: control,
-                locked: true,
-              ),
             )
           : DeviceTilePanel(
               connectionId: connectionId,

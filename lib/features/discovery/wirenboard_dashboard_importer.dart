@@ -42,16 +42,60 @@ class WirenBoardDashboardImporter {
     return operation;
   }
 
+  /// A deliberate add asks for a label. Selected-property panels are separate
+  /// from the automatically maintained whole-device panel.
+  Future<void> addDevice(
+    WirenBoardDevice device, {
+    required String label,
+    List<String>? controlIds,
+  }) {
+    final operation = _pending.then((_) async {
+      if (controlIds == null) {
+        await _import([device], true, labels: {device.id: label});
+        return;
+      }
+      final ids = device.controls
+          .where((c) => controlIds.contains(c.id))
+          .map((c) => c.id)
+          .toList();
+      if (ids.isEmpty) throw ArgumentError('No selected controls');
+      final tiles = await _panels.getByDashboard(_dashboardId);
+      final next = tiles.fold<int>(
+        0,
+        (n, p) => p.sortOrder >= n ? p.sortOrder + 1 : n,
+      );
+      await _panels.create(
+        dashboardId: _dashboardId,
+        name: label,
+        type: PanelType.device,
+        topic: '',
+        subscribeTopic: '',
+        topicPrefixOverride: '/devices/${device.id}',
+        width: PanelWidth.wide,
+        sortOrder: next,
+        config: WirenBoardDeviceConfig(device: device, controlIds: ids),
+      );
+    });
+    _pending = operation.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    return operation;
+  }
+
   Future<int> _import(
     List<WirenBoardDevice> devices,
-    bool includeBuiltins,
-  ) async {
+    bool includeBuiltins, {
+    Map<String, String> labels = const {},
+  }) async {
     final tiles = await _panels.getByDashboard(_dashboardId);
     final existing = <String, Panel>{};
     for (final tile in tiles) {
       if (tile.type != PanelType.device) continue;
       final config = PanelConfig.decode(tile.type, tile.config);
-      if (config is WirenBoardDeviceConfig) existing[config.device.id] = tile;
+      if (config is WirenBoardDeviceConfig && config.controlIds == null) {
+        existing[config.device.id] = tile;
+      }
     }
     final sections = await _sections.getByDashboard(_dashboardId);
     final sectionIds = {
@@ -72,10 +116,10 @@ class WirenBoardDashboardImporter {
       final config = WirenBoardDeviceConfig(device: device);
       final tile = existing[device.id];
       if (tile != null) {
-        if (tile.config != config.encode()) {
+        if (tile.config != config.encode() || labels.containsKey(device.id)) {
           await _panels.update(
             id: tile.id,
-            name: tile.name,
+            name: labels[device.id] ?? tile.name,
             topic: tile.topic,
             subscribeTopic: tile.subscribeTopic,
             topicPrefixOverride: tile.topicPrefixOverride,
@@ -97,7 +141,9 @@ class WirenBoardDashboardImporter {
       );
       await _panels.create(
         dashboardId: _dashboardId,
-        name: device.title(_l10n.localeName.split('_').first),
+        name:
+            labels[device.id] ??
+            device.title(_l10n.localeName.split('_').first),
         type: PanelType.device,
         topic: '',
         subscribeTopic: '',
