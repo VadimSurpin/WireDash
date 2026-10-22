@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Wiren Board styled dashboard icon</title>
+  <desc id="description">The supplied app icon's staggered four-panel layout, with a Wiren Board green background and softly waisted, rounded white and pale-green panels.</desc>
+  <!-- Upper-left: tall white panel, gently pinched along its long sides. -->
+  <path fill="#000000" transform="translate(129 129)" d="
+    M24 0 H76
+    C93 0 100 8 100 25
+    C100 43 95.5 52 95.5 71
+    C95.5 90 100 99 100 117
+    C100 134 93 142 76 142
+    H24 C7 142 0 134 0 117
+    C0 99 4.5 90 4.5 71
+    C4.5 52 0 43 0 25
+    C0 8 7 0 24 0 Z"/>
+  <!-- Upper-right: horizontal pale panel, with the WB-style central waist. -->
+  <path fill="#000000" transform="translate(256 129)" d="
+    M24 0
+    C42 0 46.5 3.8 64.5 3.8
+    C82.5 3.8 87 0 105 0
+    C122 0 129 8 129 25
+    V61 C129 78 122 86 105 86
+    C87 86 82.5 82.2 64.5 82.2
+    C46.5 82.2 42 86 24 86
+    C7 86 0 78 0 61
+    V25 C0 8 7 0 24 0 Z"/>
+  <!-- Lower-left: short pale panel. -->
+  <path fill="#000000" transform="translate(129 299)" d="
+    M23 0
+    C35 0 38 3.8 50 3.8
+    C62 3.8 65 0 77 0
+    C93 0 100 8 100 25
+    V61 C100 78 93 86 77 86
+    C65 86 62 82.2 50 82.2
+    C38 82.2 35 86 23 86
+    C7 86 0 78 0 61
+    V25 C0 8 7 0 23 0 Z"/>
+  <!-- Lower-right: tall white panel. -->
+  <path fill="#000000" transform="translate(256 242)" d="
+    M25 0 H104
+    C121 0 129 8 129 25
+    C129 43.5 123.8 53 123.8 71.5
+    C123.8 90 129 99.5 129 118
+    C129 135 121 143 104 143
+    H25 C8 143 0 135 0 118
+    C0 99.5 5.2 90 5.2 71.5
+    C5.2 53 0 43.5 0 25
+    C0 8 8 0 25 0 Z"/>
+</svg>

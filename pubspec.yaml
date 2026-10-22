@@ -130,22 +130,22 @@ flutter:
       fonts:
         - asset: assets/fonts/MaterialSymbolsRounded-subset.ttf
 
-# Launcher icon: the Signal tile grid (docs/design/signal-2.0.md §9).
-# tool/icons/render_signal_icon.sh renders tool/icons/signal/*.svg to
-# assets/icon/*.png and runs flutter_launcher_icons.
+# Launcher icon: the selected Wiren Board green four-panel design.
+# tool/icons/render_wirenboard_icon.sh renders the SVG layers and regenerates
+# platform launcher icons. Splash assets remain independent.
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icon/icon.png"
-  adaptive_icon_background: "#F6F3EC"
-  adaptive_icon_foreground: "assets/icon/foreground.png"
-  adaptive_icon_monochrome: "assets/icon/monochrome.png"
+  image_path: "assets/icon/wirenboard-play/icon.png"
+  adaptive_icon_background: "#5CB400"
+  adaptive_icon_foreground: "assets/icon/wirenboard-play/foreground.png"
+  adaptive_icon_monochrome: "assets/icon/wirenboard-play/monochrome.png"
   remove_alpha_ios: true
   web:
     generate: true
-    image_path: "assets/icon/icon.png"
-    background_color: "#F6F3EC"
-    theme_color: "#F6F3EC"
+    image_path: "assets/icon/wirenboard-play/icon.png"
+    background_color: "#5CB400"
+    theme_color: "#5CB400"
 
 # Native splash: `dart run flutter_native_splash:create`.
 # Signal ground (ivory; near-black in dark) with the tile-grid logo centered.
