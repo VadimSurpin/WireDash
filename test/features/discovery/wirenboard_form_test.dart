@@ -90,6 +90,9 @@ void main() {
           '{"type":"temperature","readonly":true}',
         );
       }
+      if (entry.key == 'switch' || entry.key == 'switch input selector') {
+        discovery.apply('$topic/meta/readonly', '1');
+      }
       final device = discovery.devices.single;
       final native = entry.key == 'native display edit';
       final custom = entry.key.contains('display edit');
