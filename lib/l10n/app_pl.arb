@@ -1302,5 +1302,6 @@
   "engineRemoveTitle": "Usunąć ZigDash Engine z huba?",
   "engineRemoveBody": "Automatyzacje przestaną działać. Reguły zostają na hubie, więc ponowna instalacja ZigDash Engine je przywróci.",
   "autoNoTargets": "Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania.",
-  "proGetAutomations": "Bez limitu automatyzacji; trzy na dom są darmowe"
+  "proGetAutomations": "Bez limitu automatyzacji; trzy na dom są darmowe",
+  "autoDeleteConfirm": "Usunąć tę automatyzację? Przestanie działać na hubie."
 }

@@ -4176,4 +4176,8 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get proGetAutomations => 'אוטומציות ללא הגבלה; שלוש לכל בית בחינם';
+
+  @override
+  String get autoDeleteConfirm =>
+      'למחוק את האוטומציה הזו? היא תפסיק לרוץ ברכזת.';
 }

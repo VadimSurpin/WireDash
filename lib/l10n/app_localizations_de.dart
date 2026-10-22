@@ -4235,4 +4235,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Unbegrenzte Automationen; drei pro Zuhause sind kostenlos';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Diese Automation löschen? Sie läuft dann nicht mehr auf Ihrem Hub.';
 }

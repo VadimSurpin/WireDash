@@ -4220,4 +4220,8 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Bez limitu automatyzacji; trzy na dom są darmowe';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Usunąć tę automatyzację? Przestanie działać na hubie.';
 }

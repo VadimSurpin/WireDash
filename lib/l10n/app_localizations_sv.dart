@@ -4214,4 +4214,8 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Obegränsade automationer; tre per hem är gratis';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Ta bort den här automationen? Den slutar köras på hubben.';
 }

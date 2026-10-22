@@ -211,6 +211,19 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
   Future<void> _delete() async {
     final id = widget.existing?.id;
     if (id == null) return;
+    final l10n = context.l10n;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(l10n.autoDeleteConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l10n.autoDelete)),
+        ],
+      ),
+    );
+    if (yes != true || !mounted) return;
     final ok = await ref.read(automationsRepoProvider).delete(widget.connectionId, id);
     if (!mounted) return;
     if (ok) {
@@ -527,7 +540,7 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
           Wrap(spacing: 8, children: [
             for (final s in actionStatesFor(target))
               ChoiceChip(
-                label: Text(valueText(l10n, 'state', s)),
+                label: Text(_capitalized(valueText(l10n, 'state', s))),
                 selected: _aState == s,
                 onSelected: (_) => setState(() => _aState = s),
               ),

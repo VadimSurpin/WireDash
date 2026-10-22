@@ -4212,4 +4212,8 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get proGetAutomations =>
       'Ubegrensede automasjoner; tre per hjem er gratis';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Slette denne automasjonen? Den slutter å kjøre på huben.';
 }
