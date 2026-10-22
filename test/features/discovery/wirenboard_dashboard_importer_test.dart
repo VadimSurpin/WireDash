@@ -81,6 +81,93 @@ void main() {
   tearDown(() => db.close());
 
   test(
+    'rediscovery preserves card labels and visibility without creating another whole-device panel',
+    () async {
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      await importer.importDevices(discovery.devices);
+      final saved = await panels.getByDashboard(dashboard);
+      final tile = saved.firstWhere(
+        (p) => p.topicPrefixOverride == '/devices/wb-mr6_10',
+      );
+      final config =
+          PanelConfig.decode(tile.type, tile.config) as WirenBoardDeviceConfig;
+      const display = DevicePanelDisplay(
+        properties: ['Relay 1'],
+        labels: {'Relay 1': 'Kitchen'},
+      );
+      await panels.update(
+        id: tile.id,
+        name: tile.name,
+        topic: tile.topic,
+        width: tile.width,
+        topicPrefixOverride: tile.topicPrefixOverride,
+        config: WirenBoardDeviceConfig(device: config.device, display: display),
+      );
+      discovery.apply(
+        '/devices/wb-mr6_10/controls/Relay 2/meta',
+        '{"type":"switch"}',
+      );
+      expect(await importer.importDevices(discovery.devices), 0);
+      final updated = await panels.getByDashboard(dashboard);
+      expect(updated.length, saved.length);
+      final panel = updated.singleWhere((p) => p.id == tile.id);
+      final decoded =
+          PanelConfig.decode(panel.type, panel.config)
+              as WirenBoardDeviceConfig;
+      expect(decoded.controlIds, isNull);
+      expect(decoded.device.controls, hasLength(2));
+      expect(decoded.display.toJson(), display.toJson());
+    },
+  );
+
+  test(
+    'chosen property widgets keep scalar topics and read-only controls reject writable widgets',
+    () async {
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      final device = discovery.devices.firstWhere((d) => d.id == 'wb-msw_11');
+      await importer.addControl(
+        device,
+        device.controls.single,
+        label: 'Temperature bar',
+        widgetType: PanelType.progress,
+      );
+      final panel = (await panels.getByDashboard(dashboard)).single;
+      expect(panel.type, PanelType.progress);
+      expect(panel.name, 'Temperature bar');
+      expect(
+        panel.topicPrefixOverride,
+        '/devices/wb-msw_11/controls/Temperature',
+      );
+      expect(panel.subscribeTopic, '');
+      expect(
+        (PanelConfig.decode(panel.type, panel.config) as ProgressConfig)
+            .jsonPath,
+        isNull,
+      );
+      await expectLater(
+        importer.addControl(
+          device,
+          device.controls.single,
+          label: 'Invalid',
+          widgetType: PanelType.toggle,
+        ),
+        throwsArgumentError,
+      );
+      expect(await panels.getByDashboard(dashboard), hasLength(1));
+    },
+  );
+
+  test(
     'rediscovery moves service and mirrored panels while preserving custom labels, subsets and sections',
     () async {
       final importer = WirenBoardDashboardImporter(

@@ -22,6 +22,11 @@ void main() {
       'wbOpenControls',
       'wbAddSelected',
       'wbChooseProperties',
+      'panelPropertyWidget',
+      'panelDisplayTitle',
+      'panelDisplayHint',
+      'panelDisplayLabel',
+      'panelDisplayReset',
     ];
     final english =
         jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync()) as Map;

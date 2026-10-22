@@ -1265,5 +1265,10 @@
   "wbOpenControls": "פתיחת פקדים",
   "wbAddSelected": "הוספת המאפיינים שנבחרו",
   "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת.",
-  "wbZ2mDevices": "התקני Z2M של Wirenboard"
+  "wbZ2mDevices": "התקני Z2M של Wirenboard",
+  "panelPropertyWidget": "רכיב תצוגה",
+  "panelDisplayTitle": "תוכן הכרטיס",
+  "panelDisplayHint": "בחרו אילו מאפיינים יוצגו בכרטיס. שמות מותאמים אישית חלים רק על הלוח הזה. פתחו את הכרטיס כדי לגשת לכל פקדי ההתקן.",
+  "panelDisplayLabel": "שם מותאם אישית (לא חובה)",
+  "panelDisplayReset": "איפוס תוכן הכרטיס והשמות"
 }

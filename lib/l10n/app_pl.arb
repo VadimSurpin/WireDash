@@ -1191,5 +1191,10 @@
   "wbOpenControls": "Otwórz elementy sterujące",
   "wbAddSelected": "Dodaj wybrane właściwości",
   "wbChooseProperties": "Wybierz właściwości do dodania jako jeden panel.",
-  "wbZ2mDevices": "Urządzenia Z2M w Wirenboard"
+  "wbZ2mDevices": "Urządzenia Z2M w Wirenboard",
+  "panelPropertyWidget": "Widżet",
+  "panelDisplayTitle": "Zawartość kafelka",
+  "panelDisplayHint": "Wybierz właściwości widoczne na tym kafelku. Własne etykiety dotyczą tylko tego panelu. Otwórz kafelek, aby uzyskać dostęp do wszystkich elementów sterujących urządzenia.",
+  "panelDisplayLabel": "Własna etykieta (opcjonalnie)",
+  "panelDisplayReset": "Przywróć zawartość i etykiety kafelka"
 }

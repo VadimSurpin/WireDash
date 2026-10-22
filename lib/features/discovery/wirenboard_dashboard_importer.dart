@@ -62,6 +62,7 @@ class WirenBoardDashboardImporter {
     WirenBoardDevice device,
     WirenBoardControl control, {
     required String label,
+    PanelType? widgetType,
   }) {
     final operation = _pending.then((_) async {
       if (control.deviceId != device.id ||
@@ -72,6 +73,7 @@ class WirenBoardDashboardImporter {
         device,
         control,
         language: _l10n.localeName.split('_').first,
+        widgetType: widgetType,
       );
       final tiles = await _panels.getByDashboard(_dashboardId);
       await _panels.create(
@@ -182,6 +184,7 @@ class WirenBoardDashboardImporter {
         final config = WirenBoardDeviceConfig(
           device: device,
           controlIds: entry.config.controlIds,
+          display: entry.config.display,
         );
         final name = tile.id == whole?.tile.id
             ? labels[device.id] ?? tile.name

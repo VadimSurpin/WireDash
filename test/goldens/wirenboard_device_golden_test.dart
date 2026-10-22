@@ -8,6 +8,7 @@ import 'package:zigdash/features/discovery/providers/wirenboard_discovery_provid
 import 'package:zigdash/features/panels/models/panel_config.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
 import 'package:zigdash/features/panels/widgets/panel_tile.dart';
+import 'package:zigdash/features/panels/widgets/device_panel_display_editor.dart';
 import 'package:zigdash/mqtt/mqtt_status.dart';
 import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
@@ -82,6 +83,46 @@ Widget _gridCell(Widget child) => IntrinsicHeight(
 );
 
 void main() {
+  goldenTest(
+    'Device panel display editor',
+    fileName: 'device_panel_display_editor',
+    builder: () => goldenMatrix(
+      variants: [
+        phoneMatrix[0],
+        phoneMatrix[1],
+        phoneMatrix[2],
+        phoneMatrix[4],
+      ],
+      overrides: () => [],
+      screen: () => Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Builder(
+              builder: (context) => DevicePanelDisplayEditor(
+                properties: [
+                  for (final c in _device.controls)
+                    (
+                      id: c.id,
+                      label: c.title(
+                        Localizations.localeOf(context).languageCode,
+                      ),
+                    ),
+                ],
+                defaults: const ['Relay', 'Temperature', 'Humidity'],
+                value: const DevicePanelDisplay(
+                  properties: ['Relay', 'Temperature'],
+                  labels: {'Relay': 'Kitchen'},
+                ),
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
   goldenTest(
     'Wiren Board device card',
     fileName: 'wirenboard_device_card',

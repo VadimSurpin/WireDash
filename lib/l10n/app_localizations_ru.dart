@@ -3816,4 +3816,20 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wbZ2mDevices => 'Устройства Z2M Wirenboard';
+
+  @override
+  String get panelPropertyWidget => 'Виджет';
+
+  @override
+  String get panelDisplayTitle => 'Содержимое карточки';
+
+  @override
+  String get panelDisplayHint =>
+      'Выберите свойства для этой карточки. Свои подписи действуют только в этой панели. Откройте карточку для доступа ко всем контролам устройства.';
+
+  @override
+  String get panelDisplayLabel => 'Своя подпись (необязательно)';
+
+  @override
+  String get panelDisplayReset => 'Сбросить содержимое и подписи';
 }

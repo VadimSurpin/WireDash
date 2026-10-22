@@ -3823,4 +3823,20 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get wbZ2mDevices => 'Urządzenia Z2M w Wirenboard';
+
+  @override
+  String get panelPropertyWidget => 'Widżet';
+
+  @override
+  String get panelDisplayTitle => 'Zawartość kafelka';
+
+  @override
+  String get panelDisplayHint =>
+      'Wybierz właściwości widoczne na tym kafelku. Własne etykiety dotyczą tylko tego panelu. Otwórz kafelek, aby uzyskać dostęp do wszystkich elementów sterujących urządzenia.';
+
+  @override
+  String get panelDisplayLabel => 'Własna etykieta (opcjonalnie)';
+
+  @override
+  String get panelDisplayReset => 'Przywróć zawartość i etykiety kafelka';
 }

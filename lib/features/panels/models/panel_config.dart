@@ -534,11 +534,47 @@ class AutoCloseConfig extends PanelConfig {
       );
 }
 
+/// Presentation overrides belong to a saved panel, never to broker metadata.
+class DevicePanelDisplay {
+  const DevicePanelDisplay({this.properties, this.labels = const {}});
+  final List<String>? properties;
+  final Map<String, String> labels;
+  bool get isDefault => properties == null && labels.isEmpty;
+  String label(String id, String fallback) => labels[id] ?? fallback;
+  Map<String, dynamic> toJson() => {
+    if (properties != null) 'properties': properties,
+    if (labels.isNotEmpty) 'labels': labels,
+  };
+  static DevicePanelDisplay fromJson(Object? value) {
+    if (value is! Map) return const DevicePanelDisplay();
+    return DevicePanelDisplay(
+      properties: value['properties'] is List
+          ? (value['properties'] as List).whereType<String>().toList()
+          : null,
+      labels: value['labels'] is Map
+          ? {
+              for (final entry in (value['labels'] as Map).entries)
+                if (entry.key is String &&
+                    entry.value is String &&
+                    (entry.value as String).trim().isNotEmpty)
+                  entry.key as String: (entry.value as String).trim(),
+            }
+          : const {},
+    );
+  }
+}
+
 /// A device tile: the device's class and exposes, cached when the tile was
 /// added so it renders with the broker unreachable. The device itself is the
 /// panel's `deviceIeee`; its topics are resolved from the friendly name.
 class DeviceTileConfig extends PanelConfig {
-  const DeviceTileConfig({required this.profile, this.model});
+  const DeviceTileConfig({
+    required this.profile,
+    this.model,
+    this.display = const DevicePanelDisplay(),
+  });
+
+  final DevicePanelDisplay display;
 
   final DeviceProfile profile;
 
@@ -548,20 +584,28 @@ class DeviceTileConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'profile': profile.toJson(),
-        if (model != null) 'model': model,
-      };
+    'profile': profile.toJson(),
+    if (model != null) 'model': model,
+    if (!display.isDefault) 'display': display.toJson(),
+  };
 
   static DeviceTileConfig fromJson(Map<String, dynamic> j) => DeviceTileConfig(
-        profile: DeviceProfile.fromJson(j['profile']),
-        model: j['model'] as String?,
-      );
+    profile: DeviceProfile.fromJson(j['profile']),
+    model: j['model'] as String?,
+    display: DevicePanelDisplay.fromJson(j['display']),
+  );
 }
 
 /// A whole WB device. Cache metadata so its controls remain accessible when
 /// offline; values are subscribed to independently on their scalar topics.
 class WirenBoardDeviceConfig extends PanelConfig {
-  const WirenBoardDeviceConfig({required this.device, this.controlIds});
+  const WirenBoardDeviceConfig({
+    required this.device,
+    this.controlIds,
+    this.display = const DevicePanelDisplay(),
+  });
+
+  final DevicePanelDisplay display;
 
   final WirenBoardDevice device;
 
@@ -585,6 +629,7 @@ class WirenBoardDeviceConfig extends PanelConfig {
     'protocol': 'wirenboard',
     'device': device.toJson(),
     if (controlIds != null) 'controlIds': controlIds,
+    if (!display.isDefault) 'display': display.toJson(),
   };
 
   static WirenBoardDeviceConfig fromJson(Map<String, dynamic> json) =>
@@ -593,6 +638,7 @@ class WirenBoardDeviceConfig extends PanelConfig {
           Map<String, dynamic>.from(json['device'] as Map),
         ),
         controlIds: (json['controlIds'] as List?)?.cast<String>(),
+        display: DevicePanelDisplay.fromJson(json['display']),
       );
 }
 

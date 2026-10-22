@@ -23,6 +23,16 @@ import '../providers/panel_value_provider.dart';
 import '../services/auto_close_config_publisher.dart';
 import '../services/automation_config_publisher.dart';
 
+import '../widgets/device_panel_display_editor.dart';
+
+import '../widgets/property_widget_selector.dart';
+
+import '../models/device_display_properties.dart';
+
+import '../../discovery/providers/wirenboard_discovery_provider.dart';
+
+import '../widgets/device_sheet.dart' show humanizeProperty;
+
 part 'panel_form_screen.fields.dart';
 part 'panel_form_screen.topics.dart';
 
@@ -155,8 +165,7 @@ class _State extends ConsumerState<PanelFormScreen> {
   // Scene field — preserved across generic-form edits (no UI field here; scene
   // panels are created/edited from the Scenes screen).
   String _sceneId = '';
-  // Device tile config — preserved as loaded; its topics and exposes are
-  // managed from the device, so the form edits only name and size.
+  // Device metadata is preserved; display overrides apply only to this panel.
   PanelConfig? _deviceConfig;
 
   // Reading fields
@@ -396,6 +405,7 @@ class _State extends ConsumerState<PanelFormScreen> {
       _progressUnit.text = cfg.unit ?? '';
     } else if (cfg is OptionsConfig) {
       _optionsJsonPath.text = cfg.jsonPath ?? '';
+      for (final row in _optionRows) { row.dispose(); }
       _optionRows
         ..clear()
         ..addAll(cfg.options.map((o) => _OptionRow(
@@ -435,11 +445,15 @@ class _State extends ConsumerState<PanelFormScreen> {
       _readingStyle = cfg.style;
       _readingMin.text = _BandRow._num(cfg.min);
       _readingMax.text = _BandRow._num(cfg.max);
+      for (final row in _bandRows) { row.dispose(); }
+      _bandRows.clear();
       for (final b in cfg.bands) {
         _bandRows.add(_BandRow(from: b.from, to: b.to, tone: b.tone));
       }
     }
   }
+
+  void _setDeviceConfig(PanelConfig config) => setState(() => _deviceConfig = config);
 
   void _seedDefaultsForType() {
     switch (_type) {
@@ -830,6 +844,23 @@ class _State extends ConsumerState<PanelFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (widget.suggestion case final suggestion?
+                when suggestion.widgetChoices.length > 1) ...[
+              PropertyWidgetSelector(
+                choices: suggestion.widgetChoices,
+                value: _type,
+                onChanged: _saving
+                    ? null
+                    : (type) => setState(() {
+                        final option = suggestion.widgetChoices.firstWhere(
+                          (c) => c.type == type,
+                        );
+                        _type = type;
+                        _applyConfig(option.config!);
+                      }),
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
               controller: _name,
               decoration: InputDecoration(labelText: l10n.panelFormName),

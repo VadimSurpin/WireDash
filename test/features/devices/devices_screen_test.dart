@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/data/database/database.dart';
+import 'package:zigdash/data/database/tables/panels.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/data/repositories/dashboard_repo.dart';
 import 'package:zigdash/data/repositories/panel_repo.dart';
@@ -58,6 +59,7 @@ const _doorDevice = Z2mDevice(
 
 class _RecordingWbImporter implements WirenBoardDashboardImporter {
   final calls = <({String label, List<String>? ids})>[];
+  final widgetTypes = <PanelType?>[];
   @override
   Future<void> addDevice(
     WirenBoardDevice device, {
@@ -71,8 +73,10 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
     WirenBoardDevice device,
     WirenBoardControl control, {
     required String label,
+    PanelType? widgetType,
   }) async {
     calls.add((label: label, ids: [control.id]));
+    widgetTypes.add(widgetType);
   }
 
   @override
@@ -289,11 +293,21 @@ void main() {
       expect(find.text('Required'), findsOneWidget);
       expect(importer.calls, isEmpty);
       await tester.enterText(label, 'Hall weather');
+      await tester.tap(find.byType(DropdownButtonFormField<PanelType>));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find
+            .text(lookupAppLocalizations(const Locale('en')).panelTypeProgress)
+            .last,
+      );
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text('Add'));
       await tester.pumpAndSettle();
       expect(importer.calls, hasLength(1));
       expect(importer.calls.single.label, 'Hall weather');
       expect(importer.calls.single.ids, ['Temperature']);
+      expect(importer.widgetTypes.single, PanelType.progress);
       expect(find.byType(BottomSheet), findsNothing);
       await tester.tap(find.byTooltip('Add whole device'));
       await tester.pumpAndSettle();

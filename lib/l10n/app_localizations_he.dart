@@ -3781,4 +3781,20 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get wbZ2mDevices => 'התקני Z2M של Wirenboard';
+
+  @override
+  String get panelPropertyWidget => 'רכיב תצוגה';
+
+  @override
+  String get panelDisplayTitle => 'תוכן הכרטיס';
+
+  @override
+  String get panelDisplayHint =>
+      'בחרו אילו מאפיינים יוצגו בכרטיס. שמות מותאמים אישית חלים רק על הלוח הזה. פתחו את הכרטיס כדי לגשת לכל פקדי ההתקן.';
+
+  @override
+  String get panelDisplayLabel => 'שם מותאם אישית (לא חובה)';
+
+  @override
+  String get panelDisplayReset => 'איפוס תוכן הכרטיס והשמות';
 }
