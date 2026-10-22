@@ -1,0 +1,1 @@
+ZigDash 2.10.3: i dispositivi che Zigbee2MQTT gestisce con una definizione generata (senza convertitore integrato, per esempio una lampada ESP32 fatta in casa) non sono più nascosti come non supportati: compaiono nella configurazione, nella scelta dei riquadri e nella pagina del dispositivo con i comandi che la loro definizione espone.

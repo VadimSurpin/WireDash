@@ -1,0 +1,1 @@
+ZigDash 2.10.3: enheter som Zigbee2MQTT kjører med en generert definisjon (uten innebygd konverter, for eksempel en hjemmelaget ESP32-lampe) skjules ikke lenger som ikke støttet: de vises i oppsettet, i flisvelgeren og på enhetssiden med kontrollene definisjonen deres tilbyr.

@@ -1,0 +1,1 @@
+ZigDash 2.10.3: Geräte, die Zigbee2MQTT mit einer generierten Definition betreibt (ohne eingebauten Konverter, zum Beispiel eine selbstgebaute ESP32-Lampe), werden nicht mehr als nicht unterstützt versteckt: Sie erscheinen in der Einrichtung, in der Kachelauswahl und auf der Geräteseite mit den Bedienelementen, die ihre Definition bereitstellt.

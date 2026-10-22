@@ -1,0 +1,1 @@
+ZigDash 2.10.3 : les appareils que Zigbee2MQTT gère avec une définition générée (sans convertisseur intégré, par exemple une lampe ESP32 faite maison) ne sont plus masqués comme non pris en charge : ils apparaissent dans la configuration, dans le choix des tuiles et sur la page de l'appareil avec les commandes que leur définition expose.
