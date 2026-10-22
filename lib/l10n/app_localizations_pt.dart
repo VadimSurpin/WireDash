@@ -3822,4 +3822,27 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Oferecer widgets editáveis mesmo quando a descoberta marcar esta propriedade como somente leitura. Aplica-se apenas a este bloco.';
+
+  @override
+  String get displayExpressionTitle => 'Antes de exibir (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value contém o valor recebido. Deixe vazio para não alterá-lo. Apenas exibição; os comandos e o histórico salvo não mudam.';
+
+  @override
+  String get displayExpressionSample => 'Valor de exemplo';
+
+  @override
+  String get displayExpressionTest => 'Testar expressão';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Resultado: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'A expressão falhou; o valor original é exibido. $error';
+  }
 }

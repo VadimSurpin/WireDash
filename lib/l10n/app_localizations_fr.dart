@@ -3836,4 +3836,27 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile.';
+
+  @override
+  String get displayExpressionTitle => 'Avant affichage (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value contient la valeur reçue. Vide, elle reste inchangée. Affichage uniquement ; les commandes et l’historique enregistré restent inchangés.';
+
+  @override
+  String get displayExpressionSample => 'Valeur d’exemple';
+
+  @override
+  String get displayExpressionTest => 'Tester l’expression';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Résultat : $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Échec de l’expression ; la valeur d’origine est affichée. $error';
+  }
 }

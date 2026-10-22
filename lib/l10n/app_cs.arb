@@ -1109,5 +1109,11 @@
   "panelDisplayLabel": "Vlastní popisek (volitelné)",
   "panelDisplayReset": "Obnovit obsah a popisky karty",
   "panelAllowCommands": "Povolit příkazy",
-  "panelAllowCommandsHint": "Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici."
+  "panelAllowCommandsHint": "Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici.",
+  "displayExpressionTitle": "Před zobrazením (JavaScript)",
+  "displayExpressionHint": "Vstupní hodnota je v proměnné value. Prázdné pole ji nemění. Jen zobrazení; příkazy a uložená historie se nemění.",
+  "displayExpressionSample": "Ukázková hodnota",
+  "displayExpressionTest": "Otestovat výraz",
+  "displayExpressionResult": "Výsledek: {value}",
+  "displayExpressionError": "Výraz selhal; zobrazuje se původní hodnota. {error}"
 }

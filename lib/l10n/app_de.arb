@@ -1194,5 +1194,11 @@
   "panelDisplayLabel": "Eigene Beschriftung (optional)",
   "panelDisplayReset": "Karteninhalt und Beschriftungen zurücksetzen",
   "panelAllowCommands": "Befehle erlauben",
-  "panelAllowCommandsHint": "Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel."
+  "panelAllowCommandsHint": "Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel.",
+  "displayExpressionTitle": "Vor der Anzeige (JavaScript)",
+  "displayExpressionHint": "value enthält den eingehenden Wert. Leer lässt ihn unverändert. Nur Anzeige; Befehle und gespeicherter Verlauf bleiben unverändert.",
+  "displayExpressionSample": "Beispielwert",
+  "displayExpressionTest": "Ausdruck testen",
+  "displayExpressionResult": "Ergebnis: {value}",
+  "displayExpressionError": "Ausdruck fehlgeschlagen; der ursprüngliche Wert wird angezeigt. {error}"
 }

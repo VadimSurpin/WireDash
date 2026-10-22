@@ -210,6 +210,31 @@ void main() {
   });
 
   testWidgets(
+    'panel-specific expressions format WB values in the card and full sheet',
+    (tester) async {
+      final manager = _Recorder();
+      await tester.pumpWidget(
+        _app(
+          manager,
+          temperatureValue: '1230',
+          display: const DevicePanelDisplay(
+            expressions: {'Temperature': '(Number(value) / 100).toFixed(2)'},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('12.30 °C'), findsOneWidget);
+      await tester.tap(find.text('Relay module'));
+      await tester.pumpAndSettle();
+      expect(_inSheet(find.text('12.30')), findsOneWidget);
+      expect(manager.sent, isEmpty);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await manager.dispose();
+    },
+  );
+
+  testWidgets(
     'many compact properties scroll to the end of a small phone sheet',
     (tester) async {
       tester.view.physicalSize = const Size(390, 640);

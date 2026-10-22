@@ -18,6 +18,7 @@ import '../../devices/device_profile.dart';
 import '../../devices/device_state_refresher.dart';
 import '../../devices/device_state.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
 import '../models/device_display_properties.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
@@ -72,7 +73,7 @@ class DeviceTilePanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selected =
         config.display.properties ??
-        (config.display.labels.isEmpty
+        (config.display.isDefault
             ? null
             : defaultDeviceDisplayProperties(config.profile));
     final profile = selected == null
@@ -141,14 +142,21 @@ class DeviceTilePanel extends ConsumerWidget {
           ? null
           : [
               for (final f in profile.features)
-                if (!profile.switches.contains(f))
+                if (!profile.switches.contains(f) ||
+                    config.display.expressions.containsKey(f.property))
                   (
                     id: f.property,
                     label: config.display.label(
                       f.property,
                       f.label ?? humanizeProperty(f.property),
                     ),
-                    value: _propertyValue(context, state, f),
+                    value: _propertyValue(
+                      context,
+                      ref,
+                      state,
+                      f,
+                      config.display.expressions[f.property],
+                    ),
                   ),
             ],
       onOpen: openSheet,
@@ -183,10 +191,23 @@ class DeviceTilePanel extends ConsumerWidget {
 
 String _propertyValue(
   BuildContext context,
+  WidgetRef ref,
   DeviceState state,
   DeviceFeature feature,
+  String? expression,
 ) {
   final value = state.values[feature.property];
+  final displayed = displayValue(ref, expression, value);
+  if (displayed.applied) {
+    return displayed.value == null
+        ? '—'
+        : ltr(
+            '${displayed.text}${feature.unit == null ? '' : ' ${feature.unit}'}',
+          );
+  }
+  if (displayed.error != null) {
+    return '⚠ ${value ?? '—'}${feature.unit == null ? '' : ' ${feature.unit}'}';
+  }
   if (value == null) return '—';
   if (value is num) {
     return value.isFinite ? formatReading(value, feature.unit) : '—';

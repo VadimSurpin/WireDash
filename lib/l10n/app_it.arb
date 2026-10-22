@@ -1109,5 +1109,11 @@
   "panelDisplayLabel": "Etichetta personalizzata (facoltativa)",
   "panelDisplayReset": "Ripristina contenuto ed etichette",
   "panelAllowCommands": "Consenti comandi",
-  "panelAllowCommandsHint": "Mostra widget modificabili anche se il rilevamento indica questa proprietà come di sola lettura. Si applica solo a questo riquadro."
+  "panelAllowCommandsHint": "Mostra widget modificabili anche se il rilevamento indica questa proprietà come di sola lettura. Si applica solo a questo riquadro.",
+  "displayExpressionTitle": "Prima della visualizzazione (JavaScript)",
+  "displayExpressionHint": "value contiene il valore ricevuto. Lasciare vuoto per non modificarlo. Solo visualizzazione; i comandi e la cronologia salvata restano invariati.",
+  "displayExpressionSample": "Valore di esempio",
+  "displayExpressionTest": "Prova espressione",
+  "displayExpressionResult": "Risultato: {value}",
+  "displayExpressionError": "Espressione non riuscita; viene mostrato il valore originale. {error}"
 }

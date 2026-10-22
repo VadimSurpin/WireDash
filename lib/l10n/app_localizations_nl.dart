@@ -3824,4 +3824,27 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Bied bewerkbare widgets aan, ook als deze eigenschap bij detectie als alleen-lezen is gemarkeerd. Geldt alleen voor deze tegel.';
+
+  @override
+  String get displayExpressionTitle => 'Voor weergave (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value bevat de ontvangen waarde. Leeg laat deze ongewijzigd. Alleen weergave; opdrachten en opgeslagen geschiedenis blijven ongewijzigd.';
+
+  @override
+  String get displayExpressionSample => 'Voorbeeldwaarde';
+
+  @override
+  String get displayExpressionTest => 'Expressie testen';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Resultaat: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Expressie mislukt; de oorspronkelijke waarde wordt getoond. $error';
+  }
 }

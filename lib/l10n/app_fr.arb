@@ -1119,5 +1119,11 @@
   "panelDisplayLabel": "Libellé personnalisé (facultatif)",
   "panelDisplayReset": "Réinitialiser le contenu et les libellés",
   "panelAllowCommands": "Autoriser les commandes",
-  "panelAllowCommandsHint": "Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile."
+  "panelAllowCommandsHint": "Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile.",
+  "displayExpressionTitle": "Avant affichage (JavaScript)",
+  "displayExpressionHint": "value contient la valeur reçue. Vide, elle reste inchangée. Affichage uniquement ; les commandes et l’historique enregistré restent inchangés.",
+  "displayExpressionSample": "Valeur d’exemple",
+  "displayExpressionTest": "Tester l’expression",
+  "displayExpressionResult": "Résultat : {value}",
+  "displayExpressionError": "Échec de l’expression ; la valeur d’origine est affichée. {error}"
 }

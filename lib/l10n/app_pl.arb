@@ -1189,5 +1189,11 @@
   "panelDisplayLabel": "Własna etykieta (opcjonalnie)",
   "panelDisplayReset": "Przywróć zawartość i etykiety kafelka",
   "panelAllowCommands": "Zezwalaj na polecenia",
-  "panelAllowCommandsHint": "Udostępnij edytowalne widżety, nawet jeśli wykryto tę właściwość jako tylko do odczytu. Dotyczy tylko tego kafelka."
+  "panelAllowCommandsHint": "Udostępnij edytowalne widżety, nawet jeśli wykryto tę właściwość jako tylko do odczytu. Dotyczy tylko tego kafelka.",
+  "displayExpressionTitle": "Przed wyświetleniem (JavaScript)",
+  "displayExpressionHint": "value zawiera odebraną wartość. Puste pole pozostawia ją bez zmian. Tylko wyświetlanie; polecenia i zapisana historia pozostają bez zmian.",
+  "displayExpressionSample": "Przykładowa wartość",
+  "displayExpressionTest": "Testuj wyrażenie",
+  "displayExpressionResult": "Wynik: {value}",
+  "displayExpressionError": "Błąd wyrażenia; wyświetlana jest pierwotna wartość. {error}"
 }

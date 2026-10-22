@@ -1154,5 +1154,11 @@
   "panelDisplayLabel": "Etiqueta personalizada (opcional)",
   "panelDisplayReset": "Redefinir conteúdo e etiquetas",
   "panelAllowCommands": "Permitir comandos",
-  "panelAllowCommandsHint": "Oferecer widgets editáveis mesmo quando a descoberta marcar esta propriedade como somente leitura. Aplica-se apenas a este bloco."
+  "panelAllowCommandsHint": "Oferecer widgets editáveis mesmo quando a descoberta marcar esta propriedade como somente leitura. Aplica-se apenas a este bloco.",
+  "displayExpressionTitle": "Antes de exibir (JavaScript)",
+  "displayExpressionHint": "value contém o valor recebido. Deixe vazio para não alterá-lo. Apenas exibição; os comandos e o histórico salvo não mudam.",
+  "displayExpressionSample": "Valor de exemplo",
+  "displayExpressionTest": "Testar expressão",
+  "displayExpressionResult": "Resultado: {value}",
+  "displayExpressionError": "A expressão falhou; o valor original é exibido. {error}"
 }

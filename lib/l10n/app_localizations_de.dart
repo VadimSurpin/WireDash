@@ -3829,4 +3829,27 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel.';
+
+  @override
+  String get displayExpressionTitle => 'Vor der Anzeige (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value enthält den eingehenden Wert. Leer lässt ihn unverändert. Nur Anzeige; Befehle und gespeicherter Verlauf bleiben unverändert.';
+
+  @override
+  String get displayExpressionSample => 'Beispielwert';
+
+  @override
+  String get displayExpressionTest => 'Ausdruck testen';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Ergebnis: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Ausdruck fehlgeschlagen; der ursprüngliche Wert wird angezeigt. $error';
+  }
 }

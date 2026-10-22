@@ -61,6 +61,7 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
   final calls = <({String label, List<String>? ids})>[];
   final widgetTypes = <PanelType?>[];
   final commandOverrides = <bool>[];
+  final valueExpressions = <String?>[];
   @override
   Future<void> addDevice(
     WirenBoardDevice device, {
@@ -76,10 +77,12 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
     required String label,
     PanelType? widgetType,
     bool allowCommands = false,
+    String? valueExpression,
   }) async {
     calls.add((label: label, ids: [control.id]));
     widgetTypes.add(widgetType);
     commandOverrides.add(allowCommands);
+    valueExpressions.add(valueExpression);
   }
 
   @override
@@ -382,16 +385,34 @@ void main() {
           await tester.tap(find.text(choice).last);
           await tester.pumpAndSettle();
         }
+        if (override) {
+          await tester.tap(find.text('Before display (JavaScript)'));
+          await tester.pumpAndSettle();
+          await tester.enterText(
+            find.byKey(const ValueKey('display-expression')),
+            'Number(value) ? "Running" : "Stopped"',
+          );
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.text('Add'));
+        }
         await tester.enterText(
           find.widgetWithText(TextFormField, 'Name'),
           'Custom label',
         );
+        tester.testTextInput.hide();
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Add'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Add'));
         await tester.pumpAndSettle();
         expect(importer.calls.single.label, 'Custom label');
         expect(importer.calls.single.ids, [controlId]);
         expect(importer.widgetTypes.single, selected);
         expect(importer.commandOverrides.single, override);
+        expect(
+          importer.valueExpressions.single,
+          override ? 'Number(value) ? "Running" : "Stopped"' : '',
+        );
       },
     );
   }

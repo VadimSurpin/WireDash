@@ -12,6 +12,7 @@ import 'alerts/alert_push.dart';
 import 'app.dart';
 import 'mqtt/dropped_connection.dart';
 import 'core/theme/font_licenses.dart';
+import 'core/licenses/javascript_licenses.dart';
 import 'features/settings/providers/settings_controller.dart';
 
 Future<void> main([List<String> args = const []]) async {
@@ -30,6 +31,7 @@ Future<void> main([List<String> args = const []]) async {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
   registerFontLicenses();
+  registerJavaScriptLicenses();
   final prefs = await SharedPreferences.getInstance();
   await AlertPush.init(prefs, background: false);
   runApp(

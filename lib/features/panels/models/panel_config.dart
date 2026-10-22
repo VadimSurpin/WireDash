@@ -12,6 +12,9 @@ import '../../discovery/models/wirenboard_device.dart';
 sealed class PanelConfig {
   const PanelConfig();
 
+  /// Incoming display formatting; never used for outgoing commands.
+  String? get valueExpression => null;
+
   String encode() => json.encode(toJson());
 
   Map<String, dynamic> toJson();
@@ -98,6 +101,7 @@ class ButtonConfig extends PanelConfig {
 
 class ToggleConfig extends PanelConfig {
   const ToggleConfig({
+    this.valueExpression,
     this.onPayload = '{"state":"ON"}',
     this.offPayload = '{"state":"OFF"}',
     this.jsonPath = 'state',
@@ -105,6 +109,9 @@ class ToggleConfig extends PanelConfig {
     this.onIconCodepoint,
     this.offIconCodepoint,
   });
+
+  @override
+  final String? valueExpression;
 
   final String onPayload;
   final String offPayload;
@@ -115,6 +122,7 @@ class ToggleConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'onPayload': onPayload,
         'offPayload': offPayload,
         if (jsonPath != null) 'jsonPath': jsonPath,
@@ -124,6 +132,7 @@ class ToggleConfig extends PanelConfig {
       };
 
   static ToggleConfig fromJson(Map<String, dynamic> j) => ToggleConfig(
+        valueExpression: j['valueExpression'] as String?,
         onPayload: j['onPayload'] as String? ?? '{"state":"ON"}',
         offPayload: j['offPayload'] as String? ?? '{"state":"OFF"}',
         jsonPath: j['jsonPath'] as String?,
@@ -135,6 +144,7 @@ class ToggleConfig extends PanelConfig {
 
 class SliderConfig extends PanelConfig {
   const SliderConfig({
+    this.valueExpression,
     this.min = 0,
     this.max = 254,
     this.step = 1,
@@ -142,6 +152,9 @@ class SliderConfig extends PanelConfig {
     this.valueTemplate = '{"brightness":{value}}',
     this.jsonPath = 'brightness',
   });
+
+  @override
+  final String? valueExpression;
 
   final double min;
   final double max;
@@ -152,6 +165,7 @@ class SliderConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'min': min,
         'max': max,
         'step': step,
@@ -161,6 +175,7 @@ class SliderConfig extends PanelConfig {
       };
 
   static SliderConfig fromJson(Map<String, dynamic> j) => SliderConfig(
+        valueExpression: j['valueExpression'] as String?,
         min: (j['min'] as num?)?.toDouble() ?? 0,
         max: (j['max'] as num?)?.toDouble() ?? 254,
         step: (j['step'] as num?)?.toDouble() ?? 1,
@@ -175,6 +190,7 @@ class SliderConfig extends PanelConfig {
 /// [onMatch]. Useful for contact sensors, occupancy, leak alerts, etc.
 class LedConfig extends PanelConfig {
   const LedConfig({
+    this.valueExpression,
     this.jsonPath,
     this.onMatch = 'true',
     this.onColorArgb,
@@ -182,6 +198,9 @@ class LedConfig extends PanelConfig {
     this.onLabel,
     this.offLabel,
   });
+
+  @override
+  final String? valueExpression;
 
   final String? jsonPath;
   final String onMatch;
@@ -192,6 +211,7 @@ class LedConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         if (jsonPath != null) 'jsonPath': jsonPath,
         'onMatch': onMatch,
         if (onColorArgb != null) 'onColor': onColorArgb,
@@ -201,6 +221,7 @@ class LedConfig extends PanelConfig {
       };
 
   static LedConfig fromJson(Map<String, dynamic> j) => LedConfig(
+        valueExpression: j['valueExpression'] as String?,
         jsonPath: j['jsonPath'] as String?,
         onMatch: j['onMatch'] as String? ?? 'true',
         onColorArgb: j['onColor'] as int?,
@@ -215,20 +236,26 @@ class LedConfig extends PanelConfig {
 /// `offline` strings by default).
 class NodeStatusConfig extends PanelConfig {
   const NodeStatusConfig({
+    this.valueExpression,
     this.onlinePayload = 'online',
     this.jsonPath,
   });
+
+  @override
+  final String? valueExpression;
 
   final String onlinePayload;
   final String? jsonPath;
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'onlinePayload': onlinePayload,
         if (jsonPath != null) 'jsonPath': jsonPath,
       };
 
   static NodeStatusConfig fromJson(Map<String, dynamic> j) => NodeStatusConfig(
+        valueExpression: j['valueExpression'] as String?,
         onlinePayload: j['onlinePayload'] as String? ?? 'online',
         jsonPath: j['jsonPath'] as String?,
       );
@@ -237,11 +264,15 @@ class NodeStatusConfig extends PanelConfig {
 /// Read-only progress bar. Useful for battery %, link quality, etc.
 class ProgressConfig extends PanelConfig {
   const ProgressConfig({
+    this.valueExpression,
     this.min = 0,
     this.max = 100,
     this.jsonPath,
     this.unit,
   });
+
+  @override
+  final String? valueExpression;
 
   final double min;
   final double max;
@@ -250,6 +281,7 @@ class ProgressConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'min': min,
         'max': max,
         if (jsonPath != null) 'jsonPath': jsonPath,
@@ -257,6 +289,7 @@ class ProgressConfig extends PanelConfig {
       };
 
   static ProgressConfig fromJson(Map<String, dynamic> j) => ProgressConfig(
+        valueExpression: j['valueExpression'] as String?,
         min: (j['min'] as num?)?.toDouble() ?? 0,
         max: (j['max'] as num?)?.toDouble() ?? 100,
         jsonPath: j['jsonPath'] as String?,
@@ -295,9 +328,13 @@ class SelectOption {
 /// Radio). They differ only in how the same list of [options] is rendered.
 class OptionsConfig extends PanelConfig {
   const OptionsConfig({
+    this.valueExpression,
     this.options = const [],
     this.jsonPath = 'state',
   });
+
+  @override
+  final String? valueExpression;
 
   final List<SelectOption> options;
   final String? jsonPath;
@@ -314,11 +351,13 @@ class OptionsConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'options': options.map((o) => o.toJson()).toList(),
         if (jsonPath != null) 'jsonPath': jsonPath,
       };
 
   static OptionsConfig fromJson(Map<String, dynamic> j) => OptionsConfig(
+        valueExpression: j['valueExpression'] as String?,
         options: (j['options'] as List?)
                 ?.map((e) => SelectOption.fromJson(e as Map<String, dynamic>))
                 .toList() ??
@@ -412,20 +451,26 @@ class TextInputConfig extends PanelConfig {
 /// logging the whole payload.
 class TextLogConfig extends PanelConfig {
   const TextLogConfig({
+    this.valueExpression,
     this.maxLines = 50,
     this.jsonPath,
   });
+
+  @override
+  final String? valueExpression;
 
   final int maxLines;
   final String? jsonPath;
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'maxLines': maxLines,
         if (jsonPath != null) 'jsonPath': jsonPath,
       };
 
   static TextLogConfig fromJson(Map<String, dynamic> j) => TextLogConfig(
+        valueExpression: j['valueExpression'] as String?,
         maxLines: (j['maxLines'] as num?)?.toInt() ?? 50,
         jsonPath: j['jsonPath'] as String?,
       );
@@ -536,14 +581,21 @@ class AutoCloseConfig extends PanelConfig {
 
 /// Presentation overrides belong to a saved panel, never to broker metadata.
 class DevicePanelDisplay {
-  const DevicePanelDisplay({this.properties, this.labels = const {}});
+  const DevicePanelDisplay({
+    this.properties,
+    this.labels = const {},
+    this.expressions = const {},
+  });
   final List<String>? properties;
   final Map<String, String> labels;
-  bool get isDefault => properties == null && labels.isEmpty;
+  final Map<String, String> expressions;
+  bool get isDefault =>
+      properties == null && labels.isEmpty && expressions.isEmpty;
   String label(String id, String fallback) => labels[id] ?? fallback;
   Map<String, dynamic> toJson() => {
     if (properties != null) 'properties': properties,
     if (labels.isNotEmpty) 'labels': labels,
+    if (expressions.isNotEmpty) 'expressions': expressions,
   };
   static DevicePanelDisplay fromJson(Object? value) {
     if (value is! Map) return const DevicePanelDisplay();
@@ -551,6 +603,15 @@ class DevicePanelDisplay {
       properties: value['properties'] is List
           ? (value['properties'] as List).whereType<String>().toList()
           : null,
+      expressions: value['expressions'] is Map
+          ? {
+              for (final e in (value['expressions'] as Map).entries)
+                if (e.key is String &&
+                    e.value is String &&
+                    (e.value as String).trim().isNotEmpty)
+                  e.key as String: (e.value as String).trim(),
+            }
+          : const {},
       labels: value['labels'] is Map
           ? {
               for (final entry in (value['labels'] as Map).entries)
@@ -699,6 +760,7 @@ const gaugeMaxBands = 3;
 /// payload, shown with [unit], as a plain value or as a gauge.
 class ReadingConfig extends PanelConfig {
   const ReadingConfig({
+    this.valueExpression,
     this.jsonPath = 'temperature',
     this.unit,
     this.decimals,
@@ -707,6 +769,9 @@ class ReadingConfig extends PanelConfig {
     this.max,
     this.bands = const [],
   });
+
+  @override
+  final String? valueExpression;
 
   final String jsonPath;
   final String? unit;
@@ -735,6 +800,7 @@ class ReadingConfig extends PanelConfig {
     List<GaugeBand>? bands,
   }) =>
       ReadingConfig(
+        valueExpression: valueExpression,
         jsonPath: jsonPath ?? this.jsonPath,
         unit: unit ?? this.unit,
         decimals: decimals ?? this.decimals,
@@ -746,6 +812,7 @@ class ReadingConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
+        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
         'jsonPath': jsonPath,
         if (unit != null) 'unit': unit,
         if (decimals != null) 'decimals': decimals,
@@ -756,6 +823,7 @@ class ReadingConfig extends PanelConfig {
       };
 
   static ReadingConfig fromJson(Map<String, dynamic> j) => ReadingConfig(
+        valueExpression: j['valueExpression'] as String?,
         jsonPath: j['jsonPath'] as String? ?? 'temperature',
         unit: j['unit'] as String?,
         decimals: (j['decimals'] as num?)?.toInt(),
@@ -769,4 +837,32 @@ class ReadingConfig extends PanelConfig {
               if (GaugeBand.fromJson(b) case final band?) band,
         ],
       );
+}
+
+/// Scalar widgets with an incoming display value. Write-only widgets and
+/// whole devices use their existing commands or per-property settings.
+bool supportsDisplayExpression(PanelType type) => const {
+  PanelType.toggle,
+  PanelType.slider,
+  PanelType.led,
+  PanelType.nodeStatus,
+  PanelType.progress,
+  PanelType.multiState,
+  PanelType.combo,
+  PanelType.radio,
+  PanelType.textLog,
+  PanelType.reading,
+}.contains(type);
+
+PanelConfig withDisplayExpression(
+  PanelType type,
+  PanelConfig config,
+  String? expression,
+) {
+  if (!supportsDisplayExpression(type)) return config;
+  final fields = config.toJson()..remove('valueExpression');
+  if (expression != null && expression.trim().isNotEmpty) {
+    fields['valueExpression'] = expression.trim();
+  }
+  return PanelConfig.decode(type, jsonEncode(fields));
 }

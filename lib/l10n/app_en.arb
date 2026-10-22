@@ -1330,5 +1330,25 @@
   "panelDisplayLabel": "Custom label (optional)",
   "panelDisplayReset": "Reset card contents and labels",
   "panelAllowCommands": "Allow commands",
-  "panelAllowCommandsHint": "Offer editable widgets even when discovery marks this property read-only. Applies only to this tile."
+  "panelAllowCommandsHint": "Offer editable widgets even when discovery marks this property read-only. Applies only to this tile.",
+  "displayExpressionTitle": "Before display (JavaScript)",
+  "displayExpressionHint": "Use value for the incoming value. Blank keeps it unchanged. Display only; commands and stored history stay unchanged.",
+  "displayExpressionSample": "Sample value",
+  "displayExpressionTest": "Test expression",
+  "displayExpressionResult": "Result: {value}",
+  "@displayExpressionResult": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "displayExpressionError": "Expression failed; showing the original value. {error}",
+  "@displayExpressionError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

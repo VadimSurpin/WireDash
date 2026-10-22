@@ -9,6 +9,7 @@ import '../../devices/device_profile.dart';
 import '../../devices/device_state.dart';
 import '../../kiosk/kiosk.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
 import '../providers/panel_value_provider.dart';
 import 'device_tile_panel.dart';
 import '../../history/history_config.dart' show historyShownOnDeviceTile;
@@ -120,6 +121,7 @@ class DeviceSheet extends ConsumerWidget {
             profile: profile,
             state: state,
             labels: config.display.labels,
+            expressions: config.display.expressions,
           ),
           // 2.7: the history of what the tile shows (kiosk guests too).
           if (ieee != null)
@@ -162,6 +164,7 @@ class DeviceControls extends ConsumerWidget {
     required this.state,
     this.readings = true,
     this.labels = const {},
+    this.expressions = const {},
   });
 
   final String connectionId;
@@ -170,6 +173,7 @@ class DeviceControls extends ConsumerWidget {
   final DeviceState state;
   final bool readings;
   final Map<String, String> labels;
+  final Map<String, String> expressions;
 
   String _label(DeviceFeature feature, String fallback) =>
       labels[feature.property] ?? feature.label ?? fallback;
@@ -202,6 +206,14 @@ class DeviceControls extends ConsumerWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final cls = profile.deviceClass;
+    String displayed(DeviceFeature feature, Object? raw, String fallback) {
+      final result = displayValue(ref, expressions[feature.property], raw);
+      return result.applied
+          ? result.value == null
+                ? '—'
+                : '${result.text}${feature.unit == null ? '' : ' ${feature.unit}'}'
+          : '${result.error == null ? '' : '⚠ '}$fallback';
+    }
 
     Future<void> send(Map<String, Object?> command) =>
         sendDeviceCommand(context, ref, connectionId, publishTopic, command);
@@ -214,14 +226,31 @@ class DeviceControls extends ConsumerWidget {
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
-            _label(f, switches.length > 1
-                ? _endpointLabel(f.endpoint, i)
-                : l10n.deviceToggle),
+            _label(
+              f,
+              switches.length > 1
+                  ? _endpointLabel(f.endpoint, i)
+                  : l10n.deviceToggle,
+            ),
           ),
           value: state.isOn(f) ?? false,
           onChanged: (_) => send(DeviceCommand.toggle(f, state.isOn(f))),
         ),
       );
+      if (expressions.containsKey(f.property)) {
+        children.add(
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: Text(
+              displayed(
+                f,
+                state.values[f.property],
+                '${state.values[f.property] ?? '—'}',
+              ),
+            ),
+          ),
+        );
+      }
     }
 
     final brightness = profile.brightness;
@@ -229,9 +258,13 @@ class DeviceControls extends ConsumerWidget {
       children.add(
         _Labeled(
           label: _label(brightness, l10n.deviceBrightness),
-          trailing: state.brightnessPercent == null
-              ? '—'
-              : '${state.brightnessPercent}%',
+          trailing: displayed(
+            brightness,
+            state.values[brightness.property],
+            state.brightnessPercent == null
+                ? '—'
+                : '${state.brightnessPercent}%',
+          ),
           child: CommitSlider(
             label: _label(brightness, l10n.deviceBrightness),
             value: state.brightnessPercent?.toDouble(),
@@ -252,7 +285,11 @@ class DeviceControls extends ConsumerWidget {
       children.add(
         _Labeled(
           label: _label(colorTemp, l10n.deviceWhite),
-          trailing: kelvin == null ? '—' : '${kelvin.round()} K',
+          trailing: displayed(
+            colorTemp,
+            state.values[colorTemp.property],
+            kelvin == null ? '—' : '${kelvin.round()} K',
+          ),
           child: CommitSlider(
             label: _label(colorTemp, l10n.deviceWhite),
             // A bulb in colour mode still takes a white command.
@@ -356,7 +393,11 @@ class DeviceControls extends ConsumerWidget {
           children.add(
             _Labeled(
               label: label,
-              trailing: v is num ? formatReading(v, f.unit) : '—',
+              trailing: displayed(
+                f,
+                v,
+                v is num ? formatReading(v, f.unit) : '—',
+              ),
               child: CommitSlider(
                 label: label,
                 value: v is num ? v.toDouble() : null,
@@ -399,6 +440,14 @@ class DeviceControls extends ConsumerWidget {
             ),
           );
       }
+      if (f.type != 'numeric' && expressions.containsKey(f.property)) {
+        children.add(
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: Text(displayed(f, v, '${v ?? '—'}')),
+          ),
+        );
+      }
     }
 
     if (!readings) {
@@ -417,7 +466,11 @@ class DeviceControls extends ConsumerWidget {
           dense: true,
           title: Text(_label(f, _humanize(f.property))),
           trailing: Text(
-            v == null ? '—' : formatReading(v, f.unit),
+            displayed(
+              f,
+              state.values[f.property],
+              v == null ? '—' : formatReading(v, f.unit),
+            ),
             style: theme.textTheme.titleMedium,
           ),
         ),
@@ -453,8 +506,11 @@ class DeviceControls extends ConsumerWidget {
                 dense: true,
                 title: Text(_label(f, _humanize(f.property))),
                 trailing: Text(
-                  '${state.values[f.property]}'
-                  '${f.unit == null ? '' : ' ${f.unit}'}',
+                  displayed(
+                    f,
+                    state.values[f.property],
+                    '${state.values[f.property]}${f.unit == null ? '' : ' ${f.unit}'}',
+                  ),
                 ),
               ),
           ],

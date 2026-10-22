@@ -26,6 +26,8 @@ import '../services/automation_config_publisher.dart';
 import '../widgets/device_panel_display_editor.dart';
 
 import '../widgets/property_widget_selector.dart';
+import '../widgets/display_expression_field.dart';
+import '../models/display_expression.dart';
 
 import '../models/device_display_properties.dart';
 
@@ -198,6 +200,8 @@ class _State extends ConsumerState<PanelFormScreen> {
   bool _loaded = false;
   bool _saving = false;
   bool _allowPropertyCommands = false;
+  String _valueExpression = '';
+  bool get _hasValueExpression => supportsDisplayExpression(_type);
   String? _topicPrefixHint;
 
   /// The device this tile shows (`panels.deviceIeee`), set by "Pick a
@@ -378,6 +382,7 @@ class _State extends ConsumerState<PanelFormScreen> {
   }
 
   void _applyConfig(PanelConfig cfg) {
+    _valueExpression = cfg.valueExpression ?? '';
     if (cfg is ToggleConfig) {
       _onPayload.text = cfg.onPayload;
       _offPayload.text = cfg.offPayload;
@@ -532,12 +537,14 @@ class _State extends ConsumerState<PanelFormScreen> {
     return switch (_type) {
       PanelType.button => ButtonConfig(payload: _buttonPayload.text),
       PanelType.toggle => ToggleConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           onPayload: _onPayload.text,
           offPayload: _offPayload.text,
           jsonPath: nullIfBlank(_toggleJsonPath.text),
           onMatch: _onMatch.text,
         ),
       PanelType.slider => SliderConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           min: double.tryParse(_sliderMin.text) ?? 0,
           max: double.tryParse(_sliderMax.text) ?? 254,
           step: double.tryParse(_sliderStep.text) ?? 1,
@@ -545,16 +552,19 @@ class _State extends ConsumerState<PanelFormScreen> {
           jsonPath: nullIfBlank(_sliderJsonPath.text),
         ),
       PanelType.led => LedConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           jsonPath: nullIfBlank(_ledJsonPath.text),
           onMatch: _ledOnMatch.text,
           onLabel: nullIfBlank(_ledOnLabel.text),
           offLabel: nullIfBlank(_ledOffLabel.text),
         ),
       PanelType.nodeStatus => NodeStatusConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           onlinePayload: _nodeOnlinePayload.text,
           jsonPath: nullIfBlank(_nodeJsonPath.text),
         ),
       PanelType.progress => ProgressConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           min: double.tryParse(_progressMin.text) ?? 0,
           max: double.tryParse(_progressMax.text) ?? 100,
           jsonPath: nullIfBlank(_progressJsonPath.text),
@@ -564,6 +574,7 @@ class _State extends ConsumerState<PanelFormScreen> {
       PanelType.combo ||
       PanelType.radio =>
         OptionsConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           jsonPath: nullIfBlank(_optionsJsonPath.text),
           options: [
             for (final r in _optionRows)
@@ -588,6 +599,7 @@ class _State extends ConsumerState<PanelFormScreen> {
           clearOnSend: _textInputClearOnSend,
         ),
       PanelType.textLog => TextLogConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           maxLines: int.tryParse(_textLogMaxLines.text) ?? 50,
           jsonPath: nullIfBlank(_textLogJsonPath.text),
         ),
@@ -611,6 +623,7 @@ class _State extends ConsumerState<PanelFormScreen> {
       PanelType.device => _deviceConfig ??
           PanelConfig.defaultFor(PanelType.device),
       PanelType.reading => ReadingConfig(
+          valueExpression: nullIfBlank(_valueExpression),
           jsonPath: _readingJsonPath.text.trim(),
           unit: nullIfBlank(_readingUnit.text),
           style: _readingStyle,
@@ -866,7 +879,9 @@ class _State extends ConsumerState<PanelFormScreen> {
                         _topic.text = option.publishTopicSuffix;
                         _subscribeTopic.text = option.subscribeTopicSuffix;
                         _commandEdited = true;
+                        final expression = _valueExpression;
                         _applyConfig(option.config!);
+                        _valueExpression = expression;
                       }),
                 value: _type,
                 onChanged: _saving
@@ -878,7 +893,9 @@ class _State extends ConsumerState<PanelFormScreen> {
                                     : suggestion.widgetChoices)
                                 .firstWhere((c) => c.type == type);
                         _type = type;
+                        final expression = _valueExpression;
                         _applyConfig(option.config!);
+                        _valueExpression = expression;
                       }),
               ),
               const SizedBox(height: 12),
@@ -894,6 +911,11 @@ class _State extends ConsumerState<PanelFormScreen> {
             const SizedBox(height: 12),
             if (_loaded) _buildLivePreview(),
             ..._typeSpecificFields(),
+            if (_hasValueExpression) DisplayExpressionField(
+              key: ValueKey('scalar-expression:$_type'),
+              initialValue: _valueExpression,
+              onChanged: (expression) => setState(() => _valueExpression = expression),
+            ),
             const SizedBox(height: 16),
             DropdownButtonFormField<PanelWidth>(
               key: ValueKey(_width),

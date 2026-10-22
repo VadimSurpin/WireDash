@@ -3808,4 +3808,27 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get panelAllowCommandsHint =>
       'Tilby redigerbare kontrollmoduler selv om oppdagelsen markerer denne egenskapen som skrivebeskyttet. Gjelder bare denne flisen.';
+
+  @override
+  String get displayExpressionTitle => 'Før visning (JavaScript)';
+
+  @override
+  String get displayExpressionHint =>
+      'value inneholder den mottatte verdien. Tomt felt beholder den uendret. Bare visning; kommandoer og lagret historikk endres ikke.';
+
+  @override
+  String get displayExpressionSample => 'Eksempelverdi';
+
+  @override
+  String get displayExpressionTest => 'Test uttrykk';
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Resultat: $value';
+  }
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Uttrykket feilet; den opprinnelige verdien vises. $error';
+  }
 }

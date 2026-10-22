@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../data/database/database.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
+import 'display_expression_field.dart';
 import '../providers/panel_value_provider.dart';
 
 class TextLogPanel extends ConsumerStatefulWidget {
@@ -25,9 +27,9 @@ class TextLogPanel extends ConsumerStatefulWidget {
 }
 
 class _LogEntry {
-  _LogEntry(this.time, this.text);
+  _LogEntry(this.time, this.value);
   final DateTime time;
-  final String text;
+  final Object? value;
 }
 
 class _TextLogPanelState extends ConsumerState<TextLogPanel> {
@@ -55,7 +57,7 @@ class _TextLogPanelState extends ConsumerState<TextLogPanel> {
         if (_lastMessageIdentity == identity) return;
         _lastMessageIdentity = identity;
         setState(() {
-          _log.insert(0, _LogEntry(DateTime.now(), snapshot.value.toString()));
+          _log.insert(0, _LogEntry(DateTime.now(), snapshot.value));
           if (_log.length > widget.config.maxLines) {
             _log.removeRange(widget.config.maxLines, _log.length);
           }
@@ -71,40 +73,57 @@ class _TextLogPanelState extends ConsumerState<TextLogPanel> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(widget.panel.name,
-                style: Theme.of(context).textTheme.bodyMedium,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis),
+            Text(
+              widget.panel.name,
+              style: Theme.of(context).textTheme.bodyMedium,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 8),
             SizedBox(
               height: 160,
               child: _log.isEmpty
                   ? Center(
-                      child: Text(context.l10n.panelTextLogWaiting,
-                          style: Theme.of(context).textTheme.bodySmall),
+                      child: Text(
+                        context.l10n.panelTextLogWaiting,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     )
                   : ListView.builder(
                       reverse: true,
                       itemCount: _log.length,
                       itemBuilder: (_, i) {
                         final e = _log[i];
+                        final displayed = displayValue(
+                          ref,
+                          widget.config.valueExpression,
+                          e.value,
+                        );
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Text.rich(
-                            TextSpan(children: [
+                          child: DisplayExpressionResult(
+                            result: displayed,
+                            child: Text.rich(
                               TextSpan(
-                                text: '${_ts(e.time)}  ',
-                                style: TextStyle(
-                                    color: scheme.outline,
-                                    fontFeatures: const [],
-                                    fontFamily: 'monospace'),
+                                children: [
+                                  TextSpan(
+                                    text: '${_ts(e.time)}  ',
+                                    style: TextStyle(
+                                      color: scheme.outline,
+                                      fontFeatures: const [],
+                                      fontFamily: 'monospace',
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: displayed.text,
+                                    style: const TextStyle(
+                                      fontFamily: 'monospace',
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: e.text,
-                                style: const TextStyle(fontFamily: 'monospace'),
-                              ),
-                            ]),
-                            style: Theme.of(context).textTheme.bodySmall,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
                           ),
                         );
                       },
