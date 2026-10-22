@@ -76,6 +76,8 @@
 
 **Automations paused** — the state when the Engine has not reported in for over a minute, or stopped itself after repeated crashes: no Automation can run, rules stay editable, and the app says so on the Automations screen and the dashboard. Same pattern as **Alerts paused**. From 3.0.
 
+**Recent runs** — the last 20 times a Home's Automations fired, kept by the Engine and shown under the Automations list, so "did it run last night" has an answer. Same pattern as **Recent alerts**. From 3.0.
+
 **Alert** — something the user asked to be told about when it happens at home: a leak, smoke, a door or window opening (optionally only within set hours), or a low battery, for chosen devices in one Home. The hub's Node-RED watches for it; the phone does not. Not a schedule: alerts tell, schedules act. Code: `AlertRule` in the config sent to the hub; UI only says "alert".
 
 **Notification** — what reaches the phone when an alert fires: a ZigDash notification, delivered through Google's push service (encrypted end to end) so it arrives with ZigDash closed; or an ntfy notification for phones without Google services and for people sharing a Home's alerts without ZigDash. Leak and smoke also notify when they clear.
