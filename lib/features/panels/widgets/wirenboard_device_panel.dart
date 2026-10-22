@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mqtt_client/mqtt_client.dart' as mc;
 
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../data/database/database.dart';
-import '../../../mqtt/mqtt_status.dart';
-import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../discovery/models/wirenboard_device.dart';
 import '../../discovery/providers/wirenboard_discovery_provider.dart';
+import '../../devices/device_profile.dart';
+import '../../devices/device_state.dart';
+import '../providers/panel_value_provider.dart';
 import '../models/panel_config.dart';
+import 'control_action.dart';
+import 'device_tile_panel.dart';
 import 'wirenboard_control_row.dart';
 
-/// A HomeUI-style device card: one header and compact inline control rows.
-class WirenBoardDevicePanel extends ConsumerStatefulWidget {
+/// Uses the same dashboard card as Zigbee2MQTT, with WB scalar commands.
+class WirenBoardDevicePanel extends ConsumerWidget {
   const WirenBoardDevicePanel({
     super.key,
     required this.connectionId,
@@ -24,117 +28,88 @@ class WirenBoardDevicePanel extends ConsumerStatefulWidget {
   final WirenBoardDeviceConfig config;
 
   @override
-  ConsumerState<WirenBoardDevicePanel> createState() =>
-      _WirenBoardDevicePanelState();
-}
-
-class _WirenBoardDevicePanelState extends ConsumerState<WirenBoardDevicePanel> {
-  bool _expanded = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final device = _currentDevice(ref, widget.connectionId, widget.config);
-    final connected =
-        ref.watch(connectionStatusProvider(widget.connectionId)).valueOrNull ==
-        MqttStatus.connected;
-    final header = Theme.of(context).brightness == Brightness.dark
-        ? const Color(0xff323d65)
-        : const Color(0xff337ab7);
-    final radius = BorderRadius.circular(8);
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: radius,
-        side: BorderSide(color: header),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Material(
-            color: header,
-            child: InkWell(
-              onTap: () => setState(() => _expanded = !_expanded),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 12, end: 4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Tooltip(
-                        message: context.l10n.wbControlCount(
-                          device.controls.length,
-                        ),
-                        child: Text(
-                          widget.panel.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleSmall?.copyWith(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    if (!connected)
-                      Tooltip(
-                        message: context.l10n.controlNotConnected,
-                        child: const Icon(
-                          Icons.cloud_off_outlined,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ),
-                    IconButton(
-                      tooltip: context.l10n.wbOpenControls,
-                      icon: const Icon(
-                        Icons.open_in_full,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      onPressed: () => showModalBottomSheet<void>(
-                        context: context,
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        showDragHandle: true,
-                        builder: (_) => WirenBoardDeviceControls(
-                          connectionId: widget.connectionId,
-                          panel: widget.panel,
-                          config: widget.config,
-                        ),
-                      ),
-                    ),
-                    Semantics(
-                      button: true,
-                      expanded: _expanded,
-                      child: IconButton(
-                        tooltip: context.l10n.wbControlCount(
-                          device.controls.length,
-                        ),
-                        icon: Icon(
-                          _expanded ? Icons.expand_more : Icons.chevron_right,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => setState(() => _expanded = !_expanded),
-                      ),
-                    ),
-                  ],
-                ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final device = _currentDevice(ref, connectionId, config);
+    final features = <DeviceFeature>[];
+    final values = <String, Object?>{};
+    for (final control in device.controls) {
+      final payload = ref
+          .watch(
+            panelValueProvider(
+              PanelStreamKey(
+                connectionId: connectionId,
+                topic: control.topic,
+                jsonPath: null,
               ),
             ),
+          )
+          .valueOrNull;
+      final numeric = control.numeric;
+      final toggle = control.type == 'switch' && !control.readOnly;
+      features.add(
+        DeviceFeature(
+          type: toggle
+              ? 'binary'
+              : numeric
+              ? 'numeric'
+              : 'text',
+          property: control.id,
+          name: toggle ? 'state' : control.id,
+          access: accessState | (toggle ? accessSet : 0),
+          unit: control.unit,
+          valueOn: '1',
+          valueOff: '0',
+        ),
+      );
+      if (payload != null) {
+        values[control.id] = numeric
+            ? num.tryParse(payload.toString()) ?? payload
+            : payload;
+      }
+    }
+    final hasSwitch = features.any((f) => f.name == 'state' && f.settable);
+    final climate = device.controls.any(
+      (c) => c.type == 'temperature' || c.type == 'rel_humidity',
+    );
+    final profile = DeviceProfile(
+      deviceClass: hasSwitch
+          ? DeviceClass.switchPlug
+          : climate
+          ? DeviceClass.climate
+          : DeviceClass.generic,
+      features: features,
+    );
+    final state = DeviceState(profile, values);
+    return DeviceSummaryCard(
+      name: panel.name,
+      state: state,
+      onToggle: (feature) {
+        final control = device.controls.firstWhere(
+          (c) => c.id == feature.property,
+        );
+        runControlAction(
+          context,
+          ref,
+          connectionId,
+          (manager) => manager.publish(
+            '${control.topic}/on',
+            state.isOn(feature) == true ? '0' : '1',
+            '',
+            qos: mc.MqttQos.values[panel.qos.clamp(0, 2)],
+            retain: false,
           ),
-          if (_expanded) ...[
-            const SizedBox(height: 4),
-            for (final control in device.controls)
-              WirenBoardControlRow(
-                key: ValueKey(control.id),
-                connectionId: widget.connectionId,
-                device: device,
-                control: control,
-                qos: widget.panel.qos,
-              ),
-            const SizedBox(height: 4),
-          ],
-        ],
+        );
+      },
+      onOpen: () => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        showDragHandle: true,
+        builder: (_) => WirenBoardDeviceControls(
+          connectionId: connectionId,
+          panel: panel,
+          config: config,
+        ),
       ),
     );
   }

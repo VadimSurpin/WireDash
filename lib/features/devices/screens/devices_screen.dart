@@ -61,7 +61,31 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   final _search = TextEditingController();
   final _expandedWb = <String>{};
   final _collapsedSearchWb = <String>{};
-  final _selectedWb = <String, Set<String>>{};
+  final _collapsedSections = <String>{'wb-builtins', 'wb-z2m'};
+  final _collapsedSearchSections = <String>{};
+
+  bool _sectionExpanded(String id, String query) =>
+      !(query.isEmpty ? _collapsedSections : _collapsedSearchSections).contains(
+        id,
+      );
+
+  Widget _sectionHeader(String id, String label, String query) {
+    final expanded = _sectionExpanded(id, query);
+    return Semantics(
+      expanded: expanded,
+      child: ListTile(
+        key: ValueKey('devices-section:$id'),
+        leading: Icon(expanded ? Icons.expand_more : Icons.chevron_right),
+        title: Text(label),
+        onTap: () => setState(() {
+          final collapsed = query.isEmpty
+              ? _collapsedSections
+              : _collapsedSearchSections;
+          if (!collapsed.add(id)) collapsed.remove(id);
+        }),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -167,19 +191,16 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     );
   }
 
-  Future<void> _addWirenBoard(WirenBoardDevice device) async {
-    final selected = _selectedWb[device.id] ?? const <String>{};
-    final ids = device.controls
-        .where((c) => selected.contains(c.id))
-        .map((c) => c.id)
-        .toList();
-    final added = await showAddWirenBoardPanelSheet(
+  Future<void> _addWirenBoard(
+    WirenBoardDevice device, [
+    WirenBoardControl? control,
+  ]) async {
+    await showAddWirenBoardPanelSheet(
       context,
       connectionId: widget.connectionId,
       device: device,
-      controlIds: ids.isEmpty ? null : ids,
+      control: control,
     );
-    if (added && mounted) setState(() => _selectedWb.remove(device.id));
   }
 
   List<Widget> _wirenBoardTree(
@@ -189,8 +210,6 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   ) {
     final l10n = context.l10n;
     final language = Localizations.localeOf(context).languageCode;
-    final selected = _selectedWb[device.id] ?? const <String>{};
-    final count = device.controls.where((c) => selected.contains(c.id)).length;
     final expanded = query.isNotEmpty
         ? !_collapsedSearchWb.contains(device.id)
         : _expandedWb.contains(device.id);
@@ -202,11 +221,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         key: ValueKey('wb-device:${device.id}'),
         leading: Icon(expanded ? Icons.expand_more : Icons.chevron_right),
         title: Text(device.title(language)),
-        subtitle: Text(
-          count == 0
-              ? l10n.wbControlCount(device.controls.length)
-              : l10n.sceneFormSelectedCount(count),
-        ),
+        subtitle: Text(l10n.wbControlCount(device.controls.length)),
         onTap: () => setState(() {
           final changes = query.isNotEmpty ? _collapsedSearchWb : _expandedWb;
           if (!changes.add(device.id)) changes.remove(device.id);
@@ -220,27 +235,14 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               onPressed: () => _openWirenBoard(device),
             ),
             IconButton(
-              tooltip: count == 0 ? l10n.wbAddWholeDevice : l10n.wbAddSelected,
-              icon: Icon(
-                count > 0
-                    ? Icons.playlist_add
-                    : linked
-                    ? Icons.dashboard_outlined
-                    : Icons.add,
-              ),
+              tooltip: l10n.wbAddWholeDevice,
+              icon: Icon(linked ? Icons.dashboard_outlined : Icons.add),
               onPressed: () => _addWirenBoard(device),
             ),
           ],
         ),
       ),
       if (expanded) ...[
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(48, 0, 16, 4),
-          child: Text(
-            l10n.wbChooseProperties,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
         for (final control in device.controls)
           if (query.isEmpty ||
               deviceMatches ||
@@ -248,35 +250,18 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               control.title(language).toLowerCase().contains(query))
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 32),
-              child: CheckboxListTile(
+              child: ListTile(
                 key: ValueKey('wb-property:${device.id}/${control.id}'),
                 dense: true,
-                controlAffinity: ListTileControlAffinity.leading,
                 title: Text(control.title(language)),
                 subtitle: control.unit == null ? null : Text(control.unit!),
-                value: selected.contains(control.id),
-                onChanged: (checked) => setState(() {
-                  final ids = _selectedWb.putIfAbsent(
-                    device.id,
-                    () => <String>{},
-                  );
-                  if (checked == true) {
-                    ids.add(control.id);
-                  } else {
-                    ids.remove(control.id);
-                  }
-                }),
+                trailing: IconButton(
+                  tooltip: l10n.deviceAddToDashboard,
+                  icon: const Icon(Icons.add),
+                  onPressed: () => _addWirenBoard(device, control),
+                ),
               ),
             ),
-        if (count > 0)
-          Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: TextButton.icon(
-              onPressed: () => _addWirenBoard(device),
-              icon: const Icon(Icons.playlist_add),
-              label: Text(l10n.wbAddSelected),
-            ),
-          ),
       ],
     ];
   }
@@ -336,6 +321,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 onChanged: (v) => setState(() {
                   _query = v;
                   _collapsedSearchWb.clear();
+                  _collapsedSearchSections.clear();
                 }),
               )
             : HomeTitle(connectionId: widget.connectionId),
@@ -458,29 +444,34 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   padding: const EdgeInsets.all(24),
                   child: Text(l10n.devicesNoMatch, textAlign: TextAlign.center),
                 ),
-              if (wbDevices.isNotEmpty && shown.isNotEmpty)
-                const ListTile(title: Text('Zigbee2MQTT')),
-              for (final h in shown)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: DeviceHealthRow(
-                    health: h,
-                    onDashboard: !unassigned(h),
-                    selected:
-                        h.device.ieeeAddress != null &&
-                        h.device.ieeeAddress == widget.selectedIeee,
-                    onTap: () => _open(h.device),
-                    onLongPress: () => _menu(
-                      h.device,
-                      isNew: newIeees.contains(h.device.ieeeAddress),
+              if (shown.isNotEmpty) _sectionHeader('z2m', 'Zigbee2MQTT', q),
+              if (_sectionExpanded('z2m', q))
+                for (final h in shown)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: DeviceHealthRow(
+                      health: h,
+                      onDashboard: !unassigned(h),
+                      selected:
+                          h.device.ieeeAddress != null &&
+                          h.device.ieeeAddress == widget.selectedIeee,
+                      onTap: () => _open(h.device),
+                      onLongPress: () => _menu(
+                        h.device,
+                        isNew: newIeees.contains(h.device.ieeeAddress),
+                      ),
                     ),
                   ),
-                ),
               for (final group in WirenBoardDeviceGroup.values) ...[
                 if (wbShown.any((d) => d.group == group))
-                  ListTile(title: Text(wirenBoardGroupLabel(group, l10n))),
-                for (final device in wbShown.where((d) => d.group == group))
-                  ..._wirenBoardTree(device, q, wbLinked.contains(device.id)),
+                  _sectionHeader(
+                    'wb-${group.name}',
+                    wirenBoardGroupLabel(group, l10n),
+                    q,
+                  ),
+                if (_sectionExpanded('wb-${group.name}', q))
+                  for (final device in wbShown.where((d) => d.group == group))
+                    ..._wirenBoardTree(device, q, wbLinked.contains(device.id)),
               ],
               if (rows.isNotEmpty && !availability.any)
                 Padding(
