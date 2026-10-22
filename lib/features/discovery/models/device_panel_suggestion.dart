@@ -55,6 +55,9 @@ class PanelSuggestion {
   /// Complete defaults for protocols with scalar rather than Z2M payloads.
   final PanelConfig? config;
 
+  /// Compatible presentations offered when adding an individual property.
+  final List<PanelSuggestion> widgetChoices;
+
   const PanelSuggestion({
     required this.type,
     required this.name,
@@ -66,6 +69,7 @@ class PanelSuggestion {
     this.unit,
     this.sliderIsBrightness = false,
     this.config,
+    this.widgetChoices = const [],
   });
 }
 

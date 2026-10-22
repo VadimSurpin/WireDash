@@ -1505,5 +1505,10 @@
   "wbChooseProperties": "Выберите свойства для добавления одной панелью.",
   "wbAddSelected": "Добавить выбранные свойства",
   "wbOpenControls": "Открыть управление",
-  "wbZ2mDevices": "Устройства Z2M Wirenboard"
+  "wbZ2mDevices": "Устройства Z2M Wirenboard",
+  "panelPropertyWidget": "Виджет",
+  "panelDisplayReset": "Сбросить содержимое и подписи",
+  "panelDisplayHint": "Выберите свойства для этой карточки. Свои подписи действуют только в этой панели. Откройте карточку для доступа ко всем контролам устройства.",
+  "panelDisplayTitle": "Содержимое карточки",
+  "panelDisplayLabel": "Своя подпись (необязательно)"
 }

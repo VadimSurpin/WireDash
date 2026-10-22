@@ -1505,5 +1505,10 @@
   "wbChooseProperties": "Selecteer eigenschappen om als één paneel toe te voegen.",
   "wbAddSelected": "Geselecteerde eigenschappen toevoegen",
   "wbOpenControls": "Bediening openen",
-  "wbZ2mDevices": "Wirenboard Z2M-apparaten"
+  "wbZ2mDevices": "Wirenboard Z2M-apparaten",
+  "panelPropertyWidget": "Widget",
+  "panelDisplayReset": "Kaartinhoud en labels herstellen",
+  "panelDisplayHint": "Kies welke eigenschappen op deze kaart staan. Aangepaste labels gelden alleen voor dit paneel. Open de kaart voor alle apparaatbedieningen.",
+  "panelDisplayTitle": "Kaartinhoud",
+  "panelDisplayLabel": "Aangepast label (optioneel)"
 }

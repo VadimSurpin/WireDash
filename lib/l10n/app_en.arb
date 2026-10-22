@@ -2254,5 +2254,10 @@
   "wbChooseProperties": "Select properties to add as one panel.",
   "wbAddSelected": "Add selected properties",
   "wbOpenControls": "Open controls",
-  "wbZ2mDevices": "Wirenboard Z2M devices"
+  "wbZ2mDevices": "Wirenboard Z2M devices",
+  "panelDisplayLabel": "Custom label (optional)",
+  "panelPropertyWidget": "Widget type",
+  "panelDisplayReset": "Reset card contents and labels",
+  "panelDisplayHint": "Choose properties shown on this card. Custom labels apply only to this panel. Open the card for all device controls.",
+  "panelDisplayTitle": "Card contents"
 }

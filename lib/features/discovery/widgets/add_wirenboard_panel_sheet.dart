@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/theme/dashboard_accent.dart';
 import '../../../data/repositories/dashboard_repo.dart';
+import '../../../data/database/tables/panels.dart';
+import '../../panels/widgets/property_widget_selector.dart';
+import '../models/wirenboard_panel_suggestion.dart';
 import '../models/wirenboard_device.dart';
 import '../wirenboard_dashboard_importer.dart';
 
@@ -46,6 +49,7 @@ class _AddWirenBoardPanelSheetState
   final _form = GlobalKey<FormState>();
   final _label = TextEditingController();
   String? _dashboardId;
+  PanelType? _widgetType;
   bool _initialized = false;
   bool _saving = false;
 
@@ -96,6 +100,7 @@ class _AddWirenBoardPanelSheetState
           widget.device,
           control,
           label: _label.text.trim(),
+          widgetType: _widgetType,
         );
       } else {
         await importer.addDevice(widget.device, label: _label.text.trim());
@@ -161,6 +166,22 @@ class _AddWirenBoardPanelSheetState
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? l10n.fieldRequired : null,
               ),
+              if (control != null) ...[
+                const SizedBox(height: 16),
+                PropertyWidgetSelector(
+                  choices: suggestWirenBoardPanel(
+                    widget.device,
+                    control,
+                    language: Localizations.localeOf(context).languageCode,
+                  ).widgetChoices,
+                  value:
+                      _widgetType ??
+                      suggestWirenBoardPanel(widget.device, control).type,
+                  onChanged: _saving
+                      ? null
+                      : (type) => setState(() => _widgetType = type),
+                ),
+              ],
               const SizedBox(height: 16),
               if (dashboards != null && dashboards.isNotEmpty)
                 DropdownButtonFormField<String>(

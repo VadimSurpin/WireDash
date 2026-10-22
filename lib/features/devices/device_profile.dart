@@ -26,6 +26,7 @@ class DeviceFeature {
     required this.type,
     required this.property,
     this.name,
+    this.label,
     this.access = 0,
     this.category,
     this.parent,
@@ -46,6 +47,7 @@ class DeviceFeature {
   /// suffix, e.g. `state_l1`). Always read and write this, never [name].
   final String property;
   final String? name;
+  final String? label;
   final int access;
 
   /// `config` | `diagnostic` | null (normal use).
@@ -72,6 +74,7 @@ class DeviceFeature {
         'type': type,
         'property': property,
         if (name != null && name != property) 'name': name,
+        if (label != null) 'label': label,
         'access': access,
         if (category != null) 'category': category,
         if (parent != null) 'parent': parent,
@@ -95,6 +98,7 @@ class DeviceFeature {
       type: json['type'] as String? ?? 'unknown',
       property: property,
       name: json['name'] as String? ?? property,
+      label: json['label'] as String?,
       access: rawAccess is num ? rawAccess.toInt() : 0,
       category: json['category'] as String?,
       parent: json['parent'] as String? ?? parent,

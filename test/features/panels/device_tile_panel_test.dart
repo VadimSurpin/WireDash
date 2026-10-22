@@ -117,6 +117,43 @@ Finder _text(String s) => find.byWidgetPredicate((w) =>
     w is Text && w.data?.replaceAll(RegExp('[\u2066-\u2069]'), '') == s);
 
 void main() {
+  testWidgets('native panel display overrides label switches and filter properties without changing commands', (tester) async {
+    final original = _device([
+      {'type': 'binary', 'property': 'state', 'name': 'state', 'access': 3, 'value_on': 'ON', 'value_off': 'OFF'},
+      {'type': 'numeric', 'property': 'temperature', 'access': 1, 'unit': '°C'},
+      {'type': 'numeric', 'property': 'humidity', 'access': 1, 'unit': '%'},
+    ]);
+    final config = PanelConfig.decode(original.type, original.config) as DeviceTileConfig;
+    final panel = original.copyWith(config: DeviceTileConfig(profile: config.profile,
+      display: const DevicePanelDisplay(properties: ['state', 'humidity'], labels: {'state': 'Desk light', 'humidity': 'Room humidity'})).encode());
+    final manager = _Recorder();
+    addTearDown(manager.dispose);
+    await tester.pumpWidget(_wrap(panel, mgr: manager, state: {'state':'ON','temperature':21.4,'humidity':48}));
+    await tester.pumpAndSettle();
+    expect(find.text('Desk light'), findsOneWidget);
+    expect(find.text('Room humidity'), findsOneWidget);
+    expect(find.byKey(const ValueKey('summary-property:temperature')), findsNothing);
+    await tester.tap(find.byTooltip('Turn on or off'));
+    await tester.pumpAndSettle();
+    expect(manager.sent.single.$2, {'state':'OFF'});
+  });
+
+  testWidgets('changing only a native switch label keeps the default property selection', (tester) async {
+    final original = _device([
+      {'type':'binary','property':'state','name':'state','access':3},
+      {'type':'numeric','property':'temperature','access':1},
+      {'type':'numeric','property':'humidity','access':1},
+    ]);
+    final config = PanelConfig.decode(original.type, original.config) as DeviceTileConfig;
+    final panel = original.copyWith(config: DeviceTileConfig(profile:config.profile,
+      display:const DevicePanelDisplay(labels:{'state':'Desk'})).encode());
+    await tester.pumpWidget(_wrap(panel, state:{'state':true,'temperature':21,'humidity':48}));
+    await tester.pumpAndSettle();
+    expect(find.text('Desk'), findsOneWidget);
+    expect(find.byKey(const ValueKey('summary-property:temperature')), findsOneWidget);
+    expect(find.byKey(const ValueKey('summary-property:humidity')), findsNothing);
+  });
+
   testWidgets('color light shows state, brightness and kelvin; icon toggles',
       (tester) async {
     final mgr = _Recorder();

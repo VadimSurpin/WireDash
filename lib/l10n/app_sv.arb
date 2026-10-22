@@ -1505,5 +1505,10 @@
   "wbChooseProperties": "Välj egenskaper att lägga till som en panel.",
   "wbAddSelected": "Lägg till valda egenskaper",
   "wbOpenControls": "Öppna kontroller",
-  "wbZ2mDevices": "Wirenboard Z2M-enheter"
+  "wbZ2mDevices": "Wirenboard Z2M-enheter",
+  "panelPropertyWidget": "Widget",
+  "panelDisplayReset": "Återställ kortinnehåll och etiketter",
+  "panelDisplayHint": "Välj vilka egenskaper som visas på kortet. Egna etiketter gäller bara för den här panelen. Öppna kortet för att se alla enhetens kontroller.",
+  "panelDisplayTitle": "Kortinnehåll",
+  "panelDisplayLabel": "Egen etikett (valfritt)"
 }

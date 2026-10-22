@@ -1285,5 +1285,10 @@
   "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel.",
   "wbAddSelected": "Přidat vybrané vlastnosti",
   "wbOpenControls": "Otevřít ovládací prvky",
-  "wbZ2mDevices": "Zařízení Z2M ve Wirenboardu"
+  "wbZ2mDevices": "Zařízení Z2M ve Wirenboardu",
+  "panelPropertyWidget": "Widget",
+  "panelDisplayReset": "Obnovit obsah a popisky karty",
+  "panelDisplayHint": "Vyberte vlastnosti zobrazené na této kartě. Vlastní popisky platí jen pro tento panel. Otevřením karty zobrazíte všechny ovládací prvky zařízení.",
+  "panelDisplayTitle": "Obsah karty",
+  "panelDisplayLabel": "Vlastní popisek (volitelné)"
 }
