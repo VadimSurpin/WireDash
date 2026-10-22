@@ -13,7 +13,7 @@ const H = Engine.helpers;
 // ---------- a fake Zigbee2MQTT ----------
 
 function fakeZ2m() {
-  const listeners = { mqtt: [], entity: [] };
+  const listeners = { mqtt: [], entity: [], published: [] };
   const published = [];
   const injected = [];
   const devices = {
@@ -26,10 +26,11 @@ function fakeZ2m() {
   const eventBus = {
     onMQTTMessage: (k, cb) => listeners.mqtt.push(cb),
     onPublishEntityState: (k, cb) => listeners.entity.push(cb),
-    removeListeners: () => { listeners.mqtt = []; listeners.entity = []; },
+    onMQTTMessagePublished: (k, cb) => listeners.published.push(cb),
+    removeListeners: () => { listeners.mqtt = []; listeners.entity = []; listeners.published = []; },
   };
   const mqtt = {
-    publish: (topic, payload, options) => { published.push({ topic: `${options.baseTopic}/${topic}`, payload, retain: options.clientOptions.retain }); return Promise.resolve(); },
+    publish: (topic, payload, options) => { published.push({ topic: `${options.baseTopic}/${topic}`, payload, retain: options.clientOptions.retain, receive: options.skipReceive === false }); return Promise.resolve(); },
     subscribe: () => Promise.resolve(),
     unsubscribe: () => Promise.resolve(),
     onMessage: (topic, buf) => injected.push({ topic, payload: JSON.parse(buf.toString()) }),
@@ -43,6 +44,9 @@ function fakeZ2m() {
     rule: (id, rule) => listeners.mqtt.forEach((cb) => cb({ topic: `zigdash/automations/rules/${id}`, message: rule ? JSON.stringify({ v: 1, enabled: true, conditions: [], ...rule }) : '' })),
     meta: (m) => listeners.mqtt.forEach((cb) => cb({ topic: 'zigdash/automations/meta', message: JSON.stringify(m) })),
     control: (m) => listeners.mqtt.forEach((cb) => cb({ topic: 'zigdash/automations/control', message: JSON.stringify(m) })),
+    mqttIn: (topic, message) => listeners.mqtt.forEach((cb) => cb({ topic, message })),
+    z2mPublished: (topic, payload) => listeners.published.forEach((cb) => cb({ topic, payload: JSON.stringify(payload) })),
+    at: (topic) => { const m = published.filter((p) => p.topic === topic).at(-1); return m && m.payload; },
     device: (ieee, message) => listeners.entity.forEach((cb) => cb({ entity: devices[ieee], message, payload: message })),
     last: (sub) => { const m = published.filter((p) => p.topic === `zigdash/automations/${sub}`).at(-1); return m && (m.payload ? JSON.parse(m.payload) : ''); },
   };
@@ -257,4 +261,97 @@ test('a malformed rule payload is caught, not thrown into Zigbee2MQTT', async ()
   assert.doesNotThrow(() => z.engine.guard('x', z.engine.onMqtt)({ topic: 'zigdash/automations/rules/bad', message: '{not json' }));
   await z.engine.stop();
   fs.rmSync(path.join(process.env.ZIGBEE2MQTT_DATA, 'zigdash-engine-stopped'), { force: true });
+});
+
+
+// ---------- alerts and history flows ----------
+
+const crypto = require('crypto');
+
+function alertsConfig() {
+  const vapid = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const jwk = vapid.publicKey.export({ format: 'jwk' });
+  const phone = crypto.createECDH('prime256v1'); phone.generateKeys();
+  return {
+    home: 'Home', base: 'zigbee2mqtt', timeZone: 'UTC',
+    vapid: {
+      privateJwk: vapid.privateKey.export({ format: 'jwk' }),
+      publicKey: Buffer.concat([Buffer.from([4]), Buffer.from(jwk.x, 'base64url'), Buffer.from(jwk.y, 'base64url')]).toString('base64url'),
+    },
+    phones: [{ id: 'p1', name: 'Phone', endpoint: 'https://fcm.googleapis.com/fcm/send/abc',
+      p256dh: phone.getPublicKey().toString('base64url'), auth: crypto.randomBytes(16).toString('base64url') }],
+    alerts: [{ id: 'a1', kind: 'leak', enabled: true, devices: [{ topic: 'zigbee2mqtt/Bathroom leak', ieee: '0xleak', name: 'Bathroom leak' }] }],
+    text: { leak: '{name}: leak' },
+  };
+}
+
+const flush = () => new Promise((r) => setImmediate(r));
+
+test('alerts: with no Node-RED, the Engine takes over, sends a leak push and keeps Recent alerts', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'setInterval', 'Date'], now: 1_800_000_000_000 });
+  const z = fakeZ2m();
+  const calls = [];
+  z.engine.fetch = async (url, init) => { calls.push({ url, init }); return { status: 201, text: async () => '' }; };
+  await z.engine.start();
+  z.mqttIn('zigdash/alerts/config', JSON.stringify(alertsConfig()));
+  t.mock.timers.tick(46000); // the observe window passes with no foreign heartbeat
+  assert.equal(z.last('state').flows.alerts, 'active');
+  assert.equal(z.at('zigdash/alerts/bridge/state'), 'online');
+  assert.ok(z.published.find((p) => p.topic === 'zigdash/alerts/bridge/state').receive, 'the beat must come back to tell Node-RED apart');
+
+  z.z2mPublished('zigbee2mqtt/Bathroom leak', { water_leak: false });
+  z.z2mPublished('zigbee2mqtt/Bathroom leak', { water_leak: true });
+  await flush();
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, 'https://fcm.googleapis.com/fcm/send/abc');
+  assert.equal(calls[0].init.headers['Content-Encoding'], 'aes128gcm');
+  assert.equal(JSON.parse(z.at('zigdash/alerts/recent'))[0].kind, 'leak');
+  await z.engine.stop();
+  assert.equal(z.at('zigdash/alerts/bridge/state'), 'offline');
+});
+
+test('alerts: a Node-RED copy still beating keeps the Engine passive, then it takes over', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'setInterval', 'Date'], now: 1_800_000_000_000 });
+  const z = fakeZ2m();
+  const calls = [];
+  z.engine.fetch = async (url) => { calls.push(url); return { status: 201, text: async () => '' }; };
+  await z.engine.start();
+  z.mqttIn('zigdash/alerts/config', JSON.stringify(alertsConfig()));
+  z.mqttIn('zigdash/alerts/bridge/state', 'online'); // the retained copy on subscribe: ignored
+  for (let i = 0; i < 4; i++) { t.mock.timers.tick(30000); z.mqttIn('zigdash/alerts/bridge/state', 'online'); }
+  assert.equal(z.last('state').flows.alerts, 'passive');
+  z.z2mPublished('zigbee2mqtt/Bathroom leak', { water_leak: false });
+  z.z2mPublished('zigbee2mqtt/Bathroom leak', { water_leak: true });
+  await flush();
+  assert.equal(calls.length, 0, 'passive: Node-RED sends this one');
+  assert.equal(z.at('zigdash/alerts/recent'), undefined);
+
+  t.mock.timers.tick(95000); // Node-RED's beats stopped
+  assert.equal(z.last('state').flows.alerts, 'active');
+  z.z2mPublished('zigbee2mqtt/Bathroom leak', { water_leak: false });
+  await flush();
+  assert.equal(calls.length, 1, 'the all-clear is sent by the Engine now: memory was kept while passive');
+  await z.engine.stop();
+});
+
+test('history: records a reading and publishes its day record when the slot closes', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'setInterval', 'Date'], now: Date.UTC(2026, 9, 22, 12, 0, 30) });
+  const z = fakeZ2m();
+  await z.engine.start();
+  z.mqttIn('zigdash/history/config', JSON.stringify({ v: 1, timeZone: 'UTC',
+    readings: [{ topic: 'zigbee2mqtt/Balcony', ieee: '0xtemp', attr: 'temperature', path: 'temperature', unit: '°C' }] }));
+  t.mock.timers.tick(46000);
+  assert.equal(z.last('state').flows.history, 'active');
+  z.z2mPublished('zigbee2mqtt/Balcony', { temperature: 21.5 });
+  t.mock.timers.tick(16 * 60000);
+  const day = z.published.filter((p) => p.topic === 'zigdash/history/0xtemp/temperature/2026-10-22');
+  assert.ok(day.length >= 1, 'a day record was published');
+  assert.ok(day.at(-1).retain);
+  assert.deepEqual(JSON.parse(day.at(-1).payload).b[0], [48, 21.5, 21.5, 21.5]);
+  await z.engine.stop();
+});
+
+test('hub/zigdash-engine.js is built from the current sources', () => {
+  const r = require('child_process').spawnSync(process.execPath, [path.join(__dirname, '..', 'build.mjs'), '--check']);
+  assert.equal(r.status, 0, String(r.stderr));
 });
