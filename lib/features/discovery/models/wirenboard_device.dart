@@ -94,12 +94,12 @@ class WirenBoardDiscovery {
 }
 
 class _Metadata {
-  Map<String, Object?> _json = {};
+  Map<String, Object?>? _json;
   final _legacy = <String, Object?>{};
 
   void update(String? key, Object? value) {
     if (key == null) {
-      _json = value == null ? {} : Map<String, Object?>.from(value as Map);
+      _json = value == null ? null : Map<String, Object?>.from(value as Map);
     } else if (value == null) {
       _legacy.remove(key);
     } else {
@@ -107,8 +107,14 @@ class _Metadata {
     }
   }
 
-  // Canonical JSON takes precedence regardless of retained delivery order.
-  Map<String, Object?> get values => Map.unmodifiable({..._legacy, ..._json});
+  // JSON is a complete snapshot: omitted fields use protocol defaults, not
+  // stale legacy values (notably readonly). Keep only the legacy display name
+  // as a fallback for publishers that provide it alongside modern metadata.
+  Map<String, Object?> get values => Map.unmodifiable(
+    _json == null
+        ? _legacy
+        : {if (_legacy.containsKey('name')) 'name': _legacy['name'], ..._json!},
+  );
 }
 
 bool _flag(Object? value) =>
