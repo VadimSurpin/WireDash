@@ -1,0 +1,42 @@
+# ZigDash relay (3.1): Mosquitto with dynamic security + the verifier.
+# Runs beside other projects on one host; Caddy (already on the host) serves
+# TLS for phones (WSS) and the verifier API, and its certificate is reused by
+# Mosquitto for hubs on 8883. See relay/README.md before running anything.
+name: zigdash-relay
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.1.2
+    restart: unless-stopped
+    ports:
+      - "8883:8883"          # hubs: MQTT over TLS
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./data:/mosquitto/data            # dynsec.json lives here
+      - ${CADDY_CERTS:?path to Caddy's certificate folder for relay.zigdash.app}:/certs:ro
+    networks: [relay, edge]
+
+  verifier:
+    build: ../verifier
+    restart: unless-stopped
+    environment:
+      PORT: "8787"
+      DB: /data/verifier.db
+      MQTT_URL: mqtt://mosquitto:1883
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?}
+      HUB_URL: mqtts://relay.zigdash.app:8883
+      PHONE_URL: wss://relay.zigdash.app/mqtt
+      VERIFY: ${VERIFY:-play}
+      GOOGLE_SA: /secrets/play-service-account.json
+    volumes:
+      - ./verifier-data:/data
+      - ./secrets:/secrets:ro
+    depends_on: [mosquitto]
+    networks: [relay, edge]
+
+networks:
+  relay: {}
+  edge:
+    external: true
+    name: ${EDGE_NETWORK:?the Docker network Caddy is on}

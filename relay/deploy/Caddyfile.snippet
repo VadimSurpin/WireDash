@@ -1,0 +1,10 @@
+# Add to the host's Caddyfile (Caddy must be on the EDGE_NETWORK).
+relay.zigdash.app {
+	handle /mqtt* {
+		reverse_proxy zigdash-relay-mosquitto-1:9001
+	}
+	handle /v1/* {
+		reverse_proxy zigdash-relay-verifier-1:8787
+	}
+	respond 404
+}
