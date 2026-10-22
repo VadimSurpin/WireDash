@@ -1519,5 +1519,7 @@
   "panelPropertyWidget": "Kontrollelement",
   "panelDisplayLabel": "Eget navn (valgfritt)",
   "panelDisplayTitle": "Kortinnhold",
-  "panelDisplayHint": "Velg egenskapene som vises på dette kortet. Egne navn gjelder bare for dette panelet. Åpne kortet for å se alle enhetskontrollene."
+  "panelDisplayHint": "Velg egenskapene som vises på dette kortet. Egne navn gjelder bare for dette panelet. Åpne kortet for å se alle enhetskontrollene.",
+  "panelAllowCommandsHint": "Tilby redigerbare kontrollmoduler selv om oppdagelsen markerer denne egenskapen som skrivebeskyttet. Gjelder bare denne flisen.",
+  "panelAllowCommands": "Tillat kommandoer"
 }

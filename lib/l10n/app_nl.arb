@@ -1519,5 +1519,7 @@
   "panelPropertyWidget": "Widget",
   "panelDisplayLabel": "Aangepast label (optioneel)",
   "panelDisplayTitle": "Kaartinhoud",
-  "panelDisplayHint": "Kies welke eigenschappen op deze kaart staan. Aangepaste labels gelden alleen voor dit paneel. Open de kaart voor alle apparaatbedieningen."
+  "panelDisplayHint": "Kies welke eigenschappen op deze kaart staan. Aangepaste labels gelden alleen voor dit paneel. Open de kaart voor alle apparaatbedieningen.",
+  "panelAllowCommandsHint": "Bied bewerkbare widgets aan, ook als deze eigenschap bij detectie als alleen-lezen is gemarkeerd. Geldt alleen voor deze tegel.",
+  "panelAllowCommands": "Opdrachten toestaan"
 }

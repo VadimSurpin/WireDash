@@ -52,6 +52,7 @@ class _AddWirenBoardPanelSheetState
   PanelType? _widgetType;
   bool _initialized = false;
   bool _saving = false;
+  bool _allowCommands = false;
 
   @override
   void didChangeDependencies() {
@@ -101,6 +102,7 @@ class _AddWirenBoardPanelSheetState
           control,
           label: _label.text.trim(),
           widgetType: _widgetType,
+          allowCommands: _allowCommands,
         );
       } else {
         await importer.addDevice(widget.device, label: _label.text.trim());
@@ -132,6 +134,14 @@ class _AddWirenBoardPanelSheetState
     );
     final dashboards = loaded.valueOrNull;
     final control = widget.control;
+    final suggestion = control == null
+        ? null
+        : suggestWirenBoardPanel(
+            widget.device,
+            control,
+            language: Localizations.localeOf(context).languageCode,
+            allowCommands: _allowCommands,
+          );
     return SafeArea(
       child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -169,14 +179,16 @@ class _AddWirenBoardPanelSheetState
               if (control != null) ...[
                 const SizedBox(height: 16),
                 PropertyWidgetSelector(
-                  choices: suggestWirenBoardPanel(
-                    widget.device,
-                    control,
-                    language: Localizations.localeOf(context).languageCode,
-                  ).widgetChoices,
-                  value:
-                      _widgetType ??
-                      suggestWirenBoardPanel(widget.device, control).type,
+                  choices: suggestion!.widgetChoices,
+                  value: _widgetType ?? suggestion.type,
+                  showCommandOverride: control.readOnly,
+                  allowCommands: _allowCommands,
+                  onAllowCommandsChanged: _saving
+                      ? null
+                      : (value) => setState(() {
+                          _allowCommands = value;
+                          _widgetType = null;
+                        }),
                   onChanged: _saving
                       ? null
                       : (type) => setState(() => _widgetType = type),

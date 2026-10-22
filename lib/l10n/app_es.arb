@@ -1519,5 +1519,7 @@
   "panelPropertyWidget": "Widget",
   "panelDisplayLabel": "Etiqueta personalizada (opcional)",
   "panelDisplayTitle": "Contenido de la tarjeta",
-  "panelDisplayHint": "Elige las propiedades que muestra esta tarjeta. Las etiquetas personalizadas solo se aplican a este panel. Abre la tarjeta para ver todos los controles del dispositivo."
+  "panelDisplayHint": "Elige las propiedades que muestra esta tarjeta. Las etiquetas personalizadas solo se aplican a este panel. Abre la tarjeta para ver todos los controles del dispositivo.",
+  "panelAllowCommandsHint": "Ofrecer widgets editables aunque la detección marque esta propiedad como de solo lectura. Solo se aplica a este panel.",
+  "panelAllowCommands": "Permitir comandos"
 }

@@ -1519,5 +1519,7 @@
   "panelPropertyWidget": "Widget",
   "panelDisplayLabel": "Egen etikett (valfritt)",
   "panelDisplayTitle": "Kortinnehåll",
-  "panelDisplayHint": "Välj vilka egenskaper som visas på kortet. Egna etiketter gäller bara för den här panelen. Öppna kortet för att se alla enhetens kontroller."
+  "panelDisplayHint": "Välj vilka egenskaper som visas på kortet. Egna etiketter gäller bara för den här panelen. Öppna kortet för att se alla enhetens kontroller.",
+  "panelAllowCommandsHint": "Erbjud redigerbara widgetar även om identifieringen markerar den här egenskapen som skrivskyddad. Gäller bara den här panelen.",
+  "panelAllowCommands": "Tillåt kommandon"
 }

@@ -1519,5 +1519,7 @@
   "panelPropertyWidget": "Widget",
   "panelDisplayLabel": "Eigene Beschriftung (optional)",
   "panelDisplayTitle": "Karteninhalt",
-  "panelDisplayHint": "Wählen Sie die Eigenschaften für diese Karte. Eigene Beschriftungen gelten nur für dieses Panel. Öffnen Sie die Karte, um alle Gerätesteuerungen zu sehen."
+  "panelDisplayHint": "Wählen Sie die Eigenschaften für diese Karte. Eigene Beschriftungen gelten nur für dieses Panel. Öffnen Sie die Karte, um alle Gerätesteuerungen zu sehen.",
+  "panelAllowCommandsHint": "Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel.",
+  "panelAllowCommands": "Befehle erlauben"
 }

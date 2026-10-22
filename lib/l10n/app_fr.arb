@@ -1373,5 +1373,7 @@
   "panelPropertyWidget": "Widget",
   "panelDisplayLabel": "Libellé personnalisé (facultatif)",
   "panelDisplayTitle": "Contenu de la carte",
-  "panelDisplayHint": "Choisissez les propriétés affichées sur cette carte. Les libellés personnalisés ne concernent que ce panneau. Ouvrez la carte pour accéder à toutes les commandes de l’appareil."
+  "panelDisplayHint": "Choisissez les propriétés affichées sur cette carte. Les libellés personnalisés ne concernent que ce panneau. Ouvrez la carte pour accéder à toutes les commandes de l’appareil.",
+  "panelAllowCommandsHint": "Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile.",
+  "panelAllowCommands": "Autoriser les commandes"
 }
