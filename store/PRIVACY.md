@@ -1,6 +1,6 @@
 # ZigDash — Privacy Policy
 
-**Effective date:** the day ZigDash 2.10.2 is published (replaces the policy published with ZigDash 2.10.0)
+**Effective date:** the day ZigDash 3.0 is published (replaces the policy published with ZigDash 2.10.2)
 
 ZigDash ("the app") is a client for controlling [Zigbee2MQTT](https://www.zigbee2mqtt.io/)
 devices through MQTT brokers that **you** configure. This policy explains what
@@ -83,8 +83,9 @@ When you do:
 
 - **Your hub does the watching.** ZigDash writes your alerts (which devices,
   which conditions, the hours) as a retained message on your own broker, and
-  installs a small flow in Node-RED on your hub, which watches the devices.
-  ZigDash itself never watches in the background and runs no server.
+  puts ZigDash Engine on your hub (before 3.0, a flow in Node-RED), which
+  watches the devices. ZigDash itself never watches in the background and
+  runs no server.
 - **Notifications reach your phone through Google's push service.** Each one
   is encrypted end to end on your hub (Web Push, RFC 8291) with keys that
   exist only on your phone and your broker, so Google carries the message but
@@ -143,6 +144,8 @@ never from anything you typed or anything your broker sent.
 | `alert_added` | An alert was added | its kind: leak, smoke, door or window opened, or battery low |
 | `alarm_shown` | From 2.9: alarm takeover filled a wall display | only the kind: leak, smoke, gas or carbon monoxide. Never the device or where it is |
 | `history_setup` | From 2.7: setting up the history recorder on the hub ended | installed, updated, imported by hand (Node-RED asked for a login), no Node-RED found, or refused; from 2.9.1 also recording on this device instead |
+| `engine_setup` | From 3.0: a step of putting ZigDash Engine on the hub | offered, installed, consent shown, given or declined, Zigbee2MQTT too old, failed, removed, started again, seen paused or stopped; which screen it came from (automations, alerts or history); Zigbee2MQTT's version as major.minor only |
+| `automation_saved` | From 3.0: an automation was saved | its shape only: the kind of trigger (a device's state, a button, a reading, a clock time or the sun), how many conditions, a scene or a device, whether it turns off again, new or edited, and how many the home has, in ranges. Never a device, a name or a time |
 | `pro` | From 2.7, Google Play version only: a step of ZigDash Pro | a locked view was shown, the Pro screen was opened (from 2.9.6), Unlock was tapped, or Pro became unlocked. Nothing about the payment |
 | `review_prompt` | From 2.6.5: the app asked Google Play to show its "rate this app" dialog (after a device you control has answered on two different days) | whether the dialog was requested, or could not be because the Play review flow is not available on the device. Nothing about whether you rated, or what |
 
@@ -159,25 +162,42 @@ If you contact support, your email (and the Support details you choose to
 include) is used only to help you, is never shared, and is deleted within 6
 months after the issue is closed.
 
-## Optional automation
+## Automations and ZigDash Engine (from 3.0)
 
-If you create a "schedule" panel, ZigDash publishes the automation configuration
-as a retained MQTT message to your own broker, where a flow you run (e.g. on
-Node-RED) executes it. This data also stays within your own infrastructure.
+If you set up automations, alerts or history, ZigDash installs ZigDash Engine
+on your hub: one JavaScript file that Zigbee2MQTT saves in its own data folder
+and runs as an extension. ZigDash sends it through your own broker; nothing is
+downloaded from anywhere else. ZigDash Engine runs your automations, alerts and
+history recorder on your hub, inside your network. Your automations (which
+devices, what they do, when), the Home's time zone and, if you use sunrise or
+sunset, the name and coordinates of the town you picked from a list built into
+the app (never your phone's location) are stored as retained messages on your
+own broker, with the last 20 runs. Nothing of it is sent to the developer or
+anyone else. On new Zigbee2MQTT installs, ZigDash asks before turning on
+Zigbee2MQTT's "Allow external JavaScript" setting and restarting it. Remove
+from hub deletes the file; your automations stay on your broker until you
+delete them.
+
+## Optional automation panels
+
+If you create a "schedule" or "auto-close" panel, ZigDash publishes its
+configuration as a retained MQTT message to your own broker, where a flow you
+run (e.g. on Node-RED) executes it. This data also stays within your own
+infrastructure. Automations from 3.0 are described above.
 
 ## History (from 2.7)
 
-If you set up history, ZigDash installs a "ZigDash history" flow in Node-RED on
-your own hub and publishes, as a retained MQTT message on your own broker, the
+If you set up history, ZigDash puts ZigDash Engine on your own hub (before
+3.0, a "ZigDash history" flow in Node-RED) and publishes, as a retained MQTT message on your own broker, the
 list of readings shown on your dashboards (device addresses, state topics,
-value names and units) and your phone's time zone. The flow records those
+value names and units) and your phone's time zone. ZigDash Engine records those
 values every 15 minutes as retained messages on your broker and deletes them
 after 30 days. Nothing of it leaves your network: no copy is sent to the
 developer or anyone else.
 
-From 2.9.1, without Node-RED, you can let ZigDash record on one phone or
+From 2.9.1, if your hub can't record, you can let ZigDash record on one phone or
 tablet you choose (Record on this device). While ZigDash is open there, it
-does what the flow does: it reads the same values from your broker and
+does what the hub does: it reads the same values from your broker and
 writes the same 15-minute records back to your broker, retained, and
 deletes them after 30 days. The choice is stored on that device only.
 

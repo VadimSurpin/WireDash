@@ -36,15 +36,17 @@ MQTT.
 - **All shutters at once** — Close, Open and Stop all shutters are ready-made
   scenes in every Home: tap them in the Scenes tab, put one on a dashboard or
   the home screen, and untick a garage door under Which shutters.
-- **Alerts** — a leak, smoke, a door opened at night or a low battery: Node-RED
-  on your hub watches, ZigDash sets it up in one tap, and the notification
+- **Alerts** — a leak, smoke, a door opened at night or a low battery: ZigDash
+  Engine on your hub watches, ZigDash sets it up in one tap, and the notification
   reaches your phone through Google's push, encrypted end to end — no account,
   no second app, nothing running on the phone. Share a Home's alerts with the
   household through ntfy.
-- **Hub-side automation** — schedules and auto-close rules run as retained MQTT
-  config executed by Node-RED on your always-on hub (SMLIGHT, Raspberry Pi, …).
-  Your phone can be off; the automation still runs. Bundled Node-RED flows in
-  `node-red/`.
+- **Automations** — when a door opens, motion is seen, a button is pressed or a
+  time comes (sunrise and sunset too), switch lights, plugs and shutters or run
+  a scene, and turn them off again after a while. ZigDash Engine runs them
+  inside Zigbee2MQTT on your hub, installed from the app in one tap, so they
+  work with your phone off and the internet down. Three per home free,
+  unlimited with Pro.
 - **Shortcuts** — Quick Settings tiles switch a light or plug in one tap, or
   open a slider for a shutter; Android's Device Controls show every dashboard
   device as a card with brightness and position sliders; home-screen widgets
@@ -128,7 +130,9 @@ CI release pipeline, which attaches signed per-ABI APKs to the release.
 ## Repository layout
 
 - `lib/` — Flutter app (Riverpod, go_router, Drift, Material 3)
-- `node-red/` — bundled Node-RED flows for hub-side automation
+- `hub/` — ZigDash Engine, the Zigbee2MQTT extension that runs automations,
+  alerts and history on the hub
+- `node-red/` — legacy flows, replaced by ZigDash Engine in 3.0
 - `store/` — Play Store listing copy, screenshots, graphics
 - `fastlane/` — supply metadata (F-Droid / IzzyOnDroid read this)
 
