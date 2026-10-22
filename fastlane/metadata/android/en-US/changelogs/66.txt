@@ -1,0 +1,1 @@
+ZigDash 2.10.3: devices that Zigbee2MQTT runs on a generated definition (no built-in converter, for example a custom ESP32 lamp) are no longer hidden as unsupported: they show up in setup, in the tile picker and on the device page with the controls their definition exposes.

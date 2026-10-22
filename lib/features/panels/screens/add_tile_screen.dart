@@ -55,14 +55,20 @@ class _AddTileScreenState extends ConsumerState<AddTileScreen> {
     final d = dashboard.valueOrNull;
     final devicesAsync = d == null
         ? const AsyncValue<List<Z2mDevice>>.loading()
-        : ref.watch(bridgeDevicesStreamProvider(
-            (connectionId: widget.connectionId,
-                base: z2mBase(d.topicPrefix,
-                    homeBase: ref.watch(
-                        baseTopicOverrideProvider(widget.connectionId))))));
+        : ref.watch(
+            bridgeDevicesStreamProvider((
+              connectionId: widget.connectionId,
+              base: z2mBase(
+                d.topicPrefix,
+                homeBase: ref.watch(
+                  baseTopicOverrideProvider(widget.connectionId),
+                ),
+              ),
+            )),
+          );
     final linked =
         ref.watch(linkedIeeesProvider(widget.connectionId)).valueOrNull ??
-            const <String>{};
+        const <String>{};
 
     final q = _query.text.trim().toLowerCase();
     bool matches(Z2mDevice d) =>
@@ -71,7 +77,7 @@ class _AddTileScreenState extends ConsumerState<AddTileScreen> {
         (deviceModelLabel(d)?.toLowerCase().contains(q) ?? false);
     final devices = [
       for (final d in devicesAsync.valueOrNull ?? const <Z2mDevice>[])
-        if (d.ieeeAddress != null && d.supported && matches(d)) d,
+        if (d.ieeeAddress != null && d.usable && matches(d)) d,
     ];
     final unassigned = [
       for (final d in devices)
@@ -89,24 +95,30 @@ class _AddTileScreenState extends ConsumerState<AddTileScreen> {
         ),
       ),
     ];
-    void section(String title) => children.add(Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-          child: Semantics(
-            header: true,
-            child: Text(title, style: Theme.of(context).textTheme.titleSmall),
-          ),
-        ));
+    void section(String title) => children.add(
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+        child: Semantics(
+          header: true,
+          child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+        ),
+      ),
+    );
 
     if (devicesAsync.isLoading && devices.isEmpty) {
-      children.add(const Padding(
-        padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
-      ));
+      children.add(
+        const Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
     } else if (devices.isEmpty) {
-      children.add(Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text(l10n.addTileNoDevices),
-      ));
+      children.add(
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(l10n.addTileNoDevices),
+        ),
+      );
     } else {
       if (unassigned.isNotEmpty) {
         section(l10n.addTileNotOnDashboard);
@@ -149,10 +161,9 @@ class _AddTileScreenState extends ConsumerState<AddTileScreen> {
     return ListTile(
       leading: Icon(deviceClassIcon(cls)),
       title: Text(d.friendlyName),
-      subtitle: Text([
-        deviceClassLabel(cls, l10n),
-        ?deviceModelLabel(d),
-      ].join(' · ')),
+      subtitle: Text(
+        [deviceClassLabel(cls, l10n), ?deviceModelLabel(d)].join(' · '),
+      ),
       onTap: () => _confirm(d),
     );
   }
@@ -169,16 +180,16 @@ class _AddTileScreenState extends ConsumerState<AddTileScreen> {
 }
 
 String deviceClassLabel(DeviceClass c, AppLocalizations l10n) => switch (c) {
-      DeviceClass.colorLight => l10n.deviceClassColorLight,
-      DeviceClass.light => l10n.deviceClassLight,
-      DeviceClass.switchPlug => l10n.deviceClassSwitch,
-      DeviceClass.cover => l10n.deviceClassCover,
-      DeviceClass.leakSmoke => l10n.deviceClassLeak,
-      DeviceClass.contact => l10n.deviceClassContact,
-      DeviceClass.motion => l10n.deviceClassMotion,
-      DeviceClass.climate => l10n.deviceClassClimate,
-      DeviceClass.generic => l10n.deviceClassGeneric,
-    };
+  DeviceClass.colorLight => l10n.deviceClassColorLight,
+  DeviceClass.light => l10n.deviceClassLight,
+  DeviceClass.switchPlug => l10n.deviceClassSwitch,
+  DeviceClass.cover => l10n.deviceClassCover,
+  DeviceClass.leakSmoke => l10n.deviceClassLeak,
+  DeviceClass.contact => l10n.deviceClassContact,
+  DeviceClass.motion => l10n.deviceClassMotion,
+  DeviceClass.climate => l10n.deviceClassClimate,
+  DeviceClass.generic => l10n.deviceClassGeneric,
+};
 
 /// The recommended tile for a device — name, size, section — editable
 /// before it is added. Shared by Add tile and the Devices tab; without a
@@ -247,8 +258,11 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
   Future<void> _add(Dashboard? dashboard, int sortOrder) async {
     setState(() => _saving = true);
     final name = _name.text.trim();
-    final dashboardId = dashboard?.id ??
-        await ref.read(dashboardRepoProvider).create(
+    final dashboardId =
+        dashboard?.id ??
+        await ref
+            .read(dashboardRepoProvider)
+            .create(
               connectionId: widget.connectionId,
               name: context.l10n.dashDefaultName,
               colorSeed: defaultDashboardSeed,
@@ -257,15 +271,18 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
     await createDeviceTile(
       ref.read(panelRepoProvider),
       dashboardId: dashboardId,
-      base: z2mBase(dashboard?.topicPrefix,
-          homeBase: ref.read(baseTopicOverrideProvider(widget.connectionId))),
+      base: z2mBase(
+        dashboard?.topicPrefix,
+        homeBase: ref.read(baseTopicOverrideProvider(widget.connectionId)),
+      ),
       device: widget.device,
       name: name.isEmpty ? widget.device.displayName : name,
       size: _size,
       sectionId: _sectionId,
       sortOrder: sortOrder,
     );
-    ref.read(analyticsProvider)
+    ref
+        .read(analyticsProvider)
         .track(FeatureUsed(Feature.tileAdded, tile: widget.deviceClass));
     if (mounted) Navigator.pop(context, true);
   }
@@ -274,9 +291,9 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final loaded =
-        ref.watch(dashboardsForConnectionProvider(widget.connectionId))
-            .valueOrNull;
+    final loaded = ref
+        .watch(dashboardsForConnectionProvider(widget.connectionId))
+        .valueOrNull;
     final dashboards = loaded ?? const <Dashboard>[];
     final noDashboards = loaded != null && loaded.isEmpty;
     _dashboardId ??= dashboards.firstOrNull?.id;
@@ -285,21 +302,26 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
     final sections = dashboardId == null
         ? const <Section>[]
         : ref.watch(sectionsForDashboardProvider(dashboardId)).valueOrNull ??
-            const <Section>[];
+              const <Section>[];
     final tiles = dashboardId == null
         ? const <Panel>[]
         : ref.watch(panelsForDashboardProvider(dashboardId)).valueOrNull ??
-            const <Panel>[];
+              const <Panel>[];
     if (!_sectionChosen) {
       // Default to the section named after the class's group, if any.
       final group = _groupName(widget.deviceClass, l10n);
       _sectionId = sections.where((s) => s.name == group).firstOrNull?.id;
     }
-    final sortOrder = tiles.fold<int>(-1, (m, p) => p.sortOrder > m ? p.sortOrder : m) + 1;
+    final sortOrder =
+        tiles.fold<int>(-1, (m, p) => p.sortOrder > m ? p.sortOrder : m) + 1;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
-          20, 0, 20, 24 + MediaQuery.viewInsetsOf(context).bottom),
+        20,
+        0,
+        20,
+        24 + MediaQuery.viewInsetsOf(context).bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -307,12 +329,16 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: Icon(deviceClassIcon(widget.deviceClass), size: 32),
-            title: Text(deviceClassLabel(widget.deviceClass, l10n),
-                style: theme.textTheme.titleMedium),
-            subtitle: Text([
-              widget.device.friendlyName,
-              ?deviceModelLabel(widget.device),
-            ].join(' · ')),
+            title: Text(
+              deviceClassLabel(widget.deviceClass, l10n),
+              style: theme.textTheme.titleMedium,
+            ),
+            subtitle: Text(
+              [
+                widget.device.friendlyName,
+                ?deviceModelLabel(widget.device),
+              ].join(' · '),
+            ),
           ),
           const SizedBox(height: 8),
           TextField(
@@ -332,11 +358,17 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
             showSelectedIcon: false,
             segments: [
               ButtonSegment(
-                  value: PanelWidth.small, label: Text(l10n.tileSizeSmall)),
+                value: PanelWidth.small,
+                label: Text(l10n.tileSizeSmall),
+              ),
               ButtonSegment(
-                  value: PanelWidth.wide, label: Text(l10n.tileSizeWide)),
+                value: PanelWidth.wide,
+                label: Text(l10n.tileSizeWide),
+              ),
               ButtonSegment(
-                  value: PanelWidth.full, label: Text(l10n.tileSizeFull)),
+                value: PanelWidth.full,
+                label: Text(l10n.tileSizeFull),
+              ),
             ],
             selected: {_size},
             onSelectionChanged: (s) => setState(() => _size = s.first),
@@ -363,7 +395,10 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
               initialValue: _sectionId,
               decoration: InputDecoration(labelText: l10n.addTileSection),
               items: [
-                DropdownMenuItem(value: null, child: Text(l10n.addTileNoSection)),
+                DropdownMenuItem(
+                  value: null,
+                  child: Text(l10n.addTileNoSection),
+                ),
                 for (final s in sections)
                   DropdownMenuItem(value: s.id, child: Text(s.name)),
               ],
@@ -387,10 +422,9 @@ class _AddDeviceSheetState extends ConsumerState<AddDeviceSheet> {
   }
 
   static String _groupName(DeviceClass c, AppLocalizations l10n) => switch (c) {
-        DeviceClass.colorLight || DeviceClass.light => l10n.sectionLights,
-        DeviceClass.switchPlug || DeviceClass.cover =>
-          l10n.sectionSwitchesCovers,
-        DeviceClass.generic => l10n.sectionOther,
-        _ => l10n.sectionSensors,
-      };
+    DeviceClass.colorLight || DeviceClass.light => l10n.sectionLights,
+    DeviceClass.switchPlug || DeviceClass.cover => l10n.sectionSwitchesCovers,
+    DeviceClass.generic => l10n.sectionOther,
+    _ => l10n.sectionSensors,
+  };
 }

@@ -1,0 +1,1 @@
+ZigDash 2.10.3: apparaten die Zigbee2MQTT met een gegenereerde definitie draait (zonder ingebouwde converter, bijvoorbeeld een zelfgebouwde ESP32-lamp) worden niet langer verborgen als niet ondersteund: ze verschijnen in de installatie, in de tegelkiezer en op de apparaatpagina met de bediening die hun definitie biedt.

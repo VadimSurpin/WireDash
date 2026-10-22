@@ -1,0 +1,1 @@
+ZigDash 2.10.3: zařízení, která Zigbee2MQTT provozuje s automaticky vytvořenou definicí (bez vestavěného převodníku, například vlastní lampa na ESP32), už nejsou skryta jako nepodporovaná: objeví se v nastavení, ve výběru dlaždic i na stránce zařízení s ovládacími prvky, které jejich definice nabízí.
