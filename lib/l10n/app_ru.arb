@@ -1512,5 +1512,11 @@
   "panelDisplayTitle": "Содержимое карточки",
   "panelDisplayLabel": "Своя подпись (необязательно)",
   "panelAllowCommandsHint": "Показать редактируемые виджеты, даже если свойство обнаружено как доступное только для чтения. Только для этой плитки.",
-  "panelAllowCommands": "Разрешить команды"
+  "panelAllowCommands": "Разрешить команды",
+  "displayExpressionError": "Ошибка выражения; показано исходное значение. {error}",
+  "displayExpressionTest": "Проверить выражение",
+  "displayExpressionResult": "Результат: {value}",
+  "displayExpressionTitle": "Перед отображением (JavaScript)",
+  "displayExpressionSample": "Пример значения",
+  "displayExpressionHint": "value — входящее значение. Пустое поле оставляет его без изменений. Влияет только на отображение, не на команды и сохранённую историю."
 }

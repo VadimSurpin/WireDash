@@ -1512,5 +1512,11 @@
   "panelDisplayTitle": "Karteninhalt",
   "panelDisplayLabel": "Eigene Beschriftung (optional)",
   "panelAllowCommandsHint": "Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel.",
-  "panelAllowCommands": "Befehle erlauben"
+  "panelAllowCommands": "Befehle erlauben",
+  "displayExpressionError": "Ausdruck fehlgeschlagen; der ursprüngliche Wert wird angezeigt. {error}",
+  "displayExpressionTest": "Ausdruck testen",
+  "displayExpressionResult": "Ergebnis: {value}",
+  "displayExpressionTitle": "Vor der Anzeige (JavaScript)",
+  "displayExpressionSample": "Beispielwert",
+  "displayExpressionHint": "value enthält den eingehenden Wert. Leer lässt ihn unverändert. Nur Anzeige; Befehle und gespeicherter Verlauf bleiben unverändert."
 }

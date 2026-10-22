@@ -117,6 +117,50 @@ Finder _text(String s) => find.byWidgetPredicate((w) =>
     w is Text && w.data?.replaceAll(RegExp('[\u2066-\u2069]'), '') == s);
 
 void main() {
+  testWidgets(
+    'native device property expressions retain formatting in the card and controls sheet',
+    (tester) async {
+      final original = _device([
+        {
+          'type': 'binary',
+          'property': 'state',
+          'name': 'state',
+          'access': 3,
+          'value_on': 'ON',
+          'value_off': 'OFF',
+        },
+        {
+          'type': 'numeric',
+          'property': 'temperature',
+          'access': 1,
+          'unit': '°C',
+        },
+      ]);
+      final config =
+          PanelConfig.decode(original.type, original.config)
+              as DeviceTileConfig;
+      final panel = original.copyWith(
+        config: DeviceTileConfig(
+          profile: config.profile,
+          display: const DevicePanelDisplay(
+            expressions: {'temperature': '(Number(value) / 100).toFixed(2)'},
+          ),
+        ).encode(),
+      );
+      final manager = _Recorder();
+      addTearDown(manager.dispose);
+      await tester.pumpWidget(
+        _wrap(panel, mgr: manager, state: {'state': 'ON', 'temperature': 1230}),
+      );
+      await tester.pumpAndSettle();
+      expect(_text('12.30 °C'), findsOneWidget);
+      await tester.tap(find.text('Living room bulb'));
+      await tester.pumpAndSettle();
+      expect(find.text('12.30 °C'), findsOneWidget);
+      expect(manager.sent, isEmpty);
+    },
+  );
+
   testWidgets('native panel display overrides label switches and filter properties without changing commands', (tester) async {
     final original = _device([
       {'type': 'binary', 'property': 'state', 'name': 'state', 'access': 3, 'value_on': 'ON', 'value_off': 'OFF'},

@@ -11,6 +11,7 @@ import 'package:zigdash/features/panels/models/panel_config.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
 import 'package:zigdash/features/panels/widgets/panel_reliability_frame.dart';
 import 'package:zigdash/features/panels/widgets/panel_tile.dart';
+import 'package:zigdash/features/panels/widgets/slider_panel.dart';
 import 'package:zigdash/l10n/app_localizations.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/mqtt_manager.dart';
@@ -133,6 +134,65 @@ final _staleChip = find.descendant(
 );
 
 void main() {
+  testWidgets(
+    'display expressions never scale slider commands or alter toggle commands',
+    (tester) async {
+      final manager = _RecordingMqttManager()..connected = true;
+      await tester.pumpWidget(
+        _wrap(
+          PanelType.slider,
+          status: MqttStatus.connected,
+          manager: manager,
+          config: const SliderConfig(
+            min: 0,
+            max: 2000,
+            jsonPath: null,
+            valueTemplate: '{value}',
+            valueExpression: '(Number(value) / 100).toFixed(2)',
+          ),
+          panelValue: '1230',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('12.30'), findsOneWidget);
+      final slider = tester.widget<Slider>(
+        find.descendant(
+          of: find.byType(SliderPanel),
+          matching: find.byType(Slider),
+        ),
+      );
+      expect(slider.value, 1230);
+      slider.onChangeEnd!(1500);
+      await tester.pumpAndSettle();
+      expect(manager.publishedValue, 1500);
+      expect(manager.publishedTemplate, '{value}');
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(
+        _wrap(
+          PanelType.toggle,
+          status: MqttStatus.connected,
+          manager: manager,
+          config: const ToggleConfig(
+            jsonPath: null,
+            onMatch: '1',
+            onPayload: '1',
+            offPayload: '0',
+            valueExpression: 'Number(value) ? "Running" : "Stopped"',
+          ),
+          panelValue: '1',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Running'), findsOneWidget);
+      await tester.tap(find.byType(Switch));
+      await tester.pumpAndSettle();
+      expect(manager.publishedTemplate, '0');
+      expect(manager.publishedValue, '');
+      await tester.pumpWidget(const SizedBox());
+      await manager.dispose();
+    },
+  );
+
   test('every panel type has an intentional reliability policy', () {
     const expected = <PanelType, PanelReliabilityPolicy>{
       PanelType.button: PanelReliabilityPolicy.publishOnly(),
@@ -324,19 +384,21 @@ void main() {
 
   testWidgets('a stale value shows its age', (tester) async {
     final now = DateTime(2026, 9, 27, 12);
-    Future<void> show(DateTime at) => tester.pumpWidget(MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: PanelReliabilityFrame(
-              stale: true,
-              controlsEnabled: true,
-              receivedAt: at,
-              now: () => now,
-              child: const SizedBox(width: 200, height: 100),
-            ),
+    Future<void> show(DateTime at) => tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: PanelReliabilityFrame(
+            stale: true,
+            controlsEnabled: true,
+            receivedAt: at,
+            now: () => now,
+            child: const SizedBox(width: 200, height: 100),
           ),
-        ));
+        ),
+      ),
+    );
     await show(now.subtract(const Duration(seconds: 20)));
     expect(find.text('Just now'), findsOneWidget);
     await show(now.subtract(const Duration(minutes: 12)));

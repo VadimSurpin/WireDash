@@ -84,6 +84,12 @@ extension _PanelFormFields on _State {
   Widget _buildPreviewValue(String rawStr, String jsonPath) {
     if (rawStr.isEmpty) return const SizedBox.shrink();
     final theme = Theme.of(context);
+    if (_hasValueExpression && _valueExpression.trim().isNotEmpty) {
+      final raw = jsonPath.isEmpty ? rawStr : extractByPath(rawStr, jsonPath);
+      final displayed = displayValue(ref, _valueExpression, raw);
+      return DisplayExpressionResult(result: displayed, child: Text(displayed.text,
+        style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.secondary, fontFamily: 'monospace')));
+    }
     if (jsonPath.isNotEmpty) {
       final extracted = extractByPath(rawStr, jsonPath);
       return Text(

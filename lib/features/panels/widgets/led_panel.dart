@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../data/database/database.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
+import 'display_expression_field.dart';
 import '../providers/panel_value_provider.dart';
 import '../../../core/theme/motion.dart';
 
@@ -23,11 +25,15 @@ class LedPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final valueAsync = ref.watch(panelValueProvider(PanelStreamKey(
-      connectionId: connectionId,
-      topic: subscribeTopic,
-      jsonPath: config.jsonPath,
-    )));
+    final valueAsync = ref.watch(
+      panelValueProvider(
+        PanelStreamKey(
+          connectionId: connectionId,
+          topic: subscribeTopic,
+          jsonPath: config.jsonPath,
+        ),
+      ),
+    );
 
     final isOn = valueAsync.maybeWhen(
       data: (v) => v?.toString() == config.onMatch,
@@ -49,11 +55,18 @@ class LedPanel extends ConsumerWidget {
         ? scheme.outline.withValues(alpha: 0.4)
         : (isOn ? onColor : offColor);
 
+    final displayed = displayValue(
+      ref,
+      config.valueExpression,
+      valueAsync.valueOrNull,
+    );
     final stateLabel = !hasValue
         ? '…'
+        : displayed.applied
+        ? displayed.text
         : (isOn
-            ? (config.onLabel ?? context.l10n.panelStateOn)
-            : (config.offLabel ?? context.l10n.panelStateOff));
+              ? (config.onLabel ?? context.l10n.panelStateOn)
+              : (config.offLabel ?? context.l10n.panelStateOff));
 
     return Card(
       child: Padding(
@@ -87,18 +100,26 @@ class LedPanel extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(panel.name,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
+                  Text(
+                    panel.name,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   AnimatedSwitcher(
-                    duration: SignalMotion.of(context, SignalMotion.stateChange),
-                    child: Text(
-                      stateLabel,
-                      key: ValueKey(stateLabel),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.outline,
-                          ),
+                    duration: SignalMotion.of(
+                      context,
+                      SignalMotion.stateChange,
+                    ),
+                    child: DisplayExpressionResult(
+                      result: displayed,
+                      child: Text(
+                        stateLabel,
+                        key: ValueKey(stateLabel),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
                     ),
                   ),
                 ],

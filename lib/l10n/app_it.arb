@@ -1292,5 +1292,11 @@
   "panelDisplayTitle": "Contenuto della scheda",
   "panelDisplayLabel": "Etichetta personalizzata (facoltativa)",
   "panelAllowCommandsHint": "Mostra widget modificabili anche se il rilevamento indica questa proprietà come di sola lettura. Si applica solo a questo riquadro.",
-  "panelAllowCommands": "Consenti comandi"
+  "panelAllowCommands": "Consenti comandi",
+  "displayExpressionError": "Espressione non riuscita; viene mostrato il valore originale. {error}",
+  "displayExpressionTest": "Prova espressione",
+  "displayExpressionResult": "Risultato: {value}",
+  "displayExpressionTitle": "Prima della visualizzazione (JavaScript)",
+  "displayExpressionSample": "Valore di esempio",
+  "displayExpressionHint": "value contiene il valore ricevuto. Lasciare vuoto per non modificarlo. Solo visualizzazione; i comandi e la cronologia salvata restano invariati."
 }

@@ -1512,5 +1512,11 @@
   "panelDisplayTitle": "Kortinnhold",
   "panelDisplayLabel": "Eget navn (valgfritt)",
   "panelAllowCommandsHint": "Tilby redigerbare kontrollmoduler selv om oppdagelsen markerer denne egenskapen som skrivebeskyttet. Gjelder bare denne flisen.",
-  "panelAllowCommands": "Tillat kommandoer"
+  "panelAllowCommands": "Tillat kommandoer",
+  "displayExpressionError": "Uttrykket feilet; den opprinnelige verdien vises. {error}",
+  "displayExpressionTest": "Test uttrykk",
+  "displayExpressionResult": "Resultat: {value}",
+  "displayExpressionTitle": "Før visning (JavaScript)",
+  "displayExpressionSample": "Eksempelverdi",
+  "displayExpressionHint": "value inneholder den mottatte verdien. Tomt felt beholder den uendret. Bare visning; kommandoer og lagret historikk endres ikke."
 }

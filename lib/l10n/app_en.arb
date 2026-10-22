@@ -2261,5 +2261,25 @@
   "panelDisplayHint": "Choose properties shown on this card. Custom labels apply only to this panel. Open the card for all device controls.",
   "panelDisplayTitle": "Card contents",
   "panelAllowCommandsHint": "Offer editable widgets even when discovery marks this property read-only. Applies only to this tile.",
-  "panelAllowCommands": "Allow commands"
+  "panelAllowCommands": "Allow commands",
+  "displayExpressionError": "Expression failed; showing the original value. {error}",
+  "displayExpressionResult": "Result: {value}",
+  "displayExpressionSample": "Sample value",
+  "@displayExpressionError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "displayExpressionHint": "Use value for the incoming value. Blank keeps it unchanged. Display only; commands and stored history stay unchanged.",
+  "displayExpressionTest": "Test expression",
+  "displayExpressionTitle": "Before display (JavaScript)",
+  "@displayExpressionResult": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }

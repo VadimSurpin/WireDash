@@ -1512,5 +1512,11 @@
   "panelDisplayTitle": "Contenido de la tarjeta",
   "panelDisplayLabel": "Etiqueta personalizada (opcional)",
   "panelAllowCommandsHint": "Ofrecer widgets editables aunque la detección marque esta propiedad como de solo lectura. Solo se aplica a este panel.",
-  "panelAllowCommands": "Permitir comandos"
+  "panelAllowCommands": "Permitir comandos",
+  "displayExpressionError": "La expresión falló; se muestra el valor original. {error}",
+  "displayExpressionTest": "Probar expresión",
+  "displayExpressionResult": "Resultado: {value}",
+  "displayExpressionTitle": "Antes de mostrar (JavaScript)",
+  "displayExpressionSample": "Valor de ejemplo",
+  "displayExpressionHint": "value contiene el valor recibido. Vacío lo deja sin cambios. Solo afecta a la visualización; los comandos y el historial guardado no cambian."
 }

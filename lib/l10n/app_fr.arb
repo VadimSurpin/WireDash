@@ -1366,5 +1366,11 @@
   "panelDisplayTitle": "Contenu de la carte",
   "panelDisplayLabel": "Libellé personnalisé (facultatif)",
   "panelAllowCommandsHint": "Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile.",
-  "panelAllowCommands": "Autoriser les commandes"
+  "panelAllowCommands": "Autoriser les commandes",
+  "displayExpressionError": "Échec de l’expression ; la valeur d’origine est affichée. {error}",
+  "displayExpressionTest": "Tester l’expression",
+  "displayExpressionResult": "Résultat : {value}",
+  "displayExpressionTitle": "Avant affichage (JavaScript)",
+  "displayExpressionSample": "Valeur d’exemple",
+  "displayExpressionHint": "value contient la valeur reçue. Vide, elle reste inchangée. Affichage uniquement ; les commandes et l’historique enregistré restent inchangés."
 }

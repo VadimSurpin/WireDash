@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/panels.dart';
 import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:zigdash/features/panels/widgets/display_expression_field.dart';
 import 'package:zigdash/features/devices/device_profile.dart';
 import 'package:zigdash/features/discovery/models/device_panel_suggestion.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
@@ -76,6 +77,7 @@ void main() {
     'custom': '{"type":"custom"}',
     'range': '{"type":"range","min":10,"max":200}',
     'reading': '{"type":"value","units":"V","readonly":true}',
+    'reading expression': '{"type":"value","units":"V","readonly":true}',
     'enum': '{"type":"text","enum":{"off":{"en":"Off"},"auto":{"en":"Auto"}}}',
     'button': '{"type":"pushbutton"}',
   };
@@ -214,6 +216,36 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
         }
       }
+      const expression = '(Number(value) / 100).toFixed(2)';
+      if (custom || entry.key == 'reading expression') {
+        final editor = custom
+            ? find.byKey(
+                ValueKey(
+                  'display-expression:0:${native ? 'state' : 'Control 1'}',
+                ),
+              )
+            : find.byType(DisplayExpressionField);
+        if (!custom) {
+          await tester.scrollUntilVisible(
+            editor,
+            250,
+            scrollable: find.byType(Scrollable).first,
+          );
+        }
+        final button = find
+            .descendant(of: editor, matching: find.byType(TextButton))
+            .first;
+        await tester.ensureVisible(button);
+        await tester.tap(button);
+        await tester.pump(const Duration(milliseconds: 100));
+        final field = find.descendant(
+          of: editor,
+          matching: find.byKey(const ValueKey('display-expression')),
+        );
+        await tester.ensureVisible(field);
+        await tester.enterText(field, expression);
+        await tester.pump(const Duration(milliseconds: 100));
+      }
       final overriding = entry.key.startsWith('switch override');
       final resetOverride = entry.key == 'switch override reset';
       if (overriding) {
@@ -278,10 +310,13 @@ void main() {
             : (config as DeviceTileConfig).display;
         final id = native ? 'state' : 'Control 1';
         expect(display.labels[id], 'Kitchen lights');
+        expect(display.expressions[id], expression);
         expect(display.properties, [native ? 'temperature' : 'Temperature']);
         if (config is WirenBoardDeviceConfig) {
           expect(config.controlIds, isNull);
         }
+      } else if (entry.key == 'reading expression') {
+        expect((saved[#config] as ReadingConfig).valueExpression, expression);
       } else if (overriding && !resetOverride) {
         expect(saved[#config], isA<ToggleConfig>());
         final config = saved[#config] as ToggleConfig;

@@ -6,6 +6,8 @@ import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/utils/material_icon.dart';
 import '../../../data/database/database.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
+import 'display_expression_field.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
 import '../../../core/theme/motion.dart';
@@ -26,24 +28,42 @@ class TogglePanel extends ConsumerWidget {
   final Panel panel;
   final ToggleConfig config;
 
-  Future<void> _toggle(BuildContext context, WidgetRef ref, bool currentlyOn) async {
-    await runControlAction(context, ref, connectionId, (mgr) => mgr.publish(
-      publishTopic,
-      currentlyOn ? config.offPayload : config.onPayload,
-      '',
-      qos: mc.MqttQos.values[panel.qos.clamp(0, 2)],
-      retain: panel.retain,
-    ));
+  Future<void> _toggle(
+    BuildContext context,
+    WidgetRef ref,
+    bool currentlyOn,
+  ) async {
+    await runControlAction(
+      context,
+      ref,
+      connectionId,
+      (mgr) => mgr.publish(
+        publishTopic,
+        currentlyOn ? config.offPayload : config.onPayload,
+        '',
+        qos: mc.MqttQos.values[panel.qos.clamp(0, 2)],
+        retain: panel.retain,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final valueAsync = ref.watch(panelValueProvider(PanelStreamKey(
-      connectionId: connectionId,
-      topic: subscribeTopic,
-      jsonPath: config.jsonPath,
-    )));
+    final valueAsync = ref.watch(
+      panelValueProvider(
+        PanelStreamKey(
+          connectionId: connectionId,
+          topic: subscribeTopic,
+          jsonPath: config.jsonPath,
+        ),
+      ),
+    );
 
+    final displayed = displayValue(
+      ref,
+      config.valueExpression,
+      valueAsync.valueOrNull,
+    );
     final isOn = valueAsync.maybeWhen(
       data: (v) => v?.toString() == config.onMatch,
       orElse: () => false,
@@ -68,24 +88,37 @@ class TogglePanel extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(panel.name,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
+                    Text(
+                      panel.name,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     AnimatedSwitcher(
-                      duration: SignalMotion.of(context, SignalMotion.stateChange),
-                      child: Text(
-                        valueAsync.when(
-                          loading: () => '…',
-                          error: (_, __) => context.l10n.panelToggleError,
-                          data: (v) => v == null
-                              ? context.l10n.panelToggleNoState
-                              : (isOn ? context.l10n.panelStateOn : context.l10n.panelStateOff),
+                      duration: SignalMotion.of(
+                        context,
+                        SignalMotion.stateChange,
+                      ),
+                      child: DisplayExpressionResult(
+                        result: displayed,
+                        child: Text(
+                          valueAsync.when(
+                            loading: () => '…',
+                            error: (_, __) => context.l10n.panelToggleError,
+                            data: (v) => v == null
+                                ? context.l10n.panelToggleNoState
+                                : displayed.applied
+                                ? displayed.text
+                                : (isOn
+                                      ? context.l10n.panelStateOn
+                                      : context.l10n.panelStateOff),
+                          ),
+                          key: ValueKey(isOn),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
                         ),
-                        key: ValueKey(isOn),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
                       ),
                     ),
                   ],
