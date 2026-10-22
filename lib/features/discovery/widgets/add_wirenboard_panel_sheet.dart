@@ -11,7 +11,7 @@ Future<bool> showAddWirenBoardPanelSheet(
   BuildContext context, {
   required String connectionId,
   required WirenBoardDevice device,
-  List<String>? controlIds,
+  WirenBoardControl? control,
 }) async =>
     await showModalBottomSheet<bool>(
       context: context,
@@ -21,7 +21,7 @@ Future<bool> showAddWirenBoardPanelSheet(
       builder: (_) => _AddWirenBoardPanelSheet(
         connectionId: connectionId,
         device: device,
-        controlIds: controlIds,
+        control: control,
       ),
     ) ==
     true;
@@ -30,11 +30,11 @@ class _AddWirenBoardPanelSheet extends ConsumerStatefulWidget {
   const _AddWirenBoardPanelSheet({
     required this.connectionId,
     required this.device,
-    this.controlIds,
+    this.control,
   });
   final String connectionId;
   final WirenBoardDevice device;
-  final List<String>? controlIds;
+  final WirenBoardControl? control;
 
   @override
   ConsumerState<_AddWirenBoardPanelSheet> createState() =>
@@ -53,9 +53,11 @@ class _AddWirenBoardPanelSheetState
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
-      _label.text = widget.device.title(
-        Localizations.localeOf(context).languageCode,
-      );
+      _label.text =
+          (widget.control?.title(
+            Localizations.localeOf(context).languageCode,
+          ) ??
+          widget.device.title(Localizations.localeOf(context).languageCode));
       _initialized = true;
     }
   }
@@ -88,13 +90,16 @@ class _AddWirenBoardPanelSheetState
                 iconCodepoint: Icons.home.codePoint,
               );
       if (!mounted) return;
-      await ref
-          .read(wirenBoardDashboardImporterProvider(id))
-          .addDevice(
-            widget.device,
-            label: _label.text.trim(),
-            controlIds: widget.controlIds,
-          );
+      final importer = ref.read(wirenBoardDashboardImporterProvider(id));
+      if (widget.control case final control?) {
+        await importer.addControl(
+          widget.device,
+          control,
+          label: _label.text.trim(),
+        );
+      } else {
+        await importer.addDevice(widget.device, label: _label.text.trim());
+      }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -121,7 +126,7 @@ class _AddWirenBoardPanelSheetState
       dashboardsForConnectionProvider(widget.connectionId),
     );
     final dashboards = loaded.valueOrNull;
-    final selected = widget.controlIds;
+    final control = widget.control;
     return SafeArea(
       child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -142,9 +147,11 @@ class _AddWirenBoardPanelSheetState
               ),
               const SizedBox(height: 8),
               Text(
-                selected == null
+                control == null
                     ? l10n.wbControlCount(widget.device.controls.length)
-                    : l10n.sceneFormSelectedCount(selected.length),
+                    : widget.device.title(
+                        Localizations.localeOf(context).languageCode,
+                      ),
               ),
               const SizedBox(height: 16),
               TextFormField(

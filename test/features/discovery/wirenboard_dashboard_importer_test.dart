@@ -93,16 +93,16 @@ void main() {
         ..apply('/devices/room_lamp/controls/state/meta', '{"type":"switch"}');
       final mirror = mirrorDiscovery.devices.single;
       await importer.importDevices([mirror]);
-      await importer.addDevice(
-        mirror,
-        label: 'Only the light',
-        controlIds: ['state'],
-      );
-      await importer.addDevice(
-        mirror,
-        label: 'My custom group',
-        controlIds: ['state'],
-      );
+      // Older versions could create subset tiles. Keep those usable on upgrade.
+      for (final label in ['Only the light', 'My custom group']) {
+        await panels.create(
+          dashboardId: dashboard,
+          name: label,
+          type: PanelType.device,
+          topic: '',
+          config: WirenBoardDeviceConfig(device: mirror, controlIds: ['state']),
+        );
+      }
       var saved = await panels.getByDashboard(dashboard);
       final customPanel = saved.firstWhere((p) => p.name == 'My custom group');
       final customSection = await sections.create(
@@ -172,19 +172,27 @@ void main() {
         l10n: lookupAppLocalizations(const Locale('en')),
       );
       final module = discovery.devices.firstWhere((d) => d.id == 'wb-mr6_10');
-      await importer.addDevice(
+      await importer.addControl(
         module,
+        module.controls.single,
         label: 'Kitchen relay',
-        controlIds: ['Relay 1'],
       );
       await importer.importDevices(discovery.devices);
       var saved = await panels.getByDashboard(dashboard);
       expect(saved, hasLength(3));
       final selected = saved.firstWhere((p) => p.name == 'Kitchen relay');
-      var config =
-          PanelConfig.decode(selected.type, selected.config)
-              as WirenBoardDeviceConfig;
-      expect(config.controlIds, ['Relay 1']);
+      expect(selected.type, PanelType.toggle);
+      expect(
+        selected.topicPrefixOverride,
+        '/devices/wb-mr6_10/controls/Relay 1',
+      );
+      expect(selected.topic, 'on');
+      expect(selected.subscribeTopic, '');
+      expect(selected.retain, isFalse);
+      expect(
+        PanelConfig.decode(selected.type, selected.config),
+        isA<ToggleConfig>(),
+      );
       await importer.addDevice(module, label: 'All kitchen outputs');
       discovery.apply(
         '/devices/wb-mr6_10/controls/Relay 2/meta',
@@ -194,18 +202,14 @@ void main() {
       saved = await panels.getByDashboard(dashboard);
       expect(saved, hasLength(3));
       expect(saved.any((p) => p.name == 'All kitchen outputs'), isTrue);
-      config =
-          PanelConfig.decode(selected.type, selected.config)
-              as WirenBoardDeviceConfig;
-      expect(
-        config
-            .visibleDevice(
-              discovery.devices.firstWhere((d) => d.id == module.id),
-            )
-            .controls
-            .map((c) => c.id),
-        ['Relay 1'],
-      );
+      final updated = saved.singleWhere((p) => p.id == selected.id);
+      expect(updated.name, 'Kitchen relay');
+      expect(updated.type, PanelType.toggle);
+      expect(updated.config, selected.config);
+      final section = (await sections.getByDashboard(
+        dashboard,
+      )).singleWhere((s) => s.id == updated.sectionId);
+      expect(section.name, 'Added modules');
     },
   );
 

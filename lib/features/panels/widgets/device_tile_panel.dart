@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/signal_colors.dart';
 import '../../../core/theme/signal_icons.dart';
 import '../../../core/theme/tokens.dart';
-import '../../../core/utils/window_class.dart';import 'package:flutter/semantics.dart';
+import '../../../core/utils/window_class.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/l10n/l10n_ext.dart';
@@ -41,13 +42,12 @@ Future<void> sendDeviceCommand(
   String connectionId,
   String publishTopic,
   Map<String, Object?> command,
-) =>
-    runControlAction(
-      context,
-      ref,
-      connectionId,
-      (mgr) => mgr.publish(publishTopic, json.encode(command), ''),
-    );
+) => runControlAction(
+  context,
+  ref,
+  connectionId,
+  (mgr) => mgr.publish(publishTopic, json.encode(command), ''),
+);
 
 /// A whole device on the dashboard. The icon is the quick action (for
 /// classes that have one), the body opens the class's controls sheet.
@@ -69,60 +69,123 @@ class DeviceTilePanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final profile = config.profile;
     final payload = ref
-        .watch(panelValueProvider(PanelStreamKey(
-          connectionId: connectionId,
-          topic: subscribeTopic,
-          jsonPath: null,
-        )))
+        .watch(
+          panelValueProvider(
+            PanelStreamKey(
+              connectionId: connectionId,
+              topic: subscribeTopic,
+              jsonPath: null,
+            ),
+          ),
+        )
         .valueOrNull;
     final state = DeviceState(profile, decodeDeviceState(payload));
-    final cls = profile.deviceClass;
 
     // Once per connection, ask the device for its state (Zigbee2MQTT does
     // not retain it). Rebuilds on reconnect via the status watch.
-    final connected = ref.watch(connectionStatusProvider(connectionId)).valueOrNull ==
+    final connected =
+        ref.watch(connectionStatusProvider(connectionId)).valueOrNull ==
         MqttStatus.connected;
-    final refresher =
-        ref.watch(deviceStateRefresherProvider(connectionId)).valueOrNull;
+    final refresher = ref
+        .watch(deviceStateRefresherProvider(connectionId))
+        .valueOrNull;
     if (connected && refresher != null) {
       WidgetsBinding.instance.addPostFrameCallback(
-          (_) => refresher.request(subscribeTopic, profile));
+        (_) => refresher.request(subscribeTopic, profile),
+      );
     }
-    final alarming =
-        cls == DeviceClass.leakSmoke && state.alarm == true;
 
     void openSheet() => showDeviceSheet(
-          context,
-          connectionId: connectionId,
-          publishTopic: publishTopic,
-          subscribeTopic: subscribeTopic,
-          panel: panel,
-          config: config,
-        );
+      context,
+      connectionId: connectionId,
+      publishTopic: publishTopic,
+      subscribeTopic: subscribeTopic,
+      panel: panel,
+      config: config,
+    );
 
     Future<void> toggle(DeviceFeature f) => sendDeviceCommand(
-        context, ref, connectionId, publishTopic,
-        DeviceCommand.toggle(f, state.isOn(f)));
+      context,
+      ref,
+      connectionId,
+      publishTopic,
+      DeviceCommand.toggle(f, state.isOn(f)),
+    );
 
+    return DeviceSummaryCard(
+      name: panel.name,
+      state: state,
+      onOpen: openSheet,
+      onToggle: toggle,
+      notResponding:
+          ref
+              .watch(
+                deviceSilentProvider((
+                  connectionId: connectionId,
+                  topic: subscribeTopic,
+                )),
+              )
+              .valueOrNull ??
+          false,
+      onBrightness: (pct) => sendDeviceCommand(
+        context,
+        ref,
+        connectionId,
+        publishTopic,
+        DeviceCommand.brightnessPercent(profile.brightness!, pct),
+      ),
+      onCover: (action) => sendDeviceCommand(
+        context,
+        ref,
+        connectionId,
+        publishTopic,
+        DeviceCommand.cover(action),
+      ),
+    );
+  }
+}
+
+/// Shared dashboard presentation for devices, independent of their MQTT protocol.
+class DeviceSummaryCard extends StatelessWidget {
+  const DeviceSummaryCard({
+    super.key,
+    required this.name,
+    required this.state,
+    required this.onOpen,
+    required this.onToggle,
+    this.notResponding = false,
+    this.onBrightness,
+    this.onCover,
+  });
+
+  final String name;
+  final DeviceState state;
+  final VoidCallback onOpen;
+  final ValueChanged<DeviceFeature> onToggle;
+  final bool notResponding;
+  final ValueChanged<int>? onBrightness;
+  final ValueChanged<String>? onCover;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final profile = state.profile;
+    final cls = profile.deviceClass;
+    final alarming = cls == DeviceClass.leakSmoke && state.alarm == true;
     final switches = profile.switches;
-    final showsSwitches = cls == DeviceClass.light ||
+    final showsSwitches =
+        cls == DeviceClass.light ||
         cls == DeviceClass.colorLight ||
         cls == DeviceClass.switchPlug ||
         (cls == DeviceClass.generic && switches.isNotEmpty);
     final anyOn = switches.any((f) => state.isOn(f) == true);
 
-    final silent = ref
-            .watch(deviceSilentProvider(
-                (connectionId: connectionId, topic: subscribeTopic)))
-            .valueOrNull ??
-        false;
     final big = _bigValue(state, l10n);
-    final line = deviceStateLine(state, l10n, notResponding: silent);
+    final line = deviceStateLine(state, l10n, notResponding: notResponding);
     final color = cls == DeviceClass.colorLight ? state.lightColor : null;
 
     // Signal (signal-2.0.md §4): amber and borderless when on, the attention
@@ -132,41 +195,42 @@ class DeviceTilePanel extends ConsumerWidget {
     final fg = alarming
         ? roles.onAttention
         : anyOn
-            ? roles.onActive
-            : scheme.onSurface;
+        ? roles.onActive
+        : scheme.onSurface;
     final fgVariant = filled ? fg : scheme.onSurfaceVariant;
     const shape = RoundedSuperellipseBorder(
-        borderRadius: BorderRadiusDirectional.all(Radius.circular(SignalRadii.tile)));
+      borderRadius: BorderRadiusDirectional.all(
+        Radius.circular(SignalRadii.tile),
+      ),
+    );
     // The fill cross-fades on a state change (M3 standard timing), instantly
     // when the system asks for no animations (signal-2.0.md §6).
     final idleColor = theme.cardTheme.color ?? roles.idle;
     return TweenAnimationBuilder<Color?>(
       tween: ColorTween(
-          end: alarming
-              ? roles.attention
-              : anyOn
-                  ? roles.active
-                  : idleColor),
+        end: alarming
+            ? roles.attention
+            : anyOn
+            ? roles.active
+            : idleColor,
+      ),
       duration: SignalMotion.of(context, SignalMotion.stateChange),
       curve: Curves.easeInOutCubicEmphasized,
       builder: (context, fill, child) => alarming
           ? _AlarmPulse(
               from: fill!,
               to: roles.attentionPulse,
-              builder: (pulse) => Card(color: pulse, shape: shape, child: child),
+              builder: (pulse) =>
+                  Card(color: pulse, shape: shape, child: child),
             )
-          : Card(
-              color: fill,
-              shape: filled ? shape : null,
-              child: child,
-            ),
+          : Card(color: fill, shape: filled ? shape : null, child: child),
       child: Semantics(
         customSemanticsActions: {
-          CustomSemanticsAction(label: l10n.deviceControls): openSheet,
+          CustomSemanticsAction(label: l10n.deviceControls): onOpen,
         },
         child: InkWell(
           customBorder: shape,
-          onTap: openSheet,
+          onTap: onOpen,
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -183,7 +247,7 @@ class DeviceTilePanel extends ConsumerWidget {
                             icon: deviceClassIcon(cls, alarm: state.alarm),
                             on: state.isOn(f),
                             tooltip: l10n.deviceToggle,
-                            onPressed: () => toggle(f),
+                            onPressed: () => onToggle(f),
                           ),
                         )
                     else
@@ -209,10 +273,12 @@ class DeviceTilePanel extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 if (big != null)
-                  Text(big,
-                      style: theme.textTheme.headlineMedium?.copyWith(color: fg)),
+                  Text(
+                    big,
+                    style: theme.textTheme.headlineMedium?.copyWith(color: fg),
+                  ),
                 Text(
-                  panel.name,
+                  name,
                   style: theme.textTheme.titleMedium?.copyWith(color: fg),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -227,31 +293,28 @@ class DeviceTilePanel extends ConsumerWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (cls == DeviceClass.colorLight && profile.brightness != null)
+                if (cls == DeviceClass.colorLight &&
+                    profile.brightness != null &&
+                    onBrightness != null)
                   // On amber, the slider is drawn in ink so it stays visible.
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: filled ? fg : null,
                       thumbColor: filled ? fg : null,
-                      inactiveTrackColor: filled ? fg.withValues(alpha: 0.24) : null,
+                      inactiveTrackColor: filled
+                          ? fg.withValues(alpha: 0.24)
+                          : null,
                     ),
                     child: IconTheme.merge(
                       data: IconThemeData(color: fgVariant),
                       child: _InlineBrightness(
-                    state: state,
-                    onChanged: (pct) => sendDeviceCommand(
-                        context, ref, connectionId, publishTopic,
-                        DeviceCommand.brightnessPercent(
-                            profile.brightness!, pct)),
-                  ),
+                        state: state,
+                        onChanged: onBrightness!,
+                      ),
                     ),
                   ),
-                if (cls == DeviceClass.cover)
-                  _CoverControls(
-                    state: state,
-                    onAction: (a) => sendDeviceCommand(context, ref,
-                        connectionId, publishTopic, DeviceCommand.cover(a)),
-                  ),
+                if (cls == DeviceClass.cover && onCover != null)
+                  _CoverControls(state: state, onAction: onCover!),
               ],
             ),
           ),
@@ -286,8 +349,8 @@ String deviceStateLine(
   String onOff(bool? on) => on == null
       ? '—'
       : on
-          ? l10n.deviceOn
-          : l10n.deviceOff;
+      ? l10n.deviceOn
+      : l10n.deviceOff;
   switch (profile.deviceClass) {
     case DeviceClass.light:
     case DeviceClass.colorLight:
@@ -317,40 +380,48 @@ String deviceStateLine(
     case DeviceClass.cover:
       final s = state.values['state'];
       if (s is String) {
-        parts.add(s.toUpperCase() == 'OPEN'
-            ? l10n.deviceOpen
-            : s.toUpperCase() == 'CLOSE' || s.toUpperCase() == 'CLOSED'
-                ? l10n.deviceClosed
-                : s);
+        parts.add(
+          s.toUpperCase() == 'OPEN'
+              ? l10n.deviceOpen
+              : s.toUpperCase() == 'CLOSE' || s.toUpperCase() == 'CLOSED'
+              ? l10n.deviceClosed
+              : s,
+        );
       }
       final pos = state.position;
       if (pos != null) parts.add(ltr('$pos%'));
     case DeviceClass.contact:
       final a = state.alarm;
-      parts.add(a == null
-          ? '—'
-          : a
-              ? l10n.deviceClosed
-              : l10n.deviceOpen);
+      parts.add(
+        a == null
+            ? '—'
+            : a
+            ? l10n.deviceClosed
+            : l10n.deviceOpen,
+      );
     case DeviceClass.motion:
       final a = state.alarm;
-      parts.add(a == null
-          ? '—'
-          : a
-              ? l10n.deviceMotion
-              : l10n.deviceClear);
+      parts.add(
+        a == null
+            ? '—'
+            : a
+            ? l10n.deviceMotion
+            : l10n.deviceClear,
+      );
     case DeviceClass.leakSmoke:
       final a = state.alarm;
       final p = profile.alarm?.property;
-      parts.add(a == null
-          ? '—'
-          : !a
-              ? l10n.deviceClear
-              : p == 'smoke'
-                  ? l10n.deviceSmokeDetected
-                  : p == 'gas'
-                      ? l10n.deviceGasDetected
-                      : l10n.deviceLeakDetected);
+      parts.add(
+        a == null
+            ? '—'
+            : !a
+            ? l10n.deviceClear
+            : p == 'smoke'
+            ? l10n.deviceSmokeDetected
+            : p == 'gas'
+            ? l10n.deviceGasDetected
+            : l10n.deviceLeakDetected,
+      );
     case DeviceClass.climate:
       final rs = profile.readings.skip(1).take(1);
       for (final f in rs) {
@@ -370,9 +441,9 @@ String formatReading(num v, String? unit) {
       ? v.round().toString()
       : v.toStringAsFixed(1);
   if (unit == null || unit.isEmpty) return ltr(text);
-  return ltr(unit == '°C' || unit == '°F' || unit == '%'
-      ? '$text$unit'
-      : '$text $unit');
+  return ltr(
+    unit == '°C' || unit == '°F' || unit == '%' ? '$text$unit' : '$text $unit',
+  );
 }
 
 /// Isolates [s] as a left-to-right run (U+2066 … U+2069).
@@ -381,23 +452,27 @@ String ltr(String s) => '\u2066$s\u2069';
 /// A device class's app icon, from the Symbols subset (ADR 0005). Draw it
 /// with [SignalIcon] so it fills when the device is on.
 IconData deviceClassIcon(DeviceClass cls, {bool? alarm}) => switch (cls) {
-      DeviceClass.colorLight || DeviceClass.light => Symbols.lightbulb,
-      DeviceClass.switchPlug => Symbols.powerSettingsNew,
-      DeviceClass.cover => Symbols.blinds,
-      DeviceClass.leakSmoke =>
-        alarm == true ? Symbols.waterDamage : Symbols.waterDrop,
-      DeviceClass.contact =>
-        alarm == false ? Symbols.doorFront : Symbols.sensorDoor,
-      DeviceClass.motion => Symbols.sensors,
-      DeviceClass.climate => Symbols.thermostat,
-      DeviceClass.generic => Symbols.deviceUnknown,
-    };
+  DeviceClass.colorLight || DeviceClass.light => Symbols.lightbulb,
+  DeviceClass.switchPlug => Symbols.powerSettingsNew,
+  DeviceClass.cover => Symbols.blinds,
+  DeviceClass.leakSmoke =>
+    alarm == true ? Symbols.waterDamage : Symbols.waterDrop,
+  DeviceClass.contact =>
+    alarm == false ? Symbols.doorFront : Symbols.sensorDoor,
+  DeviceClass.motion => Symbols.sensors,
+  DeviceClass.climate => Symbols.thermostat,
+  DeviceClass.generic => Symbols.deviceUnknown,
+};
 
 /// A leak or smoke alarm's fill, pulsing slowly between [from] and [to]
 /// (2 s, signal-2.0.md §6). Steady at [from] when the system turns
 /// animations off. Nothing else in the app loops.
 class _AlarmPulse extends StatefulWidget {
-  const _AlarmPulse({required this.from, required this.to, required this.builder});
+  const _AlarmPulse({
+    required this.from,
+    required this.to,
+    required this.builder,
+  });
 
   final Color from;
   final Color to;
@@ -434,10 +509,15 @@ class _AlarmPulseState extends State<_AlarmPulse>
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) => widget.builder(Color.lerp(widget.from,
-            widget.to, Curves.easeInOutSine.transform(_controller.value))!),
-      );
+    animation: _controller,
+    builder: (context, _) => widget.builder(
+      Color.lerp(
+        widget.from,
+        widget.to,
+        Curves.easeInOutSine.transform(_controller.value),
+      )!,
+    ),
+  );
 }
 
 class _QuickAction extends StatelessWidget {
@@ -469,8 +549,10 @@ class _QuickAction extends StatelessWidget {
         child: Material(
           color: isOn ? roles.onActive : roles.raised,
           shape: const RoundedSuperellipseBorder(
-              borderRadius: BorderRadiusDirectional.all(
-                  Radius.circular(SignalRadii.quickAction))),
+            borderRadius: BorderRadiusDirectional.all(
+              Radius.circular(SignalRadii.quickAction),
+            ),
+          ),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onPressed,
