@@ -6,6 +6,8 @@ import '../../../core/theme/dashboard_accent.dart';
 import '../../../data/repositories/dashboard_repo.dart';
 import '../../../data/database/tables/panels.dart';
 import '../../panels/widgets/property_widget_selector.dart';
+import '../../panels/widgets/display_expression_field.dart';
+import '../../panels/models/panel_config.dart';
 import '../models/wirenboard_panel_suggestion.dart';
 import '../models/wirenboard_device.dart';
 import '../wirenboard_dashboard_importer.dart';
@@ -53,6 +55,7 @@ class _AddWirenBoardPanelSheetState
   bool _initialized = false;
   bool _saving = false;
   bool _allowCommands = false;
+  String _valueExpression = '';
 
   @override
   void didChangeDependencies() {
@@ -103,6 +106,7 @@ class _AddWirenBoardPanelSheetState
           label: _label.text.trim(),
           widgetType: _widgetType,
           allowCommands: _allowCommands,
+          valueExpression: _valueExpression,
         );
       } else {
         await importer.addDevice(widget.device, label: _label.text.trim());
@@ -194,6 +198,12 @@ class _AddWirenBoardPanelSheetState
                       : (type) => setState(() => _widgetType = type),
                 ),
               ],
+              if (suggestion != null &&
+                  supportsDisplayExpression(_widgetType ?? suggestion.type))
+                DisplayExpressionField(
+                  initialValue: _valueExpression,
+                  onChanged: (value) => _valueExpression = value,
+                ),
               const SizedBox(height: 16),
               if (dashboards != null && dashboards.isNotEmpty)
                 DropdownButtonFormField<String>(

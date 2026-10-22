@@ -1301,5 +1301,11 @@
   "panelDisplayTitle": "Obsah karty",
   "panelDisplayHint": "Vyberte vlastnosti zobrazené na této kartě. Vlastní popisky platí jen pro tento panel. Otevřením karty zobrazíte všechny ovládací prvky zařízení.",
   "panelAllowCommandsHint": "Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici.",
-  "panelAllowCommands": "Povolit příkazy"
+  "panelAllowCommands": "Povolit příkazy",
+  "displayExpressionError": "Výraz selhal; zobrazuje se původní hodnota. {error}",
+  "displayExpressionTest": "Otestovat výraz",
+  "displayExpressionResult": "Výsledek: {value}",
+  "displayExpressionTitle": "Před zobrazením (JavaScript)",
+  "displayExpressionSample": "Ukázková hodnota",
+  "displayExpressionHint": "Vstupní hodnota je v proměnné value. Prázdné pole ji nemění. Jen zobrazení; příkazy a uložená historie se nemění."
 }

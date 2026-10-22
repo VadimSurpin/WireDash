@@ -93,6 +93,7 @@ void main() {
       const display = DevicePanelDisplay(
         properties: ['Relay 1'],
         labels: {'Relay 1': 'Kitchen'},
+        expressions: {'Relay 1': 'Number(value) ? "On" : "Off"'},
       );
       await panels.update(
         id: tile.id,
@@ -134,10 +135,15 @@ void main() {
         device.controls.single,
         label: 'Temperature bar',
         widgetType: PanelType.progress,
+        valueExpression: '(Number(value) / 10).toFixed(2)',
       );
       final panel = (await panels.getByDashboard(dashboard)).single;
       expect(panel.type, PanelType.progress);
       expect(panel.name, 'Temperature bar');
+      expect(
+        PanelConfig.decode(panel.type, panel.config).valueExpression,
+        '(Number(value) / 10).toFixed(2)',
+      );
       expect(
         panel.topicPrefixOverride,
         '/devices/wb-msw_11/controls/Temperature',

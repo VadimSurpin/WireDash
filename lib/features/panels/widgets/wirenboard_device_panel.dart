@@ -10,6 +10,7 @@ import '../../devices/device_profile.dart';
 import '../../devices/device_state.dart';
 import '../providers/panel_value_provider.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
 import '../models/device_display_properties.dart';
 import 'control_action.dart';
 import 'device_tile_panel.dart';
@@ -99,19 +100,18 @@ class WirenBoardDevicePanel extends ConsumerWidget {
       labels: labels,
       readings: [
         for (final control in controls)
-          if (!(control.type == 'switch' && !control.readOnly))
+          if (!(control.type == 'switch' && !control.readOnly) ||
+              config.display.expressions.containsKey(control.id))
             (
               id: control.id,
               label: labels[control.id]!,
-              value: control.numeric
-                  ? ltr(
-                      wirenBoardValueLabel(
-                        context,
-                        control,
-                        values[control.id],
-                      ),
-                    )
-                  : wirenBoardValueLabel(context, control, values[control.id]),
+              value: _displayControlValue(
+                context,
+                ref,
+                control,
+                values[control.id],
+                config.display.expressions[control.id],
+              ),
             ),
       ],
       onToggle: (feature) {
@@ -212,6 +212,7 @@ class WirenBoardDeviceControls extends ConsumerWidget {
                     control: control,
                     qos: panel.qos,
                     label: config.display.labels[control.id],
+                    valueExpression: config.display.expressions[control.id],
                   );
                 },
               ),
@@ -226,4 +227,20 @@ class WirenBoardDeviceControls extends ConsumerWidget {
       ),
     );
   }
+}
+
+String _displayControlValue(
+  BuildContext context,
+  WidgetRef ref,
+  WirenBoardControl control,
+  Object? raw,
+  String? expression,
+) {
+  final displayed = displayValue(ref, expression, raw);
+  final result = displayed.applied
+      ? displayed.value == null
+            ? '—'
+            : '${displayed.text}${control.unit == null ? '' : ' ${control.unit}'}'
+      : wirenBoardValueLabel(context, control, raw);
+  return '${displayed.error == null ? '' : '⚠ '}${control.numeric ? ltr(result) : result}';
 }

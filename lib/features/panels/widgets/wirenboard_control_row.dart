@@ -8,6 +8,8 @@ import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../discovery/models/wirenboard_device.dart';
 import '../../discovery/models/wirenboard_panel_suggestion.dart';
 import '../models/panel_config.dart';
+import '../models/display_expression.dart';
+import 'display_expression_field.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
 import 'panel_reliability_frame.dart';
@@ -46,6 +48,7 @@ class WirenBoardControlRow extends ConsumerStatefulWidget {
     required this.control,
     this.qos = 1,
     this.label,
+    this.valueExpression,
   });
 
   final String connectionId;
@@ -53,6 +56,7 @@ class WirenBoardControlRow extends ConsumerStatefulWidget {
   final WirenBoardControl control;
   final int qos;
   final String? label;
+  final String? valueExpression;
 
   @override
   ConsumerState<WirenBoardControlRow> createState() =>
@@ -106,6 +110,10 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
     );
     final raw = ref.watch(panelValueProvider(key)).valueOrNull;
     final snapshot = ref.watch(panelValueSnapshotProvider(key)).valueOrNull;
+    final displayed = displayValue(ref, widget.valueExpression, raw);
+    final displayedLabel = displayed.applied
+        ? displayed.text
+        : wirenBoardValueLabel(context, control, raw, includeUnit: false);
     final connected =
         ref.watch(connectionStatusProvider(widget.connectionId)).valueOrNull ==
         MqttStatus.connected;
@@ -152,7 +160,7 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
           children: [
             Flexible(
               child: Text(
-                wirenBoardValueLabel(context, control, raw, includeUnit: false),
+                displayedLabel,
                 textAlign: TextAlign.end,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -225,7 +233,7 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
         children: [
           pair(
             Text(
-              '${value.round()}${control.unit == null ? '' : ' ${control.unit}'}',
+              '${displayed.applied ? displayed.text : value.round()}${control.unit == null ? '' : ' ${control.unit}'}',
             ),
           ),
           Slider(
@@ -301,7 +309,7 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
     return PanelReliabilityFrame(
       stale: snapshot?.freshness == PanelFreshness.stale,
       receivedAt: snapshot?.receivedAt,
-      valueLabel: wirenBoardValueLabel(context, control, raw),
+      valueLabel: displayedLabel,
       controlsEnabled: control.readOnly || config is TextLogConfig || connected,
       child: Container(
         constraints: BoxConstraints(
@@ -313,7 +321,20 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
               : 48,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-        child: body,
+        child: DisplayExpressionResult(
+          result: displayed,
+          child:
+              displayed.applied && !control.readOnly && config is! SliderConfig
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    body,
+                    Text(displayedLabel, textAlign: TextAlign.end),
+                  ],
+                )
+              : body,
+        ),
       ),
     );
   }

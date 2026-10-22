@@ -1521,5 +1521,11 @@
   "panelDisplayTitle": "Kortinnhold",
   "panelDisplayHint": "Velg egenskapene som vises på dette kortet. Egne navn gjelder bare for dette panelet. Åpne kortet for å se alle enhetskontrollene.",
   "panelAllowCommandsHint": "Tilby redigerbare kontrollmoduler selv om oppdagelsen markerer denne egenskapen som skrivebeskyttet. Gjelder bare denne flisen.",
-  "panelAllowCommands": "Tillat kommandoer"
+  "panelAllowCommands": "Tillat kommandoer",
+  "displayExpressionError": "Uttrykket feilet; den opprinnelige verdien vises. {error}",
+  "displayExpressionTest": "Test uttrykk",
+  "displayExpressionResult": "Resultat: {value}",
+  "displayExpressionTitle": "Før visning (JavaScript)",
+  "displayExpressionSample": "Eksempelverdi",
+  "displayExpressionHint": "value inneholder den mottatte verdien. Tomt felt beholder den uendret. Bare visning; kommandoer og lagret historikk endres ikke."
 }

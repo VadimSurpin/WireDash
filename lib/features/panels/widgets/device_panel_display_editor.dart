@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/l10n/l10n_ext.dart';
 import '../models/panel_config.dart';
+import 'display_expression_field.dart';
 
 typedef DeviceDisplayProperty = ({String id, String label});
 
@@ -82,32 +83,61 @@ class _DevicePanelDisplayEditorState extends State<DevicePanelDisplayEditor> {
                       DevicePanelDisplay(
                         properties: ids.toList(),
                         labels: _value.labels,
+                        expressions: _value.expressions,
                       ),
                     );
                   },
                 ),
                 Expanded(
-                  child: TextFormField(
-                    key: ValueKey('display-label:$_reset:${property.id}'),
-                    initialValue: _value.labels[property.id] ?? '',
-                    decoration: InputDecoration(
-                      labelText: property.label,
-                      hintText: l10n.panelDisplayLabel,
-                    ),
-                    onChanged: (label) {
-                      final labels = Map<String, String>.of(_value.labels);
-                      if (label.trim().isEmpty) {
-                        labels.remove(property.id);
-                      } else {
-                        labels[property.id] = label.trim();
-                      }
-                      _change(
-                        DevicePanelDisplay(
-                          properties: _value.properties,
-                          labels: labels,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        key: ValueKey('display-label:$_reset:${property.id}'),
+                        initialValue: _value.labels[property.id] ?? '',
+                        decoration: InputDecoration(
+                          labelText: property.label,
+                          hintText: l10n.panelDisplayLabel,
                         ),
-                      );
-                    },
+                        onChanged: (label) {
+                          final labels = Map<String, String>.of(_value.labels);
+                          if (label.trim().isEmpty) {
+                            labels.remove(property.id);
+                          } else {
+                            labels[property.id] = label.trim();
+                          }
+                          _change(
+                            DevicePanelDisplay(
+                              properties: _value.properties,
+                              labels: labels,
+                              expressions: _value.expressions,
+                            ),
+                          );
+                        },
+                      ),
+                      DisplayExpressionField(
+                        key: ValueKey(
+                          'display-expression:$_reset:${property.id}',
+                        ),
+                        initialValue: _value.expressions[property.id],
+                        onChanged: (expression) {
+                          final expressions = Map<String, String>.of(
+                            _value.expressions,
+                          );
+                          if (expression.trim().isEmpty) {
+                            expressions.remove(property.id);
+                          } else {
+                            expressions[property.id] = expression;
+                          }
+                          _change(
+                            DevicePanelDisplay(
+                              properties: _value.properties,
+                              labels: _value.labels,
+                              expressions: expressions,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],

@@ -1521,5 +1521,11 @@
   "panelDisplayTitle": "תוכן הכרטיס",
   "panelDisplayHint": "בחרו אילו מאפיינים יוצגו בכרטיס. שמות מותאמים אישית חלים רק על הלוח הזה. פתחו את הכרטיס כדי לגשת לכל פקדי ההתקן.",
   "panelAllowCommandsHint": "הצגת רכיבים הניתנים לעריכה גם כשהגילוי מסמן מאפיין זה לקריאה בלבד. חל רק על אריח זה.",
-  "panelAllowCommands": "אפשר פקודות"
+  "panelAllowCommands": "אפשר פקודות",
+  "displayExpressionError": "הביטוי נכשל; מוצג הערך המקורי. {error}",
+  "displayExpressionTest": "בדיקת הביטוי",
+  "displayExpressionResult": "תוצאה: {value}",
+  "displayExpressionTitle": "לפני התצוגה (JavaScript)",
+  "displayExpressionSample": "ערך לדוגמה",
+  "displayExpressionHint": "value מכיל את הערך הנכנס. שדה ריק משאיר אותו ללא שינוי. לתצוגה בלבד; הפקודות וההיסטוריה השמורה אינן משתנות."
 }

@@ -80,6 +80,8 @@ dependencies:
   pointycastle: ^3.9.1
   # QR code for adding a phone to remote control (3.1); pure Dart.
   qr_flutter: ^4.1.0
+  jsf: ^1.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -109,6 +111,7 @@ flutter:
     - hub/zigdash-engine.js
     - assets/geo/
     - assets/fonts/licenses/
+    - assets/licenses/
   # Signal type (docs/design/signal-2.0.md §2): bundled subsets, cut by
   # tool/fonts/build_fonts.py. Never fetched at runtime.
   fonts:

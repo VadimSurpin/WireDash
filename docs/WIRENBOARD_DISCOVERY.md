@@ -141,3 +141,8 @@ the property's `/on` topic; it does not change discovered metadata or other
 panels. Turning the option off restores the read-only choices.
 The discovery tile form also offers this selector, with editable widget
 settings. Switching widgets preserves the label and WB scalar MQTT topics.
+
+Individual add sheets and the panel editor also support
+[before-display JavaScript expressions](DISPLAY_EXPRESSIONS.md), including
+per-property formatting in whole-device cards and controls sheets. These
+settings belong to the panel and survive rediscovery.

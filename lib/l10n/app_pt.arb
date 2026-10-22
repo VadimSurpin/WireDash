@@ -1521,5 +1521,11 @@
   "panelDisplayTitle": "Conteúdo do cartão",
   "panelDisplayHint": "Escolha as propriedades mostradas neste cartão. As etiquetas personalizadas valem apenas para este painel. Abra o cartão para acessar todos os controles do dispositivo.",
   "panelAllowCommandsHint": "Oferecer widgets editáveis mesmo quando a descoberta marcar esta propriedade como somente leitura. Aplica-se apenas a este bloco.",
-  "panelAllowCommands": "Permitir comandos"
+  "panelAllowCommands": "Permitir comandos",
+  "displayExpressionError": "A expressão falhou; o valor original é exibido. {error}",
+  "displayExpressionTest": "Testar expressão",
+  "displayExpressionResult": "Resultado: {value}",
+  "displayExpressionTitle": "Antes de exibir (JavaScript)",
+  "displayExpressionSample": "Valor de exemplo",
+  "displayExpressionHint": "value contém o valor recebido. Deixe vazio para não alterá-lo. Apenas exibição; os comandos e o histórico salvo não mudam."
 }
