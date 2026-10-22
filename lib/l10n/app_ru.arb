@@ -1504,5 +1504,6 @@
   "wbAutoAddFailed": "Не удалось добавить обнаруженные устройства. Повторите поиск.",
   "wbChooseProperties": "Выберите свойства для добавления одной панелью.",
   "wbAddSelected": "Добавить выбранные свойства",
-  "wbOpenControls": "Открыть управление"
+  "wbOpenControls": "Открыть управление",
+  "wbZ2mDevices": "Устройства Z2M Wirenboard"
 }

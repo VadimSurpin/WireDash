@@ -36,10 +36,27 @@ metadata when available. Its controls use the same connection and read-only
 checks as individual tiles. A whole-device panel creates one dashboard row;
 its controls are not separate stored tiles.
 
-Built-in grouping uses exact standard device IDs (`hwmon`, `wb-gpio`, `wb-adc`,
+Built-in grouping recognizes controller service IDs starting with `system__`,
+cloud/network service drivers, and exact standard device IDs (`hwmon`, `wb-gpio`, `wb-adc`,
 `power_status`, etc.). Other module and virtual device IDs appear under added
 modules. MQTT metadata does not identify the physical controller for arbitrary
 custom device names. Expansion state is preserved while metadata updates.
+
+Cloud status, network connections, the KNX gateway, battery and alarms belong to
+controller built-ins. They are not automatically added as external modules.
+WB copies of Zigbee2MQTT devices appear under **Wirenboard Z2M devices** in
+All devices, discovery, setup and dashboard sections. Both `wb-mqtt-zigbee`
+and `wb-zigbee2mqtt` driver metadata identify a mirror directly. Legacy
+wb-rules copies are matched against the retained native `bridge/devices` list
+using device IDs/friendly names (the bridge's first-slash substitution) and
+IEEE addresses; translated display labels are not used. A known different
+physical-device driver takes precedence over a matching friendly name.
+The native list is optional and never delays WB-only discovery.
+
+Rediscovery updates sections of existing automatically grouped panels,
+including older built-in panels imported as modules, without duplicating
+panels or changing custom labels, property selections or user-defined sections.
+Automatic section names are recognized across all supported languages.
 
 Individual controls use these suggested tiles:
 

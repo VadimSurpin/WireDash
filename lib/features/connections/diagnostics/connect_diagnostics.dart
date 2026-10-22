@@ -374,6 +374,7 @@ class ConnectDiagnostics {
     // that never publish) and live `$base/#` state topics.
     final names = <String>{};
     final wirenBoard = WirenBoardDiscovery();
+    var nativeDevices = <Z2mDevice>[];
     // Unnamed devices read "Motion sensor f66f", not their address (2.7.1).
     final shown = <String, String>{};
     StreamSubscription<List<mc.MqttReceivedMessage<mc.MqttMessage>>>? sub;
@@ -390,7 +391,8 @@ class ConnectDiagnostics {
             final payload = mc.MqttPublishPayload.bytesToStringAsString(
               pub.payload.message,
             );
-            for (final device in parseBridgeDevices(payload)) {
+            nativeDevices = parseBridgeDevices(payload);
+            for (final device in nativeDevices) {
               if (device.friendlyName.isEmpty) continue;
               names.add(device.friendlyName);
               shown[device.friendlyName] = device.displayName;
@@ -437,7 +439,7 @@ class ConnectDiagnostics {
       connected: true,
       candidatesTried: 1,
       deviceNames: sorted,
-      wirenBoardDevices: wirenBoard.devices,
+      wirenBoardDevices: classifyWirenBoardDevices(wirenBoard.devices, nativeDevices),
     );
   }
 

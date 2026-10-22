@@ -194,6 +194,27 @@ Widget _emptyApp({required bool missing}) => ProviderScope(
 
 void main() {
   testWidgets(
+    'WB native mirrors and controller services have separate sections',
+    (tester) async {
+      final discovery = WirenBoardDiscovery()
+        ..apply('/devices/desk/controls/state/meta', '{"type":"switch"}')
+        ..apply('/devices/wb-mr6_10/controls/Relay/meta', '{"type":"switch"}')
+        ..apply(
+          '/devices/system__cloud/controls/status/meta',
+          '{"type":"text","readonly":true}',
+        );
+      await tester.pumpWidget(
+        _app(wbDevices: discovery.devices, emptyZ2m: true),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Added modules'), findsOneWidget);
+      expect(find.text('Wirenboard Z2M devices'), findsOneWidget);
+      expect(find.text('Controller built-ins'), findsOneWidget);
+      expect(find.byKey(const ValueKey('wb-device:desk')), findsOneWidget);
+    },
+  );
+
+  testWidgets(
     'tree selection is preserved when collapsed and adding asks for a valid label',
     (tester) async {
       final device =

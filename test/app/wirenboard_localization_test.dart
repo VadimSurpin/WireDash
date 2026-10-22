@@ -18,6 +18,7 @@ void main() {
       'wbAutoAdded',
       'wbAutoAddFailed',
       'wbBuiltinsAvailable',
+      'wbZ2mDevices',
       'wbOpenControls',
       'wbAddSelected',
       'wbChooseProperties',

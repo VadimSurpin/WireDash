@@ -1504,5 +1504,6 @@
   "wbAutoAddFailed": "Kunne ikke legge til oppdagede enheter. Prøv søket på nytt.",
   "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel.",
   "wbAddSelected": "Legg til valgte egenskaper",
-  "wbOpenControls": "Åpne kontroller"
+  "wbOpenControls": "Åpne kontroller",
+  "wbZ2mDevices": "Wirenboard Z2M-enheter"
 }

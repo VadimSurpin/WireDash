@@ -2253,5 +2253,6 @@
   "wbAutoAdded": "Modules added: {count}.",
   "wbChooseProperties": "Select properties to add as one panel.",
   "wbAddSelected": "Add selected properties",
-  "wbOpenControls": "Open controls"
+  "wbOpenControls": "Open controls",
+  "wbZ2mDevices": "Wirenboard Z2M devices"
 }

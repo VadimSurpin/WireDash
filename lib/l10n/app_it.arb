@@ -1284,5 +1284,6 @@
   "wbAutoAddFailed": "Impossibile aggiungere i dispositivi rilevati. Ripeti la ricerca.",
   "wbChooseProperties": "Seleziona le proprietà da aggiungere come un unico pannello.",
   "wbAddSelected": "Aggiungi proprietà selezionate",
-  "wbOpenControls": "Apri controlli"
+  "wbOpenControls": "Apri controlli",
+  "wbZ2mDevices": "Dispositivi Z2M di Wirenboard"
 }

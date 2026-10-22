@@ -1504,5 +1504,6 @@
   "wbAutoAddFailed": "לא ניתן להוסיף את ההתקנים שהתגלו. נסו לחפש שוב.",
   "wbChooseProperties": "בחרו מאפיינים להוספה כחלונית אחת.",
   "wbAddSelected": "הוספת המאפיינים שנבחרו",
-  "wbOpenControls": "פתיחת פקדים"
+  "wbOpenControls": "פתיחת פקדים",
+  "wbZ2mDevices": "התקני Z2M של Wirenboard"
 }

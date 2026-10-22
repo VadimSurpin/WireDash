@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'z2m_device.dart';
+
+enum WirenBoardDeviceGroup { modules, z2m, builtins }
+
 /// Retained metadata from the Wiren Board MQTT conventions. Values and
 /// commands live on separate topics and are deliberately not used as metadata.
 class WirenBoardDiscovery {
@@ -133,33 +137,64 @@ class WirenBoardDevice {
     required this.id,
     required this.metadata,
     required this.controls,
+    this.z2mMirror = false,
   });
   final String id;
   final Map<String, Object?> metadata;
   final List<WirenBoardControl> controls;
 
+  /// Identity confirmed against the native bridge list (legacy converters).
+  final bool z2mMirror;
+
+  bool get isZ2mMirror =>
+      z2mMirror ||
+      const {'wb-mqtt-zigbee', 'wb-zigbee2mqtt'}.contains(metadata['driver']);
+
+  WirenBoardDeviceGroup get group => isControllerBuiltin
+      ? WirenBoardDeviceGroup.builtins
+      : isZ2mMirror
+      ? WirenBoardDeviceGroup.z2m
+      : WirenBoardDeviceGroup.modules;
+
+  WirenBoardDevice withZ2mMirror(bool matched) => WirenBoardDevice(
+    id: id,
+    metadata: metadata,
+    controls: controls,
+    z2mMirror: matched,
+  );
+
   /// Match standard controller device IDs exactly. External Modbus modules
   /// also commonly start with `wb-`, so a prefix match misclassifies them.
-  bool get isControllerBuiltin => const {
-    'buzzer',
-    'hwmon',
-    'network',
-    'power_status',
-    'system',
-    'metrics',
-    'wb-adc',
-    'wb-dac',
-    'wb-gpio',
-    'wb-w1',
-    'wb-mcu',
-    'wb-v1',
-    'wbrules',
-  }.contains(id);
+  bool get isControllerBuiltin =>
+      id.startsWith('system__') ||
+      const {'wb-cloud-agent', 'wb-nm-helper'}.contains(metadata['driver']) ||
+      const {
+        'alarms',
+        'battery',
+        'cloud_status',
+        'network_connections',
+        'knx',
+        'system_time',
+        'buzzer',
+        'hwmon',
+        'network',
+        'power_status',
+        'system',
+        'metrics',
+        'wb-adc',
+        'wb-dac',
+        'wb-gpio',
+        'wb-w1',
+        'wb-mcu',
+        'wb-v1',
+        'wbrules',
+      }.contains(id);
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'metadata': metadata,
     'controls': [for (final control in controls) control.toJson()],
+    if (z2mMirror) 'z2mMirror': true,
   };
 
   factory WirenBoardDevice.fromJson(
@@ -167,6 +202,7 @@ class WirenBoardDevice {
   ) => WirenBoardDevice(
     id: json['id'] as String,
     metadata: Map<String, Object?>.from(json['metadata'] as Map? ?? const {}),
+    z2mMirror: json['z2mMirror'] == true,
     controls: [
       for (final control in json['controls'] as List? ?? const [])
         WirenBoardControl.fromJson(Map<String, dynamic>.from(control as Map)),
@@ -246,4 +282,36 @@ class WirenBoardControl {
     'lux': 'lx',
     'sound_level': 'dB',
   };
+}
+
+/// New bridges identify their driver. The legacy wb-rules converter uses the
+/// native friendly name with its first slash replaced by an underscore.
+/// Match topic IDs, never translated display titles or a broad `wb-` prefix.
+List<WirenBoardDevice> classifyWirenBoardDevices(
+  List<WirenBoardDevice> devices,
+  List<Z2mDevice> nativeDevices,
+) {
+  final names = {
+    for (final d in nativeDevices)
+      if (d.friendlyName.isNotEmpty) d.friendlyName.replaceFirst('/', '_'),
+  };
+  final addresses = {
+    for (final d in nativeDevices)
+      if (d.ieeeAddress != null) d.ieeeAddress!.toLowerCase(),
+  };
+  return devices
+      .map((device) {
+        if (device.isControllerBuiltin || device.isZ2mMirror) return device;
+        final driver = device.metadata['driver'];
+        if (driver != null && driver != '' && driver != 'wb-rules') {
+          return device;
+        }
+        final ieee = device.metadata['ieee_address']?.toString().toLowerCase();
+        final matched =
+            names.contains(device.id) ||
+            addresses.contains(device.id.toLowerCase()) ||
+            (ieee != null && addresses.contains(ieee));
+        return matched ? device.withZ2mMirror(true) : device;
+      })
+      .toList(growable: false);
 }

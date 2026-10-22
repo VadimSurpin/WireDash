@@ -1504,5 +1504,6 @@
   "wbAutoAddFailed": "Entdeckte Geräte konnten nicht hinzugefügt werden. Erneut suchen.",
   "wbChooseProperties": "Eigenschaften auswählen, die als ein Panel hinzugefügt werden sollen.",
   "wbAddSelected": "Ausgewählte Eigenschaften hinzufügen",
-  "wbOpenControls": "Steuerelemente öffnen"
+  "wbOpenControls": "Steuerelemente öffnen",
+  "wbZ2mDevices": "Wirenboard-Z2M-Geräte"
 }

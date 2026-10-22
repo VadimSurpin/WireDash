@@ -1284,5 +1284,6 @@
   "wbAutoAddFailed": "Nalezená zařízení nelze přidat. Zkuste hledání znovu.",
   "wbChooseProperties": "Vyberte vlastnosti, které chcete přidat jako jeden panel.",
   "wbAddSelected": "Přidat vybrané vlastnosti",
-  "wbOpenControls": "Otevřít ovládací prvky"
+  "wbOpenControls": "Otevřít ovládací prvky",
+  "wbZ2mDevices": "Zařízení Z2M ve Wirenboardu"
 }

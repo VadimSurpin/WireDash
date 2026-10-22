@@ -1,3 +1,5 @@
+import '../../discovery/models/wirenboard_device.dart';
+import '../../discovery/wirenboard_device_groups.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1690,10 +1692,13 @@ class _Review extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               if (state.wirenBoardDevices.isNotEmpty) ...[
-                _GroupHeader(title: l10n.wbAddedModules),
-                for (final device in state.wirenBoardDevices.where((d) => !d.isControllerBuiltin))
-                  ListTile(leading: const Icon(Icons.developer_board_outlined),
-                    title: Text(device.title(l10n.localeName)), trailing: const Icon(Icons.check)),
+                for (final group in [WirenBoardDeviceGroup.modules, WirenBoardDeviceGroup.z2m])
+                  if (state.wirenBoardDevices.any((d) => d.group == group)) ...[
+                    _GroupHeader(title: wirenBoardGroupLabel(group, l10n)),
+                    for (final device in state.wirenBoardDevices.where((d) => d.group == group))
+                      ListTile(leading: const Icon(Icons.developer_board_outlined),
+                        title: Text(device.title(l10n.localeName)), trailing: const Icon(Icons.check)),
+                  ],
                 Text(l10n.wbBuiltinsAvailable),
               ],
               for (var i = 0; i < rows.length; i++) ...[

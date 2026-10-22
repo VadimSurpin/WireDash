@@ -110,7 +110,7 @@ class Z2mProbeFetcher {
     }
     return Z2mFetchResult(
       detected: detected,
-      wirenBoardDevices: wirenBoard.devices,
+      wirenBoardDevices: classifyWirenBoardDevices(wirenBoard.devices, devices),
       devices: devices,
       otherBases: others.toList()..sort(),
     );

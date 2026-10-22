@@ -573,6 +573,7 @@ class WirenBoardDeviceConfig extends PanelConfig {
       : WirenBoardDevice(
           id: live.id,
           metadata: live.metadata,
+          z2mMirror: live.z2mMirror,
           controls: [
             for (final control in live.controls)
               if (controlIds!.contains(control.id)) control,

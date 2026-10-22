@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../mqtt/mqtt_manager.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../models/wirenboard_device.dart';
+import 'discovery_provider.dart';
 
 /// A live list: retained metadata arrives across many topics, followed by
 /// changes. Subscribe only to metadata; never probe or publish to the broker.
@@ -49,4 +50,17 @@ final wirenBoardDevicesProvider = StreamProvider.autoDispose
         unawaited(output.close());
       });
       yield* output.stream;
+    });
+
+/// Optional native Z2M retained data refines legacy identities without holding
+/// up a WB-only broker or replacing metadata with a second device instance.
+final classifiedWirenBoardDevicesProvider = Provider.autoDispose
+    .family<AsyncValue<List<WirenBoardDevice>>, DiscoveryArgs>((ref, args) {
+      final wb = ref.watch(wirenBoardDevicesProvider(args.connectionId));
+      if (wb.valueOrNull?.isNotEmpty != true) return wb;
+      final native =
+          ref.watch(bridgeDevicesStreamProvider(args)).valueOrNull ?? const [];
+      return wb.whenData(
+        (devices) => classifyWirenBoardDevices(devices, native),
+      );
     });
