@@ -88,6 +88,20 @@ final proPurchaseProvider = Provider<VoidCallback?>((ref) {
   return () => ref.read(proBillingProvider.notifier).buy();
 });
 
+/// The Play purchase token of an owned Pro, for the ZigDash relay (3.1);
+/// null outside Play or without Pro.
+Future<String?> proPurchaseToken() async {
+  if (proFlavor != 'play') return null;
+  try {
+    final t = await _billing.invokeMethod<String>('token');
+    return (t == null || t.isEmpty) ? null : t;
+  } on PlatformException {
+    return null;
+  } on MissingPluginException {
+    return null;
+  }
+}
+
 /// Pro's price as Play formats it for this user ("€7.99"), or null where
 /// Pro can't be bought or Play doesn't say (2.9.6).
 final proPriceProvider = FutureProvider<String?>((ref) async {

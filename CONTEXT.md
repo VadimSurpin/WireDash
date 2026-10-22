@@ -72,7 +72,7 @@
 
 **Automation** — a rule the user sets so the home acts on its own: when a **trigger** happens (a device changes: motion, a door, a button, a reading past a value; or a time comes: a clock time, sunrise or sunset, on chosen days) and its **conditions** hold (within set hours; another device in a given state), an **action** runs: a **Scene**, one device command, or the same turned off again after a set number of minutes. Acts; never tells: telling is an **Alert**. For Zigbee2MQTT homes without Home Assistant; a home with Home Assistant automates there. Three per Home free, unlimited with Pro. From 3.0.
 
-**Engine** — what runs a Home's Automations, Alerts and Recorder while phones are away. Normally on the hub, inside Zigbee2MQTT, installed by the app; for a Pro Home whose hub cannot run it, on ZigDash's server, with the Home's device states sent there in the clear by choice. A free Home never uses the server. Rules run with the internet down wherever the hub runs them. From 3.0.
+**Engine** ("ZigDash Engine" in the app, untranslated in every language; never "helper") — what runs a Home's Automations, Alerts and Recorder while phones are away. Normally on the hub, inside Zigbee2MQTT, installed by the app; for a Pro Home whose hub cannot run it, on ZigDash's server, with the Home's device states sent there in the clear by choice. A free Home never uses the server. Rules run with the internet down wherever the hub runs them. From 3.0.
 
 **Automations paused** — the state when the Engine has not reported in for over a minute, or stopped itself after repeated crashes: no Automation can run, rules stay editable, and the app says so on the Automations screen and the dashboard. Same pattern as **Alerts paused**. From 3.0.
 

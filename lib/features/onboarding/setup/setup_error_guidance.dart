@@ -74,6 +74,7 @@ SetupErrorKind mapLadderFailure(DiagnosticsReport report) {
     'diagTcpHaNoBroker' ||
     'diagTcpSmlightClosed' ||
     'diagTcpZ2mNoBroker' ||
+    'diagTcpZ2mBrokerElsewhere' ||
     'diagConnackFail' => SetupErrorKind.portClosed,
     'diagAuthRejected' ||
     'diagAuthRejectedHa' ||
@@ -85,54 +86,54 @@ SetupErrorKind mapLadderFailure(DiagnosticsReport report) {
 
 /// The l10n key bundle for each error kind.
 SetupGuidance guidanceFor(SetupErrorKind kind) => switch (kind) {
-      SetupErrorKind.hostUnreachable => const SetupGuidance(
-          titleKey: 'setupErrUnreachableTitle',
-          explanationKey: 'setupErrUnreachableBody',
-          actionKey: 'setupErrUnreachableAction',
-        ),
-      SetupErrorKind.portClosed => const SetupGuidance(
-          titleKey: 'setupErrPortClosedTitle',
-          explanationKey: 'setupErrPortClosedBody',
-          actionKey: 'setupErrPortClosedAction',
-        ),
-      SetupErrorKind.loginNoAnswer => const SetupGuidance(
-          titleKey: 'setupErrLoginNoAnswerTitle',
-          explanationKey: 'setupErrLoginNoAnswerBody',
-          actionKey: 'setupErrLoginNoAnswerAction',
-        ),
-      SetupErrorKind.authRequired => const SetupGuidance(
-          titleKey: 'setupErrAuthRequiredTitle',
-          explanationKey: 'setupErrAuthRequiredBody',
-          actionKey: 'setupErrAuthRequiredAction',
-        ),
-      SetupErrorKind.authRejected => const SetupGuidance(
-          titleKey: 'setupErrAuthRejectedTitle',
-          explanationKey: 'setupErrAuthRejectedBody',
-          actionKey: 'setupErrAuthRejectedAction',
-        ),
-      SetupErrorKind.notZigbee2Mqtt => const SetupGuidance(
-          titleKey: 'setupErrNotZ2mTitle',
-          explanationKey: 'setupErrNotZ2mBody',
-          actionKey: 'setupErrNotZ2mAction',
-        ),
-      SetupErrorKind.noDevices => const SetupGuidance(
-          titleKey: 'setupErrNoDevicesTitle',
-          explanationKey: 'setupErrNoDevicesBody',
-          actionKey: 'setupErrNoDevicesAction',
-        ),
-      SetupErrorKind.scanFailed => const SetupGuidance(
-          titleKey: 'setupErrScanFailedTitle',
-          explanationKey: 'setupErrScanFailedBody',
-          actionKey: 'setupErrScanFailedAction',
-        ),
-      SetupErrorKind.saveFailed => const SetupGuidance(
-          titleKey: 'setupErrSaveFailedTitle',
-          explanationKey: 'setupErrSaveFailedBody',
-          actionKey: 'setupErrSaveFailedAction',
-        ),
-      SetupErrorKind.unknown => const SetupGuidance(
-          titleKey: 'setupErrUnknownTitle',
-          explanationKey: 'setupErrUnknownBody',
-          actionKey: 'setupErrUnknownAction',
-        ),
-    };
+  SetupErrorKind.hostUnreachable => const SetupGuidance(
+    titleKey: 'setupErrUnreachableTitle',
+    explanationKey: 'setupErrUnreachableBody',
+    actionKey: 'setupErrUnreachableAction',
+  ),
+  SetupErrorKind.portClosed => const SetupGuidance(
+    titleKey: 'setupErrPortClosedTitle',
+    explanationKey: 'setupErrPortClosedBody',
+    actionKey: 'setupErrPortClosedAction',
+  ),
+  SetupErrorKind.loginNoAnswer => const SetupGuidance(
+    titleKey: 'setupErrLoginNoAnswerTitle',
+    explanationKey: 'setupErrLoginNoAnswerBody',
+    actionKey: 'setupErrLoginNoAnswerAction',
+  ),
+  SetupErrorKind.authRequired => const SetupGuidance(
+    titleKey: 'setupErrAuthRequiredTitle',
+    explanationKey: 'setupErrAuthRequiredBody',
+    actionKey: 'setupErrAuthRequiredAction',
+  ),
+  SetupErrorKind.authRejected => const SetupGuidance(
+    titleKey: 'setupErrAuthRejectedTitle',
+    explanationKey: 'setupErrAuthRejectedBody',
+    actionKey: 'setupErrAuthRejectedAction',
+  ),
+  SetupErrorKind.notZigbee2Mqtt => const SetupGuidance(
+    titleKey: 'setupErrNotZ2mTitle',
+    explanationKey: 'setupErrNotZ2mBody',
+    actionKey: 'setupErrNotZ2mAction',
+  ),
+  SetupErrorKind.noDevices => const SetupGuidance(
+    titleKey: 'setupErrNoDevicesTitle',
+    explanationKey: 'setupErrNoDevicesBody',
+    actionKey: 'setupErrNoDevicesAction',
+  ),
+  SetupErrorKind.scanFailed => const SetupGuidance(
+    titleKey: 'setupErrScanFailedTitle',
+    explanationKey: 'setupErrScanFailedBody',
+    actionKey: 'setupErrScanFailedAction',
+  ),
+  SetupErrorKind.saveFailed => const SetupGuidance(
+    titleKey: 'setupErrSaveFailedTitle',
+    explanationKey: 'setupErrSaveFailedBody',
+    actionKey: 'setupErrSaveFailedAction',
+  ),
+  SetupErrorKind.unknown => const SetupGuidance(
+    titleKey: 'setupErrUnknownTitle',
+    explanationKey: 'setupErrUnknownBody',
+    actionKey: 'setupErrUnknownAction',
+  ),
+};

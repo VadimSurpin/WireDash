@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../data/database/tables/panels.dart';
 import '../../alerts/alert_editor_screen.dart';
 import '../../alerts/alerts_screen.dart';
+import '../../engine/automations_screen.dart';
+import '../../remote/pair_phone_screen.dart';
+import '../../remote/remote_screen.dart';
 import '../../features/ha_import/ha_import_screen.dart';
 import '../../features/connections/screens/connection_form_screen.dart';
 import '../../features/guided_connect/guided_connect_screen.dart';
@@ -79,6 +82,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       // Retired carousel address; the redirect above always leaves it.
       GoRoute(path: Routes.onboarding, redirect: (_, __) => Routes.setup),
+      // Remote control (3.1): another phone's QR code, opened by the camera app.
+      GoRoute(
+        path: '/pair-phone',
+        builder: (_, state) => PairPhoneScreen(code: state.uri.queryParameters['c']),
+      ),
       // First run and adding a home: outside the navigation shell.
       GoRoute(
         path: Routes.setup,
@@ -308,6 +316,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'ha-import',
                 builder: (_, state) =>
                     HaImportScreen(connectionId: state.pathParameters['id']!),
+              ),
+              GoRoute(
+                path: 'remote',
+                builder: (_, state) =>
+                    RemoteScreen(connectionId: state.pathParameters['id']!),
+              ),
+              GoRoute(
+                path: 'automations',
+                builder: (_, state) =>
+                    AutomationsScreen(connectionId: state.pathParameters['id']!),
               ),
               GoRoute(
                 path: 'alerts',

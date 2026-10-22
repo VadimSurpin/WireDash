@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../mqtt/endpoint.dart';
 import '../../../core/theme/dashboard_accent.dart';
 import '../wall_display.dart';
 import '../../../core/theme/signal_colors.dart';
@@ -34,6 +35,7 @@ import '../../kiosk/kiosk.dart';
 import '../../kiosk/wall_display_sheet.dart';
 import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
+import '../../../engine/automations_paused_chip.dart';
 import '../widgets/poll_card.dart';
 import '../widgets/connection_status_banner.dart';
 
@@ -236,7 +238,10 @@ class _DashboardsTabbed extends ConsumerWidget {
                             ? const []
                             : [
                                 if (wide && !demo)
-                                  _StatusChip(status: connectionStatus),
+                                  _StatusChip(
+                                    status: connectionStatus,
+                                    endpoint: ref.watch(connectionEndpointProvider(connectionId)).valueOrNull,
+                                  ),
                                 IconButton(
                                   icon: const Icon(Icons.edit_outlined),
                                   tooltip: l10n.dashEditDashboard,
@@ -291,6 +296,7 @@ class _DashboardsTabbed extends ConsumerWidget {
                       PollCard(connectionId: connectionId),
                     ],
                     AlertsPausedBanner(connectionId: connectionId),
+                    AutomationsPausedBanner(connectionId: connectionId),
                     ConnectionStatusBanner(
                       status: connectionStatus,
                       onReconnect: () =>
@@ -401,9 +407,10 @@ class _DashboardChips extends StatelessWidget implements PreferredSizeWidget {
 
 /// The connection state at the end of a wide header.
 class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
+  const _StatusChip({required this.status, this.endpoint});
 
   final MqttStatus status;
+  final MqttEndpoint? endpoint;
 
   @override
   Widget build(BuildContext context) {
@@ -426,7 +433,7 @@ class _StatusChip extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Text(
-            homeStatusLabel(status, context.l10n),
+            homeStatusLabel(status, context.l10n, endpoint: endpoint),
             style: theme.textTheme.labelLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),

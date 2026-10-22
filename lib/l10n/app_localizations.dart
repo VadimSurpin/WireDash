@@ -2598,6 +2598,12 @@ abstract class AppLocalizations {
   /// **'This is your SMLIGHT hub, but its MQTT broker doesn\'t accept connections from other devices. In the hub\'s web page, open Settings › MQTT, turn on Allow External, save, then try again.'**
   String get diagTcpSmlightClosed;
 
+  /// No description provided for @diagTcpZ2mBrokerElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT runs at this address, but it reaches its broker under another name (see Zigbee2MQTT\'s Settings › MQTT › Server). If that is another machine, type its address, usually with port 1883. If it is a container on this machine, publish its port (ports: \"1883:1883\") and let it listen to the network, then try again.'**
+  String get diagTcpZ2mBrokerElsewhere;
+
   /// Broker test: port 1883 refused on a machine serving the Zigbee2MQTT web page (2.9.5). The quoted lines are mosquitto.conf syntax; keep them as is.
   ///
   /// In en, this message translates to:
@@ -3473,6 +3479,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prefer a login over open access? Use a password_file instead of allow_anonymous.'**
   String get setupZ2mLocalOnlyNote;
+
+  /// No description provided for @setupZ2mNameOnlyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT reaches its broker by a name your phone can\'t use'**
+  String get setupZ2mNameOnlyTitle;
+
+  /// No description provided for @setupZ2mNameOnlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT uses {server}. \"{name}\" is a name only Zigbee2MQTT\'s machine knows, a Docker service or a hostname. Type the broker machine\'s IP address with port {port} instead. If the broker runs in a container, its port must also be published on the machine (ports: \"{port}:{port}\").'**
+  String setupZ2mNameOnlyBody(String server, String name, int port);
+
+  /// No description provided for @setupZ2mTokenRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT\'s web page is protected by a token, so the app couldn\'t read where its broker is. Type the broker address from Zigbee2MQTT\'s Settings › MQTT.'**
+  String get setupZ2mTokenRequired;
 
   /// No description provided for @setupZ2mUnreachable.
   ///
@@ -5469,7 +5493,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Alerts are paused: Node-RED on the hub isn\'t running'**
+  /// **'Alerts are paused: ZigDash Engine on your hub isn\'t reporting'**
   String get alertsStatusPaused;
 
   /// Alerts screen.
@@ -5487,7 +5511,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. Node-RED on your hub watches the devices; ZigDash sets it up.'**
+  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. ZigDash Engine on your hub watches the devices; ZigDash sets it up.'**
   String get alertsIntro;
 
   /// Alerts screen.
@@ -5499,7 +5523,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'The alerts flow is installed on the hub'**
+  /// **'Alerts are set up on your hub'**
   String get alertsHubInstalled;
 
   /// Alerts screen.
@@ -5541,7 +5565,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Node-RED refused the flow'**
+  /// **'Zigbee2MQTT didn\'t accept ZigDash Engine'**
   String get alertsHubFailed;
 
   /// Alerts screen.
@@ -6219,7 +6243,7 @@ abstract class AppLocalizations {
   /// No description provided for @historySetupBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
+  /// **'ZigDash has no server, so ZigDash Engine on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
   String get historySetupBody;
 
   /// No description provided for @historySetupAction.
@@ -6279,7 +6303,7 @@ abstract class AppLocalizations {
   /// No description provided for @proAbout.
   ///
   /// In en, this message translates to:
-  /// **'Longer history and wall tablet extras. Supports the open-source project.'**
+  /// **'Unlimited automations, longer history and wall tablet extras. Supports the open-source project.'**
   String get proAbout;
 
   /// No description provided for @proUnlocked.
@@ -6327,7 +6351,7 @@ abstract class AppLocalizations {
   /// No description provided for @proFreeBody.
   ///
   /// In en, this message translates to:
-  /// **'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts and the wall tablet itself stay free. Nothing you use today gets locked.'**
+  /// **'Setup, dashboards, every device control, widgets, Quick Settings tiles, alerts, three automations per home and the wall tablet itself stay free. Nothing you use today gets locked.'**
   String get proFreeBody;
 
   /// No description provided for @proBuy.
@@ -6363,7 +6387,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyRecordHereHint.
   ///
   /// In en, this message translates to:
-  /// **'No Node-RED? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
+  /// **'Can\'t use ZigDash Engine on your hub? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
   String get historyRecordHereHint;
 
   /// No description provided for @historyRecordingHere.
@@ -6381,7 +6405,7 @@ abstract class AppLocalizations {
   /// No description provided for @wallRecordHistorySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when Node-RED records.'**
+  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when ZigDash Engine on your hub records.'**
   String get wallRecordHistorySubtitle;
 
   /// No description provided for @historyNeedsPassword.
@@ -6393,7 +6417,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyNotConnected.
   ///
   /// In en, this message translates to:
-  /// **'The recorder is installed but hasn\'t connected to your broker. If the broker needs a login, enter its password in Node-RED\'s \"ZigDash history broker\" node and Deploy.'**
+  /// **'The recorder isn\'t reporting. Open Automations to check ZigDash Engine on your hub.'**
   String get historyNotConnected;
 
   /// No description provided for @historyPersistence.
@@ -6659,6 +6683,1062 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try the demo first'**
   String get setupAuthDemoFirst;
+
+  /// No description provided for @automationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations'**
+  String get automationsTitle;
+
+  /// No description provided for @engineRunningOnHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Running on hub'**
+  String get engineRunningOnHub;
+
+  /// No description provided for @engineChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your hub…'**
+  String get engineChecking;
+
+  /// No description provided for @engineNoConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash can\'t reach this Home\'s broker right now. Automations are set up while connected at home.'**
+  String get engineNoConnection;
+
+  /// No description provided for @engineRestarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting Zigbee2MQTT… Your devices are back in about 30 seconds.'**
+  String get engineRestarting;
+
+  /// No description provided for @engineInstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing on your hub…'**
+  String get engineInstalling;
+
+  /// No description provided for @engineTooOldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT needs an update'**
+  String get engineTooOldTitle;
+
+  /// No description provided for @engineTooOldBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT is version {version}. Automations need 2.4 or newer. Update Zigbee2MQTT on your hub, then come back here.'**
+  String engineTooOldBody(Object version);
+
+  /// No description provided for @engineIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations run on your hub, not on your phone'**
+  String get engineIntroTitle;
+
+  /// No description provided for @engineIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash puts ZigDash Engine inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.'**
+  String get engineIntroBody;
+
+  /// No description provided for @engineIntroNothingByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to install by hand. ZigDash does it over your home network.'**
+  String get engineIntroNothingByHand;
+
+  /// No description provided for @engineIntroVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT is version {version}.'**
+  String engineIntroVersion(Object version);
+
+  /// No description provided for @engineIntroRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'You can remove it any time from this screen.'**
+  String get engineIntroRemove;
+
+  /// No description provided for @engineInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install on hub'**
+  String get engineInstall;
+
+  /// No description provided for @engineDeclinedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No automations on this hub'**
+  String get engineDeclinedTitle;
+
+  /// No description provided for @engineDeclinedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT on your hub doesn\'t allow add-ons, so nothing can run your rules while your phone is away. Scenes, alerts and the dashboard work as before.'**
+  String get engineDeclinedBody;
+
+  /// No description provided for @engineAllowAfterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow add-ons after all'**
+  String get engineAllowAfterAll;
+
+  /// No description provided for @engineConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT needs one setting changed'**
+  String get engineConsentTitle;
+
+  /// No description provided for @engineConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT blocks add-ons like ZigDash Engine, as new installs do. To run automations on your hub, ZigDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.'**
+  String get engineConsentBody;
+
+  /// No description provided for @engineConsentOutage.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT restarts once. Your lights and sensors can\'t be reached for about 30 seconds.'**
+  String get engineConsentOutage;
+
+  /// No description provided for @engineConsentOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash Engine is open source. You can read it on your Zigbee2MQTT page under Extensions.'**
+  String get engineConsentOpen;
+
+  /// No description provided for @engineConsentUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'You can turn the setting off again later. Automations stop then.'**
+  String get engineConsentUndo;
+
+  /// No description provided for @engineConsentYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the setting and restart'**
+  String get engineConsentYes;
+
+  /// No description provided for @engineConsentNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get engineConsentNo;
+
+  /// No description provided for @automationsPausedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations paused'**
+  String get automationsPausedTitle;
+
+  /// No description provided for @automationsPausedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub hasn\'t reported in for over a minute, so no automation can run until it does. Your rules are kept.'**
+  String get automationsPausedBody;
+
+  /// No description provided for @engineReinstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Reinstall on hub'**
+  String get engineReinstall;
+
+  /// No description provided for @engineStoppedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations paused: ZigDash Engine stopped itself'**
+  String get engineStoppedTitle;
+
+  /// No description provided for @engineStoppedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It ran into errors three times in an hour and switched off so Zigbee2MQTT keeps running. Your rules are kept.'**
+  String get engineStoppedBody;
+
+  /// No description provided for @engineStartAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Start again'**
+  String get engineStartAgain;
+
+  /// No description provided for @engineReportProblem.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a problem'**
+  String get engineReportProblem;
+
+  /// No description provided for @engineRunningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub is ready for automations'**
+  String get engineRunningTitle;
+
+  /// No description provided for @engineRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules loaded on the hub: {count}. Creating automations comes in the next step of this release.'**
+  String engineRunningBody(Object count);
+
+  /// No description provided for @engineClockOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub\'s clock is more than five minutes off. Time-based automations will run at the wrong time until it is fixed.'**
+  String get engineClockOff;
+
+  /// No description provided for @engineRulesUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules ZigDash Engine on your hub can\'t run yet: {count}. Update it by reinstalling.'**
+  String engineRulesUnknown(Object count);
+
+  /// No description provided for @engineInstallRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT refused ZigDash Engine: {error}'**
+  String engineInstallRefused(Object error);
+
+  /// No description provided for @engineInstallNoAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT didn\'t answer. Check that the Home is connected and try again.'**
+  String get engineInstallNoAnswer;
+
+  /// No description provided for @engineConsentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT didn\'t accept the change or didn\'t come back. Check your hub and try again.'**
+  String get engineConsentFailed;
+
+  /// No description provided for @autoValMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'motion'**
+  String get autoValMotion;
+
+  /// No description provided for @autoValNoMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'no motion'**
+  String get autoValNoMotion;
+
+  /// No description provided for @autoValClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'closed'**
+  String get autoValClosed;
+
+  /// No description provided for @autoValOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'opened'**
+  String get autoValOpened;
+
+  /// No description provided for @autoValLeak.
+  ///
+  /// In en, this message translates to:
+  /// **'leak'**
+  String get autoValLeak;
+
+  /// No description provided for @autoValDry.
+  ///
+  /// In en, this message translates to:
+  /// **'dry'**
+  String get autoValDry;
+
+  /// No description provided for @autoValSmoke.
+  ///
+  /// In en, this message translates to:
+  /// **'smoke'**
+  String get autoValSmoke;
+
+  /// No description provided for @autoValNoSmoke.
+  ///
+  /// In en, this message translates to:
+  /// **'no smoke'**
+  String get autoValNoSmoke;
+
+  /// No description provided for @autoValOn.
+  ///
+  /// In en, this message translates to:
+  /// **'on'**
+  String get autoValOn;
+
+  /// No description provided for @autoValOff.
+  ///
+  /// In en, this message translates to:
+  /// **'off'**
+  String get autoValOff;
+
+  /// No description provided for @autoValToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'toggle'**
+  String get autoValToggle;
+
+  /// No description provided for @autoValOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'open'**
+  String get autoValOpen;
+
+  /// No description provided for @autoValClose.
+  ///
+  /// In en, this message translates to:
+  /// **'close'**
+  String get autoValClose;
+
+  /// No description provided for @autoValStop.
+  ///
+  /// In en, this message translates to:
+  /// **'stop'**
+  String get autoValStop;
+
+  /// No description provided for @autoWhenAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device}: {property} above {value}'**
+  String autoWhenAbove(Object device, Object property, Object value);
+
+  /// No description provided for @autoWhenBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device}: {property} below {value}'**
+  String autoWhenBelow(Object device, Object property, Object value);
+
+  /// No description provided for @autoWhenDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'When {device}: {what}'**
+  String autoWhenDevice(Object device, Object what);
+
+  /// No description provided for @autoAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'At {time}'**
+  String autoAtTime(Object time);
+
+  /// No description provided for @autoSunrise.
+  ///
+  /// In en, this message translates to:
+  /// **'sunrise'**
+  String get autoSunrise;
+
+  /// No description provided for @autoSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'sunset'**
+  String get autoSunset;
+
+  /// No description provided for @autoAfterSun.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min after {sun}'**
+  String autoAfterSun(Object minutes, Object sun);
+
+  /// No description provided for @autoBeforeSun.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before {sun}'**
+  String autoBeforeSun(Object minutes, Object sun);
+
+  /// No description provided for @autoAtSun.
+  ///
+  /// In en, this message translates to:
+  /// **'At {sun}'**
+  String autoAtSun(Object sun);
+
+  /// No description provided for @autoEveryDay.
+  ///
+  /// In en, this message translates to:
+  /// **'every day'**
+  String get autoEveryDay;
+
+  /// No description provided for @autoWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'weekdays'**
+  String get autoWeekdays;
+
+  /// No description provided for @autoWeekends.
+  ///
+  /// In en, this message translates to:
+  /// **'weekends'**
+  String get autoWeekends;
+
+  /// No description provided for @autoBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'between {from} and {to}'**
+  String autoBetween(Object from, Object to);
+
+  /// No description provided for @autoDeviceIs.
+  ///
+  /// In en, this message translates to:
+  /// **'{device} is {value}'**
+  String autoDeviceIs(Object device, Object value);
+
+  /// No description provided for @autoRunScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Run “{scene}”'**
+  String autoRunScene(Object scene);
+
+  /// No description provided for @autoSetDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'{device}: {state}'**
+  String autoSetDevice(Object device, Object state);
+
+  /// No description provided for @autoOffAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'{action}, off again after {minutes} min'**
+  String autoOffAfter(Object action, Object minutes);
+
+  /// No description provided for @autoErrPickTrigger.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a device and what it does.'**
+  String get autoErrPickTrigger;
+
+  /// No description provided for @autoErrValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a number for the reading.'**
+  String get autoErrValue;
+
+  /// No description provided for @autoErrDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one day.'**
+  String get autoErrDays;
+
+  /// No description provided for @autoErrTown.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your town for sunrise and sunset.'**
+  String get autoErrTown;
+
+  /// No description provided for @autoErrPickAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick what should happen.'**
+  String get autoErrPickAction;
+
+  /// No description provided for @autoErrEmptyScene.
+  ///
+  /// In en, this message translates to:
+  /// **'That scene has nothing to send.'**
+  String get autoErrEmptyScene;
+
+  /// No description provided for @autoErrNotConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash isn\'t connected to this Home. Try again at home.'**
+  String get autoErrNotConnected;
+
+  /// No description provided for @autoNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New automation'**
+  String get autoNewTitle;
+
+  /// No description provided for @autoEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit automation'**
+  String get autoEditTitle;
+
+  /// No description provided for @autoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get autoName;
+
+  /// No description provided for @autoNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What this does (optional)'**
+  String get autoNameHint;
+
+  /// No description provided for @autoWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get autoWhen;
+
+  /// No description provided for @autoOnlyIf.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if'**
+  String get autoOnlyIf;
+
+  /// No description provided for @autoThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Then'**
+  String get autoThen;
+
+  /// No description provided for @autoEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get autoEnabled;
+
+  /// No description provided for @autoDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete automation'**
+  String get autoDelete;
+
+  /// No description provided for @autoSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get autoSave;
+
+  /// No description provided for @autoDeviceChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'A device changes'**
+  String get autoDeviceChanges;
+
+  /// No description provided for @autoTimeComes.
+  ///
+  /// In en, this message translates to:
+  /// **'A time comes'**
+  String get autoTimeComes;
+
+  /// No description provided for @autoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get autoDevice;
+
+  /// No description provided for @autoAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'above'**
+  String get autoAbove;
+
+  /// No description provided for @autoBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'below'**
+  String get autoBelow;
+
+  /// No description provided for @autoClockTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock time'**
+  String get autoClockTime;
+
+  /// No description provided for @autoAt.
+  ///
+  /// In en, this message translates to:
+  /// **'At'**
+  String get autoAt;
+
+  /// No description provided for @autoShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift in minutes (minus is before)'**
+  String get autoShift;
+
+  /// No description provided for @autoTownNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No town set'**
+  String get autoTownNone;
+
+  /// No description provided for @autoTownIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun times for {town}'**
+  String autoTownIs(Object town);
+
+  /// No description provided for @autoTownSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set town'**
+  String get autoTownSet;
+
+  /// No description provided for @autoTownChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change town'**
+  String get autoTownChange;
+
+  /// No description provided for @autoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get autoDays;
+
+  /// No description provided for @autoNoConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'No conditions. It runs every time.'**
+  String get autoNoConditions;
+
+  /// No description provided for @autoAddHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Between hours'**
+  String get autoAddHours;
+
+  /// No description provided for @autoFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get autoFrom;
+
+  /// No description provided for @autoTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get autoTo;
+
+  /// No description provided for @autoAddDeviceCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'A device is…'**
+  String get autoAddDeviceCondition;
+
+  /// No description provided for @autoRunASceneOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Run a scene'**
+  String get autoRunASceneOption;
+
+  /// No description provided for @autoSetADevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a device'**
+  String get autoSetADevice;
+
+  /// No description provided for @autoScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Scene'**
+  String get autoScene;
+
+  /// No description provided for @autoTurnOffAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off again'**
+  String get autoTurnOffAgain;
+
+  /// No description provided for @autoStaysAsSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays as set'**
+  String get autoStaysAsSet;
+
+  /// No description provided for @autoOffAfterMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes after it ran'**
+  String autoOffAfterMinutes(Object minutes);
+
+  /// No description provided for @autoTownSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Town'**
+  String get autoTownSearch;
+
+  /// No description provided for @autoTownWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Used only for sunrise and sunset. Stored on your hub, never your location.'**
+  String get autoTownWhy;
+
+  /// No description provided for @autoNewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'New automation'**
+  String get autoNewButton;
+
+  /// No description provided for @autoEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing runs yet. Tap New automation to make the first one.'**
+  String get autoEmptyBody;
+
+  /// No description provided for @autoOnlyIfList.
+  ///
+  /// In en, this message translates to:
+  /// **'only if {list}'**
+  String autoOnlyIfList(Object list);
+
+  /// No description provided for @autoEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get autoEdit;
+
+  /// No description provided for @autoNeverRan.
+  ///
+  /// In en, this message translates to:
+  /// **'never ran'**
+  String get autoNeverRan;
+
+  /// No description provided for @autoRanAt.
+  ///
+  /// In en, this message translates to:
+  /// **'ran {time}'**
+  String autoRanAt(Object time);
+
+  /// No description provided for @autoFreeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max} free automations'**
+  String autoFreeCount(Object count, Object max);
+
+  /// No description provided for @autoRecentRuns.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent runs'**
+  String get autoRecentRuns;
+
+  /// No description provided for @autoDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'(deleted)'**
+  String get autoDeleted;
+
+  /// No description provided for @autoCeilingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} automations are free. Want more?'**
+  String autoCeilingTitle(Object count);
+
+  /// No description provided for @autoCeilingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash is free and open source, built by one person. Pro is a one-time purchase: unlimited automations, history for 7 and 30 days and the wall tablet extras. Your automations keep running whatever you choose.'**
+  String get autoCeilingBody;
+
+  /// No description provided for @autoCeilingSeePro.
+  ///
+  /// In en, this message translates to:
+  /// **'See Pro'**
+  String get autoCeilingSeePro;
+
+  /// No description provided for @engineRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from hub'**
+  String get engineRemove;
+
+  /// No description provided for @engineRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove ZigDash Engine from your hub?'**
+  String get engineRemoveTitle;
+
+  /// No description provided for @engineRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations stop running. Your rules stay on the hub, so installing ZigDash Engine again brings them back.'**
+  String get engineRemoveBody;
+
+  /// No description provided for @autoNoTargets.
+  ///
+  /// In en, this message translates to:
+  /// **'This Home has no light, plug, switch or shutter to control yet.'**
+  String get autoNoTargets;
+
+  /// No description provided for @proGetAutomations.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited automations; three per home are free'**
+  String get proGetAutomations;
+
+  /// No description provided for @proGetRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control from anywhere, through the ZigDash relay'**
+  String get proGetRemote;
+
+  /// No description provided for @proRemoteFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote access is included while the ZigDash relay runs, for one home, up to five phones and normal household use. It may change or end with notice.'**
+  String get proRemoteFair;
+
+  /// No description provided for @autoDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this automation? It stops running on your hub.'**
+  String get autoDeleteConfirm;
+
+  /// No description provided for @statusConnectedRelay.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · Away via ZigDash'**
+  String get statusConnectedRelay;
+
+  /// No description provided for @remoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control'**
+  String get remoteTitle;
+
+  /// No description provided for @remoteSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control this home from anywhere, with Pro'**
+  String get remoteSettingsSubtitle;
+
+  /// No description provided for @remoteIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control your home from anywhere'**
+  String get remoteIntroTitle;
+
+  /// No description provided for @remoteIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub keeps one connection to ZigDash\'s relay. Away from home, this phone reaches your devices through it. Everything is encrypted on your hub and your phone, so the relay can\'t read your devices or what they do.'**
+  String get remoteIntroBody;
+
+  /// No description provided for @remoteNeedsEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control runs in ZigDash Engine. Install it under Automations first.'**
+  String get remoteNeedsEngine;
+
+  /// No description provided for @remoteSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on remote control'**
+  String get remoteSetUp;
+
+  /// No description provided for @remoteNeedsPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is part of Pro.'**
+  String get remoteNeedsPro;
+
+  /// No description provided for @remoteNotAtHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn this on at home, connected to your broker.'**
+  String get remoteNotAtHome;
+
+  /// No description provided for @remoteUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash\'s relay didn\'t answer. Try again later.'**
+  String get remoteUnreachable;
+
+  /// No description provided for @remoteRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'The relay refused. Try again, or report a problem.'**
+  String get remoteRefused;
+
+  /// No description provided for @remoteOnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is on'**
+  String get remoteOnTitle;
+
+  /// No description provided for @remoteOnBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Away from home, ZigDash connects through the relay by itself.'**
+  String get remoteOnBody;
+
+  /// No description provided for @remoteHubOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub is connected to the relay'**
+  String get remoteHubOnline;
+
+  /// No description provided for @remoteHubOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hub isn\'t connected to the relay'**
+  String get remoteHubOffline;
+
+  /// No description provided for @remoteTurnOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off remote control'**
+  String get remoteTurnOff;
+
+  /// No description provided for @remoteViaRelayNow.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is connected through the relay right now.'**
+  String get remoteViaRelayNow;
+
+  /// No description provided for @remotePhones.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones with remote access'**
+  String get remotePhones;
+
+  /// No description provided for @remoteThisPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone'**
+  String get remoteThisPhone;
+
+  /// No description provided for @remoteOtherPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Another phone'**
+  String get remoteOtherPhone;
+
+  /// No description provided for @remotePhoneAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {date}'**
+  String remotePhoneAdded(Object date);
+
+  /// No description provided for @remoteRemovePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remoteRemovePhone;
+
+  /// No description provided for @remoteRemovePhoneConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this phone? It can no longer reach this home from away.'**
+  String get remoteRemovePhoneConfirm;
+
+  /// No description provided for @remoteAddPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a phone'**
+  String get remoteAddPhone;
+
+  /// No description provided for @remoteAddPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At home, scan this with the other phone\'s camera. It opens ZigDash and adds remote control there. Show it only to your own phones.'**
+  String get remoteAddPhoneHint;
+
+  /// No description provided for @remoteAddPhoneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The relay didn\'t give a login for another phone. A home can have up to five.'**
+  String get remoteAddPhoneFailed;
+
+  /// No description provided for @remoteBackupSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a key backup'**
+  String get remoteBackupSave;
+
+  /// No description provided for @remoteBackupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a key backup'**
+  String get remoteBackupRestore;
+
+  /// No description provided for @remoteBackupPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup passphrase'**
+  String get remoteBackupPassphrase;
+
+  /// No description provided for @remoteBackupPassphraseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you lose this phone, the backup and this passphrase bring remote control back on a new one. Use at least 8 characters, and keep the passphrase somewhere else than the file.'**
+  String get remoteBackupPassphraseHint;
+
+  /// No description provided for @remoteBackupPassphraseAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase you chose when you saved the backup.'**
+  String get remoteBackupPassphraseAsk;
+
+  /// No description provided for @remoteBackupPassphraseAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase again'**
+  String get remoteBackupPassphraseAgain;
+
+  /// No description provided for @remoteBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Key backup saved'**
+  String get remoteBackupSaved;
+
+  /// No description provided for @remoteBackupWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'That passphrase doesn\'t open this backup.'**
+  String get remoteBackupWrong;
+
+  /// No description provided for @remoteBackupWrongFile.
+  ///
+  /// In en, this message translates to:
+  /// **'That isn\'t a ZigDash key backup.'**
+  String get remoteBackupWrongFile;
+
+  /// No description provided for @remotePlayOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is in the Google Play version of ZigDash for now.'**
+  String get remotePlayOnly;
+
+  /// No description provided for @remotePairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add remote control'**
+  String get remotePairTitle;
+
+  /// No description provided for @remotePairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Which home is this? ZigDash keeps the remote login for it.'**
+  String get remotePairBody;
+
+  /// No description provided for @remotePairNoHomes.
+  ///
+  /// In en, this message translates to:
+  /// **'Set this home up on this phone first, at home. Then scan the code again.'**
+  String get remotePairNoHomes;
+
+  /// No description provided for @remotePairInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This code isn\'t a ZigDash remote control code, or it was cut off.'**
+  String get remotePairInvalid;
+
+  /// No description provided for @remotePairDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is on for {home}'**
+  String remotePairDone(Object home);
+
+  /// No description provided for @remoteReconnectHub.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnect the hub'**
+  String get remoteReconnectHub;
+
+  /// No description provided for @remoteTurnOffConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone leaves remote control and your hub disconnects from the relay. A key backup saved from this phone stops working; other phones keep their access until you remove them.'**
+  String get remoteTurnOffConfirm;
+
+  /// No description provided for @remoteHomeId.
+  ///
+  /// In en, this message translates to:
+  /// **'Home ID {id}'**
+  String remoteHomeId(Object id);
 }
 
 class _AppLocalizationsDelegate

@@ -11,7 +11,7 @@
 
 ZigDash discovers your Zigbee devices automatically — no manual topic wiring —
 and controls lights, shutters, switches, and sensors from your phone or a
-wall-mounted tablet. No cloud, no ads, no account. Free and open source.
+wall-mounted tablet. No cloud needed, no ads, no account. Free and open source.
 
 Runs great on lean setups (SMLIGHT SMHUB, Raspberry Pi, any MQTT broker) —
 no Home Assistant required, though it works alongside it happily: it's just
@@ -36,15 +36,21 @@ MQTT.
 - **All shutters at once** — Close, Open and Stop all shutters are ready-made
   scenes in every Home: tap them in the Scenes tab, put one on a dashboard or
   the home screen, and untick a garage door under Which shutters.
-- **Alerts** — a leak, smoke, a door opened at night or a low battery: Node-RED
-  on your hub watches, ZigDash sets it up in one tap, and the notification
+- **Alerts** — a leak, smoke, a door opened at night or a low battery: ZigDash
+  Engine on your hub watches, ZigDash sets it up in one tap, and the notification
   reaches your phone through Google's push, encrypted end to end — no account,
   no second app, nothing running on the phone. Share a Home's alerts with the
   household through ntfy.
-- **Hub-side automation** — schedules and auto-close rules run as retained MQTT
-  config executed by Node-RED on your always-on hub (SMLIGHT, Raspberry Pi, …).
-  Your phone can be off; the automation still runs. Bundled Node-RED flows in
-  `node-red/`.
+- **Automations** — when a door opens, motion is seen, a button is pressed or a
+  time comes (sunrise and sunset too), switch lights, plugs and shutters or run
+  a scene, and turn them off again after a while. ZigDash Engine runs them
+  inside Zigbee2MQTT on your hub, installed from the app in one tap, so they
+  work with your phone off and the internet down. Three per home free,
+  unlimited with Pro.
+- **Remote control** — with Pro, reach your home from anywhere through
+  ZigDash's relay. Your hub and your phones encrypt everything end to end, so
+  the relay can't read your devices or what they do. Add the household's
+  phones with a QR code. No port forwarding, no VPN, no account.
 - **Shortcuts** — Quick Settings tiles switch a light or plug in one tap, or
   open a slider for a shutter; Android's Device Controls show every dashboard
   device as a card with brightness and position sliders; home-screen widgets
@@ -75,7 +81,8 @@ MQTT.
   history); the GitHub and F-Droid builds have everything.
 - **Private** — no ads, no account. Anonymous usage data you can turn off at
   any time; builds without an analytics key (F-Droid, your own) send nothing at all.
-  Data lives on your device and your broker.
+  Data lives on your device and your broker; with Remote control, the relay
+  only ever holds it encrypted.
 
 ## Install
 
@@ -128,7 +135,9 @@ CI release pipeline, which attaches signed per-ABI APKs to the release.
 ## Repository layout
 
 - `lib/` — Flutter app (Riverpod, go_router, Drift, Material 3)
-- `node-red/` — bundled Node-RED flows for hub-side automation
+- `hub/` — ZigDash Engine, the Zigbee2MQTT extension that runs automations,
+  alerts and history on the hub
+- `node-red/` — legacy flows, replaced by ZigDash Engine in 3.0
 - `store/` — Play Store listing copy, screenshots, graphics
 - `fastlane/` — supply metadata (F-Droid / IzzyOnDroid read this)
 

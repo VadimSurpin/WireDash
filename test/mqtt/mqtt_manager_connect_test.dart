@@ -9,6 +9,8 @@ import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/mqtt/broker_config.dart';
 import 'package:zigdash/mqtt/connection_failure.dart';
 import 'package:zigdash/mqtt/endpoint.dart';
+import 'package:zigdash/remote/remote_home.dart';
+import 'dart:typed_data';
 import 'package:zigdash/mqtt/mqtt_manager.dart';
 import 'package:zigdash/mqtt/mqtt_status.dart';
 
@@ -820,5 +822,53 @@ void main() {
       mc.Protocol.version = saved;
     }
     expect(buf.buffer![0], 0xA2);
+  });
+
+  group('the relay hands back to the home broker (3.1)', () {
+    test('at home a slow broker still wins over the relay', () {
+      fakeAsync((async) {
+        final relay = RemoteHome(homeId: 'h', url: 'wss://r/mqtt', username: 'u', password: 'p', key: Uint8List(32));
+        final made = <String>[];
+        final manager = MqttManager(
+          config: BrokerConfig(id: 'c', host: localHost, port: 1883, protocol: MqttProtocol.tcp, relay: relay),
+          password: '',
+          clientFactory: (c, id, {host}) {
+            made.add(host ?? c.host);
+            return _FakeClient(host ?? c.host, _Behavior.succeed);
+          },
+        );
+        manager.connect();
+        async.flushMicrotasks();
+        expect(manager.activeEndpoint, MqttEndpoint.local);
+        expect(made, [localHost]);
+        manager.dispose();
+        async.flushMicrotasks();
+      });
+    });
+
+    test('on the relay, the home broker answering again switches back to it', () {
+      fakeAsync((async) {
+        final relay = RemoteHome(homeId: 'h', url: 'wss://r/mqtt', username: 'u', password: 'p', key: Uint8List(32));
+        var homeUp = false;
+        final manager = MqttManager(
+          config: BrokerConfig(id: 'c', host: localHost, port: 1883, protocol: MqttProtocol.tcp, relay: relay),
+          password: '',
+          homeProbe: (host, port) async => homeUp,
+          clientFactory: (c, id, {host}) => _FakeClient(host ?? c.host,
+              (host ?? c.host) == relayCandidateHost || homeUp ? _Behavior.succeed : _Behavior.fail),
+        );
+        manager.connect();
+        async.flushMicrotasks();
+        expect(manager.activeEndpoint, MqttEndpoint.relay, reason: 'away: the broker refuses, the relay answers');
+        async.elapse(const Duration(seconds: 61));
+        expect(manager.activeEndpoint, MqttEndpoint.relay, reason: 'still away');
+        homeUp = true;
+        async.elapse(const Duration(seconds: 61));
+        expect(manager.activeEndpoint, MqttEndpoint.local, reason: 'home again: back on the broker');
+        expect(manager.status, MqttStatus.connected);
+        manager.dispose();
+        async.flushMicrotasks();
+      });
+    });
   });
 }

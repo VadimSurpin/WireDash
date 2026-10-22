@@ -1,0 +1,7 @@
+[Unit]
+Description=Copy relay.zigdash.app's certificate to the ZigDash relay
+
+[Service]
+Type=oneshot
+EnvironmentFile=/opt/zigdash-relay/deploy/.env
+ExecStart=/opt/zigdash-relay/deploy/sync-certs.sh

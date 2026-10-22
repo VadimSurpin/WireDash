@@ -30,3 +30,6 @@ mc.MqttClient buildPlatformClient(
   client.websocketProtocols = ['mqtt'];
   return client;
 }
+
+/// A browser can't open raw TCP: the relay never hands back to the LAN here.
+Future<bool> probeTcp(String host, int port, {Duration timeout = const Duration(seconds: 2)}) async => false;

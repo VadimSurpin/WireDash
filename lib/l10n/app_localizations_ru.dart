@@ -1403,6 +1403,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Это ваш хаб SMLIGHT, но его MQTT-брокер не принимает подключения с других устройств. На веб-странице хаба откройте Settings › MQTT, включите Allow External, сохраните и попробуйте снова.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'По этому адресу работает Zigbee2MQTT, но к брокеру он обращается по другому имени (см. Zigbee2MQTT › Settings › MQTT › Server). Если это другая машина, введите её адрес, обычно с портом 1883. Если это контейнер на этой машине, опубликуйте его порт (ports: \"1883:1883\") и разрешите ему слушать сеть, затем попробуйте снова.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'По этому адресу работает Zigbee2MQTT, но его MQTT-брокер не принимает подключения с других устройств. Mosquitto слушает только на своей машине, пока вы не добавите в mosquitto.conf строки «listener 1883» и «allow_anonymous true» (или не настроите пароль). Перезапустите Mosquitto и попробуйте снова.';
 
@@ -1921,6 +1925,19 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Нужен логин вместо открытого доступа? Используйте password_file вместо allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT обращается к брокеру по имени, которое телефон использовать не может';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT использует $server. «$name» — имя, известное только машине с Zigbee2MQTT: сервис Docker или имя хоста. Введите вместо него IP-адрес машины с брокером и порт $port. Если брокер работает в контейнере, его порт должен быть также опубликован на машине (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Веб-страница Zigbee2MQTT защищена токеном, поэтому приложение не смогло узнать, где её брокер. Введите адрес брокера из настроек Zigbee2MQTT › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {
@@ -3056,7 +3073,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Тревоги приостановлены: Node-RED на хабе не запущен';
+      'Оповещения приостановлены: ZigDash Engine на хабе не выходит на связь';
 
   @override
   String get alertsStatusNotSetUp => 'Не настроено';
@@ -3066,13 +3083,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Получайте уведомление на этом телефоне о протечке, дыме, открытой двери или низком заряде, даже когда ZigDash закрыт. Node-RED на вашем хабе следит за устройствами; ZigDash его настраивает.';
+      'Получайте уведомление на этот телефон о протечке, дыме, открытой двери или разряде батареи, даже когда ZigDash закрыт. ZigDash Engine на хабе следит за устройствами; ZigDash его настраивает.';
 
   @override
   String get alertsSetUpHub => 'Настроить тревоги на хабе';
 
   @override
-  String get alertsHubInstalled => 'Поток тревог установлен на хабе';
+  String get alertsHubInstalled => 'Оповещения настроены на хабе';
 
   @override
   String get alertsHubUpdated => 'Поток тревог на хабе обновлён';
@@ -3097,7 +3114,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED отклонил поток';
+  String get alertsHubFailed => 'Zigbee2MQTT не принял ZigDash Engine';
 
   @override
   String get alertsRecent => 'Последние тревоги';
@@ -3471,7 +3488,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'У ZigDash нет сервера, поэтому небольшой поток Node-RED на хабе каждые 15 минут записывает числа с ваших панелей. Он хранит 30 дней на вашем собственном брокере.';
+      'У ZigDash нет сервера, поэтому ZigDash Engine на хабе каждые 15 минут записывает показания с ваших панелей. Хранит 30 дней, на вашем брокере.';
 
   @override
   String get historySetupAction => 'Настроить на хабе';
@@ -3510,7 +3527,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Более длинная история и дополнения для настенного планшета. Поддерживает проект с открытым кодом.';
+      'Автоматизации без ограничений, более длинная история и дополнения для настенного планшета. Поддерживает проект с открытым кодом.';
 
   @override
   String get proUnlocked => 'Открыто. Спасибо, что поддерживаете ZigDash.';
@@ -3537,7 +3554,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Настройка, панели, управление любым устройством, виджеты, плитки быстрых настроек, оповещения и сам настенный планшет остаются бесплатными. Ничто из того, чем вы пользуетесь сегодня, не будет заблокировано.';
+      'Настройка, панели, управление любым устройством, виджеты, плитки быстрых настроек, оповещения, три автоматизации на дом и сам настенный планшет остаются бесплатными. Ничто из того, чем вы пользуетесь сегодня, не будет заблокировано.';
 
   @override
   String get proBuy => 'Получить Pro';
@@ -3560,7 +3577,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Нет Node-RED? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном планшете. Историю видят все телефоны этого дома.';
+      'Не получается использовать ZigDash Engine на хабе? ZigDash может записывать на телефоне или планшете, который остаётся открытым, например на настенном. Все телефоны этого дома видят историю.';
 
   @override
   String get historyRecordingHere =>
@@ -3571,7 +3588,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает Node-RED.';
+      'Каждые 15 минут, пока ZigDash открыт, для всех телефонов этого дома. Не нужно, если записывает ZigDash Engine на хабе.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3580,7 +3597,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Запись установлена, но не подключилась к брокеру. Если брокер требует вход, введите его пароль в узле «ZigDash history broker» в Node-RED и нажмите Deploy.';
+      'Запись не выходит на связь. Откройте «Автоматизации», чтобы проверить ZigDash Engine на хабе.';
 
   @override
   String get historyPersistence =>
@@ -3739,4 +3756,629 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Сначала попробовать демо';
+
+  @override
+  String get automationsTitle => 'Автоматизации';
+
+  @override
+  String get engineRunningOnHub => 'Работает на хабе';
+
+  @override
+  String get engineChecking => 'Проверка хаба…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash сейчас не может связаться с брокером этого дома. Автоматизации настраиваются дома, при подключении.';
+
+  @override
+  String get engineRestarting =>
+      'Перезапуск Zigbee2MQTT… Устройства вернутся примерно через 30 секунд.';
+
+  @override
+  String get engineInstalling => 'Установка на хаб…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT нужно обновить';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Ваш Zigbee2MQTT версии $version. Для автоматизаций нужна 2.4 или новее. Обновите Zigbee2MQTT на хабе и вернитесь сюда.';
+  }
+
+  @override
+  String get engineIntroTitle =>
+      'Автоматизации работают на хабе, а не на телефоне';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash добавляет ZigDash Engine в Zigbee2MQTT на вашем хабе. Он следит за устройствами и выполняет ваши правила, так что свет включится при открытии двери, даже если телефон выключен и нет интернета.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Ничего не нужно ставить вручную. ZigDash сделает это через домашнюю сеть.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Ваш Zigbee2MQTT версии $version.';
+  }
+
+  @override
+  String get engineIntroRemove =>
+      'Удалить его можно в любой момент на этом экране.';
+
+  @override
+  String get engineInstall => 'Установить на хаб';
+
+  @override
+  String get engineDeclinedTitle => 'На этом хабе нет автоматизаций';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT на вашем хабе не разрешает расширения, поэтому никто не выполнит ваши правила, пока телефона нет рядом. Сцены, оповещения и панель работают как раньше.';
+
+  @override
+  String get engineAllowAfterAll => 'Всё же разрешить расширения';
+
+  @override
+  String get engineConsentTitle =>
+      'В Zigbee2MQTT нужно изменить одну настройку';
+
+  @override
+  String get engineConsentBody =>
+      'Ваш Zigbee2MQTT блокирует расширения вроде ZigDash Engine, как делают новые установки. Чтобы автоматизации работали на хабе, ZigDash включит в Zigbee2MQTT «Разрешить внешний JavaScript» и перезапустит его.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT перезапустится один раз. Свет и датчики будут недоступны около 30 секунд.';
+
+  @override
+  String get engineConsentOpen =>
+      'ZigDash Engine с открытым кодом. Его можно прочитать на странице Zigbee2MQTT в разделе «Расширения».';
+
+  @override
+  String get engineConsentUndo =>
+      'Настройку можно потом выключить. Тогда автоматизации остановятся.';
+
+  @override
+  String get engineConsentYes => 'Изменить настройку и перезапустить';
+
+  @override
+  String get engineConsentNo => 'Не сейчас';
+
+  @override
+  String get automationsPausedTitle => 'Автоматизации приостановлены';
+
+  @override
+  String get automationsPausedBody =>
+      'Хаб не выходит на связь больше минуты, поэтому ни одна автоматизация не сработает, пока он не вернётся. Ваши правила сохранены.';
+
+  @override
+  String get engineReinstall => 'Переустановить на хаб';
+
+  @override
+  String get engineStoppedTitle =>
+      'Автоматизации приостановлены: ZigDash Engine остановился сам';
+
+  @override
+  String get engineStoppedBody =>
+      'Он трижды за час столкнулся с ошибками и выключился, чтобы Zigbee2MQTT продолжал работать. Ваши правила сохранены.';
+
+  @override
+  String get engineStartAgain => 'Запустить снова';
+
+  @override
+  String get engineReportProblem => 'Сообщить о проблеме';
+
+  @override
+  String get engineRunningTitle => 'Хаб готов к автоматизациям';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Правил загружено на хаб: $count. Создание автоматизаций появится на следующем шаге этой версии.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'Часы хаба отстают или спешат больше чем на пять минут. Автоматизации по времени будут срабатывать не вовремя, пока это не исправить.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Правил, которые ZigDash Engine на хабе пока не умеет выполнять: $count. Переустановите его, чтобы обновить.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT отклонил ZigDash Engine: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT не ответил. Проверьте, что дом подключён, и попробуйте снова.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT не принял изменение или не вернулся. Проверьте хаб и попробуйте снова.';
+
+  @override
+  String get autoValMotion => 'движение';
+
+  @override
+  String get autoValNoMotion => 'нет движения';
+
+  @override
+  String get autoValClosed => 'закрыто';
+
+  @override
+  String get autoValOpened => 'открыто';
+
+  @override
+  String get autoValLeak => 'протечка';
+
+  @override
+  String get autoValDry => 'сухо';
+
+  @override
+  String get autoValSmoke => 'дым';
+
+  @override
+  String get autoValNoSmoke => 'нет дыма';
+
+  @override
+  String get autoValOn => 'вкл.';
+
+  @override
+  String get autoValOff => 'выкл.';
+
+  @override
+  String get autoValToggle => 'переключить';
+
+  @override
+  String get autoValOpen => 'открыть';
+
+  @override
+  String get autoValClose => 'закрыть';
+
+  @override
+  String get autoValStop => 'стоп';
+
+  @override
+  String autoWhenAbove(Object device, Object property, Object value) {
+    return 'Когда $device: $property выше $value';
+  }
+
+  @override
+  String autoWhenBelow(Object device, Object property, Object value) {
+    return 'Когда $device: $property ниже $value';
+  }
+
+  @override
+  String autoWhenDevice(Object device, Object what) {
+    return 'Когда $device: $what';
+  }
+
+  @override
+  String autoAtTime(Object time) {
+    return 'В $time';
+  }
+
+  @override
+  String get autoSunrise => 'восход';
+
+  @override
+  String get autoSunset => 'закат';
+
+  @override
+  String autoAfterSun(Object minutes, Object sun) {
+    return '$minutes мин после: $sun';
+  }
+
+  @override
+  String autoBeforeSun(Object minutes, Object sun) {
+    return '$minutes мин до: $sun';
+  }
+
+  @override
+  String autoAtSun(Object sun) {
+    return '$sun';
+  }
+
+  @override
+  String get autoEveryDay => 'каждый день';
+
+  @override
+  String get autoWeekdays => 'по будням';
+
+  @override
+  String get autoWeekends => 'по выходным';
+
+  @override
+  String autoBetween(Object from, Object to) {
+    return 'с $from до $to';
+  }
+
+  @override
+  String autoDeviceIs(Object device, Object value) {
+    return '$device: $value';
+  }
+
+  @override
+  String autoRunScene(Object scene) {
+    return 'Запустить «$scene»';
+  }
+
+  @override
+  String autoSetDevice(Object device, Object state) {
+    return '$device: $state';
+  }
+
+  @override
+  String autoOffAfter(Object action, Object minutes) {
+    return '$action, выключить через $minutes мин';
+  }
+
+  @override
+  String get autoErrPickTrigger => 'Выберите устройство и событие.';
+
+  @override
+  String get autoErrValue => 'Введите число для показания.';
+
+  @override
+  String get autoErrDays => 'Выберите хотя бы один день.';
+
+  @override
+  String get autoErrTown => 'Укажите город для восхода и заката.';
+
+  @override
+  String get autoErrPickAction => 'Выберите, что должно произойти.';
+
+  @override
+  String get autoErrEmptyScene => 'В этой сцене нечего отправлять.';
+
+  @override
+  String get autoErrNotConnected =>
+      'ZigDash не подключён к этому дому. Попробуйте снова дома.';
+
+  @override
+  String get autoNewTitle => 'Новая автоматизация';
+
+  @override
+  String get autoEditTitle => 'Изменить автоматизацию';
+
+  @override
+  String get autoName => 'Название';
+
+  @override
+  String get autoNameHint => 'Что она делает (необязательно)';
+
+  @override
+  String get autoWhen => 'Когда';
+
+  @override
+  String get autoOnlyIf => 'Только если';
+
+  @override
+  String get autoThen => 'Тогда';
+
+  @override
+  String get autoEnabled => 'Включена';
+
+  @override
+  String get autoDelete => 'Удалить автоматизацию';
+
+  @override
+  String get autoSave => 'Сохранить';
+
+  @override
+  String get autoDeviceChanges => 'Устройство меняется';
+
+  @override
+  String get autoTimeComes => 'Наступает время';
+
+  @override
+  String get autoDevice => 'Устройство';
+
+  @override
+  String get autoAbove => 'выше';
+
+  @override
+  String get autoBelow => 'ниже';
+
+  @override
+  String get autoClockTime => 'Время';
+
+  @override
+  String get autoAt => 'В';
+
+  @override
+  String get autoShift => 'Сдвиг в минутах (минус — раньше)';
+
+  @override
+  String get autoTownNone => 'Город не указан';
+
+  @override
+  String autoTownIs(Object town) {
+    return 'Время солнца для: $town';
+  }
+
+  @override
+  String get autoTownSet => 'Указать город';
+
+  @override
+  String get autoTownChange => 'Сменить город';
+
+  @override
+  String get autoDays => 'Дни';
+
+  @override
+  String get autoNoConditions => 'Без условий. Срабатывает каждый раз.';
+
+  @override
+  String get autoAddHours => 'Между часами';
+
+  @override
+  String get autoFrom => 'С';
+
+  @override
+  String get autoTo => 'До';
+
+  @override
+  String get autoAddDeviceCondition => 'Устройство в состоянии…';
+
+  @override
+  String get autoRunASceneOption => 'Запустить сцену';
+
+  @override
+  String get autoSetADevice => 'Управлять устройством';
+
+  @override
+  String get autoScene => 'Сцена';
+
+  @override
+  String get autoTurnOffAgain => 'Выключить потом';
+
+  @override
+  String get autoStaysAsSet => 'Остаётся как есть';
+
+  @override
+  String autoOffAfterMinutes(Object minutes) {
+    return 'Через $minutes мин после запуска';
+  }
+
+  @override
+  String get autoTownSearch => 'Город';
+
+  @override
+  String get autoTownWhy =>
+      'Только для восхода и заката. Хранится на хабе, а не ваше местоположение.';
+
+  @override
+  String get autoNewButton => 'Новая автоматизация';
+
+  @override
+  String get autoEmptyBody =>
+      'Пока ничего не работает. Нажмите «Новая автоматизация», чтобы создать первую.';
+
+  @override
+  String autoOnlyIfList(Object list) {
+    return 'только если $list';
+  }
+
+  @override
+  String get autoEdit => 'Изменить';
+
+  @override
+  String get autoNeverRan => 'ещё не срабатывала';
+
+  @override
+  String autoRanAt(Object time) {
+    return 'сработала в $time';
+  }
+
+  @override
+  String autoFreeCount(Object count, Object max) {
+    return 'Бесплатных автоматизаций: $count из $max';
+  }
+
+  @override
+  String get autoRecentRuns => 'Последние срабатывания';
+
+  @override
+  String get autoDeleted => '(удалена)';
+
+  @override
+  String autoCeilingTitle(Object count) {
+    return 'Бесплатно: $count автоматизации. Нужно больше?';
+  }
+
+  @override
+  String get autoCeilingBody =>
+      'ZigDash бесплатный и с открытым кодом, его делает один человек. Pro — разовая покупка: автоматизации без ограничений, история за 7 и 30 дней и функции для настенного планшета. Ваши автоматизации продолжат работать при любом выборе.';
+
+  @override
+  String get autoCeilingSeePro => 'Подробнее о Pro';
+
+  @override
+  String get engineRemove => 'Удалить с хаба';
+
+  @override
+  String get engineRemoveTitle => 'Удалить ZigDash Engine с хаба?';
+
+  @override
+  String get engineRemoveBody =>
+      'Автоматизации перестанут работать. Правила останутся на хабе и вернутся после переустановки ZigDash Engine.';
+
+  @override
+  String get autoNoTargets =>
+      'В этом доме пока нет света, розетки, выключателя или штор для управления.';
+
+  @override
+  String get proGetAutomations =>
+      'Автоматизации без ограничений; три на дом бесплатно';
+
+  @override
+  String get proGetRemote =>
+      'Управление откуда угодно через ретранслятор ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'Удалённый доступ включён, пока работает ретранслятор ZigDash, для одного дома, до пяти телефонов и обычного домашнего использования. Он может измениться или прекратиться с предварительным уведомлением.';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Удалить эту автоматизацию? Она перестанет работать на хабе.';
+
+  @override
+  String get statusConnectedRelay => 'Подключено · Вне дома через ZigDash';
+
+  @override
+  String get remoteTitle => 'Удалённое управление';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Управляйте этим домом откуда угодно, с Pro';
+
+  @override
+  String get remoteIntroTitle => 'Управляйте домом откуда угодно';
+
+  @override
+  String get remoteIntroBody =>
+      'Хаб держит одно соединение с ретранслятором ZigDash. Вне дома этот телефон достаёт до устройств через него. Всё шифруется на хабе и в телефоне, поэтому ретранслятор не может прочитать ни устройства, ни что они делают.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Удалённое управление работает в ZigDash Engine. Сначала установите его в разделе «Автоматизации».';
+
+  @override
+  String get remoteSetUp => 'Включить удалённое управление';
+
+  @override
+  String get remoteNeedsPro => 'Удалённое управление входит в Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Включите это дома, при подключении к брокеру.';
+
+  @override
+  String get remoteUnreachable =>
+      'Ретранслятор ZigDash не ответил. Попробуйте позже.';
+
+  @override
+  String get remoteRefused =>
+      'Ретранслятор отказал. Попробуйте снова или сообщите о проблеме.';
+
+  @override
+  String get remoteOnTitle => 'Удалённое управление включено';
+
+  @override
+  String get remoteOnBody =>
+      'Вне дома ZigDash сам подключается через ретранслятор.';
+
+  @override
+  String get remoteHubOnline => 'Хаб подключён к ретранслятору';
+
+  @override
+  String get remoteHubOffline => 'Хаб не подключён к ретранслятору';
+
+  @override
+  String get remoteTurnOff => 'Выключить удалённое управление';
+
+  @override
+  String get remoteViaRelayNow =>
+      'Этот телефон сейчас подключён через ретранслятор.';
+
+  @override
+  String get remotePhones => 'Телефоны с удалённым доступом';
+
+  @override
+  String get remoteThisPhone => 'Этот телефон';
+
+  @override
+  String get remoteOtherPhone => 'Другой телефон';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Добавлен $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Удалить';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Удалить этот телефон? Он больше не сможет подключаться к дому издалека.';
+
+  @override
+  String get remoteAddPhone => 'Добавить телефон';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Дома отсканируйте это камерой другого телефона. Откроется ZigDash и включит там удалённое управление. Показывайте только своим телефонам.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Ретранслятор не выдал доступ для ещё одного телефона. У дома может быть до пяти.';
+
+  @override
+  String get remoteBackupSave => 'Сохранить резервную копию ключа';
+
+  @override
+  String get remoteBackupRestore => 'Восстановить из копии ключа';
+
+  @override
+  String get remoteBackupPassphrase => 'Пароль копии';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Если потеряете этот телефон, копия и этот пароль вернут удалённое управление на новом. Не меньше 8 символов; храните пароль отдельно от файла.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'Пароль, выбранный при сохранении копии.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Пароль ещё раз';
+
+  @override
+  String get remoteBackupSaved => 'Копия ключа сохранена';
+
+  @override
+  String get remoteBackupWrong => 'Этот пароль не открывает копию.';
+
+  @override
+  String get remoteBackupWrongFile => 'Это не копия ключа ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Пока удалённое управление есть в версии ZigDash из Google Play.';
+
+  @override
+  String get remotePairTitle => 'Добавить удалённое управление';
+
+  @override
+  String get remotePairBody =>
+      'Какой это дом? ZigDash сохранит для него удалённый доступ.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Сначала настройте этот дом на этом телефоне, дома. Потом отсканируйте код снова.';
+
+  @override
+  String get remotePairInvalid =>
+      'Это не код удалённого управления ZigDash, или он обрезан.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Удалённое управление включено: $home';
+  }
+
+  @override
+  String get remoteReconnectHub => 'Переподключить хаб';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Этот телефон отключится от удалённого управления, а хаб — от ретранслятора. Копия ключа, сохранённая с этого телефона, перестанет работать; другие телефоны сохранят доступ, пока вы их не удалите.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID дома $id';
+  }
 }

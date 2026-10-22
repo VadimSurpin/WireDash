@@ -1391,6 +1391,10 @@ class AppLocalizationsCs extends AppLocalizations {
       'Tohle je tvůj hub SMLIGHT, ale jeho MQTT broker nepřijímá připojení z jiných zařízení. Na webové stránce hubu otevři Settings › MQTT, zapni Allow External, ulož a zkus to znovu.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Na této adrese běží Zigbee2MQTT, ale ke svému brokeru se připojuje pod jiným jménem (viz Zigbee2MQTT › Settings › MQTT › Server). Pokud je to jiný počítač, zadejte jeho adresu, obvykle s portem 1883. Pokud je to kontejner na tomto počítači, zveřejněte jeho port (ports: \"1883:1883\") a povolte mu naslouchat v síti, pak to zkuste znovu.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Na této adrese běží Zigbee2MQTT, ale jeho MQTT broker nepřijímá připojení z jiných zařízení. Mosquitto naslouchá jen na svém vlastním počítači, dokud do mosquitto.conf nepřidáš řádky \"listener 1883\" a \"allow_anonymous true\" (nebo nenastavíš heslo). Restartuj Mosquitto a zkus to znovu.';
 
@@ -1924,6 +1928,19 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Chceš raději přihlášení než otevřený přístup? Místo allow_anonymous použij password_file.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT se ke svému brokeru připojuje pod jménem, které váš telefon nemůže použít';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT používá $server. „$name“ je jméno, které zná jen počítač se Zigbee2MQTT, služba Dockeru nebo název hostitele. Zadejte místo něj IP adresu počítače s brokerem a port $port. Pokud broker běží v kontejneru, musí být jeho port také zveřejněn na počítači (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'Webová stránka Zigbee2MQTT je chráněna tokenem, takže aplikace nemohla zjistit, kde je její broker. Zadejte adresu brokeru z nastavení Zigbee2MQTT › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {
@@ -3057,7 +3074,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Upozornění jsou pozastavená: Node-RED na hubu neběží';
+      'Upozornění pozastavena: ZigDash Engine na hubu se nehlásí';
 
   @override
   String get alertsStatusNotSetUp => 'Nenastaveno';
@@ -3067,13 +3084,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Dostaneš oznámení na tento telefon, když se nahlásí únik vody, kouř, otevřené dveře nebo slabá baterie, i když je ZigDash zavřený. Zařízení hlídá Node-RED na tvém hubu; ZigDash ho nastaví.';
+      'Dostanete upozornění na tento telefon při úniku vody, kouři, otevřených dveřích nebo slabé baterii, i když je ZigDash zavřený. ZigDash Engine na hubu sleduje zařízení; ZigDash ho nastaví.';
 
   @override
   String get alertsSetUpHub => 'Nastavit upozornění na hubu';
 
   @override
-  String get alertsHubInstalled => 'Flow upozornění je na hubu nainstalovaný';
+  String get alertsHubInstalled => 'Upozornění jsou na hubu nastavena';
 
   @override
   String get alertsHubUpdated => 'Flow upozornění na hubu je aktuální';
@@ -3098,7 +3115,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED flow odmítl';
+  String get alertsHubFailed => 'Zigbee2MQTT nepřijal ZigDash Engine';
 
   @override
   String get alertsRecent => 'Nedávná upozornění';
@@ -3471,7 +3488,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash nemá server, takže čísla z tvých nástěnek zaznamenává každých 15 minut malý flow Node-RED na tvém hubu. Uchovává 30 dní, na tvém vlastním brokeru.';
+      'ZigDash nemá server, takže ZigDash Engine na hubu každých 15 minut zaznamenává hodnoty z vašich nástěnek. Uchovává 30 dní, na vašem brokeru.';
 
   @override
   String get historySetupAction => 'Nastavit na hubu';
@@ -3510,7 +3527,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.';
+      'Neomezené automatizace, delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.';
 
   @override
   String get proUnlocked => 'Odemčeno. Děkuju, že podporuješ ZigDash.';
@@ -3538,7 +3555,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Nastavení, nástěnky, ovládání všech zařízení, widgety, dlaždice Rychlého nastavení, upozornění i samotný tablet na zdi zůstávají zdarma. Nic, co dnes používáš, se nezamkne.';
+      'Nastavení, nástěnky, ovládání všech zařízení, widgety, dlaždice Rychlého nastavení, upozornění, tři automatizace na domácnost i samotný tablet na zdi zůstávají zdarma. Nic, co dnes používáš, se nezamkne.';
 
   @override
   String get proBuy => 'Získat Pro';
@@ -3561,7 +3578,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Nemáš Node-RED? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstává otevřený, třeba na tabletu na zdi. Historii uvidí všechny telefony tohoto domova.';
+      'ZigDash Engine na hubu nelze použít? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstane otevřený, třeba na nástěnném tabletu. Historii vidí každý telefon této domácnosti.';
 
   @override
   String get historyRecordingHere =>
@@ -3572,7 +3589,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Každých 15 minut, dokud je ZigDash otevřený, pro všechny telefony tohoto domova. Není potřeba, když zaznamenává Node-RED.';
+      'Každých 15 minut, dokud je ZigDash otevřený, pro každý telefon této domácnosti. Není potřeba, když zaznamenává ZigDash Engine na hubu.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3581,7 +3598,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'Záznamník je nainstalovaný, ale nepřipojil se k tvému brokeru. Pokud broker vyžaduje přihlášení, zadej jeho heslo v uzlu „ZigDash history broker“ v Node-RED a dej Deploy.';
+      'Záznam se nehlásí. Otevřete Automatizace a zkontrolujte ZigDash Engine na hubu.';
 
   @override
   String get historyPersistence =>
@@ -3748,4 +3765,623 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Nejdřív vyzkoušej demo';
+
+  @override
+  String get automationsTitle => 'Automatizace';
+
+  @override
+  String get engineRunningOnHub => 'Běží na hubu';
+
+  @override
+  String get engineChecking => 'Kontrola hubu…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash teď nedosáhne na broker této domácnosti. Automatizace se nastavují doma, s připojením.';
+
+  @override
+  String get engineRestarting =>
+      'Restart Zigbee2MQTT… Zařízení budou zpět asi za 30 sekund.';
+
+  @override
+  String get engineInstalling => 'Instalace na hub…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT potřebuje aktualizaci';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Váš Zigbee2MQTT má verzi $version. Automatizace vyžadují 2.4 nebo novější. Aktualizujte Zigbee2MQTT na hubu a vraťte se sem.';
+  }
+
+  @override
+  String get engineIntroTitle => 'Automatizace běží na hubu, ne v telefonu';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash vloží ZigDash Engine do Zigbee2MQTT na vašem hubu. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Nic se neinstaluje ručně. ZigDash to udělá přes domácí síť.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Váš Zigbee2MQTT má verzi $version.';
+  }
+
+  @override
+  String get engineIntroRemove => 'Kdykoli ho můžete odebrat z této obrazovky.';
+
+  @override
+  String get engineInstall => 'Nainstalovat na hub';
+
+  @override
+  String get engineDeclinedTitle => 'Na tomto hubu nejsou automatizace';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT na vašem hubu nepovoluje rozšíření, takže nic nespustí vaše pravidla, když telefon není doma. Scény, upozornění a nástěnka fungují jako dřív.';
+
+  @override
+  String get engineAllowAfterAll => 'Přece jen povolit rozšíření';
+
+  @override
+  String get engineConsentTitle =>
+      'Zigbee2MQTT potřebuje změnit jedno nastavení';
+
+  @override
+  String get engineConsentBody =>
+      'Váš Zigbee2MQTT blokuje rozšíření jako ZigDash Engine, jak to dělají nové instalace. Aby automatizace běžely na hubu, ZigDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT se jednou restartuje. Světla a senzory budou asi 30 sekund nedostupné.';
+
+  @override
+  String get engineConsentOpen =>
+      'ZigDash Engine má otevřený kód. Můžete si ho přečíst na stránce Zigbee2MQTT v části Rozšíření.';
+
+  @override
+  String get engineConsentUndo =>
+      'Nastavení můžete později zase vypnout. Automatizace se pak zastaví.';
+
+  @override
+  String get engineConsentYes => 'Změnit nastavení a restartovat';
+
+  @override
+  String get engineConsentNo => 'Teď ne';
+
+  @override
+  String get automationsPausedTitle => 'Automatizace pozastaveny';
+
+  @override
+  String get automationsPausedBody =>
+      'Hub se přes minutu neozval, takže žádná automatizace nepoběží, dokud se neozve. Vaše pravidla zůstávají.';
+
+  @override
+  String get engineReinstall => 'Znovu nainstalovat na hub';
+
+  @override
+  String get engineStoppedTitle =>
+      'Automatizace pozastaveny: ZigDash Engine se sám zastavil';
+
+  @override
+  String get engineStoppedBody =>
+      'Během hodiny třikrát narazil na chybu a vypnul se, aby Zigbee2MQTT dál běžel. Vaše pravidla zůstávají.';
+
+  @override
+  String get engineStartAgain => 'Spustit znovu';
+
+  @override
+  String get engineReportProblem => 'Nahlásit problém';
+
+  @override
+  String get engineRunningTitle => 'Váš hub je připraven na automatizace';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Pravidel načtených na hubu: $count. Vytváření automatizací přijde v dalším kroku této verze.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'Hodiny hubu se liší o víc než pět minut. Časové automatizace poběží ve špatnou dobu, dokud se to neopraví.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Pravidla, která ZigDash Engine na hubu zatím neumí spustit: $count. Nainstalujte ho znovu, aby se aktualizoval.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT odmítl ZigDash Engine: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT neodpověděl. Zkontrolujte, že je domácnost připojená, a zkuste to znovu.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT změnu nepřijal nebo se nevrátil. Zkontrolujte hub a zkuste to znovu.';
+
+  @override
+  String get autoValMotion => 'pohyb';
+
+  @override
+  String get autoValNoMotion => 'bez pohybu';
+
+  @override
+  String get autoValClosed => 'zavřeno';
+
+  @override
+  String get autoValOpened => 'otevřeno';
+
+  @override
+  String get autoValLeak => 'únik vody';
+
+  @override
+  String get autoValDry => 'sucho';
+
+  @override
+  String get autoValSmoke => 'kouř';
+
+  @override
+  String get autoValNoSmoke => 'bez kouře';
+
+  @override
+  String get autoValOn => 'zap.';
+
+  @override
+  String get autoValOff => 'vyp.';
+
+  @override
+  String get autoValToggle => 'přepnout';
+
+  @override
+  String get autoValOpen => 'otevřít';
+
+  @override
+  String get autoValClose => 'zavřít';
+
+  @override
+  String get autoValStop => 'zastavit';
+
+  @override
+  String autoWhenAbove(Object device, Object property, Object value) {
+    return 'Když $device: $property nad $value';
+  }
+
+  @override
+  String autoWhenBelow(Object device, Object property, Object value) {
+    return 'Když $device: $property pod $value';
+  }
+
+  @override
+  String autoWhenDevice(Object device, Object what) {
+    return 'Když $device: $what';
+  }
+
+  @override
+  String autoAtTime(Object time) {
+    return 'V $time';
+  }
+
+  @override
+  String get autoSunrise => 'východ slunce';
+
+  @override
+  String get autoSunset => 'západ slunce';
+
+  @override
+  String autoAfterSun(Object minutes, Object sun) {
+    return '$minutes min po: $sun';
+  }
+
+  @override
+  String autoBeforeSun(Object minutes, Object sun) {
+    return '$minutes min před: $sun';
+  }
+
+  @override
+  String autoAtSun(Object sun) {
+    return '$sun';
+  }
+
+  @override
+  String get autoEveryDay => 'každý den';
+
+  @override
+  String get autoWeekdays => 'pracovní dny';
+
+  @override
+  String get autoWeekends => 'víkendy';
+
+  @override
+  String autoBetween(Object from, Object to) {
+    return 'mezi $from a $to';
+  }
+
+  @override
+  String autoDeviceIs(Object device, Object value) {
+    return '$device: $value';
+  }
+
+  @override
+  String autoRunScene(Object scene) {
+    return 'Spustit „$scene“';
+  }
+
+  @override
+  String autoSetDevice(Object device, Object state) {
+    return '$device: $state';
+  }
+
+  @override
+  String autoOffAfter(Object action, Object minutes) {
+    return '$action, po $minutes min zase vypnout';
+  }
+
+  @override
+  String get autoErrPickTrigger => 'Vyberte zařízení a co dělá.';
+
+  @override
+  String get autoErrValue => 'Zadejte číslo pro hodnotu.';
+
+  @override
+  String get autoErrDays => 'Vyberte aspoň jeden den.';
+
+  @override
+  String get autoErrTown => 'Nastavte město pro východ a západ slunce.';
+
+  @override
+  String get autoErrPickAction => 'Vyberte, co se má stát.';
+
+  @override
+  String get autoErrEmptyScene => 'Tato scéna nemá co odeslat.';
+
+  @override
+  String get autoErrNotConnected =>
+      'ZigDash není připojen k této domácnosti. Zkuste to znovu doma.';
+
+  @override
+  String get autoNewTitle => 'Nová automatizace';
+
+  @override
+  String get autoEditTitle => 'Upravit automatizaci';
+
+  @override
+  String get autoName => 'Název';
+
+  @override
+  String get autoNameHint => 'Co dělá (nepovinné)';
+
+  @override
+  String get autoWhen => 'Když';
+
+  @override
+  String get autoOnlyIf => 'Jen pokud';
+
+  @override
+  String get autoThen => 'Pak';
+
+  @override
+  String get autoEnabled => 'Zapnuto';
+
+  @override
+  String get autoDelete => 'Smazat automatizaci';
+
+  @override
+  String get autoSave => 'Uložit';
+
+  @override
+  String get autoDeviceChanges => 'Zařízení se změní';
+
+  @override
+  String get autoTimeComes => 'Přijde čas';
+
+  @override
+  String get autoDevice => 'Zařízení';
+
+  @override
+  String get autoAbove => 'nad';
+
+  @override
+  String get autoBelow => 'pod';
+
+  @override
+  String get autoClockTime => 'Čas';
+
+  @override
+  String get autoAt => 'V';
+
+  @override
+  String get autoShift => 'Posun v minutách (mínus je dříve)';
+
+  @override
+  String get autoTownNone => 'Město není nastaveno';
+
+  @override
+  String autoTownIs(Object town) {
+    return 'Časy slunce pro: $town';
+  }
+
+  @override
+  String get autoTownSet => 'Nastavit město';
+
+  @override
+  String get autoTownChange => 'Změnit město';
+
+  @override
+  String get autoDays => 'Dny';
+
+  @override
+  String get autoNoConditions => 'Bez podmínek. Spustí se pokaždé.';
+
+  @override
+  String get autoAddHours => 'Mezi časy';
+
+  @override
+  String get autoFrom => 'Od';
+
+  @override
+  String get autoTo => 'Do';
+
+  @override
+  String get autoAddDeviceCondition => 'Zařízení je…';
+
+  @override
+  String get autoRunASceneOption => 'Spustit scénu';
+
+  @override
+  String get autoSetADevice => 'Nastavit zařízení';
+
+  @override
+  String get autoScene => 'Scéna';
+
+  @override
+  String get autoTurnOffAgain => 'Zase vypnout';
+
+  @override
+  String get autoStaysAsSet => 'Zůstane tak';
+
+  @override
+  String autoOffAfterMinutes(Object minutes) {
+    return '$minutes minut poté';
+  }
+
+  @override
+  String get autoTownSearch => 'Město';
+
+  @override
+  String get autoTownWhy =>
+      'Jen pro východ a západ slunce. Uloží se na hub, nikdy vaše poloha.';
+
+  @override
+  String get autoNewButton => 'Nová automatizace';
+
+  @override
+  String get autoEmptyBody =>
+      'Zatím nic neběží. Klepněte na Nová automatizace a vytvořte první.';
+
+  @override
+  String autoOnlyIfList(Object list) {
+    return 'jen pokud $list';
+  }
+
+  @override
+  String get autoEdit => 'Upravit';
+
+  @override
+  String get autoNeverRan => 'ještě neběžela';
+
+  @override
+  String autoRanAt(Object time) {
+    return 'běžela v $time';
+  }
+
+  @override
+  String autoFreeCount(Object count, Object max) {
+    return '$count z $max automatizací zdarma';
+  }
+
+  @override
+  String get autoRecentRuns => 'Poslední spuštění';
+
+  @override
+  String get autoDeleted => '(smazána)';
+
+  @override
+  String autoCeilingTitle(Object count) {
+    return 'Zdarma jsou $count automatizace. Chcete víc?';
+  }
+
+  @override
+  String get autoCeilingBody =>
+      'ZigDash je zdarma a s otevřeným kódem, vytváří ho jeden člověk. Pro je jednorázový nákup: neomezené automatizace, historie za 7 a 30 dní a doplňky pro nástěnný tablet. Vaše automatizace poběží dál, ať zvolíte cokoli.';
+
+  @override
+  String get autoCeilingSeePro => 'Zobrazit Pro';
+
+  @override
+  String get engineRemove => 'Odebrat z hubu';
+
+  @override
+  String get engineRemoveTitle => 'Odebrat ZigDash Engine z hubu?';
+
+  @override
+  String get engineRemoveBody =>
+      'Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace ZigDash Engine vrátí.';
+
+  @override
+  String get autoNoTargets =>
+      'Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.';
+
+  @override
+  String get proGetAutomations =>
+      'Neomezené automatizace; tři na domácnost jsou zdarma';
+
+  @override
+  String get proGetRemote => 'Ovládání odkudkoli přes relay ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'Vzdálený přístup je zahrnut, dokud relay ZigDash běží, pro jeden domov, až pět telefonů a běžné domácí použití. Může se změnit nebo skončit s předchozím oznámením.';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Smazat tuto automatizaci? Přestane běžet na hubu.';
+
+  @override
+  String get statusConnectedRelay => 'Připojeno · Mimo domov přes ZigDash';
+
+  @override
+  String get remoteTitle => 'Dálkové ovládání';
+
+  @override
+  String get remoteSettingsSubtitle =>
+      'Ovládejte tuto domácnost odkudkoli, s Pro';
+
+  @override
+  String get remoteIntroTitle => 'Ovládejte domácnost odkudkoli';
+
+  @override
+  String get remoteIntroBody =>
+      'Hub drží jedno spojení s relé ZigDash. Mimo domov se tento telefon dostane k zařízením přes něj. Vše se šifruje na hubu a v telefonu, takže relé nemůže číst vaše zařízení ani co dělají.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Dálkové ovládání běží v ZigDash Engine. Nejdřív ho nainstalujte v Automatizacích.';
+
+  @override
+  String get remoteSetUp => 'Zapnout dálkové ovládání';
+
+  @override
+  String get remoteNeedsPro => 'Dálkové ovládání je součástí Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Zapněte to doma, připojení k brokeru.';
+
+  @override
+  String get remoteUnreachable =>
+      'Relé ZigDash neodpovědělo. Zkuste to později.';
+
+  @override
+  String get remoteRefused =>
+      'Relé odmítlo. Zkuste to znovu nebo nahlaste problém.';
+
+  @override
+  String get remoteOnTitle => 'Dálkové ovládání je zapnuté';
+
+  @override
+  String get remoteOnBody => 'Mimo domov se ZigDash připojí přes relé sám.';
+
+  @override
+  String get remoteHubOnline => 'Hub je připojen k relé';
+
+  @override
+  String get remoteHubOffline => 'Hub není připojen k relé';
+
+  @override
+  String get remoteTurnOff => 'Vypnout dálkové ovládání';
+
+  @override
+  String get remoteViaRelayNow => 'Tento telefon je teď připojen přes relé.';
+
+  @override
+  String get remotePhones => 'Telefony se vzdáleným přístupem';
+
+  @override
+  String get remoteThisPhone => 'Tento telefon';
+
+  @override
+  String get remoteOtherPhone => 'Jiný telefon';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Přidán $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Odebrat';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Odebrat tento telefon? Už se k této domácnosti nedostane zvenku.';
+
+  @override
+  String get remoteAddPhone => 'Přidat telefon';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Doma to naskenujte fotoaparátem druhého telefonu. Otevře ZigDash a zapne tam dálkové ovládání. Ukazujte jen vlastním telefonům.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Relé nevydalo přístup pro další telefon. Domácnost jich může mít až pět.';
+
+  @override
+  String get remoteBackupSave => 'Uložit zálohu klíče';
+
+  @override
+  String get remoteBackupRestore => 'Obnovit ze zálohy klíče';
+
+  @override
+  String get remoteBackupPassphrase => 'Heslo zálohy';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Když tento telefon ztratíte, záloha a toto heslo vrátí dálkové ovládání na nový. Aspoň 8 znaků; heslo mějte jinde než soubor.';
+
+  @override
+  String get remoteBackupPassphraseAsk => 'Heslo zvolené při ukládání zálohy.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Heslo znovu';
+
+  @override
+  String get remoteBackupSaved => 'Záloha klíče uložena';
+
+  @override
+  String get remoteBackupWrong => 'Toto heslo zálohu neotevře.';
+
+  @override
+  String get remoteBackupWrongFile => 'To není záloha klíče ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Dálkové ovládání je zatím ve verzi ZigDash z Google Play.';
+
+  @override
+  String get remotePairTitle => 'Přidat dálkové ovládání';
+
+  @override
+  String get remotePairBody =>
+      'Která je to domácnost? ZigDash pro ni uloží vzdálený přístup.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Nejdřív tuto domácnost nastavte na tomto telefonu, doma. Pak kód naskenujte znovu.';
+
+  @override
+  String get remotePairInvalid =>
+      'Tento kód není kód dálkového ovládání ZigDash, nebo byl useknutý.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Dálkové ovládání zapnuto pro $home';
+  }
+
+  @override
+  String get remoteReconnectHub => 'Znovu připojit hub';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Tento telefon opustí dálkové ovládání a hub se odpojí od relé. Záloha klíče uložená z tohoto telefonu přestane fungovat; ostatní telefony si přístup ponechají, dokud je neodeberete.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'ID domova $id';
+  }
 }

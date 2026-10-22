@@ -31,26 +31,26 @@ AddressShape addressShape(String host) {
 }
 
 String addressShapeLabel(AddressShape shape) => switch (shape) {
-      AddressShape.private192 => 'private address in 192.168.x',
-      AddressShape.private10 => 'private address in 10.x',
-      AddressShape.private172 => 'private address in 172.16–31.x',
-      AddressShape.publicAddress => 'public address',
-      AddressShape.hostName => 'host name',
-      AddressShape.dotLocal => '.local name',
-    };
+  AddressShape.private192 => 'private address in 192.168.x',
+  AddressShape.private10 => 'private address in 10.x',
+  AddressShape.private172 => 'private address in 172.16–31.x',
+  AddressShape.publicAddress => 'public address',
+  AddressShape.hostName => 'host name',
+  AddressShape.dotLocal => '.local name',
+};
 
 FailureKind failureKindFromSetup(SetupErrorKind kind) => switch (kind) {
-      SetupErrorKind.hostUnreachable => FailureKind.unreachable,
-      SetupErrorKind.portClosed => FailureKind.refused,
-      SetupErrorKind.authRequired => FailureKind.loginRequired,
-      SetupErrorKind.authRejected => FailureKind.loginRejected,
-      SetupErrorKind.loginNoAnswer => FailureKind.timedOut,
-      SetupErrorKind.notZigbee2Mqtt => FailureKind.noZigbee2mqtt,
-      SetupErrorKind.noDevices => FailureKind.noDevices,
-      SetupErrorKind.scanFailed => FailureKind.noLocalNetwork,
-      SetupErrorKind.saveFailed => FailureKind.saveFailed,
-      SetupErrorKind.unknown => FailureKind.unknown,
-    };
+  SetupErrorKind.hostUnreachable => FailureKind.unreachable,
+  SetupErrorKind.portClosed => FailureKind.refused,
+  SetupErrorKind.authRequired => FailureKind.loginRequired,
+  SetupErrorKind.authRejected => FailureKind.loginRejected,
+  SetupErrorKind.loginNoAnswer => FailureKind.timedOut,
+  SetupErrorKind.notZigbee2Mqtt => FailureKind.noZigbee2mqtt,
+  SetupErrorKind.noDevices => FailureKind.noDevices,
+  SetupErrorKind.scanFailed => FailureKind.noLocalNetwork,
+  SetupErrorKind.saveFailed => FailureKind.saveFailed,
+  SetupErrorKind.unknown => FailureKind.unknown,
+};
 
 /// The kind of a failed guided-connect check, from its first failed step.
 FailureKind failureKindFromLadder(DiagnosticsReport report) {
@@ -64,7 +64,8 @@ FailureKind failureKindFromLadder(DiagnosticsReport report) {
       'diagTcpFail' ||
       'diagTcpHaNoBroker' ||
       'diagTcpSmlightClosed' ||
-      'diagTcpZ2mNoBroker' => FailureKind.refused,
+      'diagTcpZ2mNoBroker' ||
+      'diagTcpZ2mBrokerElsewhere' => FailureKind.refused,
       'diagConnackFail' => FailureKind.notMqtt,
       'diagLoginNoAnswer' => FailureKind.timedOut,
       'diagAuthRejected' ||
@@ -102,25 +103,25 @@ class ScanSummary {
   final String? network;
 
   Map<String, Object?> toJson() => {
-        'widened': widened,
-        'hostsTried': hostsTried,
-        'brokersFound': brokersFound,
-        'network': network,
-      };
+    'widened': widened,
+    'hostsTried': hostsTried,
+    'brokersFound': brokersFound,
+    'network': network,
+  };
 
   factory ScanSummary.fromJson(Map<String, Object?> j) => ScanSummary(
-        widened: j['widened'] == true,
-        hostsTried: (j['hostsTried'] as num?)?.toInt() ?? 0,
-        brokersFound: (j['brokersFound'] as num?)?.toInt() ?? 0,
-        network: j['network'] as String?,
-      );
+    widened: j['widened'] == true,
+    hostsTried: (j['hostsTried'] as num?)?.toInt() ?? 0,
+    brokersFound: (j['brokersFound'] as num?)?.toInt() ?? 0,
+    network: j['network'] as String?,
+  );
 
   String get label => [
-        widened ? '/24 then /22' : '/24',
-        '${_thousands(hostsTried)} hosts tried',
-        '$brokersFound ${brokersFound == 1 ? 'broker' : 'brokers'}',
-        if (network != null) network!,
-      ].join(' · ');
+    widened ? '/24 then /22' : '/24',
+    '${_thousands(hostsTried)} hosts tried',
+    '$brokersFound ${brokersFound == 1 ? 'broker' : 'brokers'}',
+    if (network != null) network!,
+  ].join(' · ');
 
   @override
   bool operator ==(Object other) =>
@@ -191,22 +192,13 @@ class SupportDetails {
         if (phone != null) phone!,
       ].join(' · '),
       'Opened from: $openedFrom',
-      'Connection: ${c == null ? 'none' : [
-          c.remote ? 'remote' : 'local',
-          c.protocol,
-          'port ${c.port}',
-          addressShapeLabel(c.shape),
-        ].join(' · ')}',
-      'Zigbee2MQTT: ${z == null || (z.version == null && z.online == null && z.devices == null) ? 'not found' : [
-          if (z.version != null) z.version!,
-          if (z.online != null) z.online! ? 'bridge online' : 'bridge offline',
-          if (z.devices != null) '${z.devices} devices',
-        ].join(' · ')}',
+      'Connection: ${c == null ? 'none' : [c.remote ? 'remote' : 'local', c.protocol, 'port ${c.port}', addressShapeLabel(c.shape)].join(' · ')}',
+      'Zigbee2MQTT: ${z == null || (z.version == null && z.online == null && z.devices == null) ? 'not found' : [if (z.version != null) z.version!, if (z.online != null) z.online! ? 'bridge online' : 'bridge offline', if (z.devices != null) '${z.devices} devices'].join(' · ')}',
       'Last error: ${lastFailure == null ? 'none' : failureKindLabel(lastFailure!)}',
       'Last scan: ${lastScan?.label ?? 'none'}',
     ].join('\n');
   }
 }
 
-String _thousands(int n) => n.toString().replaceAllMapped(
-    RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
+String _thousands(int n) =>
+    n.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');

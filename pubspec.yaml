@@ -1,7 +1,7 @@
 name: zigdash
 description: "Material 3 MQTT dashboard for Zigbee2MQTT control."
 publish_to: 'none'
-version: 2.10.3+66
+version: 3.1.0+69
 
 environment:
   sdk: ^3.8.0
@@ -75,6 +75,10 @@ dependencies:
   timezone: ^0.11.0
   flutter_web_auth_2: 5.1.0
   crypto: ^3.0.7
+  # AES-256-GCM for the remote relay (3.1): seals match hub/src/engine.js.
+  pointycastle: ^3.9.1
+  # QR code for adding a phone to remote control (3.1); pure Dart.
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -101,6 +105,8 @@ flutter:
     - docs/USER_GUIDE.md
     - node-red/alerts-flow.json
     - node-red/history-flow.json
+    - hub/zigdash-engine.js
+    - assets/geo/
     - assets/fonts/licenses/
   # Signal type (docs/design/signal-2.0.md §2): bundled subsets, cut by
   # tool/fonts/build_fonts.py. Never fetched at runtime.

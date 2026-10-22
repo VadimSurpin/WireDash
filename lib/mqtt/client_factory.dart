@@ -25,6 +25,9 @@ mc.MqttClient buildMqttClient(BrokerConfig config, String clientId, {String? hos
   return impl.buildPlatformClient(config, clientId, host: host);
 }
 
+/// See [impl.probeTcp].
+Future<bool> probeHome(String host, int port) => impl.probeTcp(host, port);
+
 bool isWebSocketProtocol(MqttProtocol p) =>
     p == MqttProtocol.ws || p == MqttProtocol.wss;
 

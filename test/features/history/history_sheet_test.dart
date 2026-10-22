@@ -139,13 +139,13 @@ void main() {
     expect(find.textContaining('No values yet'), findsNothing);
   });
 
-  testWidgets('installed but never online: names the broker login', (
+  testWidgets('installed but never online: points to the Engine on the hub', (
     tester,
   ) async {
     await tester.pumpWidget(_app(online: null));
     await tester.pump();
     expect(
-      find.textContaining("hasn't connected to your broker"),
+      find.textContaining("The recorder isn't reporting"),
       findsOneWidget,
     );
     expect(find.textContaining('persistence true'), findsOneWidget);
@@ -155,10 +155,10 @@ void main() {
     await tester.pumpWidget(_app(online: null, retained: ''));
     await tester.pump();
     expect(find.textContaining('ZigDash has no server'), findsOneWidget);
-    expect(find.textContaining("hasn't connected"), findsNothing);
+    expect(find.textContaining("isn't reporting"), findsNothing);
   });
 
-  testWidgets('no Node-RED needed: record on this device instead', (
+  testWidgets('no recorder on the hub: record on this device instead', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -170,7 +170,7 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.textContaining('No Node-RED?'), findsOneWidget);
+    expect(find.textContaining('ZigDash can record on a phone or tablet'), findsOneWidget);
     await tester.ensureVisible(find.text('Record on this device'));
     await tester.tap(find.text('Record on this device'));
     await tester.pump();

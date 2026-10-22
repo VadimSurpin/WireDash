@@ -28,9 +28,11 @@ class StatusBadge extends StatelessWidget {
       case MqttStatus.connecting:
         return l10n.statusConnecting;
       case MqttStatus.connected:
-        return endpoint == MqttEndpoint.remote
-            ? l10n.statusConnectedRemote
-            : l10n.statusConnected;
+        return switch (endpoint) {
+          MqttEndpoint.remote => l10n.statusConnectedRemote,
+          MqttEndpoint.relay => l10n.statusConnectedRelay,
+          _ => l10n.statusConnected,
+        };
       case MqttStatus.reconnecting:
         return l10n.statusReconnecting;
       case MqttStatus.error:

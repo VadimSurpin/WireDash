@@ -1396,6 +1396,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'Dit is je SMLIGHT-hub, maar de MQTT-broker erop accepteert geen verbindingen van andere apparaten. Open op de webpagina van de hub Settings › MQTT, zet Allow External aan, sla op en probeer het opnieuw.';
 
   @override
+  String get diagTcpZ2mBrokerElsewhere =>
+      'Op dit adres draait Zigbee2MQTT, maar het bereikt zijn broker onder een andere naam (zie Zigbee2MQTT › Settings › MQTT › Server). Is dat een andere machine, typ dan haar adres, meestal met poort 1883. Is het een container op deze machine, publiceer dan zijn poort (ports: \"1883:1883\") en laat hem op het netwerk luisteren; probeer het daarna opnieuw.';
+
+  @override
   String get diagTcpZ2mNoBroker =>
       'Op dit adres draait Zigbee2MQTT, maar de MQTT-broker accepteert geen verbindingen van andere apparaten. Mosquitto luistert alleen op zijn eigen machine tot je de regels \"listener 1883\" en \"allow_anonymous true\" aan mosquitto.conf toevoegt (of een wachtwoord instelt). Herstart Mosquitto en probeer het opnieuw.';
 
@@ -1930,6 +1934,19 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get setupZ2mLocalOnlyNote =>
       'Liever een login dan open toegang? Gebruik een password_file in plaats van allow_anonymous.';
+
+  @override
+  String get setupZ2mNameOnlyTitle =>
+      'Zigbee2MQTT bereikt zijn broker via een naam die je telefoon niet kan gebruiken';
+
+  @override
+  String setupZ2mNameOnlyBody(String server, String name, int port) {
+    return 'Zigbee2MQTT gebruikt $server. \"$name\" is een naam die alleen de machine van Zigbee2MQTT kent, een Docker-service of een hostnaam. Typ in plaats daarvan het IP-adres van de broker-machine met poort $port. Draait de broker in een container, dan moet zijn poort ook op de machine gepubliceerd zijn (ports: \"$port:$port\").';
+  }
+
+  @override
+  String get setupZ2mTokenRequired =>
+      'De webpagina van Zigbee2MQTT is beveiligd met een token, dus de app kon niet lezen waar zijn broker is. Typ het broker-adres uit Zigbee2MQTT › Settings › MQTT.';
 
   @override
   String setupZ2mUnreachable(String server) {
@@ -3065,7 +3082,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Alarmen gepauzeerd: Node-RED op de hub draait niet';
+      'Meldingen gepauzeerd: ZigDash Engine op je hub meldt zich niet';
 
   @override
   String get alertsStatusNotSetUp => 'Niet ingesteld';
@@ -3075,13 +3092,13 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Krijg een melding op deze telefoon bij een lek, rook, een geopende deur of een bijna lege batterij, ook als ZigDash gesloten is. Node-RED op je hub bewaakt de apparaten; ZigDash stelt het in.';
+      'Krijg een melding op deze telefoon bij een lek, rook, een geopende deur of een lege batterij, ook als ZigDash dicht is. ZigDash Engine op je hub let op de apparaten; ZigDash stelt het in.';
 
   @override
   String get alertsSetUpHub => 'Alarmen instellen op de hub';
 
   @override
-  String get alertsHubInstalled => 'De alarmflow is geïnstalleerd op de hub';
+  String get alertsHubInstalled => 'Meldingen zijn ingesteld op je hub';
 
   @override
   String get alertsHubUpdated => 'De alarmflow op de hub is bijgewerkt';
@@ -3106,7 +3123,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Node-RED weigerde de flow';
+  String get alertsHubFailed => 'Zigbee2MQTT nam ZigDash Engine niet aan';
 
   @override
   String get alertsRecent => 'Recente alarmen';
@@ -3478,7 +3495,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash heeft geen server, dus een kleine Node-RED-flow op je hub legt elke 15 minuten de getallen van je dashboards vast. Hij bewaart 30 dagen, op je eigen broker.';
+      'ZigDash heeft geen server, dus ZigDash Engine op je hub legt elke 15 minuten de waarden van je dashboards vast. Het bewaart 30 dagen, op je eigen broker.';
 
   @override
   String get historySetupAction => 'Instellen op de hub';
@@ -3517,7 +3534,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proAbout =>
-      'Langere geschiedenis en extra\'s voor de wandtablet. Steunt het opensourceproject.';
+      'Onbeperkte automatiseringen, langere geschiedenis en extra\'s voor de wandtablet. Steunt het opensourceproject.';
 
   @override
   String get proUnlocked => 'Ontgrendeld. Bedankt dat je ZigDash steunt.';
@@ -3546,7 +3563,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proFreeBody =>
-      'Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.';
+      'Instellen, dashboards, de bediening van elk apparaat, widgets, snelle-instellingentegels, meldingen, drie automatiseringen per huis en de wandtablet zelf blijven gratis. Niets wat je vandaag gebruikt, gaat op slot.';
 
   @override
   String get proBuy => 'Pro nemen';
@@ -3569,7 +3586,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Geen Node-RED? ZigDash kan opnemen op een telefoon of tablet die open blijft, zoals een wandtablet. Elke telefoon van dit huis ziet de geschiedenis.';
+      'Kan ZigDash Engine niet op je hub? ZigDash kan vastleggen op een telefoon of tablet die open blijft, zoals een wandtablet. Elke telefoon van dit huis ziet de geschiedenis.';
 
   @override
   String get historyRecordingHere =>
@@ -3580,7 +3597,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Elke 15 minuten zolang ZigDash open is, voor elke telefoon van dit huis. Niet nodig als Node-RED opneemt.';
+      'Elke 15 minuten zolang ZigDash open is, voor elke telefoon van dit huis. Niet nodig als ZigDash Engine op je hub vastlegt.';
 
   @override
   String historyNeedsPassword(String host) {
@@ -3589,7 +3606,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get historyNotConnected =>
-      'De recorder is geïnstalleerd maar heeft geen verbinding met je broker. Vraagt de broker om een login, typ dan het wachtwoord in de Node-RED-node \"ZigDash history broker\" en klik op Deploy.';
+      'De opname meldt zich niet. Open Automatiseringen om ZigDash Engine op je hub te controleren.';
 
   @override
   String get historyPersistence =>
@@ -3754,4 +3771,626 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get setupAuthDemoFirst => 'Eerst de demo proberen';
+
+  @override
+  String get automationsTitle => 'Automatiseringen';
+
+  @override
+  String get engineRunningOnHub => 'Draait op de hub';
+
+  @override
+  String get engineChecking => 'Hub controleren…';
+
+  @override
+  String get engineNoConnection =>
+      'ZigDash bereikt de broker van dit huis nu niet. Automatiseringen stel je thuis in, met verbinding.';
+
+  @override
+  String get engineRestarting =>
+      'Zigbee2MQTT herstart… Je apparaten zijn over ongeveer 30 seconden terug.';
+
+  @override
+  String get engineInstalling => 'Installeren op de hub…';
+
+  @override
+  String get engineTooOldTitle => 'Zigbee2MQTT moet worden bijgewerkt';
+
+  @override
+  String engineTooOldBody(Object version) {
+    return 'Je Zigbee2MQTT is versie $version. Automatiseringen hebben 2.4 of nieuwer nodig. Werk Zigbee2MQTT op de hub bij en kom dan hier terug.';
+  }
+
+  @override
+  String get engineIntroTitle =>
+      'Automatiseringen draaien op je hub, niet op je telefoon';
+
+  @override
+  String get engineIntroBody =>
+      'ZigDash zet ZigDash Engine in Zigbee2MQTT op je hub. Het let op je apparaten en voert je regels uit, zodat een lamp aangaat als de deur opengaat, ook met je telefoon uit en zonder internet.';
+
+  @override
+  String get engineIntroNothingByHand =>
+      'Niets met de hand te installeren. ZigDash doet het via je thuisnetwerk.';
+
+  @override
+  String engineIntroVersion(Object version) {
+    return 'Je Zigbee2MQTT is versie $version.';
+  }
+
+  @override
+  String get engineIntroRemove =>
+      'Je kunt hem altijd vanaf dit scherm verwijderen.';
+
+  @override
+  String get engineInstall => 'Installeren op de hub';
+
+  @override
+  String get engineDeclinedTitle => 'Geen automatiseringen op deze hub';
+
+  @override
+  String get engineDeclinedBody =>
+      'Zigbee2MQTT op je hub staat geen uitbreidingen toe, dus niets kan je regels uitvoeren als je telefoon weg is. Scènes, meldingen en het dashboard werken als voorheen.';
+
+  @override
+  String get engineAllowAfterAll => 'Uitbreidingen toch toestaan';
+
+  @override
+  String get engineConsentTitle => 'Zigbee2MQTT moet één instelling wijzigen';
+
+  @override
+  String get engineConsentBody =>
+      'Je Zigbee2MQTT blokkeert uitbreidingen zoals ZigDash Engine, zoals nieuwe installaties doen. Om automatiseringen op de hub te draaien zou ZigDash „Externe JavaScript toestaan” in Zigbee2MQTT aanzetten en het herstarten.';
+
+  @override
+  String get engineConsentOutage =>
+      'Zigbee2MQTT herstart één keer. Lampen en sensoren zijn ongeveer 30 seconden onbereikbaar.';
+
+  @override
+  String get engineConsentOpen =>
+      'ZigDash Engine is open source. Je kunt het lezen op de Zigbee2MQTT-pagina onder Extensies.';
+
+  @override
+  String get engineConsentUndo =>
+      'Je kunt de instelling later weer uitzetten. Dan stoppen de automatiseringen.';
+
+  @override
+  String get engineConsentYes => 'Instelling wijzigen en herstarten';
+
+  @override
+  String get engineConsentNo => 'Niet nu';
+
+  @override
+  String get automationsPausedTitle => 'Automatiseringen gepauzeerd';
+
+  @override
+  String get automationsPausedBody =>
+      'Je hub heeft zich al meer dan een minuut niet gemeld, dus geen automatisering kan draaien tot hij dat weer doet. Je regels blijven bewaard.';
+
+  @override
+  String get engineReinstall => 'Opnieuw installeren op de hub';
+
+  @override
+  String get engineStoppedTitle =>
+      'Automatiseringen gepauzeerd: ZigDash Engine is zelf gestopt';
+
+  @override
+  String get engineStoppedBody =>
+      'Hij liep drie keer binnen een uur tegen fouten aan en schakelde zich uit zodat Zigbee2MQTT blijft draaien. Je regels blijven bewaard.';
+
+  @override
+  String get engineStartAgain => 'Opnieuw starten';
+
+  @override
+  String get engineReportProblem => 'Probleem melden';
+
+  @override
+  String get engineRunningTitle => 'Je hub is klaar voor automatiseringen';
+
+  @override
+  String engineRunningBody(Object count) {
+    return 'Regels geladen op de hub: $count. Automatiseringen maken komt in de volgende stap van deze versie.';
+  }
+
+  @override
+  String get engineClockOff =>
+      'De klok van je hub loopt meer dan vijf minuten verkeerd. Tijdgebonden automatiseringen draaien op het verkeerde moment tot dat is opgelost.';
+
+  @override
+  String engineRulesUnknown(Object count) {
+    return 'Regels die ZigDash Engine op je hub nog niet kan uitvoeren: $count. Installeer het opnieuw om het bij te werken.';
+  }
+
+  @override
+  String engineInstallRefused(Object error) {
+    return 'Zigbee2MQTT weigerde ZigDash Engine: $error';
+  }
+
+  @override
+  String get engineInstallNoAnswer =>
+      'Zigbee2MQTT antwoordde niet. Controleer of het huis verbonden is en probeer opnieuw.';
+
+  @override
+  String get engineConsentFailed =>
+      'Zigbee2MQTT nam de wijziging niet over of kwam niet terug. Controleer je hub en probeer opnieuw.';
+
+  @override
+  String get autoValMotion => 'beweging';
+
+  @override
+  String get autoValNoMotion => 'geen beweging';
+
+  @override
+  String get autoValClosed => 'dicht';
+
+  @override
+  String get autoValOpened => 'open';
+
+  @override
+  String get autoValLeak => 'lek';
+
+  @override
+  String get autoValDry => 'droog';
+
+  @override
+  String get autoValSmoke => 'rook';
+
+  @override
+  String get autoValNoSmoke => 'geen rook';
+
+  @override
+  String get autoValOn => 'aan';
+
+  @override
+  String get autoValOff => 'uit';
+
+  @override
+  String get autoValToggle => 'omschakelen';
+
+  @override
+  String get autoValOpen => 'openen';
+
+  @override
+  String get autoValClose => 'sluiten';
+
+  @override
+  String get autoValStop => 'stoppen';
+
+  @override
+  String autoWhenAbove(Object device, Object property, Object value) {
+    return 'Als $device: $property boven $value';
+  }
+
+  @override
+  String autoWhenBelow(Object device, Object property, Object value) {
+    return 'Als $device: $property onder $value';
+  }
+
+  @override
+  String autoWhenDevice(Object device, Object what) {
+    return 'Als $device: $what';
+  }
+
+  @override
+  String autoAtTime(Object time) {
+    return 'Om $time';
+  }
+
+  @override
+  String get autoSunrise => 'zonsopkomst';
+
+  @override
+  String get autoSunset => 'zonsondergang';
+
+  @override
+  String autoAfterSun(Object minutes, Object sun) {
+    return '$minutes min na $sun';
+  }
+
+  @override
+  String autoBeforeSun(Object minutes, Object sun) {
+    return '$minutes min voor $sun';
+  }
+
+  @override
+  String autoAtSun(Object sun) {
+    return 'Bij $sun';
+  }
+
+  @override
+  String get autoEveryDay => 'elke dag';
+
+  @override
+  String get autoWeekdays => 'doordeweeks';
+
+  @override
+  String get autoWeekends => 'in het weekend';
+
+  @override
+  String autoBetween(Object from, Object to) {
+    return 'tussen $from en $to';
+  }
+
+  @override
+  String autoDeviceIs(Object device, Object value) {
+    return '$device is $value';
+  }
+
+  @override
+  String autoRunScene(Object scene) {
+    return '„$scene” uitvoeren';
+  }
+
+  @override
+  String autoSetDevice(Object device, Object state) {
+    return '$device: $state';
+  }
+
+  @override
+  String autoOffAfter(Object action, Object minutes) {
+    return '$action, na $minutes min weer uit';
+  }
+
+  @override
+  String get autoErrPickTrigger => 'Kies een apparaat en wat het doet.';
+
+  @override
+  String get autoErrValue => 'Typ een getal voor de meting.';
+
+  @override
+  String get autoErrDays => 'Kies minstens één dag.';
+
+  @override
+  String get autoErrTown =>
+      'Stel je plaats in voor zonsopkomst en zonsondergang.';
+
+  @override
+  String get autoErrPickAction => 'Kies wat er moet gebeuren.';
+
+  @override
+  String get autoErrEmptyScene => 'Die scène heeft niets te versturen.';
+
+  @override
+  String get autoErrNotConnected =>
+      'ZigDash is niet verbonden met dit huis. Probeer het thuis opnieuw.';
+
+  @override
+  String get autoNewTitle => 'Nieuwe automatisering';
+
+  @override
+  String get autoEditTitle => 'Automatisering bewerken';
+
+  @override
+  String get autoName => 'Naam';
+
+  @override
+  String get autoNameHint => 'Wat het doet (optioneel)';
+
+  @override
+  String get autoWhen => 'Als';
+
+  @override
+  String get autoOnlyIf => 'Alleen als';
+
+  @override
+  String get autoThen => 'Dan';
+
+  @override
+  String get autoEnabled => 'Ingeschakeld';
+
+  @override
+  String get autoDelete => 'Automatisering verwijderen';
+
+  @override
+  String get autoSave => 'Opslaan';
+
+  @override
+  String get autoDeviceChanges => 'Een apparaat verandert';
+
+  @override
+  String get autoTimeComes => 'Een tijdstip komt';
+
+  @override
+  String get autoDevice => 'Apparaat';
+
+  @override
+  String get autoAbove => 'boven';
+
+  @override
+  String get autoBelow => 'onder';
+
+  @override
+  String get autoClockTime => 'Tijdstip';
+
+  @override
+  String get autoAt => 'Om';
+
+  @override
+  String get autoShift => 'Verschuiving in minuten (min is ervoor)';
+
+  @override
+  String get autoTownNone => 'Geen plaats ingesteld';
+
+  @override
+  String autoTownIs(Object town) {
+    return 'Zontijden voor $town';
+  }
+
+  @override
+  String get autoTownSet => 'Plaats instellen';
+
+  @override
+  String get autoTownChange => 'Plaats wijzigen';
+
+  @override
+  String get autoDays => 'Dagen';
+
+  @override
+  String get autoNoConditions => 'Geen voorwaarden. Draait elke keer.';
+
+  @override
+  String get autoAddHours => 'Tussen tijden';
+
+  @override
+  String get autoFrom => 'Van';
+
+  @override
+  String get autoTo => 'Tot';
+
+  @override
+  String get autoAddDeviceCondition => 'Een apparaat is…';
+
+  @override
+  String get autoRunASceneOption => 'Een scène uitvoeren';
+
+  @override
+  String get autoSetADevice => 'Een apparaat instellen';
+
+  @override
+  String get autoScene => 'Scène';
+
+  @override
+  String get autoTurnOffAgain => 'Weer uitzetten';
+
+  @override
+  String get autoStaysAsSet => 'Blijft zo';
+
+  @override
+  String autoOffAfterMinutes(Object minutes) {
+    return '$minutes minuten erna';
+  }
+
+  @override
+  String get autoTownSearch => 'Plaats';
+
+  @override
+  String get autoTownWhy =>
+      'Alleen voor zonsopkomst en zonsondergang. Bewaard op je hub, nooit je locatie.';
+
+  @override
+  String get autoNewButton => 'Nieuwe automatisering';
+
+  @override
+  String get autoEmptyBody =>
+      'Er draait nog niets. Tik op Nieuwe automatisering voor de eerste.';
+
+  @override
+  String autoOnlyIfList(Object list) {
+    return 'alleen als $list';
+  }
+
+  @override
+  String get autoEdit => 'Bewerken';
+
+  @override
+  String get autoNeverRan => 'nog nooit gedraaid';
+
+  @override
+  String autoRanAt(Object time) {
+    return 'draaide $time';
+  }
+
+  @override
+  String autoFreeCount(Object count, Object max) {
+    return '$count van $max gratis automatiseringen';
+  }
+
+  @override
+  String get autoRecentRuns => 'Laatste uitvoeringen';
+
+  @override
+  String get autoDeleted => '(verwijderd)';
+
+  @override
+  String autoCeilingTitle(Object count) {
+    return '$count automatiseringen zijn gratis. Meer nodig?';
+  }
+
+  @override
+  String get autoCeilingBody =>
+      'ZigDash is gratis en open source, gemaakt door één persoon. Pro is een eenmalige aankoop: onbeperkte automatiseringen, geschiedenis van 7 en 30 dagen en de extra\'s voor wandtablets. Je automatiseringen blijven draaien, wat je ook kiest.';
+
+  @override
+  String get autoCeilingSeePro => 'Pro bekijken';
+
+  @override
+  String get engineRemove => 'Van de hub verwijderen';
+
+  @override
+  String get engineRemoveTitle => 'ZigDash Engine van de hub verwijderen?';
+
+  @override
+  String get engineRemoveBody =>
+      'Automatiseringen stoppen. Je regels blijven op de hub, dus ZigDash Engine opnieuw installeren brengt ze terug.';
+
+  @override
+  String get autoNoTargets =>
+      'Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.';
+
+  @override
+  String get proGetAutomations =>
+      'Onbeperkte automatiseringen; drie per huis zijn gratis';
+
+  @override
+  String get proGetRemote =>
+      'Bediening op afstand van overal, via de ZigDash-relay';
+
+  @override
+  String get proRemoteFair =>
+      'Toegang op afstand is inbegrepen zolang de ZigDash-relay draait, voor één huis, tot vijf telefoons en normaal huishoudelijk gebruik. Dit kan met aankondiging veranderen of stoppen.';
+
+  @override
+  String get autoDeleteConfirm =>
+      'Deze automatisering verwijderen? Hij draait dan niet meer op je hub.';
+
+  @override
+  String get statusConnectedRelay => 'Verbonden · Onderweg via ZigDash';
+
+  @override
+  String get remoteTitle => 'Bediening op afstand';
+
+  @override
+  String get remoteSettingsSubtitle => 'Bedien dit huis overal, met Pro';
+
+  @override
+  String get remoteIntroTitle => 'Bedien je huis overal';
+
+  @override
+  String get remoteIntroBody =>
+      'Je hub houdt één verbinding met de relay van ZigDash. Onderweg bereikt deze telefoon je apparaten daarlangs. Alles wordt versleuteld op je hub en je telefoon, dus de relay kan je apparaten en wat ze doen niet lezen.';
+
+  @override
+  String get remoteNeedsEngine =>
+      'Bediening op afstand draait in ZigDash Engine. Installeer het eerst onder Automatiseringen.';
+
+  @override
+  String get remoteSetUp => 'Bediening op afstand aanzetten';
+
+  @override
+  String get remoteNeedsPro => 'Bediening op afstand hoort bij Pro.';
+
+  @override
+  String get remoteNotAtHome => 'Zet dit thuis aan, verbonden met je broker.';
+
+  @override
+  String get remoteUnreachable =>
+      'De relay van ZigDash antwoordde niet. Probeer het later opnieuw.';
+
+  @override
+  String get remoteRefused =>
+      'De relay weigerde. Probeer opnieuw of meld een probleem.';
+
+  @override
+  String get remoteOnTitle => 'Bediening op afstand staat aan';
+
+  @override
+  String get remoteOnBody => 'Onderweg verbindt ZigDash vanzelf via de relay.';
+
+  @override
+  String get remoteHubOnline => 'Je hub is verbonden met de relay';
+
+  @override
+  String get remoteHubOffline => 'Je hub is niet verbonden met de relay';
+
+  @override
+  String get remoteTurnOff => 'Bediening op afstand uitzetten';
+
+  @override
+  String get remoteViaRelayNow => 'Deze telefoon is nu via de relay verbonden.';
+
+  @override
+  String get remotePhones => 'Telefoons met toegang op afstand';
+
+  @override
+  String get remoteThisPhone => 'Deze telefoon';
+
+  @override
+  String get remoteOtherPhone => 'Een andere telefoon';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Toegevoegd op $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Verwijderen';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Deze telefoon verwijderen? Hij kan dit huis dan niet meer op afstand bereiken.';
+
+  @override
+  String get remoteAddPhone => 'Telefoon toevoegen';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Scan dit thuis met de camera van de andere telefoon. Die opent ZigDash en zet daar bediening op afstand aan. Toon het alleen aan je eigen telefoons.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'De relay gaf geen toegang voor nog een telefoon. Een huis kan er tot vijf hebben.';
+
+  @override
+  String get remoteBackupSave => 'Sleutelback-up opslaan';
+
+  @override
+  String get remoteBackupRestore => 'Herstellen uit een sleutelback-up';
+
+  @override
+  String get remoteBackupPassphrase => 'Wachtzin voor de back-up';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Raak je deze telefoon kwijt, dan brengen de back-up en deze wachtzin bediening op afstand terug op een nieuwe. Minstens 8 tekens, en bewaar de wachtzin ergens anders dan het bestand.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'De wachtzin die je koos bij het opslaan.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Wachtzin nogmaals';
+
+  @override
+  String get remoteBackupSaved => 'Sleutelback-up opgeslagen';
+
+  @override
+  String get remoteBackupWrong => 'Die wachtzin opent deze back-up niet.';
+
+  @override
+  String get remoteBackupWrongFile => 'Dat is geen sleutelback-up van ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Bediening op afstand zit voorlopig in de Google Play-versie van ZigDash.';
+
+  @override
+  String get remotePairTitle => 'Bediening op afstand toevoegen';
+
+  @override
+  String get remotePairBody =>
+      'Welk huis is dit? ZigDash bewaart de toegang op afstand daarvoor.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Stel dit huis eerst in op deze telefoon, thuis. Scan de code dan opnieuw.';
+
+  @override
+  String get remotePairInvalid =>
+      'Dit is geen code voor bediening op afstand van ZigDash, of hij is afgeknipt.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Bediening op afstand staat aan voor $home';
+  }
+
+  @override
+  String get remoteReconnectHub => 'Hub opnieuw verbinden';
+
+  @override
+  String get remoteTurnOffConfirm =>
+      'Deze telefoon stopt met bediening op afstand en je hub verbreekt de verbinding met de relay. Een sleutelback-up van deze telefoon werkt dan niet meer; andere telefoons houden hun toegang tot je ze verwijdert.';
+
+  @override
+  String remoteHomeId(Object id) {
+    return 'Huis-ID $id';
+  }
 }

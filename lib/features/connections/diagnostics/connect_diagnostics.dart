@@ -9,6 +9,7 @@ import '../../../mqtt/endpoint.dart';
 import '../../../mqtt/mqtt_manager.dart' show MqttClientFactory;
 import '../../discovery/models/z2m_device.dart';
 import '../discovery/hub_probe.dart';
+import '../discovery/z2m_frontend.dart';
 import 'socket_probe.dart';
 
 /// The ladder's steps, in run order.
@@ -62,6 +63,10 @@ typedef TcpProbe =
 /// Names the machine at a host from its web pages ([identifyHost]).
 typedef HostIdentifier = Future<HubKind?> Function(String host);
 
+/// Asks Zigbee2MQTT's web page at host:port where its broker is (2.10.4).
+typedef Z2mBrokerAsk =
+    Future<Z2mBrokerSetting?> Function(String host, int port);
+
 /// Runs the guided-connect diagnostic ladder: resolve → tcp → connack → auth
 /// → devices, one candidate at a time ([endpointCandidates] order), reporting
 /// per-step results with stable detail keys.
@@ -77,11 +82,13 @@ class ConnectDiagnostics {
     HostLookup? hostLookup,
     TcpProbe? tcpProbe,
     HostIdentifier? identify,
+    Z2mBrokerAsk? askZ2m,
     this.deviceWindow = const Duration(seconds: 3),
   }) : _clientFactory = clientFactory ?? buildMqttClient,
        _hostLookup = hostLookup ?? defaultHostLookup,
        _tcpProbe = tcpProbe ?? defaultTcpProbe,
-       _identify = identify;
+       _identify = identify,
+       _askZ2m = askZ2m;
 
   final MqttClientFactory _clientFactory;
   final HostLookup _hostLookup;
@@ -91,7 +98,28 @@ class ConnectDiagnostics {
   /// failure can say "this is your Home Assistant, and here is what it
   /// lacks". Without it the general messages stay.
   final HostIdentifier? _identify;
+
+  /// Asked when a Zigbee2MQTT machine refuses 1883 (2.10.4): its settings
+  /// may name the broker elsewhere, and "open Mosquitto here" would be
+  /// the wrong advice (a German Docker user got it five times, 2026-10-22).
+  final Z2mBrokerAsk? _askZ2m;
   final Duration deviceWindow;
+
+  /// Whether Zigbee2MQTT at [host] names its broker on another machine or
+  /// under a name of its own (a container); false when it can't be told.
+  Future<bool> _brokerElsewhere(String host) async {
+    final ask = _askZ2m;
+    if (ask == null) return false;
+    try {
+      final setting = await ask(
+        host,
+        hubPorts[HubKind.zigbee2mqtt]!,
+      ).timeout(const Duration(seconds: 6));
+      return setting != null && !setting.sameMachine;
+    } catch (_) {
+      return false;
+    }
+  }
 
   /// The kind of machine at [host], or null when it can't be told.
   Future<HubKind?> _kindOf(String host) async {
@@ -202,6 +230,8 @@ class ConnectDiagnostics {
       // Only on the usual port: another port refused says nothing about
       // whether a broker runs there.
       final kind = config.port == 1883 ? await _kindOf(cand.host) : null;
+      final elsewhere =
+          kind == HubKind.zigbee2mqtt && await _brokerElsewhere(cand.host);
       steps.add(
         StepResult(
           step: DiagnosticStep.tcp,
@@ -209,7 +239,8 @@ class ConnectDiagnostics {
           detailKey: switch (kind) {
             HubKind.homeAssistant => 'diagTcpHaNoBroker',
             HubKind.smlight => 'diagTcpSmlightClosed',
-            HubKind.zigbee2mqtt => 'diagTcpZ2mNoBroker',
+            HubKind.zigbee2mqtt =>
+              elsewhere ? 'diagTcpZ2mBrokerElsewhere' : 'diagTcpZ2mNoBroker',
             null => 'diagTcpFail',
           },
         ),
@@ -447,6 +478,8 @@ ManualTestResult manualTestResult(DiagnosticsReport report) {
       return ManualTestResult.smlightClosed;
     case 'diagTcpZ2mNoBroker':
       return ManualTestResult.z2mNoBroker;
+    case 'diagTcpZ2mBrokerElsewhere':
+      return ManualTestResult.z2mBrokerElsewhere;
     case 'diagAuthRejectedHa':
       return ManualTestResult.haLogin;
   }

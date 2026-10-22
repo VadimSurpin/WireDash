@@ -85,7 +85,9 @@ enum SetupStepKind {
   manualTest,
 
   /// Zigbee2MQTT's web page asked where its broker is (2.7.2), with its
-  /// [SetupStep.result]: broker, local_only, unreachable or no_answer.
+  /// [SetupStep.result]: broker, local_only, unreachable or no_answer;
+  /// from 2.10.4 also name_only (a name only that machine knows) and
+  /// token_required (the page is protected by a token).
   z2mAsked,
 
   /// One of the three choices on the empty result (2.9.6), with its
@@ -138,7 +140,21 @@ enum ManualTestResult {
   haLogin,
   smlightClosed,
   z2mNoBroker,
+
+  /// A Zigbee2MQTT machine whose own settings name the broker elsewhere
+  /// (2.10.4): another machine, or a container on this one.
+  z2mBrokerElsewhere,
 }
+
+/// The port typed on the broker form, as a class (2.10.4): the MQTT
+/// ports, a web port (the Zigbee2MQTT page's, Home Assistant's), or other.
+/// Never the address.
+String portClassOf(int port) => switch (port) {
+  1883 => '1883',
+  8883 => '8883',
+  80 || 443 || 8080 || 8081 || 8099 || 8123 || 8443 => 'web',
+  _ => 'other',
+};
 
 /// Each step of first-run setup: where people get stuck. An empty scan
 /// (2.5) also says what the scan saw: the user's platform answer, the hub
@@ -166,6 +182,7 @@ class SetupStep extends AnalyticsEvent {
     this.noNetwork,
     this.choice,
     this.selected,
+    this.portClass,
   });
 
   final SetupStepKind step;
@@ -215,6 +232,10 @@ class SetupStep extends AnalyticsEvent {
   /// Whether the broker form cleaned up what was typed (a pasted browser
   /// link, a web port), on [SetupStepKind.manualTest].
   final bool? tidied;
+
+  /// The class of the port typed ([portClassOf]), on
+  /// [SetupStepKind.manualTest] (2.10.4).
+  final String? portClass;
   final int? hostsTried;
   final bool? widened;
 
@@ -272,6 +293,7 @@ class SetupStep extends AnalyticsEvent {
     if (network != null) 'net': networkLabel(network!),
     if (result != null) 'result': _snake(result!.name),
     if (tidied != null) 'tidied': tidied! ? 'yes' : 'no',
+    if (portClass != null) 'port': portClass!,
     if (noNetwork != null) 'why': _snake(noNetwork!.name),
     if (choice != null) 'choice': _snake(choice!.name),
   };
@@ -706,3 +728,87 @@ String bucket(
 
 String _snake(String camel) =>
     camel.replaceAllMapped(RegExp('[A-Z]'), (m) => '_${m[0]!.toLowerCase()}');
+
+/// The ZigDash Engine on the hub (3.0, zigdash-3.0.md §2): a step of
+/// putting it there or of its health as the app saw it. Never an address;
+/// Zigbee2MQTT's version as major.minor only.
+enum EngineStep {
+  offered,
+  installed,
+  consentShown,
+  consented,
+  declined,
+  tooOld,
+  failed,
+  removed,
+  startedAgain,
+  seenPaused,
+  seenStopped,
+}
+
+/// Which screen led to the Engine: Automations, Alerts or History.
+enum EngineFrom { automations, alerts, history }
+
+class EngineEvent extends AnalyticsEvent {
+  const EngineEvent(this.step, {this.z2m, this.from = EngineFrom.automations});
+
+  final EngineStep step;
+
+  /// Zigbee2MQTT's version string; reported as "major.minor".
+  final String? z2m;
+  final EngineFrom from;
+
+  @override
+  String get name => 'engine_setup';
+
+  @override
+  Map<String, String> get props => {
+        'step': _snake(step.name),
+        'from': from.name,
+        if (z2mMinor(z2m) != null) 'z2m': z2mMinor(z2m)!,
+      };
+}
+
+/// "2.14.1" → "2.14"; null when unreadable.
+String? z2mMinor(String? version) {
+  final m = RegExp(r'^(\d+)\.(\d+)').firstMatch(version ?? '');
+  return m == null ? null : '${m[1]}.${m[2]}';
+}
+
+/// An Automation was saved (3.0): its shape, never a device, a name or a
+/// time.
+class AutomationSaved extends AnalyticsEvent {
+  const AutomationSaved({
+    required this.trigger,
+    required this.conditions,
+    required this.action,
+    required this.offAfter,
+    required this.isNew,
+    required this.homeCount,
+  });
+
+  /// device_state, device_action, device_reading, clock or sun.
+  final String trigger;
+  final int conditions;
+
+  /// device or scene.
+  final String action;
+  final bool offAfter;
+  final bool isNew;
+
+  /// How many Automations the Home has after saving.
+  final int homeCount;
+
+  @override
+  String get name => 'automation_saved';
+
+  @override
+  Map<String, String> get props => {
+        'trigger': trigger,
+        'conditions': bucket(conditions, const [0, 1], top: '2+'),
+        'action': action,
+        'off_after': offAfter ? 'yes' : 'no',
+        'new': isNew ? 'yes' : 'no',
+        'count': bucket(homeCount, const [1, 2, 3], ranges: const [(4, 10)], top: '11+'),
+      };
+}

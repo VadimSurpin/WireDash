@@ -1,0 +1,5 @@
+data/
+verifier-data/
+secrets/
+certs/
+.env
