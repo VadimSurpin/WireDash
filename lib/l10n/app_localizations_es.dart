@@ -3821,4 +3821,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Restablecer contenido y etiquetas';
+
+  @override
+  String get panelAllowCommands => 'Permitir comandos';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Ofrecer widgets editables aunque la detección marque esta propiedad como de solo lectura. Solo se aplica a este panel.';
 }

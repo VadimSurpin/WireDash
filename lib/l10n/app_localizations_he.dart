@@ -3767,4 +3767,11 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'איפוס תוכן הכרטיס והשמות';
+
+  @override
+  String get panelAllowCommands => 'אפשר פקודות';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'הצגת רכיבים הניתנים לעריכה גם כשהגילוי מסמן מאפיין זה לקריאה בלבד. חל רק על אריח זה.';
 }

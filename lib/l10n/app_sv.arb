@@ -1192,5 +1192,7 @@
   "panelDisplayTitle": "Kortinnehåll",
   "panelDisplayHint": "Välj vilka egenskaper som visas på kortet. Egna etiketter gäller bara för den här panelen. Öppna kortet för att se alla enhetens kontroller.",
   "panelDisplayLabel": "Egen etikett (valfritt)",
-  "panelDisplayReset": "Återställ kortinnehåll och etiketter"
+  "panelDisplayReset": "Återställ kortinnehåll och etiketter",
+  "panelAllowCommands": "Tillåt kommandon",
+  "panelAllowCommandsHint": "Erbjud redigerbara widgetar även om identifieringen markerar den här egenskapen som skrivskyddad. Gäller bara den här panelen."
 }

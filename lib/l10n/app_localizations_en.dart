@@ -3801,4 +3801,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Reset card contents and labels';
+
+  @override
+  String get panelAllowCommands => 'Allow commands';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Offer editable widgets even when discovery marks this property read-only. Applies only to this tile.';
 }

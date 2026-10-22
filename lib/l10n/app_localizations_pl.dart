@@ -3809,4 +3809,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Przywróć zawartość i etykiety kafelka';
+
+  @override
+  String get panelAllowCommands => 'Zezwalaj na polecenia';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Udostępnij edytowalne widżety, nawet jeśli wykryto tę właściwość jako tylko do odczytu. Dotyczy tylko tego kafelka.';
 }

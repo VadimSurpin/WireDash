@@ -3821,4 +3821,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Ripristina contenuto ed etichette';
+
+  @override
+  String get panelAllowCommands => 'Consenti comandi';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Mostra widget modificabili anche se il rilevamento indica questa proprietà come di sola lettura. Si applica solo a questo riquadro.';
 }

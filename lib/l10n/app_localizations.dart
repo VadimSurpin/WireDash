@@ -6767,6 +6767,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset card contents and labels'**
   String get panelDisplayReset;
+
+  /// No description provided for @panelAllowCommands.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow commands'**
+  String get panelAllowCommands;
+
+  /// No description provided for @panelAllowCommandsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer editable widgets even when discovery marks this property read-only. Applies only to this tile.'**
+  String get panelAllowCommandsHint;
 }
 
 class _AppLocalizationsDelegate

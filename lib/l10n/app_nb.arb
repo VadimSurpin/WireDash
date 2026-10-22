@@ -1192,5 +1192,7 @@
   "panelDisplayTitle": "Kortinnhold",
   "panelDisplayHint": "Velg egenskapene som vises på dette kortet. Egne navn gjelder bare for dette panelet. Åpne kortet for å se alle enhetskontrollene.",
   "panelDisplayLabel": "Eget navn (valgfritt)",
-  "panelDisplayReset": "Tilbakestill kortinnhold og navn"
+  "panelDisplayReset": "Tilbakestill kortinnhold og navn",
+  "panelAllowCommands": "Tillat kommandoer",
+  "panelAllowCommandsHint": "Tilby redigerbare kontrollmoduler selv om oppdagelsen markerer denne egenskapen som skrivebeskyttet. Gjelder bare denne flisen."
 }

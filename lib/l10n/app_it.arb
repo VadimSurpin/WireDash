@@ -1107,5 +1107,7 @@
   "panelDisplayTitle": "Contenuto della scheda",
   "panelDisplayHint": "Scegli le proprietà da mostrare in questa scheda. Le etichette personalizzate valgono solo per questo pannello. Apri la scheda per accedere a tutti i controlli del dispositivo.",
   "panelDisplayLabel": "Etichetta personalizzata (facoltativa)",
-  "panelDisplayReset": "Ripristina contenuto ed etichette"
+  "panelDisplayReset": "Ripristina contenuto ed etichette",
+  "panelAllowCommands": "Consenti comandi",
+  "panelAllowCommandsHint": "Mostra widget modificabili anche se il rilevamento indica questa proprietà come di sola lettura. Si applica solo a questo riquadro."
 }

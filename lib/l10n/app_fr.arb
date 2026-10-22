@@ -1117,5 +1117,7 @@
   "panelDisplayTitle": "Contenu de la carte",
   "panelDisplayHint": "Choisissez les propriétés affichées sur cette carte. Les libellés personnalisés ne concernent que ce panneau. Ouvrez la carte pour accéder à toutes les commandes de l’appareil.",
   "panelDisplayLabel": "Libellé personnalisé (facultatif)",
-  "panelDisplayReset": "Réinitialiser le contenu et les libellés"
+  "panelDisplayReset": "Réinitialiser le contenu et les libellés",
+  "panelAllowCommands": "Autoriser les commandes",
+  "panelAllowCommandsHint": "Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile."
 }

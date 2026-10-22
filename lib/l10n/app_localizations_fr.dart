@@ -3829,4 +3829,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Réinitialiser le contenu et les libellés';
+
+  @override
+  String get panelAllowCommands => 'Autoriser les commandes';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Proposer des widgets modifiables même si la détection indique que cette propriété est en lecture seule. Uniquement pour cette tuile.';
 }

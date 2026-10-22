@@ -1107,5 +1107,7 @@
   "panelDisplayTitle": "Obsah karty",
   "panelDisplayHint": "Vyberte vlastnosti zobrazené na této kartě. Vlastní popisky platí jen pro tento panel. Otevřením karty zobrazíte všechny ovládací prvky zařízení.",
   "panelDisplayLabel": "Vlastní popisek (volitelné)",
-  "panelDisplayReset": "Obnovit obsah a popisky karty"
+  "panelDisplayReset": "Obnovit obsah a popisky karty",
+  "panelAllowCommands": "Povolit příkazy",
+  "panelAllowCommandsHint": "Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici."
 }
