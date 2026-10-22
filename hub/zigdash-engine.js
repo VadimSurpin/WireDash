@@ -1,0 +1,379 @@
+// ZigDash Engine: runs a Home's Automations inside Zigbee2MQTT (>= 2.4).
+// Installed by the ZigDash app as a Zigbee2MQTT external extension. Open source:
+// https://github.com/giladtamam/zigdash/tree/main/hub
+//
+// Contract (docs/design/zigdash-3.0.md, section 3), all retained under the broker root:
+//   zigdash/automations/rules/<id>   app -> engine   one rule, JSON; empty payload deletes it
+//   zigdash/automations/meta         app -> engine   {timezone, lat, lon, town}
+//   zigdash/automations/control      app -> engine   {"cmd":"start"} after the engine stopped itself
+//   zigdash/automations/state        engine -> app   every 30 s
+//   zigdash/automations/recent       engine -> app   last 20 runs
+//
+// Rules:
+//   trigger:    {type:'device', ieee, property, equals?|above?|below?}
+//               {type:'time', at:'HH:MM'|null, sun:'sunrise'|'sunset'|null, offset:minutes, days:[1..7] (1 = Monday)}
+//   conditions: [{type:'hours', from:'HH:MM', to:'HH:MM'} | {type:'device', ieee, property, equals}]
+//   action:     {type:'device', commands:[{ieee, payload}], offAfter:minutes}
+//               {type:'scene',  commands:[{ieee, payload}], offAfter:minutes, scene:name}
+//   (the app resolves a Scene into its commands when the rule is saved)
+//
+// Safety: Zigbee2MQTT has no crash guard, so every callback and timer here is wrapped.
+// After three caught errors within an hour the engine stops running rules (a flag file
+// survives restarts) and reports stopped_self until the app sends {"cmd":"start"}.
+
+'use strict';
+
+const ENGINE_VERSION = '3.0.0';
+const ROOT = 'zigdash';
+const PREFIX = 'automations';
+const STATE_EVERY_MS = 30000;
+const TICK_MS = 20000;
+const RECENT_MAX = 20;
+const CRASH_LIMIT = 3;
+const CRASH_WINDOW_MS = 3600000;
+const STOP_FLAG = 'zigdash-engine-stopped';
+
+// ---------- pure helpers (exported for tests) ----------
+
+const DAY_NAMES = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
+
+/** Local wall-clock parts of [date] in [timeZone]; falls back to the hub's zone. */
+function localParts(date, timeZone) {
+  let parts;
+  try {
+    parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: timeZone || undefined, hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', weekday: 'short',
+    }).formatToParts(date);
+  } catch (_) {
+    return localParts(date, undefined);
+  }
+  const get = (t) => (parts.find((p) => p.type === t) || {}).value;
+  return {
+    date: `${get('year')}-${get('month')}-${get('day')}`,
+    hhmm: `${get('hour')}:${get('minute')}`,
+    weekday: DAY_NAMES[get('weekday')] || 0,
+    year: +get('year'), month: +get('month'), day: +get('day'),
+  };
+}
+
+const toMinutes = (hhmm) => {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm || '');
+  return m ? (+m[1]) * 60 + (+m[2]) : NaN;
+};
+const fromMinutes = (min) => {
+  const m = ((Math.round(min) % 1440) + 1440) % 1440;
+  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+};
+
+/** True when [hhmm] lies in [from, to); a window may cross midnight. */
+function withinHours(hhmm, from, to) {
+  const n = toMinutes(hhmm), f = toMinutes(from), t = toMinutes(to);
+  if ([n, f, t].some(Number.isNaN)) return false;
+  return f <= t ? n >= f && n < t : n >= f || n < t;
+}
+
+/**
+ * Sunrise or sunset as a UTC Date for the civil date (y, m, d) at (lat, lon),
+ * NOAA's sunrise equation (zenith 90.833 deg). null when the sun does not rise or set.
+ */
+function sunTimeUtc(kind, y, m, d, lat, lon) {
+  const rad = Math.PI / 180;
+  const jd = Date.UTC(y, m - 1, d, 12) / 86400000 + 2440587.5;
+  const n = Math.round(jd - 2451545.0 + 0.0008);
+  const jStar = n - lon / 360;
+  const M = (357.5291 + 0.98560028 * jStar) % 360;
+  const C = 1.9148 * Math.sin(M * rad) + 0.02 * Math.sin(2 * M * rad) + 0.0003 * Math.sin(3 * M * rad);
+  const lambda = (M + C + 180 + 102.9372) % 360;
+  const jTransit = 2451545.0 + jStar + 0.0053 * Math.sin(M * rad) - 0.0069 * Math.sin(2 * lambda * rad);
+  const sinDec = Math.sin(lambda * rad) * Math.sin(23.4397 * rad);
+  const cosDec = Math.cos(Math.asin(sinDec));
+  const cosH = (Math.sin(-0.833 * rad) - Math.sin(lat * rad) * sinDec) / (Math.cos(lat * rad) * cosDec);
+  if (cosH < -1 || cosH > 1) return null;
+  const H = Math.acos(cosH) / rad;
+  const j = kind === 'sunrise' ? jTransit - H / 360 : jTransit + H / 360;
+  return new Date((j - 2440587.5) * 86400000);
+}
+
+/** The local HH:MM a time trigger fires at on the local date [parts], or null. */
+function triggerTime(trigger, parts, meta) {
+  if (trigger.sun === 'sunrise' || trigger.sun === 'sunset') {
+    if (!meta || typeof meta.lat !== 'number' || typeof meta.lon !== 'number') return null;
+    const utc = sunTimeUtc(trigger.sun, parts.year, parts.month, parts.day, meta.lat, meta.lon);
+    if (!utc) return null;
+    const shifted = new Date(utc.getTime() + (trigger.offset || 0) * 60000);
+    return localParts(shifted, meta.timezone).hhmm;
+  }
+  return Number.isNaN(toMinutes(trigger.at)) ? null : fromMinutes(toMinutes(trigger.at) + (trigger.offset || 0));
+}
+
+/** Does a device message satisfy [t] (property equals / above / below)? */
+function matchesValue(t, value) {
+  if (value === undefined || value === null) return false;
+  if ('equals' in t) return value === t.equals;
+  if ('above' in t) return typeof value === 'number' && value > t.above;
+  if ('below' in t) return typeof value === 'number' && value < t.below;
+  return false;
+}
+
+/**
+ * Whether a device trigger fires for a message, given the previous value seen.
+ * Actions (button presses) fire on every matching message; everything else fires
+ * on the change into the matching state, never on a repeat of the same value.
+ */
+function deviceTriggerFires(trigger, previous, message) {
+  if (!(trigger.property in message)) return false;
+  const now = message[trigger.property];
+  if (!matchesValue(trigger, now)) return false;
+  if (trigger.property === 'action') return true;
+  return !matchesValue(trigger, previous);
+}
+
+const KNOWN_TRIGGERS = new Set(['device', 'time']);
+const KNOWN_CONDITIONS = new Set(['hours', 'device']);
+const KNOWN_ACTIONS = new Set(['device', 'scene']);
+
+/** A rule this engine can run, or the reason it can't. */
+function validateRule(rule) {
+  if (!rule || typeof rule !== 'object') return 'not an object';
+  if (rule.v !== 1) return `schema v${rule.v}`;
+  if (!rule.trigger || !KNOWN_TRIGGERS.has(rule.trigger.type)) return 'unknown trigger';
+  if (!Array.isArray(rule.conditions || [])) return 'conditions';
+  if ((rule.conditions || []).some((c) => !KNOWN_CONDITIONS.has(c && c.type))) return 'unknown condition';
+  if (!rule.action || !KNOWN_ACTIONS.has(rule.action.type)) return 'unknown action';
+  if (!Array.isArray(rule.action.commands) || rule.action.commands.length === 0) return 'no commands';
+  return null;
+}
+
+/** The command that undoes [payload] for "turn off again", or null if there is none. */
+function offPayload(payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  if (payload.state === 'ON' || payload.state === 'on') return { state: 'OFF' };
+  return null;
+}
+
+// ---------- the extension ----------
+
+class ZigDashEngine {
+  constructor(zigbee, mqtt, state, publishEntityState, eventBus, enableDisableExtension, restartCallback, addExtension, settings, logger) {
+    this.zigbee = zigbee;
+    this.mqtt = mqtt;
+    this.stateCache = state;
+    this.eventBus = eventBus;
+    this.settings = settings;
+    this.logger = logger;
+    this.rules = new Map();
+    this.unknown = {};
+    this.meta = {};
+    this.lastValue = new Map(); // `${ieee}|${property}` -> last value seen
+    this.firedOn = new Map(); // rule id -> local date it last fired (time triggers)
+    this.recent = [];
+    this.crashTimes = [];
+    this.stoppedSelf = false;
+    this.timers = [];
+    this.offTimers = new Map();
+    this.clock = () => new Date();
+  }
+
+  // ----- safety -----
+
+  guard(where, fn) {
+    return (...args) => {
+      try {
+        const r = fn.apply(this, args);
+        if (r && typeof r.catch === 'function') r.catch((e) => this.caught(where, e));
+        return r;
+      } catch (e) {
+        this.caught(where, e);
+        return undefined;
+      }
+    };
+  }
+
+  caught(where, error) {
+    try {
+      this.log('warning', `caught in ${where}: ${error && error.message}`);
+      const now = Date.now();
+      this.crashTimes = this.crashTimes.filter((t) => now - t < CRASH_WINDOW_MS);
+      this.crashTimes.push(now);
+      if (this.crashTimes.length >= CRASH_LIMIT && !this.stoppedSelf) {
+        this.stoppedSelf = true;
+        this.writeStopFlag(true);
+        this.log('error', 'stopped itself after repeated errors; open ZigDash to start it again');
+      }
+      this.publishState();
+    } catch (_) { /* never throw from the guard */ }
+  }
+
+  log(level, msg) {
+    try { (this.logger[level] || this.logger.info).call(this.logger, `ZigDash engine: ${msg}`); } catch (_) {}
+  }
+
+  stopFlagPath() {
+    const path = require('path');
+    const dir = process.env.ZIGBEE2MQTT_DATA || path.join(__dirname, '..');
+    return path.join(dir, STOP_FLAG);
+  }
+
+  readStopFlag() {
+    try { return require('fs').existsSync(this.stopFlagPath()); } catch (_) { return false; }
+  }
+
+  writeStopFlag(on) {
+    try {
+      const fs = require('fs');
+      if (on) fs.writeFileSync(this.stopFlagPath(), new Date().toISOString());
+      else if (fs.existsSync(this.stopFlagPath())) fs.unlinkSync(this.stopFlagPath());
+    } catch (_) {}
+  }
+
+  // ----- MQTT -----
+
+  base() { return this.settings.get().mqtt.base_topic; }
+
+  publish(sub, payload, retain) {
+    try {
+      const p = this.mqtt.publish(`${PREFIX}/${sub}`, payload, { clientOptions: { retain: !!retain, qos: 1 }, baseTopic: ROOT });
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+    } catch (_) {}
+  }
+
+  publishState() {
+    this.publish('state', JSON.stringify({
+      engine: ENGINE_VERSION,
+      running_on: 'hub',
+      rules_loaded: this.rules.size,
+      rules_unknown: Object.keys(this.unknown),
+      stopped_self: this.stoppedSelf,
+      at: this.clock().toISOString(),
+    }), true);
+  }
+
+  publishRecent() { this.publish('recent', JSON.stringify(this.recent), true); }
+
+  /** Sends [payload] to the device with [ieee] the way an incoming /set would arrive. */
+  command(ieee, payload) {
+    const entity = this.zigbee.resolveEntity(ieee);
+    if (!entity) { this.log('warning', `device ${ieee} not found`); return false; }
+    const topic = `${this.base()}/${entity.name}/set`;
+    this.mqtt.onMessage(topic, Buffer.from(JSON.stringify(payload)));
+    return true;
+  }
+
+  // ----- lifecycle -----
+
+  async start() {
+    this.stoppedSelf = this.readStopFlag();
+    this.eventBus.onMQTTMessage(this, this.guard('mqtt message', this.onMqtt));
+    this.eventBus.onPublishEntityState(this, this.guard('device message', this.onDevice));
+    const sub = this.mqtt.subscribe(`${ROOT}/${PREFIX}/#`);
+    if (sub && typeof sub.catch === 'function') sub.catch((e) => this.caught('subscribe', e));
+    this.timers.push(setInterval(this.guard('state timer', this.publishState), STATE_EVERY_MS));
+    this.timers.push(setInterval(this.guard('clock timer', this.onTick), TICK_MS));
+    this.publishState();
+  }
+
+  async stop() {
+    this.timers.forEach((t) => clearInterval(t));
+    this.offTimers.forEach((t) => clearTimeout(t));
+    this.timers = [];
+    this.offTimers.clear();
+    try { this.eventBus.removeListeners(this); } catch (_) {}
+    try { await this.mqtt.unsubscribe(`${ROOT}/${PREFIX}/#`); } catch (_) {}
+    this.publish('state', '', true);
+  }
+
+  // ----- inputs -----
+
+  onMqtt(data) {
+    const prefix = `${ROOT}/${PREFIX}/`;
+    if (!data.topic.startsWith(prefix)) return;
+    const sub = data.topic.slice(prefix.length);
+    if (sub.startsWith('rules/')) {
+      const id = sub.slice('rules/'.length);
+      if (!data.message) {
+        this.rules.delete(id);
+        delete this.unknown[id];
+      } else {
+        const rule = JSON.parse(data.message);
+        const problem = validateRule(rule);
+        if (problem) { this.rules.delete(id); this.unknown[id] = problem; } else { delete this.unknown[id]; this.rules.set(id, rule); }
+      }
+      this.publishState();
+    } else if (sub === 'meta') {
+      this.meta = data.message ? JSON.parse(data.message) : {};
+    } else if (sub === 'control') {
+      const cmd = data.message ? JSON.parse(data.message).cmd : null;
+      if (cmd === 'start') {
+        this.stoppedSelf = false;
+        this.crashTimes = [];
+        this.writeStopFlag(false);
+        this.publishState();
+      }
+    }
+  }
+
+  onDevice(data) {
+    const entity = data.entity;
+    if (!entity || typeof entity.isDevice !== 'function' || !entity.isDevice()) return;
+    const ieee = entity.ieeeAddr;
+    const message = data.message || {};
+    const before = {};
+    for (const key of Object.keys(message)) before[key] = this.lastValue.get(`${ieee}|${key}`);
+    for (const key of Object.keys(message)) this.lastValue.set(`${ieee}|${key}`, message[key]);
+    if (this.stoppedSelf) return;
+    for (const [id, rule] of this.rules) {
+      const t = rule.trigger;
+      if (rule.enabled === false || t.type !== 'device' || t.ieee !== ieee) continue;
+      if (deviceTriggerFires(t, before[t.property], message)) this.run(id, rule);
+    }
+  }
+
+  onTick() {
+    if (this.stoppedSelf) return;
+    const parts = localParts(this.clock(), this.meta.timezone);
+    for (const [id, rule] of this.rules) {
+      const t = rule.trigger;
+      if (rule.enabled === false || t.type !== 'time') continue;
+      if (Array.isArray(t.days) && t.days.length && !t.days.includes(parts.weekday)) continue;
+      if (triggerTime(t, parts, this.meta) !== parts.hhmm) continue;
+      if (this.firedOn.get(id) === parts.date) continue;
+      this.firedOn.set(id, parts.date);
+      this.run(id, rule);
+    }
+  }
+
+  // ----- running a rule -----
+
+  conditionsHold(rule) {
+    const hhmm = localParts(this.clock(), this.meta.timezone).hhmm;
+    return (rule.conditions || []).every((c) => {
+      if (c.type === 'hours') return withinHours(hhmm, c.from, c.to);
+      if (c.type === 'device') return matchesValue(c, this.lastValue.get(`${c.ieee}|${c.property}`));
+      return false;
+    });
+  }
+
+  run(id, rule) {
+    if (!this.conditionsHold(rule)) return;
+    const sent = rule.action.commands.filter((c) => this.command(c.ieee, c.payload)).length;
+    const minutes = rule.action.offAfter || 0;
+    if (minutes > 0) {
+      const offs = rule.action.commands.map((c) => ({ ieee: c.ieee, payload: offPayload(c.payload) })).filter((c) => c.payload);
+      if (offs.length) {
+        clearTimeout(this.offTimers.get(id));
+        this.offTimers.set(id, setTimeout(this.guard('off timer', () => {
+          this.offTimers.delete(id);
+          offs.forEach((c) => this.command(c.ieee, c.payload));
+        }), minutes * 60000));
+      }
+    }
+    this.recent.unshift({ id, at: this.clock().toISOString(), commands: sent, off_after: minutes || undefined });
+    this.recent = this.recent.slice(0, RECENT_MAX);
+    this.publishRecent();
+  }
+}
+
+ZigDashEngine.ENGINE_VERSION = ENGINE_VERSION;
+ZigDashEngine.helpers = { localParts, withinHours, sunTimeUtc, triggerTime, matchesValue, deviceTriggerFires, validateRule, offPayload, toMinutes, fromMinutes };
+module.exports = ZigDashEngine;
