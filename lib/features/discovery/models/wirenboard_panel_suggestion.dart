@@ -20,9 +20,11 @@ PanelSuggestion _defaultWirenBoardPanel(
   WirenBoardDevice device,
   WirenBoardControl control, {
   String language = 'en',
+  bool allowCommands = false,
 }) {
+  final readOnly = control.readOnly && !allowCommands;
   final (PanelType type, PanelConfig config) = switch (control) {
-    _ when control.type == 'wo-switch' && !control.readOnly => (
+    _ when control.type == 'wo-switch' && !readOnly => (
       PanelType.combo,
       const OptionsConfig(
         jsonPath: null,
@@ -36,7 +38,7 @@ PanelSuggestion _defaultWirenBoardPanel(
         when control.type == 'switch' ||
             control.type == 'wo-switch' ||
             control.type == 'alarm' =>
-      control.readOnly
+      readOnly
           ? (PanelType.led, const LedConfig(jsonPath: null, onMatch: '1'))
           : (
               PanelType.toggle,
@@ -47,11 +49,11 @@ PanelSuggestion _defaultWirenBoardPanel(
                 onMatch: '1',
               ),
             ),
-    _ when !control.readOnly && control.type == 'pushbutton' => (
+    _ when !readOnly && control.type == 'pushbutton' => (
       PanelType.button,
       const ButtonConfig(payload: '1'),
     ),
-    _ when !control.readOnly && control.choices.isNotEmpty => (
+    _ when !readOnly && control.choices.isNotEmpty => (
       PanelType.combo,
       OptionsConfig(
         jsonPath: null,
@@ -66,7 +68,7 @@ PanelSuggestion _defaultWirenBoardPanel(
       ),
     ),
     _
-        when !control.readOnly &&
+        when !readOnly &&
             control.type == 'range' &&
             (control.max ?? 255) > (control.min ?? 0) =>
       (
@@ -79,11 +81,11 @@ PanelSuggestion _defaultWirenBoardPanel(
           valueTemplate: '{value}',
         ),
       ),
-    _ when control.numeric && control.readOnly => (
+    _ when control.numeric && readOnly => (
       PanelType.reading,
       ReadingConfig(jsonPath: '', unit: control.unit),
     ),
-    _ when !control.readOnly => (
+    _ when !readOnly => (
       PanelType.textInput,
       const TextInputConfig(template: '{value}'),
     ),
@@ -93,23 +95,28 @@ PanelSuggestion _defaultWirenBoardPanel(
     type: type,
     name: '${device.title(language)} · ${control.title(language)}',
     topicPrefixOverride: control.topic,
-    publishTopicSuffix: control.readOnly ? '' : 'on',
+    publishTopicSuffix: readOnly ? '' : 'on',
     subscribeTopicSuffix: '',
     config: config,
   );
 }
 
-/// Compatible widgets keep scalar payloads and the control's read-only contract.
+/// Compatible widgets keep scalar payloads and default to discovered access.
+/// [allowCommands] is an explicit override for the individual tile being added;
+/// it never changes discovery metadata or a whole-device panel's controls.
 PanelSuggestion suggestWirenBoardPanel(
   WirenBoardDevice device,
   WirenBoardControl control, {
   String language = 'en',
   PanelType? widgetType,
+  bool allowCommands = false,
 }) {
+  final readOnly = control.readOnly && !allowCommands;
   final recommended = _defaultWirenBoardPanel(
     device,
     control,
     language: language,
+    allowCommands: allowCommands,
   );
   final binary = const {'switch', 'wo-switch', 'alarm'}.contains(control.type);
   final numeric = control.numeric;
@@ -120,7 +127,7 @@ PanelSuggestion suggestWirenBoardPanel(
     if (binary) PanelType.led,
     if (numeric) PanelType.reading,
     if (numeric && max > min) PanelType.progress,
-    if (!control.readOnly) ...[
+    if (!readOnly) ...[
       if (control.type == 'switch') PanelType.toggle,
       if (binary || control.type == 'pushbutton') PanelType.button,
       if (numeric && max > min) PanelType.slider,
@@ -189,7 +196,7 @@ PanelSuggestion suggestWirenBoardPanel(
     type: type,
     name: recommended.name,
     topicPrefixOverride: control.topic,
-    publishTopicSuffix: control.readOnly ? '' : 'on',
+    publishTopicSuffix: readOnly ? '' : 'on',
     subscribeTopicSuffix: '',
     config: configFor(type),
   );
@@ -202,6 +209,14 @@ PanelSuggestion suggestWirenBoardPanel(
     subscribeTopicSuffix: '',
     config: result.config,
     widgetChoices: [for (final type in types) option(type)],
+    commandWidgetChoices: readOnly
+        ? suggestWirenBoardPanel(
+            device,
+            control,
+            language: language,
+            allowCommands: true,
+          ).widgetChoices
+        : const [],
   );
 }
 

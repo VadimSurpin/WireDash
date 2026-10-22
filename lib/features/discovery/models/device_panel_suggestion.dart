@@ -58,6 +58,9 @@ class PanelSuggestion {
   /// Compatible presentations offered when adding an individual property.
   final List<PanelSuggestion> widgetChoices;
 
+  /// Editable presentations available only after an explicit per-tile override.
+  final List<PanelSuggestion> commandWidgetChoices;
+
   const PanelSuggestion({
     required this.type,
     required this.name,
@@ -70,6 +73,7 @@ class PanelSuggestion {
     this.sliderIsBrightness = false,
     this.config,
     this.widgetChoices = const [],
+    this.commandWidgetChoices = const [],
   });
 }
 

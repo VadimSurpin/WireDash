@@ -1337,5 +1337,7 @@
   "panelDisplayTitle": "Card contents",
   "panelDisplayHint": "Choose properties shown on this card. Custom labels apply only to this panel. Open the card for all device controls.",
   "panelDisplayLabel": "Custom label (optional)",
-  "panelDisplayReset": "Reset card contents and labels"
+  "panelDisplayReset": "Reset card contents and labels",
+  "panelAllowCommands": "Allow commands",
+  "panelAllowCommandsHint": "Offer editable widgets even when discovery marks this property read-only. Applies only to this tile."
 }

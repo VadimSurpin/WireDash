@@ -1201,5 +1201,7 @@
   "panelDisplayTitle": "Karteninhalt",
   "panelDisplayHint": "Wählen Sie die Eigenschaften für diese Karte. Eigene Beschriftungen gelten nur für dieses Panel. Öffnen Sie die Karte, um alle Gerätesteuerungen zu sehen.",
   "panelDisplayLabel": "Eigene Beschriftung (optional)",
-  "panelDisplayReset": "Karteninhalt und Beschriftungen zurücksetzen"
+  "panelDisplayReset": "Karteninhalt und Beschriftungen zurücksetzen",
+  "panelAllowCommands": "Befehle erlauben",
+  "panelAllowCommandsHint": "Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel."
 }

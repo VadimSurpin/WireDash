@@ -3841,4 +3841,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Obnovit obsah a popisky karty';
+
+  @override
+  String get panelAllowCommands => 'Povolit příkazy';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici.';
 }

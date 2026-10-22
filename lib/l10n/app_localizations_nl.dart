@@ -3847,4 +3847,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Kaartinhoud en labels herstellen';
+
+  @override
+  String get panelAllowCommands => 'Opdrachten toestaan';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Bied bewerkbare widgets aan, ook als deze eigenschap bij detectie als alleen-lezen is gemarkeerd. Geldt alleen voor deze tegel.';
 }

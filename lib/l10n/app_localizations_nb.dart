@@ -3831,4 +3831,11 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Tilbakestill kortinnhold og navn';
+
+  @override
+  String get panelAllowCommands => 'Tillat kommandoer';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Tilby redigerbare kontrollmoduler selv om oppdagelsen markerer denne egenskapen som skrivebeskyttet. Gjelder bare denne flisen.';
 }

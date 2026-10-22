@@ -60,6 +60,7 @@ const _doorDevice = Z2mDevice(
 class _RecordingWbImporter implements WirenBoardDashboardImporter {
   final calls = <({String label, List<String>? ids})>[];
   final widgetTypes = <PanelType?>[];
+  final commandOverrides = <bool>[];
   @override
   Future<void> addDevice(
     WirenBoardDevice device, {
@@ -74,9 +75,11 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
     WirenBoardControl control, {
     required String label,
     PanelType? widgetType,
+    bool allowCommands = false,
   }) async {
     calls.add((label: label, ids: [control.id]));
     widgetTypes.add(widgetType);
+    commandOverrides.add(allowCommands);
   }
 
   @override
@@ -322,67 +325,75 @@ void main() {
     },
   );
 
-  for (final (id, controlId, type, selected) in [
-    ('light', 'Color', 'rgb', PanelType.textInput),
-    ('wb-mr6c_12', 'K1', 'switch', PanelType.toggle),
+  for (final (id, controlId, type, selected, override) in [
+    ('light', 'Color', 'rgb', PanelType.textInput, false),
+    ('wb-mr6c_12', 'K1', 'switch', PanelType.toggle, false),
+    ('wb-mr6c_99', 'K1', 'switch', PanelType.toggle, true),
   ]) {
-    testWidgets('$controlId can switch from display back to editable input', (
-      tester,
-    ) async {
-      final device =
-          (WirenBoardDiscovery()
-                ..apply('/devices/$id/controls/$controlId/meta/readonly', '1')
-                ..apply(
-                  '/devices/$id/controls/$controlId/meta',
-                  '{"type":"$type"}',
-                ))
-              .devices
-              .single;
-      final importer = _RecordingWbImporter();
-      await tester.pumpWidget(
-        _app(
-          wbDevices: [device],
-          emptyZ2m: true,
-          overrides: [
-            dashboardRepoProvider.overrideWithValue(_Dashboards()),
-            wirenBoardDashboardImporterProvider.overrideWith(
-              (ref, _) => importer,
-            ),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text(id));
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.descendant(
-          of: find.byKey(ValueKey('wb-property:$id/$controlId')),
-          matching: find.byIcon(Icons.add),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final strings = lookupAppLocalizations(const Locale('en'));
-      for (final choice in [
-        strings.panelTypeTextLog,
-        selected == PanelType.toggle
-            ? strings.panelTypeToggle
-            : strings.panelTypeTextInput,
-      ]) {
-        await tester.tap(find.byType(DropdownButtonFormField<PanelType>));
+    testWidgets(
+      '$id/$controlId can switch from display back to editable input',
+      (tester) async {
+        final device =
+            (WirenBoardDiscovery()
+                  ..apply('/devices/$id/controls/$controlId/meta/readonly', '1')
+                  ..apply(
+                    '/devices/$id/controls/$controlId/meta',
+                    '{"type":"$type","readonly":$override}',
+                  ))
+                .devices
+                .single;
+        final importer = _RecordingWbImporter();
+        await tester.pumpWidget(
+          _app(
+            wbDevices: [device],
+            emptyZ2m: true,
+            overrides: [
+              dashboardRepoProvider.overrideWithValue(_Dashboards()),
+              wirenBoardDashboardImporterProvider.overrideWith(
+                (ref, _) => importer,
+              ),
+            ],
+          ),
+        );
         await tester.pumpAndSettle();
-        await tester.tap(find.text(choice).last);
+        await tester.tap(find.text(id));
         await tester.pumpAndSettle();
-      }
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Name'),
-        'Custom label',
-      );
-      await tester.tap(find.text('Add'));
-      await tester.pumpAndSettle();
-      expect(importer.calls.single.label, 'Custom label');
-      expect(importer.calls.single.ids, [controlId]);
-      expect(importer.widgetTypes.single, selected);
-    });
+        await tester.tap(
+          find.descendant(
+            of: find.byKey(ValueKey('wb-property:$id/$controlId')),
+            matching: find.byIcon(Icons.add),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final strings = lookupAppLocalizations(const Locale('en'));
+        if (override) {
+          expect(find.text(strings.panelTypeToggle), findsNothing);
+          await tester.tap(find.text(strings.panelAllowCommands));
+          await tester.pumpAndSettle();
+        }
+        for (final choice in [
+          strings.panelTypeTextLog,
+          selected == PanelType.toggle
+              ? strings.panelTypeToggle
+              : strings.panelTypeTextInput,
+        ]) {
+          await tester.tap(find.byType(DropdownButtonFormField<PanelType>));
+          await tester.pumpAndSettle();
+          await tester.tap(find.text(choice).last);
+          await tester.pumpAndSettle();
+        }
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Name'),
+          'Custom label',
+        );
+        await tester.tap(find.text('Add'));
+        await tester.pumpAndSettle();
+        expect(importer.calls.single.label, 'Custom label');
+        expect(importer.calls.single.ids, [controlId]);
+        expect(importer.widgetTypes.single, selected);
+        expect(importer.commandOverrides.single, override);
+      },
+    );
   }
 
   testWidgets(

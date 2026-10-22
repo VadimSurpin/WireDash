@@ -3832,4 +3832,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Сбросить содержимое и подписи';
+
+  @override
+  String get panelAllowCommands => 'Разрешить команды';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Показать редактируемые виджеты, даже если свойство обнаружено как доступное только для чтения. Только для этой плитки.';
 }

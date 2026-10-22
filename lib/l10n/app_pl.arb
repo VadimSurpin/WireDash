@@ -1196,5 +1196,7 @@
   "panelDisplayTitle": "Zawartość kafelka",
   "panelDisplayHint": "Wybierz właściwości widoczne na tym kafelku. Własne etykiety dotyczą tylko tego panelu. Otwórz kafelek, aby uzyskać dostęp do wszystkich elementów sterujących urządzenia.",
   "panelDisplayLabel": "Własna etykieta (opcjonalnie)",
-  "panelDisplayReset": "Przywróć zawartość i etykiety kafelka"
+  "panelDisplayReset": "Przywróć zawartość i etykiety kafelka",
+  "panelAllowCommands": "Zezwalaj na polecenia",
+  "panelAllowCommandsHint": "Udostępnij edytowalne widżety, nawet jeśli wykryto tę właściwość jako tylko do odczytu. Dotyczy tylko tego kafelka."
 }

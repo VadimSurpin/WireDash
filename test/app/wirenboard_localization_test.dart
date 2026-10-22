@@ -23,6 +23,8 @@ void main() {
       'wbAddSelected',
       'wbChooseProperties',
       'panelPropertyWidget',
+      'panelAllowCommands',
+      'panelAllowCommandsHint',
       'panelDisplayTitle',
       'panelDisplayHint',
       'panelDisplayLabel',

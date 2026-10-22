@@ -3852,4 +3852,11 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get panelDisplayReset =>
       'Karteninhalt und Beschriftungen zurücksetzen';
+
+  @override
+  String get panelAllowCommands => 'Befehle erlauben';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Bearbeitbare Widgets anbieten, auch wenn die Erkennung diese Eigenschaft als schreibgeschützt meldet. Gilt nur für diese Kachel.';
 }

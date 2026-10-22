@@ -3833,4 +3833,11 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get panelDisplayReset => 'Återställ kortinnehåll och etiketter';
+
+  @override
+  String get panelAllowCommands => 'Tillåt kommandon';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Erbjud redigerbara widgetar även om identifieringen markerar den här egenskapen som skrivskyddad. Gäller bara den här panelen.';
 }
