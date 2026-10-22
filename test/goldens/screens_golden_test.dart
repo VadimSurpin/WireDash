@@ -2,6 +2,7 @@ import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zigdash/mqtt/endpoint.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
@@ -98,6 +99,7 @@ List<Override> _dashboardOverrides() => [
   connectionStatusProvider.overrideWith(
     (ref, _) => Stream.value(MqttStatus.connected),
   ),
+  connectionEndpointProvider.overrideWith((ref, _) => Stream.value(MqttEndpoint.local)),
   panelValueSnapshotProvider.overrideWith(
     (ref, key) => Stream.value(
       PanelValueSnapshot(
@@ -144,6 +146,7 @@ List<Override> _settingsOverrides() => [
   connectionStatusProvider.overrideWith(
     (ref, _) => Stream.value(MqttStatus.connected),
   ),
+  connectionEndpointProvider.overrideWith((ref, _) => Stream.value(MqttEndpoint.local)),
   appVersionProvider.overrideWith((ref) async => '1.13.0 (28)'),
 ];
 
