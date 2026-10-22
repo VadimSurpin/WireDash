@@ -1514,5 +1514,10 @@
   "wbOpenControls": "Åpne kontroller",
   "wbAddSelected": "Legg til valgte egenskaper",
   "wbChooseProperties": "Velg egenskaper som skal legges til som ett panel.",
-  "wbZ2mDevices": "Wirenboard Z2M-enheter"
+  "wbZ2mDevices": "Wirenboard Z2M-enheter",
+  "panelDisplayReset": "Tilbakestill kortinnhold og navn",
+  "panelPropertyWidget": "Kontrollelement",
+  "panelDisplayLabel": "Eget navn (valgfritt)",
+  "panelDisplayTitle": "Kortinnhold",
+  "panelDisplayHint": "Velg egenskapene som vises på dette kortet. Egne navn gjelder bare for dette panelet. Åpne kortet for å se alle enhetskontrollene."
 }

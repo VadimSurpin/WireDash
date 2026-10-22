@@ -45,12 +45,14 @@ class WirenBoardControlRow extends ConsumerStatefulWidget {
     required this.device,
     required this.control,
     this.qos = 1,
+    this.label,
   });
 
   final String connectionId;
   final WirenBoardDevice device;
   final WirenBoardControl control;
   final int qos;
+  final String? label;
 
   @override
   ConsumerState<WirenBoardControlRow> createState() =>
@@ -96,7 +98,7 @@ class _WirenBoardControlRowState extends ConsumerState<WirenBoardControlRow>
     super.build(context);
     final control = widget.control;
     final language = Localizations.localeOf(context).languageCode;
-    final name = control.title(language);
+    final name = widget.label ?? control.title(language);
     final key = PanelStreamKey(
       connectionId: widget.connectionId,
       topic: control.topic,

@@ -1514,5 +1514,10 @@
   "wbOpenControls": "Abrir controles",
   "wbAddSelected": "Adicionar propriedades selecionadas",
   "wbChooseProperties": "Selecione as propriedades para adicionar como um único painel.",
-  "wbZ2mDevices": "Dispositivos Z2M do Wirenboard"
+  "wbZ2mDevices": "Dispositivos Z2M do Wirenboard",
+  "panelDisplayReset": "Redefinir conteúdo e etiquetas",
+  "panelPropertyWidget": "Widget",
+  "panelDisplayLabel": "Etiqueta personalizada (opcional)",
+  "panelDisplayTitle": "Conteúdo do cartão",
+  "panelDisplayHint": "Escolha as propriedades mostradas neste cartão. As etiquetas personalizadas valem apenas para este painel. Abra o cartão para acessar todos os controles do dispositivo."
 }

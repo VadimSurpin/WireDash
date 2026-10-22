@@ -1368,5 +1368,10 @@
   "wbOpenControls": "Ouvrir les commandes",
   "wbAddSelected": "Ajouter les propriétés sélectionnées",
   "wbChooseProperties": "Sélectionnez les propriétés à ajouter dans un seul panneau.",
-  "wbZ2mDevices": "Appareils Z2M de Wirenboard"
+  "wbZ2mDevices": "Appareils Z2M de Wirenboard",
+  "panelDisplayReset": "Réinitialiser le contenu et les libellés",
+  "panelPropertyWidget": "Widget",
+  "panelDisplayLabel": "Libellé personnalisé (facultatif)",
+  "panelDisplayTitle": "Contenu de la carte",
+  "panelDisplayHint": "Choisissez les propriétés affichées sur cette carte. Les libellés personnalisés ne concernent que ce panneau. Ouvrez la carte pour accéder à toutes les commandes de l’appareil."
 }

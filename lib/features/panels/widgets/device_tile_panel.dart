@@ -18,6 +18,7 @@ import '../../devices/device_profile.dart';
 import '../../devices/device_state_refresher.dart';
 import '../../devices/device_state.dart';
 import '../models/panel_config.dart';
+import '../models/device_display_properties.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
 import 'device_sheet.dart';
@@ -71,7 +72,19 @@ class DeviceTilePanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = config.profile;
+    final selected =
+        config.display.properties ??
+        (config.display.labels.isEmpty
+            ? null
+            : defaultDeviceDisplayProperties(config.profile));
+    final profile = selected == null
+        ? config.profile
+        : DeviceProfile(
+            deviceClass: config.profile.deviceClass,
+            features: config.profile.features
+                .where((f) => selected.contains(f.property))
+                .toList(),
+          );
     final payload = ref
         .watch(
           panelValueProvider(
@@ -95,7 +108,7 @@ class DeviceTilePanel extends ConsumerWidget {
         .valueOrNull;
     if (connected && refresher != null) {
       WidgetsBinding.instance.addPostFrameCallback(
-        (_) => refresher.request(subscribeTopic, profile),
+        (_) => refresher.request(subscribeTopic, config.profile),
       );
     }
 
@@ -122,6 +135,27 @@ class DeviceTilePanel extends ConsumerWidget {
     return DeviceSummaryCard(
       name: panel.name,
       state: state,
+      labels: {
+        for (final f in profile.features)
+          f.property: config.display.label(
+            f.property,
+            f.label ?? humanizeProperty(f.property),
+          ),
+      },
+      readings: config.display.isDefault
+          ? null
+          : [
+              for (final f in profile.features)
+                if (!profile.switches.contains(f))
+                  (
+                    id: f.property,
+                    label: config.display.label(
+                      f.property,
+                      f.label ?? humanizeProperty(f.property),
+                    ),
+                    value: _propertyValue(context, state, f),
+                  ),
+            ],
       onOpen: openSheet,
       onHistory: graphed == null ? null : () => showHistorySheet(
         context,
@@ -161,6 +195,26 @@ class DeviceTilePanel extends ConsumerWidget {
   }
 }
 
+String _propertyValue(
+  BuildContext context,
+  DeviceState state,
+  DeviceFeature feature,
+) {
+  final value = state.values[feature.property];
+  if (value == null) return '—';
+  if (value is num) {
+    return value.isFinite ? formatReading(value, feature.unit) : '—';
+  }
+  if (feature.type == 'binary') {
+    return state.isOn(feature) == true
+        ? context.l10n.panelStateOn
+        : context.l10n.panelStateOff;
+  }
+  return value.toString();
+}
+
+typedef DeviceSummaryReading = ({String id, String label, String value});
+
 /// Shared dashboard presentation for devices, independent of their MQTT protocol.
 class DeviceSummaryCard extends StatelessWidget {
   const DeviceSummaryCard({
@@ -171,6 +225,9 @@ class DeviceSummaryCard extends StatelessWidget {
     required this.onToggle,
     this.notResponding = false,
     this.onHistory,
+    this.labels = const {},
+    this.readings,
+
     this.onBrightness,
     this.onCover,
   });
@@ -181,6 +238,9 @@ class DeviceSummaryCard extends StatelessWidget {
   final ValueChanged<DeviceFeature> onToggle;
   final bool notResponding;
   final VoidCallback? onHistory;
+  final Map<String, String> labels;
+  final List<DeviceSummaryReading>? readings;
+
   final ValueChanged<int>? onBrightness;
   final ValueChanged<String>? onCover;
 
@@ -200,9 +260,30 @@ class DeviceSummaryCard extends StatelessWidget {
         (cls == DeviceClass.generic && switches.isNotEmpty);
     final anyOn = switches.any((f) => state.isOn(f) == true);
 
-    final big = _bigValue(state, l10n);
-    final line = deviceStateLine(state, l10n, notResponding: notResponding);
-    final color = cls == DeviceClass.colorLight ? state.lightColor : null;
+    final big = readings == null ? _bigValue(state, l10n) : null;
+    final line = readings == null
+        ? deviceStateLine(state, l10n, notResponding: notResponding)
+        : switches.isNotEmpty
+        ? deviceStateLine(
+            DeviceState(
+              DeviceProfile(
+                deviceClass: DeviceClass.generic,
+                features: switches,
+              ),
+              state.values,
+            ),
+            l10n,
+          )
+        : !state.hasReported
+        ? l10n.deviceWaiting
+        : null;
+    final color =
+        cls == DeviceClass.colorLight &&
+            (readings == null ||
+                profile.colorTemp != null ||
+                profile.features.any((f) => f.type == 'composite'))
+        ? state.lightColor
+        : null;
 
     // Signal (signal-2.0.md §4): amber and borderless when on, the attention
     // container during an alarm, the idle tile with its hairline otherwise.
@@ -256,23 +337,59 @@ class DeviceSummaryCard extends StatelessWidget {
                 Row(
                   children: [
                     if (showsSwitches && switches.isNotEmpty)
-                      for (final f in switches.take(3))
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(end: 8),
-                          child: _QuickAction(
-                            icon: deviceClassIcon(cls, alarm: state.alarm),
-                            on: state.isOn(f),
-                            tooltip: l10n.deviceToggle,
-                            onPressed: () => onToggle(f),
-                          ),
-                        )
-                    else
+                      Expanded(
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final f in switches)
+                              SizedBox(
+                                width: 96,
+                                child: MergeSemantics(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      _QuickAction(
+                                        icon: deviceClassIcon(
+                                          cls,
+                                          alarm: state.alarm,
+                                        ),
+                                        on: state.isOn(f),
+                                        tooltip: l10n.deviceToggle,
+                                        onPressed: () => onToggle(f),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Tooltip(
+                                        message:
+                                            labels[f.property] ??
+                                            f.label ??
+                                            humanizeProperty(f.property),
+                                        child: Text(
+                                          labels[f.property] ??
+                                              f.label ??
+                                              humanizeProperty(f.property),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: theme.textTheme.labelMedium
+                                              ?.copyWith(color: fgVariant),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      )
+                    else ...[
                       SignalIcon(
                         deviceClassIcon(cls, alarm: state.alarm),
                         active: filled,
                         color: fgVariant,
                       ),
-                    const Spacer(),
+                      const Spacer(),
+                    ],
                     if (onHistory != null)
                       IconButton(
                         key: const Key('tile-history'),
@@ -307,16 +424,51 @@ class DeviceSummaryCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  line,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: state.batteryLow && !filled
-                        ? roles.onAttention
-                        : fgVariant,
+                if (line != null)
+                  Text(
+                    line,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: state.batteryLow && !filled
+                          ? roles.onAttention
+                          : fgVariant,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                if (readings != null)
+                  for (final reading in readings!)
+                    Padding(
+                      key: ValueKey('summary-property:${reading.id}'),
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              reading.label,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: fgVariant,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Align(
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Text(
+                                reading.value,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: fg,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 if (cls == DeviceClass.colorLight &&
                     profile.brightness != null &&
                     onBrightness != null)
@@ -337,7 +489,10 @@ class DeviceSummaryCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (cls == DeviceClass.cover && onCover != null)
+                if (cls == DeviceClass.cover &&
+                    onCover != null &&
+                    (readings == null ||
+                        profile.feature('state')?.settable == true))
                   _CoverControls(state: state, onAction: onCover!),
               ],
             ),

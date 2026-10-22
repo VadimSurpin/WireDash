@@ -1514,5 +1514,10 @@
   "wbOpenControls": "Steuerelemente öffnen",
   "wbAddSelected": "Ausgewählte Eigenschaften hinzufügen",
   "wbChooseProperties": "Eigenschaften auswählen, die als ein Panel hinzugefügt werden sollen.",
-  "wbZ2mDevices": "Wirenboard-Z2M-Geräte"
+  "wbZ2mDevices": "Wirenboard-Z2M-Geräte",
+  "panelDisplayReset": "Karteninhalt und Beschriftungen zurücksetzen",
+  "panelPropertyWidget": "Widget",
+  "panelDisplayLabel": "Eigene Beschriftung (optional)",
+  "panelDisplayTitle": "Karteninhalt",
+  "panelDisplayHint": "Wählen Sie die Eigenschaften für diese Karte. Eigene Beschriftungen gelten nur für dieses Panel. Öffnen Sie die Karte, um alle Gerätesteuerungen zu sehen."
 }
