@@ -344,9 +344,10 @@ void main() {
     'all labeled switches wrap on narrow cards with RTL and large text',
     (tester) async {
       final discovery = WirenBoardDiscovery();
-      for (var i = 0; i < 5; i++) {
+      for (var i = 1; i <= 6; i++) {
+        discovery.apply('/devices/wb-mr6c_12/controls/K$i/meta/readonly', '1');
         discovery.apply(
-          '/devices/relays/controls/Relay $i/meta',
+          '/devices/wb-mr6c_12/controls/K$i/meta',
           '{"type":"switch","order":$i}',
         );
       }
@@ -359,17 +360,17 @@ void main() {
           textScale: 2,
           locale: const Locale('he'),
           display: DevicePanelDisplay(
-            labels: {for (var i = 0; i < 5; i++) 'Relay $i': 'תאורה בחדר $i'},
+            labels: {for (var i = 1; i <= 6; i++) 'K$i': 'תאורה בחדר $i'},
           ),
         ),
       );
       await tester.pumpAndSettle();
-      for (var i = 0; i < 5; i++) {
+      for (var i = 1; i <= 6; i++) {
         expect(find.text('תאורה בחדר $i'), findsOneWidget);
       }
       expect(
         find.byTooltip(lookupAppLocalizations(const Locale('he')).deviceToggle),
-        findsNWidgets(5),
+        findsNWidgets(6),
       );
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());

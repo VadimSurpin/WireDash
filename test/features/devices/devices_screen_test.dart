@@ -322,12 +322,20 @@ void main() {
     },
   );
 
-  testWidgets(
-    'writable RGB property can switch from display back to editable input',
-    (tester) async {
+  for (final (id, controlId, type, selected) in [
+    ('light', 'Color', 'rgb', PanelType.textInput),
+    ('wb-mr6c_12', 'K1', 'switch', PanelType.toggle),
+  ]) {
+    testWidgets('$controlId can switch from display back to editable input', (
+      tester,
+    ) async {
       final device =
           (WirenBoardDiscovery()
-                ..apply('/devices/light/controls/Color/meta', '{"type":"rgb"}'))
+                ..apply('/devices/$id/controls/$controlId/meta/readonly', '1')
+                ..apply(
+                  '/devices/$id/controls/$controlId/meta',
+                  '{"type":"$type"}',
+                ))
               .devices
               .single;
       final importer = _RecordingWbImporter();
@@ -344,11 +352,11 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('light'));
+      await tester.tap(find.text(id));
       await tester.pumpAndSettle();
       await tester.tap(
         find.descendant(
-          of: find.byKey(const ValueKey('wb-property:light/Color')),
+          of: find.byKey(ValueKey('wb-property:$id/$controlId')),
           matching: find.byIcon(Icons.add),
         ),
       );
@@ -356,7 +364,9 @@ void main() {
       final strings = lookupAppLocalizations(const Locale('en'));
       for (final choice in [
         strings.panelTypeTextLog,
-        strings.panelTypeTextInput,
+        selected == PanelType.toggle
+            ? strings.panelTypeToggle
+            : strings.panelTypeTextInput,
       ]) {
         await tester.tap(find.byType(DropdownButtonFormField<PanelType>));
         await tester.pumpAndSettle();
@@ -365,15 +375,15 @@ void main() {
       }
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Name'),
-        'Lamp color',
+        'Custom label',
       );
       await tester.tap(find.text('Add'));
       await tester.pumpAndSettle();
-      expect(importer.calls.single.label, 'Lamp color');
-      expect(importer.calls.single.ids, ['Color']);
-      expect(importer.widgetTypes.single, PanelType.textInput);
-    },
-  );
+      expect(importer.calls.single.label, 'Custom label');
+      expect(importer.calls.single.ids, [controlId]);
+      expect(importer.widgetTypes.single, selected);
+    });
+  }
 
   testWidgets(
     'All devices shows WB modules and built-ins while the Z2M list is missing',

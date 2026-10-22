@@ -59,6 +59,10 @@ including older built-in panels imported as modules, without duplicating
 panels or changing custom labels, property selections or user-defined sections.
 Automatic section names are recognized across all supported languages.
 
+When JSON metadata is present, it is the complete metadata snapshot. Missing
+fields use WB defaults (including writable by default); stale legacy subtopics
+cannot override them. Legacy-only devices remain supported.
+
 Individual controls use these suggested tiles:
 
 | Control | Suggested tile |
