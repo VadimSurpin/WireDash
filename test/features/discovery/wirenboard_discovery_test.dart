@@ -117,6 +117,89 @@ void main() {
     },
   );
 
+  test(
+    'complete JSON metadata restores MR6C K1–K6 toggle choices despite stale legacy flags',
+    () {
+      for (final legacyFirst in [true, false]) {
+        final discovery = WirenBoardDiscovery();
+        for (var i = 1; i <= 6; i++) {
+          final topic = '/devices/wb-mr6c_12/controls/K$i';
+          void legacy() {
+            discovery.apply('$topic/meta/type', 'value');
+            discovery.apply('$topic/meta/readonly', '1');
+            discovery.apply('$topic/meta/hidden', '1');
+            discovery.apply('$topic/meta/min', '10');
+            discovery.apply('$topic/meta/max', '20');
+          }
+
+          if (legacyFirst) legacy();
+          discovery.apply('$topic/meta', '{"type":"switch","order":$i}');
+          if (!legacyFirst) legacy();
+        }
+        final device = discovery.devices.single;
+        expect(device.controls.map((c) => c.id), [
+          'K1',
+          'K2',
+          'K3',
+          'K4',
+          'K5',
+          'K6',
+        ]);
+        for (final control in device.controls) {
+          expect(control.readOnly, isFalse);
+          expect(control.min, isNull);
+          expect(control.max, isNull);
+          final suggestion = suggestWirenBoardPanel(
+            device,
+            control,
+            widgetType: PanelType.toggle,
+          );
+          expect(suggestion.type, PanelType.toggle);
+          expect(suggestion.publishTopicSuffix, 'on');
+          expect((suggestion.config as ToggleConfig).onPayload, '1');
+          expect((suggestion.config as ToggleConfig).offPayload, '0');
+        }
+        // A modern read-only flag must still win over writable legacy metadata.
+        const first = '/devices/wb-mr6c_12/controls/K1';
+        discovery.apply('$first/meta', '{"type":"switch","readonly":true}');
+        discovery.apply('$first/meta/readonly', '0');
+        final updated = discovery.devices.single;
+        expect(
+          updated.controls.firstWhere((c) => c.id == 'K1').readOnly,
+          isTrue,
+        );
+        expect(
+          () => suggestWirenBoardPanel(
+            updated,
+            updated.controls.firstWhere((c) => c.id == 'K1'),
+            widgetType: PanelType.toggle,
+          ),
+          throwsArgumentError,
+        );
+      }
+    },
+  );
+
+  test(
+    'JSON removal falls back to legacy metadata and names remain available',
+    () {
+      final discovery = WirenBoardDiscovery()
+        ..apply('/devices/wb-mr6c_12/meta/name', 'Relay module')
+        ..apply('/devices/wb-mr6c_12/meta', '{"driver":"wb-mqtt-serial"}')
+        ..apply('$topic/meta/name', 'Kitchen')
+        ..apply('$topic/meta/type', 'switch')
+        ..apply('$topic/meta/readonly', '1')
+        ..apply('$topic/meta', '{"type":"switch"}');
+      expect(discovery.devices.single.title('en'), 'Relay module');
+      expect(discovery.devices.single.controls.single.title('en'), 'Kitchen');
+      expect(discovery.devices.single.controls.single.readOnly, isFalse);
+      discovery.apply('$topic/meta', '');
+      expect(discovery.devices.single.controls.single.readOnly, isTrue);
+      discovery.apply('$topic/meta/readonly', '0');
+      expect(discovery.devices.single.controls.single.readOnly, isFalse);
+    },
+  );
+
   test('hidden, reordered, deleted and malformed retained metadata', () {
     final d = WirenBoardDiscovery();
     d.apply('$topic/meta', '{"type":"switch","order":2}');
