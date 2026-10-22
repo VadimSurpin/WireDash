@@ -70,8 +70,8 @@ Individual controls use these suggested tiles:
 | Writable value/text with an enum | Choices with translated labels |
 | Writable range | Integer slider using published minimum/maximum (defaults 0–255) |
 | Read-only numeric control | Reading with units, including legacy sensor types |
-| Other writable numeric/text control | Raw text input |
-| Other control, including RGB | Read-only text log |
+| Other writable control, including RGB and local time | Raw text input |
+| Other read-only control | Read-only text log |
 
 State is read from `/devices/<device>/controls/<control>` and commands go to
 that exact topic plus `/on`. The leading slash and identifiers (including
@@ -127,6 +127,8 @@ When adding an individual WB property, choose **Widget type** before adding it.
 The suggested widget is selected initially. Available alternatives depend on
 the control: numeric readings can use a reading or progress bar; writable
 ranges can also use a slider or input; switches offer toggles, indicators and
-explicit choices where supported. Read-only controls offer display widgets.
+explicit choices where supported. Every writable control offers text input for
+raw scalar commands, including RGB, local time and custom control types.
+Read-only controls offer display widgets.
 The discovery tile form also offers this selector, with editable widget
 settings. Switching widgets preserves the label and WB scalar MQTT topics.
