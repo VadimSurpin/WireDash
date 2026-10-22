@@ -10,6 +10,54 @@ void main() {
   const topic = '/devices/wb-mr6c_12/controls/Relay 1';
 
   test(
+    'widget alternatives preserve raw payloads, enums and read-only restrictions',
+    () {
+      for (final meta in [
+        '{"type":"switch"}',
+        '{"type":"wo-switch"}',
+        '{"type":"range","min":10,"max":90}',
+        '{"type":"value","enum":{"0":"Manual","0x10":"Auto"}}',
+        '{"type":"temperature","readonly":true}',
+        '{"type":"switch","readonly":true}',
+        '{"type":"text"}',
+      ]) {
+        final device =
+            (WirenBoardDiscovery()..apply('$topic/meta', meta)).devices.single;
+        final control = device.controls.single;
+        final suggestion = suggestWirenBoardPanel(device, control);
+        expect(suggestion.widgetChoices.first.type, suggestion.type);
+        for (final choice in suggestion.widgetChoices) {
+          expect(choice.topicPrefixOverride, topic);
+          expect(choice.subscribeTopicSuffix, '');
+          final config = choice.config!;
+          if (control.readOnly) {
+            expect(
+              choice.type,
+              isIn([
+                PanelType.led,
+                PanelType.reading,
+                PanelType.progress,
+                PanelType.textLog,
+              ]),
+            );
+          }
+          if (config is ToggleConfig) {
+            expect(config.onPayload, '1');
+            expect(config.offPayload, '0');
+          }
+          if (config is SliderConfig) {
+            expect(config.valueTemplate, '{value}');
+            expect(config.jsonPath, isNull);
+          }
+          if (config is OptionsConfig && control.type == 'value') {
+            expect(config.options.last.payload, '16');
+          }
+        }
+      }
+    },
+  );
+
+  test(
     'legacy metadata discovers controls without values or device metadata',
     () {
       final discovery = WirenBoardDiscovery();

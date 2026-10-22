@@ -2,6 +2,7 @@ part of 'panel_form_screen.dart';
 
 extension _PanelFormFields on _State {
   Widget _buildLivePreview() {
+    if (_type == PanelType.device) return const SizedBox.shrink();
     final l10n = context.l10n;
     final prefix = _topicPrefixHint ?? '';
     final topic = effectiveSubscribeTopic(
@@ -657,8 +658,55 @@ extension _PanelFormFields on _State {
         // dashboard"); the generic form only edits name/width here.
         return const [];
       case PanelType.device:
-        // Device tiles are configured from the device; only name and size
-        // are edited here.
+        final config = _deviceConfig;
+        if (config is WirenBoardDeviceConfig) {
+          final live = ref
+              .watch(wirenBoardDevicesProvider(widget.connectionId))
+              .valueOrNull
+              ?.where((d) => d.id == config.device.id)
+              .firstOrNull;
+          final device = config.visibleDevice(live ?? config.device);
+          final language = Localizations.localeOf(context).languageCode;
+          return [
+            DevicePanelDisplayEditor(
+              properties: [
+                for (final c in device.controls)
+                  (id: c.id, label: c.title(language)),
+              ],
+              defaults: defaultWirenBoardDisplayProperties(device),
+              value: config.display,
+              onChanged: (display) => _setDeviceConfig(
+                WirenBoardDeviceConfig(
+                  device: live ?? config.device,
+                  controlIds: config.controlIds,
+                  display: display,
+                ),
+              ),
+            ),
+          ];
+        }
+        if (config is DeviceTileConfig) {
+          return [
+            DevicePanelDisplayEditor(
+              properties: [
+                for (final f in config.profile.features)
+                  (
+                    id: f.property,
+                    label: f.label ?? humanizeProperty(f.property),
+                  ),
+              ],
+              defaults: defaultDeviceDisplayProperties(config.profile),
+              value: config.display,
+              onChanged: (display) => _setDeviceConfig(
+                DeviceTileConfig(
+                  profile: config.profile,
+                  model: config.model,
+                  display: display,
+                ),
+              ),
+            ),
+          ];
+        }
         return const [];
       case PanelType.reading:
         return [

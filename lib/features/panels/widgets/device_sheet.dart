@@ -119,6 +119,7 @@ class DeviceSheet extends ConsumerWidget {
             publishTopic: publishTopic,
             profile: profile,
             state: state,
+            labels: config.display.labels,
           ),
           // 2.7: the history of what the tile shows (kiosk guests too).
           if (ieee != null)
@@ -160,6 +161,7 @@ class DeviceControls extends ConsumerWidget {
     required this.profile,
     required this.state,
     this.readings = true,
+    this.labels = const {},
   });
 
   final String connectionId;
@@ -167,6 +169,10 @@ class DeviceControls extends ConsumerWidget {
   final DeviceProfile profile;
   final DeviceState state;
   final bool readings;
+  final Map<String, String> labels;
+
+  String _label(DeviceFeature feature, String fallback) =>
+      labels[feature.property] ?? feature.label ?? fallback;
 
   /// Whether [DeviceControls] draws anything besides readings for [profile].
   static bool hasControls(DeviceProfile profile) =>
@@ -208,9 +214,9 @@ class DeviceControls extends ConsumerWidget {
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
-            switches.length > 1
+            _label(f, switches.length > 1
                 ? _endpointLabel(f.endpoint, i)
-                : l10n.deviceToggle,
+                : l10n.deviceToggle),
           ),
           value: state.isOn(f) ?? false,
           onChanged: (_) => send(DeviceCommand.toggle(f, state.isOn(f))),
@@ -222,12 +228,12 @@ class DeviceControls extends ConsumerWidget {
     if (brightness != null) {
       children.add(
         _Labeled(
-          label: l10n.deviceBrightness,
+          label: _label(brightness, l10n.deviceBrightness),
           trailing: state.brightnessPercent == null
               ? '—'
               : '${state.brightnessPercent}%',
           child: CommitSlider(
-            label: l10n.deviceBrightness,
+            label: _label(brightness, l10n.deviceBrightness),
             value: state.brightnessPercent?.toDouble(),
             format: (v) => '${v.round()}%',
             onChanged: (v) =>
@@ -245,10 +251,10 @@ class DeviceControls extends ConsumerWidget {
       final kelvin = state.kelvin?.toDouble();
       children.add(
         _Labeled(
-          label: l10n.deviceWhite,
+          label: _label(colorTemp, l10n.deviceWhite),
           trailing: kelvin == null ? '—' : '${kelvin.round()} K',
           child: CommitSlider(
-            label: l10n.deviceWhite,
+            label: _label(colorTemp, l10n.deviceWhite),
             // A bulb in colour mode still takes a white command.
             value: kelvin ?? (state.hasReported ? (kMin + kMax) / 2 : null),
             min: kMin,
@@ -316,10 +322,10 @@ class DeviceControls extends ConsumerWidget {
       if (position != null && position.settable) {
         children.add(
           _Labeled(
-            label: l10n.devicePosition,
+            label: _label(position, l10n.devicePosition),
             trailing: state.position == null ? '—' : '${state.position}%',
             child: CommitSlider(
-              label: l10n.devicePosition,
+              label: _label(position, l10n.devicePosition),
               value:
                   state.position?.toDouble() ?? (state.hasReported ? 0 : null),
               format: (v) => '${v.round()}%',
@@ -333,7 +339,7 @@ class DeviceControls extends ConsumerWidget {
 
     for (final f in genericControls(profile)) {
       final v = state.values[f.property];
-      final label = _humanize(f.property);
+      final label = _label(f, _humanize(f.property));
       switch (f.type) {
         case 'binary':
           children.add(
@@ -409,7 +415,7 @@ class DeviceControls extends ConsumerWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           dense: true,
-          title: Text(_humanize(f.property)),
+          title: Text(_label(f, _humanize(f.property))),
           trailing: Text(
             v == null ? '—' : formatReading(v, f.unit),
             style: theme.textTheme.titleMedium,
@@ -445,7 +451,7 @@ class DeviceControls extends ConsumerWidget {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 dense: true,
-                title: Text(_humanize(f.property)),
+                title: Text(_label(f, _humanize(f.property))),
                 trailing: Text(
                   '${state.values[f.property]}'
                   '${f.unit == null ? '' : ' ${f.unit}'}',

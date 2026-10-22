@@ -112,3 +112,21 @@ commands.
 New tiles can represent one property or a whole device. Creating a selected
 subset as one device panel is unavailable for now. Previously saved subset
 panels remain usable and keep their selections and labels on rediscovery.
+
+## Customize a saved panel
+
+Whole-device switches have their own labels. Open a tile's menu and choose
+Edit, then use **Card contents** to choose which properties appear and enter
+optional custom labels. These settings belong to that saved panel; they do not
+rename MQTT controls or affect other panels. Open the card to access all device
+controls, including properties hidden from the card. **Reset card contents and
+labels** restores the defaults. The same editor supports native Zigbee2MQTT
+panels. Discovery refreshes keep saved visibility and labels.
+
+When adding an individual WB property, choose **Widget type** before adding it.
+The suggested widget is selected initially. Available alternatives depend on
+the control: numeric readings can use a reading or progress bar; writable
+ranges can also use a slider or input; switches offer toggles, indicators and
+explicit choices where supported. Read-only controls offer display widgets.
+The discovery tile form also offers this selector, with editable widget
+settings. Switching widgets preserves the label and WB scalar MQTT topics.

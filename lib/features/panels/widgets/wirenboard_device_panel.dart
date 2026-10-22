@@ -10,6 +10,7 @@ import '../../devices/device_profile.dart';
 import '../../devices/device_state.dart';
 import '../providers/panel_value_provider.dart';
 import '../models/panel_config.dart';
+import '../models/device_display_properties.dart';
 import 'control_action.dart';
 import 'device_tile_panel.dart';
 import 'wirenboard_control_row.dart';
@@ -30,9 +31,19 @@ class WirenBoardDevicePanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final device = _currentDevice(ref, connectionId, config);
+    final visible =
+        config.display.properties ?? defaultWirenBoardDisplayProperties(device);
+    final controls = device.controls
+        .where((c) => visible.contains(c.id))
+        .toList();
+    final language = Localizations.localeOf(context).languageCode;
+    final labels = {
+      for (final c in controls)
+        c.id: config.display.label(c.id, c.title(language)),
+    };
     final features = <DeviceFeature>[];
     final values = <String, Object?>{};
-    for (final control in device.controls) {
+    for (final control in controls) {
       final payload = ref
           .watch(
             panelValueProvider(
@@ -85,6 +96,24 @@ class WirenBoardDevicePanel extends ConsumerWidget {
     return DeviceSummaryCard(
       name: panel.name,
       state: state,
+      labels: labels,
+      readings: [
+        for (final control in controls)
+          if (!(control.type == 'switch' && !control.readOnly))
+            (
+              id: control.id,
+              label: labels[control.id]!,
+              value: control.numeric
+                  ? ltr(
+                      wirenBoardValueLabel(
+                        context,
+                        control,
+                        values[control.id],
+                      ),
+                    )
+                  : wirenBoardValueLabel(context, control, values[control.id]),
+            ),
+      ],
       onToggle: (feature) {
         final control = device.controls.firstWhere(
           (c) => c.id == feature.property,
@@ -182,6 +211,7 @@ class WirenBoardDeviceControls extends ConsumerWidget {
                     device: device,
                     control: control,
                     qos: panel.qos,
+                    label: config.display.labels[control.id],
                   );
                 },
               ),

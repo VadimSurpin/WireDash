@@ -89,6 +89,10 @@ Panel _panel(WirenBoardDevice device) => Panel(
 Widget _app(
   _Recorder mgr, {
   bool metadataAvailable = true,
+  DevicePanelDisplay display = const DevicePanelDisplay(),
+  double cardWidth = 380,
+  double textScale = 1,
+  Locale locale = const Locale('en'),
   String temperatureValue = '23.5',
   WirenBoardDevice? initialDevice,
   Stream<List<WirenBoardDevice>>? updates,
@@ -126,17 +130,29 @@ Widget _app(
       ),
     ],
     child: MaterialApp(
+      locale: locale,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: TextScaler.linear(textScale)),
+        child: child!,
+      ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: SingleChildScrollView(
           child: SizedBox(
-            width: 380,
+            width: cardWidth,
             child: PanelTile(
               connectionId: 'c1',
               dashboardId: 'd1',
               topicPrefix: 'unrelated',
-              panel: _panel(device),
+              panel: _panel(device).copyWith(
+                config: WirenBoardDeviceConfig(
+                  device: device,
+                  display: display,
+                ).encode(),
+              ),
               locked: true,
             ),
           ),
@@ -286,6 +302,79 @@ void main() {
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();
       await mgr.dispose();
+    },
+  );
+
+  testWidgets(
+    'panel-specific switch labels and visibility do not change full controls or metadata',
+    (tester) async {
+      final manager = _Recorder();
+      const display = DevicePanelDisplay(
+        properties: ['Relay 1'],
+        labels: {'Relay 1': 'Kitchen lights', 'Temperature': 'Air temperature'},
+      );
+      await tester.pumpWidget(_app(manager, display: display));
+      await tester.pumpAndSettle();
+      expect(find.text('Kitchen lights'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('summary-property:Temperature')),
+        findsNothing,
+      );
+      await tester.tap(find.byTooltip('Turn on or off'));
+      await tester.pumpAndSettle();
+      expect(manager.sent.single.$1, '/devices/wb-mr6c_12/controls/Relay 1/on');
+      await tester.tap(find.text('Relay module'));
+      await tester.pumpAndSettle();
+      expect(_inSheet(find.text('Air temperature')), findsOneWidget);
+      expect(_inSheet(find.byType(WirenBoardControlRow)), findsNWidgets(4));
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await tester.pumpWidget(_app(manager));
+      await tester.pumpAndSettle();
+      expect(find.text('Relay 1'), findsOneWidget);
+      expect(find.text('Kitchen lights'), findsNothing);
+      expect(_device().controls.first.title('en'), 'Relay 1');
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await manager.dispose();
+    },
+  );
+
+  testWidgets(
+    'all labeled switches wrap on narrow cards with RTL and large text',
+    (tester) async {
+      final discovery = WirenBoardDiscovery();
+      for (var i = 0; i < 5; i++) {
+        discovery.apply(
+          '/devices/relays/controls/Relay $i/meta',
+          '{"type":"switch","order":$i}',
+        );
+      }
+      final manager = _Recorder();
+      await tester.pumpWidget(
+        _app(
+          manager,
+          initialDevice: discovery.devices.single,
+          cardWidth: 160,
+          textScale: 2,
+          locale: const Locale('he'),
+          display: DevicePanelDisplay(
+            labels: {for (var i = 0; i < 5; i++) 'Relay $i': 'תאורה בחדר $i'},
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      for (var i = 0; i < 5; i++) {
+        expect(find.text('תאורה בחדר $i'), findsOneWidget);
+      }
+      expect(
+        find.byTooltip(lookupAppLocalizations(const Locale('he')).deviceToggle),
+        findsNWidgets(5),
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
+      await manager.dispose();
     },
   );
 

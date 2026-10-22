@@ -3785,4 +3785,20 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get wbZ2mDevices => 'Wirenboard Z2M-enheter';
+
+  @override
+  String get panelPropertyWidget => 'Kontrollelement';
+
+  @override
+  String get panelDisplayTitle => 'Kortinnhold';
+
+  @override
+  String get panelDisplayHint =>
+      'Velg egenskapene som vises på dette kortet. Egne navn gjelder bare for dette panelet. Åpne kortet for å se alle enhetskontrollene.';
+
+  @override
+  String get panelDisplayLabel => 'Eget navn (valgfritt)';
+
+  @override
+  String get panelDisplayReset => 'Tilbakestill kortinnhold og navn';
 }

@@ -6737,6 +6737,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wirenboard Z2M devices'**
   String get wbZ2mDevices;
+
+  /// No description provided for @panelPropertyWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget type'**
+  String get panelPropertyWidget;
+
+  /// No description provided for @panelDisplayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Card contents'**
+  String get panelDisplayTitle;
+
+  /// No description provided for @panelDisplayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose properties shown on this card. Custom labels apply only to this panel. Open the card for all device controls.'**
+  String get panelDisplayHint;
+
+  /// No description provided for @panelDisplayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom label (optional)'**
+  String get panelDisplayLabel;
+
+  /// No description provided for @panelDisplayReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset card contents and labels'**
+  String get panelDisplayReset;
 }
 
 class _AppLocalizationsDelegate

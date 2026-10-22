@@ -6,6 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/panels.dart';
+import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:zigdash/features/devices/device_profile.dart';
+import 'package:zigdash/features/discovery/models/device_panel_suggestion.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
 import 'package:zigdash/data/repositories/dashboard_repo.dart';
 import 'package:zigdash/data/repositories/panel_repo.dart';
@@ -60,6 +63,9 @@ class _Dashboards implements DashboardRepo {
 void main() {
   const cases = {
     'device edit': '{"type":"switch"}',
+    'device display edit': '{"type":"switch"}',
+    'native display edit': '{"type":"switch"}',
+    'reading selector': '{"type":"value","units":"V","readonly":true}',
     'device': '{"type":"switch"}',
     'switch': '{"type":"switch"}',
     'range': '{"type":"range","min":10,"max":200}',
@@ -74,10 +80,45 @@ void main() {
       const topic = '/devices/board/controls/Control 1';
       final discovery = WirenBoardDiscovery()
         ..apply('$topic/meta', entry.value);
+      if (entry.key == 'device display edit') {
+        discovery.apply(
+          '/devices/board/controls/Temperature/meta',
+          '{"type":"temperature","readonly":true}',
+        );
+      }
       final device = discovery.devices.single;
-      final whole = entry.key.startsWith('device');
-      final editing = entry.key == 'device edit';
-      final suggestion = whole
+      final native = entry.key == 'native display edit';
+      final custom = entry.key.contains('display edit');
+      final whole = entry.key.startsWith('device') || native;
+      final editing = entry.key.endsWith('edit');
+      final suggestion = native
+          ? PanelSuggestion(
+              type: PanelType.device,
+              name: 'Native device',
+              topicPrefixOverride: '/devices/board',
+              publishTopicSuffix: 'set',
+              subscribeTopicSuffix: '',
+              config: DeviceTileConfig(
+                profile: classifyExposes([
+                  {
+                    'type': 'binary',
+                    'property': 'state',
+                    'name': 'state',
+                    'access': 3,
+                    'value_on': 'ON',
+                    'value_off': 'OFF',
+                  },
+                  {
+                    'type': 'numeric',
+                    'property': 'temperature',
+                    'name': 'temperature',
+                    'access': 1,
+                    'unit': '°C',
+                  },
+                ]),
+              ),
+            )
+          : whole
           ? suggestWirenBoardDevicePanel(device)
           : suggestWirenBoardPanel(device, device.controls.single);
       final panels = _Panels();
@@ -154,14 +195,73 @@ void main() {
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
+      if (custom) {
+        final id = native ? 'state' : 'Control 1';
+        final label = find.byKey(ValueKey('display-label:0:$id'));
+        await tester.ensureVisible(label);
+        await tester.enterText(label, 'Kitchen lights');
+        await tester.tap(find.byKey(ValueKey('display-property:$id')));
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+      if (entry.key == 'reading selector') {
+        final name = find.widgetWithText(TextFormField, 'Name');
+        await tester.enterText(name, 'Supply voltage');
+        final selector = find.byType(DropdownButtonFormField<PanelType>);
+        await tester.ensureVisible(selector);
+        await tester.tap(selector);
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        await tester.tap(
+          find
+              .text(
+                lookupAppLocalizations(const Locale('en')).panelTypeProgress,
+              )
+              .last,
+        );
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        expect(
+          tester.widget<TextFormField>(name).controller!.text,
+          'Supply voltage',
+        );
+      }
       await tester.tap(find.text('Save'));
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
       final saved = panels.saved!;
-      expect(saved[#config].encode(), suggestion.config!.encode());
+      if (custom) {
+        final config = saved[#config] as PanelConfig;
+        final display = config is WirenBoardDeviceConfig
+            ? config.display
+            : (config as DeviceTileConfig).display;
+        final id = native ? 'state' : 'Control 1';
+        expect(display.labels[id], 'Kitchen lights');
+        expect(display.properties, [native ? 'temperature' : 'Temperature']);
+        if (config is WirenBoardDeviceConfig) {
+          expect(config.controlIds, isNull);
+        }
+      } else if (entry.key == 'reading selector') {
+        expect(saved[#config], isA<ProgressConfig>());
+        expect((saved[#config] as ProgressConfig).jsonPath, isNull);
+        expect((saved[#config] as ProgressConfig).unit, 'V');
+        expect(saved[#name], 'Supply voltage');
+      } else {
+        expect(saved[#config].encode(), suggestion.config!.encode());
+      }
       expect(saved[#retain], isFalse);
-      if (!editing) expect(saved[#type], suggestion.type);
+      if (!editing) {
+        expect(
+          saved[#type],
+          entry.key == 'reading selector'
+              ? PanelType.progress
+              : suggestion.type,
+        );
+      }
       expect(
         composeTopic(
           saved[#topicPrefixOverride],

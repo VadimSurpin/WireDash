@@ -3795,4 +3795,20 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wbZ2mDevices => 'Zařízení Z2M ve Wirenboardu';
+
+  @override
+  String get panelPropertyWidget => 'Widget';
+
+  @override
+  String get panelDisplayTitle => 'Obsah karty';
+
+  @override
+  String get panelDisplayHint =>
+      'Vyberte vlastnosti zobrazené na této kartě. Vlastní popisky platí jen pro tento panel. Otevřením karty zobrazíte všechny ovládací prvky zařízení.';
+
+  @override
+  String get panelDisplayLabel => 'Vlastní popisek (volitelné)';
+
+  @override
+  String get panelDisplayReset => 'Obnovit obsah a popisky karty';
 }

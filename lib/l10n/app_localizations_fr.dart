@@ -3813,4 +3813,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get wbZ2mDevices => 'Appareils Z2M de Wirenboard';
+
+  @override
+  String get panelPropertyWidget => 'Widget';
+
+  @override
+  String get panelDisplayTitle => 'Contenu de la carte';
+
+  @override
+  String get panelDisplayHint =>
+      'Choisissez les propriétés affichées sur cette carte. Les libellés personnalisés ne concernent que ce panneau. Ouvrez la carte pour accéder à toutes les commandes de l’appareil.';
+
+  @override
+  String get panelDisplayLabel => 'Libellé personnalisé (facultatif)';
+
+  @override
+  String get panelDisplayReset => 'Réinitialiser le contenu et les libellés';
 }
