@@ -1308,6 +1308,8 @@
   "engineRemoveBody": "Automationerna slutar köras. Dina regler ligger kvar på hubben, så en ny installation av ZigDash Engine tar tillbaka dem.",
   "autoNoTargets": "Det här hemmet har ännu ingen lampa, kontakt, strömbrytare eller rullgardin att styra.",
   "proGetAutomations": "Obegränsade automationer; tre per hem är gratis",
+  "proGetRemote": "Fjärrstyrning var du än är, via ZigDash-reläet",
+  "proRemoteFair": "Fjärråtkomst ingår så länge ZigDash-reläet körs, för ett hem, upp till fem telefoner och normal användning i hushållet. Den kan ändras eller upphöra med förvarning.",
   "autoDeleteConfirm": "Ta bort den här automationen? Den slutar köras på hubben.",
   "statusConnectedRelay": "Ansluten · Borta via ZigDash",
   "remoteTitle": "Fjärrstyrning",

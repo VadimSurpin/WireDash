@@ -4223,6 +4223,13 @@ class AppLocalizationsCs extends AppLocalizations {
       'Neomezené automatizace; tři na domácnost jsou zdarma';
 
   @override
+  String get proGetRemote => 'Ovládání odkudkoli přes relay ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'Vzdálený přístup je zahrnut, dokud relay ZigDash běží, pro jeden domov, až pět telefonů a běžné domácí použití. Může se změnit nebo skončit s předchozím oznámením.';
+
+  @override
   String get autoDeleteConfirm =>
       'Smazat tuto automatizaci? Přestane běžet na hubu.';
 

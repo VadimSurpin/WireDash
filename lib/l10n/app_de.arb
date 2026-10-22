@@ -1308,6 +1308,8 @@
   "engineRemoveBody": "Automationen laufen nicht mehr. Ihre Regeln bleiben auf dem Hub, eine Neuinstallation von ZigDash Engine bringt sie zurück.",
   "autoNoTargets": "Dieses Zuhause hat noch kein Licht, keine Steckdose, keinen Schalter und keinen Rollladen zum Steuern.",
   "proGetAutomations": "Unbegrenzte Automationen; drei pro Zuhause sind kostenlos",
+  "proGetRemote": "Fernsteuerung von überall, über das ZigDash-Relay",
+  "proRemoteFair": "Fernzugriff ist enthalten, solange das ZigDash-Relay läuft, für ein Zuhause, bis zu fünf Telefone und normale Nutzung im Haushalt. Er kann sich mit Vorankündigung ändern oder enden.",
   "autoDeleteConfirm": "Diese Automation löschen? Sie läuft dann nicht mehr auf Ihrem Hub.",
   "statusConnectedRelay": "Verbunden · Unterwegs über ZigDash",
   "remoteTitle": "Fernsteuerung",

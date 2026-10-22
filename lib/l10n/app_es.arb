@@ -1308,6 +1308,8 @@
   "engineRemoveBody": "Las automatizaciones dejan de ejecutarse. Tus reglas se quedan en el hub, así que al reinstalar ZigDash Engine vuelven.",
   "autoNoTargets": "Este hogar aún no tiene luces, enchufes, interruptores ni persianas que controlar.",
   "proGetAutomations": "Automatizaciones ilimitadas; tres por hogar son gratis",
+  "proGetRemote": "Control remoto desde cualquier lugar, a través del relay de ZigDash",
+  "proRemoteFair": "El acceso remoto está incluido mientras el relay de ZigDash funcione, para un hogar, hasta cinco teléfonos y un uso doméstico normal. Puede cambiar o terminar con aviso previo.",
   "autoDeleteConfirm": "¿Eliminar esta automatización? Deja de ejecutarse en tu hub.",
   "statusConnectedRelay": "Conectado · Fuera, vía ZigDash",
   "remoteTitle": "Control remoto",

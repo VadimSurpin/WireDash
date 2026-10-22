@@ -1308,6 +1308,8 @@
   "engineRemoveBody": "Automatiseringen stoppen. Je regels blijven op de hub, dus ZigDash Engine opnieuw installeren brengt ze terug.",
   "autoNoTargets": "Dit huis heeft nog geen lamp, stekker, schakelaar of rolluik om te bedienen.",
   "proGetAutomations": "Onbeperkte automatiseringen; drie per huis zijn gratis",
+  "proGetRemote": "Bediening op afstand van overal, via de ZigDash-relay",
+  "proRemoteFair": "Toegang op afstand is inbegrepen zolang de ZigDash-relay draait, voor één huis, tot vijf telefoons en normaal huishoudelijk gebruik. Dit kan met aankondiging veranderen of stoppen.",
   "autoDeleteConfirm": "Deze automatisering verwijderen? Hij draait dan niet meer op je hub.",
   "statusConnectedRelay": "Verbonden · Onderweg via ZigDash",
   "remoteTitle": "Bediening op afstand",

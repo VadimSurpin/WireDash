@@ -4222,6 +4222,14 @@ class AppLocalizationsPl extends AppLocalizations {
       'Bez limitu automatyzacji; trzy na dom są darmowe';
 
   @override
+  String get proGetRemote =>
+      'Zdalne sterowanie z dowolnego miejsca przez przekaźnik ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'Dostęp zdalny jest wliczony, dopóki działa przekaźnik ZigDash, dla jednego domu, do pięciu telefonów i zwykłego domowego użytku. Może się zmienić lub zakończyć po wcześniejszym powiadomieniu.';
+
+  @override
   String get autoDeleteConfirm =>
       'Usunąć tę automatyzację? Przestanie działać na hubie.';
 

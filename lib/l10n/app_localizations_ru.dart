@@ -4216,6 +4216,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Автоматизации без ограничений; три на дом бесплатно';
 
   @override
+  String get proGetRemote =>
+      'Управление откуда угодно через ретранслятор ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'Удалённый доступ включён, пока работает ретранслятор ZigDash, для одного дома, до пяти телефонов и обычного домашнего использования. Он может измениться или прекратиться с предварительным уведомлением.';
+
+  @override
   String get autoDeleteConfirm =>
       'Удалить эту автоматизацию? Она перестанет работать на хабе.';
 

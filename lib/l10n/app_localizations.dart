@@ -7458,6 +7458,18 @@ abstract class AppLocalizations {
   /// **'Unlimited automations; three per home are free'**
   String get proGetAutomations;
 
+  /// No description provided for @proGetRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control from anywhere, through the ZigDash relay'**
+  String get proGetRemote;
+
+  /// No description provided for @proRemoteFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote access is included while the ZigDash relay runs, for one home, up to five phones and normal household use. It may change or end with notice.'**
+  String get proRemoteFair;
+
   /// No description provided for @autoDeleteConfirm.
   ///
   /// In en, this message translates to:

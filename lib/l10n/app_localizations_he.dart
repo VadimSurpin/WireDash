@@ -4178,6 +4178,13 @@ class AppLocalizationsHe extends AppLocalizations {
   String get proGetAutomations => 'אוטומציות ללא הגבלה; שלוש לכל בית בחינם';
 
   @override
+  String get proGetRemote => 'שליטה מרחוק מכל מקום, דרך הממסר של ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'גישה מרחוק כלולה כל עוד הממסר של ZigDash פועל, לבית אחד, עד חמישה טלפונים ושימוש ביתי רגיל. היא עשויה להשתנות או להסתיים בהודעה מראש.';
+
+  @override
   String get autoDeleteConfirm =>
       'למחוק את האוטומציה הזו? היא תפסיק לרוץ ברכזת.';
 

@@ -4228,6 +4228,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Automações ilimitadas; três por casa são grátis';
 
   @override
+  String get proGetRemote =>
+      'Controlo remoto de qualquer lugar, através do relay do ZigDash';
+
+  @override
+  String get proRemoteFair =>
+      'O acesso remoto está incluído enquanto o relay do ZigDash funcionar, para uma casa, até cinco telemóveis e uso doméstico normal. Pode mudar ou terminar com aviso prévio.';
+
+  @override
   String get autoDeleteConfirm =>
       'Excluir esta automação? Ela para de rodar no seu hub.';
 

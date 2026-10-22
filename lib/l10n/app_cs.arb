@@ -1223,6 +1223,8 @@
   "engineRemoveBody": "Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace ZigDash Engine vrátí.",
   "autoNoTargets": "Tato domácnost zatím nemá žádné světlo, zásuvku, vypínač ani roletu k ovládání.",
   "proGetAutomations": "Neomezené automatizace; tři na domácnost jsou zdarma",
+  "proGetRemote": "Ovládání odkudkoli přes relay ZigDash",
+  "proRemoteFair": "Vzdálený přístup je zahrnut, dokud relay ZigDash běží, pro jeden domov, až pět telefonů a běžné domácí použití. Může se změnit nebo skončit s předchozím oznámením.",
   "autoDeleteConfirm": "Smazat tuto automatizaci? Přestane běžet na hubu.",
   "statusConnectedRelay": "Připojeno · Mimo domov přes ZigDash",
   "remoteTitle": "Dálkové ovládání",

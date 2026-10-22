@@ -1303,6 +1303,8 @@
   "engineRemoveBody": "Automatyzacje przestaną działać. Reguły zostają na hubie, więc ponowna instalacja ZigDash Engine je przywróci.",
   "autoNoTargets": "Ten dom nie ma jeszcze światła, gniazdka, przełącznika ani rolety do sterowania.",
   "proGetAutomations": "Bez limitu automatyzacji; trzy na dom są darmowe",
+  "proGetRemote": "Zdalne sterowanie z dowolnego miejsca przez przekaźnik ZigDash",
+  "proRemoteFair": "Dostęp zdalny jest wliczony, dopóki działa przekaźnik ZigDash, dla jednego domu, do pięciu telefonów i zwykłego domowego użytku. Może się zmienić lub zakończyć po wcześniejszym powiadomieniu.",
   "autoDeleteConfirm": "Usunąć tę automatyzację? Przestanie działać na hubie.",
   "statusConnectedRelay": "Połączono · Poza domem przez ZigDash",
   "remoteTitle": "Sterowanie zdalne",

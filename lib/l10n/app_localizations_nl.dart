@@ -4231,6 +4231,14 @@ class AppLocalizationsNl extends AppLocalizations {
       'Onbeperkte automatiseringen; drie per huis zijn gratis';
 
   @override
+  String get proGetRemote =>
+      'Bediening op afstand van overal, via de ZigDash-relay';
+
+  @override
+  String get proRemoteFair =>
+      'Toegang op afstand is inbegrepen zolang de ZigDash-relay draait, voor één huis, tot vijf telefoons en normaal huishoudelijk gebruik. Dit kan met aankondiging veranderen of stoppen.';
+
+  @override
   String get autoDeleteConfirm =>
       'Deze automatisering verwijderen? Hij draait dan niet meer op je hub.';
 
