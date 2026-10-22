@@ -21,7 +21,10 @@ The relay never reads device data: hubs and phones seal it with the Home's key
 4. Broker admin: `mosquitto_ctrl dynsec init deploy/data/dynsec.json admin <pw>`.
 5. Play: a service account with "View financial data" on the Play Console app,
    its JSON key in `deploy/secrets/play-service-account.json` (owner).
-6. `CADDY_CERTS=… ADMIN_PASSWORD=… EDGE_NETWORK=… docker compose up -d` in `deploy/`.
-7. Certificate renewals: Mosquitto rereads its certificate on SIGHUP; a weekly
-   `docker kill -s HUP zigdash-relay-mosquitto-1` (systemd timer or cron).
+6. `deploy/.env`: `ADMIN_PASSWORD`, `EDGE_NETWORK`, `CADDY_CERT_DIR` (Caddy's
+   `.../certificates/acme-v02.api.letsencrypt.org-directory/relay.zigdash.app`).
+   Run `deploy/sync-certs.sh` once Caddy has the certificate, then
+   `docker compose up -d --build` in `deploy/`.
+7. Certificate renewals: `zigdash-relay-certs.timer` runs `sync-certs.sh` daily;
+   it copies a renewed certificate and sends Mosquitto SIGHUP.
 8. Before go-live: the legal groundwork (wayfinder ticket 11).
