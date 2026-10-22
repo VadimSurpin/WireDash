@@ -7,6 +7,9 @@ import '../core/router/routes.dart';
 import '../engine/engine_providers.dart';
 import '../mqtt/endpoint.dart';
 import '../mqtt/providers/mqtt_manager_provider.dart';
+import '../features/pro/pro.dart';
+import '../features/pro/pro_screen.dart';
+import 'remote_phones.dart';
 import 'remote_setup.dart';
 
 /// Remote control through the ZigDash relay (3.1, zigdash-3.0.md §5).
@@ -85,6 +88,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 leading: const Icon(Icons.public),
                 title: Text(l10n.remoteViaRelayNow),
               ),
+            RemotePhonesSection(connectionId: widget.connectionId),
             const SizedBox(height: 16),
             OutlinedButton(
               key: const Key('remote-off'),
@@ -98,7 +102,13 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               onPressed: () => context.push(Routes.homeAutomations(widget.connectionId)),
               child: Text(l10n.automationsTitle),
             ),
-          ] else
+          ] else if (proFlavor != 'play' && !relayIsTest)
+            Text(l10n.remotePlayOnly)
+          else if (proFlavor == 'play' && !relayIsTest && ref.watch(proStatusProvider) != ProStatus.unlocked) ...[
+            Text(l10n.remoteNeedsPro),
+            const SizedBox(height: 12),
+            FilledButton(onPressed: () => openPro(context), child: Text(l10n.autoCeilingSeePro)),
+          ] else ...[
             FilledButton(
               key: const Key('remote-on'),
               onPressed: _busy ? null : _turnOn,
@@ -106,6 +116,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                   ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
                   : Text(l10n.remoteSetUp),
             ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              key: const Key('remote-restore'),
+              onPressed: _busy ? null : () => restoreRemoteBackup(context, ref, widget.connectionId),
+              icon: const Icon(Icons.key_outlined),
+              label: Text(l10n.remoteBackupRestore),
+            ),
+          ],
           if (_error != null) ...[
             const SizedBox(height: 12),
             Text(_error!, style: TextStyle(color: theme.colorScheme.error)),

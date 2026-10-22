@@ -4288,4 +4288,89 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get remoteViaRelayNow => 'Deze telefoon is nu via de relay verbonden.';
+
+  @override
+  String get remotePhones => 'Telefoons met toegang op afstand';
+
+  @override
+  String get remoteThisPhone => 'Deze telefoon';
+
+  @override
+  String get remoteOtherPhone => 'Een andere telefoon';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Toegevoegd op $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Verwijderen';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Deze telefoon verwijderen? Hij kan dit huis dan niet meer op afstand bereiken.';
+
+  @override
+  String get remoteAddPhone => 'Telefoon toevoegen';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Scan dit thuis met de camera van de andere telefoon. Die opent ZigDash en zet daar bediening op afstand aan. Toon het alleen aan je eigen telefoons.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'De relay gaf geen toegang voor nog een telefoon. Een huis kan er tot vijf hebben.';
+
+  @override
+  String get remoteBackupSave => 'Sleutelback-up opslaan';
+
+  @override
+  String get remoteBackupRestore => 'Herstellen uit een sleutelback-up';
+
+  @override
+  String get remoteBackupPassphrase => 'Wachtzin voor de back-up';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Raak je deze telefoon kwijt, dan brengen de back-up en deze wachtzin bediening op afstand terug op een nieuwe. Minstens 8 tekens, en bewaar de wachtzin ergens anders dan het bestand.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'De wachtzin die je koos bij het opslaan.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Wachtzin nogmaals';
+
+  @override
+  String get remoteBackupSaved => 'Sleutelback-up opgeslagen';
+
+  @override
+  String get remoteBackupWrong => 'Die wachtzin opent deze back-up niet.';
+
+  @override
+  String get remoteBackupWrongFile => 'Dat is geen sleutelback-up van ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Bediening op afstand zit voorlopig in de Google Play-versie van ZigDash.';
+
+  @override
+  String get remotePairTitle => 'Bediening op afstand toevoegen';
+
+  @override
+  String get remotePairBody =>
+      'Welk huis is dit? ZigDash bewaart de toegang op afstand daarvoor.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Stel dit huis eerst in op deze telefoon, thuis. Scan de code dan opnieuw.';
+
+  @override
+  String get remotePairInvalid =>
+      'Dit is geen code voor bediening op afstand van ZigDash, of hij is afgeknipt.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Bediening op afstand staat aan voor $home';
+  }
 }

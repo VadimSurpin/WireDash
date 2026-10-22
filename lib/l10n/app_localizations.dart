@@ -7565,6 +7565,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This phone is connected through the relay right now.'**
   String get remoteViaRelayNow;
+
+  /// No description provided for @remotePhones.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones with remote access'**
+  String get remotePhones;
+
+  /// No description provided for @remoteThisPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone'**
+  String get remoteThisPhone;
+
+  /// No description provided for @remoteOtherPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Another phone'**
+  String get remoteOtherPhone;
+
+  /// No description provided for @remotePhoneAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {date}'**
+  String remotePhoneAdded(Object date);
+
+  /// No description provided for @remoteRemovePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remoteRemovePhone;
+
+  /// No description provided for @remoteRemovePhoneConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this phone? It can no longer reach this home from away.'**
+  String get remoteRemovePhoneConfirm;
+
+  /// No description provided for @remoteAddPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a phone'**
+  String get remoteAddPhone;
+
+  /// No description provided for @remoteAddPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At home, scan this with the other phone\'s camera. It opens ZigDash and adds remote control there. Show it only to your own phones.'**
+  String get remoteAddPhoneHint;
+
+  /// No description provided for @remoteAddPhoneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The relay didn\'t give a login for another phone. A home can have up to five.'**
+  String get remoteAddPhoneFailed;
+
+  /// No description provided for @remoteBackupSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a key backup'**
+  String get remoteBackupSave;
+
+  /// No description provided for @remoteBackupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a key backup'**
+  String get remoteBackupRestore;
+
+  /// No description provided for @remoteBackupPassphrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup passphrase'**
+  String get remoteBackupPassphrase;
+
+  /// No description provided for @remoteBackupPassphraseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you lose this phone, the backup and this passphrase bring remote control back on a new one. Use at least 8 characters, and keep the passphrase somewhere else than the file.'**
+  String get remoteBackupPassphraseHint;
+
+  /// No description provided for @remoteBackupPassphraseAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'The passphrase you chose when you saved the backup.'**
+  String get remoteBackupPassphraseAsk;
+
+  /// No description provided for @remoteBackupPassphraseAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Passphrase again'**
+  String get remoteBackupPassphraseAgain;
+
+  /// No description provided for @remoteBackupSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Key backup saved'**
+  String get remoteBackupSaved;
+
+  /// No description provided for @remoteBackupWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'That passphrase doesn\'t open this backup.'**
+  String get remoteBackupWrong;
+
+  /// No description provided for @remoteBackupWrongFile.
+  ///
+  /// In en, this message translates to:
+  /// **'That isn\'t a ZigDash key backup.'**
+  String get remoteBackupWrongFile;
+
+  /// No description provided for @remotePlayOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is in the Google Play version of ZigDash for now.'**
+  String get remotePlayOnly;
+
+  /// No description provided for @remotePairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add remote control'**
+  String get remotePairTitle;
+
+  /// No description provided for @remotePairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Which home is this? ZigDash keeps the remote login for it.'**
+  String get remotePairBody;
+
+  /// No description provided for @remotePairNoHomes.
+  ///
+  /// In en, this message translates to:
+  /// **'Set this home up on this phone first, at home. Then scan the code again.'**
+  String get remotePairNoHomes;
+
+  /// No description provided for @remotePairInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This code isn\'t a ZigDash remote control code, or it was cut off.'**
+  String get remotePairInvalid;
+
+  /// No description provided for @remotePairDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote control is on for {home}'**
+  String remotePairDone(Object home);
 }
 
 class _AppLocalizationsDelegate

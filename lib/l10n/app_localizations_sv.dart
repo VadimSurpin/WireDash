@@ -4275,4 +4275,90 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get remoteViaRelayNow =>
       'Den här telefonen är ansluten via reläet just nu.';
+
+  @override
+  String get remotePhones => 'Telefoner med fjärråtkomst';
+
+  @override
+  String get remoteThisPhone => 'Den här telefonen';
+
+  @override
+  String get remoteOtherPhone => 'En annan telefon';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Tillagd $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Ta bort';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Ta bort den här telefonen? Den når inte längre hemmet på distans.';
+
+  @override
+  String get remoteAddPhone => 'Lägg till en telefon';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Hemma: skanna det här med den andra telefonens kamera. Den öppnar ZigDash och slår på fjärrstyrning där. Visa det bara för dina egna telefoner.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Reläet gav ingen inloggning för en till telefon. Ett hem kan ha upp till fem.';
+
+  @override
+  String get remoteBackupSave => 'Spara en nyckelbackup';
+
+  @override
+  String get remoteBackupRestore => 'Återställ från en nyckelbackup';
+
+  @override
+  String get remoteBackupPassphrase => 'Lösenfras för backupen';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Tappar du den här telefonen ger backupen och lösenfrasen tillbaka fjärrstyrningen på en ny. Minst 8 tecken, och förvara lösenfrasen någon annanstans än filen.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'Lösenfrasen du valde när du sparade backupen.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Lösenfrasen igen';
+
+  @override
+  String get remoteBackupSaved => 'Nyckelbackup sparad';
+
+  @override
+  String get remoteBackupWrong => 'Den lösenfrasen öppnar inte backupen.';
+
+  @override
+  String get remoteBackupWrongFile =>
+      'Det där är ingen nyckelbackup från ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Fjärrstyrning finns tills vidare i Google Play-versionen av ZigDash.';
+
+  @override
+  String get remotePairTitle => 'Lägg till fjärrstyrning';
+
+  @override
+  String get remotePairBody =>
+      'Vilket hem är det här? ZigDash sparar fjärrinloggningen för det.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Ställ först in hemmet på den här telefonen, hemma. Skanna sedan koden igen.';
+
+  @override
+  String get remotePairInvalid =>
+      'Koden är ingen fjärrstyrningskod från ZigDash, eller så klipptes den av.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Fjärrstyrning är på för $home';
+  }
 }

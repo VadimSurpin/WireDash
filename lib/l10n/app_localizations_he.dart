@@ -4234,4 +4234,88 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get remoteViaRelayNow => 'הטלפון הזה מחובר עכשיו דרך הממסר.';
+
+  @override
+  String get remotePhones => 'טלפונים עם גישה מרחוק';
+
+  @override
+  String get remoteThisPhone => 'הטלפון הזה';
+
+  @override
+  String get remoteOtherPhone => 'טלפון אחר';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'נוסף ב־$date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'הסרה';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'להסיר את הטלפון הזה? הוא לא יוכל להגיע לבית הזה מבחוץ.';
+
+  @override
+  String get remoteAddPhone => 'הוספת טלפון';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'בבית, יש לסרוק את זה במצלמה של הטלפון השני. היא תפתח את ZigDash ותפעיל שם שליטה מרחוק. להציג רק לטלפונים שלך.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'הממסר לא נתן גישה לטלפון נוסף. לבית יכולים להיות עד חמישה.';
+
+  @override
+  String get remoteBackupSave => 'שמירת גיבוי מפתח';
+
+  @override
+  String get remoteBackupRestore => 'שחזור מגיבוי מפתח';
+
+  @override
+  String get remoteBackupPassphrase => 'סיסמת הגיבוי';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'אם הטלפון הזה ילך לאיבוד, הגיבוי והסיסמה הזו יחזירו את השליטה מרחוק בטלפון חדש. לפחות 8 תווים, ולשמור את הסיסמה במקום אחר מהקובץ.';
+
+  @override
+  String get remoteBackupPassphraseAsk => 'הסיסמה שבחרת כששמרת את הגיבוי.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'הסיסמה שוב';
+
+  @override
+  String get remoteBackupSaved => 'גיבוי המפתח נשמר';
+
+  @override
+  String get remoteBackupWrong => 'הסיסמה הזו לא פותחת את הגיבוי.';
+
+  @override
+  String get remoteBackupWrongFile => 'זה לא גיבוי מפתח של ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'בינתיים שליטה מרחוק נמצאת בגרסת Google Play של ZigDash.';
+
+  @override
+  String get remotePairTitle => 'הוספת שליטה מרחוק';
+
+  @override
+  String get remotePairBody =>
+      'איזה בית זה? ZigDash ישמור עבורו את הגישה מרחוק.';
+
+  @override
+  String get remotePairNoHomes =>
+      'יש להגדיר קודם את הבית בטלפון הזה, בבית. אחר כך לסרוק שוב את הקוד.';
+
+  @override
+  String get remotePairInvalid =>
+      'הקוד הזה אינו קוד שליטה מרחוק של ZigDash, או שהוא נחתך.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'שליטה מרחוק פעילה עבור $home';
+  }
 }

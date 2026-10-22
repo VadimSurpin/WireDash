@@ -36,6 +36,14 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Remote control (3.1): a paired phone shows a QR code holding
+                 zigdash://remote/pair-phone?c=…; the camera app opens it here. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="zigdash" android:host="remote" />
+            </intent-filter>
         </activity>
         <!-- The shutter pop-up, opened by a shutter's tile or widget. -->
         <activity

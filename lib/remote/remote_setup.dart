@@ -16,12 +16,20 @@ import 'remote_seal.dart';
 const relayApi = String.fromEnvironment('ZIGDASH_RELAY_API', defaultValue: 'https://relay.zigdash.app');
 
 /// A test relay (not the production one) accepts "test-pro-…" tokens.
-bool get _testRelay => relayApi != 'https://relay.zigdash.app';
+bool get relayIsTest => relayApi != 'https://relay.zigdash.app';
 
 /// Topic ZigDash Engine takes its relay login from (never retained).
 const engineRemoteTopic = 'zigdash/remote/set';
 
 enum RemoteSetupResult { ready, noPro, notAtHome, refused, unreachable }
+
+/// One phone with remote access to a Home.
+class RemotePhone {
+  const RemotePhone({required this.username, required this.created, required this.thisPhone});
+  final String username;
+  final DateTime created;
+  final bool thisPhone;
+}
 
 /// Sets remote control up for a Home, and turns it off (zigdash-3.0.md §5).
 class RemoteSetup {
@@ -62,7 +70,7 @@ class RemoteSetup {
   Future<RemoteSetupResult> setUp(String connectionId) async {
     final mgr = await _managerOf(connectionId);
     if (!mgr.isConnected) return RemoteSetupResult.notAtHome;
-    final token = await _purchaseToken() ?? (_testRelay && kDebugMode ? 'test-pro-$connectionId' : null);
+    final token = await _purchaseToken() ?? (relayIsTest && kDebugMode ? 'test-pro-$connectionId' : null);
     if (token == null) return RemoteSetupResult.noPro;
     final (status, body) = await _call('POST', '/v1/homes', body: {'purchaseToken': token});
     if (status == 0) return RemoteSetupResult.unreachable;
@@ -82,6 +90,41 @@ class RemoteSetup {
     ));
     return RemoteSetupResult.ready;
   }
+
+  /// The Home's phones on the relay, as this phone sees them; null when the
+  /// relay can't be asked.
+  Future<List<RemotePhone>?> phones(String connectionId) async {
+    final home = await _store.read(connectionId);
+    if (home == null) return null;
+    final (status, body) = await _call('GET', '/v1/homes/${home.homeId}/phones', auth: home);
+    if (status != 200 || body == null) return null;
+    return [
+      for (final p in (body['list'] as List? ?? const []))
+        if (p is Map) RemotePhone(username: '${p['username']}', created: DateTime.fromMillisecondsSinceEpoch((p['created'] as num).toInt()), thisPhone: p['username'] == home.username),
+    ]..sort((a, b) => a.created.compareTo(b.created));
+  }
+
+  /// A login for another phone of this Home, with the Home's key, for the
+  /// QR code. Null when the relay refused (limit reached) or can't be asked.
+  Future<RemoteHome?> newPhone(String connectionId) async {
+    final home = await _store.read(connectionId);
+    if (home == null) return null;
+    final (status, body) = await _call('POST', '/v1/homes/${home.homeId}/phones', auth: home);
+    final phone = body?['phone'] as Map?;
+    if (status != 200 || phone == null) return null;
+    return RemoteHome(homeId: home.homeId, url: '${phone['url']}', username: '${phone['username']}', password: '${phone['password']}', key: home.key);
+  }
+
+  /// Removes another phone from the relay (a lost or sold phone).
+  Future<bool> removePhone(String connectionId, String username) async {
+    final home = await _store.read(connectionId);
+    if (home == null) return false;
+    final (status, _) = await _call('DELETE', '/v1/homes/${home.homeId}/phones/$username', auth: home);
+    return status == 200;
+  }
+
+  /// Keeps a login brought from another phone (QR code or backup file).
+  Future<void> adopt(String connectionId, RemoteHome home) => _store.write(connectionId, home);
 
   /// Removes this phone from the relay and forgets the Home's login here;
   /// with [everywhere], also tells ZigDash Engine on the hub to disconnect.

@@ -6,6 +6,7 @@ import '../../data/database/tables/panels.dart';
 import '../../alerts/alert_editor_screen.dart';
 import '../../alerts/alerts_screen.dart';
 import '../../engine/automations_screen.dart';
+import '../../remote/pair_phone_screen.dart';
 import '../../remote/remote_screen.dart';
 import '../../features/ha_import/ha_import_screen.dart';
 import '../../features/connections/screens/connection_form_screen.dart';
@@ -81,6 +82,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       // Retired carousel address; the redirect above always leaves it.
       GoRoute(path: Routes.onboarding, redirect: (_, __) => Routes.setup),
+      // Remote control (3.1): another phone's QR code, opened by the camera app.
+      GoRoute(
+        path: '/pair-phone',
+        builder: (_, state) => PairPhoneScreen(code: state.uri.queryParameters['c']),
+      ),
       // First run and adding a home: outside the navigation shell.
       GoRoute(
         path: Routes.setup,

@@ -4281,4 +4281,88 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remoteViaRelayNow => 'Tento telefon je teď připojen přes relé.';
+
+  @override
+  String get remotePhones => 'Telefony se vzdáleným přístupem';
+
+  @override
+  String get remoteThisPhone => 'Tento telefon';
+
+  @override
+  String get remoteOtherPhone => 'Jiný telefon';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Přidán $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Odebrat';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Odebrat tento telefon? Už se k této domácnosti nedostane zvenku.';
+
+  @override
+  String get remoteAddPhone => 'Přidat telefon';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Doma to naskenujte fotoaparátem druhého telefonu. Otevře ZigDash a zapne tam dálkové ovládání. Ukazujte jen vlastním telefonům.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Relé nevydalo přístup pro další telefon. Domácnost jich může mít až pět.';
+
+  @override
+  String get remoteBackupSave => 'Uložit zálohu klíče';
+
+  @override
+  String get remoteBackupRestore => 'Obnovit ze zálohy klíče';
+
+  @override
+  String get remoteBackupPassphrase => 'Heslo zálohy';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Když tento telefon ztratíte, záloha a toto heslo vrátí dálkové ovládání na nový. Aspoň 8 znaků; heslo mějte jinde než soubor.';
+
+  @override
+  String get remoteBackupPassphraseAsk => 'Heslo zvolené při ukládání zálohy.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Heslo znovu';
+
+  @override
+  String get remoteBackupSaved => 'Záloha klíče uložena';
+
+  @override
+  String get remoteBackupWrong => 'Toto heslo zálohu neotevře.';
+
+  @override
+  String get remoteBackupWrongFile => 'To není záloha klíče ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Dálkové ovládání je zatím ve verzi ZigDash z Google Play.';
+
+  @override
+  String get remotePairTitle => 'Přidat dálkové ovládání';
+
+  @override
+  String get remotePairBody =>
+      'Která je to domácnost? ZigDash pro ni uloží vzdálený přístup.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Nejdřív tuto domácnost nastavte na tomto telefonu, doma. Pak kód naskenujte znovu.';
+
+  @override
+  String get remotePairInvalid =>
+      'Tento kód není kód dálkového ovládání ZigDash, nebo byl useknutý.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Dálkové ovládání zapnuto pro $home';
+  }
 }

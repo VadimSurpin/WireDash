@@ -4276,4 +4276,89 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get remoteViaRelayNow =>
       'Этот телефон сейчас подключён через ретранслятор.';
+
+  @override
+  String get remotePhones => 'Телефоны с удалённым доступом';
+
+  @override
+  String get remoteThisPhone => 'Этот телефон';
+
+  @override
+  String get remoteOtherPhone => 'Другой телефон';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Добавлен $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Удалить';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Удалить этот телефон? Он больше не сможет подключаться к дому издалека.';
+
+  @override
+  String get remoteAddPhone => 'Добавить телефон';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Дома отсканируйте это камерой другого телефона. Откроется ZigDash и включит там удалённое управление. Показывайте только своим телефонам.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Ретранслятор не выдал доступ для ещё одного телефона. У дома может быть до пяти.';
+
+  @override
+  String get remoteBackupSave => 'Сохранить резервную копию ключа';
+
+  @override
+  String get remoteBackupRestore => 'Восстановить из копии ключа';
+
+  @override
+  String get remoteBackupPassphrase => 'Пароль копии';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Если потеряете этот телефон, копия и этот пароль вернут удалённое управление на новом. Не меньше 8 символов; храните пароль отдельно от файла.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'Пароль, выбранный при сохранении копии.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Пароль ещё раз';
+
+  @override
+  String get remoteBackupSaved => 'Копия ключа сохранена';
+
+  @override
+  String get remoteBackupWrong => 'Этот пароль не открывает копию.';
+
+  @override
+  String get remoteBackupWrongFile => 'Это не копия ключа ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Пока удалённое управление есть в версии ZigDash из Google Play.';
+
+  @override
+  String get remotePairTitle => 'Добавить удалённое управление';
+
+  @override
+  String get remotePairBody =>
+      'Какой это дом? ZigDash сохранит для него удалённый доступ.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Сначала настройте этот дом на этом телефоне, дома. Потом отсканируйте код снова.';
+
+  @override
+  String get remotePairInvalid =>
+      'Это не код удалённого управления ZigDash, или он обрезан.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Удалённое управление включено: $home';
+  }
 }

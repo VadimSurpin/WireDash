@@ -4293,4 +4293,90 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get remoteViaRelayNow =>
       'Questo telefono è connesso tramite il relay in questo momento.';
+
+  @override
+  String get remotePhones => 'Telefoni con accesso remoto';
+
+  @override
+  String get remoteThisPhone => 'Questo telefono';
+
+  @override
+  String get remoteOtherPhone => 'Un altro telefono';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Aggiunto il $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Rimuovi';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Rimuovere questo telefono? Non potrà più raggiungere questa casa da fuori.';
+
+  @override
+  String get remoteAddPhone => 'Aggiungi un telefono';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'A casa, inquadralo con la fotocamera dell\'altro telefono. Apre ZigDash e attiva lì il controllo remoto. Mostralo solo ai tuoi telefoni.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Il relay non ha dato un accesso per un altro telefono. Una casa può averne fino a cinque.';
+
+  @override
+  String get remoteBackupSave => 'Salva un backup della chiave';
+
+  @override
+  String get remoteBackupRestore => 'Ripristina da un backup della chiave';
+
+  @override
+  String get remoteBackupPassphrase => 'Passphrase del backup';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Se perdi questo telefono, il backup e questa passphrase riportano il controllo remoto su uno nuovo. Almeno 8 caratteri, e tieni la passphrase in un posto diverso dal file.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'La passphrase scelta quando hai salvato il backup.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Ripeti la passphrase';
+
+  @override
+  String get remoteBackupSaved => 'Backup della chiave salvato';
+
+  @override
+  String get remoteBackupWrong => 'Questa passphrase non apre il backup.';
+
+  @override
+  String get remoteBackupWrongFile =>
+      'Questo non è un backup di chiave di ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Per ora il controllo remoto è nella versione Google Play di ZigDash.';
+
+  @override
+  String get remotePairTitle => 'Aggiungi il controllo remoto';
+
+  @override
+  String get remotePairBody =>
+      'Quale casa è? ZigDash conserva l\'accesso remoto per questa.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Configura prima questa casa su questo telefono, a casa. Poi inquadra di nuovo il codice.';
+
+  @override
+  String get remotePairInvalid =>
+      'Questo codice non è un codice di controllo remoto ZigDash, oppure è stato tagliato.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Controllo remoto attivo per $home';
+  }
 }

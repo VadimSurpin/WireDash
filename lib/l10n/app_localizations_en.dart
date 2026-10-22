@@ -4276,4 +4276,89 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get remoteViaRelayNow =>
       'This phone is connected through the relay right now.';
+
+  @override
+  String get remotePhones => 'Phones with remote access';
+
+  @override
+  String get remoteThisPhone => 'This phone';
+
+  @override
+  String get remoteOtherPhone => 'Another phone';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Added $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Remove';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Remove this phone? It can no longer reach this home from away.';
+
+  @override
+  String get remoteAddPhone => 'Add a phone';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'At home, scan this with the other phone\'s camera. It opens ZigDash and adds remote control there. Show it only to your own phones.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'The relay didn\'t give a login for another phone. A home can have up to five.';
+
+  @override
+  String get remoteBackupSave => 'Save a key backup';
+
+  @override
+  String get remoteBackupRestore => 'Restore from a key backup';
+
+  @override
+  String get remoteBackupPassphrase => 'Backup passphrase';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'If you lose this phone, the backup and this passphrase bring remote control back on a new one. Use at least 8 characters, and keep the passphrase somewhere else than the file.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'The passphrase you chose when you saved the backup.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Passphrase again';
+
+  @override
+  String get remoteBackupSaved => 'Key backup saved';
+
+  @override
+  String get remoteBackupWrong => 'That passphrase doesn\'t open this backup.';
+
+  @override
+  String get remoteBackupWrongFile => 'That isn\'t a ZigDash key backup.';
+
+  @override
+  String get remotePlayOnly =>
+      'Remote control is in the Google Play version of ZigDash for now.';
+
+  @override
+  String get remotePairTitle => 'Add remote control';
+
+  @override
+  String get remotePairBody =>
+      'Which home is this? ZigDash keeps the remote login for it.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Set this home up on this phone first, at home. Then scan the code again.';
+
+  @override
+  String get remotePairInvalid =>
+      'This code isn\'t a ZigDash remote control code, or it was cut off.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Remote control is on for $home';
+  }
 }

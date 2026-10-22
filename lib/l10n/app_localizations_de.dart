@@ -4298,4 +4298,90 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get remoteViaRelayNow =>
       'Dieses Telefon ist gerade über das Relay verbunden.';
+
+  @override
+  String get remotePhones => 'Telefone mit Fernzugriff';
+
+  @override
+  String get remoteThisPhone => 'Dieses Telefon';
+
+  @override
+  String get remoteOtherPhone => 'Ein anderes Telefon';
+
+  @override
+  String remotePhoneAdded(Object date) {
+    return 'Hinzugefügt am $date';
+  }
+
+  @override
+  String get remoteRemovePhone => 'Entfernen';
+
+  @override
+  String get remoteRemovePhoneConfirm =>
+      'Dieses Telefon entfernen? Es erreicht dieses Zuhause dann nicht mehr von unterwegs.';
+
+  @override
+  String get remoteAddPhone => 'Telefon hinzufügen';
+
+  @override
+  String get remoteAddPhoneHint =>
+      'Scannen Sie das zu Hause mit der Kamera des anderen Telefons. Es öffnet ZigDash und richtet dort die Fernsteuerung ein. Zeigen Sie es nur Ihren eigenen Telefonen.';
+
+  @override
+  String get remoteAddPhoneFailed =>
+      'Das Relay hat keinen Zugang für ein weiteres Telefon vergeben. Ein Zuhause kann bis zu fünf haben.';
+
+  @override
+  String get remoteBackupSave => 'Schlüssel-Backup speichern';
+
+  @override
+  String get remoteBackupRestore => 'Aus Schlüssel-Backup wiederherstellen';
+
+  @override
+  String get remoteBackupPassphrase => 'Backup-Passphrase';
+
+  @override
+  String get remoteBackupPassphraseHint =>
+      'Geht dieses Telefon verloren, bringen Backup und Passphrase die Fernsteuerung auf ein neues. Mindestens 8 Zeichen, und bewahren Sie die Passphrase woanders auf als die Datei.';
+
+  @override
+  String get remoteBackupPassphraseAsk =>
+      'Die Passphrase, die Sie beim Speichern gewählt haben.';
+
+  @override
+  String get remoteBackupPassphraseAgain => 'Passphrase wiederholen';
+
+  @override
+  String get remoteBackupSaved => 'Schlüssel-Backup gespeichert';
+
+  @override
+  String get remoteBackupWrong => 'Diese Passphrase öffnet das Backup nicht.';
+
+  @override
+  String get remoteBackupWrongFile =>
+      'Das ist kein Schlüssel-Backup von ZigDash.';
+
+  @override
+  String get remotePlayOnly =>
+      'Die Fernsteuerung gibt es vorerst in der Google-Play-Version von ZigDash.';
+
+  @override
+  String get remotePairTitle => 'Fernsteuerung hinzufügen';
+
+  @override
+  String get remotePairBody =>
+      'Welches Zuhause ist das? ZigDash speichert den Fernzugang dafür.';
+
+  @override
+  String get remotePairNoHomes =>
+      'Richten Sie dieses Zuhause zuerst auf diesem Telefon ein, zu Hause. Scannen Sie den Code dann erneut.';
+
+  @override
+  String get remotePairInvalid =>
+      'Das ist kein Fernsteuerungs-Code von ZigDash, oder er wurde abgeschnitten.';
+
+  @override
+  String remotePairDone(Object home) {
+    return 'Fernsteuerung ist an für $home';
+  }
 }
