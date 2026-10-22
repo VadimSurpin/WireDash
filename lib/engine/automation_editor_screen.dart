@@ -11,6 +11,7 @@ import '../features/scenes/models/scene.dart';
 import '../features/scenes/scenes_providers.dart';
 import '../features/settings/providers/settings_controller.dart' show sharedPreferencesProvider;
 import '../l10n/app_localizations.dart';
+import '../core/analytics/analytics.dart';
 import 'automation.dart';
 import 'automation_text.dart';
 import 'automations_repo.dart';
@@ -184,6 +185,20 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
     final ok = await ref.read(automationsRepoProvider).save(widget.connectionId, rule);
     if (!mounted) return;
     if (ok) {
+      final count = ref.read(automationsProvider(widget.connectionId)).valueOrNull?.length ?? 0;
+      ref.read(analyticsProvider).track(AutomationSaved(
+        trigger: switch (rule.trigger) {
+          DeviceTrigger t when t.above != null || t.below != null => 'device_reading',
+          DeviceTrigger t when t.property == 'action' => 'device_action',
+          DeviceTrigger() => 'device_state',
+          TimeTrigger t => t.sun == null ? 'clock' : 'sun',
+        },
+        conditions: rule.conditions.length,
+        action: rule.action.kind.name,
+        offAfter: rule.action.offAfter > 0,
+        isNew: widget.existing == null,
+        homeCount: widget.existing == null ? count + 1 : count,
+      ));
       Navigator.of(context).pop();
     } else {
       setState(() {

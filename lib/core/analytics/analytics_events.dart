@@ -706,3 +706,87 @@ String bucket(
 
 String _snake(String camel) =>
     camel.replaceAllMapped(RegExp('[A-Z]'), (m) => '_${m[0]!.toLowerCase()}');
+
+/// The ZigDash Engine on the hub (3.0, zigdash-3.0.md §2): a step of
+/// putting it there or of its health as the app saw it. Never an address;
+/// Zigbee2MQTT's version as major.minor only.
+enum EngineStep {
+  offered,
+  installed,
+  consentShown,
+  consented,
+  declined,
+  tooOld,
+  failed,
+  removed,
+  startedAgain,
+  seenPaused,
+  seenStopped,
+}
+
+/// Which screen led to the Engine: Automations, Alerts or History.
+enum EngineFrom { automations, alerts, history }
+
+class EngineEvent extends AnalyticsEvent {
+  const EngineEvent(this.step, {this.z2m, this.from = EngineFrom.automations});
+
+  final EngineStep step;
+
+  /// Zigbee2MQTT's version string; reported as "major.minor".
+  final String? z2m;
+  final EngineFrom from;
+
+  @override
+  String get name => 'engine_setup';
+
+  @override
+  Map<String, String> get props => {
+        'step': _snake(step.name),
+        'from': from.name,
+        if (z2mMinor(z2m) != null) 'z2m': z2mMinor(z2m)!,
+      };
+}
+
+/// "2.14.1" → "2.14"; null when unreadable.
+String? z2mMinor(String? version) {
+  final m = RegExp(r'^(\d+)\.(\d+)').firstMatch(version ?? '');
+  return m == null ? null : '${m[1]}.${m[2]}';
+}
+
+/// An Automation was saved (3.0): its shape, never a device, a name or a
+/// time.
+class AutomationSaved extends AnalyticsEvent {
+  const AutomationSaved({
+    required this.trigger,
+    required this.conditions,
+    required this.action,
+    required this.offAfter,
+    required this.isNew,
+    required this.homeCount,
+  });
+
+  /// device_state, device_action, device_reading, clock or sun.
+  final String trigger;
+  final int conditions;
+
+  /// device or scene.
+  final String action;
+  final bool offAfter;
+  final bool isNew;
+
+  /// How many Automations the Home has after saving.
+  final int homeCount;
+
+  @override
+  String get name => 'automation_saved';
+
+  @override
+  Map<String, String> get props => {
+        'trigger': trigger,
+        'conditions': bucket(conditions, const [0, 1], top: '2+'),
+        'action': action,
+        'off_after': offAfter ? 'yes' : 'no',
+        'new': isNew ? 'yes' : 'no',
+        'count': bucket(homeCount, const [1, 2, 3], ranges: const [(4, 10)], top: '11+'),
+      };
+}

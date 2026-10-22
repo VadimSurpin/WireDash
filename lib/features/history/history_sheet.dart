@@ -294,7 +294,7 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      final r = await ensureEngine(context, ref, widget.connectionId);
+      final r = await ensureEngine(context, ref, widget.connectionId, from: EngineFrom.history);
       if (!mounted) return;
       switch (r) {
         case EngineSetup.ready:

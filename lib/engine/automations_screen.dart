@@ -8,6 +8,7 @@ import '../features/settings/providers/settings_controller.dart' show sharedPref
 import '../l10n/app_localizations.dart';
 import '../features/pro/pro.dart';
 import '../features/pro/pro_screen.dart';
+import '../core/analytics/analytics.dart';
 import 'automation.dart';
 import 'automation_editor_screen.dart';
 import 'automation_text.dart';
@@ -33,6 +34,31 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
   _Busy _busy = _Busy.none;
   String? _error;
 
+  void _track(EngineStep step) => ref.read(analyticsProvider).track(EngineEvent(step,
+      z2m: ref.read(engineViewProvider(widget.connectionId)).valueOrNull?.hub?.version));
+
+  final _seen = <HubEnginePhase>{};
+
+  /// Each phase worth counting, once per visit to this screen.
+  void _seenPhase(HubEnginePhase phase) {
+    if (!_seen.add(phase)) return;
+    switch (phase) {
+      case HubEnginePhase.notInstalled:
+        _track(EngineStep.offered);
+      case HubEnginePhase.needsConsent:
+        _track(EngineStep.consentShown);
+      case HubEnginePhase.tooOld:
+        _track(EngineStep.tooOld);
+      case HubEnginePhase.paused:
+        _track(EngineStep.seenPaused);
+      case HubEnginePhase.stoppedSelf:
+        _track(EngineStep.seenStopped);
+      case HubEnginePhase.checking:
+      case HubEnginePhase.running:
+        break;
+    }
+  }
+
   Future<void> _install() async {
     setState(() {
       _busy = _Busy.installing;
@@ -44,6 +70,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
       final source = await ref.read(engineSourceProvider.future);
       final (answer, error) = await installer.install(source);
       if (!mounted) return;
+      _track(answer == HubAnswer.ok ? EngineStep.installed : EngineStep.failed);
       setState(() => _error = switch (answer) {
             HubAnswer.ok => null,
             HubAnswer.refused => l10n.engineInstallRefused(error ?? ''),
@@ -63,6 +90,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
     });
     final l10n = context.l10n;
     await setEngineDeclined(ref.read(sharedPreferencesProvider), widget.connectionId, false);
+    _track(EngineStep.consented);
     try {
       final installer = await ref.read(engineInstallerProvider(widget.connectionId).future);
       final answer = await installer.allowExtensionsAndRestart();
@@ -87,6 +115,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
   }
 
   Future<void> _decline() async {
+    _track(EngineStep.declined);
     await setEngineDeclined(ref.read(sharedPreferencesProvider), widget.connectionId, true);
     ref.invalidate(engineViewProvider(widget.connectionId));
   }
@@ -110,6 +139,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
       final installer = await ref.read(engineInstallerProvider(widget.connectionId).future);
       final (answer, error) = await installer.remove();
       if (!mounted) return;
+      if (answer == HubAnswer.ok) _track(EngineStep.removed);
       if (answer != HubAnswer.ok) {
         setState(() => _error = answer == HubAnswer.refused
             ? l10n.engineInstallRefused(error ?? '')
@@ -140,6 +170,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
   Future<void> _startAgain() async {
     final installer = await ref.read(engineInstallerProvider(widget.connectionId).future);
     installer.startAgain();
+    _track(EngineStep.startedAgain);
   }
 
   @override
@@ -192,6 +223,9 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
   }
 
   List<Widget> _body(BuildContext context, AppLocalizations l10n, EngineView v) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _seenPhase(v.phase);
+    });
     if (_busy == _Busy.restarting) {
       return [_Progress(text: l10n.engineRestarting)];
     }

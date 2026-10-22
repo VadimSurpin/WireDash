@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/router/routes.dart';
+import '../core/analytics/analytics.dart';
 import 'engine_installer.dart';
 import 'engine_providers.dart';
 import 'engine_status.dart';
@@ -25,7 +26,8 @@ enum EngineSetup {
 /// Alerts, history and automations all run in the Engine (zigdash-3.0.md
 /// §4): before setting one up, put the Engine on the hub, installing it
 /// directly when Zigbee2MQTT allows it.
-Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String connectionId) async {
+Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String connectionId,
+    {EngineFrom from = EngineFrom.automations}) async {
   final view = await _settled(ref, connectionId);
   if (view == null) {
     if (context.mounted) unawaited(context.push(Routes.homeAutomations(connectionId)));
@@ -40,6 +42,9 @@ Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String con
     final installer = await ref.read(engineInstallerProvider(connectionId).future);
     final source = await ref.read(engineSourceProvider.future);
     final (answer, _) = await installer.install(source);
+    ref.read(analyticsProvider).track(EngineEvent(
+        answer == HubAnswer.ok ? EngineStep.installed : EngineStep.failed,
+        z2m: view.hub?.version, from: from));
     return answer == HubAnswer.ok ? EngineSetup.ready : EngineSetup.failed;
   } catch (_) {
     return EngineSetup.failed;

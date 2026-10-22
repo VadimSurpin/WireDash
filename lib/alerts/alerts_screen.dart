@@ -215,7 +215,7 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      final r = await ensureEngine(context, ref, _id);
+      final r = await ensureEngine(context, ref, _id, from: EngineFrom.alerts);
       if (!mounted) return false;
       switch (r) {
         case EngineSetup.ready:
