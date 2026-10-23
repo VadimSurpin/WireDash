@@ -114,6 +114,10 @@ enum SetupStepKind {
   /// [SetupStep.choice] saying from where (a [HaSignInFrom]).
   haOpened,
 
+  /// An answer to "where does Zigbee2MQTT run?" was picked (3.1.3), with
+  /// [SetupStep.platform]; counted when given, not only with later steps.
+  platformChosen,
+
   /// The review was left without creating a dashboard (2.10.2): back, or
   /// setup started over. Carries [SetupStep.devices] and
   /// [SetupStep.selected], the state of the list when it was left.

@@ -48,7 +48,10 @@ typedef ScanRunFactory = ScanRun Function(String deviceIp, Set<HubKind> hubs);
 /// Where the user says Zigbee2MQTT runs, asked while the scan runs (2.5).
 /// Not an answer and [notSure] both mean the plain scan; the others add a
 /// pass or change what the empty result says.
-enum SetupPlatform { homeAssistant, smlight, piOrDocker, notSure }
+/// The answer to "where does Zigbee2MQTT run?". [zha] (3.1.3) is Home
+/// Assistant's own Zigbee with no Zigbee2MQTT, which ZigDash can't serve;
+/// counted to size a move from ZHA (wayfinder map "ZHA to ZigDash").
+enum SetupPlatform { homeAssistant, smlight, piOrDocker, zha, notSure }
 
 /// The hub kinds a platform answer makes the scan look for, on top of the
 /// default ones (Home Assistant and the Zigbee2MQTT frontend).

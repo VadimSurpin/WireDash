@@ -615,6 +615,8 @@
   "setupPlatformHa": "Home Assistant",
   "setupPlatformSmlight": "SMLIGHT-hubb",
   "setupPlatformPi": "Raspberry Pi eller Docker",
+  "setupPlatformZha": "ZHA, inget Zigbee2MQTT",
+  "setupZhaNote": "ZigDash visar enheter från Zigbee2MQTT och ser därför inte enheter i ZHA, Home Assistants egen Zigbee. Du kan prova demohemmet för att se hur ZigDash fungerar.",
   "setupPlatformNotSure": "Vet inte",
   "setupScanProgress": "Kontrollerade {checked} av {total} adresser",
   "@setupScanProgress": {"placeholders": {"checked": {"type": "int"}, "total": {"type": "int"}}},

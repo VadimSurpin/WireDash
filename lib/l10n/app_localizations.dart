@@ -3360,6 +3360,18 @@ abstract class AppLocalizations {
   /// **'Raspberry Pi or Docker'**
   String get setupPlatformPi;
 
+  /// No description provided for @setupPlatformZha.
+  ///
+  /// In en, this message translates to:
+  /// **'ZHA, no Zigbee2MQTT'**
+  String get setupPlatformZha;
+
+  /// Under the setup answer for Home Assistant's own Zigbee (ZHA), 3.1.3: ZigDash cannot see ZHA devices; a Try demo button follows.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash shows devices from Zigbee2MQTT, so it can\'t see devices in ZHA, Home Assistant\'s own Zigbee. You can try the demo home to see how ZigDash works.'**
+  String get setupZhaNote;
+
   /// No description provided for @setupPlatformNotSure.
   ///
   /// In en, this message translates to:

@@ -1851,6 +1851,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get setupPlatformPi => 'Raspberry Pi lub Docker';
 
   @override
+  String get setupPlatformZha => 'ZHA, bez Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'ZigDash pokazuje urządzenia z Zigbee2MQTT, więc nie widzi urządzeń w ZHA, wbudowanym Zigbee Home Assistanta. Możesz wypróbować dom demo, aby zobaczyć, jak działa ZigDash.';
+
+  @override
   String get setupPlatformNotSure => 'Nie wiem';
 
   @override
