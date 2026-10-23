@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/router/routes.dart';
 import '../settings/providers/settings_controller.dart';
@@ -47,7 +46,7 @@ class HaImportOfferCard extends ConsumerWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final offer = ref.read(haImportOfferProvider.notifier);
-    final analytics = ref.read(analyticsProvider);
+
     return Card(
       margin: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 8),
       child: Padding(
@@ -71,18 +70,12 @@ class HaImportOfferCard extends ConsumerWidget {
               children: [
                 TextButton(
                   onPressed: () {
-                    analytics.track(
-                      const HaImportEvent(HaImportStep.offerDeclined),
-                    );
                     offer.clear();
                   },
                   child: Text(l10n.haImportOfferLater),
                 ),
                 FilledButton(
                   onPressed: () {
-                    analytics.track(
-                      const HaImportEvent(HaImportStep.offerAccepted),
-                    );
                     offer.clear();
                     context.push(Routes.homeHaImport(connectionId));
                   },

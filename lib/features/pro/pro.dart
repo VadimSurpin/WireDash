@@ -1,8 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/analytics/analytics.dart';
-
 /// ZigDash Pro (docs/design/history-2.7.md): a one-time purchase on Google
 /// Play that unlocks depth features, starting with the 7- and 30-day
 /// history views.
@@ -60,12 +58,7 @@ class ProBilling extends Notifier<ProStatus> {
 
   /// Opens Play's purchase sheet; the status follows what Play says after.
   Future<void> buy() async {
-    final analytics = ref.read(analyticsProvider);
-    analytics.track(const ProEvent(ProStep.unlockTapped));
     await _ask('buy');
-    if (state == ProStatus.unlocked) {
-      analytics.track(const ProEvent(ProStep.unlocked));
-    }
   }
 }
 

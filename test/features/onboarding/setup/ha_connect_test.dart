@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/features/ha_import/ha_auth.dart';
 import 'package:zigdash/features/onboarding/setup/ha_connect.dart';
 import 'package:zigdash/mqtt/ha_token.dart';
@@ -7,7 +6,6 @@ import 'package:zigdash/mqtt/ha_token.dart';
 void main() {
   late List<(Uri, String)> probed;
   late List<(Uri, String)> adopted;
-  late List<Map<String, String>> events;
 
   HaConnectController make({
     HaSignInResult? signIn,
@@ -16,7 +14,6 @@ void main() {
   }) {
     probed = [];
     adopted = [];
-    events = [];
     return HaConnectController(
       address: address,
       adopt: (a, s) async => adopted.add((a, s)),
@@ -25,14 +22,8 @@ void main() {
         return problem;
       },
       signIn: signIn == null ? null : (_) async => signIn,
-      onEvent: (e) => events.add(e.props),
     );
   }
-
-  List<String?> outcomes() => [
-    for (final e in events)
-      if (e['step'] == 'ha_connect') e['result'],
-  ];
 
   test('starts asking, with the address the scan saw', () {
     final c = make(address: '192.168.68.52');
@@ -49,9 +40,8 @@ void main() {
     expect(probed.single.$2, haStoredRefresh('ref'));
     expect(adopted.single.$2, haStoredRefresh('ref'));
     expect(c.value, isA<HaConnectDone>());
-    expect(outcomes(), ['ok']);
+
     // Never a token in an event.
-    expect(events.join(), isNot(contains('ref')));
   });
 
   test('a pasted token is kept as is', () async {
@@ -60,7 +50,6 @@ void main() {
     expect(probed.single.$1, Uri.parse('http://192.168.68.52:8123'));
     expect(probed.single.$2, 'eyJ.long.lived');
     expect(adopted.single.$2, 'eyJ.long.lived');
-    expect(outcomes(), ['ok']);
   });
 
   test('no address, no token: asked again, nothing probed', () async {
@@ -72,13 +61,12 @@ void main() {
     await c.connectWithToken('192.168.68.52', '');
     expect((c.value as HaConnectAsk).problem, HaConnectProblem.noToken);
     expect(probed, isEmpty);
-    expect(outcomes(), ['no_address']);
   });
 
   test(
     'closing the login quietly returns; refused and failed say why',
     () async {
-      for (final (error, problem, outcome) in [
+      for (final (error, problem, _) in [
         (HaSignInError.cancelled, null, 'sign_in_cancelled'),
         (
           HaSignInError.refused,
@@ -93,7 +81,6 @@ void main() {
         await c.signInAndConnect('192.168.68.52');
         expect((c.value as HaConnectAsk).problem, problem);
         expect(adopted, isEmpty);
-        expect(outcomes(), [outcome]);
       }
     },
   );
@@ -101,7 +88,7 @@ void main() {
   test(
     'what the check finds is shown and counted, nothing handed over',
     () async {
-      for (final (problem, outcome) in [
+      for (final (problem, _) in [
         (HaConnectProblem.unreachable, 'unreachable'),
         (HaConnectProblem.notHomeAssistant, 'not_home_assistant'),
         (HaConnectProblem.certificate, 'certificate'),
@@ -114,18 +101,7 @@ void main() {
         expect((c.value as HaConnectAsk).problem, problem);
         expect((c.value as HaConnectAsk).address, '192.168.68.52');
         expect(adopted, isEmpty);
-        expect(outcomes(), [outcome]);
       }
     },
   );
-
-  test('the setup_step event carries only the kind and the outcome', () {
-    expect(
-      const SetupStep(
-        SetupStepKind.haConnect,
-        result: HaConnectOutcome.notAdmin,
-      ).props,
-      {'step': 'ha_connect', 'result': 'not_admin'},
-    );
-  });
 }

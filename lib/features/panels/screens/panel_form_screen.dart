@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
@@ -43,8 +42,8 @@ enum SliderPreset { brightness, position }
 /// Editable row backing one colour band of a gauge reading tile.
 class _BandRow {
   _BandRow({double? from, double? to, this.tone = GaugeTone.good})
-      : from = TextEditingController(text: _num(from)),
-        to = TextEditingController(text: _num(to));
+    : from = TextEditingController(text: _num(from)),
+      to = TextEditingController(text: _num(to));
 
   final TextEditingController from;
   final TextEditingController to;
@@ -69,9 +68,9 @@ class _BandRow {
 /// Editable row backing one entry of a Multi-State / Combo / Radio panel.
 class _OptionRow {
   _OptionRow({String label = '', String payload = '', String match = ''})
-      : label = TextEditingController(text: label),
-        payload = TextEditingController(text: payload),
-        match = TextEditingController(text: match);
+    : label = TextEditingController(text: label),
+      payload = TextEditingController(text: payload),
+      match = TextEditingController(text: match);
 
   final TextEditingController label;
   final TextEditingController payload;
@@ -182,14 +181,15 @@ class _State extends ConsumerState<PanelFormScreen> {
   final _scheduleOpenTime = TextEditingController(text: '07:00');
   final _scheduleCloseTime = TextEditingController(text: '19:00');
   final _scheduleOpenPayload = TextEditingController(text: '{"state":"OPEN"}');
-  final _scheduleClosePayload = TextEditingController(text: '{"state":"CLOSE"}');
+  final _scheduleClosePayload = TextEditingController(
+    text: '{"state":"CLOSE"}',
+  );
   bool _scheduleEnabled = true;
 
   // Auto-close fields
   final _autoCloseTriggerPath = TextEditingController(text: 'state');
   final _autoCloseTriggerValue = TextEditingController(text: 'ON');
-  final _autoCloseClosePayload =
-      TextEditingController(text: '{"state":"OFF"}');
+  final _autoCloseClosePayload = TextEditingController(text: '{"state":"OFF"}');
   final _autoCloseDelaySeconds = TextEditingController(text: '60');
   bool _autoCloseEnabled = true;
 
@@ -236,19 +236,18 @@ class _State extends ConsumerState<PanelFormScreen> {
   /// Returns the json-path text for the current panel type, or '' for types
   /// without a json-path field (button, textInput, cover, schedule, autoClose).
   String get _currentJsonPath => switch (_type) {
-        PanelType.toggle => _toggleJsonPath.text,
-        PanelType.slider => _sliderJsonPath.text,
-        PanelType.led => _ledJsonPath.text,
-        PanelType.nodeStatus => _nodeJsonPath.text,
-        PanelType.progress => _progressJsonPath.text,
-        PanelType.multiState ||
-        PanelType.combo ||
-        PanelType.radio =>
-          _optionsJsonPath.text,
-        PanelType.textLog => _textLogJsonPath.text,
-        PanelType.reading => _readingJsonPath.text,
-        _ => '',
-      };
+    PanelType.toggle => _toggleJsonPath.text,
+    PanelType.slider => _sliderJsonPath.text,
+    PanelType.led => _ledJsonPath.text,
+    PanelType.nodeStatus => _nodeJsonPath.text,
+    PanelType.progress => _progressJsonPath.text,
+    PanelType.multiState ||
+    PanelType.combo ||
+    PanelType.radio => _optionsJsonPath.text,
+    PanelType.textLog => _textLogJsonPath.text,
+    PanelType.reading => _readingJsonPath.text,
+    _ => '',
+  };
 
   late final VoidCallback _onTopicChanged;
 
@@ -296,7 +295,8 @@ class _State extends ConsumerState<PanelFormScreen> {
     _topicPrefixOverride.text = suggestion.topicPrefixOverride;
     _topic.text = suggestion.publishTopicSuffix;
     _subscribeTopic.text = suggestion.subscribeTopicSuffix;
-    _commandEdited = suggestion.publishTopicSuffix !=
+    _commandEdited =
+        suggestion.publishTopicSuffix !=
         commandFor(suggestion.subscribeTopicSuffix);
 
     if (suggestion.config case final config?) {
@@ -411,14 +411,17 @@ class _State extends ConsumerState<PanelFormScreen> {
       _progressUnit.text = cfg.unit ?? '';
     } else if (cfg is OptionsConfig) {
       _optionsJsonPath.text = cfg.jsonPath ?? '';
-      for (final row in _optionRows) { row.dispose(); }
+      for (final row in _optionRows) {
+        row.dispose();
+      }
       _optionRows
         ..clear()
-        ..addAll(cfg.options.map((o) => _OptionRow(
-              label: o.label,
-              payload: o.payload,
-              match: o.match,
-            )));
+        ..addAll(
+          cfg.options.map(
+            (o) =>
+                _OptionRow(label: o.label, payload: o.payload, match: o.match),
+          ),
+        );
     } else if (cfg is TextInputConfig) {
       _textInputHint.text = cfg.hint;
       _textInputTemplate.text = cfg.template;
@@ -451,7 +454,9 @@ class _State extends ConsumerState<PanelFormScreen> {
       _readingStyle = cfg.style;
       _readingMin.text = _BandRow._num(cfg.min);
       _readingMax.text = _BandRow._num(cfg.max);
-      for (final row in _bandRows) { row.dispose(); }
+      for (final row in _bandRows) {
+        row.dispose();
+      }
       _bandRows.clear();
       for (final b in cfg.bands) {
         _bandRows.add(_BandRow(from: b.from, to: b.to, tone: b.tone));
@@ -459,7 +464,8 @@ class _State extends ConsumerState<PanelFormScreen> {
     }
   }
 
-  void _setDeviceConfig(PanelConfig config) => setState(() => _deviceConfig = config);
+  void _setDeviceConfig(PanelConfig config) =>
+      setState(() => _deviceConfig = config);
 
   void _seedDefaultsForType() {
     switch (_type) {
@@ -495,11 +501,15 @@ class _State extends ConsumerState<PanelFormScreen> {
         _optionsJsonPath.text = def.jsonPath ?? 'state';
         _optionRows
           ..clear()
-          ..addAll(def.options.map((o) => _OptionRow(
+          ..addAll(
+            def.options.map(
+              (o) => _OptionRow(
                 label: o.label,
                 payload: o.payload,
                 match: o.match,
-              )));
+              ),
+            ),
+          );
         break;
       case PanelType.cover:
         _topic.text = 'set';
@@ -537,103 +547,102 @@ class _State extends ConsumerState<PanelFormScreen> {
     return switch (_type) {
       PanelType.button => ButtonConfig(payload: _buttonPayload.text),
       PanelType.toggle => ToggleConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          onPayload: _onPayload.text,
-          offPayload: _offPayload.text,
-          jsonPath: nullIfBlank(_toggleJsonPath.text),
-          onMatch: _onMatch.text,
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        onPayload: _onPayload.text,
+        offPayload: _offPayload.text,
+        jsonPath: nullIfBlank(_toggleJsonPath.text),
+        onMatch: _onMatch.text,
+      ),
       PanelType.slider => SliderConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          min: double.tryParse(_sliderMin.text) ?? 0,
-          max: double.tryParse(_sliderMax.text) ?? 254,
-          step: double.tryParse(_sliderStep.text) ?? 1,
-          valueTemplate: _sliderTemplate.text,
-          jsonPath: nullIfBlank(_sliderJsonPath.text),
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        min: double.tryParse(_sliderMin.text) ?? 0,
+        max: double.tryParse(_sliderMax.text) ?? 254,
+        step: double.tryParse(_sliderStep.text) ?? 1,
+        valueTemplate: _sliderTemplate.text,
+        jsonPath: nullIfBlank(_sliderJsonPath.text),
+      ),
       PanelType.led => LedConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          jsonPath: nullIfBlank(_ledJsonPath.text),
-          onMatch: _ledOnMatch.text,
-          onLabel: nullIfBlank(_ledOnLabel.text),
-          offLabel: nullIfBlank(_ledOffLabel.text),
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        jsonPath: nullIfBlank(_ledJsonPath.text),
+        onMatch: _ledOnMatch.text,
+        onLabel: nullIfBlank(_ledOnLabel.text),
+        offLabel: nullIfBlank(_ledOffLabel.text),
+      ),
       PanelType.nodeStatus => NodeStatusConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          onlinePayload: _nodeOnlinePayload.text,
-          jsonPath: nullIfBlank(_nodeJsonPath.text),
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        onlinePayload: _nodeOnlinePayload.text,
+        jsonPath: nullIfBlank(_nodeJsonPath.text),
+      ),
       PanelType.progress => ProgressConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          min: double.tryParse(_progressMin.text) ?? 0,
-          max: double.tryParse(_progressMax.text) ?? 100,
-          jsonPath: nullIfBlank(_progressJsonPath.text),
-          unit: nullIfBlank(_progressUnit.text),
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        min: double.tryParse(_progressMin.text) ?? 0,
+        max: double.tryParse(_progressMax.text) ?? 100,
+        jsonPath: nullIfBlank(_progressJsonPath.text),
+        unit: nullIfBlank(_progressUnit.text),
+      ),
       PanelType.multiState ||
       PanelType.combo ||
-      PanelType.radio =>
-        OptionsConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          jsonPath: nullIfBlank(_optionsJsonPath.text),
-          options: [
-            for (final r in _optionRows)
-              if (r.label.text.trim().isNotEmpty ||
-                  r.payload.text.trim().isNotEmpty)
-                SelectOption(
-                  label: r.label.text.trim(),
-                  payload: r.payload.text,
-                  match: r.match.text.trim(),
-                ),
-          ],
-        ),
+      PanelType.radio => OptionsConfig(
+        valueExpression: nullIfBlank(_valueExpression),
+        jsonPath: nullIfBlank(_optionsJsonPath.text),
+        options: [
+          for (final r in _optionRows)
+            if (r.label.text.trim().isNotEmpty ||
+                r.payload.text.trim().isNotEmpty)
+              SelectOption(
+                label: r.label.text.trim(),
+                payload: r.payload.text,
+                match: r.match.text.trim(),
+              ),
+        ],
+      ),
       PanelType.cover => CoverConfig(
-          presets: _parsePresets(_coverPresets.text),
-          showSlider: _coverShowSlider,
-        ),
+        presets: _parsePresets(_coverPresets.text),
+        showSlider: _coverShowSlider,
+      ),
       PanelType.textInput => TextInputConfig(
-          hint: _textInputHint.text,
-          template: _textInputTemplate.text.isEmpty
-              ? '{value}'
-              : _textInputTemplate.text,
-          clearOnSend: _textInputClearOnSend,
-        ),
+        hint: _textInputHint.text,
+        template: _textInputTemplate.text.isEmpty
+            ? '{value}'
+            : _textInputTemplate.text,
+        clearOnSend: _textInputClearOnSend,
+      ),
       PanelType.textLog => TextLogConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          maxLines: int.tryParse(_textLogMaxLines.text) ?? 50,
-          jsonPath: nullIfBlank(_textLogJsonPath.text),
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        maxLines: int.tryParse(_textLogMaxLines.text) ?? 50,
+        jsonPath: nullIfBlank(_textLogJsonPath.text),
+      ),
       PanelType.schedule => ScheduleConfig(
-          openTime: _scheduleOpenTime.text.trim(),
-          closeTime: _scheduleCloseTime.text.trim(),
-          openPayload: _scheduleOpenPayload.text,
-          closePayload: _scheduleClosePayload.text,
-          enabled: _scheduleEnabled,
-        ),
+        openTime: _scheduleOpenTime.text.trim(),
+        closeTime: _scheduleCloseTime.text.trim(),
+        openPayload: _scheduleOpenPayload.text,
+        closePayload: _scheduleClosePayload.text,
+        enabled: _scheduleEnabled,
+      ),
       PanelType.scene => SceneConfig(sceneId: _sceneId),
       PanelType.autoClose => AutoCloseConfig(
-          triggerPath: _autoCloseTriggerPath.text.trim().isEmpty
-              ? 'state'
-              : _autoCloseTriggerPath.text.trim(),
-          triggerValue: _autoCloseTriggerValue.text,
-          closePayload: _autoCloseClosePayload.text,
-          delaySeconds: int.tryParse(_autoCloseDelaySeconds.text) ?? 60,
-          enabled: _autoCloseEnabled,
-        ),
-      PanelType.device => _deviceConfig ??
-          PanelConfig.defaultFor(PanelType.device),
+        triggerPath: _autoCloseTriggerPath.text.trim().isEmpty
+            ? 'state'
+            : _autoCloseTriggerPath.text.trim(),
+        triggerValue: _autoCloseTriggerValue.text,
+        closePayload: _autoCloseClosePayload.text,
+        delaySeconds: int.tryParse(_autoCloseDelaySeconds.text) ?? 60,
+        enabled: _autoCloseEnabled,
+      ),
+      PanelType.device =>
+        _deviceConfig ?? PanelConfig.defaultFor(PanelType.device),
       PanelType.reading => ReadingConfig(
-          valueExpression: nullIfBlank(_valueExpression),
-          jsonPath: _readingJsonPath.text.trim(),
-          unit: nullIfBlank(_readingUnit.text),
-          style: _readingStyle,
-          min: double.tryParse(_readingMin.text.trim()),
-          max: double.tryParse(_readingMax.text.trim()),
-          bands: [
-            for (final r in _bandRows)
-              if (r.toBand() case final b?) b,
-          ],
-        ),
+        valueExpression: nullIfBlank(_valueExpression),
+        jsonPath: _readingJsonPath.text.trim(),
+        unit: nullIfBlank(_readingUnit.text),
+        style: _readingStyle,
+        min: double.tryParse(_readingMin.text.trim()),
+        max: double.tryParse(_readingMax.text.trim()),
+        bands: [
+          for (final r in _bandRows)
+            if (r.toBand() case final b?) b,
+        ],
+      ),
     };
   }
 
@@ -680,8 +689,10 @@ class _State extends ConsumerState<PanelFormScreen> {
     );
     final picked = await showTimePicker(context: context, initialTime: initial);
     if (picked != null) {
-      setState(() => c.text =
-          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}');
+      setState(
+        () => c.text =
+            '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}',
+      );
     }
   }
 
@@ -689,8 +700,9 @@ class _State extends ConsumerState<PanelFormScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final repo = ref.read(panelRepoProvider);
-    final subTopic =
-        _subscribeTopic.text == _topic.text ? null : _subscribeTopic.text;
+    final subTopic = _subscribeTopic.text == _topic.text
+        ? null
+        : _subscribeTopic.text;
     final prefixOverride = _topicPrefixOverride.text.trim().isEmpty
         ? null
         : _topicPrefixOverride.text.trim();
@@ -724,24 +736,23 @@ class _State extends ConsumerState<PanelFormScreen> {
           deviceIeee: _deviceIeee,
           config: _buildConfig(),
         );
-        ref.read(analyticsProvider)
-            .track(FeatureUsed(Feature.tileAdded, tile: _type));
       }
       if (_type == PanelType.schedule) {
         final effectivePrefix = prefixOverride ?? _topicPrefixHint;
         final target = composeTopic(effectivePrefix, _topic.text);
-        final ok =
-            await ref.read(automationConfigPublisherProvider).publishConfig(
-                  connectionId: widget.connectionId,
-                  panelId: panelId,
-                  name: _name.text.trim(),
-                  target: target,
-                  config: _buildConfig() as ScheduleConfig,
-                );
+        final ok = await ref
+            .read(automationConfigPublisherProvider)
+            .publishConfig(
+              connectionId: widget.connectionId,
+              panelId: panelId,
+              name: _name.text.trim(),
+              target: target,
+              config: _buildConfig() as ScheduleConfig,
+            );
         if (!ok && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(context.l10n.panelScheduleSavedOffline),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.panelScheduleSavedOffline)),
+          );
         }
       }
       if (_type == PanelType.autoClose) {
@@ -752,19 +763,20 @@ class _State extends ConsumerState<PanelFormScreen> {
         // supports it but the v1 UX assumes the Z2M target convention.
         final target = '$triggerTopic/set';
         final cfg = _buildConfig() as AutoCloseConfig;
-        final ok =
-            await ref.read(autoCloseConfigPublisherProvider).publishConfig(
-                  connectionId: widget.connectionId,
-                  panelId: panelId,
-                  name: _name.text.trim(),
-                  triggerTopic: triggerTopic,
-                  target: target,
-                  config: cfg,
-                );
+        final ok = await ref
+            .read(autoCloseConfigPublisherProvider)
+            .publishConfig(
+              connectionId: widget.connectionId,
+              panelId: panelId,
+              name: _name.text.trim(),
+              triggerTopic: triggerTopic,
+              target: target,
+              config: cfg,
+            );
         if (!ok && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(context.l10n.panelAutoCloseSavedOffline),
-          ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.panelAutoCloseSavedOffline)),
+          );
         }
       }
       if (mounted) context.pop();
@@ -776,23 +788,48 @@ class _State extends ConsumerState<PanelFormScreen> {
   @override
   void dispose() {
     for (final c in [
-      _name, _topic, _subscribeTopic,
-      _onPayload, _offPayload, _onMatch, _toggleJsonPath,
-      _sliderMin, _sliderMax, _sliderStep, _sliderTemplate, _sliderJsonPath,
+      _name,
+      _topic,
+      _subscribeTopic,
+      _onPayload,
+      _offPayload,
+      _onMatch,
+      _toggleJsonPath,
+      _sliderMin,
+      _sliderMax,
+      _sliderStep,
+      _sliderTemplate,
+      _sliderJsonPath,
       _buttonPayload,
-      _ledJsonPath, _ledOnMatch, _ledOnLabel, _ledOffLabel,
-      _nodeOnlinePayload, _nodeJsonPath,
-      _progressMin, _progressMax, _progressJsonPath, _progressUnit,
+      _ledJsonPath,
+      _ledOnMatch,
+      _ledOnLabel,
+      _ledOffLabel,
+      _nodeOnlinePayload,
+      _nodeJsonPath,
+      _progressMin,
+      _progressMax,
+      _progressJsonPath,
+      _progressUnit,
       _topicPrefixOverride,
       _optionsJsonPath,
-      _textInputHint, _textInputTemplate,
-      _textLogMaxLines, _textLogJsonPath,
+      _textInputHint,
+      _textInputTemplate,
+      _textLogMaxLines,
+      _textLogJsonPath,
       _coverPresets,
-      _scheduleOpenTime, _scheduleCloseTime,
-      _scheduleOpenPayload, _scheduleClosePayload,
-      _autoCloseTriggerPath, _autoCloseTriggerValue,
-      _autoCloseClosePayload, _autoCloseDelaySeconds,
-      _readingJsonPath, _readingUnit, _readingMin, _readingMax,
+      _scheduleOpenTime,
+      _scheduleCloseTime,
+      _scheduleOpenPayload,
+      _scheduleClosePayload,
+      _autoCloseTriggerPath,
+      _autoCloseTriggerValue,
+      _autoCloseClosePayload,
+      _autoCloseDelaySeconds,
+      _readingJsonPath,
+      _readingUnit,
+      _readingMin,
+      _readingMax,
     ]) {
       c.dispose();
     }
@@ -843,9 +880,11 @@ class _State extends ConsumerState<PanelFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEdit
-            ? l10n.panelFormEdit(typeLabel)
-            : l10n.panelFormNew(typeLabel)),
+        title: Text(
+          _isEdit
+              ? l10n.panelFormEdit(typeLabel)
+              : l10n.panelFormNew(typeLabel),
+        ),
         actions: [
           TextButton(
             onPressed: _saving ? null : _save,
@@ -911,11 +950,13 @@ class _State extends ConsumerState<PanelFormScreen> {
             const SizedBox(height: 12),
             if (_loaded) _buildLivePreview(),
             ..._typeSpecificFields(),
-            if (_hasValueExpression) DisplayExpressionField(
-              key: ValueKey('scalar-expression:$_type'),
-              initialValue: _valueExpression,
-              onChanged: (expression) => setState(() => _valueExpression = expression),
-            ),
+            if (_hasValueExpression)
+              DisplayExpressionField(
+                key: ValueKey('scalar-expression:$_type'),
+                initialValue: _valueExpression,
+                onChanged: (expression) =>
+                    setState(() => _valueExpression = expression),
+              ),
             const SizedBox(height: 16),
             DropdownButtonFormField<PanelWidth>(
               key: ValueKey(_width),
@@ -923,14 +964,17 @@ class _State extends ConsumerState<PanelFormScreen> {
               decoration: InputDecoration(labelText: l10n.tileSize),
               items: [
                 DropdownMenuItem(
-                    value: PanelWidth.small,
-                    child: Text(l10n.tileSizeSmall)),
+                  value: PanelWidth.small,
+                  child: Text(l10n.tileSizeSmall),
+                ),
                 DropdownMenuItem(
-                    value: PanelWidth.wide,
-                    child: Text(l10n.tileSizeWide)),
+                  value: PanelWidth.wide,
+                  child: Text(l10n.tileSizeWide),
+                ),
                 DropdownMenuItem(
-                    value: PanelWidth.full,
-                    child: Text(l10n.tileSizeFull)),
+                  value: PanelWidth.full,
+                  child: Text(l10n.tileSizeFull),
+                ),
               ],
               onChanged: (v) => v == null ? null : setState(() => _width = v),
             ),
@@ -940,5 +984,4 @@ class _State extends ConsumerState<PanelFormScreen> {
       ),
     );
   }
-
 }

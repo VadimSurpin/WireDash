@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../settings/providers/settings_controller.dart';
-import '../../core/analytics/analytics.dart';
 import '../kiosk/kiosk.dart';
 import '../pro/pro.dart';
 import 'widgets/wall_alarm_screen.dart';
@@ -92,9 +91,6 @@ class WallDisplaySetting extends FamilyNotifier<bool, String> {
 
   Future<void> set(bool on) async {
     state = on;
-    if (on) {
-      ref.read(analyticsProvider).track(const FeatureUsed(Feature.wallDisplay));
-    }
     await ref.read(sharedPreferencesProvider).setBool(_key, on);
   }
 }
@@ -389,12 +385,8 @@ class _WallDisplayScopeState extends ConsumerState<WallDisplayScope> {
   void _onState(WallStateEvent e, Set<String> wakers, bool alarmsOn) {
     if (!mounted) return;
     if (wakers.contains(e.name) && wakesFor(e.state)) _wokenByMotion();
-    final before = _alarms.showing.length;
     if (alarmsOn && _alarms.update(e.name, e.state)) {
       setState(() {});
-      for (final a in _alarms.showing.skip(before)) {
-        ref.read(analyticsProvider).track(AlarmShown(a.kind.name));
-      }
       _touched();
       final sound = ref.read(wallAlarmProvider(_settingsId)).sound;
       if (sound && !_sounding) {

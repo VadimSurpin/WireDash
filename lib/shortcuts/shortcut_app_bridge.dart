@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/analytics/analytics.dart';
 import '../core/l10n/l10n_ext.dart';
 import '../core/router/app_router.dart';
 import '../core/router/routes.dart';
@@ -22,7 +21,6 @@ import '../mqtt/providers/mqtt_manager_provider.dart';
 import 'shortcut_commander.dart';
 import 'shortcut_service.dart';
 import 'shortcut_store.dart';
-import 'shortcut_usage.dart';
 
 /// Connects the running app to its shortcuts: opens the tile picker when an
 /// unassigned tile is tapped, writes the native side's words in the app's
@@ -68,34 +66,40 @@ class _ShortcutAppBridgeState extends ConsumerState<ShortcutAppBridge> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final service = ref.read(shortcutServiceProvider);
-      unawaited(service
-          .syncWidgets()
-          .then((_) => service.resyncTiles())
-          .then((_) => refreshShortcutTiles()));
+      unawaited(
+        service
+            .syncWidgets()
+            .then((_) => service.resyncTiles())
+            .then((_) => refreshShortcutTiles()),
+      );
       unawaited(service.resyncControls());
       unawaited(service.resyncScenes());
       unawaited(service.resyncGroups());
-      // Uses noted by tiles and Device Controls while the app was closed.
-      unawaited(reportShortcutUsage(
-          ref.read(sharedPreferencesProvider), ref.read(analyticsProvider)));
       // Device Controls and tiles show what's on the dashboards: follow
       // changes.
       final db = ref.read(appDatabaseProvider);
       _dashboardChanges = db
-          .tableUpdates(TableUpdateQuery.onAllTables(
-              [db.panels, db.dashboards, db.connections, db.shortcuts,
-                db.scenes, db.sections]))
+          .tableUpdates(
+            TableUpdateQuery.onAllTables([
+              db.panels,
+              db.dashboards,
+              db.connections,
+              db.shortcuts,
+              db.scenes,
+              db.sections,
+            ]),
+          )
           .listen((_) {
-        _resync?.cancel();
-        _resync = Timer(const Duration(seconds: 1), () async {
-          await service.resyncControls();
-          await service.resyncScenes();
-          await service.resyncGroups();
-          // Tiles follow renames and deleted Homes without a restart.
-          await service.resyncTiles();
-          await refreshShortcutTiles();
-        });
-      });
+            _resync?.cancel();
+            _resync = Timer(const Duration(seconds: 1), () async {
+              await service.resyncControls();
+              await service.resyncScenes();
+              await service.resyncGroups();
+              // Tiles follow renames and deleted Homes without a restart.
+              await service.resyncTiles();
+              await refreshShortcutTiles();
+            });
+          });
       try {
         _handle(await appChannel.invokeMethod<Object?>('takeAction'));
       } on MissingPluginException {
@@ -108,8 +112,9 @@ class _ShortcutAppBridgeState extends ConsumerState<ShortcutAppBridge> {
       final launched = await AlertPush.takeLaunchTap();
       if (launched != null) _openFromAlert(launched);
       _alertTaps = AlertPush.taps.stream.listen(_openFromAlert);
-      _alertEndpoints = AlertPush.endpoints.stream
-          .listen((e) => alerts.onEndpoint(e.$1, e.$2));
+      _alertEndpoints = AlertPush.endpoints.stream.listen(
+        (e) => alerts.onEndpoint(e.$1, e.$2),
+      );
       _alertConfigs = db.select(db.alertConfigs).watch().listen((rows) async {
         final wanted = {for (final r in rows) r.connectionId};
         for (final id in _alertFollows.keys.toList()) {
@@ -129,8 +134,12 @@ class _ShortcutAppBridgeState extends ConsumerState<ShortcutAppBridge> {
     final (id, ieee, name) = tap;
     if (ieee == null) return;
     // The id is the writing phone's Home id; find ours by it, else by name.
-    final homes = await ref.read(appDatabaseProvider).select(ref.read(appDatabaseProvider).connections).get();
-    final home = homes.where((c) => c.id == id).firstOrNull ??
+    final homes = await ref
+        .read(appDatabaseProvider)
+        .select(ref.read(appDatabaseProvider).connections)
+        .get();
+    final home =
+        homes.where((c) => c.id == id).firstOrNull ??
         homes.where((c) => c.name == name).firstOrNull ??
         (homes.length == 1 ? homes.single : null);
     if (home == null || !mounted) return;
@@ -168,59 +177,73 @@ class _ShortcutAppBridgeState extends ConsumerState<ShortcutAppBridge> {
 /// While the app runs, every tile shortcut's device is followed on the app's
 /// own connection and its state written for the native side, so a tile shows
 /// the current state, not the one from its last tap.
-final shortcutLiveStateProvider =
-    Provider.autoDispose.family<void, AppLocalizations>((ref, l10n) {
-  final db = ref.watch(appDatabaseProvider);
-  final prefs = ref.watch(sharedPreferencesProvider);
-  final commander = ShortcutCommander(l10n: l10n);
-  // The devices currently followed; replaced whenever the shortcuts change.
-  var following = <StreamSubscription<Object?>>[];
-  var release = <void Function()>[];
-  var generation = 0;
-  Timer? redraw;
+final shortcutLiveStateProvider = Provider.autoDispose
+    .family<void, AppLocalizations>((ref, l10n) {
+      final db = ref.watch(appDatabaseProvider);
+      final prefs = ref.watch(sharedPreferencesProvider);
+      final commander = ShortcutCommander(l10n: l10n);
+      // The devices currently followed; replaced whenever the shortcuts change.
+      var following = <StreamSubscription<Object?>>[];
+      var release = <void Function()>[];
+      var generation = 0;
+      Timer? redraw;
 
-  void stopFollowing() {
-    for (final s in following) {
-      s.cancel();
-    }
-    for (final r in release) {
-      r();
-    }
-    following = [];
-    release = [];
-  }
-
-  Future<void> follow(List<Shortcut> rows) async {
-    final mine = ++generation;
-    stopFollowing();
-    final seen = <String>{};
-    for (final row in rows) {
-      for (final ieee in shortcutTargets(row)) {
-        if (!seen.add('${row.connectionId}/$ieee')) continue;
-        final device = await resolveShortcutDevice(db, row.connectionId, ieee);
-        if (device == null) continue;
-        final mgr =
-            await ref.read(mqttManagerProvider(row.connectionId).future);
-        if (mine != generation) return; // shortcuts changed meanwhile
-        following.add(mgr.subscribe(device.subscribeTopic).listen((m) {
-          if (m.payload.isEmpty) return;
-          final r = commander.describe(device, m.payload, m.receivedAt);
-          debugPrint('shortcut live: ${device.name} on=${r.on} ${r.line}');
-          prefs.setString(shortcutStateKey(row.connectionId, ieee),
-              jsonEncode(r.toJson()));
-          redraw?.cancel();
-          redraw = Timer(const Duration(milliseconds: 300), refreshShortcutTiles);
-        }));
-        release.add(() => mgr.unsubscribe(device.subscribeTopic));
+      void stopFollowing() {
+        for (final s in following) {
+          s.cancel();
+        }
+        for (final r in release) {
+          r();
+        }
+        following = [];
+        release = [];
       }
-    }
-  }
 
-  final rows = ShortcutDao(db).watchAll().listen(follow);
-  ref.onDispose(() {
-    generation++;
-    rows.cancel();
-    redraw?.cancel();
-    stopFollowing();
-  });
-});
+      Future<void> follow(List<Shortcut> rows) async {
+        final mine = ++generation;
+        stopFollowing();
+        final seen = <String>{};
+        for (final row in rows) {
+          for (final ieee in shortcutTargets(row)) {
+            if (!seen.add('${row.connectionId}/$ieee')) continue;
+            final device = await resolveShortcutDevice(
+              db,
+              row.connectionId,
+              ieee,
+            );
+            if (device == null) continue;
+            final mgr = await ref.read(
+              mqttManagerProvider(row.connectionId).future,
+            );
+            if (mine != generation) return; // shortcuts changed meanwhile
+            following.add(
+              mgr.subscribe(device.subscribeTopic).listen((m) {
+                if (m.payload.isEmpty) return;
+                final r = commander.describe(device, m.payload, m.receivedAt);
+                debugPrint(
+                  'shortcut live: ${device.name} on=${r.on} ${r.line}',
+                );
+                prefs.setString(
+                  shortcutStateKey(row.connectionId, ieee),
+                  jsonEncode(r.toJson()),
+                );
+                redraw?.cancel();
+                redraw = Timer(
+                  const Duration(milliseconds: 300),
+                  refreshShortcutTiles,
+                );
+              }),
+            );
+            release.add(() => mgr.unsubscribe(device.subscribeTopic));
+          }
+        }
+      }
+
+      final rows = ShortcutDao(db).watchAll().listen(follow);
+      ref.onDispose(() {
+        generation++;
+        rows.cancel();
+        redraw?.cancel();
+        stopFollowing();
+      });
+    });

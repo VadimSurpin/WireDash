@@ -7,7 +7,6 @@ import '../../../mqtt/ha_token.dart';
 import '../../../mqtt/ha_address.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../../data/repositories/connection_repo.dart';
-import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
@@ -57,7 +56,7 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
 
   HaConnectController _make() => HaConnectController(
     address: widget.initialHost ?? '',
-    onEvent: (event) => ref.read(analyticsProvider).track(event),
+
     adopt: (address, signIn) => widget.again == null
         ? ref
               .read(setupCoordinatorProvider)

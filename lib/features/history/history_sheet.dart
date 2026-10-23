@@ -84,13 +84,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
   HistoryRange _range = HistoryRange.day;
   HistoryPoint? _scrub;
   bool _busy = false;
-  bool _lockedSeen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(analyticsProvider).track(const FeatureUsed(Feature.history));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,10 +105,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     ];
     final range = ranges.contains(_range) ? _range : HistoryRange.day;
     final locked = range.isPro && pro == ProStatus.locked;
-    if (locked && !_lockedSeen) {
-      _lockedSeen = true;
-      ref.read(analyticsProvider).track(const ProEvent(ProStep.lockedShown));
-    }
     final online = ref
         .watch(historyRecorderOnlineProvider(widget.connectionId))
         .valueOrNull;
@@ -336,7 +325,7 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     await ref
         .read(historyRecordHereProvider(widget.connectionId).notifier)
         .set(true);
-    _track(HistorySetupResult.thisDevice);
+
     messenger.showSnackBar(SnackBar(content: Text(l10n.historyRecordingHere)));
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 
 import '../discovery/models/z2m_device.dart';
-import '../../core/analytics/analytics.dart';
 import 'ha_auth.dart';
 import 'ha_client.dart';
 import 'ha_import_apply.dart';
@@ -99,7 +98,6 @@ class HaImportController extends ValueNotifier<HaImportState> {
     required HaImportWriter writer,
     HaSignIn? signIn,
     HaRevoke? revoke,
-    this.onEvent,
   }) : _reader = reader,
        _devices = devices,
        _writer = writer,
@@ -114,15 +112,6 @@ class HaImportController extends ValueNotifier<HaImportState> {
   final HaSignIn? _signIn;
   final HaRevoke? _revoke;
   String _address;
-
-  /// Usage events only the controller can see (2.9.7): how the sign-in
-  /// ended, which no state shows (a cancelled login just goes back).
-  final void Function(HaImportEvent event)? onEvent;
-
-  void _signedIn(HaSignInMethod method, HaSignInOutcome outcome) =>
-      onEvent?.call(
-        HaImportEvent(HaImportStep.signIn, method: method, outcome: outcome),
-      );
 
   /// Whether this build can sign in at Home Assistant's login page.
   bool get canSignIn => _signIn != null;
@@ -139,12 +128,7 @@ class HaImportController extends ValueNotifier<HaImportState> {
     if (z2m == null) return _ask(HaImportProblem.noDevices);
     final signed = await signIn(base);
     final access = signed.accessToken;
-    _signedIn(HaSignInMethod.page, switch (signed.error) {
-      _ when access != null => HaSignInOutcome.ok,
-      HaSignInError.refused => HaSignInOutcome.refused,
-      HaSignInError.failed => HaSignInOutcome.failed,
-      HaSignInError.cancelled || null => HaSignInOutcome.cancelled,
-    });
+
     if (access == null) {
       return switch (signed.error) {
         HaSignInError.cancelled || null => back(),
@@ -173,31 +157,12 @@ class HaImportController extends ValueNotifier<HaImportState> {
     value = const HaImportReading();
     final z2m = await _devices();
     if (z2m == null) return _ask(HaImportProblem.noDevices);
-    await _readWith(base, token.trim(), z2m, pasted: true);
+    await _readWith(base, token.trim(), z2m);
   }
 
-  Future<void> _readWith(
-    Uri base,
-    String token,
-    List<Z2mDevice> z2m, {
-    bool pasted = false,
-  }) async {
+  Future<void> _readWith(Uri base, String token, List<Z2mDevice> z2m) async {
     final read = await _reader(base, token);
     final registry = read.registry;
-    // A pasted token is only judged once Home Assistant answered: accepted
-    // (read, or failed past the login), or refused.
-    if (pasted) {
-      switch (read.error) {
-        case null || HaReadError.failed:
-          _signedIn(HaSignInMethod.token, HaSignInOutcome.ok);
-        case HaReadError.badToken:
-          _signedIn(HaSignInMethod.token, HaSignInOutcome.failed);
-        case HaReadError.unreachable ||
-            HaReadError.notHomeAssistant ||
-            HaReadError.certificate:
-          break;
-      }
-    }
     if (registry == null) {
       return _ask(switch (read.error) {
         HaReadError.unreachable => HaImportProblem.unreachable,
