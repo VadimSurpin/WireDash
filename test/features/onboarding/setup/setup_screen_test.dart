@@ -708,7 +708,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.textContaining('stays on this phone'), findsOneWidget);
-    expect(find.text('What ZigDash keeps'), findsOneWidget);
+    expect(find.text('What WireDash keeps'), findsOneWidget);
     expect(find.text('Try the demo first'), findsOneWidget);
   });
 
@@ -1121,7 +1121,7 @@ void main() {
   testWidgets('renders in RTL for Hebrew', (tester) async {
     await _pump(tester, locale: const Locale('he'));
 
-    final title = find.text('ברוכים הבאים ל-ZigDash');
+    final title = find.text('ברוכים הבאים ל-WireDash');
     expect(title, findsOneWidget);
     expect(find.text('מצאו את ההתקנה שלי'), findsOneWidget);
     expect(Directionality.of(tester.element(title)), TextDirection.rtl);

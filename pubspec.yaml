@@ -132,7 +132,7 @@ flutter:
 
 # Launcher icon: the selected Wiren Board green four-panel design.
 # tool/icons/render_wirenboard_icon.sh renders the SVG layers and regenerates
-# platform launcher icons. Splash assets remain independent.
+# platform launcher icons. The splash uses the same foreground below.
 flutter_launcher_icons:
   android: true
   ios: true
@@ -147,14 +147,14 @@ flutter_launcher_icons:
     background_color: "#5CB400"
     theme_color: "#5CB400"
 
-# Native splash: `dart run flutter_native_splash:create`.
-# Signal ground (ivory; near-black in dark) with the tile-grid logo centered.
+# Native splash: `tool/flutter pub run flutter_native_splash:create`.
+# Match the WireDash launcher icon in both light and dark mode.
 flutter_native_splash:
-  color: "#F6F3EC"
-  color_dark: "#15130F"
-  image: assets/icon/foreground.png
+  color: "#5CB400"
+  color_dark: "#5CB400"
+  image: assets/icon/wirenboard-play/foreground.png
   android_12:
-    color: "#F6F3EC"
-    color_dark: "#15130F"
-    image: assets/icon/foreground.png
+    color: "#5CB400"
+    color_dark: "#5CB400"
+    image: assets/icon/wirenboard-play/foreground.png
   web: false

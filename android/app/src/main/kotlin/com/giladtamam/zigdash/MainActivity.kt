@@ -33,7 +33,7 @@ class MainActivity : FlutterActivity() {
                 "forgetHome" -> ShortcutEngine.forgetHome(this,
                     call.argument<String>("connectionId") ?: "") { result.success(null) }
                 "requestAddTile" -> requestAddTile(call.argument<Int>("slot") ?: 1,
-                    call.argument<String>("label") ?: "ZigDash", result)
+                    call.argument<String>("label") ?: "WireDash", result)
                 "requestPinWidget" -> result.success(PinWidgetReceiver.request(this,
                     call.argument<String>("kind") ?: "device",
                     call.argument<String>("connectionId") ?: "",

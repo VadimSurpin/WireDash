@@ -110,7 +110,7 @@ Uri feedbackMailUrl({
       path: featureRequestEmail,
       // Uri's queryParameters encode spaces as '+', which mail apps show.
       query: 'subject=${Uri.encodeComponent(subject)}'
-          '&body=${Uri.encodeComponent('$prompt\n\n\n${details == null ? '— ZigDash $version' : '— Support details —\n$details'}')}',
+          '&body=${Uri.encodeComponent('$prompt\n\n\n${details == null ? '— WireDash $version' : '— Support details —\n$details'}')}',
     );
 
 /// Settings (devices-tablet-1.13.md §6): Homes, Appearance and About on one

@@ -1,4 +1,6 @@
-# ZigDash
+# WireDash
+
+WireDash is a fork of [ZigDash](https://github.com/giladtamam/zigdash), with Wiren Board discovery and embedded WireGuard.
 
 **The MQTT dashboard built for Zigbee2MQTT — your smart home dashboard builds itself.**
 

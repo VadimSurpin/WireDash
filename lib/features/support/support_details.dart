@@ -186,7 +186,7 @@ class SupportDetails {
     final z = z2m;
     return [
       [
-        'ZigDash $appVersion ($build)',
+        'WireDash $appVersion ($build)',
         if (android != null) 'Android $android',
         if (phone != null) phone!,
       ].join(' · '),

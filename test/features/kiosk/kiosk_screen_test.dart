@@ -191,7 +191,7 @@ void main() {
       expect(find.text('When no one touches it'), findsOneWidget);
       expect(find.text('Clock'), findsOneWidget);
       expect(find.textContaining('Readings'), findsNothing);
-      expect(find.textContaining('part of ZigDash Pro'), findsNothing);
+      expect(find.textContaining('part of WireDash Pro'), findsNothing);
     });
 
     testWidgets('where it can be bought: Readings marked Pro, one note', (
@@ -199,7 +199,7 @@ void main() {
     ) async {
       await openSheet(tester, ProStatus.locked);
       expect(find.text('Readings · Pro'), findsOneWidget);
-      expect(find.textContaining('part of ZigDash Pro'), findsOneWidget);
+      expect(find.textContaining('part of WireDash Pro'), findsOneWidget);
       await tester.tap(find.text('Readings · Pro'));
       await tester.pumpAndSettle();
       expect(prefs.getString('wall_idle_show_d1'), isNull, reason: 'locked');
@@ -215,7 +215,7 @@ void main() {
         findsOneWidget,
         reason: 'this dashboard has no tiles',
       );
-      expect(find.textContaining('part of ZigDash Pro'), findsNothing);
+      expect(find.textContaining('part of WireDash Pro'), findsNothing);
     });
   });
 
@@ -295,7 +295,7 @@ void main() {
 
     await tester.tap(find.text('Forgot the PIN?'));
     await tester.pumpAndSettle();
-    expect(find.textContaining("clearing ZigDash's data"), findsOneWidget);
+    expect(find.textContaining("clearing WireDash's data"), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), '2468');
     await tester.tap(find.widgetWithText(FilledButton, 'Leave'));

@@ -119,7 +119,7 @@ class BackupService {
   Future<int> importToConnection(String connectionId, String raw) async {
     final doc = json.decode(raw);
     if (doc is! Map || doc['dashboards'] is! List) {
-      throw const FormatException('Not a ZigDash backup (missing dashboards)');
+      throw const FormatException('Not a WireDash backup (missing dashboards)');
     }
     final dashboards = doc['dashboards'] as List;
     final base = doc['z2mBaseTopic'];
