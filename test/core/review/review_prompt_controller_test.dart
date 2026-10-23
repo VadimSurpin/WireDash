@@ -1,18 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/core/review/review_launcher.dart';
 import 'package:zigdash/core/review/review_prompt_controller.dart';
-
-class _FakeSink implements AnalyticsSink {
-  final sent = <(String, Map<String, String>)>[];
-  @override
-  Future<void> start() async {}
-  @override
-  Future<void> stop() async {}
-  @override
-  void send(String name, Map<String, String> props) => sent.add((name, props));
-}
 
 class _FakeLauncher implements ReviewLauncher {
   _FakeLauncher({this.available = true});
@@ -134,41 +123,6 @@ void main() {
     expect(await c.recordSuccessfulSession(), isTrue);
     expect(launcher.requests, 2);
   });
-
-  test(
-    'sends review_prompt only when the policy is met, with the result',
-    () async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final sink = _FakeSink();
-      final launcher = _FakeLauncher();
-      final clock = _Clock(DateTime(2026, 9, 1));
-      final c = ReviewPromptController(
-        prefs: prefs,
-        launcher: launcher,
-        analytics: Analytics(sink, enabled: true),
-        now: clock.call,
-      );
-
-      await c.recordSuccessfulSession();
-      expect(sink.sent, isEmpty, reason: 'first day: policy not met');
-
-      clock.advance(1);
-      await c.recordSuccessfulSession();
-      expect(sink.sent.length, 1);
-      expect(sink.sent.single.$1, 'review_prompt');
-      expect(sink.sent.single.$2, {'result': 'requested'});
-
-      // Unavailable flow: reported as such, nothing requested.
-      launcher.available = false;
-      clock.advance(90);
-      expect(await c.recordSuccessfulSession(), isFalse);
-      expect(sink.sent.length, 2);
-      expect(sink.sent.last.$1, 'review_prompt');
-      expect(sink.sent.last.$2, {'result': 'unavailable'});
-      expect(launcher.requests, 1);
-    },
-  );
 
   test('stores only day-granularity keys', () async {
     final (c, _, _, prefs) = await _setup();

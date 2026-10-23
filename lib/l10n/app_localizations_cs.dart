@@ -970,31 +970,17 @@ class AppLocalizationsCs extends AppLocalizations {
       'Líbí se ti? Krátká recenze pomůže ostatním ho najít.';
 
   @override
-  String get settingsFeatureRequest => 'Navrhnout funkci';
+  String get problemReportGithub => 'Na GitHubu';
 
   @override
-  String get settingsFeatureRequestSubtitle =>
-      'Napiš mi, co by WireDash vylepšilo.';
-
-  @override
-  String get featureRequestGithub => 'Na GitHubu';
-
-  @override
-  String get featureRequestGithubSubtitle =>
+  String get problemReportGithubSubtitle =>
       'Veřejně: ostatní to uvidí a můžou pro to hlasovat.';
 
   @override
-  String get featureRequestEmail => 'E-mailem';
+  String get problemReportEmail => 'E-mailem';
 
   @override
-  String get featureRequestEmailSubtitle => 'Soukromě, přímo vývojáři.';
-
-  @override
-  String get featureRequestEmailSubject => 'WireDash – návrh funkce';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'Co bys chtěl, aby WireDash uměl, a proč?';
+  String get problemReportEmailSubtitle => 'Soukromě, přímo vývojáři.';
 
   @override
   String get settingsReportProblem => 'Nahlásit problém';
@@ -2519,37 +2505,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get dashWallDisplay => 'Nástěnný displej';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Sdílet anonymní data o používání a pomoct vylepšit nastavení';
-
-  @override
-  String get analyticsWhatsShared => 'Co se sdílí';
-
-  @override
-  String get analyticsCardTitle => 'Pomůžeš vylepšit WireDash?';
-
-  @override
-  String get analyticsCardBody =>
-      'Sdílej anonymní data o používání: které kroky nastavení selhávají a které funkce se používají. Nikdy tvoje zařízení, témata ani broker.';
-
-  @override
-  String get analyticsShare => 'Sdílet';
-
-  @override
-  String get analyticsNoThanks => 'Ne, díky';
-
-  @override
-  String get settingsAnalytics => 'Sdílet anonymní data o používání';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Kroky nastavení a používané funkce. Nikdy tvoje zařízení, témata ani broker.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Anonymní data o používání. Vypneš je přepínačem výše.';
-
-  @override
   String get dashDefaultName => 'Domov';
 
   @override
@@ -2967,35 +2922,6 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get shortcutOpenAppFirst =>
       'Otevři WireDash a nejdřív dej zařízení na nástěnku.';
-
-  @override
-  String get pollTitle => 'Co by měl WireDash umět dál?';
-
-  @override
-  String get pollBody =>
-      'Vyber tu věc, kterou bys používal nejvíc. Tvoje odpověď se odešle s anonymními daty o používání.';
-
-  @override
-  String get pollNotifications => 'Oznámení';
-
-  @override
-  String get pollHistory => 'Grafy historie';
-
-  @override
-  String get pollKiosk => 'Kiosk režim pro tablet na zdi';
-
-  @override
-  String get pollGroups => 'Skupiny Zigbee';
-
-  @override
-  String get pollNotNow => 'Teď ne';
-
-  @override
-  String get pollThanks => 'Díky! Pomůže to rozhodnout, co přijde dál.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Data o používání jsou vypnutá, takže odsud se nic neodešle. Napiš nám raději přes Navrhnout funkci.';
 
   @override
   String alertLeak(Object name) {

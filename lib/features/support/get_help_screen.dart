@@ -1,9 +1,9 @@
+import 'help_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../onboarding/setup/setup_error_guidance.dart';
 import 'community.dart';
@@ -22,19 +22,19 @@ Uri supportMailUrl({
   required String subject,
   required String prompt,
   required String details,
-}) =>
-    Uri(
-      scheme: 'mailto',
-      path: supportEmail,
-      // Uri's queryParameters encode spaces as '+', which mail apps show.
-      query: 'subject=${Uri.encodeComponent(subject)}'
-          '&body=${Uri.encodeComponent('$prompt\n\n\n— Support details —\n$details')}',
-    );
+}) => Uri(
+  scheme: 'mailto',
+  path: supportEmail,
+  // Uri's queryParameters encode spaces as '+', which mail apps show.
+  query:
+      'subject=${Uri.encodeComponent(subject)}'
+      '&body=${Uri.encodeComponent('$prompt\n\n\n— Support details —\n$details')}',
+);
 
 /// Opens a mailto URL; replaced in tests.
 @visibleForTesting
-Future<bool> Function(Uri url) openMailApp =
-    (url) => launchUrl(url, mode: LaunchMode.externalApplication);
+Future<bool> Function(Uri url) openMailApp = (url) =>
+    launchUrl(url, mode: LaunchMode.externalApplication);
 
 /// The one screen every help link opens (CONTEXT.md: Get help): the tips for
 /// the place it came from, the support promise, what Support details
@@ -64,42 +64,40 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
   final _ticked = <int>{};
 
   SupportQuery get _query => (
-        openedFrom: openedFromLabel(widget.from, widget.error),
-        connectionId: widget.connectionId,
-      );
+    openedFrom: openedFromLabel(widget.from, widget.error),
+    connectionId: widget.connectionId,
+  );
 
   @override
   void initState() {
     super.initState();
-    ref.read(analyticsProvider).track(HelpOpened(widget.from));
   }
 
   Future<void> _contact(String details) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
-    ref
-        .read(analyticsProvider)
-        .track(SupportContact(widget.from, ContactVia.email));
+
     var opened = false;
     try {
-      opened = await openMailApp(supportMailUrl(
-        subject: l10n.getHelpEmailSubject,
-        prompt: l10n.getHelpEmailPrompt,
-        details: details,
-      ));
+      opened = await openMailApp(
+        supportMailUrl(
+          subject: l10n.getHelpEmailSubject,
+          prompt: l10n.getHelpEmailPrompt,
+          details: details,
+        ),
+      );
     } catch (_) {}
     if (!opened) {
-      messenger.showSnackBar(SnackBar(
-          content: Text(l10n.getHelpNoEmailApp(supportEmail))));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.getHelpNoEmailApp(supportEmail))),
+      );
     }
   }
 
   Future<void> _copy(String details) async {
     final messenger = ScaffoldMessenger.of(context);
     final copied = context.l10n.getHelpCopied;
-    ref
-        .read(analyticsProvider)
-        .track(SupportContact(widget.from, ContactVia.copy));
+
     await Clipboard.setData(ClipboardData(text: details));
     messenger.showSnackBar(SnackBar(content: Text(copied)));
   }
@@ -114,8 +112,10 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
     // If gathering fails, still let the user reach support with the basics.
     final text = details.hasError
         ? SupportDetails(
-                appVersion: '?', build: '?', openedFrom: _query.openedFrom)
-            .format()
+            appVersion: '?',
+            build: '?',
+            openedFrom: _query.openedFrom,
+          ).format()
         : details.valueOrNull?.format();
 
     return Scaffold(
@@ -130,8 +130,10 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
                 padding: const EdgeInsetsDirectional.fromSTEB(4, 8, 4, 8),
                 child: Semantics(
                   header: true,
-                  child: Text(l10n.getHelpTryFirst,
-                      style: theme.textTheme.titleMedium),
+                  child: Text(
+                    l10n.getHelpTryFirst,
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
               ),
               Card(
@@ -142,8 +144,9 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
                       CheckboxListTile(
                         controlAffinity: ListTileControlAffinity.leading,
                         value: _ticked.contains(i),
-                        onChanged: (on) => setState(() =>
-                            on == true ? _ticked.add(i) : _ticked.remove(i)),
+                        onChanged: (on) => setState(
+                          () => on == true ? _ticked.add(i) : _ticked.remove(i),
+                        ),
                         title: Text(tips[i].title),
                         subtitle: Text(tips[i].body),
                       ),
@@ -152,9 +155,12 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
-                child: Text(l10n.getHelpPromise,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: scheme.onSurfaceVariant)),
+                child: Text(
+                  l10n.getHelpPromise,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
               ),
               Card(
                 margin: EdgeInsets.zero,
@@ -170,9 +176,12 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
                       Directionality(
                         // English, whatever the app language.
                         textDirection: TextDirection.ltr,
-                        child: SelectableText(text,
-                            style: theme.textTheme.bodySmall
-                                ?.copyWith(fontFamily: 'monospace')),
+                        child: SelectableText(
+                          text,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontFamily: 'monospace',
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -209,8 +218,6 @@ class GetHelpLink extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) => TextButton(
-        onPressed: onPressed,
-        child: Text(context.l10n.getHelpLink),
-      );
+  Widget build(BuildContext context) =>
+      TextButton(onPressed: onPressed, child: Text(context.l10n.getHelpLink));
 }

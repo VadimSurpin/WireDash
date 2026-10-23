@@ -12,7 +12,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import '../../../core/analytics/analytics.dart';
 import '../../../mqtt/ha_address.dart';
 import '../../../mqtt/ha_mqtt_client.dart';
 import '../../../mqtt/ha_token.dart';
@@ -26,21 +25,6 @@ enum HaConnectProblem {
   unreachable,
   notHomeAssistant,
   certificate,
-  signInRefused,
-  signInFailed,
-  badToken,
-  notAdmin,
-  noMqtt,
-}
-
-/// How a try ended, for usage data (`setup_step` ha_connect).
-enum HaConnectOutcome {
-  ok,
-  noAddress,
-  unreachable,
-  notHomeAssistant,
-  certificate,
-  signInCancelled,
   signInRefused,
   signInFailed,
   badToken,
@@ -111,7 +95,6 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
     required HaAdopt adopt,
     HaProbe probe = probeHomeAssistant,
     HaSignIn? signIn,
-    this.onEvent,
   }) : _adopt = adopt,
        _probe = probe,
        _signIn = signIn,
@@ -120,9 +103,6 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
   final HaAdopt _adopt;
   final HaProbe _probe;
   final HaSignIn? _signIn;
-
-  /// Usage events: how each try ended. Never the address or a token.
-  final void Function(AnalyticsEvent event)? onEvent;
 
   bool get canSignIn => _signIn != null;
 
@@ -134,16 +114,12 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
   void _ask(String address, HaConnectProblem? problem) =>
       value = HaConnectAsk(address: address, problem: problem);
 
-  void _count(HaConnectOutcome outcome) =>
-      onEvent?.call(SetupStep(SetupStepKind.haConnect, result: outcome));
-
   /// Home Assistant's own login page in the browser, then the check.
   Future<void> signInAndConnect(String address) async {
     final signIn = _signIn;
     if (signIn == null) return;
     final base = haBaseUri(address);
     if (base == null) {
-      _count(HaConnectOutcome.noAddress);
       return _ask(address, HaConnectProblem.noAddress);
     }
     value = const HaConnectChecking();
@@ -152,13 +128,10 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
     if (access == null) {
       switch (signed.error) {
         case HaSignInError.cancelled || null:
-          _count(HaConnectOutcome.signInCancelled);
           return _ask(address, null);
         case HaSignInError.refused:
-          _count(HaConnectOutcome.signInRefused);
           return _ask(address, HaConnectProblem.signInRefused);
         case HaSignInError.failed:
-          _count(HaConnectOutcome.signInFailed);
           return _ask(address, HaConnectProblem.signInFailed);
       }
     }
@@ -176,7 +149,6 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
   Future<void> connectWithToken(String address, String token) async {
     final base = haBaseUri(address);
     if (base == null) {
-      _count(HaConnectOutcome.noAddress);
       return _ask(address, HaConnectProblem.noAddress);
     }
     if (token.trim().isEmpty) return _ask(address, HaConnectProblem.noToken);
@@ -187,18 +159,9 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
   Future<void> _check(Uri base, String address, String stored) async {
     final problem = await _probe(base, stored);
     if (problem != null) {
-      _count(switch (problem) {
-        HaConnectProblem.unreachable => HaConnectOutcome.unreachable,
-        HaConnectProblem.notHomeAssistant => HaConnectOutcome.notHomeAssistant,
-        HaConnectProblem.certificate => HaConnectOutcome.certificate,
-        HaConnectProblem.badToken => HaConnectOutcome.badToken,
-        HaConnectProblem.notAdmin => HaConnectOutcome.notAdmin,
-        HaConnectProblem.noMqtt => HaConnectOutcome.noMqtt,
-        _ => HaConnectOutcome.unreachable,
-      });
       return _ask(address, problem);
     }
-    _count(HaConnectOutcome.ok);
+
     value = const HaConnectDone();
     await _adopt(base, stored);
   }

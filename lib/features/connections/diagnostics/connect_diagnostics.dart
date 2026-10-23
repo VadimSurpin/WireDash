@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 
-import '../../../core/analytics/analytics_events.dart' show ManualTestResult;
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/client_factory.dart';
 import '../../../mqtt/endpoint.dart';
@@ -366,8 +365,13 @@ class ConnectDiagnostics {
           final pub = event.payload;
           if (pub is! mc.MqttPublishMessage) continue;
           final topic = event.topic;
-          wirenBoard.apply(topic, mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message));
-          if (!topic.startsWith('$base/') || topic.length <= base.length + 1) continue;
+          wirenBoard.apply(
+            topic,
+            mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message),
+          );
+          if (!topic.startsWith('$base/') || topic.length <= base.length + 1) {
+            continue;
+          }
           final rest = topic.substring(base.length + 1);
           if (rest == 'bridge/devices') {
             final payload = mc.MqttPublishPayload.bytesToStringAsString(
@@ -421,7 +425,10 @@ class ConnectDiagnostics {
       connected: true,
       candidatesTried: 1,
       deviceNames: sorted,
-      wirenBoardDevices: classifyWirenBoardDevices(wirenBoard.devices, nativeDevices),
+      wirenBoardDevices: classifyWirenBoardDevices(
+        wirenBoard.devices,
+        nativeDevices,
+      ),
     );
   }
 
@@ -453,31 +460,3 @@ class ConnectDiagnostics {
 /// A `.local` name, which Android often cannot look up (2.9.3).
 bool _isLocalName(String host) =>
     host.toLowerCase().replaceFirst(RegExp(r'\.$'), '').endsWith('.local');
-
-/// How a ladder run ends, for analytics: connected, or its first failed
-/// step (2.7.2), or the more precise reason its message gave (2.9.3,
-/// 2.9.5).
-ManualTestResult manualTestResult(DiagnosticsReport report) {
-  if (report.connected) return ManualTestResult.connected;
-  final failure = report.steps
-      .where((s) => s.status == StepStatus.fail)
-      .firstOrNull;
-  switch (failure?.detailKey) {
-    case 'diagResolveLocalName':
-      return ManualTestResult.localName;
-    case 'diagTcpHaNoBroker':
-      return ManualTestResult.haNoBroker;
-    case 'diagTcpSmlightClosed':
-      return ManualTestResult.smlightClosed;
-    case 'diagTcpZ2mNoBroker':
-      return ManualTestResult.z2mNoBroker;
-    case 'diagAuthRejectedHa':
-      return ManualTestResult.haLogin;
-  }
-  return switch (failure?.step) {
-    DiagnosticStep.resolve => ManualTestResult.resolve,
-    DiagnosticStep.tcp || null => ManualTestResult.tcp,
-    DiagnosticStep.connack => ManualTestResult.connack,
-    DiagnosticStep.auth || DiagnosticStep.devices => ManualTestResult.auth,
-  };
-}

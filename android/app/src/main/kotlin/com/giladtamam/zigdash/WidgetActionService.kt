@@ -75,7 +75,6 @@ class WidgetActionService : Service() {
             }
             return START_NOT_STICKY
         }
-        ShortcutPrefs.mark(this, "shortcut.used.widget")
         val mgr = AppWidgetManager.getInstance(this)
         DeviceWidget.render(this, mgr, id, working = true)
         running++
@@ -138,7 +137,6 @@ class WidgetActionService : Service() {
             finishSoon(0)
             return
         }
-        ShortcutPrefs.mark(this, "shortcut.used.group_widget")
         GroupWidget.render(this, mgr, id, about, working = true)
         running++
         val done = { json: String ->
@@ -165,7 +163,6 @@ class WidgetActionService : Service() {
             finishSoon(0)
             return
         }
-        ShortcutPrefs.mark(this, "shortcut.used.scene_widget")
         val mgr = AppWidgetManager.getInstance(this)
         SceneWidget.render(this, mgr, id, working = true)
         running++

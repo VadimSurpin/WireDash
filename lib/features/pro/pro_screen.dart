@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import 'pro.dart';
 
@@ -23,12 +22,6 @@ class ProScreen extends ConsumerStatefulWidget {
 }
 
 class _ProScreenState extends ConsumerState<ProScreen> {
-  @override
-  void initState() {
-    super.initState();
-    ref.read(analyticsProvider).track(const ProEvent(ProStep.screenShown));
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;

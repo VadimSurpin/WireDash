@@ -1,9 +1,9 @@
+import '../support/help_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/build/store_capture.dart';
-import '../../core/analytics/analytics_events.dart' show HelpFrom;
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/router/routes.dart';
 import '../../data/repositories/connection_repo.dart';
@@ -30,8 +30,11 @@ class DemoBanner extends ConsumerWidget {
         padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 8, 4),
         child: Row(
           children: [
-            Icon(Icons.play_circle_outline,
-                size: 20, color: scheme.onSecondaryContainer),
+            Icon(
+              Icons.play_circle_outline,
+              size: 20,
+              color: scheme.onSecondaryContainer,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

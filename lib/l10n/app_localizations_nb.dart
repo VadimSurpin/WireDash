@@ -969,31 +969,17 @@ class AppLocalizationsNb extends AppLocalizations {
       'Liker du den? En rask anmeldelse hjelper andre med å finne appen.';
 
   @override
-  String get settingsFeatureRequest => 'Foreslå en funksjon';
+  String get problemReportGithub => 'På GitHub';
 
   @override
-  String get settingsFeatureRequestSubtitle =>
-      'Fortell meg hva som ville gjort WireDash bedre.';
-
-  @override
-  String get featureRequestGithub => 'På GitHub';
-
-  @override
-  String get featureRequestGithubSubtitle =>
+  String get problemReportGithubSubtitle =>
       'Offentlig: andre kan se det og stemme.';
 
   @override
-  String get featureRequestEmail => 'På e-post';
+  String get problemReportEmail => 'På e-post';
 
   @override
-  String get featureRequestEmailSubtitle => 'Privat, rett til utvikleren.';
-
-  @override
-  String get featureRequestEmailSubject => 'WireDash: funksjonsønske';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'Hva vil du at WireDash skal kunne, og hvorfor?';
+  String get problemReportEmailSubtitle => 'Privat, rett til utvikleren.';
 
   @override
   String get settingsReportProblem => 'Rapporter et problem';
@@ -2515,37 +2501,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get dashWallDisplay => 'Veggskjerm';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Del anonyme bruksdata for å forbedre oppsettet';
-
-  @override
-  String get analyticsWhatsShared => 'Hva som deles';
-
-  @override
-  String get analyticsCardTitle => 'Hjelpe til å forbedre WireDash?';
-
-  @override
-  String get analyticsCardBody =>
-      'Del anonyme bruksdata: hvilke oppsettsteg som mislykkes og hvilke funksjoner som brukes. Aldri enhetene, topicene eller brokeren din.';
-
-  @override
-  String get analyticsShare => 'Del';
-
-  @override
-  String get analyticsNoThanks => 'Nei takk';
-
-  @override
-  String get settingsAnalytics => 'Del anonyme bruksdata';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Oppsettsteg og funksjoner som brukes. Aldri enhetene, topicene eller brokeren din.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Anonyme bruksdata. Slå av med bryteren over.';
-
-  @override
   String get dashDefaultName => 'Hjem';
 
   @override
@@ -2965,35 +2920,6 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get shortcutOpenAppFirst =>
       'Åpne WireDash og legg først en enhet på et dashbord.';
-
-  @override
-  String get pollTitle => 'Hva bør WireDash gjøre videre?';
-
-  @override
-  String get pollBody =>
-      'Velg det du ville brukt mest. Svaret sendes med de anonyme bruksdataene dine.';
-
-  @override
-  String get pollNotifications => 'Varsler';
-
-  @override
-  String get pollHistory => 'Historikkgrafer';
-
-  @override
-  String get pollKiosk => 'Kioskmodus for et nettbrett på veggen';
-
-  @override
-  String get pollGroups => 'Zigbee-grupper';
-
-  @override
-  String get pollNotNow => 'Ikke nå';
-
-  @override
-  String get pollThanks => 'Takk! Det hjelper oss å velge hva som kommer.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Bruksdata er av, så ingenting sendes herfra. Fortell oss heller via Foreslå en funksjon.';
 
   @override
   String alertLeak(Object name) {

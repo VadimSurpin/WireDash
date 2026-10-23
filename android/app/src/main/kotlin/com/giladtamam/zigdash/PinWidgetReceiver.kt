@@ -29,7 +29,6 @@ class PinWidgetReceiver : BroadcastReceiver() {
                     .firstOrNull { it.connectionId == conn && it.id == groupId } ?: return
                 ShortcutPrefs.setGroupWidget(ctx, id, g)
                 GroupWidget.render(ctx, mgr, id)
-                ShortcutPrefs.mark(ctx, "shortcut.added.group_widget")
                 askState(ctx, id)
             }
             "scene" -> {
@@ -40,14 +39,12 @@ class PinWidgetReceiver : BroadcastReceiver() {
                         intent.getStringExtra(EXTRA_NAME) ?: "")
                 ShortcutPrefs.setSceneWidget(ctx, id, e)
                 SceneWidget.render(ctx, mgr, id)
-                ShortcutPrefs.mark(ctx, "shortcut.added.scene_widget")
             }
             else -> {
                 val ieee = intent.getStringExtra(EXTRA_TARGET) ?: return
                 val e = ShortcutPrefs.control(ctx, conn, ieee) ?: return
                 ShortcutPrefs.setWidget(ctx, id, e)
                 DeviceWidget.render(ctx, mgr, id)
-                ShortcutPrefs.mark(ctx, "shortcut.added.widget")
                 askState(ctx, id)
             }
         }

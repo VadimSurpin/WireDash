@@ -974,31 +974,17 @@ class AppLocalizationsRu extends AppLocalizations {
       'Нравится? Короткий отзыв поможет другим найти приложение.';
 
   @override
-  String get settingsFeatureRequest => 'Предложить функцию';
+  String get problemReportGithub => 'На GitHub';
 
   @override
-  String get settingsFeatureRequestSubtitle =>
-      'Расскажите, что сделает WireDash лучше.';
-
-  @override
-  String get featureRequestGithub => 'На GitHub';
-
-  @override
-  String get featureRequestGithubSubtitle =>
+  String get problemReportGithubSubtitle =>
       'Публично: другие увидят и смогут проголосовать.';
 
   @override
-  String get featureRequestEmail => 'По почте';
+  String get problemReportEmail => 'По почте';
 
   @override
-  String get featureRequestEmailSubtitle => 'Лично, напрямую разработчику.';
-
-  @override
-  String get featureRequestEmailSubject => 'WireDash: предложение функции';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'Что вы хотели бы видеть в WireDash и зачем?';
+  String get problemReportEmailSubtitle => 'Лично, напрямую разработчику.';
 
   @override
   String get settingsReportProblem => 'Сообщить о проблеме';
@@ -2516,37 +2502,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dashWallDisplay => 'Настенный экран';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Отправлять анонимные данные об использовании для улучшения настройки';
-
-  @override
-  String get analyticsWhatsShared => 'Что отправляется';
-
-  @override
-  String get analyticsCardTitle => 'Помочь улучшить WireDash?';
-
-  @override
-  String get analyticsCardBody =>
-      'Отправлять анонимные данные об использовании: какие шаги настройки не удаются и какие функции используются. Никогда — ваши устройства, топики или брокер.';
-
-  @override
-  String get analyticsShare => 'Отправлять';
-
-  @override
-  String get analyticsNoThanks => 'Нет, спасибо';
-
-  @override
-  String get settingsAnalytics => 'Анонимные данные об использовании';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Шаги настройки и используемые функции. Никогда — ваши устройства, топики или брокер.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Анонимные данные об использовании. Отключите переключателем выше.';
-
-  @override
   String get dashDefaultName => 'Дом';
 
   @override
@@ -2966,35 +2921,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get shortcutOpenAppFirst =>
       'Откройте WireDash и сначала добавьте устройство на дашборд.';
-
-  @override
-  String get pollTitle => 'Что WireDash стоит сделать дальше?';
-
-  @override
-  String get pollBody =>
-      'Выберите то, чем пользовались бы чаще всего. Ответ отправится вместе с анонимными данными об использовании.';
-
-  @override
-  String get pollNotifications => 'Уведомления';
-
-  @override
-  String get pollHistory => 'Графики истории';
-
-  @override
-  String get pollKiosk => 'Режим киоска для настенного планшета';
-
-  @override
-  String get pollGroups => 'Группы Zigbee';
-
-  @override
-  String get pollNotNow => 'Не сейчас';
-
-  @override
-  String get pollThanks => 'Спасибо! Это помогает решить, что делать дальше.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Данные об использовании выключены, поэтому отсюда ничего не отправляется. Расскажите нам через «Предложить функцию».';
 
   @override
   String alertLeak(Object name) {

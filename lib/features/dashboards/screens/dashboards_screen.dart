@@ -1,3 +1,4 @@
+import '../../support/help_context.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/dashboard_accent.dart';
 import '../wall_display.dart';
@@ -5,7 +6,6 @@ import '../../../core/theme/signal_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/analytics/analytics_events.dart' show HelpFrom;
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/utils/window_class.dart';
 import '../../settings/screens/settings_screen.dart' show homeStatusLabel;
@@ -29,12 +29,10 @@ import '../../onboarding/demo_banner.dart';
 import '../../onboarding/demo_service.dart' show isDemoConnection;
 import '../../panels/widgets/panel_grid.dart';
 import '../../ha_import/ha_import_offer.dart';
-import '../widgets/analytics_consent_card.dart';
 import '../../kiosk/kiosk.dart';
 import '../../kiosk/wall_display_sheet.dart';
 import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
-import '../widgets/poll_card.dart';
 import '../widgets/connection_status_banner.dart';
 
 /// Per-connection dashboards screen. Shows a TabBar of all dashboards
@@ -100,7 +98,7 @@ class DashboardsScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                AnalyticsConsentCard(connectionId: connectionId),
+
                 const Expanded(child: _EmptyState()),
               ],
             ),
@@ -287,8 +285,6 @@ class _DashboardsTabbed extends ConsumerWidget {
                     DemoBanner(connectionId: connectionId),
                     if (!kiosk) ...[
                       HaImportOfferCard(connectionId: connectionId),
-                      AnalyticsConsentCard(connectionId: connectionId),
-                      PollCard(connectionId: connectionId),
                     ],
                     AlertsPausedBanner(connectionId: connectionId),
                     ConnectionStatusBanner(

@@ -961,30 +961,17 @@ class AppLocalizationsHe extends AppLocalizations {
       'נהנים? ביקורת קצרה עוזרת לאחרים למצוא את האפליקציה.';
 
   @override
-  String get settingsFeatureRequest => 'בקשת תכונה';
+  String get problemReportGithub => 'ב-GitHub';
 
   @override
-  String get settingsFeatureRequestSubtitle => 'ספרו לי מה ישפר את WireDash.';
-
-  @override
-  String get featureRequestGithub => 'ב-GitHub';
-
-  @override
-  String get featureRequestGithubSubtitle =>
+  String get problemReportGithubSubtitle =>
       'ציבורי: אחרים יכולים לראות ולהצביע.';
 
   @override
-  String get featureRequestEmail => 'במייל';
+  String get problemReportEmail => 'במייל';
 
   @override
-  String get featureRequestEmailSubtitle => 'פרטי, ישירות למפתח.';
-
-  @override
-  String get featureRequestEmailSubject => 'WireDash: בקשת תכונה';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'מה הייתם רוצים ש-WireDash יעשה, ולמה?';
+  String get problemReportEmailSubtitle => 'פרטי, ישירות למפתח.';
 
   @override
   String get settingsReportProblem => 'דיווח על בעיה';
@@ -2493,37 +2480,6 @@ class AppLocalizationsHe extends AppLocalizations {
   String get dashWallDisplay => 'תצוגת קיר';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'שיתוף נתוני שימוש אנונימיים לשיפור ההגדרה';
-
-  @override
-  String get analyticsWhatsShared => 'מה משותף';
-
-  @override
-  String get analyticsCardTitle => 'לעזור לשפר את WireDash?';
-
-  @override
-  String get analyticsCardBody =>
-      'שיתוף נתוני שימוש אנונימיים: אילו שלבי הגדרה נכשלים ובאילו תכונות משתמשים. אף פעם לא המכשירים, הנושאים או הברוקר שלך.';
-
-  @override
-  String get analyticsShare => 'שיתוף';
-
-  @override
-  String get analyticsNoThanks => 'לא תודה';
-
-  @override
-  String get settingsAnalytics => 'שיתוף נתוני שימוש אנונימיים';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'שלבי הגדרה ותכונות בשימוש. אף פעם לא המכשירים, הנושאים או הברוקר שלך.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'נתוני שימוש אנונימיים. אפשר לכבות במתג שלמעלה.';
-
-  @override
   String get dashDefaultName => 'בית';
 
   @override
@@ -2939,35 +2895,6 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get shortcutOpenAppFirst =>
       'פתחו את WireDash והוסיפו קודם מכשיר ללוח.';
-
-  @override
-  String get pollTitle => 'מה WireDash צריכה לעשות בהמשך?';
-
-  @override
-  String get pollBody =>
-      'בחרו את מה שהייתם משתמשים בו הכי הרבה. התשובה נשלחת עם נתוני השימוש האנונימיים שלכם.';
-
-  @override
-  String get pollNotifications => 'התראות';
-
-  @override
-  String get pollHistory => 'גרפים של היסטוריה';
-
-  @override
-  String get pollKiosk => 'מצב קיוסק לטאבלט על הקיר';
-
-  @override
-  String get pollGroups => 'קבוצות Zigbee';
-
-  @override
-  String get pollNotNow => 'לא עכשיו';
-
-  @override
-  String get pollThanks => 'תודה! זה עוזר להחליט מה יגיע בהמשך.';
-
-  @override
-  String get pollNoAnalytics =>
-      'נתוני השימוש כבויים, לכן שום דבר לא נשלח מכאן. ספרו לנו דרך בקשת תכונה.';
 
   @override
   String alertLeak(Object name) {
