@@ -577,6 +577,7 @@
   "setupAddressCheck": "Zkontrolovat adresu",
   "setupAddressNothing": "Na {host} nic neodpovědělo. Zkontroluj adresu a jestli je telefon ve stejné Wi-Fi.",
   "setupAddressNotResolved": "{host} se nepodařilo vyhledat. Názvy končící na .local na Androidu často nefungují; zkus místo toho IP adresu. Home Assistant ji ukazuje v Nastavení › Systém › Síť.",
+  "setupAddressNotResolvedHa": "{host} z tohoto telefonu nelze najít; Android často neumí vyhledat názvy .local. Klepni výše na {button} a použij adresu, kterou Home Assistant otevíráš v prohlížeči, nebo sem napiš jeho IP adresu. Home Assistant ji ukazuje v Nastavení › Systém › Síť.",
   "setupAddressNotLocal": "{host} není ve tvé domácí síti. Použij adresu, která funguje na tvé Wi-Fi, ne vzdálený odkaz jako Nabu Casa nebo DuckDNS.",
   "setupAddressInvalid": "Nejdřív zadej adresu.",
   "setupChoicesTitle": "Co z toho na tebe sedí?",

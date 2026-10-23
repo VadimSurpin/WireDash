@@ -2007,6 +2007,11 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host is vanaf deze telefoon niet te vinden; Android kan .local-namen vaak niet opzoeken. Tik hierboven op $button en gebruik het adres waarmee je Home Assistant in de browser opent, of typ hier het IP-adres. Home Assistant toont het onder Instellingen › Systeem › Netwerk.';
+  }
+
+  @override
   String setupAddressNotLocal(String host) {
     return '$host zit niet op je thuisnetwerk. Gebruik het adres dat op je wifi werkt, geen externe link zoals Nabu Casa of DuckDNS.';
   }

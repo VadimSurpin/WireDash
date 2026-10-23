@@ -2000,6 +2000,11 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host z tohoto telefonu nelze najít; Android často neumí vyhledat názvy .local. Klepni výše na $button a použij adresu, kterou Home Assistant otevíráš v prohlížeči, nebo sem napiš jeho IP adresu. Home Assistant ji ukazuje v Nastavení › Systém › Síť.';
+  }
+
+  @override
   String setupAddressNotLocal(String host) {
     return '$host není ve tvé domácí síti. Použij adresu, která funguje na tvé Wi-Fi, ne vzdálený odkaz jako Nabu Casa nebo DuckDNS.';
   }

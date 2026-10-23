@@ -110,6 +110,10 @@ enum SetupStepKind {
   /// [SetupStep.result]: ok, or why not (`HaConnectOutcome`).
   haConnect,
 
+  /// The Home Assistant sign-in was opened from setup (3.1.3), with
+  /// [SetupStep.choice] saying from where (a [HaSignInFrom]).
+  haOpened,
+
   /// The review was left without creating a dashboard (2.10.2): back, or
   /// setup started over. Carries [SetupStep.devices] and
   /// [SetupStep.selected], the state of the list when it was left.
@@ -121,6 +125,19 @@ enum SetupStepKind {
 /// homeassistant.local), or a hub on another network (the guest-network
 /// note and usual names).
 enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
+
+/// Where setup opened the Home Assistant sign-in (3.1.3): while scanning,
+/// the card on an empty result, the note under "I use Home Assistant",
+/// the first button when Home Assistant was found without a broker, the
+/// broker's login prompt, or the link on the broker form.
+enum HaSignInFrom {
+  scanning,
+  emptyCard,
+  emptyChoice,
+  haFound,
+  login,
+  manualForm,
+}
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the
 /// first step that failed (name lookup, TCP connection, MQTT handshake,
@@ -188,7 +205,8 @@ class SetupStep extends AnalyticsEvent {
   final SetupStepKind step;
 
   /// The choice tapped on the empty result (a [ScanEmptyChoice]), when
-  /// [step] is emptyChoice.
+  /// [step] is emptyChoice; where the sign-in was opened from (a
+  /// [HaSignInFrom]), when [step] is haOpened.
   final Enum? choice;
 
   /// The setup error kind's name, when [step] is failed.

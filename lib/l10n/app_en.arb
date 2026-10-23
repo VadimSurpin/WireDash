@@ -672,6 +672,8 @@
   "setupAddressNothing": "Nothing answered at {host}. Check the address, and that your phone is on the same Wi-Fi as it.",
   "@setupAddressNothing": {"placeholders": {"host": {"type": "String"}}},
   "setupAddressNotResolved": "{host} could not be looked up. Names ending in .local often fail on Android; try the IP address instead. Home Assistant shows it under Settings › System › Network.",
+  "setupAddressNotResolvedHa": "{host} can't be found from this phone; Android often can't look up .local names. Tap {button} above and use the address you open Home Assistant with in your browser, or type its IP address here. Home Assistant shows it under Settings › System › Network.",
+  "@setupAddressNotResolvedHa": {"description": "A .local name that did not resolve, for someone who said they use Home Assistant (3.1.3). {button} is the Connect through Home Assistant button above.", "placeholders": {"host": {"type": "String"}, "button": {"type": "String"}}},
   "@setupAddressNotResolved": {"placeholders": {"host": {"type": "String"}}},
   "setupAddressNotLocal": "{host} is not on your home network. Use the address that works on your Wi-Fi, not a remote link such as Nabu Casa or DuckDNS.",
   "@setupAddressNotLocal": {"placeholders": {"host": {"type": "String"}}},

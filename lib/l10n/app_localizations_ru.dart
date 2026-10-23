@@ -1998,6 +1998,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host не находится с этого телефона: Android часто не умеет разрешать имена .local. Нажмите «$button» выше и укажите адрес, по которому открываете Home Assistant в браузере, или введите здесь его IP-адрес. Home Assistant показывает его в Настройки › Система › Сеть.';
+  }
+
+  @override
   String setupAddressNotLocal(String host) {
     return '$host не в вашей домашней сети. Используйте адрес, который работает в вашем Wi-Fi, а не удалённую ссылку вроде Nabu Casa или DuckDNS.';
   }

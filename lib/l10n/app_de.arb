@@ -660,6 +660,7 @@
   "setupAddressCheck": "Diese Adresse prüfen",
   "setupAddressNothing": "Unter {host} hat nichts geantwortet. Prüfe die Adresse und ob dein Handy im selben WLAN ist.",
   "setupAddressNotResolved": "{host} konnte nicht aufgelöst werden. Namen auf .local scheitern unter Android oft; versuche stattdessen die IP-Adresse. Home Assistant zeigt sie unter Einstellungen › System › Netzwerk.",
+  "setupAddressNotResolvedHa": "{host} ist von diesem Telefon aus nicht auffindbar; Android kann .local-Namen oft nicht auflösen. Tippe oben auf {button} und nutze die Adresse, mit der du Home Assistant im Browser öffnest, oder gib hier die IP-Adresse ein. Home Assistant zeigt sie unter Einstellungen › System › Netzwerk.",
   "setupAddressNotLocal": "{host} liegt nicht in deinem Heimnetz. Verwende die Adresse, die in deinem WLAN funktioniert, keinen Fernzugriffslink wie Nabu Casa oder DuckDNS.",
   "setupAddressInvalid": "Gib zuerst eine Adresse ein.",
   "setupChoicesTitle": "Was davon passt zu dir?",

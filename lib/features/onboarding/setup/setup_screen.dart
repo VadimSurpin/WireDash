@@ -117,6 +117,14 @@ class SetupScreen extends ConsumerWidget {
     }
 
     // 2.9.7: no Zigbee2MQTT yet, so no point scanning.
+    // Which way into the Home Assistant sign-in people take (3.1.3).
+    void viaHa(String? host, HaSignInFrom from) {
+      ref
+          .read(analyticsProvider)
+          .track(SetupStep(SetupStepKind.haOpened, choice: from));
+      context.push(Routes.haConnectAt(host));
+    }
+
     Future<void> welcomeHubs() async {
       ref
           .read(analyticsProvider)
@@ -141,7 +149,7 @@ class SetupScreen extends ConsumerWidget {
             onSelect: coordinator.selectCandidate,
             onPlatform: coordinator.setPlatform,
             onManual: manual,
-            onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
+            onConnectViaHa: viaHa,
           ),
           SetupScanEmpty() => _ScanEmpty(
             state: state,
@@ -153,14 +161,14 @@ class SetupScreen extends ConsumerWidget {
             onManualTo: manualTo,
             onManualPort: manualPort,
             onDemo: tryDemo,
-            onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
+            onConnectViaHa: viaHa,
           ),
           SetupVerifying() => const _Verifying(),
           SetupNeedsAuth() => _AuthPrompt(
             state: state,
             onSubmit: coordinator.submitCredentials,
             onDemo: tryDemo,
-            onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
+            onConnectViaHa: viaHa,
           ),
           SetupFailed(kind: SetupErrorKind.notZigbee2Mqtt) => _NoZigbee2Mqtt(
             base: coordinator.base,
@@ -376,7 +384,7 @@ class _Scanning extends StatelessWidget {
   final ValueChanged<SetupCandidate> onSelect;
   final ValueChanged<SetupPlatform?> onPlatform;
   final VoidCallback onManual;
-  final ValueChanged<String?> onConnectViaHa;
+  final void Function(String? host, HaSignInFrom from) onConnectViaHa;
 
   @override
   Widget build(BuildContext context) {
@@ -434,6 +442,7 @@ class _Scanning extends StatelessWidget {
                   .where((h) => h.kind == HubKind.homeAssistant)
                   .firstOrNull
                   ?.host,
+              HaSignInFrom.scanning,
             ),
           ),
         ],
@@ -551,7 +560,7 @@ class _ScanEmpty extends StatelessWidget {
 
   /// Connect through Home Assistant (2.10), with the Home Assistant the
   /// scan saw, if any.
-  final ValueChanged<String?> onConnectViaHa;
+  final void Function(String? host, HaSignInFrom from) onConnectViaHa;
 
   @override
   Widget build(BuildContext context) {
@@ -650,14 +659,17 @@ class _ScanEmpty extends StatelessWidget {
           if (platform == SetupPlatform.homeAssistant)
             Padding(
               padding: const EdgeInsets.only(top: 20),
-              child: _HaShortcut(onPressed: () => onConnectViaHa(null)),
+              child: _HaShortcut(
+                onPressed: () => onConnectViaHa(null, HaSignInFrom.emptyCard),
+              ),
             )
           else
             const SizedBox.shrink(),
           const SizedBox(height: 20),
           _EmptyChoices(
             onChoice: onChoice,
-            onConnectViaHa: () => onConnectViaHa(null),
+            onConnectViaHa: () =>
+                onConnectViaHa(null, HaSignInFrom.emptyChoice),
             onHomeAssistant: () {
               onPlatform(SetupPlatform.homeAssistant);
               onCheckAddress('homeassistant.local');
@@ -682,7 +694,7 @@ class _ScanEmpty extends StatelessWidget {
           // they run Home Assistant in 30 days, 7 reached it as the
           // second button; the broker needs a login they rarely have.
           FilledButton.icon(
-            onPressed: () => onConnectViaHa(hub!.host),
+            onPressed: () => onConnectViaHa(hub!.host, HaSignInFrom.haFound),
             icon: const Icon(Icons.home_outlined),
             label: Text(l10n.haConnectButton),
           ),
@@ -1091,6 +1103,13 @@ class _AddressFieldState extends State<_AddressField> {
     };
     final String? outcome = switch (check?.status) {
       AddressCheckStatus.nothing => l10n.setupAddressNothing(check!.host),
+      // 3.1.3: a .local name (often the app's own homeassistant.local
+      // check) points Home Assistant users at its sign-in, which takes the
+      // address they use in the browser.
+      AddressCheckStatus.notResolved
+          when widget.platform == SetupPlatform.homeAssistant &&
+              check!.host.toLowerCase().endsWith('.local') =>
+        l10n.setupAddressNotResolvedHa(check.host, l10n.haConnectButton),
       AddressCheckStatus.notResolved => l10n.setupAddressNotResolved(
         check!.host,
       ),
@@ -1268,7 +1287,7 @@ class _AuthPrompt extends StatefulWidget {
   final SetupNeedsAuth state;
   final void Function(String username, String password) onSubmit;
   final VoidCallback onDemo;
-  final ValueChanged<String?> onConnectViaHa;
+  final void Function(String? host, HaSignInFrom from) onConnectViaHa;
 
   @override
   State<_AuthPrompt> createState() => _AuthPromptState();
@@ -1329,7 +1348,10 @@ class _AuthPromptState extends State<_AuthPrompt> {
         if (widget.state.platform == SetupPlatform.homeAssistant) ...[
           const SizedBox(height: 12),
           _HaShortcut(
-            onPressed: () => widget.onConnectViaHa(widget.state.candidate.host),
+            onPressed: () => widget.onConnectViaHa(
+              widget.state.candidate.host,
+              HaSignInFrom.login,
+            ),
           ),
         ],
         const SizedBox(height: 12),

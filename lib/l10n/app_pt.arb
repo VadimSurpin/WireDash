@@ -620,6 +620,7 @@
   "setupAddressCheck": "Verificar este endereço",
   "setupAddressNothing": "Nada respondeu em {host}. Confira o endereço e se o celular está no mesmo Wi-Fi.",
   "setupAddressNotResolved": "Não foi possível resolver {host}. Nomes terminados em .local costumam falhar no Android; tente o endereço IP. O Home Assistant o mostra em Configurações › Sistema › Rede.",
+  "setupAddressNotResolvedHa": "Não foi possível encontrar {host} a partir deste telefone; o Android muitas vezes não resolve nomes .local. Toque em {button} acima e use o endereço com que você abre o Home Assistant no navegador, ou digite aqui o endereço IP. O Home Assistant o mostra em Configurações › Sistema › Rede.",
   "setupAddressNotLocal": "{host} não está na sua rede doméstica. Use o endereço que funciona no seu Wi-Fi, não um link remoto como Nabu Casa ou DuckDNS.",
   "setupAddressInvalid": "Digite um endereço primeiro.",
   "setupChoicesTitle": "Qual destas combina com você?",

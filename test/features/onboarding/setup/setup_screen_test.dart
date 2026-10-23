@@ -589,11 +589,34 @@ void main() {
         find.widgetWithText(TextField, 'homeassistant.local'),
         findsOneWidget,
       );
+      // 3.1.3: a Home Assistant user is sent to its sign-in, above.
       expect(
-        find.textContaining('homeassistant.local could not be looked up'),
+        find.textContaining("homeassistant.local can't be found"),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Tap Connect through Home Assistant above'),
         findsOneWidget,
       );
       expect(choices(), ['home_assistant']);
+
+      // Which way into the sign-in is counted (3.1.3).
+      await tester.ensureVisible(find.byKey(const Key('setup-ha-shortcut')));
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('setup-ha-shortcut')),
+          matching: find.text('Connect through Home Assistant'),
+        ),
+      );
+      await tester.pump();
+      expect(
+        [
+          for (final (name, props) in sent)
+            if (name == 'setup_step' && props['step'] == 'ha_opened')
+              props['choice'],
+        ],
+        ['empty_card'],
+      );
     });
 
     testWidgets('another network explains, and checks a usual name', (

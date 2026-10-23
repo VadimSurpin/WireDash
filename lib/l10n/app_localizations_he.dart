@@ -1979,6 +1979,11 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return 'לא ניתן למצוא את $host מהטלפון הזה; אנדרואיד לרוב לא מצליח לפענח שמות ‎.local. הקישו על $button למעלה והשתמשו בכתובת שבה אתם פותחים את Home Assistant בדפדפן, או הקלידו כאן את כתובת ה‑IP שלו. Home Assistant מציג אותה תחת הגדרות › מערכת › רשת.';
+  }
+
+  @override
   String setupAddressNotLocal(String host) {
     return '$host אינו ברשת הביתית שלכם. השתמשו בכתובת שעובדת ב‑Wi-Fi שלכם, לא בקישור מרוחק כמו Nabu Casa או DuckDNS.';
   }

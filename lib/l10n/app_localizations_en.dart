@@ -1996,6 +1996,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host can\'t be found from this phone; Android often can\'t look up .local names. Tap $button above and use the address you open Home Assistant with in your browser, or type its IP address here. Home Assistant shows it under Settings › System › Network.';
+  }
+
+  @override
   String setupAddressNotLocal(String host) {
     return '$host is not on your home network. Use the address that works on your Wi-Fi, not a remote link such as Nabu Casa or DuckDNS.';
   }

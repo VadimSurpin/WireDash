@@ -313,7 +313,17 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: TextButton.icon(
-              onPressed: () => context.push(Routes.haConnect),
+              onPressed: () {
+                ref
+                    .read(analyticsProvider)
+                    .track(
+                      const SetupStep(
+                        SetupStepKind.haOpened,
+                        choice: HaSignInFrom.manualForm,
+                      ),
+                    );
+                context.push(Routes.haConnect);
+              },
               icon: const Icon(Icons.home_outlined),
               label: Text(l10n.haConnectManualLink),
             ),

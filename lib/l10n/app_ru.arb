@@ -655,6 +655,7 @@
   "setupAddressCheck": "Проверить этот адрес",
   "setupAddressNothing": "По адресу {host} никто не ответил. Проверьте адрес и что телефон в той же сети Wi-Fi.",
   "setupAddressNotResolved": "Не удалось разрешить {host}. Имена на .local часто не работают в Android; попробуйте IP-адрес. Home Assistant показывает его в Настройки › Система › Сеть.",
+  "setupAddressNotResolvedHa": "{host} не находится с этого телефона: Android часто не умеет разрешать имена .local. Нажмите «{button}» выше и укажите адрес, по которому открываете Home Assistant в браузере, или введите здесь его IP-адрес. Home Assistant показывает его в Настройки › Система › Сеть.",
   "setupAddressNotLocal": "{host} не в вашей домашней сети. Используйте адрес, который работает в вашем Wi-Fi, а не удалённую ссылку вроде Nabu Casa или DuckDNS.",
   "setupAddressInvalid": "Сначала введите адрес.",
   "setupChoicesTitle": "Что из этого про вас?",
