@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'alerts/alert_push.dart';
 import 'app.dart';
 import 'core/analytics/analytics.dart' show readTestDevice, testDeviceProvider;
+import 'core/privacy/legacy_data_cleanup.dart';
 import 'mqtt/dropped_connection.dart';
 import 'core/theme/font_licenses.dart';
 import 'core/licenses/javascript_licenses.dart';
@@ -22,7 +23,10 @@ Future<void> main([List<String> args = const []]) async {
   // (--unifiedpush-bg) just to show the notification (alerts-2.3.md).
   final pushBackground = args.contains('--unifiedpush-bg');
   if (pushBackground) {
-    await AlertPush.init(await SharedPreferences.getInstance(), background: true);
+    await AlertPush.init(
+      await SharedPreferences.getInstance(),
+      background: true,
+    );
     return;
   }
   PlatformDispatcher.instance.onError = ignoreDroppedConnection;
@@ -34,6 +38,7 @@ Future<void> main([List<String> args = const []]) async {
   registerFontLicenses();
   registerJavaScriptLicenses();
   final prefs = await SharedPreferences.getInstance();
+  await clearLegacyUsageData(prefs);
   await AlertPush.init(prefs, background: false);
   final testDevice = await readTestDevice();
   runApp(

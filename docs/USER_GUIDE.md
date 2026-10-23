@@ -292,10 +292,8 @@ layout to right‑to‑left.
 No. WireDash stores everything **on your device** (settings/dashboards in a local
 database, passwords in the OS secure keystore) and talks **only** to the broker you
 configure. Your broker password, devices, topics and values never leave the phone.
-There are no ads and no account. Unless you opt out (on the first setup screen,
-or in Settings › About), WireDash also sends anonymous usage data: which setup
-steps fail and which features get used. You can turn it off any time; the
-privacy policy lists exactly what is sent.
+There are no ads, no account, no telemetry, and no automatic usage or crash reporting.
+Support details stay on the device unless you choose to copy them or send a problem report.
 
 **Q: Can I put WireDash on a tablet on the wall, locked for guests?**
 Yes. On the dashboard, open ⋮ › **Wall display**. *Keep the screen on and hide

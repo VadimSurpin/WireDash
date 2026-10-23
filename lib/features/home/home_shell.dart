@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../devices/control_tracker.dart';
 import '../history/app_history_recorder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -52,10 +51,6 @@ class HomeShell extends ConsumerWidget {
       // the chrome hiding and the rail appearing.
       AppHistoryRecorder(
         key: ValueKey(connectionId),
-        connectionId: connectionId,
-      ),
-      ControlTracker(
-        key: ValueKey('control-$connectionId'),
         connectionId: connectionId,
       ),
     ],

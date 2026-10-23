@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/analytics/analytics.dart';
 import '../../../core/theme/dashboard_accent.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../data/database/database.dart';

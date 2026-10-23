@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 /// Why a connection attempt failed, as a fixed kind. Support details and
-/// analytics use this instead of the error text, which carries the broker's
+/// local guidance use this instead of the error text, which carries the broker's
 /// host and port (docs/design/support.md §4).
 enum FailureKind {
   unreachable,
@@ -52,16 +52,16 @@ FailureKind failureKindFromMessage(String message) {
 
 /// Short English label for Support details.
 String failureKindLabel(FailureKind kind) => switch (kind) {
-      FailureKind.unreachable => "can't reach the address",
-      FailureKind.timedOut => 'timed out',
-      FailureKind.refused => 'nothing answers on the port',
-      FailureKind.hostNotFound => 'host name not found',
-      FailureKind.loginRequired => 'login required',
-      FailureKind.loginRejected => 'login rejected',
-      FailureKind.notMqtt => 'not an MQTT broker',
-      FailureKind.noZigbee2mqtt => 'no Zigbee2MQTT on this broker',
-      FailureKind.noDevices => 'no devices received',
-      FailureKind.noLocalNetwork => 'no local network',
-      FailureKind.saveFailed => "couldn't save",
-      FailureKind.unknown => 'unknown',
-    };
+  FailureKind.unreachable => "can't reach the address",
+  FailureKind.timedOut => 'timed out',
+  FailureKind.refused => 'nothing answers on the port',
+  FailureKind.hostNotFound => 'host name not found',
+  FailureKind.loginRequired => 'login required',
+  FailureKind.loginRejected => 'login rejected',
+  FailureKind.notMqtt => 'not an MQTT broker',
+  FailureKind.noZigbee2mqtt => 'no Zigbee2MQTT on this broker',
+  FailureKind.noDevices => 'no devices received',
+  FailureKind.noLocalNetwork => 'no local network',
+  FailureKind.saveFailed => "couldn't save",
+  FailureKind.unknown => 'unknown',
+};

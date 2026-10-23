@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 
-import '../../../core/analytics/analytics_events.dart' show ManualTestResult;
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/client_factory.dart';
 import '../../../mqtt/endpoint.dart';
@@ -397,8 +396,13 @@ class ConnectDiagnostics {
           final pub = event.payload;
           if (pub is! mc.MqttPublishMessage) continue;
           final topic = event.topic;
-          wirenBoard.apply(topic, mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message));
-          if (!topic.startsWith('$base/') || topic.length <= base.length + 1) continue;
+          wirenBoard.apply(
+            topic,
+            mc.MqttPublishPayload.bytesToStringAsString(pub.payload.message),
+          );
+          if (!topic.startsWith('$base/') || topic.length <= base.length + 1) {
+            continue;
+          }
           final rest = topic.substring(base.length + 1);
           if (rest == 'bridge/devices') {
             final payload = mc.MqttPublishPayload.bytesToStringAsString(
@@ -452,7 +456,10 @@ class ConnectDiagnostics {
       connected: true,
       candidatesTried: 1,
       deviceNames: sorted,
-      wirenBoardDevices: classifyWirenBoardDevices(wirenBoard.devices, nativeDevices),
+      wirenBoardDevices: classifyWirenBoardDevices(
+        wirenBoard.devices,
+        nativeDevices,
+      ),
     );
   }
 

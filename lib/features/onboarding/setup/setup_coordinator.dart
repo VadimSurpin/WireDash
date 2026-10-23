@@ -74,7 +74,7 @@ typedef HubIdentifier = Future<HubKind?> Function(String host);
 /// How far a scan has come, for the progress bar.
 typedef ScanProgressValue = ({int checked, int total});
 
-/// What a finished scan tried, for the empty result's analytics: whether it
+/// What a finished scan tried, for local setup diagnostics: whether it
 /// widened, how many hosts it tried and how many answered at all (2.6.2),
 /// and how many only to the second, slower look (2.9.3).
 typedef ScanTried = ({
@@ -149,7 +149,7 @@ class SetupScanning extends SetupState {
 /// The scan finished without a single usable candidate. [hubs] are the hubs
 /// it saw instead, [platform] the user's answer, [tried] what it covered,
 /// [deviceIp] the phone's address and [network] what it ran on, for the
-/// result screen and its analytics. [address] is the address check's state
+/// result screen and local support details. [address] is the address check's state
 /// once the user typed one (2.6.2). [z2m] is what Zigbee2MQTT's web page
 /// said about its broker, once asked (2.7.2).
 class SetupScanEmpty extends SetupState {
@@ -226,7 +226,7 @@ class SetupVerifying extends SetupState {
   final SetupCandidate candidate;
 
   /// For a broker the scan found: how many hosts answered only to its
-  /// second look (2.9.3), so analytics can tell whether that look found it.
+  /// second look (2.9.3), so local diagnostics can explain whether that look found it.
   final int? lateHosts;
 }
 
@@ -270,12 +270,17 @@ class SetupFailed extends SetupState {
 
 /// Devices verified — the user reviews the grouped, preselected rows.
 class SetupReview extends SetupState {
-  const SetupReview(this.candidate, this.rows, {this.wirenBoardDevices = const []});
+  const SetupReview(
+    this.candidate,
+    this.rows, {
+    this.wirenBoardDevices = const [],
+  });
   final List<WirenBoardDevice> wirenBoardDevices;
   final SetupCandidate candidate;
   final List<ReviewRow> rows;
 
-  int get selectedCount => rows.where((r) => r.selected).length +
+  int get selectedCount =>
+      rows.where((r) => r.selected).length +
       wirenBoardDevices.where((d) => !d.isControllerBuiltin).length;
 }
 
@@ -805,7 +810,9 @@ class SetupCoordinator {
             : r,
     ];
     _rows = rows;
-    _emit(SetupReview(s.candidate, rows, wirenBoardDevices: s.wirenBoardDevices));
+    _emit(
+      SetupReview(s.candidate, rows, wirenBoardDevices: s.wirenBoardDevices),
+    );
   }
 
   Future<void> createDashboard() async {
@@ -813,7 +820,11 @@ class SetupCoordinator {
     final candidate = _candidate;
     if (rows == null || candidate == null) return;
     final op = ++_op;
-    _emit(SetupCreating(SetupReview(candidate, rows, wirenBoardDevices: _wirenBoardDevices)));
+    _emit(
+      SetupCreating(
+        SetupReview(candidate, rows, wirenBoardDevices: _wirenBoardDevices),
+      ),
+    );
     try {
       final result = await _creator.create(
         host: candidate.host,

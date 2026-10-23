@@ -83,10 +83,8 @@ MQTT.
   fill the screen with a sound on a leak, smoke, gas or CO report. Part of
   ZigDash Pro on Google Play (a one-time purchase, with 7- and 30-day
   history); the GitHub and F-Droid builds have everything.
-- **Private** — no ads, no account. Anonymous usage data you can turn off at
-  any time; builds without an analytics key (F-Droid, your own) send nothing at all.
-  Data lives on your device and your broker; with Remote control, the relay
-  only ever holds it encrypted.
+- **Private** — no ads, no account, no telemetry or automatic usage reporting.
+  Data lives on your device and your broker.
 
 ## Install
 

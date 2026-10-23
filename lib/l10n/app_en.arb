@@ -369,14 +369,6 @@
   "settingsVersion": "Version",
   "settingsRateApp": "Rate WireDash",
   "settingsRateAppSubtitle": "Enjoying it? A quick review helps others find it.",
-  "settingsFeatureRequest": "Request a feature",
-  "settingsFeatureRequestSubtitle": "Tell me what would make WireDash better.",
-  "featureRequestGithub": "On GitHub",
-  "featureRequestGithubSubtitle": "Public: others can see it and vote for it.",
-  "featureRequestEmail": "By email",
-  "featureRequestEmailSubtitle": "Private, straight to the developer.",
-  "featureRequestEmailSubject": "WireDash feature request",
-  "featureRequestEmailPrompt": "What would you like WireDash to do, and why?",
   "settingsReportProblem": "Report a problem",
   "settingsReportProblemSubtitle": "Something broken or confusing? Tell me.",
   "reportProblemEmailSubject": "WireDash problem report",
@@ -1140,15 +1132,6 @@
   "panelFormAdvancedSubtitle": "Prefix override, QoS, retain",
   "panelFormStateTopicHelper": "Blank = the prefix itself (a Zigbee2MQTT device's state).",
   "dashWallDisplay": "Wall display",
-  "analyticsSetupCheckbox": "Share anonymous usage data to help improve setup",
-  "analyticsWhatsShared": "What's shared",
-  "analyticsCardTitle": "Help improve WireDash?",
-  "analyticsCardBody": "Share anonymous usage data: which setup steps fail and which features get used. Never your devices, topics or broker.",
-  "analyticsShare": "Share",
-  "analyticsNoThanks": "No thanks",
-  "settingsAnalytics": "Share anonymous usage data",
-  "settingsAnalyticsSubtitle": "Setup steps and features used. Never your devices, topics or broker.",
-  "settingsPrivacySubtitleOptIn": "Anonymous usage data. Turn it off with the switch above.",
   "dashDefaultName": "Home",
   "dashExportSaveFile": "Save file",
   "dashExportSaved": "Backup saved",
@@ -1350,42 +1333,6 @@
   "shortcutOpenAppFirst": "Open WireDash and put a device on a dashboard first.",
   "@shortcutOpenAppFirst": {
     "description": "Home-screen widget picker, when no device is on a dashboard yet."
-  },
-  "pollTitle": "What should WireDash do next?",
-  "@pollTitle": {
-    "description": "One-time dashboard card asking what to build next."
-  },
-  "pollBody": "Pick the one you'd use most. Your answer is sent with your anonymous usage data.",
-  "@pollBody": {
-    "description": "Under the poll title, for people who share usage data."
-  },
-  "pollNotifications": "Notifications",
-  "@pollNotifications": {
-    "description": "Poll choice: alerts on the phone (door opened, leak…)."
-  },
-  "pollHistory": "History graphs",
-  "@pollHistory": {
-    "description": "Poll choice: graphs of past readings."
-  },
-  "pollKiosk": "Kiosk mode for a wall tablet",
-  "@pollKiosk": {
-    "description": "Poll choice: a full-screen mode for a wall tablet."
-  },
-  "pollGroups": "Zigbee groups",
-  "@pollGroups": {
-    "description": "Poll choice: control Zigbee2MQTT groups."
-  },
-  "pollNotNow": "Not now",
-  "@pollNotNow": {
-    "description": "Hides the poll for good."
-  },
-  "pollThanks": "Thanks! That helps decide what comes next.",
-  "@pollThanks": {
-    "description": "Snackbar after answering the poll."
-  },
-  "pollNoAnalytics": "Usage data is off, so nothing is sent from here. Tell us with Request a feature instead.",
-  "@pollNoAnalytics": {
-    "description": "Poll card text for people who don't share usage data."
   },
   "alertLeak": "💧 Leak — {name}",
   "@alertLeak": {
@@ -2290,5 +2237,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "problemReportGithub": "On GitHub",
+  "problemReportEmail": "By email",
+  "problemReportGithubSubtitle": "Public: others can see it and vote for it.",
+  "problemReportEmailSubtitle": "Private, straight to the developer."
 }

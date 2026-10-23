@@ -200,7 +200,6 @@ class WidgetConfigActivity : Activity() {
     private fun chooseGroup(g: ShortcutPrefs.GroupEntry) {
         ShortcutPrefs.setGroupWidget(this, id, g)
         GroupWidget.render(this, AppWidgetManager.getInstance(this), id)
-        ShortcutPrefs.mark(this, "shortcut.added.group_widget")
         askState()
         setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id))
         finish()
@@ -218,7 +217,6 @@ class WidgetConfigActivity : Activity() {
     private fun chooseScene(e: ShortcutPrefs.SceneEntry) {
         ShortcutPrefs.setSceneWidget(this, id, e)
         SceneWidget.render(this, AppWidgetManager.getInstance(this), id)
-        ShortcutPrefs.mark(this, "shortcut.added.scene_widget")
         setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id))
         finish()
     }
@@ -226,7 +224,6 @@ class WidgetConfigActivity : Activity() {
     private fun choose(e: ShortcutPrefs.ControlEntry) {
         ShortcutPrefs.setWidget(this, id, e)
         DeviceWidget.render(this, AppWidgetManager.getInstance(this), id)
-        ShortcutPrefs.mark(this, "shortcut.added.widget")
         askState()
         setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id))
         finish()
