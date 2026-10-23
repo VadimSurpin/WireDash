@@ -14,6 +14,6 @@ void main() {
     // AppBar title is localized:
     expect(find.text('Help & Guide'), findsWidgets);
     // A known heading from docs/USER_GUIDE.md body:
-    expect(find.textContaining('ZigDash'), findsWidgets);
+    expect(find.textContaining('WireDash'), findsWidgets);
   });
 }

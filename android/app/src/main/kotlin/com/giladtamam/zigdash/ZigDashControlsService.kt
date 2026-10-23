@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 
 /**
  * Android's Device Controls (docs/design/roadmap-post-2.0.md, 2.1 §4): every
- * device on a dashboard, one control each, in a "ZigDash · <Home>"
+ * device on a dashboard, one control each, in a "WireDash · <Home>"
  * structure. Lights, plugs and switches toggle; dimmable lights and shutters
  * get Android's slider; sensors show their reading. Commands and state go
  * through [ShortcutEngine], like the tiles; the app writes the device list
@@ -152,7 +152,7 @@ class ZigDashControlsService : ControlsProviderService() {
     private fun hasRange(e: ShortcutPrefs.ControlEntry) =
         e.kind == "dimmer" || (e.kind == "cover" && e.position)
 
-    private fun structure(e: ShortcutPrefs.ControlEntry) ="ZigDash · ${e.home}"
+    private fun structure(e: ShortcutPrefs.ControlEntry) ="WireDash · ${e.home}"
 
     private fun deviceType(e: ShortcutPrefs.ControlEntry) = when (e.cls) {
         "light", "colorLight" -> DeviceTypes.TYPE_LIGHT

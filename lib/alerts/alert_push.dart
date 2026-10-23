@@ -235,7 +235,7 @@ abstract final class AlertPush {
     await _channels();
     await _notes.show(
       id: event.device?.hashCode ?? event.at.millisecondsSinceEpoch ~/ 1000,
-      title: homeName ?? (event.home.isEmpty ? 'ZigDash' : event.home),
+      title: homeName ?? (event.home.isEmpty ? 'WireDash' : event.home),
       body: event.text(l10n, oneHome: true),
       payload: '${homeId ?? ''}|${event.device ?? ''}|${event.home}',
       notificationDetails: NotificationDetails(

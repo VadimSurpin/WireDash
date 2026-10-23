@@ -9,7 +9,7 @@
          asked for at start on phones that enforce it (alerts-2.3.md §3). -->
     <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK"/>
     <application
-        android:label="ZigDash"
+        android:label="WireDash"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -117,7 +117,7 @@
         <service
             android:name=".ZigDashControlsService"
             android:exported="true"
-            android:label="ZigDash"
+            android:label="WireDash"
             android:permission="android.permission.BIND_CONTROLS">
             <intent-filter>
                 <action android:name="android.service.controls.ControlsProviderService" />
@@ -128,7 +128,7 @@
             android:name=".ShortcutTile1"
             android:exported="true"
             android:icon="@drawable/ic_shortcut_tile"
-            android:label="ZigDash 1"
+            android:label="WireDash 1"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
@@ -139,7 +139,7 @@
             android:name=".ShortcutTile2"
             android:exported="true"
             android:icon="@drawable/ic_shortcut_tile"
-            android:label="ZigDash 2"
+            android:label="WireDash 2"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
@@ -150,7 +150,7 @@
             android:name=".ShortcutTile3"
             android:exported="true"
             android:icon="@drawable/ic_shortcut_tile"
-            android:label="ZigDash 3"
+            android:label="WireDash 3"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
@@ -161,7 +161,7 @@
             android:name=".ShortcutTile4"
             android:exported="true"
             android:icon="@drawable/ic_shortcut_tile"
-            android:label="ZigDash 4"
+            android:label="WireDash 4"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

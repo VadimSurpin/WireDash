@@ -162,7 +162,7 @@ void main() {
             widened: true, hostsTried: 1018, brokersFound: 0, network: 'Wi-Fi'),
       );
       expect(d.format(), '''
-ZigDash 2.0.1 (31) · Android 15 · Samsung SM-S721B
+WireDash 2.0.1 (31) · Android 15 · Samsung SM-S721B
 Opened from: Setup › No connection found
 Connection: local · TCP · port 1883 · private address in 192.168.x
 Zigbee2MQTT: 2.6.1 · bridge online · 14 devices
@@ -177,7 +177,7 @@ Last scan: /24 then /22 · 1,018 hosts tried · 0 brokers · Wi-Fi''');
         openedFrom: 'Settings',
       );
       expect(d.format(), '''
-ZigDash 2.0.1 (31)
+WireDash 2.0.1 (31)
 Opened from: Settings
 Connection: none
 Zigbee2MQTT: not found

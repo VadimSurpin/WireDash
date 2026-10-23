@@ -135,7 +135,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash'**
+  /// **'WireDash'**
   String get appTitle;
 
   /// No description provided for @onboardingDemo.
@@ -243,7 +243,7 @@ abstract class AppLocalizations {
   /// No description provided for @connEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No connections yet.\nTap \"Add broker\" to point ZigDash at your MQTT server.'**
+  /// **'No connections yet.\nTap \"Add broker\" to point WireDash at your MQTT server.'**
   String get connEmpty;
 
   /// No description provided for @connNew.
@@ -393,7 +393,7 @@ abstract class AppLocalizations {
   /// No description provided for @connHelpZhaBody.
   ///
   /// In en, this message translates to:
-  /// **'ZHA has no MQTT broker — it talks to Home Assistant directly, so ZigDash can\'t connect to it. To use ZigDash, switch to Zigbee2MQTT (available as a Home Assistant add-on or a Docker container), which provides an MQTT broker.'**
+  /// **'ZHA has no MQTT broker — it talks to Home Assistant directly, so WireDash can\'t connect to it. To use WireDash, switch to Zigbee2MQTT (available as a Home Assistant add-on or a Docker container), which provides an MQTT broker.'**
   String get connHelpZhaBody;
 
   /// No description provided for @connHelpSameNetwork.
@@ -1863,7 +1863,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsRateApp.
   ///
   /// In en, this message translates to:
-  /// **'Rate ZigDash'**
+  /// **'Rate WireDash'**
   String get settingsRateApp;
 
   /// No description provided for @settingsRateAppSubtitle.
@@ -1881,7 +1881,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFeatureRequestSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Tell me what would make ZigDash better.'**
+  /// **'Tell me what would make WireDash better.'**
   String get settingsFeatureRequestSubtitle;
 
   /// No description provided for @featureRequestGithub.
@@ -1911,13 +1911,13 @@ abstract class AppLocalizations {
   /// No description provided for @featureRequestEmailSubject.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash feature request'**
+  /// **'WireDash feature request'**
   String get featureRequestEmailSubject;
 
   /// No description provided for @featureRequestEmailPrompt.
   ///
   /// In en, this message translates to:
-  /// **'What would you like ZigDash to do, and why?'**
+  /// **'What would you like WireDash to do, and why?'**
   String get featureRequestEmailPrompt;
 
   /// No description provided for @settingsReportProblem.
@@ -1935,7 +1935,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportProblemEmailSubject.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash problem report'**
+  /// **'WireDash problem report'**
   String get reportProblemEmailSubject;
 
   /// No description provided for @reportProblemEmailPrompt.
@@ -2631,7 +2631,7 @@ abstract class AppLocalizations {
   /// No description provided for @noDevicesHint.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash can see your broker, but hasn\'t found any Zigbee devices yet. You can start pairing to add them.'**
+  /// **'WireDash can see your broker, but hasn\'t found any Zigbee devices yet. You can start pairing to add them.'**
   String get noDevicesHint;
 
   /// No description provided for @startPairing.
@@ -2697,7 +2697,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to ZigDash'**
+  /// **'Welcome to WireDash'**
   String get setupWelcomeTitle;
 
   /// No description provided for @setupWelcomeHeadline.
@@ -2709,7 +2709,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupWelcomeBody.
   ///
   /// In en, this message translates to:
-  /// **'A small hub running Zigbee2MQTT is all you need: an SMLIGHT hub, a Raspberry Pi or any Linux box. No Home Assistant needed, and if you have it, ZigDash works with it too. Everything stays local, with no cloud.'**
+  /// **'A small hub running Zigbee2MQTT is all you need: an SMLIGHT hub, a Raspberry Pi or any Linux box. No Home Assistant needed, and if you have it, WireDash works with it too. Everything stays local, with no cloud.'**
   String get setupWelcomeBody;
 
   /// No description provided for @setupFindMySetup.
@@ -2793,7 +2793,7 @@ abstract class AppLocalizations {
   /// No description provided for @reminderNoPermission.
   ///
   /// In en, this message translates to:
-  /// **'Notifications are off for ZigDash, so there\'s no reminder. You can turn them on in Android\'s settings.'**
+  /// **'Notifications are off for WireDash, so there\'s no reminder. You can turn them on in Android\'s settings.'**
   String get reminderNoPermission;
 
   /// No description provided for @reminderChannel.
@@ -2805,7 +2805,7 @@ abstract class AppLocalizations {
   /// No description provided for @reminderTitle.
   ///
   /// In en, this message translates to:
-  /// **'Finish setting up ZigDash'**
+  /// **'Finish setting up WireDash'**
   String get reminderTitle;
 
   /// No description provided for @reminderBody.
@@ -2841,7 +2841,7 @@ abstract class AppLocalizations {
   /// No description provided for @haConnectIntro.
   ///
   /// In en, this message translates to:
-  /// **'Your phone can\'t reach the broker, but it can reach Home Assistant. Sign in once, and ZigDash talks to Zigbee2MQTT through Home Assistant: at home or away, with no broker settings.'**
+  /// **'Your phone can\'t reach the broker, but it can reach Home Assistant. Sign in once, and WireDash talks to Zigbee2MQTT through Home Assistant: at home or away, with no broker settings.'**
   String get haConnectIntro;
 
   /// No description provided for @haConnectAddressHelp.
@@ -2853,19 +2853,19 @@ abstract class AppLocalizations {
   /// No description provided for @haConnectSignInHelp.
   ///
   /// In en, this message translates to:
-  /// **'Home Assistant\'s own login opens in your browser. ZigDash never sees your password.'**
+  /// **'Home Assistant\'s own login opens in your browser. WireDash never sees your password.'**
   String get haConnectSignInHelp;
 
   /// No description provided for @haConnectKeeps.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash keeps this sign-in on your phone and acts as you in Home Assistant, for MQTT only. End it any time in Home Assistant under Profile › Security.'**
+  /// **'WireDash keeps this sign-in on your phone and acts as you in Home Assistant, for MQTT only. End it any time in Home Assistant under Profile › Security.'**
   String get haConnectKeeps;
 
   /// No description provided for @haConnectTokenHelp.
   ///
   /// In en, this message translates to:
-  /// **'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. ZigDash keeps it on this phone to connect; delete it in Home Assistant whenever you want to end that.'**
+  /// **'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. WireDash keeps it on this phone to connect; delete it in Home Assistant whenever you want to end that.'**
   String get haConnectTokenHelp;
 
   /// No description provided for @haConnectWithToken.
@@ -2883,7 +2883,7 @@ abstract class AppLocalizations {
   /// No description provided for @haConnectNotAdmin.
   ///
   /// In en, this message translates to:
-  /// **'Your Home Assistant user isn\'t an administrator. ZigDash needs one for Home Assistant\'s MQTT. Sign in as an administrator, or paste a token an administrator created.'**
+  /// **'Your Home Assistant user isn\'t an administrator. WireDash needs one for Home Assistant\'s MQTT. Sign in as an administrator, or paste a token an administrator created.'**
   String get haConnectNotAdmin;
 
   /// No description provided for @haConnectNoMqtt.
@@ -3195,7 +3195,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupNoWifiUnknown.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash can\'t find your phone\'s Wi-Fi address. Check that Wi-Fi is on and joined to your home network: setup starts again by itself. On a VPN or away from home? Enter the details manually.'**
+  /// **'WireDash can\'t find your phone\'s Wi-Fi address. Check that Wi-Fi is on and joined to your home network: setup starts again by itself. On a VPN or away from home? Enter the details manually.'**
   String get setupNoWifiUnknown;
 
   /// No description provided for @setupOpenWifiSettings.
@@ -3405,7 +3405,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupNoBrokerHaZha.
   ///
   /// In en, this message translates to:
-  /// **'Using Home Assistant\'s own Zigbee (ZHA) instead of Zigbee2MQTT? ZigDash works only with Zigbee2MQTT, so it can\'t see ZHA devices. The demo shows what you\'d get.'**
+  /// **'Using Home Assistant\'s own Zigbee (ZHA) instead of Zigbee2MQTT? WireDash works only with Zigbee2MQTT, so it can\'t see ZHA devices. The demo shows what you\'d get.'**
   String get setupNoBrokerHaZha;
 
   /// No description provided for @setupVpnHint.
@@ -3585,7 +3585,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupChoiceHaNote.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash connects to Home Assistant\'s MQTT broker, the Mosquitto broker add-on under Settings › Add-ons, and Zigbee2MQTT has to use it too. If homeassistant.local isn\'t found, enter Home Assistant\'s IP address below. It\'s under Settings › System › Network.'**
+  /// **'WireDash connects to Home Assistant\'s MQTT broker, the Mosquitto broker add-on under Settings › Add-ons, and Zigbee2MQTT has to use it too. If homeassistant.local isn\'t found, enter Home Assistant\'s IP address below. It\'s under Settings › System › Network.'**
   String get setupChoiceHaNote;
 
   /// No description provided for @setupChoiceOther.
@@ -4215,7 +4215,7 @@ abstract class AppLocalizations {
   /// No description provided for @statusWhyBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash keeps trying on its own. Until it\'s back, tiles show their last known values, dimmed, with their age. Check that the broker is on and this phone is on the same network, or test the connection in its settings.'**
+  /// **'WireDash keeps trying on its own. Until it\'s back, tiles show their last known values, dimmed, with their age. Check that the broker is on and this phone is on the same network, or test the connection in its settings.'**
   String get statusWhyBody;
 
   /// No description provided for @statusSettings.
@@ -4557,7 +4557,7 @@ abstract class AppLocalizations {
   /// No description provided for @analyticsCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Help improve ZigDash?'**
+  /// **'Help improve WireDash?'**
   String get analyticsCardTitle;
 
   /// No description provided for @analyticsCardBody.
@@ -4677,7 +4677,7 @@ abstract class AppLocalizations {
   /// No description provided for @getHelpEmailSubject.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash: help getting it working'**
+  /// **'WireDash: help getting it working'**
   String get getHelpEmailSubject;
 
   /// No description provided for @getHelpEmailPrompt.
@@ -4707,7 +4707,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCommunity.
   ///
   /// In en, this message translates to:
-  /// **'Join the ZigDash community'**
+  /// **'Join the WireDash community'**
   String get settingsCommunity;
 
   /// No description provided for @settingsCommunitySubtitle.
@@ -5109,7 +5109,7 @@ abstract class AppLocalizations {
   /// No description provided for @tipFindSetupBody.
   ///
   /// In en, this message translates to:
-  /// **'Leave the demo and tap Find my setup. ZigDash looks for your hub on its own.'**
+  /// **'Leave the demo and tap Find my setup. WireDash looks for your hub on its own.'**
   String get tipFindSetupBody;
 
   /// No description provided for @getHelpNoEmailApp.
@@ -5169,7 +5169,7 @@ abstract class AppLocalizations {
   /// Scene widget picker, when there are no scenes yet.
   ///
   /// In en, this message translates to:
-  /// **'Open ZigDash and create a scene first.'**
+  /// **'Open WireDash and create a scene first.'**
   String get shortcutOpenAppFirstScene;
 
   /// Title of the group widget's picker.
@@ -5220,22 +5220,22 @@ abstract class AppLocalizations {
   /// **'Add the widget'**
   String get shortcutWidgetHowToTitle;
 
-  /// How to add a ZigDash widget by hand.
+  /// How to add a WireDash widget by hand.
   ///
   /// In en, this message translates to:
-  /// **'Long-press an empty spot on your home screen, tap Widgets, find ZigDash and drag the widget you want.'**
+  /// **'Long-press an empty spot on your home screen, tap Widgets, find WireDash and drag the widget you want.'**
   String get shortcutWidgetHowTo;
 
   /// No description provided for @shortcutTileReady.
   ///
   /// In en, this message translates to:
-  /// **'{name} is on Quick Settings tile ZigDash {slot}'**
+  /// **'{name} is on Quick Settings tile WireDash {slot}'**
   String shortcutTileReady(Object name, Object slot);
 
   /// No description provided for @shortcutTileAlready.
   ///
   /// In en, this message translates to:
-  /// **'{name} is already on tile ZigDash {slot}'**
+  /// **'{name} is already on tile WireDash {slot}'**
   String shortcutTileAlready(Object name, Object slot);
 
   /// No description provided for @shortcutTileHowToTitle.
@@ -5247,13 +5247,13 @@ abstract class AppLocalizations {
   /// No description provided for @shortcutTileHowTo.
   ///
   /// In en, this message translates to:
-  /// **'Open Quick Settings (swipe down twice), tap the pencil to edit, and drag “ZigDash {slot}” into your tiles.'**
+  /// **'Open Quick Settings (swipe down twice), tap the pencil to edit, and drag “WireDash {slot}” into your tiles.'**
   String shortcutTileHowTo(Object slot);
 
   /// No description provided for @shortcutPickTitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose a device for ZigDash {slot}'**
+  /// **'Choose a device for WireDash {slot}'**
   String shortcutPickTitle(Object slot);
 
   /// No description provided for @shortcutPickEmpty.
@@ -5265,13 +5265,13 @@ abstract class AppLocalizations {
   /// No description provided for @shortcutSlotsFull.
   ///
   /// In en, this message translates to:
-  /// **'All 4 ZigDash tiles are in use. Which one should show this device instead?'**
+  /// **'All 4 WireDash tiles are in use. Which one should show this device instead?'**
   String get shortcutSlotsFull;
 
   /// No description provided for @shortcutSlotLabel.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash {slot}'**
+  /// **'WireDash {slot}'**
   String shortcutSlotLabel(Object slot);
 
   /// No description provided for @shortcutSlotEmpty.
@@ -5319,13 +5319,13 @@ abstract class AppLocalizations {
   /// Home-screen widget picker, when no device is on a dashboard yet.
   ///
   /// In en, this message translates to:
-  /// **'Open ZigDash and put a device on a dashboard first.'**
+  /// **'Open WireDash and put a device on a dashboard first.'**
   String get shortcutOpenAppFirst;
 
   /// One-time dashboard card asking what to build next.
   ///
   /// In en, this message translates to:
-  /// **'What should ZigDash do next?'**
+  /// **'What should WireDash do next?'**
   String get pollTitle;
 
   /// Under the poll title, for people who share usage data.
@@ -5415,7 +5415,7 @@ abstract class AppLocalizations {
   /// The test notification's text.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash test alert'**
+  /// **'WireDash test alert'**
   String get alertTest;
 
   /// Android notification channel for leak and smoke (urgent).
@@ -5475,7 +5475,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with ZigDash closed. Node-RED on your hub watches the devices; ZigDash sets it up.'**
+  /// **'Get a notification on this phone when a leak, smoke, an opened door or a low battery is reported, even with WireDash closed. Node-RED on your hub watches the devices; WireDash sets it up.'**
   String get alertsIntro;
 
   /// Alerts screen.
@@ -5565,7 +5565,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'This phone has no Google services, so ZigDash can\'t receive pushes here.'**
+  /// **'This phone has no Google services, so WireDash can\'t receive pushes here.'**
   String get alertsNoGoogle;
 
   /// Alerts screen.
@@ -5703,13 +5703,13 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Alerts to ZigDash are encrypted end to end: Google\'s push service carries them but can\'t read them. Nothing else leaves your hub.'**
+  /// **'Alerts to WireDash are encrypted end to end: Google\'s push service carries them but can\'t read them. Nothing else leaves your hub.'**
   String get alertsWhatLeaves;
 
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Android may stop ZigDash in the background, so notifications could be late or missed. Allow it to run in the background in Android\'s settings (on Samsung: Battery › Never sleeping apps).'**
+  /// **'Android may stop WireDash in the background, so notifications could be late or missed. Allow it to run in the background in Android\'s settings (on Samsung: Battery › Never sleeping apps).'**
   String get alertsRestricted;
 
   /// Alerts screen.
@@ -5751,7 +5751,7 @@ abstract class AppLocalizations {
   /// Alerts screen: sharing with the household (ntfy) and Pushover.
   ///
   /// In en, this message translates to:
-  /// **'Anyone with this link gets this Home\'s alerts in the ntfy app, with no ZigDash needed. The alert text goes through ntfy.sh unencrypted.'**
+  /// **'Anyone with this link gets this Home\'s alerts in the ntfy app, with no WireDash needed. The alert text goes through ntfy.sh unencrypted.'**
   String get alertsShareBody;
 
   /// Alerts screen: sharing with the household (ntfy) and Pushover.
@@ -5937,7 +5937,7 @@ abstract class AppLocalizations {
   /// No description provided for @wallProNote.
   ///
   /// In en, this message translates to:
-  /// **'Readings on the clock, wake on motion, the night schedule and alarms are part of ZigDash Pro, a one-time purchase.'**
+  /// **'Readings on the clock, wake on motion, the night schedule and alarms are part of WireDash Pro, a one-time purchase.'**
   String get wallProNote;
 
   /// No description provided for @wallAlarmLeak.
@@ -5997,7 +5997,7 @@ abstract class AppLocalizations {
   /// No description provided for @wallAlarmsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Leak, smoke, gas or carbon monoxide fills the screen until someone taps OK. Only while ZigDash is open on this tablet; Alerts reach phones anywhere.'**
+  /// **'Leak, smoke, gas or carbon monoxide fills the screen until someone taps OK. Only while WireDash is open on this tablet; Alerts reach phones anywhere.'**
   String get wallAlarmsSubtitle;
 
   /// No description provided for @wallAlarmSound.
@@ -6123,7 +6123,7 @@ abstract class AppLocalizations {
   /// No description provided for @kioskPinForgotBody.
   ///
   /// In en, this message translates to:
-  /// **'A forgotten PIN can only be reset by clearing ZigDash\'s data in Android\'s settings, which removes this Home unless you have a backup. Export one before setting a PIN.'**
+  /// **'A forgotten PIN can only be reset by clearing WireDash\'s data in Android\'s settings, which removes this Home unless you have a backup. Export one before setting a PIN.'**
   String get kioskPinForgotBody;
 
   /// No description provided for @kioskExportBackup.
@@ -6135,13 +6135,13 @@ abstract class AppLocalizations {
   /// No description provided for @kioskOsPin.
   ///
   /// In en, this message translates to:
-  /// **'Also pin ZigDash on Android'**
+  /// **'Also pin WireDash on Android'**
   String get kioskOsPin;
 
   /// No description provided for @kioskOsPinSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Android blocks Home and recent apps until ZigDash is unpinned. A tablet without a lock screen unpins with a gesture, so this is not the lock.'**
+  /// **'Android blocks Home and recent apps until WireDash is unpinned. A tablet without a lock screen unpins with a gesture, so this is not the lock.'**
   String get kioskOsPinSubtitle;
 
   /// No description provided for @kioskOn.
@@ -6207,7 +6207,7 @@ abstract class AppLocalizations {
   /// No description provided for @historySetupBody.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
+  /// **'WireDash has no server, so a small Node-RED flow on your hub records the numbers on your dashboards every 15 minutes. It keeps 30 days, on your own broker.'**
   String get historySetupBody;
 
   /// No description provided for @historySetupAction.
@@ -6249,7 +6249,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyLocked.
   ///
   /// In en, this message translates to:
-  /// **'Longer history is part of ZigDash Pro, a one-time purchase.'**
+  /// **'Longer history is part of WireDash Pro, a one-time purchase.'**
   String get historyLocked;
 
   /// No description provided for @historyUnlock.
@@ -6261,7 +6261,7 @@ abstract class AppLocalizations {
   /// No description provided for @proTitle.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash Pro'**
+  /// **'WireDash Pro'**
   String get proTitle;
 
   /// No description provided for @proAbout.
@@ -6273,13 +6273,13 @@ abstract class AppLocalizations {
   /// No description provided for @proUnlocked.
   ///
   /// In en, this message translates to:
-  /// **'Unlocked. Thank you for supporting ZigDash.'**
+  /// **'Unlocked. Thank you for supporting WireDash.'**
   String get proUnlocked;
 
   /// No description provided for @proScreenIntro.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash is free and open source, built by one person in their spare time. Pro is a one-time purchase that keeps it going.'**
+  /// **'WireDash is free and open source, built by one person in their spare time. Pro is a one-time purchase that keeps it going.'**
   String get proScreenIntro;
 
   /// No description provided for @proWhatYouGet.
@@ -6351,13 +6351,13 @@ abstract class AppLocalizations {
   /// No description provided for @historyRecordHereHint.
   ///
   /// In en, this message translates to:
-  /// **'No Node-RED? ZigDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
+  /// **'No Node-RED? WireDash can record on a phone or tablet that stays open, like a wall tablet. Every phone of this Home sees the history.'**
   String get historyRecordHereHint;
 
   /// No description provided for @historyRecordingHere.
   ///
   /// In en, this message translates to:
-  /// **'This device records history while ZigDash is open. The first values appear within 15 minutes.'**
+  /// **'This device records history while WireDash is open. The first values appear within 15 minutes.'**
   String get historyRecordingHere;
 
   /// No description provided for @wallRecordHistory.
@@ -6369,13 +6369,13 @@ abstract class AppLocalizations {
   /// No description provided for @wallRecordHistorySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Every 15 minutes while ZigDash is open, for every phone of this Home. Not needed when Node-RED records.'**
+  /// **'Every 15 minutes while WireDash is open, for every phone of this Home. Not needed when Node-RED records.'**
   String get wallRecordHistorySubtitle;
 
   /// No description provided for @historyNeedsPassword.
   ///
   /// In en, this message translates to:
-  /// **'One more step: your broker asks for a login. Open Node-RED at {host}:1880, double-click \"ZigDash history broker\", type the MQTT password on its Security tab, then Deploy. ZigDash never sends your password to the hub.'**
+  /// **'One more step: your broker asks for a login. Open Node-RED at {host}:1880, double-click \"ZigDash history broker\", type the MQTT password on its Security tab, then Deploy. WireDash never sends your password to the hub.'**
   String historyNeedsPassword(String host);
 
   /// No description provided for @historyNotConnected.
@@ -6405,7 +6405,7 @@ abstract class AppLocalizations {
   /// No description provided for @haImportIntro.
   ///
   /// In en, this message translates to:
-  /// **'Bring the names and rooms you set up in Home Assistant. ZigDash reads them once and keeps nothing else from Home Assistant.'**
+  /// **'Bring the names and rooms you set up in Home Assistant. WireDash reads them once and keeps nothing else from Home Assistant.'**
   String get haImportIntro;
 
   /// No description provided for @haImportAddress.
@@ -6429,7 +6429,7 @@ abstract class AppLocalizations {
   /// No description provided for @haImportTokenHelp.
   ///
   /// In en, this message translates to:
-  /// **'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. ZigDash uses it once and doesn\'t keep it; you can delete it in Home Assistant afterwards.'**
+  /// **'In Home Assistant, open your profile, then Security › Long-lived access tokens › Create token. Copy it and paste it here. WireDash uses it once and doesn\'t keep it; you can delete it in Home Assistant afterwards.'**
   String get haImportTokenHelp;
 
   /// No description provided for @haImportRead.
@@ -6495,7 +6495,7 @@ abstract class AppLocalizations {
   /// No description provided for @haImportNoDevices.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash can\'t see this home\'s devices right now. Connect to the home, then try again.'**
+  /// **'WireDash can\'t see this home\'s devices right now. Connect to the home, then try again.'**
   String get haImportNoDevices;
 
   /// No description provided for @haImportAutomations.
@@ -6549,7 +6549,7 @@ abstract class AppLocalizations {
   /// No description provided for @haImportZhaOnly.
   ///
   /// In en, this message translates to:
-  /// **'These devices run on ZHA, Home Assistant\'s own Zigbee, not on Zigbee2MQTT, so ZigDash can\'t show them.'**
+  /// **'These devices run on ZHA, Home Assistant\'s own Zigbee, not on Zigbee2MQTT, so WireDash can\'t show them.'**
   String get haImportZhaOnly;
 
   /// No description provided for @haImportNothing.
@@ -6579,7 +6579,7 @@ abstract class AppLocalizations {
   /// No description provided for @haImportOfferBody.
   ///
   /// In en, this message translates to:
-  /// **'Home Assistant is on your network. ZigDash can name your tiles and add a dashboard per floor and room, the way you set them up there.'**
+  /// **'Home Assistant is on your network. WireDash can name your tiles and add a dashboard per floor and room, the way you set them up there.'**
   String get haImportOfferBody;
 
   /// No description provided for @haImportOfferLater.
@@ -6603,7 +6603,7 @@ abstract class AppLocalizations {
   /// No description provided for @haImportSignInHelp.
   ///
   /// In en, this message translates to:
-  /// **'Home Assistant\'s own login opens in your browser. ZigDash never sees your password and signs out again after reading.'**
+  /// **'Home Assistant\'s own login opens in your browser. WireDash never sees your password and signs out again after reading.'**
   String get haImportSignInHelp;
 
   /// No description provided for @haImportOrToken.
@@ -6633,13 +6633,13 @@ abstract class AppLocalizations {
   /// No description provided for @setupAuthTrust.
   ///
   /// In en, this message translates to:
-  /// **'Your login stays on this phone and goes only to your own broker. ZigDash has no server and no account, and every MQTT app logs in this way. Safest: a separate MQTT user just for ZigDash, which you can remove any time.'**
+  /// **'Your login stays on this phone and goes only to your own broker. WireDash has no server and no account, and every MQTT app logs in this way. Safest: a separate MQTT user just for WireDash, which you can remove any time.'**
   String get setupAuthTrust;
 
   /// No description provided for @setupAuthWhatKept.
   ///
   /// In en, this message translates to:
-  /// **'What ZigDash keeps'**
+  /// **'What WireDash keeps'**
   String get setupAuthWhatKept;
 
   /// No description provided for @setupAuthDemoFirst.

@@ -1,6 +1,6 @@
-# ZigDash — User Guide
+# WireDash — User Guide
 
-ZigDash turns your phone into a private, customizable control panel for a
+WireDash turns your phone into a private, customizable control panel for a
 [Zigbee2MQTT](https://www.zigbee2mqtt.io/) smart home. It talks directly to an
 MQTT broker you control — no cloud account, no third‑party servers, no tracking.
 
@@ -11,7 +11,7 @@ each panel type, scheduled automation, scenes, remote access, settings, backup, 
 
 ## 1. Concepts at a glance
 
-ZigDash is organized in three tabs (bottom bar):
+WireDash is organized in three tabs (bottom bar):
 
 | Tab | What it holds |
 |---|---|
@@ -33,15 +33,15 @@ The hierarchy is: **Broker → Dashboards → Panels**.
 
 ### First run: Find my setup
 
-On a new install, tap **Find my setup**. ZigDash scans your Wi-Fi for an MQTT broker, checks it speaks Zigbee2MQTT, and builds your first dashboard from the devices it finds. While it scans you can say where Zigbee2MQTT runs (Home Assistant, an SMLIGHT hub, a Raspberry Pi or Docker, or Not sure); it's optional, and it makes the result more specific.
+On a new install, tap **Find my setup**. WireDash scans your Wi-Fi for an MQTT broker, checks it speaks Zigbee2MQTT, and builds your first dashboard from the devices it finds. While it scans you can say where Zigbee2MQTT runs (Home Assistant, an SMLIGHT hub, a Raspberry Pi or Docker, or Not sure); it's optional, and it makes the result more specific.
 
-If no broker answers, ZigDash also looks for Home Assistant, the Zigbee2MQTT frontend and (if you said so) your SMLIGHT hub, and tells you what it found and what's missing: for example "Found Home Assistant, but no MQTT broker", with the add-on to start. **Connect to <address>** opens manual entry with the address filled in. Nothing found at all? Check your phone is on the same Wi-Fi as the hub, then try again, or enter the address yourself: the manual form shows your phone's own address so you know what the hub's usually starts with.
+If no broker answers, WireDash also looks for Home Assistant, the Zigbee2MQTT frontend and (if you said so) your SMLIGHT hub, and tells you what it found and what's missing: for example "Found Home Assistant, but no MQTT broker", with the add-on to start. **Connect to <address>** opens manual entry with the address filled in. Nothing found at all? Check your phone is on the same Wi-Fi as the hub, then try again, or enter the address yourself: the manual form shows your phone's own address so you know what the hub's usually starts with.
 
 
 1. Open the **Brokers** tab → tap **Add broker**.
 2. Fill in:
    - **Name** — any label (e.g. "Home").
-   - **Protocol** — `tcp` for a normal local broker (most common). `ws`/`wss` for WebSocket brokers (required if you ever run ZigDash on the web).
+   - **Protocol** — `tcp` for a normal local broker (most common). `ws`/`wss` for WebSocket brokers (required if you ever run WireDash on the web).
    - **Local host** — your broker's address on the home network, e.g. `192.168.7.210`.
    - **Port** — usually `1883` (plain MQTT) or `8883`/`9001` for TLS/WebSocket.
    - **Username / Password** — only if your broker requires auth. Passwords are stored in your device's secure keystore (encrypted), never in plain text.
@@ -108,7 +108,7 @@ topic** (what it sends) and/or a **subscribe topic** (what it reads), with optio
 
 The **Schedule** panel sets a daily **open** and **close** time for a target (e.g. a
 shutter). Crucially, the schedule is **executed by your always‑on hub, not the
-phone** — ZigDash publishes the schedule as a retained MQTT message, and a flow on
+phone** — WireDash publishes the schedule as a retained MQTT message, and a flow on
 your hub (e.g. Node‑RED) fires it at the right times. So it keeps running even when
 your phone is off or away.
 
@@ -129,7 +129,7 @@ the shutters at 30%.
 1. Open the **Scenes** tab in the bottom bar and tap **New scene**.
 2. Give it a **Scene name**.
 3. Under **Devices to capture**, tick the devices to include. Each one starts from
-   its current state, which ZigDash reads live from Zigbee2MQTT.
+   its current state, which WireDash reads live from Zigbee2MQTT.
 4. Adjust the values: lights and switches have **Power** and **Brightness**, and
    shutters have **Position**. Anything else a device can set (colour, colour
    temperature…) is saved as it is right now.
@@ -140,7 +140,7 @@ create the scene. Everything is captured as it is, and you only tick the devices
 
 ### Use a scene
 
-- **Tap it** in the Scenes tab. ZigDash sends each device its saved values and
+- **Tap it** in the Scenes tab. WireDash sends each device its saved values and
   shows "Activated …".
 - **Put it on a dashboard:** ⋮ next to the scene → **Add to dashboard**. You get a
   scene tile that runs it with one tap, next to your other tiles.
@@ -163,27 +163,27 @@ devices.
 ### Good to know
 
 - **Scenes run from the app.** Your phone has to be connected to the broker when
-  you tap one; otherwise ZigDash says it can't activate the scene. Scenes don't
+  you tap one; otherwise WireDash says it can't activate the scene. Scenes don't
   run on a timer: for timed actions, use the **Schedule** panel (§5).
 - **Read-only values are never saved** (battery, link quality and so on), so a
   scene only sends values the device accepts.
 - **Scenes are stored on this phone, per home**, and the backup (§9) includes
   them, so **Export** and **Import** move them to a new phone too.
-- ZigDash scenes are ZigDash's own. They don't use the scenes Zigbee2MQTT can
+- WireDash scenes are WireDash's own. They don't use the scenes Zigbee2MQTT can
   store on devices (`scene_store` / `scene_recall`).
 
 ---
 
 ## 7. Remote access from outside home (Tailscale)
 
-By default ZigDash reaches your broker over the LAN, so it only works at home.
+By default WireDash reaches your broker over the LAN, so it only works at home.
 To control your home while away, add a **remote host** using
 [Tailscale](https://tailscale.com) (a free, encrypted mesh VPN):
 
 1. Install Tailscale on your **hub/broker** and on your **phone**, signed into the same account. Note the hub's Tailscale IP (`tailscale ip -4`, e.g. `100.x.y.z`).
-2. In ZigDash, edit the connection → **Advanced** → **Remote host (Tailscale)** → enter the hub's **Tailscale IP** (e.g. `100.x.y.z`). Leave **Local host** as your LAN address. (Prefer the `100.x` IP over a `.ts.net` name — it's stable and needs no DNS, which avoids MagicDNS-resolution issues in apps.)
+2. In WireDash, edit the connection → **Advanced** → **Remote host (Tailscale)** → enter the hub's **Tailscale IP** (e.g. `100.x.y.z`). Leave **Local host** as your LAN address. (Prefer the `100.x` IP over a `.ts.net` name — it's stable and needs no DNS, which avoids MagicDNS-resolution issues in apps.)
 
-ZigDash is **local‑first**: it tries the LAN first (instant, no VPN overhead at
+WireDash is **local‑first**: it tries the LAN first (instant, no VPN overhead at
 home) and automatically falls back to the Tailscale address when you're away. The
 status chip shows **Connected · Remote** when it's on the fallback. The remote leg
 is encrypted end‑to‑end by Tailscale. Full setup steps: `docs/tailscale-remote.md`.
@@ -197,7 +197,7 @@ is encrypted end‑to‑end by Tailscale. Full setup steps: `docs/tailscale-remo
 - **Appearance** — Theme: System / Light / Dark.
 - **Use Material You colors** — on Android 12+, themes the app from your wallpaper palette; otherwise uses the app's brand color.
 - **Language** — System, or one of the app's languages. Hebrew switches the whole UI to right‑to‑left.
-- **About** — rate ZigDash, this guide, the privacy policy and the version.
+- **About** — rate WireDash, this guide, the privacy policy and the version.
 
 All settings persist across restarts.
 
@@ -217,21 +217,21 @@ device's secure storage) — re‑enter them after importing.
 Tap a reading tile, or **History** in a device's sheet or on its device page,
 to see the last 24 hours as a graph: the line is the 15‑minute average, the
 band the minimum and maximum. Touch the graph to read a value. 7 and 30 days
-are part of ZigDash Pro in the Google Play version (unlocked in the GitHub,
+are part of WireDash Pro in the Google Play version (unlocked in the GitHub,
 IzzyOnDroid and F‑Droid versions).
 
-ZigDash has no server, so a small **Node‑RED** flow on your hub records the
+WireDash has no server, so a small **Node‑RED** flow on your hub records the
 numbers shown on your dashboards and keeps 30 days on your own broker. You
 need Node‑RED next to your broker:
 - **SMLIGHT SMHUB:** install Node‑RED under the hub's Apps.
 - **Home Assistant OS:** install the Node‑RED add‑on. It asks for Home
-  Assistant's login, so ZigDash copies the flow instead: in Node‑RED choose
+  Assistant's login, so WireDash copies the flow instead: in Node‑RED choose
   Import, paste, Deploy.
 - **Raspberry Pi or Docker:** install Node‑RED (port 1880).
 
 Then open any history and tap **Set up on the hub**. If your broker needs a
 login, open Node‑RED at `<hub>:1880`, double‑click **ZigDash history
-broker**, type the MQTT password on its Security tab and Deploy (ZigDash never
+broker**, type the MQTT password on its Security tab and Deploy (WireDash never
 sends your password to the hub).
 
 History is stored as retained messages on your broker. If you run Mosquitto
@@ -260,7 +260,7 @@ set the JSON path to the right field (e.g. `state`, `position`, `battery`).
 
 **Q: Why don't my devices show Online or Offline?**
 Zigbee2MQTT only reports whether a device is online when its **availability**
-feature is on, and it is off by default. Without it, ZigDash never guesses: a
+feature is on, and it is off by default. Without it, WireDash never guesses: a
 device that ignores a state request shows **Not responding**, and battery devices
 show their last report. To turn availability on:
 - In the Zigbee2MQTT web interface: **Settings → Availability**, turn it on, save and restart Zigbee2MQTT; or
@@ -289,23 +289,23 @@ Panel and dashboard **names** are whatever you typed and stay as‑is. The app's
 layout to right‑to‑left.
 
 **Q: Are my broker password and data sent anywhere?**
-No. ZigDash stores everything **on your device** (settings/dashboards in a local
+No. WireDash stores everything **on your device** (settings/dashboards in a local
 database, passwords in the OS secure keystore) and talks **only** to the broker you
 configure. Your broker password, devices, topics and values never leave the phone.
 There are no ads and no account. Unless you opt out (on the first setup screen,
-or in Settings › About), ZigDash also sends anonymous usage data: which setup
+or in Settings › About), WireDash also sends anonymous usage data: which setup
 steps fail and which features get used. You can turn it off any time; the
 privacy policy lists exactly what is sent.
 
-**Q: Can I put ZigDash on a tablet on the wall, locked for guests?**
+**Q: Can I put WireDash on a tablet on the wall, locked for guests?**
 Yes. On the dashboard, open ⋮ › **Wall display**. *Keep the screen on and hide
 the bars* is the plain wall mode. *Fullscreen* hides Android's bars too, and
 *Dim after* dims the screen after a few minutes without a touch. *Kiosk lock*
 pins this Home on screen: only its dashboards and their tiles stay reachable,
 and nothing else in the app can be opened. To leave, long-press the title; set
 a 4-digit PIN first if guests shouldn't be able to. There is no way around a
-forgotten PIN except clearing ZigDash's data, so export a backup before setting
-one. *Also pin ZigDash on Android* adds Android's own screen pinning, which
+forgotten PIN except clearing WireDash's data, so export a backup before setting
+one. *Also pin WireDash on Android* adds Android's own screen pinning, which
 blocks the Home button and recent apps too.
 
 **Q: Does the schedule run when my phone is off?**
@@ -313,13 +313,13 @@ Yes — schedules are executed by your always‑on hub (e.g. Node‑RED), not th
 The phone only publishes the schedule configuration. (Requires the companion
 Node‑RED flow on your hub.)
 
-**Q: Can I run ZigDash in a web browser?**
+**Q: Can I run WireDash in a web browser?**
 The app can build for web, but browsers can't open raw TCP — your broker must
 expose a **WebSocket** listener and you must use the `ws`/`wss` protocol. On a phone,
 plain `tcp` works fine.
 
 **Q: How do I move my setup to a new phone?**
-Use **Export** (§9) to save the JSON, install ZigDash on the new phone, then
+Use **Export** (§9) to save the JSON, install WireDash on the new phone, then
 **Import** it. Re‑enter broker passwords afterward.
 
 ---

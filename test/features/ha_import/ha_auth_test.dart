@@ -55,7 +55,7 @@ void main() {
     expect(RegExp(r'^[A-Za-z0-9\-._~]+$').hasMatch(v), isTrue);
   });
 
-  test('the login page link carries ZigDash\'s identity and return', () {
+  test('the login page link carries WireDash\'s identity and return', () {
     final uri = haAuthorizeUri(
       Uri.parse('http://192.168.68.52:8123'),
       state: 's',
