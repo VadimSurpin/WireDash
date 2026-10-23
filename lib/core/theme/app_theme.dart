@@ -6,7 +6,7 @@ import 'tokens.dart';
 
 /// The Signal theme (docs/design/signal-2.0.md §1–2). With Material You on,
 /// surfaces follow the wallpaper [dynamic] scheme and the state roles are
-/// harmonized toward it; otherwise the ivory, ink and amber fallback.
+/// harmonized toward it; otherwise the green-tinted surfaces and Wiren Board green fallback.
 class AppTheme {
   AppTheme._();
 
@@ -20,49 +20,49 @@ class AppTheme {
         dynamic == null ? SignalColors.dark : null,
       );
 
-  /// The scheme when Material You is off: ivory ground, ink text, amber as
-  /// the accent (ink on it in light, amber itself in dark).
+  /// The scheme when Material You is off: green-tinted ground, ink text, and
+  /// Wiren Board green accents in light and dark mode.
   static ColorScheme _fallback(Brightness b) {
     final light = b == Brightness.light;
     final base = ColorScheme.fromSeed(
-      seedColor: light ? SignalPalette.amberLight : SignalPalette.amberDark,
+      seedColor: light ? SignalPalette.accentLight : SignalPalette.accentDark,
       brightness: b,
     );
     return light
         ? base.copyWith(
-            primary: SignalPalette.inkLight,
-            onPrimary: SignalPalette.amberLight,
-            primaryContainer: SignalPalette.amberLight,
-            onPrimaryContainer: SignalPalette.onAmber,
+            primary: SignalPalette.primaryLight,
+            onPrimary: SignalPalette.onPrimaryLight,
+            primaryContainer: SignalPalette.accentLight,
+            onPrimaryContainer: SignalPalette.onAccent,
             secondaryContainer: SignalPalette.raisedLight,
             onSecondaryContainer: SignalPalette.inkLight,
             surface: SignalPalette.groundLight,
             onSurface: SignalPalette.inkLight,
             onSurfaceVariant: SignalPalette.inkVariantLight,
             surfaceContainerLowest: SignalPalette.tileLight,
-            surfaceContainerLow: const Color(0xFFFBF9F4),
-            surfaceContainer: const Color(0xFFF3EFE6),
+            surfaceContainerLow: const Color(0xFFF8FBF4),
+            surfaceContainer: const Color(0xFFEEF3E7),
             surfaceContainerHigh: SignalPalette.raisedLight,
             surfaceContainerHighest: SignalPalette.hairlineLight,
-            outline: const Color(0xFF8A826F),
+            outline: const Color(0xFF78866D),
             outlineVariant: SignalPalette.hairlineLight,
           )
         : base.copyWith(
-            primary: SignalPalette.amberDark,
-            onPrimary: SignalPalette.onAmber,
-            primaryContainer: SignalPalette.amberDark,
-            onPrimaryContainer: SignalPalette.onAmber,
+            primary: SignalPalette.accentDark,
+            onPrimary: SignalPalette.onAccent,
+            primaryContainer: SignalPalette.accentDark,
+            onPrimaryContainer: SignalPalette.onAccent,
             secondaryContainer: SignalPalette.raisedDark,
             onSecondaryContainer: SignalPalette.inkDark,
             surface: SignalPalette.groundDark,
             onSurface: SignalPalette.inkDark,
             onSurfaceVariant: SignalPalette.inkVariantDark,
-            surfaceContainerLowest: const Color(0xFF100E0B),
-            surfaceContainerLow: const Color(0xFF1A1813),
-            surfaceContainer: const Color(0xFF1E1B16),
+            surfaceContainerLowest: const Color(0xFF0D130A),
+            surfaceContainerLow: const Color(0xFF151E10),
+            surfaceContainer: const Color(0xFF182313),
             surfaceContainerHigh: SignalPalette.tileDark,
             surfaceContainerHighest: SignalPalette.raisedDark,
-            outline: const Color(0xFF7D7566),
+            outline: const Color(0xFF6B7D5C),
             outlineVariant: SignalPalette.hairlineDark,
           );
   }

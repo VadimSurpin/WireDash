@@ -57,7 +57,7 @@ void main() {
         dynamic: ColorScheme.fromSeed(seedColor: const Color(0xFF3A7D44)));
     expect(dyn.extension<SignalColors>()!.active,
         isNot(SignalColors.light.active),
-        reason: 'amber is harmonized toward the wallpaper');
+        reason: 'green is harmonized toward the wallpaper');
   });
 }
 
