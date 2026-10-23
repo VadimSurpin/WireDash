@@ -1588,6 +1588,10 @@ class AppLocalizationsPl extends AppLocalizations {
       'Logowanie nie zostało ukończone. Spróbuj ponownie albo użyj długoterminowego tokenu.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT działa w Home Assistant? Pomiń brokera i jego login: zaloguj się kontem administratora Home Assistant. Działa z każdej sieci.';
+
+  @override
   String get haConnectButton => 'Połącz przez Home Assistant';
 
   @override

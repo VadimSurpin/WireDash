@@ -307,7 +307,12 @@ void main() {
     // Only Home Assistant's guide; no platform question any more.
     expect(find.textContaining('SMLIGHT'), findsNothing);
     // Nothing answers on 1883, so Try again leads, not Connect to.
-    expect(find.widgetWithText(FilledButton, 'Try again'), findsOneWidget);
+    // 3.1.2: Home Assistant's sign-in leads; Try again follows.
+    expect(
+      find.widgetWithText(FilledButton, 'Connect through Home Assistant'),
+      findsOneWidget,
+    );
+    expect(find.widgetWithText(OutlinedButton, 'Try again'), findsOneWidget);
     expect(
       find.widgetWithText(TextButton, 'Connect to 192.168.1.20'),
       findsOneWidget,
@@ -784,6 +789,38 @@ void main() {
     expect(find.textContaining('Home Assistant: use a'), findsOneWidget);
     expect(find.textContaining('Raspberry Pi or Docker'), findsNothing);
     expect(find.textContaining('SMLIGHT: the login'), findsNothing);
+  });
+
+  testWidgets('Home Assistant users are offered its sign-in (3.1.2)', (
+    tester,
+  ) async {
+    final controller = StreamController<ScanEvent>();
+    addTearDown(controller.close);
+    await _pump(
+      tester,
+      run: (_, __) => ScanRun(events: controller.stream, addHub: (_) {}),
+    );
+    await tester.tap(find.text('Find my setup'));
+    await tester.pump();
+    expect(find.byKey(const Key('setup-ha-shortcut')), findsNothing);
+
+    await tester.tap(find.text('Home Assistant').first);
+    await tester.pump();
+    expect(find.byKey(const Key('setup-ha-shortcut')), findsOneWidget);
+    expect(find.text('Connect through Home Assistant'), findsOneWidget);
+  });
+
+  testWidgets('the login prompt offers Home Assistant sign-in to its users', (
+    tester,
+  ) async {
+    final coordinator = await _pump(tester, reports: [_authFail(), _ok()]);
+    coordinator.setPlatform(SetupPlatform.homeAssistant);
+    await tester.tap(find.text('Find my setup'));
+    for (var i = 0; i < 4; i++) {
+      await tester.pump();
+    }
+    expect(find.text('This broker needs a login'), findsOneWidget);
+    expect(find.byKey(const Key('setup-ha-shortcut')), findsOneWidget);
   });
 
   testWidgets('rejected credentials show the rejected explanation', (

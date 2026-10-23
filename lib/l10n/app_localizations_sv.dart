@@ -1574,6 +1574,10 @@ class AppLocalizationsSv extends AppLocalizations {
       'Inloggningen slutfördes inte. Försök igen, eller använd en långlivad token.';
 
   @override
+  String get setupHaShortcut =>
+      'Kör Zigbee2MQTT i Home Assistant? Hoppa över brokern och dess inloggning: logga in med ditt administratörskonto i Home Assistant. Det fungerar från alla nätverk.';
+
+  @override
   String get haConnectButton => 'Anslut via Home Assistant';
 
   @override

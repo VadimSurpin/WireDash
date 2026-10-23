@@ -1589,6 +1589,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'La connexion ne s\'est pas terminée. Réessayez, ou utilisez un jeton longue durée.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT tourne dans Home Assistant ? Oubliez le broker et son identifiant : connectez-vous avec votre compte administrateur Home Assistant. Ça marche depuis n\'importe quel réseau.';
+
+  @override
   String get haConnectButton => 'Se connecter via Home Assistant';
 
   @override

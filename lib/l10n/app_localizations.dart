@@ -2904,6 +2904,12 @@ abstract class AppLocalizations {
   /// **'The sign-in didn\'t complete. Try again, or use a long-lived token.'**
   String get haConnectSignInFailed;
 
+  /// Setup, when Zigbee2MQTT runs in Home Assistant: the Home Assistant sign-in instead of the broker (3.1.2).
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT runs in Home Assistant? Skip the broker and its login: sign in with your Home Assistant admin account. It works from any network.'**
+  String get setupHaShortcut;
+
   /// No description provided for @haConnectButton.
   ///
   /// In en, this message translates to:

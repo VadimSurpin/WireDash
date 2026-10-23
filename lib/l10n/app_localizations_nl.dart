@@ -1582,6 +1582,10 @@ class AppLocalizationsNl extends AppLocalizations {
       'De aanmelding is niet voltooid. Probeer het opnieuw, of gebruik een langdurig token.';
 
   @override
+  String get setupHaShortcut =>
+      'Draait Zigbee2MQTT in Home Assistant? Sla de broker en zijn login over: meld je aan met je Home Assistant-beheerdersaccount. Dat werkt vanaf elk netwerk.';
+
+  @override
   String get haConnectButton => 'Verbinden via Home Assistant';
 
   @override

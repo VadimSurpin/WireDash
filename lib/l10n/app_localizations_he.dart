@@ -1561,6 +1561,10 @@ class AppLocalizationsHe extends AppLocalizations {
       'הכניסה לא הושלמה. נסו שוב, או השתמשו באסימון ארוך טווח.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT רץ בתוך Home Assistant? אפשר לדלג על הברוקר ועל ההתחברות אליו: היכנסו עם חשבון המנהל שלכם ב-Home Assistant. זה עובד מכל רשת.';
+
+  @override
   String get haConnectButton => 'התחברות דרך Home Assistant';
 
   @override
