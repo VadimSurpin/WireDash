@@ -27,30 +27,30 @@ void main() {
   test('email goes to the developer with subject, prompt and version', () {
     final url = feedbackMailUrl(
       version: '2.0.1 (30)',
-      subject: 'ZigDash feature request',
-      prompt: 'What would you like ZigDash to do, and why?',
+      subject: 'WireDash feature request',
+      prompt: 'What would you like WireDash to do, and why?',
     );
     expect(url.scheme, 'mailto');
     expect(url.path, featureRequestEmail);
-    expect(url.query, contains('subject=ZigDash%20feature%20request'));
+    expect(url.query, contains('subject=WireDash%20feature%20request'));
     expect(url.query, isNot(contains('+')), reason: 'mail apps show + literally');
     final body = Uri.decodeComponent(url.query.split('&body=').last);
-    expect(body, startsWith('What would you like ZigDash to do, and why?'));
-    expect(body, endsWith('— ZigDash 2.0.1 (30)'));
+    expect(body, startsWith('What would you like WireDash to do, and why?'));
+    expect(body, endsWith('— WireDash 2.0.1 (30)'));
   });
 
   test('a problem report carries Support details instead of the version', () {
-    const details = 'ZigDash 2.0.1 (31)\nLast error: timed out';
+    const details = 'WireDash 2.0.1 (31)\nLast error: timed out';
     final gh = problemReportGithubUrl('2.0.1 (31)', details: details);
     expect(gh.queryParameters['details'], details);
     final mail = feedbackMailUrl(
       version: '2.0.1 (31)',
-      subject: 'ZigDash problem',
+      subject: 'WireDash problem',
       prompt: 'What happened, and what did you expect?',
       details: details,
     );
     final body = Uri.decodeComponent(mail.query.split('&body=').last);
     expect(body, endsWith('— Support details —\n$details'));
-    expect(body, isNot(contains('— ZigDash 2.0.1')));
+    expect(body, isNot(contains('— WireDash 2.0.1')));
   });
 }

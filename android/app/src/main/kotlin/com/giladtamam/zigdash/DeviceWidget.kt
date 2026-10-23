@@ -70,7 +70,7 @@ class DeviceWidget : AppWidgetProvider() {
                 // Not set up (the picker was left): tapping opens it again.
                 val v = RemoteViews(ctx.packageName,
                     if (strip) R.layout.widget_device_strip else R.layout.widget_device)
-                v.setTextViewText(R.id.w_name, "ZigDash")
+                v.setTextViewText(R.id.w_name, "WireDash")
                 v.setTextViewText(R.id.w_line, ShortcutPrefs.word(ctx, "chooseDevice", "Choose a device"))
                 v.setImageViewResource(R.id.w_icon, R.drawable.ic_shortcut_tile)
                 v.setOnClickPendingIntent(R.id.w_root, PendingIntent.getActivity(ctx, id,

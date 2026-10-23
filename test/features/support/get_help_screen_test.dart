@@ -72,7 +72,7 @@ void main() {
         scrollable: find.byType(Scrollable).first);
     await tester.tap(find.text('Copy details'));
     await tester.pumpAndSettle();
-    expect(copied, startsWith('ZigDash 2.0.1 (31) · Android 15'));
+    expect(copied, startsWith('WireDash 2.0.1 (31) · Android 15'));
     expect(copied, contains('Last scan: /24 then /22 · 1,018 hosts tried'));
     expect(find.text('Details copied'), findsOneWidget);
   });
@@ -105,9 +105,9 @@ void main() {
 
   test('the support email carries subject, prompt and details', () {
     final url = supportMailUrl(
-      subject: 'ZigDash: help getting it working',
+      subject: 'WireDash: help getting it working',
       prompt: 'What happened?',
-      details: 'ZigDash 2.0.1 (31)\nLast error: timed out',
+      details: 'WireDash 2.0.1 (31)\nLast error: timed out',
     );
     expect(url.scheme, 'mailto');
     expect(url.path, supportEmail);
@@ -115,7 +115,7 @@ void main() {
     final body = Uri.decodeComponent(url.query.split('&body=').last);
     expect(body, startsWith('What happened?'));
     expect(body, endsWith('— Support details —\n'
-        'ZigDash 2.0.1 (31)\nLast error: timed out'));
+        'WireDash 2.0.1 (31)\nLast error: timed out'));
   });
 
   test('every place and setup error has tips', () {

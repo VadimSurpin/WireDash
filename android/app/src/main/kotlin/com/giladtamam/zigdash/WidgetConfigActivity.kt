@@ -70,9 +70,9 @@ class WidgetConfigActivity : Activity() {
         if (rows.isEmpty()) {
             list.addView(TextView(this).apply {
                 text = if (scene) ShortcutPrefs.word(context, "openAppFirstScene",
-                           "Open ZigDash and create a scene first.")
+                           "Open WireDash and create a scene first.")
                        else ShortcutPrefs.word(context, "openAppFirst",
-                           "Open ZigDash and put a device on a dashboard first.")
+                           "Open WireDash and put a device on a dashboard first.")
                 setPadding(0, dp(8), 0, dp(8))
                 setOnClickListener {
                     startActivity(Intent(context, MainActivity::class.java)
@@ -185,7 +185,7 @@ class WidgetConfigActivity : Activity() {
             val first = chosen.firstOrNull() ?: return@setOnClickListener
             val title = name.text.toString().trim().ifEmpty {
                 devices.firstOrNull { it.ieee == chosen.firstOrNull { c -> c.ieee != null }?.ieee }?.name
-                    ?: "ZigDash"
+                    ?: "WireDash"
             }
             chooseGroup(ShortcutPrefs.GroupEntry(first.conn, "", "", title,
                 chosen.mapNotNull { it.ieee }, chosen.mapNotNull { it.scene }))
