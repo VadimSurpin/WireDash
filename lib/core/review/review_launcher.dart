@@ -20,5 +20,15 @@ class InAppReviewLauncher implements ReviewLauncher {
   Future<void> requestReview() => InAppReview.instance.requestReview();
 }
 
-final reviewLauncherProvider =
-    Provider<ReviewLauncher>((ref) => const InAppReviewLauncher());
+/// WireDash is distributed through GitHub, with no automatic store requests.
+class DisabledReviewLauncher implements ReviewLauncher {
+  const DisabledReviewLauncher();
+  @override
+  Future<bool> isAvailable() async => false;
+  @override
+  Future<void> requestReview() async {}
+}
+
+final reviewLauncherProvider = Provider<ReviewLauncher>(
+  (ref) => const DisabledReviewLauncher(),
+);

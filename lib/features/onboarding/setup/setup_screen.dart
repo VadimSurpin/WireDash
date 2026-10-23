@@ -26,9 +26,10 @@ import 'setup_error_guidance.dart';
 import 'setup_providers.dart';
 import 'setup_reminder.dart';
 
-/// zigdash.app's Hubs page: the small hubs that run Zigbee2MQTT, for the
-/// empty result's "I don't have a hub yet" (2.9.6).
-final hubsPageUrl = Uri.parse('https://zigdash.app/hubs/');
+/// Fork-owned setup documentation, opened only on request.
+final hubsPageUrl = Uri.parse(
+  'https://github.com/VadimSurpin/WireDash/blob/HEAD/docs/USER_GUIDE.md',
+);
 
 /// Opens a link outside the app; replaced in tests.
 @visibleForTesting
@@ -59,28 +60,12 @@ class SetupScreen extends ConsumerWidget {
     final state = asyncState.valueOrNull ?? coordinator.state;
     final l10n = context.l10n;
 
-    // No "ready" screen: a finished setup opens its dashboard directly.
-    ref.listen(setupStateProvider, (previous, next) {
-      final s = next.valueOrNull;
-      if (s == null) return;
-      final before = previous?.valueOrNull;
-      // 2.10.2: leaving the list by starting over is counted on its own;
-      // the step that follows (started, say) is counted as usual.
-      if (before is SetupReview &&
-          s is! SetupReview &&
-          s is! SetupCreating &&
-          s is! SetupComplete) {
-        ref.read(analyticsProvider).track(reviewLeftStep(before, coordinator));
-      }
-      final step = setupStepFor(
-        previous?.valueOrNull,
-        s,
-        platform: coordinator.platform,
-      );
-      if (step != null) ref.read(analyticsProvider).track(step);
-      if (s is SetupComplete) {
+    // A finished setup opens its dashboard directly.
+    ref.listen(setupStateProvider, (_, next) {
+      final result = next.valueOrNull;
+      if (result is SetupComplete) {
         ref.read(setupReminderProvider).cancel();
-        context.go(Routes.homeDashboards(state.result.connectionId));
+        context.go(Routes.homeDashboards(result.result.connectionId));
       }
     });
 
@@ -96,23 +81,10 @@ class SetupScreen extends ConsumerWidget {
     // 2.10.4: manual entry with the port Zigbee2MQTT's page named, the
     // address left for the user (the page named a host only it knows).
     void manualPort(int port) {
-      ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.manual));
       context.push(Routes.guidedConnectTo('', port));
     }
 
-    // 2.9.6: a choice on the empty result, counted before it acts.
-    void emptyChoice(ScanEmptyChoice choice) => ref
-        .read(analyticsProvider)
-        .track(
-          SetupStep(
-            SetupStepKind.emptyChoice,
-            choice: choice,
-            platform: coordinator.platform,
-          ),
-        );
-
-    Future<void> tryDemo({SetupStepKind kind = SetupStepKind.demo}) async {
-      ref.read(analyticsProvider).track(SetupStep(kind));
+    Future<void> tryDemo() async {
       final id = await ref.read(firstRunProvider).startDemo();
       if (context.mounted) context.go(Routes.homeDashboards(id));
     }
@@ -1662,7 +1634,8 @@ class _Review extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (state.selectedCount == 0 && state.wirenBoardDevices.isEmpty) ...[
+              if (state.selectedCount == 0 &&
+                  state.wirenBoardDevices.isEmpty) ...[
                 Text(
                   l10n.setupReviewNoneSelected,
                   style: theme.textTheme.bodyMedium,
@@ -1680,13 +1653,14 @@ class _Review extends StatelessWidget {
                       : const Icon(Icons.dashboard_outlined),
                   label: Text(
                     state.selectedCount == 0
-                        ? (state.wirenBoardDevices.isEmpty ? l10n.setupCreateEmpty : l10n.continueToDashboard)
+                        ? (state.wirenBoardDevices.isEmpty
+                              ? l10n.setupCreateEmpty
+                              : l10n.continueToDashboard)
                         : l10n.setupCreateWithCount(state.selectedCount),
                   ),
                 ),
               ),
             ],
-
           ),
         ),
       ],

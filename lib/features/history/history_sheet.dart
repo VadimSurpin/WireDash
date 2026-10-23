@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../engine/engine_setup.dart';
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/review/review_prompt_controller.dart';
 import '../../core/theme/signal_colors.dart';
@@ -283,23 +282,27 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      final r = await ensureEngine(context, ref, widget.connectionId, from: EngineFrom.history);
+      final r = await ensureEngine(context, ref, widget.connectionId);
       if (!mounted) return;
       switch (r) {
         case EngineSetup.ready:
-          _track(HistorySetupResult.installed);
           await service.publishConfig(widget.connectionId);
-          messenger.showSnackBar(SnackBar(content: Text(l10n.historyInstalled)));
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.historyInstalled)),
+          );
           // A happy moment (2.8.1): the review policy still decides.
-          await ref.read(reviewPromptControllerProvider).recordSuccessfulSession();
+          await ref
+              .read(reviewPromptControllerProvider)
+              .recordSuccessfulSession();
         case EngineSetup.needsUser:
           break;
         case EngineSetup.failed:
-          _track(HistorySetupResult.failed);
           final here = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
-              content: Text('${l10n.alertsHubFailed}\n\n${l10n.historyRecordHereHint}'),
+              content: Text(
+                '${l10n.alertsHubFailed}\n\n${l10n.historyRecordHereHint}',
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
@@ -328,10 +331,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
 
     messenger.showSnackBar(SnackBar(content: Text(l10n.historyRecordingHere)));
   }
-
-  void _track(HistorySetupResult r) =>
-      ref.read(analyticsProvider).track(HistorySetup(r));
-
 }
 
 /// No recorder yet: what it is, and the one-tap install.

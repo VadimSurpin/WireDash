@@ -15,7 +15,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get reliabilityControlsUnavailable => 'Ovládání není dostupné';
 
   @override
-  String get appTitle => 'ZigDash';
+  String get appTitle => 'WireDash';
 
   @override
   String get onboardingDemo => 'Vyzkoušet demo';
@@ -73,7 +73,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get connEmpty =>
-      'Zatím žádná připojení.\nKlepni na „Přidat broker“ a nasměruj ZigDash na svůj MQTT server.';
+      'Zatím žádná připojení.\nKlepni na „Přidat broker“ a nasměruj WireDash na svůj MQTT server.';
 
   @override
   String get connNew => 'Nové připojení';
@@ -156,7 +156,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get connHelpZhaBody =>
-      'ZHA nemá MQTT broker — komunikuje přímo s Home Assistantem, takže se k němu ZigDash nemůže připojit. Pokud chceš ZigDash používat, přejdi na Zigbee2MQTT (dostupné jako doplněk Home Assistantu nebo jako kontejner Dockeru), který MQTT broker poskytuje.';
+      'ZHA nemá MQTT broker — komunikuje přímo s Home Assistantem, takže se k němu WireDash nemůže připojit. Pokud chceš WireDash používat, přejdi na Zigbee2MQTT (dostupné jako doplněk Home Assistantu nebo jako kontejner Dockeru), který MQTT broker poskytuje.';
 
   @override
   String get connHelpSameNetwork =>
@@ -963,38 +963,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsVersion => 'Verze';
 
   @override
-  String get settingsRateApp => 'Ohodnotit ZigDash';
+  String get settingsRateApp => 'Vydání';
 
   @override
-  String get settingsRateAppSubtitle =>
-      'Líbí se ti? Krátká recenze pomůže ostatním ho najít.';
-
-  @override
-  String get settingsFeatureRequest => 'Navrhnout funkci';
-
-  @override
-  String get settingsFeatureRequestSubtitle =>
-      'Napiš mi, co by ZigDash vylepšilo.';
-
-  @override
-  String get featureRequestGithub => 'Na GitHubu';
-
-  @override
-  String get featureRequestGithubSubtitle =>
-      'Veřejně: ostatní to uvidí a můžou pro to hlasovat.';
-
-  @override
-  String get featureRequestEmail => 'E-mailem';
-
-  @override
-  String get featureRequestEmailSubtitle => 'Soukromě, přímo vývojáři.';
-
-  @override
-  String get featureRequestEmailSubject => 'ZigDash – návrh funkce';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'Co bys chtěl, aby ZigDash uměl, a proč?';
+  String get settingsRateAppSubtitle => 'Stáhnout vydání WireDash z GitHubu.';
 
   @override
   String get settingsReportProblem => 'Nahlásit problém';
@@ -1002,12 +974,6 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get settingsReportProblemSubtitle =>
       'Něco nefunguje nebo je to matoucí? Napiš mi.';
-
-  @override
-  String get reportProblemEmailSubject => 'ZigDash – hlášení problému';
-
-  @override
-  String get reportProblemEmailPrompt => 'Co se stalo a co jsi čekal?';
 
   @override
   String get settingsBuyCoffee => 'Kup mi kávu';
@@ -1317,7 +1283,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Otestujeme každý krok připojení a ukážeme tvoje zařízení Zigbee.';
+      'Otestujeme připojení MQTT a vyhledáme zařízení na vašem brokeru.';
 
   @override
   String get guidedBaseTopic => 'Základní téma';
@@ -1423,7 +1389,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get noDevicesHint =>
-      'ZigDash vidí tvůj broker, ale zatím nenašel žádná zařízení Zigbee. Můžeš spustit párování a přidat je.';
+      'WireDash vidí tvůj broker, ale zatím nenašel žádná zařízení Zigbee. Můžeš spustit párování a přidat je.';
 
   @override
   String get startPairing => 'Spustit párování';
@@ -1446,7 +1412,7 @@ class AppLocalizationsCs extends AppLocalizations {
       'Dva pokusy bez připojení. Napiš nám, jaký máš hub a co jsi zadal, a pomůžeme ti ho najít.';
 
   @override
-  String get guidedStuckTelegram => 'Zeptat se na Telegramu';
+  String get guidedStuckTelegram => 'WireDash na GitHubu';
 
   @override
   String get guidedStuckHelp => 'Tipy a e-mail';
@@ -1461,14 +1427,14 @@ class AppLocalizationsCs extends AppLocalizations {
       'Připojení se nepodařilo uložit. Zkus to prosím znovu.';
 
   @override
-  String get setupWelcomeTitle => 'Vítej v ZigDash';
+  String get setupWelcomeTitle => 'Vítej v WireDash';
 
   @override
   String get setupWelcomeHeadline => 'Tvůj Zigbee domov v telefonu';
 
   @override
   String get setupWelcomeBody =>
-      'Stačí malý hub se Zigbee2MQTT: hub SMLIGHT, Raspberry Pi nebo jakýkoli linuxový počítač. Home Assistant nepotřebuješ, a pokud ho máš, ZigDash s ním funguje taky. Všechno zůstává lokálně, bez cloudu.';
+      'Stačí malý hub se Zigbee2MQTT: hub SMLIGHT, Raspberry Pi nebo jakýkoli linuxový počítač. Home Assistant nepotřebuješ, a pokud ho máš, WireDash s ním funguje taky. Všechno zůstává lokálně, bez cloudu.';
 
   @override
   String get setupFindMySetup => 'Najít moje zařízení';
@@ -1515,13 +1481,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get reminderNoPermission =>
-      'Oznámení ZigDash jsou vypnutá, takže připomenutí nebude. Můžeš je zapnout v nastavení Androidu.';
+      'Oznámení WireDash jsou vypnutá, takže připomenutí nebude. Můžeš je zapnout v nastavení Androidu.';
 
   @override
   String get reminderChannel => 'Připomenutí nastavení';
 
   @override
-  String get reminderTitle => 'Dokonči nastavení ZigDash';
+  String get reminderTitle => 'Dokonči nastavení WireDash';
 
   @override
   String get reminderBody =>
@@ -1534,14 +1500,14 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupWelcomeDemo => 'Vyzkoušet ukázkovou domácnost';
 
   @override
-  String get setupWelcomeHubs => 'Jaký hub vybrat';
+  String get setupWelcomeHubs => 'Průvodce nastavením';
 
   @override
   String get haConnectTitle => 'Připojit přes Home Assistant';
 
   @override
   String get haConnectIntro =>
-      'Tvůj telefon na broker nedosáhne, ale na Home Assistant ano. Přihlas se jednou a ZigDash bude se Zigbee2MQTT mluvit přes Home Assistant: doma i mimo domov, bez nastavení brokeru.';
+      'Tvůj telefon na broker nedosáhne, ale na Home Assistant ano. Přihlas se jednou a WireDash bude se Zigbee2MQTT mluvit přes Home Assistant: doma i mimo domov, bez nastavení brokeru.';
 
   @override
   String get haConnectAddressHelp =>
@@ -1549,15 +1515,15 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haConnectSignInHelp =>
-      'Vlastní přihlášení Home Assistantu se otevře v prohlížeči. ZigDash tvoje heslo nikdy nevidí.';
+      'Vlastní přihlášení Home Assistantu se otevře v prohlížeči. WireDash tvoje heslo nikdy nevidí.';
 
   @override
   String get haConnectKeeps =>
-      'ZigDash si toto přihlášení ponechá v telefonu a jedná v Home Assistantu tvým jménem, jen pro MQTT. Ukončit to můžeš kdykoli v Home Assistantu v Profil › Zabezpečení.';
+      'WireDash si toto přihlášení ponechá v telefonu a jedná v Home Assistantu tvým jménem, jen pro MQTT. Ukončit to můžeš kdykoli v Home Assistantu v Profil › Zabezpečení.';
 
   @override
   String get haConnectTokenHelp =>
-      'V Home Assistantu otevři svůj profil, pak Zabezpečení › Dlouhodobé přístupové tokeny › Vytvořit token. Zkopíruj ho a vlož sem. ZigDash si ho ponechá v tomto telefonu pro připojení; smaž ho v Home Assistantu, kdykoli to budeš chtít ukončit.';
+      'V Home Assistantu otevři svůj profil, pak Zabezpečení › Dlouhodobé přístupové tokeny › Vytvořit token. Zkopíruj ho a vlož sem. WireDash si ho ponechá v tomto telefonu pro připojení; smaž ho v Home Assistantu, kdykoli to budeš chtít ukončit.';
 
   @override
   String get haConnectWithToken => 'Připojit s tokenem';
@@ -1567,7 +1533,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haConnectNotAdmin =>
-      'Tvůj uživatel v Home Assistantu není správce. ZigDash správce potřebuje pro MQTT Home Assistantu. Přihlas se jako správce, nebo vlož token, který správce vytvořil.';
+      'Tvůj uživatel v Home Assistantu není správce. WireDash správce potřebuje pro MQTT Home Assistantu. Přihlas se jako správce, nebo vlož token, který správce vytvořil.';
 
   @override
   String get haConnectNoMqtt =>
@@ -1770,7 +1736,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupNoWifiUnknown =>
-      'ZigDash nemůže najít Wi-Fi adresu tvého telefonu. Zkontroluj, že je Wi-Fi zapnutá a připojená k domácí síti: nastavení se spustí znovu samo. Máš zapnutou VPN nebo nejsi doma? Zadej údaje ručně.';
+      'WireDash nemůže najít Wi-Fi adresu tvého telefonu. Zkontroluj, že je Wi-Fi zapnutá a připojená k domácí síti: nastavení se spustí znovu samo. Máš zapnutou VPN nebo nejsi doma? Zadej údaje ručně.';
 
   @override
   String get setupOpenWifiSettings => 'Otevřít nastavení Wi-Fi';
@@ -1893,7 +1859,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupNoBrokerHaZha =>
-      'Používáš vlastní Zigbee Home Assistantu (ZHA) místo Zigbee2MQTT? ZigDash funguje jen se Zigbee2MQTT, takže zařízení ZHA nevidí. Demo ukazuje, co bys dostal.';
+      'Používáš vlastní Zigbee Home Assistantu (ZHA) místo Zigbee2MQTT? WireDash funguje jen se Zigbee2MQTT, takže zařízení ZHA nevidí. Demo ukazuje, co bys dostal.';
 
   @override
   String get setupVpnHint =>
@@ -2025,7 +1991,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupChoiceHaNote =>
-      'ZigDash se připojuje k MQTT brokeru Home Assistantu, doplňku Mosquitto broker v Nastavení › Doplňky, a Zigbee2MQTT ho musí používat také. Pokud se homeassistant.local nenajde, zadej níže IP adresu Home Assistantu. Najdeš ji v Nastavení › Systém › Síť.';
+      'WireDash se připojuje k MQTT brokeru Home Assistantu, doplňku Mosquitto broker v Nastavení › Doplňky, a Zigbee2MQTT ho musí používat také. Pokud se homeassistant.local nenajde, zadej níže IP adresu Home Assistantu. Najdeš ji v Nastavení › Systém › Síť.';
 
   @override
   String get setupChoiceOther => 'Můj hub je v jiné síti';
@@ -2369,7 +2335,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get statusWhyBody =>
-      'ZigDash to sám zkouší dál. Než se broker vrátí, dlaždice ukazují naposledy známé hodnoty, ztlumené a s jejich stářím. Zkontroluj, že je broker zapnutý a telefon ve stejné síti, nebo otestuj připojení v jeho nastavení.';
+      'WireDash to sám zkouší dál. Než se broker vrátí, dlaždice ukazují naposledy známé hodnoty, ztlumené a s jejich stářím. Zkontroluj, že je broker zapnutý a telefon ve stejné síti, nebo otestuj připojení v jeho nastavení.';
 
   @override
   String get statusSettings => 'Nastavení připojení';
@@ -2547,37 +2513,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get dashWallDisplay => 'Nástěnný displej';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Sdílet anonymní data o používání a pomoct vylepšit nastavení';
-
-  @override
-  String get analyticsWhatsShared => 'Co se sdílí';
-
-  @override
-  String get analyticsCardTitle => 'Pomůžeš vylepšit ZigDash?';
-
-  @override
-  String get analyticsCardBody =>
-      'Sdílej anonymní data o používání: které kroky nastavení selhávají a které funkce se používají. Nikdy tvoje zařízení, témata ani broker.';
-
-  @override
-  String get analyticsShare => 'Sdílet';
-
-  @override
-  String get analyticsNoThanks => 'Ne, díky';
-
-  @override
-  String get settingsAnalytics => 'Sdílet anonymní data o používání';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Kroky nastavení a používané funkce. Nikdy tvoje zařízení, témata ani broker.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Anonymní data o používání. Vypneš je přepínačem výše.';
-
-  @override
   String get dashDefaultName => 'Domov';
 
   @override
@@ -2600,13 +2535,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get getHelpPromise =>
-      'Pořád se nedaří? Obvykle odpovídám do 3 dnů, anglicky nebo hebrejsky. Nikdy tě nebudu žádat o hesla.';
+      'Podpora probíhá přes veřejná hlášení na GitHubu WireDash. Před odesláním hlášení zkontrolujte a upravte.';
 
   @override
   String get getHelpIncluded => 'Co je přiloženo';
 
   @override
-  String get getHelpContact => 'Kontaktovat podporu';
+  String get getHelpContact => 'Nahlásit problém na GitHubu';
 
   @override
   String get getHelpCopy => 'Kopírovat podrobnosti';
@@ -2616,12 +2551,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get getHelpLink => 'Pořád se nedaří? Získej pomoc';
-
-  @override
-  String get getHelpEmailSubject => 'ZigDash: pomoc se zprovozněním';
-
-  @override
-  String get getHelpEmailPrompt => 'Co ses snažil udělat a co se stalo?';
 
   @override
   String get settingsHelpSupport => 'Nápověda a podpora';
@@ -2634,14 +2563,14 @@ class AppLocalizationsCs extends AppLocalizations {
       'Nedaří se to zprovoznit? Nejdřív tipy, pak kontakt';
 
   @override
-  String get settingsCommunity => 'Přidej se ke komunitě ZigDash';
+  String get settingsCommunity => 'WireDash na GitHubu';
 
   @override
   String get settingsCommunitySubtitle =>
-      'Skupina na Telegramu: otázky, nápady a co se chystá';
+      'Dokumentace, hlášení a novinky ve vývoji.';
 
   @override
-  String get getHelpCommunity => 'Zeptat se ve skupině na Telegramu';
+  String get getHelpCommunity => 'WireDash na GitHubu';
 
   @override
   String get demoBannerHelp => 'Získat pomoc';
@@ -2868,12 +2797,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tipFindSetupBody =>
-      'Opusť demo a klepni na Najít moje zařízení. ZigDash tvůj hub najde sám.';
-
-  @override
-  String getHelpNoEmailApp(Object email) {
-    return 'Nenalezena žádná e-mailová aplikace. Zkopíruj podrobnosti a napiš na $email.';
-  }
+      'Opusť demo a klepni na Najít moje zařízení. WireDash tvůj hub najde sám.';
 
   @override
   String get shortcutWorking => 'pracuji…';
@@ -2901,7 +2825,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get shortcutOpenAppFirstScene =>
-      'Otevři ZigDash a nejdřív vytvoř scénu.';
+      'Otevři WireDash a nejdřív vytvoř scénu.';
 
   @override
   String get shortcutChooseGroup => 'Vyber skupinu';
@@ -2929,16 +2853,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get shortcutWidgetHowTo =>
-      'Dlouze podrž prázdné místo na ploše, klepni na Widgety, najdi ZigDash a přetáhni widget, který chceš.';
+      'Dlouze podrž prázdné místo na ploše, klepni na Widgety, najdi WireDash a přetáhni widget, který chceš.';
 
   @override
   String shortcutTileReady(Object name, Object slot) {
-    return '$name je na dlaždici Rychlého nastavení ZigDash $slot';
+    return '$name je na dlaždici Rychlého nastavení WireDash $slot';
   }
 
   @override
   String shortcutTileAlready(Object name, Object slot) {
-    return '$name už je na dlaždici ZigDash $slot';
+    return '$name už je na dlaždici WireDash $slot';
   }
 
   @override
@@ -2946,12 +2870,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String shortcutTileHowTo(Object slot) {
-    return 'Otevři Rychlé nastavení (dvakrát přejeď dolů), klepni na tužku pro úpravy a přetáhni „ZigDash $slot“ mezi své dlaždice.';
+    return 'Otevři Rychlé nastavení (dvakrát přejeď dolů), klepni na tužku pro úpravy a přetáhni „WireDash $slot“ mezi své dlaždice.';
   }
 
   @override
   String shortcutPickTitle(Object slot) {
-    return 'Vyber zařízení pro ZigDash $slot';
+    return 'Vyber zařízení pro WireDash $slot';
   }
 
   @override
@@ -2960,11 +2884,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get shortcutSlotsFull =>
-      'Všechny 4 dlaždice ZigDash se používají. Která z nich má místo toho ukazovat toto zařízení?';
+      'Všechny 4 dlaždice WireDash se používají. Která z nich má místo toho ukazovat toto zařízení?';
 
   @override
   String shortcutSlotLabel(Object slot) {
-    return 'ZigDash $slot';
+    return 'WireDash $slot';
   }
 
   @override
@@ -2994,36 +2918,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get shortcutOpenAppFirst =>
-      'Otevři ZigDash a nejdřív dej zařízení na nástěnku.';
-
-  @override
-  String get pollTitle => 'Co by měl ZigDash umět dál?';
-
-  @override
-  String get pollBody =>
-      'Vyber tu věc, kterou bys používal nejvíc. Tvoje odpověď se odešle s anonymními daty o používání.';
-
-  @override
-  String get pollNotifications => 'Oznámení';
-
-  @override
-  String get pollHistory => 'Grafy historie';
-
-  @override
-  String get pollKiosk => 'Kiosk režim pro tablet na zdi';
-
-  @override
-  String get pollGroups => 'Skupiny Zigbee';
-
-  @override
-  String get pollNotNow => 'Teď ne';
-
-  @override
-  String get pollThanks => 'Díky! Pomůže to rozhodnout, co přijde dál.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Data o používání jsou vypnutá, takže odsud se nic neodešle. Napiš nám raději přes Navrhnout funkci.';
+      'Otevři WireDash a nejdřív dej zařízení na nástěnku.';
 
   @override
   String alertLeak(Object name) {
@@ -3056,7 +2951,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get alertTest => 'Testovací upozornění ZigDash';
+  String get alertTest => 'Testovací upozornění WireDash';
 
   @override
   String get alertsChannel => 'Upozornění';
@@ -3088,7 +2983,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Dostanete upozornění na tento telefon při úniku vody, kouři, otevřených dveřích nebo slabé baterii, i když je ZigDash zavřený. ZigDash Engine na hubu sleduje zařízení; ZigDash ho nastaví.';
+      'Dostanete upozornění na tento telefon při úniku vody, kouři, otevřených dveřích nebo slabé baterii, i když je WireDash zavřený. WireDash Engine na hubu sleduje zařízení; WireDash ho nastaví.';
 
   @override
   String get alertsSetUpHub => 'Nastavit upozornění na hubu';
@@ -3138,7 +3033,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsNoGoogle =>
-      'Tento telefon nemá služby Google, takže sem ZigDash nemůže dostávat push oznámení.';
+      'Tento telefon nemá služby Google, takže sem WireDash nemůže dostávat push oznámení.';
 
   @override
   String get alertsSendTest => 'Poslat testovací oznámení';
@@ -3212,11 +3107,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsWhatLeaves =>
-      'Upozornění pro ZigDash jsou šifrovaná end-to-end: push služba Googlu je doručí, ale nemůže je přečíst. Nic jiného tvůj hub neopouští.';
+      'Upozornění pro WireDash jsou šifrovaná end-to-end: push služba Googlu je doručí, ale nemůže je přečíst. Nic jiného tvůj hub neopouští.';
 
   @override
   String get alertsRestricted =>
-      'Android může ZigDash na pozadí zastavit, takže oznámení můžou přijít pozdě nebo vůbec. Povol mu běh na pozadí v nastavení Androidu (na Samsungu: Baterie › Aplikace, které nikdy nebudou uspány).';
+      'Android může WireDash na pozadí zastavit, takže oznámení můžou přijít pozdě nebo vůbec. Povol mu běh na pozadí v nastavení Androidu (na Samsungu: Baterie › Aplikace, které nikdy nebudou uspány).';
 
   @override
   String get alertsOpenSettings => 'Otevřít nastavení Androidu';
@@ -3247,7 +3142,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsShareBody =>
-      'Kdokoli s tímto odkazem dostane upozornění tohoto domova v aplikaci ntfy, bez potřeby ZigDash. Text upozornění jde přes ntfy.sh nešifrovaně.';
+      'Kdokoli s tímto odkazem dostane upozornění tohoto domova v aplikaci ntfy, bez potřeby WireDash. Text upozornění jde přes ntfy.sh nešifrovaně.';
 
   @override
   String get alertsShareLink => 'Odkaz';
@@ -3347,7 +3242,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wallProNote =>
-      'Měření na hodinách, probuzení pohybem, noční plán a alarmy jsou součástí ZigDash Pro, jednorázového nákupu.';
+      'Měření na hodinách, probuzení pohybem, noční plán a alarmy jsou součástí WireDash Pro, jednorázového nákupu.';
 
   @override
   String get wallAlarmLeak => 'Únik vody';
@@ -3380,7 +3275,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get wallAlarmsSubtitle =>
-      'Únik vody, kouř, plyn nebo oxid uhelnatý zaplní obrazovku, dokud někdo neklepne na OK. Jen když je ZigDash na tomto tabletu otevřený; Upozornění dorazí na telefony kdekoli.';
+      'Únik vody, kouř, plyn nebo oxid uhelnatý zaplní obrazovku, dokud někdo neklepne na OK. Jen když je WireDash na tomto tabletu otevřený; Upozornění dorazí na telefony kdekoli.';
 
   @override
   String get wallAlarmSound => 'Přehrát zvuk';
@@ -3448,17 +3343,17 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get kioskPinForgotBody =>
-      'Zapomenutý PIN jde resetovat jen vymazáním dat ZigDash v nastavení Androidu, což odstraní tento domov, pokud nemáš zálohu. Než PIN nastavíš, zálohu si vyexportuj.';
+      'Zapomenutý PIN jde resetovat jen vymazáním dat WireDash v nastavení Androidu, což odstraní tento domov, pokud nemáš zálohu. Než PIN nastavíš, zálohu si vyexportuj.';
 
   @override
   String get kioskExportBackup => 'Exportovat zálohu';
 
   @override
-  String get kioskOsPin => 'Připnout ZigDash i v Androidu';
+  String get kioskOsPin => 'Připnout WireDash i v Androidu';
 
   @override
   String get kioskOsPinSubtitle =>
-      'Android zablokuje Domů a nedávné aplikace, dokud ZigDash neodepneš. Tablet bez zámku obrazovky se odepne gestem, takže tohle zámek není.';
+      'Android zablokuje Domů a nedávné aplikace, dokud WireDash neodepneš. Tablet bez zámku obrazovky se odepne gestem, takže tohle zámek není.';
 
   @override
   String get kioskOn => 'Kiosk zapnutý. Pro odchod dlouze podrž název.';
@@ -3492,7 +3387,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'ZigDash nemá server, takže ZigDash Engine na hubu každých 15 minut zaznamenává hodnoty z vašich nástěnek. Uchovává 30 dní, na vašem brokeru.';
+      'WireDash nemá server, takže WireDash Engine na hubu každých 15 minut zaznamenává hodnoty z vašich nástěnek. Uchovává 30 dní, na vašem brokeru.';
 
   @override
   String get historySetupAction => 'Nastavit na hubu';
@@ -3521,24 +3416,24 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyLocked =>
-      'Delší historie je součástí ZigDash Pro, jednorázového nákupu.';
+      'Delší historie je součástí WireDash Pro, jednorázového nákupu.';
 
   @override
   String get historyUnlock => 'Odemknout';
 
   @override
-  String get proTitle => 'ZigDash Pro';
+  String get proTitle => 'WireDash Pro';
 
   @override
   String get proAbout =>
       'Neomezené automatizace, delší historie a doplňky pro tablet na zdi. Podpoříš tím open source projekt.';
 
   @override
-  String get proUnlocked => 'Odemčeno. Děkuju, že podporuješ ZigDash.';
+  String get proUnlocked => 'Odemčeno. Děkuju, že podporuješ WireDash.';
 
   @override
   String get proScreenIntro =>
-      'ZigDash je zdarma a open source a ve volném čase ho vyvíjí jeden člověk. Pro je jednorázový nákup, který ho drží při životě.';
+      'WireDash je zdarma a open source a ve volném čase ho vyvíjí jeden člověk. Pro je jednorázový nákup, který ho drží při životě.';
 
   @override
   String get proWhatYouGet => 'Co dostaneš';
@@ -3582,22 +3477,22 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'ZigDash Engine na hubu nelze použít? ZigDash může zaznamenávat na telefonu nebo tabletu, který zůstane otevřený, třeba na nástěnném tabletu. Historii vidí každý telefon této domácnosti.';
+      'WireDash Engine na hubu nelze použít? WireDash může zaznamenávat na telefonu nebo tabletu, který zůstane otevřený, třeba na nástěnném tabletu. Historii vidí každý telefon této domácnosti.';
 
   @override
   String get historyRecordingHere =>
-      'Toto zařízení zaznamenává historii, dokud je ZigDash otevřený. První hodnoty se objeví do 15 minut.';
+      'Toto zařízení zaznamenává historii, dokud je WireDash otevřený. První hodnoty se objeví do 15 minut.';
 
   @override
   String get wallRecordHistory => 'Zaznamenávat historii na tomto zařízení';
 
   @override
   String get wallRecordHistorySubtitle =>
-      'Každých 15 minut, dokud je ZigDash otevřený, pro každý telefon této domácnosti. Není potřeba, když zaznamenává ZigDash Engine na hubu.';
+      'Každých 15 minut, dokud je WireDash otevřený, pro každý telefon této domácnosti. Není potřeba, když zaznamenává WireDash Engine na hubu.';
 
   @override
   String historyNeedsPassword(String host) {
-    return 'Ještě jeden krok: tvůj broker vyžaduje přihlášení. Otevři Node-RED na $host:1880, dvakrát klikni na „ZigDash history broker“, na kartě Security zadej heslo k MQTT a dej Deploy. ZigDash tvoje heslo na hub nikdy neposílá.';
+    return 'Ještě jeden krok: tvůj broker vyžaduje přihlášení. Otevři Node-RED na $host:1880, dvakrát klikni na „ZigDash history broker“, na kartě Security zadej heslo k MQTT a dej Deploy. WireDash tvoje heslo na hub nikdy neposílá.';
   }
 
   @override
@@ -3617,7 +3512,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haImportIntro =>
-      'Přenes názvy a místnosti, které máš nastavené v Home Assistantu. ZigDash je jednou načte a nic dalšího z Home Assistantu si neponechá.';
+      'Přenes názvy a místnosti, které máš nastavené v Home Assistantu. WireDash je jednou načte a nic dalšího z Home Assistantu si neponechá.';
 
   @override
   String get haImportAddress => 'Adresa Home Assistantu';
@@ -3631,7 +3526,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haImportTokenHelp =>
-      'V Home Assistantu otevři svůj profil a pak Zabezpečení › Dlouhodobé přístupové tokeny › Vytvořit token. Zkopíruj ho a vlož sem. ZigDash ho použije jednou a neuchovává ho; v Home Assistantu ho pak můžeš smazat.';
+      'V Home Assistantu otevři svůj profil a pak Zabezpečení › Dlouhodobé přístupové tokeny › Vytvořit token. Zkopíruj ho a vlož sem. WireDash ho použije jednou a neuchovává ho; v Home Assistantu ho pak můžeš smazat.';
 
   @override
   String get haImportRead => 'Načíst z Home Assistantu';
@@ -3671,7 +3566,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haImportNoDevices =>
-      'ZigDash teď nevidí zařízení tohoto domova. Připoj se k domovu a zkus to znovu.';
+      'WireDash teď nevidí zařízení tohoto domova. Připoj se k domovu a zkus to znovu.';
 
   @override
   String get haImportAutomations =>
@@ -3711,7 +3606,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haImportZhaOnly =>
-      'Tato zařízení běží na ZHA, vlastním Zigbee Home Assistantu, ne na Zigbee2MQTT, takže je ZigDash nemůže zobrazit.';
+      'Tato zařízení běží na ZHA, vlastním Zigbee Home Assistantu, ne na Zigbee2MQTT, takže je WireDash nemůže zobrazit.';
 
   @override
   String get haImportNothing =>
@@ -3731,7 +3626,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haImportOfferBody =>
-      'Home Assistant je ve tvé síti. ZigDash může pojmenovat tvoje dlaždice a přidat nástěnku pro každé podlaží a místnost tak, jak je tam máš nastavené.';
+      'Home Assistant je ve tvé síti. WireDash může pojmenovat tvoje dlaždice a přidat nástěnku pro každé podlaží a místnost tak, jak je tam máš nastavené.';
 
   @override
   String get haImportOfferLater => 'Teď ne';
@@ -3744,7 +3639,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haImportSignInHelp =>
-      'Vlastní přihlášení Home Assistantu se otevře v prohlížeči. ZigDash tvoje heslo nikdy nevidí a po načtení se zase odhlásí.';
+      'Vlastní přihlášení Home Assistantu se otevře v prohlížeči. WireDash tvoje heslo nikdy nevidí a po načtení se zase odhlásí.';
 
   @override
   String get haImportOrToken => 'Nebo použij dlouhodobý token';
@@ -3762,10 +3657,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get setupAuthTrust =>
-      'Tvoje přihlášení zůstává v tomto telefonu a jde jen na tvůj vlastní broker. ZigDash nemá server ani účet a každá MQTT aplikace se přihlašuje stejně. Nejbezpečnější: samostatný MQTT uživatel jen pro ZigDash, kterého můžeš kdykoli odstranit.';
+      'Tvoje přihlášení zůstává v tomto telefonu a jde jen na tvůj vlastní broker. WireDash nemá server ani účet a každá MQTT aplikace se přihlašuje stejně. Nejbezpečnější: samostatný MQTT uživatel jen pro WireDash, kterého můžeš kdykoli odstranit.';
 
   @override
-  String get setupAuthWhatKept => 'Co si ZigDash uchovává';
+  String get setupAuthWhatKept => 'Co si WireDash uchovává';
 
   @override
   String get setupAuthDemoFirst => 'Nejdřív vyzkoušej demo';
@@ -3781,7 +3676,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineNoConnection =>
-      'ZigDash teď nedosáhne na broker této domácnosti. Automatizace se nastavují doma, s připojením.';
+      'WireDash teď nedosáhne na broker této domácnosti. Automatizace se nastavují doma, s připojením.';
 
   @override
   String get engineRestarting =>
@@ -3803,11 +3698,11 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'ZigDash vloží ZigDash Engine do Zigbee2MQTT na vašem hubu. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
+      'WireDash vloží ZigDash Engine do Zigbee2MQTT na vašem hubu. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
 
   @override
   String get engineIntroNothingByHand =>
-      'Nic se neinstaluje ručně. ZigDash to udělá přes domácí síť.';
+      'Nic se neinstaluje ručně. WireDash to udělá přes domácí síť.';
 
   @override
   String engineIntroVersion(Object version) {
@@ -3836,7 +3731,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Váš Zigbee2MQTT blokuje rozšíření jako ZigDash Engine, jak to dělají nové instalace. Aby automatizace běžely na hubu, ZigDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
+      'Váš Zigbee2MQTT blokuje rozšíření jako ZigDash Engine, jak to dělají nové instalace. Aby automatizace běžely na hubu, WireDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
 
   @override
   String get engineConsentOutage =>
@@ -4047,7 +3942,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get autoErrNotConnected =>
-      'ZigDash není připojen k této domácnosti. Zkuste to znovu doma.';
+      'WireDash není připojen k této domácnosti. Zkuste to znovu doma.';
 
   @override
   String get autoNewTitle => 'Nová automatizace';
@@ -4203,7 +4098,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get autoCeilingBody =>
-      'ZigDash je zdarma a s otevřeným kódem, vytváří ho jeden člověk. Pro je jednorázový nákup: neomezené automatizace, historie za 7 a 30 dní a doplňky pro nástěnný tablet. Vaše automatizace poběží dál, ať zvolíte cokoli.';
+      'WireDash je zdarma a s otevřeným kódem, vytváří ho jeden člověk. Pro je jednorázový nákup: neomezené automatizace, historie za 7 a 30 dní a doplňky pro nástěnný tablet. Vaše automatizace poběží dál, ať zvolíte cokoli.';
 
   @override
   String get autoCeilingSeePro => 'Zobrazit Pro';
@@ -4227,18 +4122,18 @@ class AppLocalizationsCs extends AppLocalizations {
       'Neomezené automatizace; tři na domácnost jsou zdarma';
 
   @override
-  String get proGetRemote => 'Ovládání odkudkoli přes relay ZigDash';
+  String get proGetRemote => 'Ovládání odkudkoli přes relay WireDash';
 
   @override
   String get proRemoteFair =>
-      'Vzdálený přístup je zahrnut, dokud relay ZigDash běží, pro jeden domov, až pět telefonů a běžné domácí použití. Může se změnit nebo skončit s předchozím oznámením.';
+      'Vzdálený přístup je zahrnut, dokud relay WireDash běží, pro jeden domov, až pět telefonů a běžné domácí použití. Může se změnit nebo skončit s předchozím oznámením.';
 
   @override
   String get autoDeleteConfirm =>
       'Smazat tuto automatizaci? Přestane běžet na hubu.';
 
   @override
-  String get statusConnectedRelay => 'Připojeno · Mimo domov přes ZigDash';
+  String get statusConnectedRelay => 'Připojeno · Mimo domov přes WireDash';
 
   @override
   String get remoteTitle => 'Dálkové ovládání';
@@ -4252,7 +4147,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remoteIntroBody =>
-      'Hub drží jedno spojení s relé ZigDash. Mimo domov se tento telefon dostane k zařízením přes něj. Vše se šifruje na hubu a v telefonu, takže relé nemůže číst vaše zařízení ani co dělají.';
+      'Hub drží jedno spojení s relé WireDash. Mimo domov se tento telefon dostane k zařízením přes něj. Vše se šifruje na hubu a v telefonu, takže relé nemůže číst vaše zařízení ani co dělají.';
 
   @override
   String get remoteNeedsEngine =>
@@ -4269,7 +4164,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remoteUnreachable =>
-      'Relé ZigDash neodpovědělo. Zkuste to později.';
+      'Relé WireDash neodpovědělo. Zkuste to později.';
 
   @override
   String get remoteRefused =>
@@ -4279,7 +4174,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get remoteOnTitle => 'Dálkové ovládání je zapnuté';
 
   @override
-  String get remoteOnBody => 'Mimo domov se ZigDash připojí přes relé sám.';
+  String get remoteOnBody => 'Mimo domov se WireDash připojí přes relé sám.';
 
   @override
   String get remoteHubOnline => 'Hub je připojen k relé';
@@ -4319,7 +4214,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remoteAddPhoneHint =>
-      'Doma to naskenujte fotoaparátem druhého telefonu. Otevře ZigDash a zapne tam dálkové ovládání. Ukazujte jen vlastním telefonům.';
+      'Doma to naskenujte fotoaparátem druhého telefonu. Otevře WireDash a zapne tam dálkové ovládání. Ukazujte jen vlastním telefonům.';
 
   @override
   String get remoteAddPhoneFailed =>
@@ -4351,18 +4246,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get remoteBackupWrong => 'Toto heslo zálohu neotevře.';
 
   @override
-  String get remoteBackupWrongFile => 'To není záloha klíče ZigDash.';
+  String get remoteBackupWrongFile => 'To není záloha klíče WireDash.';
 
   @override
   String get remotePlayOnly =>
-      'Dálkové ovládání je zatím ve verzi ZigDash z Google Play.';
+      'Dálkové ovládání je zatím ve verzi WireDash z Google Play.';
 
   @override
   String get remotePairTitle => 'Přidat dálkové ovládání';
 
   @override
   String get remotePairBody =>
-      'Která je to domácnost? ZigDash pro ni uloží vzdálený přístup.';
+      'Která je to domácnost? WireDash pro ni uloží vzdálený přístup.';
 
   @override
   String get remotePairNoHomes =>
@@ -4370,7 +4265,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remotePairInvalid =>
-      'Tento kód není kód dálkového ovládání ZigDash, nebo byl useknutý.';
+      'Tento kód není kód dálkového ovládání WireDash, nebo byl useknutý.';
 
   @override
   String remotePairDone(Object home) {
@@ -4388,4 +4283,145 @@ class AppLocalizationsCs extends AppLocalizations {
   String remoteHomeId(Object id) {
     return 'ID domova $id';
   }
+
+  @override
+  String get wgSecretHint =>
+      'Uloženo šifrovaně v tomto telefonu. Není součástí exportu nástěnky. Po obnovení dat aplikace konfiguraci znovu importujte.';
+
+  @override
+  String get wgDescription =>
+      'Připojte tuto domácnost přes WireGuard přímo v WireDash. Ostatní aplikace používají vlastní připojení.';
+
+  @override
+  String get wgShow => 'Zobrazit konfiguraci';
+
+  @override
+  String get wgTitle => 'Použít vestavěný WireGuard';
+
+  @override
+  String get wgImport => 'Importovat soubor .conf';
+
+  @override
+  String get wgHide => 'Skrýt konfiguraci';
+
+  @override
+  String get wgConfiguration => 'Konfigurace WireGuard';
+
+  @override
+  String get discoverWirenBoardHint =>
+      'Nalezené moduly se na tuto nástěnku přidají automaticky. Vestavěné prvky přidejte tlačítkem + nebo rozbalte zařízení a vyberte jednotlivé ovládací prvky.';
+
+  @override
+  String get discoverWirenBoardNone =>
+      'Nebyly nalezeny žádné ovládací prvky Wiren Board. Zkontrolujte přístup MQTT uživatele k metadatům /devices a publikování metadat s příznakem retained.';
+
+  @override
+  String get wbControllerBuiltins => 'Vestavěná zařízení kontroléru';
+
+  @override
+  String get wbSearch => 'Hledat zařízení a ovládací prvky';
+
+  @override
+  String get wbAddWholeDevice => 'Přidat celé zařízení';
+
+  @override
+  String wbControlCount(int count) {
+    return 'Ovládací prvky: $count';
+  }
+
+  @override
+  String get wbAddedModules => 'Přidané moduly';
+
+  @override
+  String get wbClearSearch => 'Vymazat hledání';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Neplatná konfigurace WireGuard. Zkontrolujte konfigurační soubor a zkuste to znovu.';
+
+  @override
+  String get wgConnect => 'Připojit přes WireGuard';
+
+  @override
+  String get wbAutoAddFailed =>
+      'Nalezená zařízení nelze přidat. Zkuste hledání znovu.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Vestavěná zařízení kontroléru zůstávají dostupná v seznamu všech zařízení.';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Přidané moduly: $count.';
+  }
+
+  @override
+  String get wbOpenControls => 'Otevřít ovládací prvky';
+
+  @override
+  String get wbAddSelected => 'Přidat vybrané vlastnosti';
+
+  @override
+  String get wbChooseProperties =>
+      'Vyberte vlastnosti, které chcete přidat jako jeden panel.';
+
+  @override
+  String get wbZ2mDevices => 'Zařízení Z2M ve Wirenboardu';
+
+  @override
+  String get panelDisplayReset => 'Obnovit obsah a popisky karty';
+
+  @override
+  String get panelPropertyWidget => 'Widget';
+
+  @override
+  String get panelDisplayLabel => 'Vlastní popisek (volitelné)';
+
+  @override
+  String get panelDisplayTitle => 'Obsah karty';
+
+  @override
+  String get panelDisplayHint =>
+      'Vyberte vlastnosti zobrazené na této kartě. Vlastní popisky platí jen pro tento panel. Otevřením karty zobrazíte všechny ovládací prvky zařízení.';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Nabídnout upravitelné widgety, i když je tato vlastnost při zjišťování označena jen pro čtení. Platí pouze pro tuto dlaždici.';
+
+  @override
+  String get panelAllowCommands => 'Povolit příkazy';
+
+  @override
+  String displayExpressionError(String error) {
+    return 'Výraz selhal; zobrazuje se původní hodnota. $error';
+  }
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Výsledek: $value';
+  }
+
+  @override
+  String get displayExpressionSample => 'Ukázková hodnota';
+
+  @override
+  String get displayExpressionHint =>
+      'Vstupní hodnota je v proměnné value. Prázdné pole ji nemění. Jen zobrazení; příkazy a uložená historie se nemění.';
+
+  @override
+  String get displayExpressionTest => 'Otestovat výraz';
+
+  @override
+  String get displayExpressionTitle => 'Před zobrazením (JavaScript)';
+
+  @override
+  String get problemReportGithub => 'Na GitHubu';
+
+  @override
+  String get problemReportGithubSubtitle =>
+      'Veřejný koncept: před odesláním jej zkontrolujte a upravte.';
+
+  @override
+  String get getHelpCannotOpen =>
+      'GitHub nelze otevřít. Zkopírujte podrobnosti a otevřete hlášení WireDash v prohlížeči.';
 }

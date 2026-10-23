@@ -1,3 +1,4 @@
+import 'package:zigdash/features/panels/screens/add_tile_screen.dart';
 import 'dart:async';
 import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
 import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
@@ -89,24 +90,45 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+Dashboard _dashboard(String id) => Dashboard(
+  id: id,
+  connectionId: 'c1',
+  name: id == 'd1' ? 'Home' : 'Other',
+  topicPrefix: 'zigbee2mqtt',
+  colorSeed: 0,
+  iconCodepoint: 0,
+  locked: false,
+  sortOrder: 0,
+  createdAt: _stamp,
+  updatedAt: _stamp,
+);
+
 class _Dashboards implements DashboardRepo {
+  _Dashboards({this.extraFirst = false});
+  final bool extraFirst;
   @override
   Future<List<Dashboard>> getByConnection(String id) async => [
-    Dashboard(
-      id: 'd1',
-      connectionId: 'c1',
-      name: 'Home',
-      topicPrefix: null,
-      colorSeed: 0,
-      iconCodepoint: 0,
-      locked: false,
-      sortOrder: 0,
-      createdAt: _stamp,
-      updatedAt: _stamp,
-    ),
+    if (extraFirst) _dashboard('other'),
+    _dashboard('d1'),
   ];
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+Future<void> _expandZ2mAndModules(WidgetTester tester) async {
+  for (final id in ['z2m', 'wb-modules']) {
+    final row = find.byKey(ValueKey('devices-section:$id'));
+    if (row.evaluate().isEmpty) continue;
+    await tester.ensureVisible(row);
+    await tester.pumpAndSettle();
+    await tester.tap(row);
+    await tester.pumpAndSettle();
+  }
+  final scrollable = find.byType(Scrollable).first;
+  if (scrollable.evaluate().isNotEmpty) {
+    tester.state<ScrollableState>(scrollable).position.jumpTo(0);
+  }
+  await tester.pumpAndSettle();
 }
 
 Widget _app({
@@ -114,6 +136,7 @@ Widget _app({
   ValueChanged<String>? onSelect,
   List<WirenBoardDevice> wbDevices = const [],
   bool emptyZ2m = false,
+  String? dashboardId,
   List<Override> overrides = const [],
 }) {
   final rows = deviceHealthFrom(
@@ -130,6 +153,7 @@ Widget _app({
   return ProviderScope(
     overrides: [
       ...overrides,
+      dashboardByIdProvider.overrideWith((ref, id) async => _dashboard(id)),
       mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
       wirenBoardDevicesProvider.overrideWith(
         (ref, _) => Stream.value(wbDevices),
@@ -177,7 +201,13 @@ Widget _app({
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: DevicesScreen(connectionId: 'c1', onSelect: onSelect),
+      home: dashboardId == null
+          ? DevicesScreen(connectionId: 'c1', onSelect: onSelect)
+          : AddTileScreen(
+              connectionId: 'c1',
+              dashboardId: dashboardId,
+              onCustomTile: (_) {},
+            ),
     ),
   );
 }
@@ -211,6 +241,121 @@ Widget _emptyApp({required bool missing}) => ProviderScope(
 );
 
 void main() {
+  for (final picking in [false, true]) {
+    testWidgets(
+      'all categories start collapsed and WB rows share the Z2M background (picker: $picking)',
+      (tester) async {
+        final discovery = WirenBoardDiscovery()
+          ..apply('/devices/desk/controls/state/meta', '{"type":"switch"}')
+          ..apply('/devices/wb-mr6_10/controls/Relay/meta', '{"type":"switch"}')
+          ..apply(
+            '/devices/system__cloud/controls/status/meta',
+            '{"type":"text","readonly":true}',
+          );
+        await tester.pumpWidget(
+          _app(
+            wbDevices: discovery.devices,
+            dashboardId: picking ? 'd1' : null,
+          ),
+        );
+        await tester.pumpAndSettle();
+        for (final id in ['z2m', 'wb-modules', 'wb-z2m', 'wb-builtins']) {
+          expect(find.byKey(ValueKey('devices-section:$id')), findsOneWidget);
+        }
+        expect(find.byType(DeviceHealthRow), findsNothing);
+        expect(find.byKey(const ValueKey('wb-device:wb-mr6_10')), findsNothing);
+        expect(find.byKey(const ValueKey('wb-device:desk')), findsNothing);
+        expect(
+          find.byKey(const ValueKey('wb-device:system__cloud')),
+          findsNothing,
+        );
+        expect(
+          find.text('Wiren Board'),
+          findsNothing,
+          reason: 'no separate WB picker entry',
+        );
+        await _expandZ2mAndModules(tester);
+        final wb = find
+            .ancestor(
+              of: find.byKey(const ValueKey('wb-device:wb-mr6_10')),
+              matching: find.byType(DeviceListRowSurface),
+            )
+            .first;
+        final z2m = find
+            .descendant(
+              of: find.byType(DeviceHealthRow).first,
+              matching: find.byType(DeviceListRowSurface),
+            )
+            .first;
+        Color? background(Finder surface) => tester
+            .widget<Material>(
+              find
+                  .descendant(of: surface, matching: find.byType(Material))
+                  .first,
+            )
+            .color;
+        expect(background(wb), background(z2m));
+        expect(
+          background(wb),
+          Theme.of(tester.element(wb)).colorScheme.surfaceContainerHigh,
+        );
+        for (final (section, device) in [
+          ('wb-z2m', 'desk'),
+          ('wb-builtins', 'system__cloud'),
+        ]) {
+          final header = find.byKey(ValueKey('devices-section:$section'));
+          await tester.ensureVisible(header);
+          await tester.pumpAndSettle();
+          await tester.tap(header);
+          await tester.pumpAndSettle();
+          expect(find.byKey(ValueKey('wb-device:$device')), findsOneWidget);
+        }
+      },
+    );
+  }
+
+  testWidgets(
+    'WB add from dashboard picker keeps the target dashboard and panel label',
+    (tester) async {
+      final importer = _RecordingWbImporter();
+      String? target;
+      final discovery = WirenBoardDiscovery()
+        ..apply('/devices/wb-mr6_10/controls/Relay/meta', '{"type":"switch"}');
+      await tester.pumpWidget(
+        _app(
+          wbDevices: discovery.devices,
+          dashboardId: 'd1',
+          overrides: [
+            dashboardRepoProvider.overrideWithValue(
+              _Dashboards(extraFirst: true),
+            ),
+            wirenBoardDashboardImporterProvider.overrideWith((ref, id) {
+              target = id;
+              return importer;
+            }),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey('devices-section:wb-modules')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Add whole device'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).first, 'Kitchen relay');
+      await tester.ensureVisible(find.widgetWithText(FilledButton, 'Add'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(
+        target,
+        'd1',
+        reason: 'the other dashboard was first in the repository',
+      );
+      expect(importer.calls.single.label, 'Kitchen relay');
+    },
+  );
+
   testWidgets(
     'WB native mirrors and controller services have separate sections',
     (tester) async {
@@ -225,6 +370,7 @@ void main() {
         _app(wbDevices: discovery.devices, emptyZ2m: true),
       );
       await tester.pumpAndSettle();
+      await _expandZ2mAndModules(tester);
       expect(find.text('Added modules'), findsOneWidget);
       expect(find.text('Wirenboard Z2M devices'), findsOneWidget);
       expect(find.text('Controller built-ins'), findsOneWidget);
@@ -280,6 +426,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      await _expandZ2mAndModules(tester);
       expect(find.byType(CheckboxListTile), findsNothing);
       await tester.tap(find.text('Room sensor'));
       await tester.pumpAndSettle();
@@ -359,6 +506,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
+        await _expandZ2mAndModules(tester);
         await tester.tap(find.text(id));
         await tester.pumpAndSettle();
         await tester.tap(
@@ -435,6 +583,7 @@ void main() {
               .devices;
       await tester.pumpWidget(_app(wbDevices: devices, emptyZ2m: true));
       await tester.pumpAndSettle();
+      await _expandZ2mAndModules(tester);
       expect(find.text('Relay module'), findsOneWidget);
       expect(find.text('Hardware monitor'), findsNothing);
       await tester.tap(find.text('Controller built-ins'));
@@ -458,13 +607,13 @@ void main() {
   testWidgets('native device section collapses and expands', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
-    expect(find.text('desk'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('devices-section:z2m')));
-    await tester.pumpAndSettle();
     expect(find.text('desk'), findsNothing);
     await tester.tap(find.byKey(const ValueKey('devices-section:z2m')));
     await tester.pumpAndSettle();
     expect(find.text('desk'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('devices-section:z2m')));
+    await tester.pumpAndSettle();
+    expect(find.text('desk'), findsNothing);
   });
 
   testWidgets(
@@ -481,6 +630,7 @@ void main() {
         _app(wbDevices: discovery.devices, emptyZ2m: true),
       );
       await tester.pumpAndSettle();
+      await _expandZ2mAndModules(tester);
       expect(find.byKey(const ValueKey('wb-device:hwmon')), findsNothing);
       await tester.tap(find.byIcon(Icons.search));
       await tester.pumpAndSettle();
@@ -520,6 +670,7 @@ void main() {
   ) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
+    await _expandZ2mAndModules(tester);
 
     expect(find.text('Not on a dashboard'), findsOneWidget);
     expect(find.text('Needs attention · 1'), findsOneWidget);
@@ -536,6 +687,7 @@ void main() {
   ) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
+    await _expandZ2mAndModules(tester);
     expect(find.byIcon(Icons.cloud_off), findsNothing);
     expect(find.text('How to turn it on'), findsOneWidget);
   });
@@ -545,12 +697,14 @@ void main() {
       _app(availability: const AvailabilityConfig(enabled: true)),
     );
     await tester.pumpAndSettle();
+    await _expandZ2mAndModules(tester);
     expect(find.text('How to turn it on'), findsNothing);
   });
 
   testWidgets('filtering to Needs attention shows only those', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
+    await _expandZ2mAndModules(tester);
     await tester.tap(find.text('Needs attention · 1'));
     await tester.pumpAndSettle();
     expect(find.byType(DeviceHealthRow), findsOneWidget);
@@ -561,6 +715,7 @@ void main() {
     String? opened;
     await tester.pumpWidget(_app(onSelect: (ieee) => opened = ieee));
     await tester.pumpAndSettle();
+    await _expandZ2mAndModules(tester);
     await tester.tap(find.text('hall'));
     expect(opened, '0x2');
   });
@@ -570,6 +725,7 @@ void main() {
   ) async {
     await tester.pumpWidget(_app());
     await tester.pumpAndSettle();
+    await _expandZ2mAndModules(tester);
     await tester.longPress(find.text('hall'));
     await tester.pumpAndSettle();
     expect(find.text('Add to a dashboard'), findsOneWidget);

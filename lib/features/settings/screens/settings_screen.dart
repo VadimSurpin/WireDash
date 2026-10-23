@@ -1,6 +1,7 @@
 import '../../support/help_context.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../mqtt/endpoint.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../support/community.dart';
+import '../../support/project_links.dart';
+export '../../support/project_links.dart'
+    show problemReportGithubUrl, releasesUrl;
 import '../../support/support_facts.dart' show supportDetailsProvider;
 import '../../../core/l10n/l10n_ext.dart';
 import '../../panels/widgets/device_tile_panel.dart' show ltr;
@@ -42,70 +46,6 @@ final dynamicColorAvailableProvider = FutureProvider<bool>((ref) async {
 /// WireDash privacy policy on the repository's default branch.
 final privacyPolicyUrl = Uri.parse(
   'https://github.com/VadimSurpin/WireDash/blob/HEAD/docs/PRIVACY.md',
-);
-
-/// ZigDash's package on Google Play. Fixed, so test builds with a suffixed
-/// package (`.dev`) still open the real listing.
-const playPackage = 'com.giladtamam.zigdash';
-
-/// The Play Store app's page for ZigDash, and the web page as a fallback.
-final playStoreAppUrl = Uri.parse('market://details?id=$playPackage');
-final playStoreWebUrl = Uri.https('play.google.com', '/store/apps/details', {
-  'id': playPackage,
-});
-
-/// Opens ZigDash on Google Play so the user can rate it.
-///
-/// Not the in-app review dialog: Play rations it and gives no signal when it
-/// shows nothing, so a Rate button that relies on it often does nothing at
-/// all, and Google advises against calling it from a button. The automatic
-/// prompt (lib/core/review) still uses it.
-Future<void> openPlayListing() async {
-  try {
-    if (await launchUrl(
-      playStoreAppUrl,
-      mode: LaunchMode.externalApplication,
-    )) {
-      return;
-    }
-  } catch (_) {
-    // No Play Store app (or no handler for market://): use the web page.
-  }
-  await launchUrl(playStoreWebUrl, mode: LaunchMode.externalApplication);
-}
-
-/// Where user-initiated problem reports go: a GitHub issue or an email to
-/// the developer (private). The app only opens a browser or mail app; it
-/// sends nothing itself.
-const reportEmail = 'giladtamam1@gmail.com';
-
-/// A new GitHub issue from the bug-report template, with the app version
-/// filled in.
-Uri problemReportGithubUrl(String version, {String? details}) =>
-    _githubIssueUrl('bug_report.yml', version, details: details);
-
-Uri _githubIssueUrl(String template, String version, {String? details}) =>
-    Uri.https('github.com', '/giladtamam/zigdash/issues/new', {
-      'template': template,
-      'version': version,
-      if (details != null) 'details': details,
-    });
-
-/// A new email to [reportEmail] with [subject] and a body that asks
-/// [prompt] and ends with the app version, or with Support [details] when
-/// given (problem reports).
-Uri feedbackMailUrl({
-  required String version,
-  required String subject,
-  required String prompt,
-  String? details,
-}) => Uri(
-  scheme: 'mailto',
-  path: reportEmail,
-  // Uri's queryParameters encode spaces as '+', which mail apps show.
-  query:
-      'subject=${Uri.encodeComponent(subject)}'
-      '&body=${Uri.encodeComponent('$prompt\n\n\n${details == null ? '— WireDash $version' : '— Support details —\n$details'}')}',
 );
 
 /// Settings (devices-tablet-1.13.md §6): Homes, Appearance and About on one
@@ -216,10 +156,10 @@ class SettingsScreen extends ConsumerWidget {
               const Divider(),
               _SectionHeader(l10n.settingsAbout),
               ListTile(
-                leading: const Icon(Icons.star_outline),
+                leading: const Icon(Icons.download_outlined),
                 title: Text(l10n.settingsRateApp),
                 subtitle: Text(l10n.settingsRateAppSubtitle),
-                onTap: openPlayListing,
+                onTap: () => openSupportLink(releasesUrl),
               ),
               // ZigDash Pro (history-2.7.md): only where it can be bought.
               if (proFlavor == 'play' &&
@@ -262,25 +202,26 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-/// Asks where to send a user-initiated problem report,
-/// then opens GitHub or the mail app.
+/// Shows manual actions for a report: review a GitHub draft or copy details.
 Future<void> sendProblemReport(
   BuildContext context,
   WidgetRef ref, {
   String? connectionId,
 }) async {
   final l10n = context.l10n;
-  final version = ref.read(appVersionProvider).valueOrNull ?? '';
+  var version = ref.read(appVersionProvider).valueOrNull ?? '';
   // A problem report carries the same Support details as Get help.
   String? details;
   {
     try {
-      details = (await ref.read(
+      final facts = await ref.read(
         supportDetailsProvider((
           openedFrom: 'Settings › Report a problem',
           connectionId: connectionId,
         )).future,
-      )).format();
+      );
+      details = facts.format();
+      version = '${facts.appVersion} (${facts.build})';
     } catch (_) {}
     if (!context.mounted) return;
   }
@@ -301,25 +242,21 @@ Future<void> sendProblemReport(
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.mail_outline),
-            title: Text(l10n.problemReportEmail),
-            subtitle: Text(l10n.problemReportEmailSubtitle),
-            onTap: () => Navigator.pop(
-              ctx,
-              feedbackMailUrl(
-                version: version,
-                subject: l10n.reportProblemEmailSubject,
-                prompt: l10n.reportProblemEmailPrompt,
-                details: details,
-              ),
-            ),
+            leading: const Icon(Icons.copy),
+            title: Text(l10n.getHelpCopy),
+            onTap: () async {
+              await Clipboard.setData(
+                ClipboardData(text: details ?? 'WireDash $version'),
+              );
+              if (ctx.mounted) Navigator.pop(ctx);
+            },
           ),
         ],
       ),
     ),
   );
   if (url == null) return;
-  await launchUrl(url, mode: LaunchMode.externalApplication);
+  await openSupportLink(url);
 }
 
 /// One home: name, address, and for the current home its connection state.
@@ -337,16 +274,20 @@ class _HomeRow extends ConsumerWidget {
     final status = current
         ? ref.watch(connectionStatusProvider(home.id)).valueOrNull
         : null;
-    final endpoint = current ? ref.watch(connectionEndpointProvider(home.id)).valueOrNull : null;
+    final endpoint = current
+        ? ref.watch(connectionEndpointProvider(home.id)).valueOrNull
+        : null;
     return ListTile(
       leading: Icon(
         current ? Icons.home : Icons.home_outlined,
         color: current ? scheme.primary : null,
       ),
       title: Text(home.name),
-      subtitle: Text(status == null
-          ? address
-          : '$address · ${homeStatusLabel(status, l10n, endpoint: endpoint)}'),
+      subtitle: Text(
+        status == null
+            ? address
+            : '$address · ${homeStatusLabel(status, l10n, endpoint: endpoint)}',
+      ),
       trailing: current
           ? Icon(
               Icons.check,
@@ -359,13 +300,19 @@ class _HomeRow extends ConsumerWidget {
   }
 }
 
-String homeStatusLabel(MqttStatus s, AppLocalizations l10n, {MqttEndpoint? endpoint}) => switch (s) {
-      MqttStatus.connected when endpoint == MqttEndpoint.relay => l10n.statusConnectedRelay,
-      MqttStatus.connected when endpoint == MqttEndpoint.remote => l10n.statusConnectedRemote,
-      MqttStatus.connected => l10n.statusConnected,
-      MqttStatus.connecting => l10n.statusConnecting,
-      _ => l10n.statusCantReach,
-    };
+String homeStatusLabel(
+  MqttStatus s,
+  AppLocalizations l10n, {
+  MqttEndpoint? endpoint,
+}) => switch (s) {
+  MqttStatus.connected when endpoint == MqttEndpoint.relay =>
+    l10n.statusConnectedRelay,
+  MqttStatus.connected when endpoint == MqttEndpoint.remote =>
+    l10n.statusConnectedRemote,
+  MqttStatus.connected => l10n.statusConnected,
+  MqttStatus.connecting => l10n.statusConnecting,
+  _ => l10n.statusCantReach,
+};
 
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader(this.text);

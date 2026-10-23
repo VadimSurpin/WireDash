@@ -564,7 +564,6 @@ void main() {
         d.run(config: config(), password: '').then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps[1].detailKey, 'diagTcpZ2mBrokerElsewhere');
-        expect(manualTestResult(report!), ManualTestResult.z2mBrokerElsewhere);
       });
     });
 

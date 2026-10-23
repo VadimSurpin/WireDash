@@ -4,26 +4,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/l10n_ext.dart';
+import 'project_links.dart';
 
-/// The ZigDash Telegram group (docs/design/support.md, Community): where
-/// users ask, suggest and hear what's coming. Public, so the link is open.
-final communityUrl = Uri.parse('https://t.me/zigdash_app');
+/// WireDash's repository, with documentation and public issues.
+final communityUrl = Uri.parse(projectUrl);
 
 /// Opens a link outside the app; replaced in tests.
 @visibleForTesting
 Future<bool> Function(Uri url) openCommunityLink = (url) =>
     launchUrl(url, mode: LaunchMode.externalApplication);
 
-/// Opens the community group and records where it was opened from.
+/// Opens the project only after an explicit user action.
 Future<void> openCommunity(WidgetRef ref, HelpFrom from) async {
   try {
     await openCommunityLink(communityUrl);
   } catch (_) {}
 }
 
-/// "Ask in the Telegram group", the quiet link beside Get help on a screen
-/// where setup is stuck (support.md, Community): a stuck user can ask in
-/// public right there instead of writing to the developer first.
+/// A manual link to the WireDash project beside troubleshooting actions.
 class CommunityLink extends ConsumerWidget {
   const CommunityLink({super.key, required this.from});
 

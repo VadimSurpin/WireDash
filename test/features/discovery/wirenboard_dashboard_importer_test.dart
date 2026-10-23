@@ -23,6 +23,13 @@ import 'package:zigdash/l10n/app_localizations.dart';
 
 class _Storage implements SecureStore {
   @override
+  Future<String?> readWireGuard(String id) async => null;
+  @override
+  Future<void> writeWireGuard(String id, String config) async {}
+  @override
+  Future<void> deleteWireGuard(String id) async {}
+
+  @override
   Future<void> writePassword(String id, String password) async {}
   @override
   Future<void> deletePassword(String id) async {}

@@ -11,8 +11,10 @@ and builds on its MQTT dashboards, device controls, scenes and tablet layouts.
 [![Built with Flutter](https://img.shields.io/badge/Built%20with-Flutter-02569B.svg)](https://flutter.dev)
 
 Connect directly to your existing MQTT broker. WireDash does not require its
-own server, cloud account or dashboard backend. Optional Node-RED flows on your
-hub provide recording, alerts and automation when the phone is offline.
+own server, cloud account or dashboard backend. Optional hub-side ZigDash Engine and Node-RED flows provide automation,
+recording and alerts when the phone is offline. The upstream encrypted relay
+is an optional, separately configured remote-access service; embedded
+WireGuard does not use it.
 
 <p align="center">
   <img src="docs/screenshots/dashboard-light.png" width="200" alt="WireDash green device panels in light mode">
@@ -37,7 +39,8 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
   devices are added automatically after discovery.
 - **Organized device lists** — expand a device inline to browse its properties.
   Collapsible sections separate controller built-ins, added modules and WB
-  mirrors of Zigbee2MQTT devices. Built-ins and WB Z2M sections start collapsed.
+  mirrors of Zigbee2MQTT devices. All categories start collapsed in both All devices and Add tile. Both views
+  share the full device list, with matching backgrounds for WB and Z2M rows.
   Built-ins include cloud status, network connections, KNX gateway, battery and
   alarms.
 - **Panel-specific controls and labels** — whole-device WB panels use the same
@@ -55,7 +58,9 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 - **[No telemetry](docs/PRIVACY.md)** — the analytics SDK, event hooks, consent
   prompts, feature-request entry and roadmap poll are removed. Old queued usage
   records are cleared on upgrade. Manual help and problem-report actions remain
-  user-initiated.
+  user-initiated and open editable issue drafts in this repository. The bundled
+  manual stays local; project, setup-guide and release links target WireDash.
+  No reports are submitted automatically.
 - **Localized UI** — 13 languages: English, Czech, Dutch, French, German, Hebrew,
   Italian, Norwegian Bokmål, Polish, Portuguese, Russian, Spanish and Swedish,
   including RTL layouts.
@@ -80,16 +85,19 @@ all app features without Play billing.
 
 ## Install
 
-WireDash does not currently publish its own Play Store release. Test APKs are
-available from successful [check workflow runs](https://github.com/VadimSurpin/WireDash/actions/workflows/check.yml):
-open a run on the combined branch and download the
-`zigdash-wireguard-wirenboard-debug-arm64` artifact. The artifact retains its
-original build-system name; it contains the WireDash app for ARM64 Android.
+Download the APK for your phone from [WireDash releases](https://github.com/VadimSurpin/WireDash/releases/latest):
+`arm64-v8a` for most current phones, `armeabi-v7a` for older 32-bit devices, or
+`x86_64` for compatible emulators. Releases include SHA-256 checksums. Android
+6.0 or newer is required. These are release-mode FOSS builds with all app
+features unlocked and no Play billing.
 
-CI artifacts use the CI debug signing key. Updating an existing installation
-requires an APK signed with the same key as that installation.
+The first WireDash release uses the same local development signing certificate
+as the previously supplied WireDash test APKs, allowing in-place updates.
+Keep that certificate stable when building updates. This is not the upstream
+ZigDash Play signing key.
 
-The default branch, `feat/wireguard-wirenboard`, combines these feature branches:
+The default branch, `feat/wireguard-wirenboard`, includes ZigDash main through
+3.1.2 (`550394f`) and combines these feature branches:
 
 | Branch | Change |
 | --- | --- |
@@ -137,8 +145,11 @@ not rename the package.
 ## Help and upstream credits
 
 For issues specific to this fork, use the [WireDash issue tracker](https://github.com/VadimSurpin/WireDash/issues).
-The in-app support email and community links are inherited from ZigDash and
-still point to its upstream contacts; use this repository for WireDash changes.
+The bundled Help & Guide opens locally. Get help and Report a problem open
+editable GitHub issue drafts in this repository only after you choose them.
+Review the included support details before posting a public issue. Project
+and Releases actions also point here; no inherited email or Telegram action
+contacts the original author.
 
 The original project remains available here:
 

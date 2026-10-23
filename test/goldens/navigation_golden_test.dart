@@ -24,6 +24,9 @@ import 'package:zigdash/features/settings/providers/settings_controller.dart';
 
 import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
+import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
+import 'package:zigdash/features/discovery/providers/wirenboard_discovery_provider.dart';
+import 'package:zigdash/features/discovery/wirenboard_dashboard_importer.dart';
 import 'golden_harness.dart';
 
 // 1.12 navigation screens in the interim look: the home shell (header
@@ -114,7 +117,18 @@ final _devices = [
 
 late SharedPreferences _prefs;
 
+final _wb = WirenBoardDiscovery()
+  ..apply('/devices/wb-mr6_10/meta', '{"name":"Relay module"}')
+  ..apply('/devices/wb-mr6_10/controls/K1/meta', '{"type":"switch"}')
+  ..apply('/devices/garden_relay/controls/state/meta', '{"type":"switch"}')
+  ..apply(
+    '/devices/system__cloud/controls/status/meta',
+    '{"type":"text","readonly":true}',
+  );
+
 List<Override> _overrides() => [
+  wirenBoardDevicesProvider.overrideWith((ref, _) => Stream.value(_wb.devices)),
+  linkedWirenBoardIdsProvider.overrideWith((ref, _) => {}),
   // The home shell holds the history recorder (2.9.1), off here.
   sharedPreferencesProvider.overrideWithValue(_prefs),
   // The shell's control tracker asks for the broker (2.9.2): none here.

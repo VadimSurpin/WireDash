@@ -35,7 +35,6 @@ import '../../kiosk/wall_display_sheet.dart';
 import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
 import '../../../engine/automations_paused_chip.dart';
-import '../widgets/poll_card.dart';
 import '../widgets/connection_status_banner.dart';
 
 /// Per-connection dashboards screen. Shows a TabBar of all dashboards
@@ -239,7 +238,13 @@ class _DashboardsTabbed extends ConsumerWidget {
                                 if (wide && !demo)
                                   _StatusChip(
                                     status: connectionStatus,
-                                    endpoint: ref.watch(connectionEndpointProvider(connectionId)).valueOrNull,
+                                    endpoint: ref
+                                        .watch(
+                                          connectionEndpointProvider(
+                                            connectionId,
+                                          ),
+                                        )
+                                        .valueOrNull,
                                   ),
                                 IconButton(
                                   icon: const Icon(Icons.edit_outlined),

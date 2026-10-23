@@ -17,7 +17,8 @@ import 'alerts_service.dart';
 import 'alert_editor_screen.dart' show alertKindsOf;
 import '../features/devices/device_profile.dart' show classifyExposes;
 import '../features/discovery/providers/discovery_provider.dart';
-import '../features/panels/providers/panel_value_provider.dart' show composeTopic;
+import '../features/panels/providers/panel_value_provider.dart'
+    show composeTopic;
 import '../engine/engine_setup.dart';
 import 'share_alerts_sheet.dart';
 
@@ -228,12 +229,13 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      final r = await ensureEngine(context, ref, _id, from: EngineFrom.alerts);
+      final r = await ensureEngine(context, ref, _id);
       if (!mounted) return false;
       switch (r) {
         case EngineSetup.ready:
-          _track(const AlertsSetup(AlertsSetupStep.flowInstalled));
-          messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubInstalled)));
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.alertsHubInstalled)),
+          );
           await ref.read(alertsServiceProvider).publish(_id);
           return true;
         case EngineSetup.needsUser:
@@ -306,7 +308,6 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     );
     if (yes == true) await ref.read(alertsServiceProvider).turnOff(_id);
   }
-
 
   String _age(BuildContext context, DateTime at) {
     final m = MaterialLocalizations.of(context);

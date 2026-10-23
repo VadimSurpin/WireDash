@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/router/routes.dart';
-import '../core/analytics/analytics.dart';
 import 'engine_installer.dart';
 import 'engine_providers.dart';
 import 'engine_status.dart';
@@ -26,8 +25,11 @@ enum EngineSetup {
 /// Alerts, history and automations all run in the Engine (zigdash-3.0.md
 /// §4): before setting one up, put the Engine on the hub, installing it
 /// directly when Zigbee2MQTT allows it.
-Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String connectionId,
-    {EngineFrom from = EngineFrom.automations}) async {
+Future<EngineSetup> ensureEngine(
+  BuildContext context,
+  WidgetRef ref,
+  String connectionId,
+) async {
   final view = await _settled(ref, connectionId);
   if (view == null) {
     if (context.mounted) context.go(Routes.homeAutomations(connectionId));
@@ -39,12 +41,12 @@ Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String con
     return EngineSetup.needsUser;
   }
   try {
-    final installer = await ref.read(engineInstallerProvider(connectionId).future);
+    final installer = await ref.read(
+      engineInstallerProvider(connectionId).future,
+    );
     final source = await ref.read(engineSourceProvider.future);
     final (answer, _) = await installer.install(source);
-    ref.read(analyticsProvider).track(EngineEvent(
-        answer == HubAnswer.ok ? EngineStep.installed : EngineStep.failed,
-        z2m: view.hub?.version, from: from));
+
     return answer == HubAnswer.ok ? EngineSetup.ready : EngineSetup.failed;
   } catch (_) {
     return EngineSetup.failed;
@@ -53,12 +55,23 @@ Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String con
 
 /// The first view past "checking", or null if the hub doesn't say within
 /// [within].
-Future<EngineView?> _settled(WidgetRef ref, String connectionId,
-    {Duration within = const Duration(seconds: 8)}) {
+Future<EngineView?> _settled(
+  WidgetRef ref,
+  String connectionId, {
+  Duration within = const Duration(seconds: 8),
+}) {
   final done = Completer<EngineView?>();
-  final sub = ref.listenManual<AsyncValue<EngineView>>(engineViewProvider(connectionId), (_, next) {
-    final v = next.valueOrNull;
-    if (v != null && v.phase != HubEnginePhase.checking && !done.isCompleted) done.complete(v);
-  }, fireImmediately: true);
-  return done.future.timeout(within, onTimeout: () => null).whenComplete(sub.close);
+  final sub = ref.listenManual<AsyncValue<EngineView>>(
+    engineViewProvider(connectionId),
+    (_, next) {
+      final v = next.valueOrNull;
+      if (v != null && v.phase != HubEnginePhase.checking && !done.isCompleted) {
+        done.complete(v);
+      }
+    },
+    fireImmediately: true,
+  );
+  return done.future
+      .timeout(within, onTimeout: () => null)
+      .whenComplete(sub.close);
 }

@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'alerts/alert_push.dart';
 import 'app.dart';
-import 'core/analytics/analytics.dart' show readTestDevice, testDeviceProvider;
 import 'core/privacy/legacy_data_cleanup.dart';
 import 'mqtt/dropped_connection.dart';
 import 'core/theme/font_licenses.dart';
@@ -40,13 +39,9 @@ Future<void> main([List<String> args = const []]) async {
   final prefs = await SharedPreferences.getInstance();
   await clearLegacyUsageData(prefs);
   await AlertPush.init(prefs, background: false);
-  final testDevice = await readTestDevice();
   runApp(
     ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        testDeviceProvider.overrideWithValue(testDevice),
-      ],
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
       child: const ZigDashApp(),
     ),
   );

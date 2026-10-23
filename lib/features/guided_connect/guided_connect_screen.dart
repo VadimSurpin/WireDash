@@ -45,7 +45,12 @@ enum _Phase { form, running, failed, success }
 /// [initialHost] and [initialPort] fill the form in (2.5: a hub the scan
 /// found but whose broker didn't answer).
 class GuidedConnectScreen extends ConsumerStatefulWidget {
-  const GuidedConnectScreen({super.key, this.initialHost, this.initialPort, this.initialWireGuard = false});
+  const GuidedConnectScreen({
+    super.key,
+    this.initialHost,
+    this.initialPort,
+    this.initialWireGuard = false,
+  });
 
   final String? initialHost;
   final int? initialPort;
@@ -66,7 +71,8 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _wireGuard = TextEditingController();
-  late bool _useWireGuard = widget.initialWireGuard && supportsEmbeddedWireGuard;
+  late bool _useWireGuard =
+      widget.initialWireGuard && supportsEmbeddedWireGuard;
 
   MqttProtocol _protocol = MqttProtocol.tcp;
   _Phase _phase = _Phase.form;
@@ -124,7 +130,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       );
       if (!_formKey.currentState!.validate()) return;
     }
-    if (_useWireGuard && !await validateWireGuardForForm(context, _wireGuard.text)) return;
+    if (_useWireGuard &&
+        !await validateWireGuardForForm(context, _wireGuard.text)) {
+      return;
+    }
     if (!mounted) return;
     final host = _host.text.trim();
     final port = int.parse(_port.text);
@@ -137,7 +146,9 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       protocol: _protocol,
       username: _username.text.trim().isEmpty ? null : _username.text.trim(),
       keepAliveSeconds: 60,
-      transport: _useWireGuard ? ConnectionTransport.wireGuard : ConnectionTransport.mqtt,
+      transport: _useWireGuard
+          ? ConnectionTransport.wireGuard
+          : ConnectionTransport.mqtt,
       wireGuardConfig: _useWireGuard ? _wireGuard.text : null,
     );
     final diagnostics = ref.read(connectDiagnosticsProvider);
@@ -167,17 +178,6 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     }
     // 2.7.2: where the broker form loses people. A user spent three minutes
     // here and all we knew was that the form had opened.
-    ref
-        .read(analyticsProvider)
-        .track(
-          SetupStep(
-            SetupStepKind.manualTest,
-            result: manualTestResult(report),
-            devices: report.connected ? report.deviceNames.length : null,
-            tidied: tidied,
-            portClass: portClassOf(port),
-          ),
-        );
 
     if (report.connected) {
       // Auto-save per the spec: on success the connection saves with
@@ -391,8 +391,11 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
             obscureText: true,
             decoration: InputDecoration(labelText: l10n.connPasswordOptional),
           ),
-          WireGuardFields(controller: _wireGuard, enabled: _useWireGuard,
-            onChanged: (value) => setState(() => _useWireGuard = value)),
+          WireGuardFields(
+            controller: _wireGuard,
+            enabled: _useWireGuard,
+            onChanged: (value) => setState(() => _useWireGuard = value),
+          ),
           const SizedBox(height: 8),
           TextButton.icon(
             icon: const Icon(Icons.wifi_find, size: 18),

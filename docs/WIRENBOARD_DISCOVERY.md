@@ -1,6 +1,6 @@
 # Wiren Board discovery
 
-ZigDash can discover devices published by Wiren Board drivers and virtual
+WireDash can discover devices published by Wiren Board drivers and virtual
 devices directly from the MQTT broker. No additional server or Zigbee2MQTT
 converter is required. The connection must allow subscriptions to:
 
@@ -9,19 +9,18 @@ converter is required. The connection must allow subscriptions to:
 /devices/+/controls/+/meta/#
 ```
 
-Create an MQTT connection and a dashboard, then choose **Add tile → Wiren
-Board**. Discovered non-built-in modules are added automatically as whole-device panels,
+Create an MQTT connection and a dashboard, then choose **Add tile**, then expand the relevant device category. Discovered non-built-in modules are added automatically as whole-device panels,
 with no duplicates on repeated discovery. This works in initial broker setup,
 the manual connection wizard, and the dashboard discovery screen. Built-ins
 are listed in All devices and can be added manually.
 
-In **All devices**, each section can be collapsed independently. Controller
-built-ins and Wirenboard Z2M devices start collapsed; added modules and native
-Zigbee2MQTT devices start expanded. Search reveals matching devices and
+In **All devices**, each section can be collapsed independently. All categories start collapsed in both All devices and the dashboard Add tile
+picker: Zigbee2MQTT, added modules, Wirenboard Z2M devices and controller built-ins. Search reveals matching devices and
 properties inside collapsed sections, then restores their expansion state when
 cleared. Device rows expand into a property tree. Use the + button next to a
 property to add it as a standard tile, or the device's + button to add the whole
-device. The add sheet asks for a label and target dashboard. The discovery
+device. The add sheet asks for a label. From All devices, choose the target dashboard;
+from Add tile, the dashboard you opened is already selected. The discovery
 screen also has a Zigbee2MQTT source selector.
 
 Discovery listens for retained metadata and subsequent changes. It supports

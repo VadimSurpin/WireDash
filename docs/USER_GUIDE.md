@@ -1,7 +1,7 @@
 # WireDash — User Guide
 
 WireDash turns your phone into a private, customizable control panel for a
-[Zigbee2MQTT](https://www.zigbee2mqtt.io/) smart home. It talks directly to an
+Wiren Board, [Zigbee2MQTT](https://www.zigbee2mqtt.io/) or custom MQTT smart home. It talks directly to an
 MQTT broker you control — no cloud account, no third‑party servers, no tracking.
 
 This guide walks through everything: connecting to a broker, building dashboards,
@@ -11,13 +11,44 @@ each panel type, scheduled automation, scenes, remote access, settings, backup, 
 
 ## 1. Concepts at a glance
 
-WireDash is organized in three tabs (bottom bar):
+Each home has four tabs in the bottom bar:
 
 | Tab | What it holds |
 |---|---|
-| **Brokers** | Your MQTT broker connections. Tap one to open its dashboards. |
-| **Dashboards** | The dashboards belonging to the broker you opened. |
-| **Settings** | Theme, Material You colors, and language. |
+| **Dashboards** | Your dashboards and device panels. |
+| **Devices** | All devices, grouped by source. |
+| **Scenes** | Actions for several controls at once. |
+| **Automations** | Schedules and hub-side rules using optional ZigDash Engine. |
+
+Open **Settings** from the gear to manage homes, appearance and language.
+
+### Wiren Board devices and embedded WireGuard
+
+All devices and **Dashboard → Add tile** show the same complete list: native
+Zigbee2MQTT devices, added WB modules, Wirenboard Z2M mirrors and controller
+built-ins. All categories start collapsed; tap a heading to expand it. Search
+reveals matches inside collapsed categories. WB rows have the same background
+as Zigbee2MQTT rows. Expand a WB device to browse its controls, then use the
+property's + button to add one control with a label and widget choice, or the
+device's + button for a whole-device panel. Add tile uses the current dashboard.
+
+Non-built-in WB devices are added automatically after discovery. Whole-device
+panels support custom labels and visible properties in the panel editor.
+See [Wiren Board discovery](WIRENBOARD_DISCOVERY.md).
+
+Import a WireGuard peer configuration in the initial connection form or the
+home's connection settings. The app uses its embedded tunnel for MQTT, without
+a separate VPN app. Configurations stay in encrypted device storage. Tunnel
+errors do not switch to direct MQTT or a relay. See [embedded WireGuard](EMBEDDED_WIREGUARD.md).
+
+### Help and problem reports
+
+Help & Guide is bundled with the app. Get help shows troubleshooting tips and
+support details locally. **Report a problem on GitHub** opens an editable draft
+in [WireDash issues](https://github.com/VadimSurpin/WireDash/issues); review the
+report before posting it publicly. Nothing is submitted automatically.
+**Copy details** only copies to your clipboard. Project and Releases links
+also point to WireDash, with no email or Telegram action to upstream contacts.
 
 The hierarchy is: **Broker → Dashboards → Panels**.
 - A **broker** is your MQTT server (e.g. the Mosquitto running on your hub).
@@ -197,7 +228,7 @@ is encrypted end‑to‑end by Tailscale. Full setup steps: `docs/tailscale-remo
 - **Appearance** — Theme: System / Light / Dark.
 - **Use Material You colors** — on Android 12+, themes the app from your wallpaper palette; otherwise uses the app's brand color.
 - **Language** — System, or one of the app's languages. Hebrew switches the whole UI to right‑to‑left.
-- **About** — rate WireDash, this guide, the privacy policy and the version.
+- **About** — WireDash releases, this guide, the privacy policy and the version.
 
 All settings persist across restarts.
 
@@ -220,7 +251,7 @@ band the minimum and maximum. Touch the graph to read a value. 7 and 30 days
 are part of WireDash Pro in the Google Play version (unlocked in the GitHub,
 IzzyOnDroid and F‑Droid versions).
 
-WireDash has no server, so a small **Node‑RED** flow on your hub records the
+Direct MQTT needs no WireDash server. A small **Node‑RED** flow on your hub records the
 numbers shown on your dashboards and keeps 30 days on your own broker. You
 need Node‑RED next to your broker:
 - **SMLIGHT SMHUB:** install Node‑RED under the hub's Apps.
@@ -322,4 +353,4 @@ Use **Export** (§9) to save the JSON, install WireDash on the new phone, then
 
 ---
 
-*Questions or issues: giladtamam1@gmail.com*
+*Questions or issues: [WireDash issue tracker](https://github.com/VadimSurpin/WireDash/issues)*

@@ -513,7 +513,7 @@ void main() {
 
   // 2.9.6: the empty result with no hub found offers three ways out.
   group('the empty result\'s choices', () {
-    testWidgets('no hub yet opens the Hubs page', (tester) async {
+    testWidgets('no hub yet opens the WireDash setup guide', (tester) async {
       Uri? opened;
       final original = openSetupLink;
       addTearDown(() => openSetupLink = original);
@@ -529,7 +529,10 @@ void main() {
       await tester.tap(find.text("I don't have a hub yet"));
       await tester.pump();
       expect(opened, hubsPageUrl);
-      expect(opened.toString(), 'https://zigdash.app/hubs/');
+      expect(
+        opened.toString(),
+        'https://github.com/VadimSurpin/WireDash/blob/HEAD/docs/USER_GUIDE.md',
+      );
     });
 
     testWidgets('Home Assistant checks homeassistant.local', (tester) async {
@@ -1003,18 +1006,12 @@ void main() {
   testWidgets('nothing preselected: says so, creates an empty dashboard', (
     tester,
   ) async {
-    final sent = <(String, Map<String, String>)>[];
     await _pump(
       tester,
       fetch: const Z2mFetchResult(
         detected: true,
         devices: [_batterySensor, _mystery],
       ),
-      extra: [
-        analyticsProvider.overrideWithValue(
-          Analytics(_RecordingSink(sent), enabled: true),
-        ),
-      ],
     );
     await tester.tap(find.text('Find my setup'));
     for (var i = 0; i < 4; i++) {
@@ -1022,42 +1019,10 @@ void main() {
     }
     expect(find.textContaining('Nothing is ticked yet'), findsOneWidget);
     expect(find.text('Create an empty dashboard'), findsOneWidget);
-    expect(
-      sent.where((e) => e.$2['step'] == 'review').single.$2['selected'],
-      '0',
-    );
+
     await tester.tap(find.text('Create an empty dashboard'));
     await tester.pumpAndSettle();
     expect(find.text('dashboards of c1'), findsOneWidget);
-    expect(sent.where((e) => e.$2['step'] == 'review_left'), isEmpty);
-  });
-
-  testWidgets('leaving the review without a dashboard is counted', (
-    tester,
-  ) async {
-    final sent = <(String, Map<String, String>)>[];
-    final coordinator = await _pump(
-      tester,
-      extra: [
-        analyticsProvider.overrideWithValue(
-          Analytics(_RecordingSink(sent), enabled: true),
-        ),
-      ],
-    );
-    await tester.tap(find.text('Find my setup'));
-    for (var i = 0; i < 4; i++) {
-      await tester.pump();
-    }
-    expect(find.text('Create dashboard with 1'), findsOneWidget);
-    // Setup starts over while the list is up.
-    unawaited(coordinator.startScan());
-    await tester.pump();
-    final steps = [for (final e in sent) e.$2['step']];
-    final at = steps.indexOf('review');
-    expect(steps.sublist(at, at + 3), ['review', 'review_left', 'started']);
-    final left = sent.firstWhere((e) => e.$2['step'] == 'review_left').$2;
-    expect(left['devices'], '1-5');
-    expect(left['selected'], '1-5');
   });
 
   // First-run decision: no "Creating…" or "ready" screens; selecting
@@ -1193,7 +1158,9 @@ void main() {
       expect(coordinator.state, isA<SetupIdle>());
     });
 
-    testWidgets('which hub to get opens the Hubs page', (tester) async {
+    testWidgets('which hub to get opens the WireDash setup guide', (
+      tester,
+    ) async {
       Uri? opened;
       final original = openSetupLink;
       addTearDown(() => openSetupLink = original);
@@ -1202,7 +1169,7 @@ void main() {
         return true;
       };
       await _pump(tester);
-      await tester.tap(find.text('Which hub to get'));
+      await tester.tap(find.text('Setup guide'));
       await tester.pump();
       expect(opened, hubsPageUrl);
     });

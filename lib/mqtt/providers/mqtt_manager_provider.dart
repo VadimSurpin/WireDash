@@ -62,13 +62,19 @@ final mqttManagerProvider = FutureProvider.family<MqttManager, String>((
       keepAliveSeconds: conn.keepAliveSeconds,
       remoteHost: conn.remoteHost,
       transport: transportOf(conn.transport),
-      relay: relay,
+      relay: transportOf(conn.transport) == ConnectionTransport.wireGuard
+          ? null
+          : relay,
       wireGuardConfig: await ref
           .read(secureStorageProvider)
           .readWireGuard(connectionId),
     ),
     password: password,
-    homeProbe: relay == null ? null : probeHome,
+    homeProbe:
+        relay == null ||
+            transportOf(conn.transport) == ConnectionTransport.wireGuard
+        ? null
+        : probeHome,
   );
 
   final registry = ref.watch(mqttManagerRegistryProvider);

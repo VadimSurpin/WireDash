@@ -59,11 +59,8 @@ class DiagnosticsReport {
 }
 
 typedef HostLookup = Future<List<String>> Function(String host);
-typedef TcpProbe = Future<void> Function(
-  String host,
-  int port,
-  Duration timeout,
-);
+typedef TcpProbe =
+    Future<void> Function(String host, int port, Duration timeout);
 
 /// Names the machine at a host from its web pages ([identifyHost]).
 typedef HostIdentifier = Future<HubKind?> Function(String host);
@@ -491,33 +488,3 @@ class ConnectDiagnostics {
 /// A `.local` name, which Android often cannot look up (2.9.3).
 bool _isLocalName(String host) =>
     host.toLowerCase().replaceFirst(RegExp(r'\.$'), '').endsWith('.local');
-
-/// How a ladder run ends, for analytics: connected, or its first failed
-/// step (2.7.2), or the more precise reason its message gave (2.9.3,
-/// 2.9.5).
-ManualTestResult manualTestResult(DiagnosticsReport report) {
-  if (report.connected) return ManualTestResult.connected;
-  final failure = report.steps
-      .where((s) => s.status == StepStatus.fail)
-      .firstOrNull;
-  switch (failure?.detailKey) {
-    case 'diagResolveLocalName':
-      return ManualTestResult.localName;
-    case 'diagTcpHaNoBroker':
-      return ManualTestResult.haNoBroker;
-    case 'diagTcpSmlightClosed':
-      return ManualTestResult.smlightClosed;
-    case 'diagTcpZ2mNoBroker':
-      return ManualTestResult.z2mNoBroker;
-    case 'diagTcpZ2mBrokerElsewhere':
-      return ManualTestResult.z2mBrokerElsewhere;
-    case 'diagAuthRejectedHa':
-      return ManualTestResult.haLogin;
-  }
-  return switch (failure?.step) {
-    DiagnosticStep.resolve => ManualTestResult.resolve,
-    DiagnosticStep.tcp || null => ManualTestResult.tcp,
-    DiagnosticStep.connack => ManualTestResult.connack,
-    DiagnosticStep.auth || DiagnosticStep.devices => ManualTestResult.auth,
-  };
-}

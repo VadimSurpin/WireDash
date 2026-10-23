@@ -131,8 +131,9 @@ class DeviceTilePanel extends ConsumerWidget {
     );
 
     final ieee = panel.deviceIeee;
-    final graphed = ieee == null || _bigValue(state, context.l10n) == null
-        ? null : historyShownOnDeviceTile(profile).firstOrNull;
+    final graphed = ieee == null || profile.deviceClass != DeviceClass.climate
+        ? null
+        : historyShownOnDeviceTile(profile).firstOrNull;
     return DeviceSummaryCard(
       name: panel.name,
       state: state,
@@ -165,15 +166,17 @@ class DeviceTilePanel extends ConsumerWidget {
                   ),
             ],
       onOpen: openSheet,
-      onHistory: graphed == null ? null : () => showHistorySheet(
-        context,
-        connectionId: connectionId,
-        ieee: ieee!,
-        path: graphed.property,
-        title: '${panel.name} · ${humanizeProperty(graphed.property)}',
-        unit: graphed.unit,
-        topic: subscribeTopic,
-      ),
+      onHistory: graphed == null
+          ? null
+          : () => showHistorySheet(
+              context,
+              connectionId: connectionId,
+              ieee: ieee!,
+              path: graphed.property,
+              title: '${panel.name} · ${humanizeProperty(graphed.property)}',
+              unit: graphed.unit,
+              topic: subscribeTopic,
+            ),
       onToggle: toggle,
       notResponding:
           ref

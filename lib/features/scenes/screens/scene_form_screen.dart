@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/utils/material_icon.dart';
 import '../../devices/devices_providers.dart';
@@ -118,7 +117,9 @@ class _State extends ConsumerState<SceneFormScreen> {
     if (_statesRequested || devices.isEmpty) return;
     _statesRequested = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) requestDeviceStates(ref, widget.connectionId, _base, devices);
+      if (mounted) {
+        requestDeviceStates(ref, widget.connectionId, _base, devices);
+      }
     });
   }
 
@@ -152,10 +153,12 @@ class _State extends ConsumerState<SceneFormScreen> {
     final out = <SceneAction>[];
     for (final entry in _edits.entries) {
       if (entry.value.isEmpty) continue;
-      out.add(SceneAction(
-        setTopic: '$_base/${entry.key}/set',
-        payload: jsonEncode(entry.value),
-      ));
+      out.add(
+        SceneAction(
+          setTopic: '$_base/${entry.key}/set',
+          payload: jsonEncode(entry.value),
+        ),
+      );
     }
     return out;
   }
@@ -170,12 +173,14 @@ class _State extends ConsumerState<SceneFormScreen> {
     // New scenes must capture something; edits may keep existing actions.
     if (!_isEdit && _edits.isEmpty) {
       messenger.showSnackBar(
-          SnackBar(content: Text(l10n.sceneFormNoDevicesSelected)));
+        SnackBar(content: Text(l10n.sceneFormNoDevicesSelected)),
+      );
       return;
     }
     if (_edits.isNotEmpty && captured.isEmpty) {
       messenger.showSnackBar(
-          SnackBar(content: Text(l10n.sceneFormNothingCaptured)));
+        SnackBar(content: Text(l10n.sceneFormNothingCaptured)),
+      );
       return;
     }
 
@@ -202,7 +207,6 @@ class _State extends ConsumerState<SceneFormScreen> {
           colorSeed: _color.toARGB32(),
           actions: captured,
         );
-        ref.read(analyticsProvider).track(const FeatureUsed(Feature.sceneCreated));
       }
       if (!mounted) return;
       final done = widget.onDone;
@@ -293,8 +297,10 @@ class _State extends ConsumerState<SceneFormScreen> {
                   icon: Icon(i),
                   style: sel
                       ? IconButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer)
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer,
+                        )
                       : null,
                 );
               }).toList(),
@@ -304,8 +310,10 @@ class _State extends ConsumerState<SceneFormScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Text(l10n.sceneFormDevicesHeader,
-                      style: Theme.of(context).textTheme.titleSmall),
+                  child: Text(
+                    l10n.sceneFormDevicesHeader,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.refresh),
@@ -317,8 +325,8 @@ class _State extends ConsumerState<SceneFormScreen> {
             Text(
               l10n.sceneFormCaptureHint,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
             if (_isEdit && _existingActions > 0)
               Padding(
@@ -330,18 +338,22 @@ class _State extends ConsumerState<SceneFormScreen> {
               ),
             const SizedBox(height: 8),
             if (devicesAsync.isLoading && capturable.isEmpty)
-              const Center(child: Padding(
-                padding: EdgeInsets.all(24),
-                child: CircularProgressIndicator(),
-              ))
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: CircularProgressIndicator(),
+                ),
+              )
             else if (capturable.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text(l10n.sceneFormNoDevices),
               )
             else ...[
-              Text(l10n.sceneFormSelectedCount(_edits.length),
-                  style: Theme.of(context).textTheme.bodySmall),
+              Text(
+                l10n.sceneFormSelectedCount(_edits.length),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               ...capturable.map((d) {
                 final name = d.friendlyName;
                 final selected = _edits.containsKey(name);
@@ -361,7 +373,9 @@ class _State extends ConsumerState<SceneFormScreen> {
                     if (selected)
                       Padding(
                         padding: const EdgeInsetsDirectional.only(
-                            start: 16, bottom: 8),
+                          start: 16,
+                          bottom: 8,
+                        ),
                         child: _deviceControls(d),
                       ),
                   ],
@@ -385,8 +399,8 @@ class _State extends ConsumerState<SceneFormScreen> {
       return Text(
         edits.isEmpty ? l10n.sceneFormReadingState : jsonEncode(edits),
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
-            ),
+          color: Theme.of(context).colorScheme.outline,
+        ),
       );
     }
 
@@ -399,19 +413,20 @@ class _State extends ConsumerState<SceneFormScreen> {
             dense: true,
             title: Text(_controlLabel(c.property)),
             value: on,
-            onChanged: (v) => setState(
-                () => edits[c.property] = v ? c.onValue : c.offValue),
+            onChanged: (v) =>
+                setState(() => edits[c.property] = v ? c.onValue : c.offValue),
           );
         }
         final raw = edits[c.property];
-        final value =
-            (raw is num ? raw.toDouble() : c.min).clamp(c.min, c.max);
+        final value = (raw is num ? raw.toDouble() : c.min).clamp(c.min, c.max);
         return Row(
           children: [
             SizedBox(
               width: 88,
-              child: Text(_controlLabel(c.property),
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(
+                _controlLabel(c.property),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
             Expanded(
               child: Slider(
@@ -420,14 +435,15 @@ class _State extends ConsumerState<SceneFormScreen> {
                 divisions: (c.max - c.min).round(),
                 value: value,
                 label: '${value.round()}${c.unit ?? ''}',
-                onChanged: (v) =>
-                    setState(() => edits[c.property] = v.round()),
+                onChanged: (v) => setState(() => edits[c.property] = v.round()),
               ),
             ),
             SizedBox(
               width: 44,
-              child: Text('${value.round()}${c.unit ?? ''}',
-                  textAlign: TextAlign.end),
+              child: Text(
+                '${value.round()}${c.unit ?? ''}',
+                textAlign: TextAlign.end,
+              ),
             ),
           ],
         );

@@ -1,5 +1,5 @@
 name: Problem report
-description: Something in ZigDash is broken or confusing. The app's Settings › Report a problem opens this.
+description: Something in WireDash is broken or confusing. The app's Settings › Report a problem opens this.
 title: "Problem: "
 labels: ["bug"]
 body:
@@ -21,7 +21,7 @@ body:
   - type: input
     id: device
     attributes:
-      label: Zigbee device (if it's about one)
+      label: Device or control (if applicable)
       placeholder: e.g. SONOFF MINI-ZBRBS
   - type: input
     id: z2m
@@ -31,11 +31,11 @@ body:
   - type: input
     id: version
     attributes:
-      label: ZigDash version
+      label: WireDash version
       description: Filled in when you come from the app.
   - type: textarea
     id: details
     attributes:
       label: Support details
-      description: Filled in when you come from the app. No passwords, addresses or device names. Delete any line you'd rather not share.
+      description: "Filled in when you come from the app. Review before posting: issues are public. No passwords, addresses or device names are collected. Delete any line you would rather not share."
       render: text

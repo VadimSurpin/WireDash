@@ -1,56 +1,102 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+import 'package:zigdash/features/support/support_details.dart';
+import 'package:zigdash/features/support/support_facts.dart';
+import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:zigdash/core/review/review_launcher.dart';
 import 'package:zigdash/features/settings/screens/settings_screen.dart';
+import 'package:zigdash/features/support/project_links.dart';
 
 void main() {
-  test('Rate opens the real Play listing, also from a .dev test build', () {
+  for (final copy in [true, false]) {
+    testWidgets('Settings report is manual (copy only: $copy)', (tester) async {
+      final saved = openSupportLink;
+      addTearDown(() => openSupportLink = saved);
+      final opened = <Uri>[];
+      openSupportLink = (url) async {
+        opened.add(url);
+        return true;
+      };
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appVersionProvider.overrideWith((ref) async => '3.1.2 (72)'),
+            supportDetailsProvider.overrideWith(
+              (ref, query) async => SupportDetails(
+                appVersion: '3.1.2',
+                build: '72',
+                openedFrom: query.openedFrom,
+              ),
+            ),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: Consumer(
+                builder: (context, ref, _) => TextButton(
+                  onPressed: () => sendProblemReport(context, ref),
+                  child: const Text('Report'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(opened, isEmpty);
+      await tester.tap(find.text('Report'));
+      await tester.pumpAndSettle();
+      expect(opened, isEmpty);
+      expect(find.textContaining('Public draft'), findsOneWidget);
+      expect(find.text('By email'), findsNothing);
+      await tester.tap(find.text(copy ? 'Copy details' : 'On GitHub'));
+      await tester.pumpAndSettle();
+      if (copy) {
+        expect(opened, isEmpty);
+      } else {
+        expect(opened, hasLength(1));
+        expect(opened.single.path, '/VadimSurpin/WireDash/issues/new');
+        expect(opened.single.queryParameters['version'], '3.1.2 (72)');
+        expect(
+          opened.single.queryParameters['details'],
+          contains('Settings › Report a problem'),
+        );
+      }
+    });
+  }
+
+  test('releases and setup help belong to WireDash', () {
+    expect(releasesUrl.toString(), '$projectUrl/releases/latest');
     expect(
-      playStoreAppUrl.toString(),
-      'market://details?id=com.giladtamam.zigdash',
-    );
-    expect(
-      playStoreWebUrl.toString(),
-      'https://play.google.com/store/apps/details?id=com.giladtamam.zigdash',
+      setupGuideUrl.toString(),
+      '$projectUrl/blob/HEAD/docs/USER_GUIDE.md',
     );
   });
 
-  test('problem report opens the bug-report form with the version', () {
-    final url = problemReportGithubUrl('2.0.1 (30)');
-    expect(url.path, '/giladtamam/zigdash/issues/new');
-    expect(url.queryParameters['template'], 'bug_report.yml');
-    expect(url.queryParameters['version'], '2.0.1 (30)');
-  });
+  test(
+    'problem report opens an editable WireDash issue with version and details',
+    () {
+      const details = 'WireDash 3.1.2 (72)\nLast error: timed out';
+      final url = problemReportGithubUrl('3.1.2 (72)', details: details);
+      expect(url.scheme, 'https');
+      expect(url.host, 'github.com');
+      expect(url.path, '/VadimSurpin/WireDash/issues/new');
+      expect(url.queryParameters['template'], 'bug_report.yml');
+      expect(url.queryParameters['version'], '3.1.2 (72)');
+      expect(url.queryParameters['details'], details);
+    },
+  );
 
-  test('email goes to the developer with subject, prompt and version', () {
-    final url = feedbackMailUrl(
-      version: '2.0.1 (30)',
-      subject: 'WireDash problem report',
-      prompt: 'What happened, and what did you expect?',
-    );
-    expect(url.scheme, 'mailto');
-    expect(url.path, reportEmail);
-    expect(url.query, contains('subject=WireDash%20problem%20report'));
-    expect(
-      url.query,
-      isNot(contains('+')),
-      reason: 'mail apps show + literally',
-    );
-    final body = Uri.decodeComponent(url.query.split('&body=').last);
-    expect(body, startsWith('What happened, and what did you expect?'));
-    expect(body, endsWith('— WireDash 2.0.1 (30)'));
-  });
-
-  test('a problem report carries Support details instead of the version', () {
-    const details = 'WireDash 2.0.1 (31)\nLast error: timed out';
-    final gh = problemReportGithubUrl('2.0.1 (31)', details: details);
-    expect(gh.queryParameters['details'], details);
-    final mail = feedbackMailUrl(
-      version: '2.0.1 (31)',
-      subject: 'WireDash problem',
-      prompt: 'What happened, and what did you expect?',
-      details: details,
-    );
-    final body = Uri.decodeComponent(mail.query.split('&body=').last);
-    expect(body, endsWith('— Support details —\n$details'));
-    expect(body, isNot(contains('— WireDash 2.0.1')));
-  });
+  test(
+    'WireDash does not automatically request upstream Play reviews',
+    () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final launcher = container.read(reviewLauncherProvider);
+      expect(launcher, isA<DisabledReviewLauncher>());
+      expect(await launcher.isAvailable(), isFalse);
+    },
+  );
 }

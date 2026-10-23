@@ -144,10 +144,7 @@ void main() {
   ) async {
     await tester.pumpWidget(_app(online: null));
     await tester.pump();
-    expect(
-      find.textContaining("The recorder isn't reporting"),
-      findsOneWidget,
-    );
+    expect(find.textContaining("The recorder isn't reporting"), findsOneWidget);
     expect(find.textContaining('persistence true'), findsOneWidget);
   });
 
@@ -156,7 +153,6 @@ void main() {
     await tester.pump();
     expect(find.textContaining('WireDash has no server'), findsOneWidget);
     expect(find.textContaining("isn't reporting"), findsNothing);
-
   });
 
   testWidgets('no recorder on the hub: record on this device instead', (
@@ -171,7 +167,10 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.textContaining('ZigDash can record on a phone or tablet'), findsOneWidget);
+    expect(
+      find.textContaining('WireDash can record on a phone or tablet'),
+      findsOneWidget,
+    );
     await tester.ensureVisible(find.text('Record on this device'));
     await tester.tap(find.text('Record on this device'));
     await tester.pump();

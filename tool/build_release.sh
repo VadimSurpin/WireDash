@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build a signed release artifact for ZigDash.
+# Build a signed release artifact for WireDash.
 #
 # Requires android/key.properties + android/zigdash-release.jks (both gitignored;
 # see android/app/build.gradle.kts for how they're consumed). If key.properties
@@ -11,7 +11,7 @@
 # Usage:
 #   tool/build_release.sh apk     # -> build/app/outputs/flutter-apk/app-release.apk
 #   tool/build_release.sh bundle  # -> build/app/outputs/bundle/playRelease/app-play-release.aab (Play Store)
-#   tool/build_release.sh github  # -> build/github-release/zigdash-<version>-<abi>.apk
+#   tool/build_release.sh github  # -> build/github-release/wiredash-<version>-<abi>.apk
 #                                 #    per-ABI APKs for GitHub releases and IzzyOnDroid;
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -28,7 +28,7 @@ if [[ "$TARGET" == github ]]; then
   VERSION="$(sed -n 's/^version: \([^+]*\).*/\1/p' pubspec.yaml)"
   OUT=build/github-release; rm -rf "$OUT"; mkdir -p "$OUT"
   for abi in arm64-v8a armeabi-v7a x86_64; do
-    cp "build/app/outputs/flutter-apk/app-$abi-foss-release.apk" "$OUT/zigdash-$VERSION-$abi.apk"
+    cp "build/app/outputs/flutter-apk/app-$abi-foss-release.apk" "$OUT/wiredash-$VERSION-$abi.apk"
   done
   (cd "$OUT" && shasum -a 256 *.apk > SHA256SUMS)
   ls -la "$OUT"; exit 0

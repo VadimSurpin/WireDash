@@ -69,33 +69,37 @@ class SupportLog {
 
   Future<void> _save() async {
     try {
-      await write(_failure == null && _scan == null
-          ? null
-          : jsonEncode({
-              if (_failure != null) 'failure': _failure!.name,
-              if (_scan != null) 'scan': _scan!.toJson(),
-            }));
+      await write(
+        _failure == null && _scan == null
+            ? null
+            : jsonEncode({
+                if (_failure != null) 'failure': _failure!.name,
+                if (_scan != null) 'scan': _scan!.toJson(),
+              }),
+      );
     } catch (_) {}
   }
 }
 
 const supportLogFileName = 'support_last.json';
 
-Future<File> _file() async =>
-    File(p.join((await getApplicationDocumentsDirectory()).path,
-        supportLogFileName));
+Future<File> _file() async => File(
+  p.join((await getApplicationDocumentsDirectory()).path, supportLogFileName),
+);
 
-final supportLogProvider = Provider<SupportLog>((ref) => SupportLog(
-      read: () async {
-        final f = await _file();
-        return await f.exists() ? f.readAsString() : null;
-      },
-      write: (contents) async {
-        final f = await _file();
-        if (contents == null) {
-          if (await f.exists()) await f.delete();
-        } else {
-          await f.writeAsString(contents);
-        }
-      },
-    ));
+final supportLogProvider = Provider<SupportLog>(
+  (ref) => SupportLog(
+    read: () async {
+      final f = await _file();
+      return await f.exists() ? f.readAsString() : null;
+    },
+    write: (contents) async {
+      final f = await _file();
+      if (contents == null) {
+        if (await f.exists()) await f.delete();
+      } else {
+        await f.writeAsString(contents);
+      }
+    },
+  ),
+);

@@ -256,7 +256,9 @@ void main() {
             diagnostics: diagnostics,
             extraOverrides: {
               'storage': secureStorageProvider.overrideWithValue(storage),
-              'status': connectionStatusProvider.overrideWith((ref, _) => Stream.value(MqttStatus.disconnected)),
+              'status': connectionStatusProvider.overrideWith(
+                (ref, _) => Stream.value(MqttStatus.disconnected),
+              ),
             },
           ),
         );
@@ -443,7 +445,7 @@ void main() {
     await tester.tap(find.text('Retry'));
     await tester.pumpAndSettle();
     expect(find.text('Stuck? Ask a person'), findsOneWidget);
-    expect(find.text('Ask in Telegram'), findsOneWidget);
+    expect(find.text('WireDash on GitHub'), findsOneWidget);
     expect(find.text('Tips and email'), findsOneWidget);
   });
 

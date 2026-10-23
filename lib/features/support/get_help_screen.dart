@@ -2,7 +2,6 @@ import 'help_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/l10n_ext.dart';
 import '../onboarding/setup/setup_error_guidance.dart';
@@ -10,35 +9,9 @@ import 'community.dart';
 import 'help_tips.dart';
 import 'support_details.dart';
 import 'support_facts.dart';
+import 'project_links.dart';
 
-/// Where Support requests go: the developer's existing address, kept on
-/// 2026-10-10 instead of a dedicated one (docs/design/support.md §1).
-const supportEmail = 'giladtamam1@gmail.com';
-
-/// A new email to [supportEmail]: [subject], a [prompt] to answer, and the
-/// Support details [details] at the bottom, where the user can read or
-/// delete any line before sending.
-Uri supportMailUrl({
-  required String subject,
-  required String prompt,
-  required String details,
-}) => Uri(
-  scheme: 'mailto',
-  path: supportEmail,
-  // Uri's queryParameters encode spaces as '+', which mail apps show.
-  query:
-      'subject=${Uri.encodeComponent(subject)}'
-      '&body=${Uri.encodeComponent('$prompt\n\n\n— Support details —\n$details')}',
-);
-
-/// Opens a mailto URL; replaced in tests.
-@visibleForTesting
-Future<bool> Function(Uri url) openMailApp = (url) =>
-    launchUrl(url, mode: LaunchMode.externalApplication);
-
-/// The one screen every help link opens (CONTEXT.md: Get help): the tips for
-/// the place it came from, the support promise, what Support details
-/// contains, then Contact support or Copy details.
+/// Local troubleshooting and support details. External actions require a tap.
 class GetHelpScreen extends ConsumerStatefulWidget {
   const GetHelpScreen({
     super.key,
@@ -68,29 +41,18 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
     connectionId: widget.connectionId,
   );
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<void> _contact(String details) async {
+  Future<void> _contact(String version, String details) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
 
     var opened = false;
     try {
-      opened = await openMailApp(
-        supportMailUrl(
-          subject: l10n.getHelpEmailSubject,
-          prompt: l10n.getHelpEmailPrompt,
-          details: details,
-        ),
+      opened = await openSupportLink(
+        problemReportGithubUrl(version, details: details),
       );
     } catch (_) {}
     if (!opened) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(l10n.getHelpNoEmailApp(supportEmail))),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(l10n.getHelpCannotOpen)));
     }
   }
 
@@ -188,8 +150,13 @@ class _GetHelpScreenState extends ConsumerState<GetHelpScreen> {
               ),
               const SizedBox(height: 16),
               FilledButton.icon(
-                onPressed: text == null ? null : () => _contact(text),
-                icon: const Icon(Icons.mail_outline),
+                onPressed: text == null
+                    ? null
+                    : () => _contact(
+                        '${details.valueOrNull?.appVersion ?? '?'} (${details.valueOrNull?.build ?? '?'})',
+                        text,
+                      ),
+                icon: const Icon(Icons.bug_report_outlined),
                 label: Text(l10n.getHelpContact),
               ),
               const SizedBox(height: 4),

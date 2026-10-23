@@ -9,9 +9,9 @@ import '../features/discovery/providers/discovery_provider.dart';
 import '../features/scenes/all_shutters.dart';
 import '../features/scenes/models/scene.dart';
 import '../features/scenes/scenes_providers.dart';
-import '../features/settings/providers/settings_controller.dart' show sharedPreferencesProvider;
+import '../features/settings/providers/settings_controller.dart'
+    show sharedPreferencesProvider;
 import '../l10n/app_localizations.dart';
-import '../core/analytics/analytics.dart';
 import 'automation.dart';
 import 'automation_text.dart';
 import 'automations_repo.dart';
@@ -20,20 +20,26 @@ import 'town_picker.dart';
 /// Creates or edits one Automation: When / Only if / Then
 /// (prototype accepted 2026-10-22, zigdash-3.0.md §1).
 class AutomationEditorScreen extends ConsumerStatefulWidget {
-  const AutomationEditorScreen({super.key, required this.connectionId, this.existing});
+  const AutomationEditorScreen({
+    super.key,
+    required this.connectionId,
+    this.existing,
+  });
 
   final String connectionId;
   final Automation? existing;
 
   @override
-  ConsumerState<AutomationEditorScreen> createState() => _AutomationEditorScreenState();
+  ConsumerState<AutomationEditorScreen> createState() =>
+      _AutomationEditorScreenState();
 }
 
 enum _TriggerKind { device, time }
 
 enum _TimeKind { clock, sunrise, sunset }
 
-class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen> {
+class _AutomationEditorScreenState
+    extends ConsumerState<AutomationEditorScreen> {
   late final TextEditingController _name;
   late bool _enabled;
 
@@ -81,7 +87,11 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
         }
       case TimeTrigger t:
         _triggerKind = _TriggerKind.time;
-        _timeKind = switch (t.sun) { Sun.sunrise => _TimeKind.sunrise, Sun.sunset => _TimeKind.sunset, null => _TimeKind.clock };
+        _timeKind = switch (t.sun) {
+          Sun.sunrise => _TimeKind.sunrise,
+          Sun.sunset => _TimeKind.sunset,
+          null => _TimeKind.clock,
+        };
         _at = parseHhmm(t.at) ?? _at;
         _offset = t.offset;
         _days = t.days.toSet();
@@ -105,14 +115,24 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
     super.dispose();
   }
 
-  String get _base => ref.read(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
+  String get _base =>
+      ref.read(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
 
-  List<Z2mDevice> _devices() => [
+  List<Z2mDevice> _devices() =>
+      [
         ...?ref
-            .watch(bridgeDevicesStreamProvider((connectionId: widget.connectionId, base: _base)))
+            .watch(
+              bridgeDevicesStreamProvider((
+                connectionId: widget.connectionId,
+                base: _base,
+              )),
+            )
             .valueOrNull
             ?.where((d) => d.type != 'Coordinator' && d.ieeeAddress != null),
-      ]..sort((a, b) => a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()));
+      ]..sort(
+        (a, b) =>
+            a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
+      );
 
   Z2mDevice? _byIeee(List<Z2mDevice> devices, String? ieee) =>
       devices.where((d) => d.ieeeAddress == ieee).firstOrNull;
@@ -123,26 +143,52 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
     final AutomationTrigger trigger;
     if (_triggerKind == _TriggerKind.device) {
       final dev = _byIeee(devices, _tIeee);
-      final opt = dev == null ? null : triggerOptionsFor(dev).where((o) => o.property == _tProperty).firstOrNull;
-      if (dev == null || opt == null) return setState(() => _error = l10n.autoErrPickTrigger);
+      final opt = dev == null
+          ? null
+          : triggerOptionsFor(
+              dev,
+            ).where((o) => o.property == _tProperty).firstOrNull;
+      if (dev == null || opt == null) {
+        return setState(() => _error = l10n.autoErrPickTrigger);
+      }
       if (opt.numeric) {
         final v = double.tryParse(_tValue.text.replaceAll(',', '.'));
         if (v == null) return setState(() => _error = l10n.autoErrValue);
         trigger = DeviceTrigger(
-            ieee: dev.ieeeAddress!, property: opt.property, above: _tAbove ? v : null, below: _tAbove ? null : v,
-            label: dev.displayName);
+          ieee: dev.ieeeAddress!,
+          property: opt.property,
+          above: _tAbove ? v : null,
+          below: _tAbove ? null : v,
+          label: dev.displayName,
+        );
       } else {
-        if (_tEquals == null) return setState(() => _error = l10n.autoErrPickTrigger);
-        trigger = DeviceTrigger(ieee: dev.ieeeAddress!, property: opt.property, equals: _tEquals, label: dev.displayName);
+        if (_tEquals == null) {
+          return setState(() => _error = l10n.autoErrPickTrigger);
+        }
+        trigger = DeviceTrigger(
+          ieee: dev.ieeeAddress!,
+          property: opt.property,
+          equals: _tEquals,
+          label: dev.displayName,
+        );
       }
     } else {
       if (_days.isEmpty) return setState(() => _error = l10n.autoErrDays);
-      final sun = switch (_timeKind) { _TimeKind.sunrise => Sun.sunrise, _TimeKind.sunset => Sun.sunset, _ => null };
-      if (sun != null && ref.read(automationsRepoProvider).town(widget.connectionId) == null) {
+      final sun = switch (_timeKind) {
+        _TimeKind.sunrise => Sun.sunrise,
+        _TimeKind.sunset => Sun.sunset,
+        _ => null,
+      };
+      if (sun != null &&
+          ref.read(automationsRepoProvider).town(widget.connectionId) == null) {
         return setState(() => _error = l10n.autoErrTown);
       }
       trigger = TimeTrigger(
-          at: sun == null ? hhmm(_at) : null, sun: sun, offset: sun == null ? 0 : _offset, days: _days.toList()..sort());
+        at: sun == null ? hhmm(_at) : null,
+        sun: sun,
+        offset: sun == null ? 0 : _offset,
+        days: _days.toList()..sort(),
+      );
     }
 
     final AutomationAction action;
@@ -151,7 +197,9 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
       if (dev == null) return setState(() => _error = l10n.autoErrPickAction);
       action = AutomationAction(
         kind: ActionKind.device,
-        commands: [EngineCommand(ieee: dev.ieeeAddress!, payload: {'state': _aState})],
+        commands: [
+          EngineCommand(ieee: dev.ieeeAddress!, payload: {'state': _aState}),
+        ],
         offAfter: _aState == 'ON' ? _offAfter : 0,
         label: dev.displayName,
       );
@@ -160,13 +208,27 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
       if (scene == null) return setState(() => _error = l10n.autoErrPickAction);
       final shutter = allShuttersCommand(scene.id);
       final List<SceneAction> actions = shutter != null
-          ? shutterActions(shutter, _base, devices,
-              excludedShutters(ref.read(sharedPreferencesProvider), widget.connectionId))
+          ? shutterActions(
+              shutter,
+              _base,
+              devices,
+              excludedShutters(
+                ref.read(sharedPreferencesProvider),
+                widget.connectionId,
+              ),
+            )
           : SceneAction.decodeList(scene.actions);
       final commands = sceneCommands(actions, devices, _base);
-      if (commands.isEmpty) return setState(() => _error = l10n.autoErrEmptyScene);
+      if (commands.isEmpty) {
+        return setState(() => _error = l10n.autoErrEmptyScene);
+      }
       action = AutomationAction(
-          kind: ActionKind.scene, commands: commands, offAfter: _offAfter, sceneId: scene.id, label: scene.name);
+        kind: ActionKind.scene,
+        commands: commands,
+        offAfter: _offAfter,
+        sceneId: scene.id,
+        label: scene.name,
+      );
     }
 
     var rule = Automation(
@@ -182,23 +244,11 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
       _saving = true;
       _error = null;
     });
-    final ok = await ref.read(automationsRepoProvider).save(widget.connectionId, rule);
+    final ok = await ref
+        .read(automationsRepoProvider)
+        .save(widget.connectionId, rule);
     if (!mounted) return;
     if (ok) {
-      final count = ref.read(automationsProvider(widget.connectionId)).valueOrNull?.length ?? 0;
-      ref.read(analyticsProvider).track(AutomationSaved(
-        trigger: switch (rule.trigger) {
-          DeviceTrigger t when t.above != null || t.below != null => 'device_reading',
-          DeviceTrigger t when t.property == 'action' => 'device_action',
-          DeviceTrigger() => 'device_state',
-          TimeTrigger t => t.sun == null ? 'clock' : 'sun',
-        },
-        conditions: rule.conditions.length,
-        action: rule.action.kind.name,
-        offAfter: rule.action.offAfter > 0,
-        isNew: widget.existing == null,
-        homeCount: widget.existing == null ? count + 1 : count,
-      ));
       Navigator.of(context).pop();
     } else {
       setState(() {
@@ -217,14 +267,21 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
       builder: (ctx) => AlertDialog(
         content: Text(l10n.autoDeleteConfirm),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false),
-              child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
-          FilledButton(onPressed: () => Navigator.of(ctx).pop(true), child: Text(l10n.autoDelete)),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.autoDelete),
+          ),
         ],
       ),
     );
     if (yes != true || !mounted) return;
-    final ok = await ref.read(automationsRepoProvider).delete(widget.connectionId, id);
+    final ok = await ref
+        .read(automationsRepoProvider)
+        .delete(widget.connectionId, id);
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).pop();
@@ -237,21 +294,32 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final devices = _devices();
-    final scenes = ref.watch(scenesForConnectionProvider(widget.connectionId)).valueOrNull ?? const <Scene>[];
+    final scenes =
+        ref
+            .watch(scenesForConnectionProvider(widget.connectionId))
+            .valueOrNull ??
+        const <Scene>[];
     final theme = Theme.of(context);
     Widget section(String text) => Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 8),
-          child: Text(text.toUpperCase(), style: theme.textTheme.labelLarge),
-        );
+      padding: const EdgeInsets.only(top: 20, bottom: 8),
+      child: Text(text.toUpperCase(), style: theme.textTheme.labelLarge),
+    );
     return Scaffold(
-      appBar: AppBar(title: Text(widget.existing == null ? l10n.autoNewTitle : l10n.autoEditTitle)),
+      appBar: AppBar(
+        title: Text(
+          widget.existing == null ? l10n.autoNewTitle : l10n.autoEditTitle,
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
         children: [
           TextField(
             key: const Key('auto-name'),
             controller: _name,
-            decoration: InputDecoration(labelText: l10n.autoName, hintText: l10n.autoNameHint),
+            decoration: InputDecoration(
+              labelText: l10n.autoName,
+              hintText: l10n.autoNameHint,
+            ),
           ),
           section(l10n.autoWhen),
           ..._triggerFields(l10n, devices),
@@ -271,13 +339,19 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
               alignment: AlignmentDirectional.centerStart,
               child: TextButton(
                 onPressed: _saving ? null : _delete,
-                child: Text(l10n.autoDelete, style: TextStyle(color: theme.colorScheme.error)),
+                child: Text(
+                  l10n.autoDelete,
+                  style: TextStyle(color: theme.colorScheme.error),
+                ),
               ),
             ),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(_error!, style: TextStyle(color: theme.colorScheme.error)),
+              child: Text(
+                _error!,
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
             ),
         ],
       ),
@@ -298,16 +372,27 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
     final ml = MaterialLocalizations.of(context);
     final kind = SegmentedButton<_TriggerKind>(
       segments: [
-        ButtonSegment(value: _TriggerKind.device, label: Text(l10n.autoDeviceChanges)),
-        ButtonSegment(value: _TriggerKind.time, label: Text(l10n.autoTimeComes)),
+        ButtonSegment(
+          value: _TriggerKind.device,
+          label: Text(l10n.autoDeviceChanges),
+        ),
+        ButtonSegment(
+          value: _TriggerKind.time,
+          label: Text(l10n.autoTimeComes),
+        ),
       ],
       selected: {_triggerKind},
       onSelectionChanged: (s) => setState(() => _triggerKind = s.first),
     );
     if (_triggerKind == _TriggerKind.device) {
-      final withOptions = [for (final d in devices) if (triggerOptionsFor(d).isNotEmpty) d];
+      final withOptions = [
+        for (final d in devices)
+          if (triggerOptionsFor(d).isNotEmpty) d,
+      ];
       final dev = _byIeee(withOptions, _tIeee);
-      final options = dev == null ? const <TriggerOption>[] : triggerOptionsFor(dev);
+      final options = dev == null
+          ? const <TriggerOption>[]
+          : triggerOptionsFor(dev);
       final opt = options.where((o) => o.property == _tProperty).firstOrNull;
       return [
         kind,
@@ -317,60 +402,81 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
           initialValue: dev?.ieeeAddress,
           isExpanded: true,
           decoration: InputDecoration(labelText: l10n.autoDevice),
-          items: [for (final d in withOptions) DropdownMenuItem(value: d.ieeeAddress, child: Text(d.displayName))],
+          items: [
+            for (final d in withOptions)
+              DropdownMenuItem(
+                value: d.ieeeAddress,
+                child: Text(d.displayName),
+              ),
+          ],
           onChanged: (v) => setState(() {
             _tIeee = v;
-            final first = _byIeee(withOptions, v) == null ? null : triggerOptionsFor(_byIeee(withOptions, v)!).firstOrNull;
+            final first = _byIeee(withOptions, v) == null
+                ? null
+                : triggerOptionsFor(_byIeee(withOptions, v)!).firstOrNull;
             _tProperty = first?.property;
             _tEquals = first?.choices.firstOrNull;
           }),
         ),
         if (options.length > 1) ...[
           const SizedBox(height: 12),
-          Wrap(spacing: 8, runSpacing: 8, children: [
-            for (final o in options)
-              ChoiceChip(
-                label: Text(o.property.replaceAll('_', ' ')),
-                selected: o.property == _tProperty,
-                onSelected: (_) => setState(() {
-                  _tProperty = o.property;
-                  _tEquals = o.choices.firstOrNull;
-                }),
-              ),
-          ]),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final o in options)
+                ChoiceChip(
+                  label: Text(o.property.replaceAll('_', ' ')),
+                  selected: o.property == _tProperty,
+                  onSelected: (_) => setState(() {
+                    _tProperty = o.property;
+                    _tEquals = o.choices.firstOrNull;
+                  }),
+                ),
+            ],
+          ),
         ],
         if (opt != null && !opt.numeric) ...[
           const SizedBox(height: 12),
-          Wrap(spacing: 8, runSpacing: 8, children: [
-            for (final c in opt.choices)
-              ChoiceChip(
-                label: Text(valueText(l10n, opt.property, c)),
-                selected: _tEquals == c,
-                onSelected: (_) => setState(() => _tEquals = c),
-              ),
-          ]),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final c in opt.choices)
+                ChoiceChip(
+                  label: Text(valueText(l10n, opt.property, c)),
+                  selected: _tEquals == c,
+                  onSelected: (_) => setState(() => _tEquals = c),
+                ),
+            ],
+          ),
         ],
         if (opt != null && opt.numeric) ...[
           const SizedBox(height: 12),
-          Row(children: [
-            SegmentedButton<bool>(
-              segments: [
-                ButtonSegment(value: true, label: Text(l10n.autoAbove)),
-                ButtonSegment(value: false, label: Text(l10n.autoBelow)),
-              ],
-              selected: {_tAbove},
-              onSelectionChanged: (s) => setState(() => _tAbove = s.first),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextField(
-                key: const Key('auto-trigger-value'),
-                controller: _tValue,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                decoration: InputDecoration(suffixText: opt.unit),
+          Row(
+            children: [
+              SegmentedButton<bool>(
+                segments: [
+                  ButtonSegment(value: true, label: Text(l10n.autoAbove)),
+                  ButtonSegment(value: false, label: Text(l10n.autoBelow)),
+                ],
+                selected: {_tAbove},
+                onSelectionChanged: (s) => setState(() => _tAbove = s.first),
               ),
-            ),
-          ]),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  key: const Key('auto-trigger-value'),
+                  controller: _tValue,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  decoration: InputDecoration(suffixText: opt.unit),
+                ),
+              ),
+            ],
+          ),
         ],
       ];
     }
@@ -378,44 +484,62 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
     return [
       kind,
       const SizedBox(height: 12),
-      Wrap(spacing: 8, children: [
-        for (final k in _TimeKind.values)
-          ChoiceChip(
-            label: Text(switch (k) {
-              _TimeKind.clock => l10n.autoClockTime,
-              _TimeKind.sunrise => _capitalized(l10n.autoSunrise),
-              _TimeKind.sunset => _capitalized(l10n.autoSunset),
-            }),
-            selected: _timeKind == k,
-            onSelected: (_) => setState(() => _timeKind = k),
-          ),
-      ]),
+      Wrap(
+        spacing: 8,
+        children: [
+          for (final k in _TimeKind.values)
+            ChoiceChip(
+              label: Text(switch (k) {
+                _TimeKind.clock => l10n.autoClockTime,
+                _TimeKind.sunrise => _capitalized(l10n.autoSunrise),
+                _TimeKind.sunset => _capitalized(l10n.autoSunset),
+              }),
+              selected: _timeKind == k,
+              onSelected: (_) => setState(() => _timeKind = k),
+            ),
+        ],
+      ),
       const SizedBox(height: 12),
       if (_timeKind == _TimeKind.clock)
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(l10n.autoAt),
-          trailing: Text(hhmm(_at), style: Theme.of(context).textTheme.titleLarge),
+          trailing: Text(
+            hhmm(_at),
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           onTap: () async {
             final t = await showTimePicker(context: context, initialTime: _at);
             if (t != null) setState(() => _at = t);
           },
         )
       else ...[
-        Row(children: [
-          Expanded(child: Text(l10n.autoShift)),
-          IconButton(onPressed: () => setState(() => _offset -= 5), icon: const Icon(Icons.remove)),
-          Text(_offset == 0 ? '0' : (_offset > 0 ? '+$_offset' : '$_offset')),
-          IconButton(onPressed: () => setState(() => _offset += 5), icon: const Icon(Icons.add)),
-        ]),
+        Row(
+          children: [
+            Expanded(child: Text(l10n.autoShift)),
+            IconButton(
+              onPressed: () => setState(() => _offset -= 5),
+              icon: const Icon(Icons.remove),
+            ),
+            Text(_offset == 0 ? '0' : (_offset > 0 ? '+$_offset' : '$_offset')),
+            IconButton(
+              onPressed: () => setState(() => _offset += 5),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
         ListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(town == null ? l10n.autoTownNone : l10n.autoTownIs(town.name)),
+          title: Text(
+            town == null ? l10n.autoTownNone : l10n.autoTownIs(town.name),
+          ),
           trailing: TextButton(
             onPressed: () async {
               final picked = await pickTown(context);
               if (picked != null) {
-                await ref.read(automationsRepoProvider).setTown(widget.connectionId, picked);
+                await ref
+                    .read(automationsRepoProvider)
+                    .setTown(widget.connectionId, picked);
                 setState(() {});
               }
             },
@@ -426,86 +550,142 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
       const SizedBox(height: 8),
       Text(l10n.autoDays),
       const SizedBox(height: 8),
-      Wrap(spacing: 6, children: [
-        for (var d = 1; d <= 7; d++)
-          FilterChip(
-            label: Text(dayShort(ml, d)),
-            selected: _days.contains(d),
-            onSelected: (on) => setState(() => on ? _days.add(d) : _days.remove(d)),
-          ),
-      ]),
+      Wrap(
+        spacing: 6,
+        children: [
+          for (var d = 1; d <= 7; d++)
+            FilterChip(
+              label: Text(dayShort(ml, d)),
+              selected: _days.contains(d),
+              onSelected: (on) =>
+                  setState(() => on ? _days.add(d) : _days.remove(d)),
+            ),
+        ],
+      ),
     ];
   }
 
-  List<Widget> _conditionFields(AppLocalizations l10n, List<Z2mDevice> devices) {
+  List<Widget> _conditionFields(
+    AppLocalizations l10n,
+    List<Z2mDevice> devices,
+  ) {
     return [
       if (_conditions.isEmpty) Text(l10n.autoNoConditions),
       for (final (i, c) in _conditions.indexed)
         InputChip(
-          label: Text(conditionText(l10n, c, deviceName: c is DeviceCondition ? _byIeee(devices, c.ieee)?.displayName : null)),
+          label: Text(
+            conditionText(
+              l10n,
+              c,
+              deviceName: c is DeviceCondition
+                  ? _byIeee(devices, c.ieee)?.displayName
+                  : null,
+            ),
+          ),
           onDeleted: () => setState(() => _conditions.removeAt(i)),
         ),
       const SizedBox(height: 8),
-      Wrap(spacing: 8, children: [
-        ActionChip(
-          avatar: const Icon(Icons.add),
-          label: Text(l10n.autoAddHours),
-          onPressed: () async {
-            final from = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 18, minute: 0), helpText: l10n.autoFrom);
-            if (from == null || !mounted) return;
-            final to = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 7, minute: 0), helpText: l10n.autoTo);
-            if (to == null) return;
-            setState(() => _conditions.add(HoursCondition(from: hhmm(from), to: hhmm(to))));
-          },
-        ),
-        ActionChip(
-          avatar: const Icon(Icons.add),
-          label: Text(l10n.autoAddDeviceCondition),
-          onPressed: () async {
-            final c = await _pickDeviceCondition(l10n, devices);
-            if (c != null) setState(() => _conditions.add(c));
-          },
-        ),
-      ]),
+      Wrap(
+        spacing: 8,
+        children: [
+          ActionChip(
+            avatar: const Icon(Icons.add),
+            label: Text(l10n.autoAddHours),
+            onPressed: () async {
+              final from = await showTimePicker(
+                context: context,
+                initialTime: const TimeOfDay(hour: 18, minute: 0),
+                helpText: l10n.autoFrom,
+              );
+              if (from == null || !mounted) return;
+              final to = await showTimePicker(
+                context: context,
+                initialTime: const TimeOfDay(hour: 7, minute: 0),
+                helpText: l10n.autoTo,
+              );
+              if (to == null) return;
+              setState(
+                () => _conditions.add(
+                  HoursCondition(from: hhmm(from), to: hhmm(to)),
+                ),
+              );
+            },
+          ),
+          ActionChip(
+            avatar: const Icon(Icons.add),
+            label: Text(l10n.autoAddDeviceCondition),
+            onPressed: () async {
+              final c = await _pickDeviceCondition(l10n, devices);
+              if (c != null) setState(() => _conditions.add(c));
+            },
+          ),
+        ],
+      ),
     ];
   }
 
-  Future<DeviceCondition?> _pickDeviceCondition(AppLocalizations l10n, List<Z2mDevice> devices) =>
-      showModalBottomSheet<DeviceCondition>(
-        context: context,
-        isScrollControlled: true,
-        showDragHandle: true,
-        builder: (ctx) => SafeArea(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: Text(l10n.autoAddDeviceCondition, style: Theme.of(ctx).textTheme.titleMedium),
-              ),
-              for (final d in devices)
-                for (final o in triggerOptionsFor(d).where((o) => !o.numeric && o.property != 'action'))
-                  for (final v in o.choices)
-                    ListTile(
-                      title: Text(d.displayName),
-                      subtitle: Text(valueText(l10n, o.property, v)),
-                      onTap: () => Navigator.of(ctx).pop(
-                          DeviceCondition(ieee: d.ieeeAddress!, property: o.property, equals: v, label: d.displayName)),
-                    ),
-            ],
+  Future<DeviceCondition?> _pickDeviceCondition(
+    AppLocalizations l10n,
+    List<Z2mDevice> devices,
+  ) => showModalBottomSheet<DeviceCondition>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (ctx) => SafeArea(
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              l10n.autoAddDeviceCondition,
+              style: Theme.of(ctx).textTheme.titleMedium,
+            ),
           ),
-        ),
-      );
+          for (final d in devices)
+            for (final o in triggerOptionsFor(
+              d,
+            ).where((o) => !o.numeric && o.property != 'action'))
+              for (final v in o.choices)
+                ListTile(
+                  title: Text(d.displayName),
+                  subtitle: Text(valueText(l10n, o.property, v)),
+                  onTap: () => Navigator.of(ctx).pop(
+                    DeviceCondition(
+                      ieee: d.ieeeAddress!,
+                      property: o.property,
+                      equals: v,
+                      label: d.displayName,
+                    ),
+                  ),
+                ),
+        ],
+      ),
+    ),
+  );
 
-  List<Widget> _actionFields(AppLocalizations l10n, List<Z2mDevice> devices, List<Scene> scenes) {
-    final targets = [for (final d in devices) if (actionStatesFor(d).isNotEmpty) d];
+  List<Widget> _actionFields(
+    AppLocalizations l10n,
+    List<Z2mDevice> devices,
+    List<Scene> scenes,
+  ) {
+    final targets = [
+      for (final d in devices)
+        if (actionStatesFor(d).isNotEmpty) d,
+    ];
     final target = _byIeee(targets, _aIeee);
     final canTurnOff = _actionKind == ActionKind.scene || _aState == 'ON';
     return [
       SegmentedButton<ActionKind>(
         segments: [
-          ButtonSegment(value: ActionKind.scene, label: Text(l10n.autoRunASceneOption)),
-          ButtonSegment(value: ActionKind.device, label: Text(l10n.autoSetADevice)),
+          ButtonSegment(
+            value: ActionKind.scene,
+            label: Text(l10n.autoRunASceneOption),
+          ),
+          ButtonSegment(
+            value: ActionKind.device,
+            label: Text(l10n.autoSetADevice),
+          ),
         ],
         selected: {_actionKind},
         onSelectionChanged: (s) => setState(() => _actionKind = s.first),
@@ -517,56 +697,92 @@ class _AutomationEditorScreenState extends ConsumerState<AutomationEditorScreen>
           initialValue: scenes.any((s) => s.id == _sceneId) ? _sceneId : null,
           isExpanded: true,
           decoration: InputDecoration(labelText: l10n.autoScene),
-          items: [for (final s in scenes) DropdownMenuItem(value: s.id, child: Text(s.name))],
+          items: [
+            for (final s in scenes)
+              DropdownMenuItem(value: s.id, child: Text(s.name)),
+          ],
           onChanged: (v) => setState(() => _sceneId = v),
         )
       else ...[
         if (targets.isEmpty)
-          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(l10n.autoNoTargets)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(l10n.autoNoTargets),
+          ),
         DropdownButtonFormField<String>(
           key: const Key('auto-action-device'),
           initialValue: target?.ieeeAddress,
           isExpanded: true,
           decoration: InputDecoration(labelText: l10n.autoDevice),
-          items: [for (final d in targets) DropdownMenuItem(value: d.ieeeAddress, child: Text(d.displayName))],
+          items: [
+            for (final d in targets)
+              DropdownMenuItem(
+                value: d.ieeeAddress,
+                child: Text(d.displayName),
+              ),
+          ],
           onChanged: (v) => setState(() {
             _aIeee = v;
-            final states = _byIeee(targets, v) == null ? const <String>[] : actionStatesFor(_byIeee(targets, v)!);
+            final states = _byIeee(targets, v) == null
+                ? const <String>[]
+                : actionStatesFor(_byIeee(targets, v)!);
             _aState = states.firstOrNull ?? 'ON';
           }),
         ),
         if (target != null) ...[
           const SizedBox(height: 12),
-          Wrap(spacing: 8, children: [
-            for (final s in actionStatesFor(target))
-              ChoiceChip(
-                label: Text(_capitalized(valueText(l10n, 'state', s))),
-                selected: _aState == s,
-                onSelected: (_) => setState(() => _aState = s),
-              ),
-          ]),
+          Wrap(
+            spacing: 8,
+            children: [
+              for (final s in actionStatesFor(target))
+                ChoiceChip(
+                  label: Text(_capitalized(valueText(l10n, 'state', s))),
+                  selected: _aState == s,
+                  onSelected: (_) => setState(() => _aState = s),
+                ),
+            ],
+          ),
         ],
       ],
       if (canTurnOff) ...[
         const SizedBox(height: 12),
-        Row(children: [
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(l10n.autoTurnOffAgain),
-              Text(_offAfter == 0 ? l10n.autoStaysAsSet : l10n.autoOffAfterMinutes(_offAfter),
-                  style: Theme.of(context).textTheme.bodySmall),
-            ]),
-          ),
-          IconButton(
-              onPressed: _offAfter == 0 ? null : () => setState(() => _offAfter = (_offAfter - 5).clamp(0, 1440)),
-              icon: const Icon(Icons.remove)),
-          Text('$_offAfter'),
-          IconButton(onPressed: () => setState(() => _offAfter = (_offAfter + 5).clamp(0, 1440)), icon: const Icon(Icons.add)),
-        ]),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.autoTurnOffAgain),
+                  Text(
+                    _offAfter == 0
+                        ? l10n.autoStaysAsSet
+                        : l10n.autoOffAfterMinutes(_offAfter),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              onPressed: _offAfter == 0
+                  ? null
+                  : () => setState(
+                      () => _offAfter = (_offAfter - 5).clamp(0, 1440),
+                    ),
+              icon: const Icon(Icons.remove),
+            ),
+            Text('$_offAfter'),
+            IconButton(
+              onPressed: () =>
+                  setState(() => _offAfter = (_offAfter + 5).clamp(0, 1440)),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
       ],
     ];
   }
 }
 
 /// The sentence word ("sunrise") as a chip label ("Sunrise").
-String _capitalized(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+String _capitalized(String s) =>
+    s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);

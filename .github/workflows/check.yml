@@ -46,7 +46,7 @@ jobs:
         run: flutter build apk --debug --flavor foss --target-platform android-arm64
       - uses: actions/upload-artifact@v4
         with:
-          name: zigdash-wireguard-debug-arm64
+          name: wiredash-debug-arm64
           path: build/app/outputs/flutter-apk/app-foss-debug.apk
           if-no-files-found: error
 
@@ -95,3 +95,45 @@ jobs:
           name: golden-failures
           path: test/**/failures/
           if-no-files-found: ignore
+
+  release-apks:
+    # Release builds run only after all functional, visual and Go checks pass.
+    if: github.ref == 'refs/heads/feat/upstream-3.1.2-release'
+    needs: [wireguard, analyze-and-test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: native/wireguard/go.mod
+          cache-dependency-path: native/wireguard/go.sum
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - run: sdkmanager 'platforms;android-36' 'ndk;27.0.12077973'
+      - name: Read pinned Flutter version
+        id: flutter_release
+        run: echo "version=$(sed -n 's/.*"flutter"[^"]*"\([^"]*\)".*/\1/p' .fvmrc)" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.flutter_release.outputs.version }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Build release-mode FOSS APKs for all supported ABIs
+        run: tool/build_release.sh github
+      # No private signing key is stored in CI. The maintainer re-signs and
+      # verifies downloaded APKs before publishing; checksums are recomputed.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wiredash-release-apks
+          path: build/github-release/
+          if-no-files-found: error

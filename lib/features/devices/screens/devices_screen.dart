@@ -1,9 +1,12 @@
 import '../../support/help_context.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/signal_icons.dart';
 import '../../../core/theme/signal_colors.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,7 +25,9 @@ import '../../discovery/widgets/add_wirenboard_panel_sheet.dart';
 import '../../discovery/providers/discovery_provider.dart';
 import '../../home/home_shell.dart';
 import '../../support/get_help_screen.dart' show GetHelpLink;
-import '../../panels/screens/add_tile_screen.dart' show showAddDeviceSheet;
+import '../../panels/widgets/add_device_sheet.dart' show showAddDeviceSheet;
+import '../../../data/repositories/dashboard_repo.dart';
+import '../device_tiles.dart' show z2mBase;
 import '../../panels/widgets/device_tile_panel.dart'
     show deviceClassIcon, deviceStateLine, ltr;
 import '../../panels/widgets/panel_reliability_frame.dart' show formatValueAge;
@@ -45,11 +50,17 @@ class DevicesScreen extends ConsumerStatefulWidget {
     required this.connectionId,
     this.onSelect,
     this.selectedIeee,
+    this.dashboardId,
+    this.onCustomTile,
   });
 
   final String connectionId;
   final ValueChanged<String>? onSelect;
   final String? selectedIeee;
+
+  /// When present, selecting a device adds it to this dashboard.
+  final String? dashboardId;
+  final void Function(BuildContext context)? onCustomTile;
 
   @override
   ConsumerState<DevicesScreen> createState() => _DevicesScreenState();
@@ -61,7 +72,11 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   final _search = TextEditingController();
   final _expandedWb = <String>{};
   final _collapsedSearchWb = <String>{};
-  final _collapsedSections = <String>{'wb-builtins', 'wb-z2m'};
+  final _collapsedSections = <String>{
+    'z2m',
+    for (final group in WirenBoardDeviceGroup.values) 'wb-${group.name}',
+  };
+  bool get _picking => widget.dashboardId != null;
   final _collapsedSearchSections = <String>{};
 
   bool _sectionExpanded(String id, String query) =>
@@ -93,8 +108,15 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     super.dispose();
   }
 
-  String get _base =>
-      ref.read(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
+  String get _base => _picking
+      ? z2mBase(
+          ref
+              .read(dashboardByIdProvider(widget.dashboardId!))
+              .valueOrNull
+              ?.topicPrefix,
+          homeBase: ref.read(baseTopicOverrideProvider(widget.connectionId)),
+        )
+      : ref.read(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
 
   void _refresh() {
     final args = (connectionId: widget.connectionId, base: _base);
@@ -111,7 +133,17 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     );
   }
 
-  void _open(Z2mDevice d) {
+  Future<void> _open(Z2mDevice d) async {
+    if (_picking) {
+      final added = await showAddDeviceSheet(
+        context,
+        connectionId: widget.connectionId,
+        dashboardId: widget.dashboardId,
+        device: d,
+      );
+      if (added && mounted) Navigator.pop(context);
+      return;
+    }
     final ieee = d.ieeeAddress;
     if (ieee == null) return;
     final select = widget.onSelect;
@@ -195,12 +227,14 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     WirenBoardDevice device, [
     WirenBoardControl? control,
   ]) async {
-    await showAddWirenBoardPanelSheet(
+    final added = await showAddWirenBoardPanelSheet(
       context,
       connectionId: widget.connectionId,
       device: device,
       control: control,
+      dashboardId: widget.dashboardId,
     );
+    if (added && _picking && mounted) Navigator.pop(context);
   }
 
   List<Widget> _wirenBoardTree(
@@ -217,29 +251,36 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
         device.id.toLowerCase().contains(query) ||
         device.title(language).toLowerCase().contains(query);
     return [
-      ListTile(
-        key: ValueKey('wb-device:${device.id}'),
-        leading: Icon(expanded ? Icons.expand_more : Icons.chevron_right),
-        title: Text(device.title(language)),
-        subtitle: Text(l10n.wbControlCount(device.controls.length)),
-        onTap: () => setState(() {
-          final changes = query.isNotEmpty ? _collapsedSearchWb : _expandedWb;
-          if (!changes.add(device.id)) changes.remove(device.id);
-        }),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              tooltip: l10n.wbOpenControls,
-              icon: const Icon(Icons.tune),
-              onPressed: () => _openWirenBoard(device),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: DeviceListRowSurface(
+          child: ListTile(
+            key: ValueKey('wb-device:${device.id}'),
+            leading: Icon(expanded ? Icons.expand_more : Icons.chevron_right),
+            title: Text(device.title(language)),
+            subtitle: Text(l10n.wbControlCount(device.controls.length)),
+            onTap: () => setState(() {
+              final changes = query.isNotEmpty
+                  ? _collapsedSearchWb
+                  : _expandedWb;
+              if (!changes.add(device.id)) changes.remove(device.id);
+            }),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: l10n.wbOpenControls,
+                  icon: const Icon(Icons.tune),
+                  onPressed: () => _openWirenBoard(device),
+                ),
+                IconButton(
+                  tooltip: l10n.wbAddWholeDevice,
+                  icon: Icon(linked ? Icons.dashboard_outlined : Icons.add),
+                  onPressed: () => _addWirenBoard(device),
+                ),
+              ],
             ),
-            IconButton(
-              tooltip: l10n.wbAddWholeDevice,
-              icon: Icon(linked ? Icons.dashboard_outlined : Icons.add),
-              onPressed: () => _addWirenBoard(device),
-            ),
-          ],
+          ),
         ),
       ),
       if (expanded) ...[
@@ -250,15 +291,17 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               control.title(language).toLowerCase().contains(query))
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 32),
-              child: ListTile(
-                key: ValueKey('wb-property:${device.id}/${control.id}'),
-                dense: true,
-                title: Text(control.title(language)),
-                subtitle: control.unit == null ? null : Text(control.unit!),
-                trailing: IconButton(
-                  tooltip: l10n.deviceAddToDashboard,
-                  icon: const Icon(Icons.add),
-                  onPressed: () => _addWirenBoard(device, control),
+              child: DeviceListRowSurface(
+                child: ListTile(
+                  key: ValueKey('wb-property:${device.id}/${control.id}'),
+                  dense: true,
+                  title: Text(control.title(language)),
+                  subtitle: control.unit == null ? null : Text(control.unit!),
+                  trailing: IconButton(
+                    tooltip: l10n.deviceAddToDashboard,
+                    icon: const Icon(Icons.add),
+                    onPressed: () => _addWirenBoard(device, control),
+                  ),
                 ),
               ),
             ),
@@ -269,8 +312,16 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final base =
-        ref.watch(homeBaseTopicProvider(widget.connectionId)) ?? 'zigbee2mqtt';
+    final targetDashboard = widget.dashboardId == null
+        ? null
+        : ref.watch(dashboardByIdProvider(widget.dashboardId!)).valueOrNull;
+    final base = _picking
+        ? z2mBase(
+            targetDashboard?.topicPrefix,
+            homeBase: ref.watch(baseTopicOverrideProvider(widget.connectionId)),
+          )
+        : ref.watch(homeBaseTopicProvider(widget.connectionId)) ??
+              'zigbee2mqtt';
     final args = (connectionId: widget.connectionId, base: base);
     final healthAsync = ref.watch(deviceHealthProvider(args));
     final availability =
@@ -304,13 +355,15 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
     final searchable =
         all.length + wbDevices.length >= 8 ||
         wbDevices.any((d) => d.controls.length >= 8);
-    final visibleHealth = wbDevices.isNotEmpty
+    final visibleHealth = _picking || wbDevices.isNotEmpty
         ? AsyncValue<List<DeviceHealth>>.data(all)
         : healthAsync;
 
     return Scaffold(
       appBar: AppBar(
-        title: _query != null
+        title: _picking
+            ? Text(l10n.dashAddTile)
+            : _query != null
             ? TextField(
                 controller: _search,
                 autofocus: true,
@@ -326,7 +379,7 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
               )
             : HomeTitle(connectionId: widget.connectionId),
         actions: [
-          if (_query != null)
+          if (!_picking && _query != null)
             IconButton(
               tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
               icon: const Icon(Icons.close),
@@ -335,13 +388,13 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                 _search.clear();
               }),
             )
-          else if (searchable)
+          else if (!_picking && searchable)
             IconButton(
               tooltip: l10n.addTileSearch,
               icon: const Icon(Icons.search),
               onPressed: () => setState(() => _query = ''),
             ),
-          const SettingsAction(),
+          if (!_picking) const SettingsAction(),
           PopupMenuButton<String>(
             onSelected: (_) => _refresh(),
             itemBuilder: (_) => [
@@ -366,7 +419,9 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           ),
         ),
         data: (rows) {
-          if (rows.isEmpty && wbDevices.isEmpty) return _NoDevices(args: args);
+          if (!_picking && rows.isEmpty && wbDevices.isEmpty) {
+            return _NoDevices(args: args);
+          }
           bool unassigned(DeviceHealth h) =>
               h.device.ieeeAddress != null &&
               !linked.contains(h.device.ieeeAddress);
@@ -410,6 +465,20 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           return ListView(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
             children: [
+              if (_picking)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: SearchBar(
+                    controller: _search,
+                    hintText: l10n.addTileSearch,
+                    leading: const Icon(Icons.search),
+                    onChanged: (v) => setState(() {
+                      _query = v;
+                      _collapsedSearchWb.clear();
+                      _collapsedSearchSections.clear();
+                    }),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
                 child: Wrap(
@@ -439,7 +508,12 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   ],
                 ),
               ),
-              if (shown.isEmpty && wbShown.isEmpty)
+              if (healthAsync.isLoading &&
+                  _picking &&
+                  shown.isEmpty &&
+                  wbShown.isEmpty)
+                const LinearProgressIndicator(),
+              if (shown.isEmpty && wbShown.isEmpty && !healthAsync.isLoading)
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(l10n.devicesNoMatch, textAlign: TextAlign.center),
@@ -473,7 +547,24 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
                   for (final device in wbShown.where((d) => d.group == group))
                     ..._wirenBoardTree(device, q, wbLinked.contains(device.id)),
               ],
-              if (rows.isNotEmpty && !availability.any)
+              if (_picking) ...[
+                const Divider(height: 32),
+                ListTile(
+                  leading: const Icon(Icons.speed),
+                  title: Text(l10n.addTileReading),
+                  subtitle: Text(l10n.addTileReadingSubtitle),
+                  onTap: () => context.pushReplacement(
+                    '/connections/${widget.connectionId}/dashboards/${widget.dashboardId}/panels/new?type=reading',
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings_ethernet),
+                  title: Text(l10n.addTileCustom),
+                  subtitle: Text(l10n.addTileCustomSubtitle),
+                  onTap: () => widget.onCustomTile?.call(context),
+                ),
+              ],
+              if (!_picking && rows.isNotEmpty && !availability.any)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
                   child: _AvailabilityNote(
@@ -484,13 +575,34 @@ class _DevicesScreenState extends ConsumerState<DevicesScreen> {
           );
         },
       ),
-      floatingActionButton: wbDevices.isNotEmpty && all.isEmpty
+      floatingActionButton: _picking || (wbDevices.isNotEmpty && all.isEmpty)
           ? null
           : FloatingActionButton.extended(
               onPressed: _openPairing,
               icon: const Icon(Icons.add),
               label: Text(l10n.devicesAddButton),
             ),
+    );
+  }
+}
+
+/// The common background and shape for both WB and Zigbee2MQTT rows.
+class DeviceListRowSurface extends StatelessWidget {
+  const DeviceListRowSurface({
+    super.key,
+    required this.child,
+    this.selected = false,
+  });
+  final Widget child;
+  final bool selected;
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: selected ? scheme.secondaryContainer : scheme.surfaceContainerHigh,
+      borderRadius: BorderRadius.circular(12),
+      clipBehavior: Clip.antiAlias,
+      child: child,
     );
   }
 }
@@ -525,10 +637,8 @@ class DeviceHealthRow extends StatelessWidget {
     final line = deviceHealthLine(context, health, state);
     final signal = _signal(context);
 
-    return Material(
-      color: selected ? scheme.secondaryContainer : scheme.surfaceContainerHigh,
-      borderRadius: BorderRadius.circular(12),
-      clipBehavior: Clip.antiAlias,
+    return DeviceListRowSurface(
+      selected: selected,
       child: InkWell(
         onTap: onTap,
         onLongPress: onLongPress,

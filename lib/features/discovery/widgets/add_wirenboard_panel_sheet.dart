@@ -17,6 +17,7 @@ Future<bool> showAddWirenBoardPanelSheet(
   required String connectionId,
   required WirenBoardDevice device,
   WirenBoardControl? control,
+  String? dashboardId,
 }) async =>
     await showModalBottomSheet<bool>(
       context: context,
@@ -27,6 +28,7 @@ Future<bool> showAddWirenBoardPanelSheet(
         connectionId: connectionId,
         device: device,
         control: control,
+        dashboardId: dashboardId,
       ),
     ) ==
     true;
@@ -36,10 +38,12 @@ class _AddWirenBoardPanelSheet extends ConsumerStatefulWidget {
     required this.connectionId,
     required this.device,
     this.control,
+    this.dashboardId,
   });
   final String connectionId;
   final WirenBoardDevice device;
   final WirenBoardControl? control;
+  final String? dashboardId;
 
   @override
   ConsumerState<_AddWirenBoardPanelSheet> createState() =>
@@ -50,7 +54,7 @@ class _AddWirenBoardPanelSheetState
     extends ConsumerState<_AddWirenBoardPanelSheet> {
   final _form = GlobalKey<FormState>();
   final _label = TextEditingController();
-  String? _dashboardId;
+  late String? _dashboardId = widget.dashboardId;
   PanelType? _widgetType;
   bool _initialized = false;
   bool _saving = false;
@@ -193,7 +197,7 @@ class _AddWirenBoardPanelSheetState
                           _allowCommands = value;
                           _widgetType = null;
                         }),
-                  onChanged: _saving
+                  onChanged: _saving || widget.dashboardId != null
                       ? null
                       : (type) => setState(() => _widgetType = type),
                 ),
@@ -214,7 +218,7 @@ class _AddWirenBoardPanelSheetState
                     for (final d in dashboards)
                       DropdownMenuItem(value: d.id, child: Text(d.name)),
                   ],
-                  onChanged: _saving
+                  onChanged: _saving || widget.dashboardId != null
                       ? null
                       : (id) => setState(() => _dashboardId = id),
                 )

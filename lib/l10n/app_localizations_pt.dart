@@ -15,7 +15,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reliabilityControlsUnavailable => 'Controles indisponíveis';
 
   @override
-  String get appTitle => 'ZigDash';
+  String get appTitle => 'WireDash';
 
   @override
   String get onboardingDemo => 'Testar demo';
@@ -73,7 +73,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get connEmpty =>
-      'Nenhuma conexão ainda.\nToque em \"Adicionar broker\" para apontar o ZigDash para seu servidor MQTT.';
+      'Nenhuma conexão ainda.\nToque em \"Adicionar broker\" para apontar o WireDash para seu servidor MQTT.';
 
   @override
   String get connNew => 'Nova conexão';
@@ -156,7 +156,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get connHelpZhaBody =>
-      'O ZHA não tem broker MQTT — ele fala direto com o Home Assistant, então o ZigDash não consegue se conectar a ele. Para usar o ZigDash, migre para o Zigbee2MQTT (disponível como add-on do Home Assistant ou contêiner Docker), que fornece um broker MQTT.';
+      'O ZHA não tem broker MQTT — ele fala direto com o Home Assistant, então o WireDash não consegue se conectar a ele. Para usar o WireDash, migre para o Zigbee2MQTT (disponível como add-on do Home Assistant ou contêiner Docker), que fornece um broker MQTT.';
 
   @override
   String get connHelpSameNetwork =>
@@ -965,39 +965,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsVersion => 'Versão';
 
   @override
-  String get settingsRateApp => 'Avaliar o ZigDash';
+  String get settingsRateApp => 'Versões';
 
   @override
   String get settingsRateAppSubtitle =>
-      'Está gostando? Uma avaliação rápida ajuda outras pessoas a encontrá-lo.';
-
-  @override
-  String get settingsFeatureRequest => 'Sugerir um recurso';
-
-  @override
-  String get settingsFeatureRequestSubtitle =>
-      'Conte o que deixaria o ZigDash melhor.';
-
-  @override
-  String get featureRequestGithub => 'No GitHub';
-
-  @override
-  String get featureRequestGithubSubtitle =>
-      'Público: outras pessoas podem ver e votar.';
-
-  @override
-  String get featureRequestEmail => 'Por e-mail';
-
-  @override
-  String get featureRequestEmailSubtitle =>
-      'Privado, direto para o desenvolvedor.';
-
-  @override
-  String get featureRequestEmailSubject => 'ZigDash: sugestão de recurso';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'O que você gostaria que o ZigDash fizesse, e por quê?';
+      'Transferir versões do WireDash no GitHub.';
 
   @override
   String get settingsReportProblem => 'Relatar um problema';
@@ -1005,13 +977,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get settingsReportProblemSubtitle =>
       'Algo quebrado ou confuso? Me conte.';
-
-  @override
-  String get reportProblemEmailSubject => 'ZigDash: relato de problema';
-
-  @override
-  String get reportProblemEmailPrompt =>
-      'O que aconteceu e o que você esperava?';
 
   @override
   String get settingsBuyCoffee => 'Me pague um café';
@@ -1321,7 +1286,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get guidedConnectIntro =>
-      'Vamos testar cada etapa da conexão e mostrar seus dispositivos Zigbee.';
+      'Vamos testar sua conexão MQTT e descobrir dispositivos no seu broker.';
 
   @override
   String get guidedBaseTopic => 'Tópico base';
@@ -1427,7 +1392,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get noDevicesHint =>
-      'O ZigDash vê seu broker, mas ainda não encontrou dispositivos Zigbee. Você pode iniciar o pareamento para adicioná-los.';
+      'O WireDash vê seu broker, mas ainda não encontrou dispositivos Zigbee. Você pode iniciar o pareamento para adicioná-los.';
 
   @override
   String get startPairing => 'Iniciar pareamento';
@@ -1450,7 +1415,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Duas tentativas sem conexão. Conte qual hub você tem e o que digitou, e ajudamos a encontrá-lo.';
 
   @override
-  String get guidedStuckTelegram => 'Perguntar no Telegram';
+  String get guidedStuckTelegram => 'WireDash no GitHub';
 
   @override
   String get guidedStuckHelp => 'Dicas e e-mail';
@@ -1465,14 +1430,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível salvar a conexão. Tente de novo.';
 
   @override
-  String get setupWelcomeTitle => 'Boas-vindas ao ZigDash';
+  String get setupWelcomeTitle => 'Boas-vindas ao WireDash';
 
   @override
   String get setupWelcomeHeadline => 'Sua casa Zigbee, no seu celular';
 
   @override
   String get setupWelcomeBody =>
-      'Basta um hub pequeno rodando Zigbee2MQTT: um hub SMLIGHT, um Raspberry Pi ou qualquer máquina Linux. Não precisa de Home Assistant, e se você tiver, o ZigDash funciona com ele também. Tudo fica local, sem nuvem.';
+      'Basta um hub pequeno rodando Zigbee2MQTT: um hub SMLIGHT, um Raspberry Pi ou qualquer máquina Linux. Não precisa de Home Assistant, e se você tiver, o WireDash funciona com ele também. Tudo fica local, sem nuvem.';
 
   @override
   String get setupFindMySetup => 'Encontrar minha instalação';
@@ -1519,13 +1484,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get reminderNoPermission =>
-      'As notificações do ZigDash estão desativadas, por isso não haverá lembrete. Pode ativá-las nas definições do Android.';
+      'As notificações do WireDash estão desativadas, por isso não haverá lembrete. Pode ativá-las nas definições do Android.';
 
   @override
   String get reminderChannel => 'Lembrete de configuração';
 
   @override
-  String get reminderTitle => 'Termine de configurar o ZigDash';
+  String get reminderTitle => 'Termine de configurar o WireDash';
 
   @override
   String get reminderBody =>
@@ -1538,14 +1503,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get setupWelcomeDemo => 'Experimente a casa de demonstração';
 
   @override
-  String get setupWelcomeHubs => 'Qual hub escolher';
+  String get setupWelcomeHubs => 'Guia de configuração';
 
   @override
   String get haConnectTitle => 'Conectar pelo Home Assistant';
 
   @override
   String get haConnectIntro =>
-      'Seu telefone não alcança o broker, mas alcança o Home Assistant. Entre uma vez e o ZigDash fala com o Zigbee2MQTT pelo Home Assistant: em casa ou fora, sem configurações de broker.';
+      'Seu telefone não alcança o broker, mas alcança o Home Assistant. Entre uma vez e o WireDash fala com o Zigbee2MQTT pelo Home Assistant: em casa ou fora, sem configurações de broker.';
 
   @override
   String get haConnectAddressHelp =>
@@ -1553,15 +1518,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haConnectSignInHelp =>
-      'O login do próprio Home Assistant abre no seu navegador. O ZigDash nunca vê sua senha.';
+      'O login do próprio Home Assistant abre no seu navegador. O WireDash nunca vê sua senha.';
 
   @override
   String get haConnectKeeps =>
-      'O ZigDash guarda este login no seu telefone e age como você no Home Assistant, só para MQTT. Encerre quando quiser no Home Assistant, em Perfil › Segurança.';
+      'O WireDash guarda este login no seu telefone e age como você no Home Assistant, só para MQTT. Encerre quando quiser no Home Assistant, em Perfil › Segurança.';
 
   @override
   String get haConnectTokenHelp =>
-      'No Home Assistant, abra seu perfil, depois Segurança › Tokens de acesso de longa duração › Criar token. Copie e cole aqui. O ZigDash o guarda neste telefone para conectar; apague-o no Home Assistant quando quiser encerrar.';
+      'No Home Assistant, abra seu perfil, depois Segurança › Tokens de acesso de longa duração › Criar token. Copie e cole aqui. O WireDash o guarda neste telefone para conectar; apague-o no Home Assistant quando quiser encerrar.';
 
   @override
   String get haConnectWithToken => 'Conectar com token';
@@ -1571,7 +1536,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haConnectNotAdmin =>
-      'Seu usuário do Home Assistant não é administrador. O ZigDash precisa de um para o MQTT do Home Assistant. Entre como administrador ou cole um token criado por um administrador.';
+      'Seu usuário do Home Assistant não é administrador. O WireDash precisa de um para o MQTT do Home Assistant. Entre como administrador ou cole um token criado por um administrador.';
 
   @override
   String get haConnectNoMqtt =>
@@ -1771,7 +1736,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get setupNoWifiUnknown =>
-      'O ZigDash não encontra o endereço Wi-Fi do seu celular. Verifique se o Wi-Fi está ligado e conectado à rede de casa: a configuração recomeça sozinha. Usando VPN ou fora de casa? Digite os dados manualmente.';
+      'O WireDash não encontra o endereço Wi-Fi do seu celular. Verifique se o Wi-Fi está ligado e conectado à rede de casa: a configuração recomeça sozinha. Usando VPN ou fora de casa? Digite os dados manualmente.';
 
   @override
   String get setupOpenWifiSettings => 'Abrir configurações de Wi-Fi';
@@ -1896,7 +1861,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get setupNoBrokerHaZha =>
-      'Usa o Zigbee próprio do Home Assistant (ZHA) em vez do Zigbee2MQTT? O ZigDash só funciona com o Zigbee2MQTT, então não enxerga dispositivos ZHA. A demonstração mostra o que você teria.';
+      'Usa o Zigbee próprio do Home Assistant (ZHA) em vez do Zigbee2MQTT? O WireDash só funciona com o Zigbee2MQTT, então não enxerga dispositivos ZHA. A demonstração mostra o que você teria.';
 
   @override
   String get setupVpnHint =>
@@ -2029,7 +1994,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get setupChoiceHaNote =>
-      'O ZigDash se conecta ao broker MQTT do Home Assistant, o add-on Mosquitto broker em Configurações › Add-ons, e o Zigbee2MQTT também precisa usá-lo. Se homeassistant.local não for encontrado, digite abaixo o endereço IP do Home Assistant. Ele fica em Configurações › Sistema › Rede.';
+      'O WireDash se conecta ao broker MQTT do Home Assistant, o add-on Mosquitto broker em Configurações › Add-ons, e o Zigbee2MQTT também precisa usá-lo. Se homeassistant.local não for encontrado, digite abaixo o endereço IP do Home Assistant. Ele fica em Configurações › Sistema › Rede.';
 
   @override
   String get setupChoiceOther => 'Meu hub está em outra rede';
@@ -2373,7 +2338,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get statusWhyBody =>
-      'O ZigDash continua tentando sozinho. Até ele voltar, os blocos mostram os últimos valores conhecidos, esmaecidos e com a idade. Verifique se o broker está ligado e se este celular está na mesma rede, ou teste a conexão nas configurações dela.';
+      'O WireDash continua tentando sozinho. Até ele voltar, os blocos mostram os últimos valores conhecidos, esmaecidos e com a idade. Verifique se o broker está ligado e se este celular está na mesma rede, ou teste a conexão nas configurações dela.';
 
   @override
   String get statusSettings => 'Configurações de conexão';
@@ -2551,37 +2516,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashWallDisplay => 'Tela de parede';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Compartilhar dados de uso anônimos para melhorar a configuração';
-
-  @override
-  String get analyticsWhatsShared => 'O que é compartilhado';
-
-  @override
-  String get analyticsCardTitle => 'Ajudar a melhorar o ZigDash?';
-
-  @override
-  String get analyticsCardBody =>
-      'Compartilhe dados de uso anônimos: quais etapas da configuração falham e quais recursos são usados. Nunca seus dispositivos, tópicos ou broker.';
-
-  @override
-  String get analyticsShare => 'Compartilhar';
-
-  @override
-  String get analyticsNoThanks => 'Não, obrigado';
-
-  @override
-  String get settingsAnalytics => 'Compartilhar dados de uso anônimos';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Etapas da configuração e recursos usados. Nunca seus dispositivos, tópicos ou broker.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Dados de uso anônimos. Desative no botão acima.';
-
-  @override
   String get dashDefaultName => 'Casa';
 
   @override
@@ -2604,13 +2538,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get getHelpPromise =>
-      'Ainda não funcionou? Costumo responder em até 3 dias, em inglês ou hebraico. Nunca vou pedir suas senhas.';
+      'O suporte usa os problemas públicos do WireDash no GitHub. Reveja e edite o relatório antes de o publicar.';
 
   @override
   String get getHelpIncluded => 'O que vai junto';
 
   @override
-  String get getHelpContact => 'Falar com o suporte';
+  String get getHelpContact => 'Reportar um problema no GitHub';
 
   @override
   String get getHelpCopy => 'Copiar detalhes';
@@ -2620,13 +2554,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get getHelpLink => 'Ainda não funcionou? Obter ajuda';
-
-  @override
-  String get getHelpEmailSubject => 'ZigDash: ajuda para fazer funcionar';
-
-  @override
-  String get getHelpEmailPrompt =>
-      'O que você estava tentando fazer e o que aconteceu?';
 
   @override
   String get settingsHelpSupport => 'Ajuda e suporte';
@@ -2639,14 +2566,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não está funcionando? Primeiro dicas, depois contato';
 
   @override
-  String get settingsCommunity => 'Entre na comunidade ZigDash';
+  String get settingsCommunity => 'WireDash no GitHub';
 
   @override
   String get settingsCommunitySubtitle =>
-      'Grupo no Telegram: dúvidas, ideias e novidades';
+      'Documentação, problemas e novidades do desenvolvimento.';
 
   @override
-  String get getHelpCommunity => 'Perguntar no grupo do Telegram';
+  String get getHelpCommunity => 'WireDash no GitHub';
 
   @override
   String get demoBannerHelp => 'Obter ajuda';
@@ -2874,12 +2801,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tipFindSetupBody =>
-      'Saia da demo e toque em \"Encontrar minha instalação\". O ZigDash procura seu hub sozinho.';
-
-  @override
-  String getHelpNoEmailApp(Object email) {
-    return 'Nenhum app de e-mail encontrado. Copie os detalhes e escreva para $email.';
-  }
+      'Saia da demo e toque em \"Encontrar minha instalação\". O WireDash procura seu hub sozinho.';
 
   @override
   String get shortcutWorking => 'executando…';
@@ -2907,7 +2829,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shortcutOpenAppFirstScene =>
-      'Abra o ZigDash e crie uma cena primeiro.';
+      'Abra o WireDash e crie uma cena primeiro.';
 
   @override
   String get shortcutChooseGroup => 'Escolha um grupo';
@@ -2935,16 +2857,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shortcutWidgetHowTo =>
-      'Toque e segure um espaço vazio da tela inicial, toque em Widgets, encontre o ZigDash e arraste o widget desejado.';
+      'Toque e segure um espaço vazio da tela inicial, toque em Widgets, encontre o WireDash e arraste o widget desejado.';
 
   @override
   String shortcutTileReady(Object name, Object slot) {
-    return '$name está no bloco ZigDash $slot das Configurações rápidas';
+    return '$name está no bloco WireDash $slot das Configurações rápidas';
   }
 
   @override
   String shortcutTileAlready(Object name, Object slot) {
-    return '$name já está no bloco ZigDash $slot';
+    return '$name já está no bloco WireDash $slot';
   }
 
   @override
@@ -2952,12 +2874,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String shortcutTileHowTo(Object slot) {
-    return 'Abra as Configurações rápidas (deslize para baixo duas vezes), toque no lápis para editar e arraste \"ZigDash $slot\" para seus blocos.';
+    return 'Abra as Configurações rápidas (deslize para baixo duas vezes), toque no lápis para editar e arraste \"WireDash $slot\" para seus blocos.';
   }
 
   @override
   String shortcutPickTitle(Object slot) {
-    return 'Escolha um dispositivo para ZigDash $slot';
+    return 'Escolha um dispositivo para WireDash $slot';
   }
 
   @override
@@ -2966,11 +2888,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shortcutSlotsFull =>
-      'Os 4 blocos do ZigDash estão em uso. Qual deve mostrar este dispositivo no lugar?';
+      'Os 4 blocos do WireDash estão em uso. Qual deve mostrar este dispositivo no lugar?';
 
   @override
   String shortcutSlotLabel(Object slot) {
-    return 'ZigDash $slot';
+    return 'WireDash $slot';
   }
 
   @override
@@ -3001,36 +2923,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shortcutOpenAppFirst =>
-      'Abra o ZigDash e coloque primeiro um dispositivo em um painel.';
-
-  @override
-  String get pollTitle => 'O que o ZigDash deve fazer a seguir?';
-
-  @override
-  String get pollBody =>
-      'Escolha o que você mais usaria. A resposta é enviada com seus dados de uso anônimos.';
-
-  @override
-  String get pollNotifications => 'Notificações';
-
-  @override
-  String get pollHistory => 'Gráficos de histórico';
-
-  @override
-  String get pollKiosk => 'Modo quiosque para um tablet na parede';
-
-  @override
-  String get pollGroups => 'Grupos Zigbee';
-
-  @override
-  String get pollNotNow => 'Agora não';
-
-  @override
-  String get pollThanks => 'Obrigado! Isso ajuda a decidir o que vem a seguir.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Os dados de uso estão desativados, então nada é enviado daqui. Conte para nós em Sugerir um recurso.';
+      'Abra o WireDash e coloque primeiro um dispositivo em um painel.';
 
   @override
   String alertLeak(Object name) {
@@ -3063,7 +2956,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get alertTest => 'Notificação de teste do ZigDash';
+  String get alertTest => 'Notificação de teste do WireDash';
 
   @override
   String get alertsChannel => 'Alertas';
@@ -3095,7 +2988,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get alertsIntro =>
-      'Receba uma notificação neste celular quando houver vazamento, fumaça, porta aberta ou bateria fraca, mesmo com o ZigDash fechado. ZigDash Engine no seu hub observa os dispositivos; o ZigDash o configura.';
+      'Receba uma notificação neste celular quando houver vazamento, fumaça, porta aberta ou bateria fraca, mesmo com o WireDash fechado. WireDash Engine no seu hub observa os dispositivos; o WireDash o configura.';
 
   @override
   String get alertsSetUpHub => 'Configurar alertas no hub';
@@ -3145,7 +3038,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get alertsNoGoogle =>
-      'Este celular não tem serviços do Google, então o ZigDash não pode receber pushes aqui.';
+      'Este celular não tem serviços do Google, então o WireDash não pode receber pushes aqui.';
 
   @override
   String get alertsSendTest => 'Enviar notificação de teste';
@@ -3220,11 +3113,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get alertsWhatLeaves =>
-      'Os alertas para o ZigDash são criptografados de ponta a ponta: o serviço push do Google os transporta, mas não consegue lê-los. Nada mais sai do seu hub.';
+      'Os alertas para o WireDash são criptografados de ponta a ponta: o serviço push do Google os transporta, mas não consegue lê-los. Nada mais sai do seu hub.';
 
   @override
   String get alertsRestricted =>
-      'O Android pode parar o ZigDash em segundo plano, e as notificações podem atrasar ou se perder. Permita a execução em segundo plano nas configurações do Android (na Samsung: Bateria › Apps que nunca dormem).';
+      'O Android pode parar o WireDash em segundo plano, e as notificações podem atrasar ou se perder. Permita a execução em segundo plano nas configurações do Android (na Samsung: Bateria › Apps que nunca dormem).';
 
   @override
   String get alertsOpenSettings => 'Abrir configurações do Android';
@@ -3254,7 +3147,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get alertsShareBody =>
-      'Quem tiver este link recebe os alertas desta casa no app ntfy, sem precisar do ZigDash. O texto do alerta passa pelo ntfy.sh sem criptografia.';
+      'Quem tiver este link recebe os alertas desta casa no app ntfy, sem precisar do WireDash. O texto do alerta passa pelo ntfy.sh sem criptografia.';
 
   @override
   String get alertsShareLink => 'Link';
@@ -3354,7 +3247,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get wallProNote =>
-      'Leituras no relógio, despertar por movimento, o horário noturno e os alarmes fazem parte do ZigDash Pro, uma compra única.';
+      'Leituras no relógio, despertar por movimento, o horário noturno e os alarmes fazem parte do WireDash Pro, uma compra única.';
 
   @override
   String get wallAlarmLeak => 'Vazamento de água';
@@ -3386,7 +3279,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get wallAlarmsSubtitle =>
-      'Vazamento, fumaça, gás ou monóxido de carbono enche a tela até alguém tocar em OK. Só enquanto o ZigDash está aberto neste tablet; os alertas chegam aos celulares em qualquer lugar.';
+      'Vazamento, fumaça, gás ou monóxido de carbono enche a tela até alguém tocar em OK. Só enquanto o WireDash está aberto neste tablet; os alertas chegam aos celulares em qualquer lugar.';
 
   @override
   String get wallAlarmSound => 'Tocar um som';
@@ -3454,17 +3347,17 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get kioskPinForgotBody =>
-      'Um PIN esquecido só pode ser redefinido apagando os dados do ZigDash nas configurações do Android, o que remove esta casa a menos que você tenha um backup. Exporte um antes de definir o PIN.';
+      'Um PIN esquecido só pode ser redefinido apagando os dados do WireDash nas configurações do Android, o que remove esta casa a menos que você tenha um backup. Exporte um antes de definir o PIN.';
 
   @override
   String get kioskExportBackup => 'Exportar backup';
 
   @override
-  String get kioskOsPin => 'Fixar o ZigDash também no Android';
+  String get kioskOsPin => 'Fixar o WireDash também no Android';
 
   @override
   String get kioskOsPinSubtitle =>
-      'O Android bloqueia o botão Início e os apps recentes até o ZigDash ser desafixado. Um tablet sem tela de bloqueio desafixa com um gesto, então isto não é o bloqueio.';
+      'O Android bloqueia o botão Início e os apps recentes até o WireDash ser desafixado. Um tablet sem tela de bloqueio desafixa com um gesto, então isto não é o bloqueio.';
 
   @override
   String get kioskOn => 'Quiosque ligado. Segure o título para sair.';
@@ -3498,7 +3391,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get historySetupBody =>
-      'O ZigDash não tem servidor, então ZigDash Engine no seu hub registra os números dos seus painéis a cada 15 minutos. Guarda 30 dias, no seu próprio broker.';
+      'O WireDash não tem servidor, então WireDash Engine no seu hub registra os números dos seus painéis a cada 15 minutos. Guarda 30 dias, no seu próprio broker.';
 
   @override
   String get historySetupAction => 'Configurar no hub';
@@ -3527,24 +3420,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get historyLocked =>
-      'Histórico mais longo faz parte do ZigDash Pro, uma compra única.';
+      'Histórico mais longo faz parte do WireDash Pro, uma compra única.';
 
   @override
   String get historyUnlock => 'Desbloquear';
 
   @override
-  String get proTitle => 'ZigDash Pro';
+  String get proTitle => 'WireDash Pro';
 
   @override
   String get proAbout =>
       'Automações ilimitadas, histórico mais longo e extras para o tablet de parede. Apoia o projeto de código aberto.';
 
   @override
-  String get proUnlocked => 'Desbloqueado. Obrigado por apoiar o ZigDash.';
+  String get proUnlocked => 'Desbloqueado. Obrigado por apoiar o WireDash.';
 
   @override
   String get proScreenIntro =>
-      'O ZigDash é gratuito e de código aberto, feito por uma só pessoa nos tempos livres. O Pro é uma compra única que o mantém vivo.';
+      'O WireDash é gratuito e de código aberto, feito por uma só pessoa nos tempos livres. O Pro é uma compra única que o mantém vivo.';
 
   @override
   String get proWhatYouGet => 'O que recebe';
@@ -3588,22 +3481,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get historyRecordHereHint =>
-      'Não dá para usar ZigDash Engine no hub? O ZigDash pode registrar num celular ou tablet que fique aberto, como um tablet de parede. Todos os celulares desta casa veem o histórico.';
+      'Não dá para usar WireDash Engine no hub? O WireDash pode registrar num celular ou tablet que fique aberto, como um tablet de parede. Todos os celulares desta casa veem o histórico.';
 
   @override
   String get historyRecordingHere =>
-      'Este dispositivo grava o histórico enquanto o ZigDash está aberto. Os primeiros valores aparecem em até 15 minutos.';
+      'Este dispositivo grava o histórico enquanto o WireDash está aberto. Os primeiros valores aparecem em até 15 minutos.';
 
   @override
   String get wallRecordHistory => 'Gravar o histórico neste dispositivo';
 
   @override
   String get wallRecordHistorySubtitle =>
-      'A cada 15 minutos enquanto o ZigDash está aberto, para todos os celulares desta casa. Não é preciso se ZigDash Engine no hub registra.';
+      'A cada 15 minutos enquanto o WireDash está aberto, para todos os celulares desta casa. Não é preciso se WireDash Engine no hub registra.';
 
   @override
   String historyNeedsPassword(String host) {
-    return 'Mais um passo: seu broker pede login. Abra o Node-RED em $host:1880, clique duas vezes em \"ZigDash history broker\", digite a senha MQTT na aba Security e clique em Deploy. O ZigDash nunca envia sua senha ao hub.';
+    return 'Mais um passo: seu broker pede login. Abra o Node-RED em $host:1880, clique duas vezes em \"ZigDash history broker\", digite a senha MQTT na aba Security e clique em Deploy. O WireDash nunca envia sua senha ao hub.';
   }
 
   @override
@@ -3622,7 +3515,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportIntro =>
-      'Traga os nomes e as divisões que configurou no Home Assistant. O ZigDash lê-os uma vez e não guarda mais nada do Home Assistant.';
+      'Traga os nomes e as divisões que configurou no Home Assistant. O WireDash lê-os uma vez e não guarda mais nada do Home Assistant.';
 
   @override
   String get haImportAddress => 'Endereço do Home Assistant';
@@ -3636,7 +3529,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportTokenHelp =>
-      'No Home Assistant, abra o seu perfil e depois Segurança › Tokens de acesso de longa duração › Criar token. Copie-o e cole-o aqui. O ZigDash usa-o uma vez e não o guarda; depois pode apagá-lo no Home Assistant.';
+      'No Home Assistant, abra o seu perfil e depois Segurança › Tokens de acesso de longa duração › Criar token. Copie-o e cole-o aqui. O WireDash usa-o uma vez e não o guarda; depois pode apagá-lo no Home Assistant.';
 
   @override
   String get haImportRead => 'Ler do Home Assistant';
@@ -3676,7 +3569,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportNoDevices =>
-      'O ZigDash não vê agora os dispositivos desta casa. Ligue-se à casa e tente de novo.';
+      'O WireDash não vê agora os dispositivos desta casa. Ligue-se à casa e tente de novo.';
 
   @override
   String get haImportAutomations =>
@@ -3715,7 +3608,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportZhaOnly =>
-      'Estes dispositivos usam ZHA, o Zigbee próprio do Home Assistant, e não o Zigbee2MQTT, por isso o ZigDash não os pode mostrar.';
+      'Estes dispositivos usam ZHA, o Zigbee próprio do Home Assistant, e não o Zigbee2MQTT, por isso o WireDash não os pode mostrar.';
 
   @override
   String get haImportNothing =>
@@ -3735,7 +3628,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportOfferBody =>
-      'O Home Assistant está na sua rede. O ZigDash pode dar nome aos mosaicos e adicionar um painel por piso e divisão, como os configurou lá.';
+      'O Home Assistant está na sua rede. O WireDash pode dar nome aos mosaicos e adicionar um painel por piso e divisão, como os configurou lá.';
 
   @override
   String get haImportOfferLater => 'Agora não';
@@ -3748,7 +3641,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get haImportSignInHelp =>
-      'O início de sessão do Home Assistant abre no seu navegador. O ZigDash nunca vê a sua senha e termina a sessão depois de ler.';
+      'O início de sessão do Home Assistant abre no seu navegador. O WireDash nunca vê a sua senha e termina a sessão depois de ler.';
 
   @override
   String get haImportOrToken => 'Ou use um token de acesso de longa duração';
@@ -3766,10 +3659,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get setupAuthTrust =>
-      'O seu login fica neste telefone e vai só para o seu próprio broker. O ZigDash não tem servidor nem conta, e qualquer app MQTT entra assim. O mais seguro: um utilizador MQTT só para o ZigDash, que pode remover quando quiser.';
+      'O seu login fica neste telefone e vai só para o seu próprio broker. O WireDash não tem servidor nem conta, e qualquer app MQTT entra assim. O mais seguro: um utilizador MQTT só para o WireDash, que pode remover quando quiser.';
 
   @override
-  String get setupAuthWhatKept => 'O que o ZigDash guarda';
+  String get setupAuthWhatKept => 'O que o WireDash guarda';
 
   @override
   String get setupAuthDemoFirst => 'Experimentar primeiro a demo';
@@ -3785,7 +3678,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get engineNoConnection =>
-      'O ZigDash não alcança o broker desta casa agora. As automações são configuradas com conexão, em casa.';
+      'O WireDash não alcança o broker desta casa agora. As automações são configuradas com conexão, em casa.';
 
   @override
   String get engineRestarting =>
@@ -3807,11 +3700,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'O ZigDash coloca ZigDash Engine dentro do Zigbee2MQTT no seu hub. Ele observa seus dispositivos e executa suas regras, então uma luz acende quando a porta abre mesmo com o celular desligado e sem internet.';
+      'O WireDash coloca ZigDash Engine dentro do Zigbee2MQTT no seu hub. Ele observa seus dispositivos e executa suas regras, então uma luz acende quando a porta abre mesmo com o celular desligado e sem internet.';
 
   @override
   String get engineIntroNothingByHand =>
-      'Nada para instalar à mão. O ZigDash faz isso pela rede de casa.';
+      'Nada para instalar à mão. O WireDash faz isso pela rede de casa.';
 
   @override
   String engineIntroVersion(Object version) {
@@ -3841,7 +3734,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Seu Zigbee2MQTT bloqueia extensões como ZigDash Engine, como fazem as instalações novas. Para rodar automações no hub, o ZigDash ativaria \"Permitir JavaScript externo\" no Zigbee2MQTT e o reiniciaria.';
+      'Seu Zigbee2MQTT bloqueia extensões como ZigDash Engine, como fazem as instalações novas. Para rodar automações no hub, o WireDash ativaria \"Permitir JavaScript externo\" no Zigbee2MQTT e o reiniciaria.';
 
   @override
   String get engineConsentOutage =>
@@ -4052,7 +3945,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get autoErrNotConnected =>
-      'O ZigDash não está conectado a esta casa. Tente de novo em casa.';
+      'O WireDash não está conectado a esta casa. Tente de novo em casa.';
 
   @override
   String get autoNewTitle => 'Nova automação';
@@ -4208,7 +4101,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get autoCeilingBody =>
-      'O ZigDash é grátis e de código aberto, feito por uma pessoa. O Pro é uma compra única: automações ilimitadas, histórico de 7 e 30 dias e os extras de tablet de parede. Suas automações continuam rodando, seja qual for a sua escolha.';
+      'O WireDash é grátis e de código aberto, feito por uma pessoa. O Pro é uma compra única: automações ilimitadas, histórico de 7 e 30 dias e os extras de tablet de parede. Suas automações continuam rodando, seja qual for a sua escolha.';
 
   @override
   String get autoCeilingSeePro => 'Ver Pro';
@@ -4233,18 +4126,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Controlo remoto de qualquer lugar, através do relay do ZigDash';
+      'Controlo remoto de qualquer lugar, através do relay do WireDash';
 
   @override
   String get proRemoteFair =>
-      'O acesso remoto está incluído enquanto o relay do ZigDash funcionar, para uma casa, até cinco telemóveis e uso doméstico normal. Pode mudar ou terminar com aviso prévio.';
+      'O acesso remoto está incluído enquanto o relay do WireDash funcionar, para uma casa, até cinco telemóveis e uso doméstico normal. Pode mudar ou terminar com aviso prévio.';
 
   @override
   String get autoDeleteConfirm =>
       'Excluir esta automação? Ela para de rodar no seu hub.';
 
   @override
-  String get statusConnectedRelay => 'Conectado · Fora de casa via ZigDash';
+  String get statusConnectedRelay => 'Conectado · Fora de casa via WireDash';
 
   @override
   String get remoteTitle => 'Controle remoto';
@@ -4258,7 +4151,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteIntroBody =>
-      'Seu hub mantém uma conexão com o relay do ZigDash. Fora de casa, este celular chega aos seus dispositivos por ele. Tudo é criptografado no hub e no celular, então o relay não consegue ler seus dispositivos nem o que eles fazem.';
+      'Seu hub mantém uma conexão com o relay do WireDash. Fora de casa, este celular chega aos seus dispositivos por ele. Tudo é criptografado no hub e no celular, então o relay não consegue ler seus dispositivos nem o que eles fazem.';
 
   @override
   String get remoteNeedsEngine =>
@@ -4275,7 +4168,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteUnreachable =>
-      'O relay do ZigDash não respondeu. Tente mais tarde.';
+      'O relay do WireDash não respondeu. Tente mais tarde.';
 
   @override
   String get remoteRefused =>
@@ -4286,7 +4179,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteOnBody =>
-      'Fora de casa, o ZigDash se conecta pelo relay sozinho.';
+      'Fora de casa, o WireDash se conecta pelo relay sozinho.';
 
   @override
   String get remoteHubOnline => 'Seu hub está conectado ao relay';
@@ -4327,7 +4220,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteAddPhoneHint =>
-      'Em casa, escaneie com a câmera do outro celular. Ela abre o ZigDash e ativa o controle remoto lá. Mostre só para seus próprios celulares.';
+      'Em casa, escaneie com a câmera do outro celular. Ela abre o WireDash e ativa o controle remoto lá. Mostre só para seus próprios celulares.';
 
   @override
   String get remoteAddPhoneFailed =>
@@ -4361,18 +4254,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteBackupWrongFile =>
-      'Isso não é um backup de chave do ZigDash.';
+      'Isso não é um backup de chave do WireDash.';
 
   @override
   String get remotePlayOnly =>
-      'Por enquanto o controle remoto está na versão Google Play do ZigDash.';
+      'Por enquanto o controle remoto está na versão Google Play do WireDash.';
 
   @override
   String get remotePairTitle => 'Adicionar controle remoto';
 
   @override
   String get remotePairBody =>
-      'Que casa é esta? O ZigDash guarda o acesso remoto para ela.';
+      'Que casa é esta? O WireDash guarda o acesso remoto para ela.';
 
   @override
   String get remotePairNoHomes =>
@@ -4380,7 +4273,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remotePairInvalid =>
-      'Este código não é de controle remoto do ZigDash, ou foi cortado.';
+      'Este código não é de controle remoto do WireDash, ou foi cortado.';
 
   @override
   String remotePairDone(Object home) {
@@ -4398,4 +4291,145 @@ class AppLocalizationsPt extends AppLocalizations {
   String remoteHomeId(Object id) {
     return 'ID da casa $id';
   }
+
+  @override
+  String get wgSecretHint =>
+      'Armazenada de forma criptografada neste telefone. Não é incluída nas exportações de painéis. Importe novamente após restaurar os dados do aplicativo.';
+
+  @override
+  String get wgDescription =>
+      'Conecte esta casa pelo WireGuard dentro do WireDash. Outros aplicativos mantêm sua própria conexão.';
+
+  @override
+  String get wgShow => 'Mostrar configuração';
+
+  @override
+  String get wgTitle => 'Usar WireGuard integrado';
+
+  @override
+  String get wgImport => 'Importar arquivo .conf';
+
+  @override
+  String get wgHide => 'Ocultar configuração';
+
+  @override
+  String get wgConfiguration => 'Configuração do WireGuard';
+
+  @override
+  String get discoverWirenBoardHint =>
+      'Os módulos descobertos são adicionados automaticamente a este painel. Use + para os dispositivos integrados ou expanda um dispositivo para escolher controles individuais.';
+
+  @override
+  String get discoverWirenBoardNone =>
+      'Nenhum controle Wiren Board encontrado. Verifique se o usuário MQTT pode ler os metadados de /devices e se os drivers publicaram metadados retidos.';
+
+  @override
+  String get wbControllerBuiltins => 'Dispositivos integrados ao controlador';
+
+  @override
+  String get wbSearch => 'Buscar dispositivos e controles';
+
+  @override
+  String get wbAddWholeDevice => 'Adicionar dispositivo completo';
+
+  @override
+  String wbControlCount(int count) {
+    return 'Controles: $count';
+  }
+
+  @override
+  String get wbAddedModules => 'Módulos adicionados';
+
+  @override
+  String get wbClearSearch => 'Limpar busca';
+
+  @override
+  String get wgInvalidConfiguration =>
+      'Configuração do WireGuard inválida. Verifique o arquivo de configuração e tente novamente.';
+
+  @override
+  String get wgConnect => 'Conectar pelo WireGuard';
+
+  @override
+  String get wbAutoAddFailed =>
+      'Não foi possível adicionar os dispositivos descobertos. Repita a busca.';
+
+  @override
+  String get wbBuiltinsAvailable =>
+      'Os dispositivos integrados ao controlador continuam disponíveis em Todos os dispositivos.';
+
+  @override
+  String wbAutoAdded(int count) {
+    return 'Módulos adicionados: $count.';
+  }
+
+  @override
+  String get wbOpenControls => 'Abrir controles';
+
+  @override
+  String get wbAddSelected => 'Adicionar propriedades selecionadas';
+
+  @override
+  String get wbChooseProperties =>
+      'Selecione as propriedades para adicionar como um único painel.';
+
+  @override
+  String get wbZ2mDevices => 'Dispositivos Z2M do Wirenboard';
+
+  @override
+  String get panelDisplayReset => 'Redefinir conteúdo e etiquetas';
+
+  @override
+  String get panelPropertyWidget => 'Widget';
+
+  @override
+  String get panelDisplayLabel => 'Etiqueta personalizada (opcional)';
+
+  @override
+  String get panelDisplayTitle => 'Conteúdo do cartão';
+
+  @override
+  String get panelDisplayHint =>
+      'Escolha as propriedades mostradas neste cartão. As etiquetas personalizadas valem apenas para este painel. Abra o cartão para acessar todos os controles do dispositivo.';
+
+  @override
+  String get panelAllowCommandsHint =>
+      'Oferecer widgets editáveis mesmo quando a descoberta marcar esta propriedade como somente leitura. Aplica-se apenas a este bloco.';
+
+  @override
+  String get panelAllowCommands => 'Permitir comandos';
+
+  @override
+  String displayExpressionError(String error) {
+    return 'A expressão falhou; o valor original é exibido. $error';
+  }
+
+  @override
+  String displayExpressionResult(String value) {
+    return 'Resultado: $value';
+  }
+
+  @override
+  String get displayExpressionSample => 'Valor de exemplo';
+
+  @override
+  String get displayExpressionHint =>
+      'value contém o valor recebido. Deixe vazio para não alterá-lo. Apenas exibição; os comandos e o histórico salvo não mudam.';
+
+  @override
+  String get displayExpressionTest => 'Testar expressão';
+
+  @override
+  String get displayExpressionTitle => 'Antes de exibir (JavaScript)';
+
+  @override
+  String get problemReportGithub => 'No GitHub';
+
+  @override
+  String get problemReportGithubSubtitle =>
+      'Rascunho público: reveja e edite antes de publicar.';
+
+  @override
+  String get getHelpCannotOpen =>
+      'Não foi possível abrir o GitHub. Copie os detalhes e abra os problemas do WireDash no navegador.';
 }

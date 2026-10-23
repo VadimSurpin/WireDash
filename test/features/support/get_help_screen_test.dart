@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/features/onboarding/setup/setup_error_guidance.dart';
 import 'package:zigdash/features/support/community.dart';
 import 'package:zigdash/features/support/get_help_screen.dart';
+import 'package:zigdash/features/support/project_links.dart';
 import 'package:zigdash/features/support/help_tips.dart';
 import 'package:zigdash/features/support/support_facts.dart';
 import 'package:zigdash/features/support/support_log.dart';
@@ -46,7 +47,10 @@ void main() {
     expect(find.text('The right port'), findsOneWidget);
     expect(find.text('Mosquitto 2'), findsOneWidget);
     expect(find.text('Same Wi-Fi as your hub'), findsNothing);
-    expect(find.textContaining('reply within 3 days'), findsOneWidget);
+    expect(
+      find.textContaining('Review and edit the report before posting'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('What\'s included shows the details; Copy copies them', (
@@ -101,13 +105,44 @@ void main() {
     expect(find.text('Details copied'), findsOneWidget);
   });
 
-  testWidgets('with no email app, it points to Copy and the address', (
+  testWidgets('help is local until the user opens a WireDash report draft', (
     tester,
   ) async {
-    // A phone with no email app: the launcher can't open mailto.
-    final saved = openMailApp;
-    addTearDown(() => openMailApp = saved);
-    openMailApp = (_) async => false;
+    final saved = openSupportLink;
+    addTearDown(() => openSupportLink = saved);
+    final opened = <Uri>[];
+    openSupportLink = (url) async {
+      opened.add(url);
+      return true;
+    };
+    await tester.pumpWidget(_app(const GetHelpScreen(from: HelpFrom.settings)));
+    await tester.pumpAndSettle();
+    expect(opened, isEmpty);
+    await tester.scrollUntilVisible(
+      find.text('Copy details'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Copy details'));
+    await tester.pumpAndSettle();
+    expect(opened, isEmpty);
+    await tester.tap(find.text('Report a problem on GitHub'));
+    await tester.pumpAndSettle();
+    expect(opened, hasLength(1));
+    expect(opened.single.path, '/VadimSurpin/WireDash/issues/new');
+    expect(opened.single.queryParameters['version'], '2.0.1 (31)');
+    expect(
+      opened.single.queryParameters['details'],
+      contains('Opened from: Settings'),
+    );
+  });
+
+  testWidgets('when the browser fails, details can still be copied', (
+    tester,
+  ) async {
+    final saved = openSupportLink;
+    addTearDown(() => openSupportLink = saved);
+    openSupportLink = (_) async => false;
     await tester.pumpWidget(_app(const GetHelpScreen(from: HelpFrom.settings)));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
@@ -115,10 +150,9 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Contact support'));
+    await tester.tap(find.text('Report a problem on GitHub'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('No email app found'), findsOneWidget);
-    expect(find.textContaining(supportEmail), findsOneWidget);
+    expect(find.textContaining('Could not open GitHub'), findsOneWidget);
   });
 
   testWidgets('ticking a tip is local only', (tester) async {
@@ -129,26 +163,6 @@ void main() {
     await tester.tap(box);
     await tester.pump();
     expect(tester.widget<Checkbox>(box).value, isTrue);
-  });
-
-  test('the support email carries subject, prompt and details', () {
-    final url = supportMailUrl(
-      subject: 'WireDash: help getting it working',
-      prompt: 'What happened?',
-      details: 'WireDash 2.0.1 (31)\nLast error: timed out',
-    );
-    expect(url.scheme, 'mailto');
-    expect(url.path, supportEmail);
-    expect(url.query, isNot(contains('+')));
-    final body = Uri.decodeComponent(url.query.split('&body=').last);
-    expect(body, startsWith('What happened?'));
-    expect(
-      body,
-      endsWith(
-        '— Support details —\n'
-        'WireDash 2.0.1 (31)\nLast error: timed out',
-      ),
-    );
   });
 
   test('every place and setup error has tips', () {
@@ -170,9 +184,9 @@ void main() {
     );
   });
 
-  testWidgets('Ask in the Telegram group opens the community link', (
-    tester,
-  ) async {
+  testWidgets('WireDash on GitHub opens the community link', (tester) async {
+    final saved = openCommunityLink;
+    addTearDown(() => openCommunityLink = saved);
     Uri? opened;
     openCommunityLink = (url) async {
       opened = url;
@@ -182,14 +196,15 @@ void main() {
       _app(const GetHelpScreen(from: HelpFrom.noConnection)),
     );
     await tester.pumpAndSettle();
+    expect(opened, isNull);
     await tester.scrollUntilVisible(
-      find.text('Ask in the Telegram group'),
+      find.text('WireDash on GitHub'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Ask in the Telegram group'));
+    await tester.tap(find.text('WireDash on GitHub'));
     await tester.pump();
     expect(opened, communityUrl);
-    expect(opened.toString(), 'https://t.me/zigdash_app');
+    expect(opened.toString(), 'https://github.com/VadimSurpin/WireDash');
   });
 }
