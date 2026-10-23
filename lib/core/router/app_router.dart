@@ -139,7 +139,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
-      // One home at a time: Dashboards, Devices and Scenes share the bottom
+      // One home at a time: Dashboards, Devices, Scenes and Automations share the bottom
       // bar; screens opened from them cover it (root navigator).
       ShellRoute(
         builder: (_, state, child) => HomeShell(
@@ -279,6 +279,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          GoRoute(
+            path: Routes.automations,
+            pageBuilder: (_, state) => NoTransitionPage(
+              child: AutomationsScreen(
+                connectionId: state.pathParameters['id']!,
+              ),
+            ),
+          ),
         ],
       ),
       GoRoute(path: Routes.start, builder: (_, __) => const HomeStartScreen()),
@@ -322,10 +330,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, state) =>
                     RemoteScreen(connectionId: state.pathParameters['id']!),
               ),
+              // Automations were here before they became a tab (3.1.1).
               GoRoute(
                 path: 'automations',
-                builder: (_, state) =>
-                    AutomationsScreen(connectionId: state.pathParameters['id']!),
+                redirect: (_, state) =>
+                    Routes.homeAutomations(state.pathParameters['id']!),
               ),
               GoRoute(
                 path: 'alerts',

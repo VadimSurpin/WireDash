@@ -1,0 +1,1 @@
+ZigDash 3.1.1: Automations now have their own tab at the bottom of the screen, next to Dashboards, Devices and Scenes.

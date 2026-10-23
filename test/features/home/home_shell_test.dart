@@ -32,6 +32,7 @@ Widget _app(
   List<Connection> homes, {
   int newDevices = 0,
   Set<String> lowBatteries = const {},
+  Locale? locale,
 }) {
   Widget page(String label, String id) => Scaffold(
     appBar: AppBar(title: HomeTitle(connectionId: id)),
@@ -51,7 +52,12 @@ Widget _app(
           location: state.matchedLocation,
           child: child,
         ),
-        routes: [tab('dashboards'), tab('devices'), tab('scenes')],
+        routes: [
+          tab('dashboards'),
+          tab('devices'),
+          tab('scenes'),
+          tab('automations'),
+        ],
       ),
       GoRoute(path: Routes.setup, builder: (_, __) => const Text('setup')),
       GoRoute(path: Routes.settings, builder: (_, __) => const Text('homes')),
@@ -71,6 +77,7 @@ Widget _app(
     ],
     child: MaterialApp.router(
       routerConfig: router,
+      locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
     ),
@@ -177,5 +184,35 @@ void main() {
     await tester.tap(find.text('Scenes'));
     await tester.pumpAndSettle();
     expect(find.text('scenes c1'), findsOneWidget);
+  });
+
+  testWidgets('Automations is a tab of its own (3.1.1)', (tester) async {
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_app([_home('c1', 'My Home')]));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Automations'));
+    await tester.pumpAndSettle();
+    expect(find.text('automations c1'), findsOneWidget);
+    expect(
+      tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+      3,
+    );
+  });
+
+  testWidgets('four tabs fit a narrow phone in the longest languages', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    for (final l in const ['es', 'fr', 'nl', 'ru', 'de']) {
+      await tester.pumpWidget(
+        _app([_home('c1', 'My Home')], locale: Locale(l)),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: l);
+    }
   });
 }

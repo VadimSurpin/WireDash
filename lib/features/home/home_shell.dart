@@ -20,7 +20,7 @@ import '../devices/devices_providers.dart';
 import '../panels/widgets/edit_grid.dart' show askSectionName;
 
 /// The navigation shell of one home (docs/design/dashboard-1.12.md §6):
-/// Dashboards, Devices and Scenes in the bottom bar, all showing the current
+/// Dashboards, Devices, Scenes and Automations in the bottom bar, all showing the current
 /// home. The Devices destination carries a dot while a device is on no
 /// dashboard and not dismissed.
 class HomeShell extends ConsumerWidget {
@@ -38,6 +38,7 @@ class HomeShell extends ConsumerWidget {
   static int indexOf(String location) {
     if (location.contains('/devices')) return 1;
     if (location.contains('/scenes')) return 2;
+    if (location.contains('/automations')) return 3;
     return 0;
   }
 
@@ -96,6 +97,7 @@ class HomeShell extends ConsumerWidget {
     void go(int i) => context.go(switch (i) {
       1 => Routes.homeDevices(connectionId),
       2 => Routes.homeScenes(connectionId),
+      3 => Routes.homeAutomations(connectionId),
       _ => Routes.homeDashboards(connectionId),
     });
     Widget devicesIcon(IconData icon, {bool active = false}) => Badge(
@@ -143,6 +145,11 @@ class HomeShell extends ConsumerWidget {
                   ),
                   label: Text(l10n.navScenes),
                 ),
+                NavigationRailDestination(
+                  icon: const SignalIcon(Symbols.bolt),
+                  selectedIcon: const SignalIcon(Symbols.bolt, active: true),
+                  label: Text(l10n.automationsTitle),
+                ),
               ],
             ),
             const VerticalDivider(width: 1, thickness: 1),
@@ -185,6 +192,11 @@ class HomeShell extends ConsumerWidget {
                     active: true,
                   ),
                   label: l10n.navScenes,
+                ),
+                NavigationDestination(
+                  icon: const SignalIcon(Symbols.bolt),
+                  selectedIcon: const SignalIcon(Symbols.bolt, active: true),
+                  label: l10n.automationsTitle,
                 ),
               ],
             ),

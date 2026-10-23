@@ -35,8 +35,9 @@ class Routes {
       '/settings/home/$connectionId';
   static String homeRemote(String connectionId) =>
       '/settings/home/$connectionId/remote';
+  /// The Automations tab (3.1.1): the fourth destination of a home.
   static String homeAutomations(String connectionId) =>
-      '/settings/home/$connectionId/automations';
+      '/connections/$connectionId/automations';
   static String homeAlerts(String connectionId) =>
       '/settings/home/$connectionId/alerts';
 
@@ -70,6 +71,7 @@ class Routes {
       '/connections/:id/dashboards/:dashboardId/discover';
   static const devices = '/connections/:id/devices';
   static const scenes = '/connections/:id/scenes';
+  static const automations = '/connections/:id/automations';
 
   /// Opens the first home, or setup when there is none.
   static const start = '/start';

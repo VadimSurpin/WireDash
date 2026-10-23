@@ -32,7 +32,7 @@ class AutomationsPausedBanner extends ConsumerWidget {
     return Material(
       color: scheme.errorContainer,
       child: InkWell(
-        onTap: () => context.push(Routes.homeAutomations(connectionId)),
+        onTap: () => context.go(Routes.homeAutomations(connectionId)),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
           child: Row(
