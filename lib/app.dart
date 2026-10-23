@@ -7,7 +7,6 @@ import 'core/lifecycle/app_lifecycle_reconnector.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/settings/providers/settings_controller.dart';
-import 'core/analytics/analytics_tracker.dart';
 import 'shortcuts/shortcut_app_bridge.dart';
 
 class ZigDashApp extends ConsumerWidget {
@@ -24,15 +23,15 @@ class ZigDashApp extends ConsumerWidget {
           onGenerateTitle: (ctx) => AppLocalizations.of(ctx).appTitle,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.light(dynamic: settings.dynamicColor ? light : null),
-          darkTheme:
-              AppTheme.dark(dynamic: settings.dynamicColor ? dark : null),
+          darkTheme: AppTheme.dark(
+            dynamic: settings.dynamicColor ? dark : null,
+          ),
           themeMode: settings.themeMode,
           locale: settings.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           routerConfig: router,
-          builder: (context, child) =>
-              ShortcutAppBridge(child: AnalyticsTracker(child: child!)),
+          builder: (context, child) => ShortcutAppBridge(child: child!),
           // Onboarding is a router route (Routes.onboarding) with a redirect,
           // so its context.go calls can reach the InheritedGoRouter.
         ),

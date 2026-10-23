@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../data/database/database.dart';
 import '../../data/repositories/panel_repo.dart';
@@ -260,27 +259,8 @@ class WallDisplaySheet extends ConsumerWidget {
     if (!fullscreen.chosen) await fullscreen.set(true);
     final dim = ref.read(wallDimProvider(id).notifier);
     if (!dim.chosen) await dim.set(5);
-    final kiosk = ref.read(kioskProvider);
     await ref.read(kioskProvider.notifier).start(connectionId, id);
-    ref
-        .read(analyticsProvider)
-        .track(
-          KioskStarted(
-            pin: kiosk.hasPin,
-            osPinning: kiosk.osPinning,
-            dimMinutes: ref.read(wallDimProvider(id)),
-            // What will show: readings without Pro is the clock.
-            idleShow:
-                (ref.read(wallIdleShowProvider(id)) == WallIdleShow.readings &&
-                            ref.read(proStatusProvider) != ProStatus.unlocked
-                        ? WallIdleShow.clock
-                        : ref.read(wallIdleShowProvider(id)))
-                    .name,
-            motion: ref.read(wallMotionSensorsProvider(id)).isNotEmpty,
-            night: ref.read(wallNightProvider(id)).on,
-            alarms: ref.read(wallAlarmProvider(id)).on,
-          ),
-        );
+
     if (!context.mounted) return;
     Navigator.pop(context);
     messenger

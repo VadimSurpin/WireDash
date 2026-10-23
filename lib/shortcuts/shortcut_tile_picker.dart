@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/analytics/analytics.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/l10n/l10n_ext.dart';
@@ -14,30 +13,44 @@ import 'shortcut_service.dart';
 
 /// A device that a shortcut can switch: a device tile whose class has an
 /// on/off or open/close action.
-typedef ShortcutCandidate = ({String connectionId, String home, String ieee, String name});
+typedef ShortcutCandidate = ({
+  String connectionId,
+  String home,
+  String ieee,
+  String name,
+});
 
 final shortcutCandidatesProvider =
     FutureProvider.autoDispose<List<ShortcutCandidate>>((ref) async {
-  final db = ref.watch(appDatabaseProvider);
-  final homes = await ref.watch(connectionRepoProvider).watchAll().first;
-  final out = <ShortcutCandidate>[];
-  for (final home in homes) {
-    final seen = <String>{};
-    for (final (panel, _) in await DeviceRegistryDao(db).tilesOfHome(home.id)) {
-      final ieee = panel.deviceIeee;
-      if (ieee == null || panel.type != PanelType.device || !seen.add(ieee)) {
-        continue;
+      final db = ref.watch(appDatabaseProvider);
+      final homes = await ref.watch(connectionRepoProvider).watchAll().first;
+      final out = <ShortcutCandidate>[];
+      for (final home in homes) {
+        final seen = <String>{};
+        for (final (panel, _) in await DeviceRegistryDao(
+          db,
+        ).tilesOfHome(home.id)) {
+          final ieee = panel.deviceIeee;
+          if (ieee == null ||
+              panel.type != PanelType.device ||
+              !seen.add(ieee)) {
+            continue;
+          }
+          final c = PanelConfig.decode(panel.type, panel.config);
+          if (c is DeviceTileConfig &&
+              (c.profile.switches.isNotEmpty ||
+                  c.profile.deviceClass.name == 'cover')) {
+            out.add((
+              connectionId: home.id,
+              home: home.name,
+              ieee: ieee,
+              name: panel.name,
+            ));
+          }
+        }
       }
-      final c = PanelConfig.decode(panel.type, panel.config);
-      if (c is DeviceTileConfig &&
-          (c.profile.switches.isNotEmpty ||
-              c.profile.deviceClass.name == 'cover')) {
-        out.add((connectionId: home.id, home: home.name, ieee: ieee, name: panel.name));
-      }
-    }
-  }
-  return out;
-});
+      return out;
+    });
 
 /// "Choose a device for ZigDash 2": opened by an unassigned tile.
 class ShortcutTilePicker extends ConsumerWidget {
@@ -67,16 +80,25 @@ class ShortcutTilePicker extends ConsumerWidget {
                       subtitle: Text(c.home),
                       onTap: () async {
                         final messenger = ScaffoldMessenger.of(context);
-                        await ref.read(shortcutServiceProvider).assignTile(slot,
-                            connectionId: c.connectionId, ieee: c.ieee, name: c.name);
-                        ref
-                            .read(analyticsProvider)
-                            .track(const ShortcutAdded(ShortcutEventKind.tile));
+                        await ref
+                            .read(shortcutServiceProvider)
+                            .assignTile(
+                              slot,
+                              connectionId: c.connectionId,
+                              ieee: c.ieee,
+                              name: c.name,
+                            );
+
                         await refreshShortcutTiles();
-                        messenger.showSnackBar(SnackBar(
-                            content: Text(l10n.shortcutTileReady(c.name, slot))));
+                        messenger.showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.shortcutTileReady(c.name, slot)),
+                          ),
+                        );
                         if (context.mounted) {
-                          context.canPop() ? context.pop() : context.go('/start');
+                          context.canPop()
+                              ? context.pop()
+                              : context.go('/start');
                         }
                       },
                     ),

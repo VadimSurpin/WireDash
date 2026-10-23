@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/features/pro/pro.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zigdash/alerts/alerts_service.dart';
-import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
@@ -55,17 +54,6 @@ Dashboard _dash(String id, String name) => Dashboard(
   updatedAt: _stamp,
 );
 
-class _Sink implements AnalyticsSink {
-  final sent = <Map<String, String>>[];
-  @override
-  Future<void> start() async {}
-  @override
-  Future<void> stop() async {}
-  @override
-  void send(String name, Map<String, String> props) =>
-      sent.add({'name': name, ...props});
-}
-
 class _Wake extends ScreenWake {
   final lockCalls = <bool>[];
   final fullscreenCalls = <bool>[];
@@ -85,7 +73,6 @@ class _Wake extends ScreenWake {
 void main() {
   late SharedPreferences prefs;
   late FakeKioskPinStore pins;
-  late _Sink sink;
   late _Wake wake;
 
   Future<void> setPrefs(Map<String, Object> values) async {
@@ -94,9 +81,8 @@ void main() {
   }
 
   setUp(() async {
-    await setPrefs({'analytics_consent': true});
+    await setPrefs({});
     pins = FakeKioskPinStore();
-    sink = _Sink();
     wake = _Wake();
   });
 
@@ -105,8 +91,6 @@ void main() {
       if (pro != null) proStatusProvider.overrideWithValue(pro),
       sharedPreferencesProvider.overrideWithValue(prefs),
       kioskPinStoreProvider.overrideWithValue(pins),
-      analyticsSinkProvider.overrideWithValue(sink),
-      analyticsAvailableProvider.overrideWithValue(true),
       screenWakeProvider.overrideWithValue(wake),
       appDatabaseProvider.overrideWith((ref) {
         final db = AppDatabase.test(NativeDatabase.memory());
@@ -176,7 +160,7 @@ void main() {
 
   group('the idle screen and Pro (wall-tablet-2.9.md)', () {
     Future<void> openSheet(WidgetTester tester, ProStatus pro) async {
-      await setPrefs({'analytics_consent': true, 'wall_dim_d1': 5});
+      await setPrefs({'wall_dim_d1': 5});
       await pump(tester, pro: pro);
       await tester.tap(find.byType(PopupMenuButton<String>));
       await tester.pumpAndSettle();
@@ -237,17 +221,7 @@ void main() {
       find.text('Kiosk on. Long-press the title to leave.'),
       findsOneWidget,
     );
-    expect(sink.sent.where((e) => e['feature'] == 'kiosk').single, {
-      'name': 'feature_used',
-      'feature': 'kiosk',
-      'lock': 'none',
-      'os_pin': 'no',
-      'dim': '5m',
-      'idle_show': 'dim',
-      'motion': 'no',
-      'night': 'no',
-      'alarms': 'no',
-    });
+
     // The header lost its actions and the add-tile button; tabs stay.
     expect(find.byIcon(Icons.edit_outlined), findsNothing);
     expect(find.byIcon(Icons.settings_outlined), findsNothing);

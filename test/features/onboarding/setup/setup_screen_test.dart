@@ -6,10 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/features/onboarding/first_run.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/connections/discovery/address_check.dart';
@@ -108,20 +105,6 @@ class _FakeFirstRun implements FirstRun {
 
   @override
   Future<void> finish(String connectionId) async {}
-}
-
-class _RecordingSink implements AnalyticsSink {
-  _RecordingSink(this.sent);
-  final List<(String, Map<String, String>)> sent;
-
-  @override
-  Future<void> start() async {}
-
-  @override
-  Future<void> stop() async {}
-
-  @override
-  void send(String name, Map<String, String> props) => sent.add((name, props));
 }
 
 /// Pumps the setup screen with a coordinator built on fakes.
@@ -521,22 +504,6 @@ void main() {
 
   // 2.9.6: the empty result with no hub found offers three ways out.
   group('the empty result\'s choices', () {
-    late List<(String, Map<String, String>)> sent;
-    late List<Override> analytics;
-    setUp(() {
-      sent = [];
-      analytics = [
-        analyticsProvider.overrideWithValue(
-          Analytics(_RecordingSink(sent), enabled: true),
-        ),
-      ];
-    });
-    List<String?> choices() => [
-      for (final (name, props) in sent)
-        if (name == 'setup_step' && props['step'] == 'empty_choice')
-          props['choice'],
-    ];
-
     testWidgets('no hub yet opens the Hubs page', (tester) async {
       Uri? opened;
       final original = openSetupLink;
@@ -545,7 +512,7 @@ void main() {
         opened = url;
         return true;
       };
-      await _pump(tester, scan: (_) => const Stream.empty(), extra: analytics);
+      await _pump(tester, scan: (_) => const Stream.empty());
       await tester.tap(find.text('Find my setup'));
       await tester.pump();
       await tester.pump();
@@ -554,7 +521,6 @@ void main() {
       await tester.pump();
       expect(opened, hubsPageUrl);
       expect(opened.toString(), 'https://zigdash.app/hubs/');
-      expect(choices(), ['no_hub']);
     });
 
     testWidgets('Home Assistant checks homeassistant.local', (tester) async {
@@ -562,7 +528,7 @@ void main() {
       final coordinator = await _pump(
         tester,
         scan: (_) => const Stream.empty(),
-        extra: analytics,
+
         checkAddress: (host, port) async {
           asked.add(host);
           return const AddressCheckResult(AddressOutcome.notResolved);
@@ -586,7 +552,6 @@ void main() {
         find.textContaining('homeassistant.local could not be looked up'),
         findsOneWidget,
       );
-      expect(choices(), ['home_assistant']);
     });
 
     testWidgets('another network explains, and checks a usual name', (
@@ -596,7 +561,7 @@ void main() {
       await _pump(
         tester,
         scan: (_) => const Stream.empty(),
-        extra: analytics,
+
         checkAddress: (host, port) async {
           asked.add(host);
           return const AddressCheckResult.nothing();
@@ -620,7 +585,6 @@ void main() {
         find.textContaining('Nothing answered at smhub.local'),
         findsOneWidget,
       );
-      expect(choices(), ['other_network']);
     });
 
     testWidgets('a hub found: no choices', (tester) async {
@@ -1061,21 +1025,6 @@ void main() {
   // welcome screen offers the demo and the hubs page under its own heading;
   // Find my setup stays the one main button.
   group('welcome: no Zigbee2MQTT yet', () {
-    late List<(String, Map<String, String>)> sent;
-    late List<Override> analytics;
-    setUp(() {
-      sent = [];
-      analytics = [
-        analyticsProvider.overrideWithValue(
-          Analytics(_RecordingSink(sent), enabled: true),
-        ),
-      ];
-    });
-    List<String?> steps() => [
-      for (final (name, props) in sent)
-        if (name == 'setup_step') props['step'],
-    ];
-
     testWidgets('Find my setup is still the only main button', (tester) async {
       await _pump(tester);
       expect(find.text('No Zigbee2MQTT yet?'), findsOneWidget);
@@ -1089,17 +1038,12 @@ void main() {
 
     testWidgets('the demo home opens without a scan', (tester) async {
       final firstRun = _FakeFirstRun();
-      final coordinator = await _pump(
-        tester,
-        firstRun: firstRun,
-        extra: analytics,
-      );
+      final coordinator = await _pump(tester, firstRun: firstRun);
       await tester.tap(find.text('Try the demo home'));
       await tester.pumpAndSettle();
       expect(firstRun.demoStarted, 1);
       expect(find.text('dashboards of demo1'), findsOneWidget);
       expect(coordinator.state, isA<SetupIdle>());
-      expect(steps(), ['welcome_demo']);
     });
 
     testWidgets('which hub to get opens the Hubs page', (tester) async {
@@ -1110,11 +1054,10 @@ void main() {
         opened = url;
         return true;
       };
-      await _pump(tester, extra: analytics);
+      await _pump(tester);
       await tester.tap(find.text('Which hub to get'));
       await tester.pump();
       expect(opened, hubsPageUrl);
-      expect(steps(), ['welcome_hubs']);
     });
   });
 
@@ -1169,74 +1112,6 @@ void main() {
     expect(mystery.value, isFalse);
     expect(mystery.onChanged, isNull); // disabled for screen readers
   });
-
-  group('usage data on the first screen (ADR 0007)', () {
-    Future<(SharedPreferences, _SinkSpy)> analyticsOverrides(
-      List<Override> out, {
-      bool available = true,
-    }) async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final sink = _SinkSpy();
-      out.addAll([
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        analyticsSinkProvider.overrideWithValue(sink),
-        analyticsAvailableProvider.overrideWithValue(available),
-      ]);
-      return (prefs, sink);
-    }
-
-    testWidgets('the box is ticked by default and moving on shares the '
-        'setup steps from the first one', (tester) async {
-      final extra = <Override>[];
-      final (prefs, sink) = await analyticsOverrides(extra);
-      await _pump(tester, extra: extra);
-      expect(
-        find.text('Share anonymous usage data to help improve setup'),
-        findsOneWidget,
-      );
-      expect(
-        tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
-        isTrue,
-      );
-      expect(sink.sent, isEmpty, reason: 'nothing before the user moves on');
-
-      await tester.tap(find.text('Find my setup'));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump();
-
-      expect(prefs.getBool('analytics_consent'), isTrue);
-      expect(
-        sink.sent.map((e) => e['step']),
-        containsAllInOrder(['started', 'scan_found', 'review']),
-      );
-    });
-
-    testWidgets('unticking it is a no, and nothing is sent', (tester) async {
-      final extra = <Override>[];
-      final (prefs, sink) = await analyticsOverrides(extra);
-      await _pump(tester, extra: extra);
-      await tester.tap(find.byType(CheckboxListTile));
-      await tester.pump();
-      expect(
-        tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
-        isFalse,
-      );
-      await tester.tap(find.text('Find my setup'));
-      await tester.pump();
-      await tester.pump();
-      expect(prefs.getBool('analytics_consent'), isFalse);
-      expect(sink.sent, isEmpty);
-    });
-
-    testWidgets('a build without a key asks nothing', (tester) async {
-      final extra = <Override>[];
-      await analyticsOverrides(extra, available: false);
-      await _pump(tester, extra: extra);
-      expect(find.byType(CheckboxListTile), findsNothing);
-    });
-  });
 }
 
 class _FakeReminder implements SetupReminder {
@@ -1256,23 +1131,4 @@ class _FakeReminder implements SetupReminder {
 
   @override
   Future<bool> openedFromReminder() async => false;
-}
-
-class _SinkSpy implements AnalyticsSink {
-  bool running = false;
-  final sent = <Map<String, String>>[];
-
-  @override
-  Future<void> start() async => running = true;
-
-  @override
-  Future<void> stop() async {
-    running = false;
-    sent.clear();
-  }
-
-  @override
-  void send(String name, Map<String, String> props) {
-    if (running) sent.add(props);
-  }
 }

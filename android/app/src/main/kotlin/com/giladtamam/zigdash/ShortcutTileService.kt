@@ -51,7 +51,6 @@ abstract class ShortcutTileService : TileService() {
 
     private fun handleClick() {
         val t = ShortcutPrefs.tile(this, slot)
-        if (t != null) ShortcutPrefs.mark(this, "shortcut.used.tile")
         if (t == null) {
             openApp(Intent(this, MainActivity::class.java)
                 .putExtra(MainActivity.EXTRA_ACTION, "assignTile")

@@ -1,3 +1,4 @@
+import '../support/help_context.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import '../support/support_details.dart';
 import '../support/get_help_screen.dart' show GetHelpLink;
 import '../support/community.dart';
 import '../support/support_log.dart';
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/router/routes.dart';
 import '../../data/database/tables/connections.dart';
@@ -71,7 +71,6 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   /// Failed checks on this screen: after two, a card offers a person
   /// (2.9.2; the small link at the bottom was opened by 6 of 53 stuck users).
   int _failures = 0;
-  bool _offerTracked = false;
   String? _savedConnectionId;
   String _baseTopic = 'zigbee2mqtt';
   bool _pairingRequested = false;
@@ -109,10 +108,9 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   Future<void> _start() async {
     // The form is only mounted in the form phase (retry runs from the failed
     // phase, where there is no form to validate).
-    var tidied = false;
     if (_phase == _Phase.form) {
       setState(
-        () => tidied = tidyBrokerAddress(
+        () => tidyBrokerAddress(
           host: _host,
           port: _port,
           protocol: _protocol,
@@ -158,19 +156,6 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     if (!report.connected) {
       ref.read(supportLogProvider).recordFailure(failureKindFromLadder(report));
     }
-    // 2.7.2: where the broker form loses people. A user spent three minutes
-    // here and all we knew was that the form had opened.
-    ref
-        .read(analyticsProvider)
-        .track(
-          SetupStep(
-            SetupStepKind.manualTest,
-            result: manualTestResult(report),
-            devices: report.connected ? report.deviceNames.length : null,
-            tidied: tidied,
-          ),
-        );
-
     if (report.connected) {
       // Auto-save per the spec: on success the connection saves with
       // autoConnect on, then the success moment is shown.
@@ -227,7 +212,8 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   /// as it is.
   Future<void> _buildFirstDashboard(String connectionId) async {
     final base = _baseTopic;
-    final wirenBoardDevices = _report?.wirenBoardDevices ?? const <WirenBoardDevice>[];
+    final wirenBoardDevices =
+        _report?.wirenBoardDevices ?? const <WirenBoardDevice>[];
     // The language this screen shows, for the dashboard and section names.
     final l10n = context.l10n;
     try {
@@ -244,8 +230,11 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
       );
       final List<Z2mDevice> devices;
       try {
-        devices = wirenBoardDevices.isNotEmpty && (_report?.deviceNames.isEmpty ?? true) ? const [] :
-            await ref.read(discoveredDevicesProvider(args).future);
+        devices =
+            wirenBoardDevices.isNotEmpty &&
+                (_report?.deviceNames.isEmpty ?? true)
+            ? const []
+            : await ref.read(discoveredDevicesProvider(args).future);
       } finally {
         keepAlive.close();
       }
@@ -417,12 +406,6 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
   Widget _buildFailed(BuildContext context) {
     final report = _report!;
     final offer = !_saveFailed && _failures >= 2;
-    if (offer && !_offerTracked) {
-      _offerTracked = true;
-      ref
-          .read(analyticsProvider)
-          .track(const HelpOffered(HelpFrom.manualConnect));
-    }
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -482,8 +465,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
     final l10n = context.l10n;
     final cs = Theme.of(context).colorScheme;
     final wbDevices = report.wirenBoardDevices;
-    final names = [...report.deviceNames,
-      for (final device in wbDevices) device.title(l10n.localeName)];
+    final names = [
+      ...report.deviceNames,
+      for (final device in wbDevices) device.title(l10n.localeName),
+    ];
     final count = names.length;
     final zeroDevices = count == 0;
 
@@ -499,7 +484,11 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          zeroDevices ? l10n.noDevicesHint : wbDevices.isNotEmpty ? l10n.wbBuiltinsAvailable : l10n.foundDevicesHint,
+          zeroDevices
+              ? l10n.noDevicesHint
+              : wbDevices.isNotEmpty
+              ? l10n.wbBuiltinsAvailable
+              : l10n.foundDevicesHint,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
@@ -509,8 +498,7 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final name in names.take(8))
-                Chip(label: Text(name)),
+              for (final name in names.take(8)) Chip(label: Text(name)),
             ],
           ),
         ],

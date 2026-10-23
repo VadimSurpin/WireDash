@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../../alerts/alert_push.dart';
-import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/app_l10n.dart';
 import '../../../core/l10n/l10n_ext.dart';
 
@@ -104,9 +103,6 @@ class _RemindMeLaterState extends ConsumerState<RemindMeLater> {
   bool? _set;
 
   Future<void> _remind() async {
-    ref
-        .read(analyticsProvider)
-        .track(const SetupStep(SetupStepKind.remindLater));
     final ok = await ref
         .read(setupReminderProvider)
         .schedule(Localizations.localeOf(context));

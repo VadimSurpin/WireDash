@@ -972,32 +972,18 @@ class AppLocalizationsNl extends AppLocalizations {
       'Tevreden? Een korte review helpt anderen de app te vinden.';
 
   @override
-  String get settingsFeatureRequest => 'Functie aanvragen';
+  String get problemReportGithub => 'Op GitHub';
 
   @override
-  String get settingsFeatureRequestSubtitle =>
-      'Vertel me wat WireDash beter zou maken.';
-
-  @override
-  String get featureRequestGithub => 'Op GitHub';
-
-  @override
-  String get featureRequestGithubSubtitle =>
+  String get problemReportGithubSubtitle =>
       'Openbaar: anderen kunnen het zien en erop stemmen.';
 
   @override
-  String get featureRequestEmail => 'Per e-mail';
+  String get problemReportEmail => 'Per e-mail';
 
   @override
-  String get featureRequestEmailSubtitle =>
+  String get problemReportEmailSubtitle =>
       'Privé, rechtstreeks naar de ontwikkelaar.';
-
-  @override
-  String get featureRequestEmailSubject => 'WireDash: functieverzoek';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'Wat zou je willen dat WireDash doet, en waarom?';
 
   @override
   String get settingsReportProblem => 'Probleem melden';
@@ -2524,37 +2510,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dashWallDisplay => 'Wandweergave';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Anonieme gebruiksgegevens delen om de installatie te verbeteren';
-
-  @override
-  String get analyticsWhatsShared => 'Wat wordt gedeeld';
-
-  @override
-  String get analyticsCardTitle => 'WireDash helpen verbeteren?';
-
-  @override
-  String get analyticsCardBody =>
-      'Anonieme gebruiksgegevens delen: welke installatiestappen mislukken en welke functies worden gebruikt. Nooit je apparaten, topics of broker.';
-
-  @override
-  String get analyticsShare => 'Delen';
-
-  @override
-  String get analyticsNoThanks => 'Nee, bedankt';
-
-  @override
-  String get settingsAnalytics => 'Anonieme gebruiksgegevens delen';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Installatiestappen en gebruikte functies. Nooit je apparaten, topics of broker.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Anonieme gebruiksgegevens. Zet ze uit met de schakelaar hierboven.';
-
-  @override
   String get dashDefaultName => 'Thuis';
 
   @override
@@ -2975,35 +2930,6 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get shortcutOpenAppFirst =>
       'Open WireDash en zet eerst een apparaat op een dashboard.';
-
-  @override
-  String get pollTitle => 'Wat moet WireDash hierna doen?';
-
-  @override
-  String get pollBody =>
-      'Kies wat je het meest zou gebruiken. Je antwoord wordt met je anonieme gebruiksgegevens verstuurd.';
-
-  @override
-  String get pollNotifications => 'Meldingen';
-
-  @override
-  String get pollHistory => 'Geschiedenisgrafieken';
-
-  @override
-  String get pollKiosk => 'Kioskmodus voor een wandtablet';
-
-  @override
-  String get pollGroups => 'Zigbee-groepen';
-
-  @override
-  String get pollNotNow => 'Niet nu';
-
-  @override
-  String get pollThanks => 'Bedankt! Dat helpt kiezen wat er komt.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Gebruiksgegevens staan uit, dus van hier wordt niets verstuurd. Laat het ons weten via Functie aanvragen.';
 
   @override
   String alertLeak(Object name) {

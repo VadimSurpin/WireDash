@@ -976,32 +976,17 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vous aimez l\'appli ? Un avis rapide aide les autres à la trouver.';
 
   @override
-  String get settingsFeatureRequest => 'Proposer une fonction';
+  String get problemReportGithub => 'Sur GitHub';
 
   @override
-  String get settingsFeatureRequestSubtitle =>
-      'Dites-moi ce qui améliorerait WireDash.';
-
-  @override
-  String get featureRequestGithub => 'Sur GitHub';
-
-  @override
-  String get featureRequestGithubSubtitle =>
+  String get problemReportGithubSubtitle =>
       'Public : d\'autres peuvent le voir et voter.';
 
   @override
-  String get featureRequestEmail => 'Par e-mail';
+  String get problemReportEmail => 'Par e-mail';
 
   @override
-  String get featureRequestEmailSubtitle =>
-      'Privé, directement au développeur.';
-
-  @override
-  String get featureRequestEmailSubject => 'WireDash : demande de fonction';
-
-  @override
-  String get featureRequestEmailPrompt =>
-      'Que voudriez-vous que WireDash fasse, et pourquoi ?';
+  String get problemReportEmailSubtitle => 'Privé, directement au développeur.';
 
   @override
   String get settingsReportProblem => 'Signaler un problème';
@@ -2532,38 +2517,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dashWallDisplay => 'Affichage mural';
 
   @override
-  String get analyticsSetupCheckbox =>
-      'Partager des données d\'utilisation anonymes pour améliorer la configuration';
-
-  @override
-  String get analyticsWhatsShared => 'Ce qui est partagé';
-
-  @override
-  String get analyticsCardTitle => 'Aider à améliorer WireDash ?';
-
-  @override
-  String get analyticsCardBody =>
-      'Partager des données d\'utilisation anonymes : les étapes de configuration qui échouent et les fonctions utilisées. Jamais vos appareils, topics ou broker.';
-
-  @override
-  String get analyticsShare => 'Partager';
-
-  @override
-  String get analyticsNoThanks => 'Non merci';
-
-  @override
-  String get settingsAnalytics =>
-      'Partager des données d\'utilisation anonymes';
-
-  @override
-  String get settingsAnalyticsSubtitle =>
-      'Étapes de configuration et fonctions utilisées. Jamais vos appareils, topics ou broker.';
-
-  @override
-  String get settingsPrivacySubtitleOptIn =>
-      'Données d\'utilisation anonymes. Désactivez-les avec l\'interrupteur ci-dessus.';
-
-  @override
   String get dashDefaultName => 'Maison';
 
   @override
@@ -2984,35 +2937,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get shortcutOpenAppFirst =>
       'Ouvrez WireDash et placez d\'abord un appareil sur un tableau de bord.';
-
-  @override
-  String get pollTitle => 'Que devrait faire WireDash ensuite ?';
-
-  @override
-  String get pollBody =>
-      'Choisissez ce que vous utiliseriez le plus. La réponse est envoyée avec vos données d\'utilisation anonymes.';
-
-  @override
-  String get pollNotifications => 'Notifications';
-
-  @override
-  String get pollHistory => 'Graphiques d\'historique';
-
-  @override
-  String get pollKiosk => 'Mode kiosque pour une tablette murale';
-
-  @override
-  String get pollGroups => 'Groupes Zigbee';
-
-  @override
-  String get pollNotNow => 'Pas maintenant';
-
-  @override
-  String get pollThanks => 'Merci ! Cela aide à choisir la suite.';
-
-  @override
-  String get pollNoAnalytics =>
-      'Les données d\'utilisation sont désactivées : rien n\'est envoyé d\'ici. Dites-le-nous plutôt via Proposer une fonction.';
 
   @override
   String alertLeak(Object name) {

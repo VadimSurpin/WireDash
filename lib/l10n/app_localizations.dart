@@ -1872,53 +1872,29 @@ abstract class AppLocalizations {
   /// **'Enjoying it? A quick review helps others find it.'**
   String get settingsRateAppSubtitle;
 
-  /// No description provided for @settingsFeatureRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Request a feature'**
-  String get settingsFeatureRequest;
-
-  /// No description provided for @settingsFeatureRequestSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tell me what would make WireDash better.'**
-  String get settingsFeatureRequestSubtitle;
-
-  /// No description provided for @featureRequestGithub.
+  /// No description provided for @problemReportGithub.
   ///
   /// In en, this message translates to:
   /// **'On GitHub'**
-  String get featureRequestGithub;
+  String get problemReportGithub;
 
-  /// No description provided for @featureRequestGithubSubtitle.
+  /// No description provided for @problemReportGithubSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Public: others can see it and vote for it.'**
-  String get featureRequestGithubSubtitle;
+  String get problemReportGithubSubtitle;
 
-  /// No description provided for @featureRequestEmail.
+  /// No description provided for @problemReportEmail.
   ///
   /// In en, this message translates to:
   /// **'By email'**
-  String get featureRequestEmail;
+  String get problemReportEmail;
 
-  /// No description provided for @featureRequestEmailSubtitle.
+  /// No description provided for @problemReportEmailSubtitle.
   ///
   /// In en, this message translates to:
   /// **'Private, straight to the developer.'**
-  String get featureRequestEmailSubtitle;
-
-  /// No description provided for @featureRequestEmailSubject.
-  ///
-  /// In en, this message translates to:
-  /// **'WireDash feature request'**
-  String get featureRequestEmailSubject;
-
-  /// No description provided for @featureRequestEmailPrompt.
-  ///
-  /// In en, this message translates to:
-  /// **'What would you like WireDash to do, and why?'**
-  String get featureRequestEmailPrompt;
+  String get problemReportEmailSubtitle;
 
   /// No description provided for @settingsReportProblem.
   ///
@@ -4542,60 +4518,6 @@ abstract class AppLocalizations {
   /// **'Wall display'**
   String get dashWallDisplay;
 
-  /// No description provided for @analyticsSetupCheckbox.
-  ///
-  /// In en, this message translates to:
-  /// **'Share anonymous usage data to help improve setup'**
-  String get analyticsSetupCheckbox;
-
-  /// No description provided for @analyticsWhatsShared.
-  ///
-  /// In en, this message translates to:
-  /// **'What\'s shared'**
-  String get analyticsWhatsShared;
-
-  /// No description provided for @analyticsCardTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Help improve WireDash?'**
-  String get analyticsCardTitle;
-
-  /// No description provided for @analyticsCardBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Share anonymous usage data: which setup steps fail and which features get used. Never your devices, topics or broker.'**
-  String get analyticsCardBody;
-
-  /// No description provided for @analyticsShare.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get analyticsShare;
-
-  /// No description provided for @analyticsNoThanks.
-  ///
-  /// In en, this message translates to:
-  /// **'No thanks'**
-  String get analyticsNoThanks;
-
-  /// No description provided for @settingsAnalytics.
-  ///
-  /// In en, this message translates to:
-  /// **'Share anonymous usage data'**
-  String get settingsAnalytics;
-
-  /// No description provided for @settingsAnalyticsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Setup steps and features used. Never your devices, topics or broker.'**
-  String get settingsAnalyticsSubtitle;
-
-  /// No description provided for @settingsPrivacySubtitleOptIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Anonymous usage data. Turn it off with the switch above.'**
-  String get settingsPrivacySubtitleOptIn;
-
   /// No description provided for @dashDefaultName.
   ///
   /// In en, this message translates to:
@@ -5321,60 +5243,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open WireDash and put a device on a dashboard first.'**
   String get shortcutOpenAppFirst;
-
-  /// One-time dashboard card asking what to build next.
-  ///
-  /// In en, this message translates to:
-  /// **'What should WireDash do next?'**
-  String get pollTitle;
-
-  /// Under the poll title, for people who share usage data.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick the one you\'d use most. Your answer is sent with your anonymous usage data.'**
-  String get pollBody;
-
-  /// Poll choice: alerts on the phone (door opened, leak…).
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications'**
-  String get pollNotifications;
-
-  /// Poll choice: graphs of past readings.
-  ///
-  /// In en, this message translates to:
-  /// **'History graphs'**
-  String get pollHistory;
-
-  /// Poll choice: a full-screen mode for a wall tablet.
-  ///
-  /// In en, this message translates to:
-  /// **'Kiosk mode for a wall tablet'**
-  String get pollKiosk;
-
-  /// Poll choice: control Zigbee2MQTT groups.
-  ///
-  /// In en, this message translates to:
-  /// **'Zigbee groups'**
-  String get pollGroups;
-
-  /// Hides the poll for good.
-  ///
-  /// In en, this message translates to:
-  /// **'Not now'**
-  String get pollNotNow;
-
-  /// Snackbar after answering the poll.
-  ///
-  /// In en, this message translates to:
-  /// **'Thanks! That helps decide what comes next.'**
-  String get pollThanks;
-
-  /// Poll card text for people who don't share usage data.
-  ///
-  /// In en, this message translates to:
-  /// **'Usage data is off, so nothing is sent from here. Tell us with Request a feature instead.'**
-  String get pollNoAnalytics;
 
   /// Notification: a leak sensor got wet. {name} is the device's name.
   ///

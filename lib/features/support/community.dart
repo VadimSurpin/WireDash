@@ -1,8 +1,8 @@
+import 'help_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 
 /// The ZigDash Telegram group (docs/design/support.md, Community): where
@@ -16,7 +16,6 @@ Future<bool> Function(Uri url) openCommunityLink = (url) =>
 
 /// Opens the community group and records where it was opened from.
 Future<void> openCommunity(WidgetRef ref, HelpFrom from) async {
-  ref.read(analyticsProvider).track(CommunityOpened(from));
   try {
     await openCommunityLink(communityUrl);
   } catch (_) {}

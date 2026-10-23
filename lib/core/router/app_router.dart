@@ -1,3 +1,4 @@
+import '../../features/support/help_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,7 +26,6 @@ import '../../features/help/screens/help_screen.dart';
 import '../../features/onboarding/setup/setup_error_guidance.dart';
 import '../../features/support/get_help_screen.dart';
 import '../../shortcuts/shortcut_tile_picker.dart';
-import '../analytics/analytics_events.dart' show HelpFrom;
 import '../../features/settings/screens/home_settings_screen.dart';
 import '../../features/settings/screens/language_screen.dart';
 import '../../features/settings/screens/settings_screen.dart';
@@ -210,7 +210,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                   DevicePickerScreen(
                     connectionId: state.pathParameters['id']!,
                     dashboardId: state.pathParameters['dashboardId']!,
-                    initialWirenBoard: state.uri.queryParameters['source'] == 'wirenboard',
+                    initialWirenBoard:
+                        state.uri.queryParameters['source'] == 'wirenboard',
                   ),
                 ),
               ),

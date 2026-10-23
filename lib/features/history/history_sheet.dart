@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../alerts/node_red_installer.dart';
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/review/review_prompt_controller.dart';
 import '../../core/theme/signal_colors.dart';
@@ -85,13 +84,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
   HistoryRange _range = HistoryRange.day;
   HistoryPoint? _scrub;
   bool _busy = false;
-  bool _lockedSeen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(analyticsProvider).track(const FeatureUsed(Feature.history));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,10 +105,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     ];
     final range = ranges.contains(_range) ? _range : HistoryRange.day;
     final locked = range.isPro && pro == ProStatus.locked;
-    if (locked && !_lockedSeen) {
-      _lockedSeen = true;
-      ref.read(analyticsProvider).track(const ProEvent(ProStep.lockedShown));
-    }
     final online = ref
         .watch(historyRecorderOnlineProvider(widget.connectionId))
         .valueOrNull;
@@ -298,11 +286,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
       switch (r) {
         case NodeRedInstall.installed:
         case NodeRedInstall.updated:
-          _track(
-            r == NodeRedInstall.installed
-                ? HistorySetupResult.installed
-                : HistorySetupResult.updated,
-          );
           if (await service.brokerHasLogin(widget.connectionId)) {
             final host = await service.hostOf(widget.connectionId) ?? '';
             if (!mounted) return;
@@ -329,10 +312,8 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
               .read(reviewPromptControllerProvider)
               .recordSuccessfulSession();
         case NodeRedInstall.needsLogin:
-          _track(HistorySetupResult.manual);
           await _manualSteps(l10n);
         case NodeRedInstall.notInstalled:
-          _track(HistorySetupResult.noNodeRed);
           final host = await service.hostOf(widget.connectionId) ?? '';
           if (!mounted) return;
           final here = await showDialog<bool>(
@@ -355,7 +336,6 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
           );
           if (here == true) await _recordHere(l10n);
         case NodeRedInstall.failed:
-          _track(HistorySetupResult.failed);
           messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubFailed)));
       }
     } finally {
@@ -369,12 +349,9 @@ class _HistorySheetState extends ConsumerState<HistorySheet> {
     await ref
         .read(historyRecordHereProvider(widget.connectionId).notifier)
         .set(true);
-    _track(HistorySetupResult.thisDevice);
+
     messenger.showSnackBar(SnackBar(content: Text(l10n.historyRecordingHere)));
   }
-
-  void _track(HistorySetupResult r) =>
-      ref.read(analyticsProvider).track(HistorySetup(r));
 
   Future<void> _manualSteps(AppLocalizations l10n) async {
     final flow = await DefaultAssetBundle.of(

@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
-import 'package:zigdash/core/analytics/analytics_events.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/connections/discovery/hub_probe.dart';
@@ -383,7 +382,6 @@ void main() {
         expect(report!.steps[2].status, StepStatus.fail);
         expect(report!.steps[2].detailKey, 'diagLoginNoAnswer');
         expect(report!.connected, isFalse);
-        expect(manualTestResult(report!), ManualTestResult.connack);
       });
     });
 
@@ -444,7 +442,6 @@ void main() {
             .then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps.single.detailKey, 'diagResolveLocalName');
-        expect(manualTestResult(report!), ManualTestResult.localName);
       });
     });
 
@@ -462,7 +459,7 @@ void main() {
         d.run(config: config(), password: '').then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps[1].detailKey, 'diagTcpHaNoBroker');
-        expect(manualTestResult(report!), ManualTestResult.haNoBroker);
+
         expect(asked, [host]);
 
         // Another port refused says nothing about a broker on 1883.
@@ -493,7 +490,6 @@ void main() {
         d.run(config: config(), password: '').then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps[1].detailKey, 'diagTcpSmlightClosed');
-        expect(manualTestResult(report!), ManualTestResult.smlightClosed);
       });
     });
 
@@ -507,7 +503,6 @@ void main() {
         d.run(config: config(), password: '').then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps[1].detailKey, 'diagTcpZ2mNoBroker');
-        expect(manualTestResult(report!), ManualTestResult.z2mNoBroker);
       });
     });
 
@@ -521,7 +516,6 @@ void main() {
         d.run(config: config(), password: '').then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps[1].detailKey, 'diagTcpFail');
-        expect(manualTestResult(report!), ManualTestResult.tcp);
       });
     });
 
@@ -535,7 +529,6 @@ void main() {
         d.run(config: config(), password: 'wrong').then((r) => report = r);
         async.flushMicrotasks();
         expect(report!.steps[3].detailKey, 'diagAuthRejectedHa');
-        expect(manualTestResult(report!), ManualTestResult.haLogin);
       });
     });
 
@@ -603,50 +596,6 @@ void main() {
         // Steps belong to the last (remote) candidate.
         expect(report!.steps[2].status, StepStatus.fail);
       });
-    });
-  });
-
-  // 2.7.2: the analytics outcome of a ladder run.
-  group('manualTestResult', () {
-    DiagnosticsReport failedAt(DiagnosticStep step) => DiagnosticsReport(
-      steps: [
-        for (final s in DiagnosticStep.values)
-          if (s.index < step.index)
-            StepResult(step: s, status: StepStatus.pass)
-          else if (s == step)
-            StepResult(step: s, status: StepStatus.fail),
-      ],
-      connected: false,
-      candidatesTried: 1,
-    );
-
-    test('connected, or the first failed step', () {
-      expect(
-        manualTestResult(
-          const DiagnosticsReport(
-            steps: [],
-            connected: true,
-            candidatesTried: 1,
-          ),
-        ),
-        ManualTestResult.connected,
-      );
-      expect(
-        manualTestResult(failedAt(DiagnosticStep.resolve)),
-        ManualTestResult.resolve,
-      );
-      expect(
-        manualTestResult(failedAt(DiagnosticStep.tcp)),
-        ManualTestResult.tcp,
-      );
-      expect(
-        manualTestResult(failedAt(DiagnosticStep.connack)),
-        ManualTestResult.connack,
-      );
-      expect(
-        manualTestResult(failedAt(DiagnosticStep.auth)),
-        ManualTestResult.auth,
-      );
     });
   });
 }

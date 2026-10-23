@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../core/analytics/analytics.dart';
 import '../core/l10n/l10n_ext.dart';
 import '../core/router/routes.dart';
 import '../data/repositories/connection_repo.dart';
@@ -21,7 +20,8 @@ import 'alerts_service.dart';
 import 'alert_editor_screen.dart' show alertKindsOf;
 import '../features/devices/device_profile.dart' show classifyExposes;
 import '../features/discovery/providers/discovery_provider.dart';
-import '../features/panels/providers/panel_value_provider.dart' show composeTopic;
+import '../features/panels/providers/panel_value_provider.dart'
+    show composeTopic;
 import 'node_red_installer.dart';
 import 'share_alerts_sheet.dart';
 
@@ -90,12 +90,17 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
               if (config == null) ...[
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: Text(l10n.alertsIntro, style: theme.textTheme.bodyMedium),
+                  child: Text(
+                    l10n.alertsIntro,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: Text(l10n.alertsWhatLeaves,
-                      style: theme.textTheme.bodySmall),
+                  child: Text(
+                    l10n.alertsWhatLeaves,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -117,9 +122,11 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                       subtitle: Text(_age(context, e.at)),
                       onTap: e.device == null
                           ? null
-                          : () => context.push(Routes.homeDevice(_id, e.device!)),
+                          : () =>
+                                context.push(Routes.homeDevice(_id, e.device!)),
                     ),
-                if (config.alerts.isEmpty) _Suggestions(connectionId: _id, config: config),
+                if (config.alerts.isEmpty)
+                  _Suggestions(connectionId: _id, config: config),
                 _Header(l10n.alertsYourAlerts),
                 for (final a in config.alerts)
                   ListTile(
@@ -128,10 +135,14 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                     subtitle: Text(a.devices.map((d) => d.name).join(', ')),
                     trailing: Switch(
                       value: a.enabled,
-                      onChanged: (v) => _update(config.copyWith(alerts: [
-                        for (final r in config.alerts)
-                          r.id == a.id ? r.copyWith(enabled: v) : r,
-                      ])),
+                      onChanged: (v) => _update(
+                        config.copyWith(
+                          alerts: [
+                            for (final r in config.alerts)
+                              r.id == a.id ? r.copyWith(enabled: v) : r,
+                          ],
+                        ),
+                      ),
                     ),
                     onTap: () => context.push(Routes.homeAlertEdit(_id, a.id)),
                   ),
@@ -161,7 +172,9 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                 ListTile(
                   leading: const Icon(Icons.share_outlined),
                   title: Text(l10n.alertsShare),
-                  subtitle: push == PushAvailability.none ? Text(l10n.alertsGetWithNtfy) : null,
+                  subtitle: push == PushAvailability.none
+                      ? Text(l10n.alertsGetWithNtfy)
+                      : null,
                   onTap: () => ShareAlertsSheet.show(context, _id),
                 ),
                 ListTile(
@@ -172,10 +185,14 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                 ),
                 const Divider(),
                 ListTile(
-                  leading: Icon(Icons.notifications_off_outlined,
-                      color: theme.colorScheme.error),
-                  title: Text(l10n.alertsTurnOff,
-                      style: TextStyle(color: theme.colorScheme.error)),
+                  leading: Icon(
+                    Icons.notifications_off_outlined,
+                    color: theme.colorScheme.error,
+                  ),
+                  title: Text(
+                    l10n.alertsTurnOff,
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
                   onTap: () => _turnOff(l10n),
                 ),
               ],
@@ -185,8 +202,6 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
       ),
     );
   }
-
-  void _track(AnalyticsEvent e) => ref.read(analyticsProvider).track(e);
 
   Future<void> _update(AlertsConfig config) async {
     final service = ref.read(alertsServiceProvider);
@@ -203,7 +218,6 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
       final ok = await _install(l10n);
       if (ok && mounted) {
         if (await AlertPush.availability() == PushAvailability.none) {
-          _track(const AlertsSetup(AlertsSetupStep.noGoogleServices));
         } else {
           await _thisPhone(true, l10n);
         }
@@ -221,27 +235,29 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     setState(() => _busy = true);
     try {
       final r = await NodeRedInstaller(host: conn.host).install(
-          brokerHost: conn.host,
-          brokerPort: conn.port,
-          username: conn.username,
-          baseTopic: base);
+        brokerHost: conn.host,
+        brokerPort: conn.port,
+        username: conn.username,
+        baseTopic: base,
+      );
       if (!mounted) return false;
       switch (r) {
         case NodeRedInstall.installed:
-          _track(const AlertsSetup(AlertsSetupStep.flowInstalled));
-          messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubInstalled)));
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.alertsHubInstalled)),
+          );
           await ref.read(alertsServiceProvider).publish(_id);
           return true;
         case NodeRedInstall.updated:
-          messenger.showSnackBar(SnackBar(content: Text(l10n.alertsHubUpdated)));
+          messenger.showSnackBar(
+            SnackBar(content: Text(l10n.alertsHubUpdated)),
+          );
           await ref.read(alertsServiceProvider).publish(_id);
           return true;
         case NodeRedInstall.needsLogin:
-          _track(const AlertsSetup(AlertsSetupStep.flowManual));
           await _manualSteps(l10n, conn.host, conn.port, conn.username, base);
           return true;
         case NodeRedInstall.notInstalled:
-          _track(const AlertsSetup(AlertsSetupStep.noNodeRed));
           await _say(l10n.alertsNoNodeRed(conn.host));
           return false;
         case NodeRedInstall.failed:
@@ -253,36 +269,61 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     }
   }
 
-  Future<void> _manualSteps(AppLocalizations l10n, String host, int port,
-      String? username, String base) async {
-    final flow = await DefaultAssetBundle.of(context)
-        .loadString(NodeRedInstaller.flowAsset);
+  Future<void> _manualSteps(
+    AppLocalizations l10n,
+    String host,
+    int port,
+    String? username,
+    String base,
+  ) async {
+    final flow = await DefaultAssetBundle.of(
+      context,
+    ).loadString(NodeRedInstaller.flowAsset);
     if (!mounted) return;
     final messenger = ScaffoldMessenger.of(context);
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.alertsSetUpHub),
-        content: Text('${l10n.alertsHubNeedsLogin}\n\n${l10n.alertsHubManualSteps}'),
+        content: Text(
+          '${l10n.alertsHubNeedsLogin}\n\n${l10n.alertsHubManualSteps}',
+        ),
         actions: [
           TextButton(
             onPressed: () async {
               // The import format: the tab and its nodes, broker filled in.
-              final tab = NodeRedInstaller.tabFor(flow,
-                  brokerHost: host, brokerPort: port, username: username, baseTopic: base);
-              await Clipboard.setData(ClipboardData(
+              final tab = NodeRedInstaller.tabFor(
+                flow,
+                brokerHost: host,
+                brokerPort: port,
+                username: username,
+                baseTopic: base,
+              );
+              await Clipboard.setData(
+                ClipboardData(
                   text: const JsonEncoder.withIndent(' ').convert([
-                    {'id': 'zigdash_alerts_tab', 'type': 'tab', 'label': tab['label'], 'info': tab['info']},
+                    {
+                      'id': 'zigdash_alerts_tab',
+                      'type': 'tab',
+                      'label': tab['label'],
+                      'info': tab['info'],
+                    },
                     for (final n in tab['configs'] as List) n,
-                    for (final n in tab['nodes'] as List) {...n as Map, 'z': 'zigdash_alerts_tab'},
-                  ])));
-              messenger.showSnackBar(SnackBar(content: Text(l10n.alertsFlowCopied)));
+                    for (final n in tab['nodes'] as List)
+                      {...n as Map, 'z': 'zigdash_alerts_tab'},
+                  ]),
+                ),
+              );
+              messenger.showSnackBar(
+                SnackBar(content: Text(l10n.alertsFlowCopied)),
+              );
             },
             child: Text(l10n.alertsCopyFlow),
           ),
           TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(MaterialLocalizations.of(ctx).okButtonLabel)),
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
+          ),
         ],
       ),
     );
@@ -295,7 +336,6 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
       if (on) {
         await AlertPush.askPermission();
         await service.enableThisPhone(_id, l10n);
-        _track(const AlertsSetup(AlertsSetupStep.phoneRegistered));
       } else {
         await service.disableThisPhone(_id);
       }
@@ -309,15 +349,20 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
     setState(() => _busy = true);
     try {
       final r = await ref.read(alertsServiceProvider).sendTest(_id);
-      _track(AlertsSetup(r.ok ? AlertsSetupStep.testSent : AlertsSetupStep.testFailed));
-      messenger.showSnackBar(SnackBar(
-          content: Text(r.ok
-              ? l10n.alertsTestSent
-              : r.timedOut
-                  ? l10n.alertsTestTimedOut
-                  : r.status == null
-                      ? l10n.alertsNotConnected
-                      : l10n.alertsTestFailed('${r.status}'))));
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            r.ok
+                ? l10n.alertsTestSent
+                : r.timedOut
+                ? l10n.alertsTestTimedOut
+                : r.status == null
+                ? l10n.alertsNotConnected
+                : l10n.alertsTestFailed('${r.status}'),
+          ),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -331,11 +376,13 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
         content: Text(l10n.alertsTurnOffBody),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+          ),
           FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l10n.alertsTurnOff)),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.alertsTurnOff),
+          ),
         ],
       ),
     );
@@ -343,16 +390,17 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
   }
 
   Future<void> _say(String text) => showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          content: Text(text),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(MaterialLocalizations.of(ctx).okButtonLabel)),
-          ],
+    context: context,
+    builder: (ctx) => AlertDialog(
+      content: Text(text),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text(MaterialLocalizations.of(ctx).okButtonLabel),
         ),
-      );
+      ],
+    ),
+  );
 
   String _age(BuildContext context, DateTime at) {
     final m = MaterialLocalizations.of(context);
@@ -361,19 +409,19 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
 }
 
 String kindLabel(AppLocalizations l10n, AlertKind kind) => switch (kind) {
-      AlertKind.leak => l10n.alertKindLeak,
-      AlertKind.smoke => l10n.alertKindSmoke,
-      AlertKind.opened => l10n.alertKindOpened,
-      AlertKind.battery => l10n.alertKindBattery,
-    };
+  AlertKind.leak => l10n.alertKindLeak,
+  AlertKind.smoke => l10n.alertKindSmoke,
+  AlertKind.opened => l10n.alertKindOpened,
+  AlertKind.battery => l10n.alertKindBattery,
+};
 
 IconData _iconFor(String kind) => switch (kind) {
-      'leak' => Icons.water_drop_outlined,
-      'smoke' => Icons.local_fire_department_outlined,
-      'opened' => Icons.door_front_door_outlined,
-      'battery' => Icons.battery_alert_outlined,
-      _ => Icons.notifications_outlined,
-    };
+  'leak' => Icons.water_drop_outlined,
+  'smoke' => Icons.local_fire_department_outlined,
+  'opened' => Icons.door_front_door_outlined,
+  'battery' => Icons.battery_alert_outlined,
+  _ => Icons.notifications_outlined,
+};
 
 /// A fresh id for an alert.
 String newAlertId() {
@@ -386,21 +434,23 @@ class _Header extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-        child: Text(text,
-            style: Theme.of(context)
-                .textTheme
-                .labelLarge
-                ?.copyWith(color: Theme.of(context).colorScheme.primary)),
-      );
+    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+    child: Text(
+      text,
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    ),
+  );
 }
 
 class _StatusCard extends ConsumerWidget {
-  const _StatusCard(
-      {required this.config,
-      required this.online,
-      required this.thisPhone,
-      required this.push});
+  const _StatusCard({
+    required this.config,
+    required this.online,
+    required this.thisPhone,
+    required this.push,
+  });
   final AlertsConfig? config;
   final bool? online;
   final bool thisPhone;
@@ -410,12 +460,29 @@ class _StatusCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final restricted = ref.watch(backgroundRestrictedProvider).valueOrNull ?? false;
+    final restricted =
+        ref.watch(backgroundRestrictedProvider).valueOrNull ?? false;
     final (text, icon, color) = switch ((config, online, thisPhone)) {
-      (null, _, _) => (l10n.alertsStatusNotSetUp, Icons.notifications_none, theme.colorScheme.onSurfaceVariant),
-      (_, false, _) => (l10n.alertsStatusPaused, Icons.pause_circle_outline, theme.colorScheme.error),
-      (_, _, false) => (l10n.alertsStatusPhoneOff, Icons.phone_disabled_outlined, theme.colorScheme.tertiary),
-      _ => (l10n.alertsStatusOn, Icons.notifications_active_outlined, theme.colorScheme.primary),
+      (null, _, _) => (
+        l10n.alertsStatusNotSetUp,
+        Icons.notifications_none,
+        theme.colorScheme.onSurfaceVariant,
+      ),
+      (_, false, _) => (
+        l10n.alertsStatusPaused,
+        Icons.pause_circle_outline,
+        theme.colorScheme.error,
+      ),
+      (_, _, false) => (
+        l10n.alertsStatusPhoneOff,
+        Icons.phone_disabled_outlined,
+        theme.colorScheme.tertiary,
+      ),
+      _ => (
+        l10n.alertsStatusOn,
+        Icons.notifications_active_outlined,
+        theme.colorScheme.primary,
+      ),
     };
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
@@ -447,9 +514,16 @@ class _Suggestions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final base = ref.watch(homeBaseTopicProvider(connectionId)) ?? 'zigbee2mqtt';
-    final devices = ref
-            .watch(bridgeDevicesStreamProvider((connectionId: connectionId, base: base)))
+    final base =
+        ref.watch(homeBaseTopicProvider(connectionId)) ?? 'zigbee2mqtt';
+    final devices =
+        ref
+            .watch(
+              bridgeDevicesStreamProvider((
+                connectionId: connectionId,
+                base: base,
+              )),
+            )
             .valueOrNull ??
         const [];
     final byKind = <AlertKind, List<AlertDevice>>{};
@@ -457,8 +531,13 @@ class _Suggestions extends ConsumerWidget {
       final ieee = d.ieeeAddress;
       if (ieee == null) continue;
       for (final k in alertKindsOf(classifyExposes(d.rawExposes))) {
-        (byKind[k] ??= []).add(AlertDevice(
-            ieee: ieee, topic: composeTopic(base, d.friendlyName), name: d.friendlyName));
+        (byKind[k] ??= []).add(
+          AlertDevice(
+            ieee: ieee,
+            topic: composeTopic(base, d.friendlyName),
+            name: d.friendlyName,
+          ),
+        );
       }
     }
     if (byKind.isEmpty) return const SizedBox.shrink();
@@ -475,17 +554,21 @@ class _Suggestions extends ConsumerWidget {
               trailing: FilledButton.tonal(
                 onPressed: () async {
                   final service = ref.read(alertsServiceProvider);
-                  await service.save(config.copyWith(alerts: [
-                    ...config.alerts,
-                    AlertRule(
-                        id: newAlertId(),
-                        kind: k,
-                        devices: list,
-                        from: k == AlertKind.opened ? '23:00' : null,
-                        to: k == AlertKind.opened ? '06:00' : null),
-                  ]));
+                  await service.save(
+                    config.copyWith(
+                      alerts: [
+                        ...config.alerts,
+                        AlertRule(
+                          id: newAlertId(),
+                          kind: k,
+                          devices: list,
+                          from: k == AlertKind.opened ? '23:00' : null,
+                          to: k == AlertKind.opened ? '06:00' : null,
+                        ),
+                      ],
+                    ),
+                  );
                   await service.publish(connectionId);
-                  ref.read(analyticsProvider).track(AlertAdded(k.name));
                 },
                 child: Text(l10n.alertsTurnOn),
               ),

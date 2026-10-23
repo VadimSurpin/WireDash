@@ -68,7 +68,6 @@ class ZigDashControlsService : ControlsProviderService() {
 
     override fun createPublisherFor(controlIds: List<String>): Flow.Publisher<Control> {
         val wanted = ShortcutPrefs.controls(this).filter { it.id in controlIds }
-        if (wanted.isNotEmpty()) ShortcutPrefs.mark(this, "shortcut.added.control", onlyOnce = true)
         return Flow.Publisher { s -> LiveSubscription(wanted, s).also(s::onSubscribe) }
     }
 
@@ -79,7 +78,6 @@ class ZigDashControlsService : ControlsProviderService() {
             return
         }
         consumer.accept(ControlAction.RESPONSE_OK)
-        ShortcutPrefs.mark(this, "shortcut.used.control")
         main.post {
             working.add(id)
             flash.remove(id)

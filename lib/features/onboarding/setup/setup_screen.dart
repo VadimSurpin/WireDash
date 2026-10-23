@@ -1,3 +1,4 @@
+import '../../support/help_context.dart';
 import '../../discovery/models/wirenboard_device.dart';
 import '../../discovery/wirenboard_device_groups.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
@@ -23,7 +23,6 @@ import 'recommendation_policy.dart';
 import 'setup_candidate.dart';
 import 'setup_coordinator.dart';
 import 'setup_error_guidance.dart';
-import 'setup_analytics.dart';
 import 'setup_providers.dart';
 import 'setup_reminder.dart';
 
@@ -46,6 +45,8 @@ const usualHubNames = [
   'raspberrypi.local',
 ];
 
+enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
+
 /// The discovery-first onboarding flow: renders [SetupCoordinator] state and
 /// forwards user intents. No network work or persistence happens here.
 class SetupScreen extends ConsumerWidget {
@@ -58,55 +59,31 @@ class SetupScreen extends ConsumerWidget {
     final state = asyncState.valueOrNull ?? coordinator.state;
     final l10n = context.l10n;
 
-    // No "ready" screen: a finished setup opens its dashboard directly.
-    ref.listen(setupStateProvider, (previous, next) {
-      final s = next.valueOrNull;
-      if (s == null) return;
-      final step = setupStepFor(
-        previous?.valueOrNull,
-        s,
-        platform: coordinator.platform,
-      );
-      if (step != null) ref.read(analyticsProvider).track(step);
-      if (s is SetupComplete) {
+    // A finished setup opens its dashboard directly.
+    ref.listen(setupStateProvider, (_, next) {
+      final state = next.valueOrNull;
+      if (state is SetupComplete) {
         ref.read(setupReminderProvider).cancel();
-        context.go(Routes.homeDashboards(s.result.connectionId));
+        context.go(Routes.homeDashboards(state.result.connectionId));
       }
     });
 
     void manual() {
-      ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.manual));
       context.push(Routes.guidedConnect);
     }
 
     // Manual entry filled in with a hub the scan found (2.5).
     void manualTo(HubFound hub) {
-      ref.read(analyticsProvider).track(const SetupStep(SetupStepKind.manual));
       context.push(Routes.guidedConnectTo(hub.host, 1883));
     }
 
-    // 2.9.6: a choice on the empty result, counted before it acts.
-    void emptyChoice(ScanEmptyChoice choice) => ref
-        .read(analyticsProvider)
-        .track(
-          SetupStep(
-            SetupStepKind.emptyChoice,
-            choice: choice,
-            platform: coordinator.platform,
-          ),
-        );
-
-    Future<void> tryDemo({SetupStepKind kind = SetupStepKind.demo}) async {
-      ref.read(analyticsProvider).track(SetupStep(kind));
+    Future<void> tryDemo() async {
       final id = await ref.read(firstRunProvider).startDemo();
       if (context.mounted) context.go(Routes.homeDashboards(id));
     }
 
     // 2.9.7: no Zigbee2MQTT yet, so no point scanning.
     Future<void> welcomeHubs() async {
-      ref
-          .read(analyticsProvider)
-          .track(const SetupStep(SetupStepKind.welcomeHubs));
       try {
         await openSetupLink(hubsPageUrl);
       } catch (_) {}
@@ -119,7 +96,7 @@ class SetupScreen extends ConsumerWidget {
           SetupIdle() => _Welcome(
             onFind: coordinator.startScan,
             onManual: manual,
-            onDemo: () => tryDemo(kind: SetupStepKind.welcomeDemo),
+            onDemo: tryDemo,
             onHubs: welcomeHubs,
           ),
           SetupScanning() => _Scanning(
@@ -133,7 +110,7 @@ class SetupScreen extends ConsumerWidget {
             onRetry: coordinator.retry,
             onPlatform: coordinator.setPlatform,
             onCheckAddress: coordinator.checkAddress,
-            onChoice: emptyChoice,
+
             onManual: manual,
             onManualTo: manualTo,
             onDemo: tryDemo,
@@ -214,10 +191,8 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
   _ => l10n.setupErrUnknownAction,
 };
 
-/// The first setup screen. With an analytics key in the build and no choice
-/// made yet, it carries the one usage-data question for new installs: a box
-/// ticked by default (ADR 0007), recorded either way when the user moves on.
-class _Welcome extends ConsumerStatefulWidget {
+/// The first setup screen, with no telemetry consent or collection.
+class _Welcome extends StatelessWidget {
   const _Welcome({
     required this.onFind,
     required this.onManual,
@@ -226,50 +201,12 @@ class _Welcome extends ConsumerStatefulWidget {
   });
   final VoidCallback onFind;
   final VoidCallback onManual;
-
-  /// "No Zigbee2MQTT yet?": nothing to scan for, so the demo home or which
-  /// hub to get (2.9.7).
   final VoidCallback onDemo;
   final VoidCallback onHubs;
 
   @override
-  ConsumerState<_Welcome> createState() => _WelcomeState();
-}
-
-class _WelcomeState extends ConsumerState<_Welcome> {
-  bool _share = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // Counted only here: the reminder opens the app on this screen.
-    ref.read(setupReminderProvider).openedFromReminder().then((yes) {
-      if (yes && mounted) {
-        ref
-            .read(analyticsProvider)
-            .track(const SetupStep(SetupStepKind.reminderOpened));
-      }
-    });
-  }
-
-  bool get _asking =>
-      ref.watch(analyticsAvailableProvider) &&
-      ref.watch(analyticsConsentProvider) == AnalyticsConsent.unasked;
-
-  Future<void> _then(VoidCallback next) async {
-    if (_asking) {
-      await ref.read(analyticsConsentProvider.notifier).set(_share);
-    }
-    next();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    void onFind() => _then(widget.onFind);
-    void onManual() => _then(widget.onManual);
-    void onDemo() => _then(widget.onDemo);
-    void onHubs() => _then(widget.onHubs);
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
@@ -322,26 +259,6 @@ class _WelcomeState extends ConsumerState<_Welcome> {
             ),
           ],
         ),
-        if (_asking) ...[
-          const SizedBox(height: 24),
-          CheckboxListTile(
-            value: _share,
-            onChanged: (v) => setState(() => _share = v ?? false),
-            controlAffinity: ListTileControlAffinity.leading,
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.analyticsSetupCheckbox),
-          ),
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: TextButton(
-              onPressed: () => launchUrl(
-                usageDataPolicyUrl,
-                mode: LaunchMode.externalApplication,
-              ),
-              child: Text(l10n.analyticsWhatsShared),
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -501,7 +418,7 @@ class _ScanEmpty extends StatelessWidget {
     required this.onPlatform,
     required this.onManual,
     required this.onCheckAddress,
-    required this.onChoice,
+
     required this.onManualTo,
     required this.onDemo,
     required this.onConnectViaHa,
@@ -510,7 +427,7 @@ class _ScanEmpty extends StatelessWidget {
   final VoidCallback onRetry;
   final ValueChanged<SetupPlatform?> onPlatform;
   final ValueChanged<String> onCheckAddress;
-  final ValueChanged<ScanEmptyChoice> onChoice;
+
   final VoidCallback onManual;
   final ValueChanged<HubFound> onManualTo;
   final VoidCallback onDemo;
@@ -612,7 +529,6 @@ class _ScanEmpty extends StatelessWidget {
         if (hub == null) ...[
           const SizedBox(height: 20),
           _EmptyChoices(
-            onChoice: onChoice,
             onConnectViaHa: () => onConnectViaHa(null),
             onHomeAssistant: () {
               onPlatform(SetupPlatform.homeAssistant);
@@ -696,12 +612,11 @@ class _ScanEmpty extends StatelessWidget {
 /// and offers [usualHubNames] to check.
 class _EmptyChoices extends StatefulWidget {
   const _EmptyChoices({
-    required this.onChoice,
     required this.onHomeAssistant,
     required this.onCheckAddress,
     required this.onConnectViaHa,
   });
-  final ValueChanged<ScanEmptyChoice> onChoice;
+
   final VoidCallback onHomeAssistant;
   final VoidCallback onConnectViaHa;
   final ValueChanged<String> onCheckAddress;
@@ -714,7 +629,6 @@ class _EmptyChoicesState extends State<_EmptyChoices> {
   ScanEmptyChoice? _open;
 
   Future<void> _tap(ScanEmptyChoice choice) async {
-    widget.onChoice(choice);
     switch (choice) {
       case ScanEmptyChoice.noHub:
         try {
@@ -1553,18 +1467,28 @@ class _Review extends StatelessWidget {
               Semantics(
                 liveRegion: true,
                 child: Text(
-                  l10n.setupReviewSubtitle(rows.length + state.wirenBoardDevices.length),
+                  l10n.setupReviewSubtitle(
+                    rows.length + state.wirenBoardDevices.length,
+                  ),
                   style: theme.textTheme.titleMedium,
                 ),
               ),
               const SizedBox(height: 8),
               if (state.wirenBoardDevices.isNotEmpty) ...[
-                for (final group in [WirenBoardDeviceGroup.modules, WirenBoardDeviceGroup.z2m])
+                for (final group in [
+                  WirenBoardDeviceGroup.modules,
+                  WirenBoardDeviceGroup.z2m,
+                ])
                   if (state.wirenBoardDevices.any((d) => d.group == group)) ...[
                     _GroupHeader(title: wirenBoardGroupLabel(group, l10n)),
-                    for (final device in state.wirenBoardDevices.where((d) => d.group == group))
-                      ListTile(leading: const Icon(Icons.developer_board_outlined),
-                        title: Text(device.title(l10n.localeName)), trailing: const Icon(Icons.check)),
+                    for (final device in state.wirenBoardDevices.where(
+                      (d) => d.group == group,
+                    ))
+                      ListTile(
+                        leading: const Icon(Icons.developer_board_outlined),
+                        title: Text(device.title(l10n.localeName)),
+                        trailing: const Icon(Icons.check),
+                      ),
                   ],
                 Text(l10n.wbBuiltinsAvailable),
               ],
@@ -1580,14 +1504,23 @@ class _Review extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16),
           child: FilledButton.icon(
-            onPressed: (state.selectedCount > 0 || state.wirenBoardDevices.isNotEmpty) && !busy ? onCreate : null,
+            onPressed:
+                (state.selectedCount > 0 ||
+                        state.wirenBoardDevices.isNotEmpty) &&
+                    !busy
+                ? onCreate
+                : null,
             icon: busy
                 ? const SizedBox.square(
                     dimension: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.dashboard_outlined),
-            label: Text(state.selectedCount == 0 ? l10n.continueToDashboard : l10n.setupCreateWithCount(state.selectedCount)),
+            label: Text(
+              state.selectedCount == 0
+                  ? l10n.continueToDashboard
+                  : l10n.setupCreateWithCount(state.selectedCount),
+            ),
           ),
         ),
       ],

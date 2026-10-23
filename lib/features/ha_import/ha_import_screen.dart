@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/analytics/analytics.dart';
 import '../../core/l10n/l10n_ext.dart';
 import '../../core/review/review_prompt_controller.dart';
 import '../../core/router/routes.dart';
@@ -75,7 +74,7 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
     _address.text = host;
     return HaImportController(
       address: host,
-      onEvent: (event) => ref.read(analyticsProvider).track(event),
+
       reader: readHaRegistry,
       devices: () async {
         try {
@@ -112,31 +111,10 @@ class _HaImportScreenState extends ConsumerState<HaImportScreen> {
   }
 
   HaImportController _own(String host) =>
-      _make('$host:8123')..addListener(_track);
+      _make('$host:8123')..addListener(_onImportChanged);
 
-  /// The `ha_import` event for each step that counts: counts only.
-  void _track() {
-    final event = switch (_controller?.value) {
-      HaImportAsk(:final problem?)
-          when problem != HaImportProblem.noAddress &&
-              problem != HaImportProblem.noToken =>
-        HaImportEvent(HaImportStep.failed, error: problem),
-      HaImportPreview(:final plan, skip: final s) when s.isEmpty =>
-        HaImportEvent(
-          HaImportStep.preview,
-          devices: plan.matched,
-          rooms: plan.rooms,
-          zhaOnly: plan.zhaOnly,
-        ),
-      HaImportDone(:final result) => HaImportEvent(
-        HaImportStep.imported,
-        renamed: result.renamed,
-        dashboards: result.dashboardIds.length,
-        devices: result.tiles,
-      ),
-      _ => null,
-    };
-    if (event != null) ref.read(analyticsProvider).track(event);
+  /// Record a successful local session after an import completes.
+  void _onImportChanged() {
     // A happy moment (2.8.1): the review policy still decides.
     if (_controller?.value is HaImportDone) {
       ref.read(reviewPromptControllerProvider).recordSuccessfulSession();
