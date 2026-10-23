@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'alerts/alert_push.dart';
 import 'app.dart';
+import 'core/analytics/analytics.dart' show readTestDevice, testDeviceProvider;
 import 'mqtt/dropped_connection.dart';
 import 'core/theme/font_licenses.dart';
 import 'features/settings/providers/settings_controller.dart';
@@ -32,9 +33,13 @@ Future<void> main([List<String> args = const []]) async {
   registerFontLicenses();
   final prefs = await SharedPreferences.getInstance();
   await AlertPush.init(prefs, background: false);
+  final testDevice = await readTestDevice();
   runApp(
     ProviderScope(
-      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        testDeviceProvider.overrideWithValue(testDevice),
+      ],
       child: const ZigDashApp(),
     ),
   );

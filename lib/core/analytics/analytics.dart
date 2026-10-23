@@ -1,5 +1,6 @@
 import 'package:aptabase_flutter/aptabase_flutter.dart';
 import 'package:aptabase_flutter/storage_manager.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,8 +16,27 @@ export 'analytics_events.dart';
 const analyticsKey = String.fromEnvironment('ZIGDASH_ANALYTICS_KEY');
 
 /// Whether this build can send usage data at all.
-final analyticsAvailableProvider =
-    Provider<bool>((ref) => analyticsKey.isNotEmpty && !storeCapture);
+final analyticsAvailableProvider = Provider<bool>(
+  (ref) =>
+      analyticsKey.isNotEmpty && !storeCapture && !ref.watch(testDeviceProvider),
+);
+
+/// Whether this is one of Google's test devices (Play's pre-launch report):
+/// they tap every button of every build, and were most of the events until
+/// 3.1.2. Read once at start ([readTestDevice]); false otherwise.
+final testDeviceProvider = Provider<bool>((ref) => false);
+
+/// Asks Android whether this is a Google test device; false when it can't say.
+Future<bool> readTestDevice() async {
+  try {
+    return await const MethodChannel('zigdash/app')
+            .invokeMethod<bool>('isTestDevice')
+            .timeout(const Duration(seconds: 2)) ??
+        false;
+  } catch (_) {
+    return false;
+  }
+}
 
 /// The privacy policy's section listing every event (opened by "What's
 /// shared").
