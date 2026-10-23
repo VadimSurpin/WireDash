@@ -24,7 +24,7 @@ class SignalColors extends ThemeExtension<SignalColors> {
     required this.raised,
   });
 
-  /// On or open: the amber fill.
+  /// On or open: the green fill.
   final Color active;
   final Color onActive;
 
@@ -36,7 +36,7 @@ class SignalColors extends ThemeExtension<SignalColors> {
   final Color stale;
   final Color onStale;
 
-  /// Low battery, leak, door open too long. Differs from amber in lightness.
+  /// Low battery, leak, door open too long. Uses a separate warning hue from the green active state.
   final Color attention;
   final Color onAttention;
 
@@ -62,8 +62,8 @@ class SignalColors extends ThemeExtension<SignalColors> {
       (Theme.of(context).brightness == Brightness.dark ? dark : light);
 
   static const light = SignalColors(
-    active: SignalPalette.amberLight,
-    onActive: SignalPalette.onAmber,
+    active: SignalPalette.accentLight,
+    onActive: SignalPalette.onAccent,
     idle: SignalPalette.tileLight,
     onIdle: SignalPalette.inkLight,
     stale: SignalPalette.staleLight,
@@ -78,8 +78,8 @@ class SignalColors extends ThemeExtension<SignalColors> {
   );
 
   static const dark = SignalColors(
-    active: SignalPalette.amberDark,
-    onActive: SignalPalette.onAmber,
+    active: SignalPalette.accentDark,
+    onActive: SignalPalette.onAccent,
     idle: SignalPalette.tileDark,
     onIdle: SignalPalette.inkDark,
     stale: SignalPalette.staleDark,
