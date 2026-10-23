@@ -1,1 +1,1 @@
-ZigDash 3.1.2: Sensor tiles now have a history button in the corner, so a temperature or power graph is one tap away.
+ZigDash 3.1.2: Zigbee2MQTT in Home Assistant? Setup now offers Home Assistant sign-in right away, with no broker address or MQTT login. Sensor tiles have a history button in the corner, so a temperature or power graph is one tap away.
