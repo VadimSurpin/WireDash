@@ -20,6 +20,8 @@ import '../models/panel_config.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
 import 'device_sheet.dart';
+import '../../history/history_config.dart' show historyShownOnDeviceTile;
+import '../../history/history_sheet.dart';
 import '../../../core/theme/motion.dart';
 
 /// Decodes a Zigbee2MQTT state payload; anything else reads as "no state".
@@ -122,6 +124,12 @@ class DeviceTilePanel extends ConsumerWidget {
             .valueOrNull ??
         false;
     final big = _bigValue(state, l10n);
+    // 3.1.2: a sensor tile's graph one tap away (it was at the bottom of
+    // the sheet, where few found it).
+    final ieee = panel.deviceIeee;
+    final graphed = ieee == null || big == null
+        ? null
+        : historyShownOnDeviceTile(profile).firstOrNull;
     final line = deviceStateLine(state, l10n, notResponding: silent);
     final color = cls == DeviceClass.colorLight ? state.lightColor : null;
 
@@ -193,6 +201,22 @@ class DeviceTilePanel extends ConsumerWidget {
                         color: fgVariant,
                       ),
                     const Spacer(),
+                    if (graphed != null)
+                      IconButton(
+                        key: const Key('tile-history'),
+                        tooltip: l10n.historyTitle,
+                        visualDensity: VisualDensity.compact,
+                        icon: Icon(Icons.timeline, color: fgVariant),
+                        onPressed: () => showHistorySheet(
+                          context,
+                          connectionId: connectionId,
+                          ieee: ieee!,
+                          path: graphed.property,
+                          title: '${panel.name} · ${humanizeProperty(graphed.property)}',
+                          unit: graphed.unit,
+                          topic: subscribeTopic,
+                        ),
+                      ),
                     if (color != null)
                       ExcludeSemantics(
                         child: Container(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/analytics/analytics.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/utils/material_icon.dart';
 import '../../devices/devices_providers.dart';
@@ -201,6 +202,7 @@ class _State extends ConsumerState<SceneFormScreen> {
           colorSeed: _color.toARGB32(),
           actions: captured,
         );
+        ref.read(analyticsProvider).track(const FeatureUsed(Feature.sceneCreated));
       }
       if (!mounted) return;
       final done = widget.onDone;
