@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../../core/analytics/analytics_events.dart' show SetupVia;
 import '../../../data/database/tables/connections.dart';
 import '../../../mqtt/broker_config.dart';
 import '../../../mqtt/ha_address.dart';
@@ -286,8 +287,11 @@ class SetupCreating extends SetupState {
 
 /// Done — the dashboard is ready.
 class SetupComplete extends SetupState {
-  const SetupComplete(this.result);
+  const SetupComplete(this.result, {this.via = SetupVia.scan});
   final SetupResult result;
+
+  /// The scan's review, or Home Assistant's sign-in (3.1.3, analytics).
+  final SetupVia via;
 }
 
 // --- Coordinator ----------------------------------------------------------
@@ -832,7 +836,14 @@ class SetupCoordinator {
         // failing must not turn a working setup into an error.
       }
       if (op != _op) return;
-      _emit(SetupComplete(result));
+      _emit(
+        SetupComplete(
+          result,
+          via: candidate.transport == ConnectionTransport.homeAssistant
+              ? SetupVia.homeAssistant
+              : SetupVia.scan,
+        ),
+      );
     } catch (_) {
       if (op != _op) return;
       _emit(

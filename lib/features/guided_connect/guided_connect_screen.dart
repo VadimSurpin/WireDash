@@ -536,6 +536,16 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
                   if (!zeroDevices) await _buildFirstDashboard(id);
                   if (!mounted) return;
                   setState(() => _building = false);
+                  // 3.1.3: a home made here is a finished setup too.
+                  ref
+                      .read(analyticsProvider)
+                      .track(
+                        SetupStep(
+                          SetupStepKind.complete,
+                          devices: count,
+                          via: SetupVia.brokerForm,
+                        ),
+                      );
                   try {
                     await ref.read(firstRunProvider).finish(id);
                   } catch (_) {

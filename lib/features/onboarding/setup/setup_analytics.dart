@@ -93,10 +93,11 @@ SetupStep? setupStepFor(
     selected: rows.where((r) => r.selected).length,
     platform: platform,
   ),
-  SetupComplete(:final result) => SetupStep(
+  SetupComplete(:final result, :final via) => SetupStep(
     SetupStepKind.complete,
     devices: result.panelCount,
     platform: platform,
+    via: via,
   ),
   _ => null,
 };

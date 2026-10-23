@@ -130,6 +130,11 @@ enum SetupStepKind {
 /// note and usual names).
 enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
 
+/// How setup succeeded (3.1.3), on [SetupStepKind.complete]: the scan and
+/// its review, Home Assistant's sign-in (which also ends in the review), or
+/// the broker form, which until 3.1.3 sent no complete at all.
+enum SetupVia { scan, homeAssistant, brokerForm }
+
 /// Where setup opened the Home Assistant sign-in (3.1.3): while scanning,
 /// the card on an empty result, the note under "I use Home Assistant",
 /// the first button when Home Assistant was found without a broker, the
@@ -204,9 +209,13 @@ class SetupStep extends AnalyticsEvent {
     this.choice,
     this.selected,
     this.portClass,
+    this.via,
   });
 
   final SetupStepKind step;
+
+  /// How setup succeeded, on [SetupStepKind.complete] (3.1.3).
+  final SetupVia? via;
 
   /// The choice tapped on the empty result (a [ScanEmptyChoice]), when
   /// [step] is emptyChoice; where the sign-in was opened from (a
@@ -286,6 +295,7 @@ class SetupStep extends AnalyticsEvent {
         top: '21+',
       ),
     if (platform != null) 'platform': _snake(platform!.name),
+    if (via != null) 'via': _snake(via!.name),
     if (step == SetupStepKind.scanEmpty)
       'hub': hub == null ? 'none' : _snake(hub!.name),
     if (hostsTried != null)
