@@ -38,10 +38,9 @@ final dynamicColorAvailableProvider = FutureProvider<bool>((ref) async {
   }
 });
 
-/// The published privacy policy: the same page the Play listing links.
-/// (The GitHub Pages address was never enabled and returned 404.)
+/// WireDash privacy policy on the repository's default branch.
 final privacyPolicyUrl = Uri.parse(
-  'https://github.com/VadimSurpin/zigdash/blob/feat/remove-telemetry-feature-requests/docs/PRIVACY.md',
+  'https://github.com/VadimSurpin/WireDash/blob/HEAD/docs/PRIVACY.md',
 );
 
 /// ZigDash's package on Google Play. Fixed, so test builds with a suffixed

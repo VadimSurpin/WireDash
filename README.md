@@ -1,143 +1,153 @@
 # WireDash
 
-WireDash is a fork of [ZigDash](https://github.com/giladtamam/zigdash), with Wiren Board discovery and embedded WireGuard.
+**An Android MQTT dashboard for Wiren Board, Zigbee2MQTT and custom MQTT devices, with embedded WireGuard.**
 
-**The MQTT dashboard built for Zigbee2MQTT — your smart home dashboard builds itself.**
+WireDash is a fork of [ZigDash](https://github.com/giladtamam/zigdash), created by
+[Gilad Tamam](https://github.com/giladtamam). It keeps the original MIT license
+and builds on its MQTT dashboards, device controls, scenes and tablet layouts.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Android-blue.svg)](https://play.google.com/store/apps/details?id=com.giladtamam.zigdash)
+[![Platform: Android](https://img.shields.io/badge/Platform-Android-5CB400.svg)](https://github.com/VadimSurpin/WireDash/actions)
 [![Built with Flutter](https://img.shields.io/badge/Built%20with-Flutter-02569B.svg)](https://flutter.dev)
-[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2.svg)](https://github.com/sponsors/giladtamam)
-[![Telegram](https://img.shields.io/badge/Telegram-Join%20the%20community-26A5E4.svg?logo=telegram&logoColor=white)](https://t.me/zigdash_app)
-[![Website](https://img.shields.io/badge/Website-zigdash.app-006a6a.svg)](https://zigdash.app)
 
-ZigDash discovers your Zigbee devices automatically — no manual topic wiring —
-and controls lights, shutters, switches, and sensors from your phone or a
-wall-mounted tablet. No cloud, no ads, no account. Free and open source.
-
-Runs great on lean setups (SMLIGHT SMHUB, Raspberry Pi, any MQTT broker) —
-no Home Assistant required, though it works alongside it happily: it's just
-MQTT.
+Connect directly to your existing MQTT broker. WireDash does not require its
+own server, cloud account or dashboard backend. Optional Node-RED flows on your
+hub provide recording, alerts and automation when the phone is offline.
 
 <p align="center">
-  <img src="store/screenshots/01-dashboard.png" width="220" alt="Dashboard">
-  <img src="store/screenshots/02-device-controls.png" width="220" alt="Light controls">
-  <img src="store/screenshots/03-alerts.png" width="220" alt="Alerts">
-  <img src="store/screenshots/04-widgets.png" width="220" alt="Home-screen widgets">
+  <img src="docs/screenshots/dashboard-light.png" width="220" alt="WireDash green device panels in light mode">
+  <img src="docs/screenshots/dashboard-dark.png" width="220" alt="WireDash green device panels in dark mode">
+  <img src="docs/screenshots/device-controls.png" width="220" alt="Light, brightness and colour controls in the green theme">
+  <img src="docs/screenshots/devices.png" width="220" alt="The all-devices list in WireDash">
 </p>
 
-## Features
+These are rendered views of the actual app widgets with demo devices and values.
+See [screenshot sources and regeneration](docs/screenshots/README.md).
 
-- **Zigbee2MQTT auto-discovery** — scan your Z2M bridge and create a panel for
-  every device with a single tap. JSON-path extraction on every panel.
-- **[Wiren Board discovery](docs/WIRENBOARD_DISCOVERY.md)** — add controls from
-  retained MQTT metadata, with scalar commands and sensor readings.
-- **16 panel types** — toggle, button, slider, cover (open/stop/close with
-  presets), multi-state, combo, radio, LED indicator, node status, progress,
-  text input, text log, scene, schedule, auto-close rule, Z2M discovery.
-- **Readings and gauges** — any sensor value as a tile, as a large number or
-  as a half-arc gauge with a min, max and colour bands for good and attention.
-- **All shutters at once** — Close, Open and Stop all shutters are ready-made
-  scenes in every Home: tap them in the Scenes tab, put one on a dashboard or
-  the home screen, and untick a garage door under Which shutters.
-- **Alerts** — a leak, smoke, a door opened at night or a low battery: Node-RED
-  on your hub watches, ZigDash sets it up in one tap, and the notification
-  reaches your phone through Google's push, encrypted end to end — no account,
-  no second app, nothing running on the phone. Share a Home's alerts with the
-  household through ntfy.
-- **Hub-side automation** — schedules and auto-close rules run as retained MQTT
-  config executed by Node-RED on your always-on hub (SMLIGHT, Raspberry Pi, …).
-  Your phone can be off; the automation still runs. Bundled Node-RED flows in
-  `node-red/`.
-- **Shortcuts** — Quick Settings tiles switch a light or plug in one tap, or
-  open a slider for a shutter; Android's Device Controls show every dashboard
-  device as a card with brightness and position sliders; home-screen widgets
-  show one device, run a scene, or hold a group of up to five devices and
-  three scenes.
-- **A first run that helps** — while ZigDash scans, say where Zigbee2MQTT runs
-  (Home Assistant, SMLIGHT hub, Pi or Docker). If no broker answers, the scan
-  looks for Home Assistant or the Zigbee2MQTT page, names what it found, says
-  the one step that is missing and fills in the address for you.
-- **Any MQTT broker** — TCP, SSL/TLS, WebSocket, WSS. Broker auto-scan on the
-  LAN, username/password in hardware-backed secure storage, automatic
-  exponential-backoff reconnect, multiple brokers with instant switching.
-- **Tailscale support** — secure remote access over your WireGuard mesh, no
-  port forwarding.
-- **Polished** — Material 3 with Material You dynamic color (Android 12+),
-  phone and tablet in both orientations, eleven languages (English, French,
-  German, Spanish, Dutch, Swedish, Norwegian, Russian, Polish, Portuguese,
-  Hebrew) with full RTL, responsive panel
-  grid, dashboard lock, JSON backup/restore.
-- **Kiosk mode** — a tablet on the wall: keep the screen on, hide the bars,
-  go fullscreen, and a Kiosk lock with a PIN that keeps guests on the
-  dashboards. Optional Android screen pinning on top. When no one touches
-  it, the screen dims, shows a big clock, or goes black.
-- **Wall tablet extras** — readings under the clock, waking the screen when
-  a Zigbee motion sensor sees someone, a night schedule, and alarms that
-  fill the screen with a sound on a leak, smoke, gas or CO report. Part of
-  ZigDash Pro on Google Play (a one-time purchase, with 7- and 30-day
-  history); the GitHub and F-Droid builds have everything.
-- **Private** — no ads, no account, no telemetry or automatic usage reporting.
-  Data lives on your device and your broker.
+## Changes in this fork
+
+- **[Embedded WireGuard](docs/EMBEDDED_WIREGUARD.md)** — import a peer configuration
+  in the initial connection form or a home's settings. MQTT TCP, TLS, WebSocket
+  and WSS can use the app's own tunnel, without a separate VPN app or system VPN
+  permission. Configurations are encrypted on the device. Tunnel failures do not
+  silently switch the broker connection to a direct route.
+- **[Wiren Board discovery](docs/WIRENBOARD_DISCOVERY.md)** — discover devices and
+  controls from retained `/devices/…` MQTT metadata. Add a whole device as one
+  dashboard panel, or choose an individual property and its widget. Non-built-in
+  devices are added automatically after discovery.
+- **Organized device lists** — expand a device inline to browse its properties.
+  Collapsible sections separate controller built-ins, added modules and WB
+  mirrors of Zigbee2MQTT devices. Built-ins and WB Z2M sections start collapsed.
+  Built-ins include cloud status, network connections, KNX gateway, battery and
+  alarms.
+- **Panel-specific controls and labels** — whole-device WB panels use the same
+  style as Zigbee2MQTT panels. In the panel editor, choose visible properties and
+  give them custom labels. Single properties offer a widget selector. **Allow
+  commands** can explicitly enable editable widgets when metadata incorrectly
+  marks a writable control read-only.
+- **[Before-display JavaScript expressions](docs/DISPLAY_EXPRESSIONS.md)** — format
+  each field before rendering, for example `Number(value).toFixed(2)` or
+  `(Number(value) / 1000).toFixed(2)`. Test expressions in the editor. Formatting
+  settings belong to each panel; commands keep their raw values.
+- **[Wiren Board green theme](docs/WIRENBOARD_THEME.md)** — green device states,
+  buttons and accents, matching light/dark surfaces, a new launcher icon and a
+  matching startup splash. The Material You option remains available.
+- **[No telemetry](docs/PRIVACY.md)** — the analytics SDK, event hooks, consent
+  prompts, feature-request entry and roadmap poll are removed. Old queued usage
+  records are cleared on upgrade. Manual help and problem-report actions remain
+  user-initiated.
+- **Localized UI** — 13 languages: English, Czech, Dutch, French, German, Hebrew,
+  Italian, Norwegian Bokmål, Polish, Portuguese, Russian, Spanish and Swedish,
+  including RTL layouts.
+
+<p align="center">
+  <img src="docs/screenshots/wirenboard-panel.png" width="412" alt="Wiren Board whole-device panel with a labelled relay, temperature and humidity">
+</p>
+
+## Dashboard features
+
+WireDash also retains the original project's Zigbee2MQTT auto-discovery,
+custom MQTT topics, JSON-path extraction, switches, sliders, covers, readings,
+gauges, text controls, scenes, schedules and auto-close rules. It supports
+multiple brokers, automatic reconnect, dashboard sections, per-panel editing
+and JSON backup/restore.
+
+For wall tablets, use fullscreen, dimming, a PIN-protected kiosk, a clock with
+readings, motion wake-up and on-screen alarms. Android shortcuts include Quick
+Settings tiles, Device Controls and home-screen widgets. Optional Node-RED
+flows provide longer history and hub-side automation. The `foss` build exposes
+all app features without Play billing.
 
 ## Install
 
-- [Google Play](https://play.google.com/store/apps/details?id=com.giladtamam.zigdash)
-- F-Droid / IzzyOnDroid / Obtainium: in progress.
+WireDash does not currently publish its own Play Store release. Test APKs are
+available from successful [check workflow runs](https://github.com/VadimSurpin/WireDash/actions/workflows/check.yml):
+open a run on the combined branch and download the
+`zigdash-wireguard-wirenboard-debug-arm64` artifact. The artifact retains its
+original build-system name; it contains the WireDash app for ARM64 Android.
 
-## Getting help
+CI artifacts use the CI debug signing key. Updating an existing installation
+requires an APK signed with the same key as that installation.
 
-Stuck setting up, or something doesn't work? In the app, open **Get help**
-(Settings › Help & support, or the link on any setup error). It shows tips
-for where you are, then lets you email support with the app's Support
-details (no passwords, addresses or device names), or write to
-giladtamam1@gmail.com. I usually reply within 3 days, in English or Hebrew.
-I'll never ask for your passwords or for remote access.
+The default branch, `feat/wireguard-wirenboard`, combines these feature branches:
 
-**Community:** the ZigDash Telegram group, https://t.me/zigdash_app, for questions,
-ideas and release news. **Join the ZigDash community** in Settings opens it.
+| Branch | Change |
+| --- | --- |
+| `feat/embedded-wireguard` | Embedded WireGuard transport and connection settings |
+| `feat/wirenboard-discovery` | WB discovery, panels, display expressions and WireDash branding |
+| `feat/remove-telemetry-feature-requests` | Telemetry SDK/hooks and feature-request/poll removal |
+| `feat/wirenboard-green-theme` | Green light/dark theme |
 
-Feature requests, bug reports, and ideas are welcome too — open a
-[GitHub issue](https://github.com/giladtamam/zigdash/issues).
-Built by a Zigbee2MQTT user, for the Zigbee2MQTT community.
+## Build and test
 
-## Sponsor
-
-ZigDash is free, with no ads, and stays that way. If it's useful to you,
-you can [sponsor it on GitHub](https://github.com/sponsors/giladtamam). A
-[Google Play review](https://play.google.com/store/apps/details?id=com.giladtamam.zigdash)
-helps too.
-
-## Build & test
-
-The Android build also needs Go 1.26+ for the optional embedded WireGuard
-transport. See [embedded WireGuard setup and build notes](docs/EMBEDDED_WIREGUARD.md).
-
-Requires the Flutter SDK (stable channel).
+Use the Flutter version in [.fvmrc](.fvmrc). `tool/flutter` selects it through
+FVM or `ZIGDASH_FLUTTER`. Android builds also need Java 17, the Android SDK/NDK
+and Go 1.26+ on `PATH`; see the [WireGuard build notes](docs/EMBEDDED_WIREGUARD.md#build-and-check).
+Linux tests for display expressions additionally need CMake and a C/C++ compiler.
 
 ```bash
-flutter pub get
-dart run build_runner build --delete-conflicting-outputs
-flutter analyze
-flutter test
+git clone https://github.com/VadimSurpin/WireDash.git
+cd WireDash
+tool/flutter pub get
+tool/flutter pub run build_runner build --delete-conflicting-outputs
+python3 tool/build_display_js_native.py
+export JSF_LIBRARY_PATH="$PWD/.dart_tool/display-js-native/libjsf.so"
+tool/flutter analyze
+tool/flutter test
 ```
 
-Release APKs (per-ABI):
+Build the ARM64 Android test APK:
 
 ```bash
-flutter build apk --release --split-per-abi
+tool/flutter build apk --debug --flavor foss --target-platform android-arm64
 ```
 
-Signing uses `android/key.properties` (gitignored). Tags (`vX.Y.Z`) drive the
-CI release pipeline, which attaches signed per-ABI APKs to the release.
+For release APKs:
 
-## Repository layout
+```bash
+tool/flutter build apk --release --flavor foss --split-per-abi \
+  --no-tree-shake-icons --dart-define=ZIGDASH_FLAVOR=foss
+```
 
-- `lib/` — Flutter app (Riverpod, go_router, Drift, Material 3)
-- `node-red/` — bundled Node-RED flows for hub-side automation
-- `store/` — Play Store listing copy, screenshots, graphics
-- `fastlane/` — supply metadata (F-Droid / IzzyOnDroid read this)
+Signing uses `android/key.properties` (gitignored). Keep your signing key stable
+for updates. The Android application ID remains `com.giladtamam.zigdash` for
+compatibility with the existing development APKs; renaming the GitHub fork does
+not rename the package.
+
+## Help and upstream credits
+
+For issues specific to this fork, use the [WireDash issue tracker](https://github.com/VadimSurpin/WireDash/issues).
+The in-app support email and community links are inherited from ZigDash and
+still point to its upstream contacts; use this repository for WireDash changes.
+
+The original project remains available here:
+
+- [ZigDash source](https://github.com/giladtamam/zigdash) and [original README](https://github.com/giladtamam/zigdash#readme)
+- [Original ZigDash on Google Play](https://play.google.com/store/apps/details?id=com.giladtamam.zigdash)
+- [ZigDash website](https://zigdash.app) and [community](https://t.me/zigdash_app)
+- [Support the original author](https://github.com/sponsors/giladtamam)
 
 ## License
 
-[MIT](LICENSE) © 2026 Gilad Tamam
+[MIT](LICENSE). Original ZigDash code © 2026 Gilad Tamam.
+The original license and copyright notice are preserved in this fork.
