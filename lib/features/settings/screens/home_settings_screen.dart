@@ -79,7 +79,7 @@ class HomeSettingsScreen extends ConsumerWidget {
                 leading: const Icon(Icons.bolt_outlined),
                 title: Text(l10n.automationsTitle),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(Routes.homeAutomations(home.id)),
+                onTap: () => context.go(Routes.homeAutomations(home.id)),
               ),
               ListTile(
                 leading: const Icon(Icons.notifications_outlined),

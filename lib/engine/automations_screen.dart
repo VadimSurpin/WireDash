@@ -9,6 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../features/pro/pro.dart';
 import '../features/pro/pro_screen.dart';
 import '../core/analytics/analytics.dart';
+import '../features/home/home_shell.dart' show HomeTitle, SettingsAction;
 import 'automation.dart';
 import 'automation_editor_screen.dart';
 import 'automation_text.dart';
@@ -163,7 +164,8 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
       );
       return;
     }
-    Navigator.of(context).push(MaterialPageRoute<void>(
+    // Above the bottom bar, like the scene editor.
+    Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(
         builder: (_) => AutomationEditorScreen(connectionId: widget.connectionId)));
   }
 
@@ -188,7 +190,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
             )
           : null,
       appBar: AppBar(
-        title: Text(l10n.automationsTitle),
+        title: HomeTitle(connectionId: widget.connectionId),
         actions: [
           if (view.valueOrNull?.phase == HubEnginePhase.running)
             Padding(
@@ -202,6 +204,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
                 PopupMenuItem<void>(onTap: _confirmRemove, child: Text(l10n.engineRemove)),
               ],
             ),
+          const SettingsAction(),
         ],
       ),
       body: view.when(
@@ -477,7 +480,7 @@ class _AutomationsList extends ConsumerWidget {
                   ),
                   Row(children: [
                     TextButton(
-                      onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                      onPressed: () => Navigator.of(context, rootNavigator: true).push(MaterialPageRoute<void>(
                           builder: (_) => AutomationEditorScreen(connectionId: connectionId, existing: r))),
                       child: Text(l10n.autoEdit),
                     ),

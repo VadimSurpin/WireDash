@@ -144,7 +144,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             Text(l10n.remoteNeedsEngine),
             const SizedBox(height: 12),
             FilledButton.tonal(
-              onPressed: () => context.push(Routes.homeAutomations(widget.connectionId)),
+              onPressed: () => context.go(Routes.homeAutomations(widget.connectionId)),
               child: Text(l10n.automationsTitle),
             ),
           ] else if (proFlavor != 'play' && !relayIsTest)

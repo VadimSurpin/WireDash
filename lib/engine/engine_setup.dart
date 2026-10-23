@@ -30,12 +30,12 @@ Future<EngineSetup> ensureEngine(BuildContext context, WidgetRef ref, String con
     {EngineFrom from = EngineFrom.automations}) async {
   final view = await _settled(ref, connectionId);
   if (view == null) {
-    if (context.mounted) unawaited(context.push(Routes.homeAutomations(connectionId)));
+    if (context.mounted) context.go(Routes.homeAutomations(connectionId));
     return EngineSetup.needsUser;
   }
   if (view.installed) return EngineSetup.ready;
   if (view.phase != HubEnginePhase.notInstalled) {
-    if (context.mounted) unawaited(context.push(Routes.homeAutomations(connectionId)));
+    if (context.mounted) context.go(Routes.homeAutomations(connectionId));
     return EngineSetup.needsUser;
   }
   try {
