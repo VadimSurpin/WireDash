@@ -539,6 +539,7 @@
   "haConnectNotAdmin": "Home Assistant-brukeren din er ikke administrator. ZigDash trenger en for Home Assistants MQTT. Logg inn som administrator, eller lim inn et token en administrator har laget.",
   "haConnectNoMqtt": "Denne Home Assistant har ingen MQTT-integrasjon. Zigbee2MQTT trenger også en: legg til Mosquitto broker-tillegget og MQTT-integrasjonen i Home Assistant, og prøv igjen.",
   "haConnectSignInFailed": "Innloggingen ble ikke fullført. Prøv igjen, eller bruk et langvarig token.",
+  "setupHaShortcut": "Kjører Zigbee2MQTT i Home Assistant? Hopp over brokeren og innloggingen: logg inn med administratorkontoen din i Home Assistant. Det virker fra alle nettverk.",
   "haConnectButton": "Koble til via Home Assistant",
   "haConnectManualLink": "Bruker du Home Assistant? Koble til via den i stedet",
   "haConnectEmptyNote": "Når ikke denne telefonen megleren? Home Assistant kan bære tilkoblingen for deg.",

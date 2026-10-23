@@ -1572,6 +1572,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'The sign-in didn\'t complete. Try again, or use a long-lived token.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT runs in Home Assistant? Skip the broker and its login: sign in with your Home Assistant admin account. It works from any network.';
+
+  @override
   String get haConnectButton => 'Connect through Home Assistant';
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'dart:convert';
 
+import '../../core/analytics/analytics.dart';
 import '../../core/l10n/app_l10n.dart';
 import '../../core/utils/uuid.dart';
 import '../../data/database/daos/scene_dao.dart';
@@ -157,8 +158,10 @@ Future<String?> homeBaseTopic(WidgetRef ref, String connectionId) async {
 /// Runs [scene] as the Scenes tab and the scene tile do. Returns the number
 /// of actions published; 0 when disconnected or, for a built-in, when no
 /// shutter is known or included.
-Future<int> runScene(WidgetRef ref, String connectionId, Scene scene) async =>
-    activateScene(ref, connectionId, await resolveSceneActions(ref, connectionId, scene));
+Future<int> runScene(WidgetRef ref, String connectionId, Scene scene) async {
+  ref.read(analyticsProvider).track(const FeatureUsed(Feature.sceneRun));
+  return activateScene(ref, connectionId, await resolveSceneActions(ref, connectionId, scene));
+}
 
 /// Asks each device to report its current state by publishing a Z2M `/get`
 /// request for its gettable+settable properties. Many Z2M setups don't retain

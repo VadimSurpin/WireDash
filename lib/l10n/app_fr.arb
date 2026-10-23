@@ -464,6 +464,7 @@
   "haConnectNotAdmin": "Votre utilisateur Home Assistant n'est pas administrateur. ZigDash en a besoin pour le MQTT de Home Assistant. Connectez-vous en tant qu'administrateur, ou collez un jeton créé par un administrateur.",
   "haConnectNoMqtt": "Ce Home Assistant n'a pas d'intégration MQTT. Zigbee2MQTT en a aussi besoin : dans Home Assistant, ajoutez le module complémentaire Mosquitto broker et l'intégration MQTT, puis réessayez.",
   "haConnectSignInFailed": "La connexion ne s'est pas terminée. Réessayez, ou utilisez un jeton longue durée.",
+  "setupHaShortcut": "Zigbee2MQTT tourne dans Home Assistant ? Oubliez le broker et son identifiant : connectez-vous avec votre compte administrateur Home Assistant. Ça marche depuis n'importe quel réseau.",
   "haConnectButton": "Se connecter via Home Assistant",
   "haConnectManualLink": "Vous utilisez Home Assistant ? Connectez-vous plutôt via lui",
   "haConnectEmptyNote": "Ce téléphone n'atteint pas le broker ? Home Assistant peut porter la connexion pour vous.",

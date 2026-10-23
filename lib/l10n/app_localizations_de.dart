@@ -1584,6 +1584,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Anmeldung wurde nicht abgeschlossen. Versuche es erneut oder nutze einen langlebigen Token.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT läuft in Home Assistant? Broker und MQTT-Login überspringen: mit Ihrem Home-Assistant-Administratorkonto anmelden. Das klappt aus jedem Netzwerk.';
+
+  @override
   String get haConnectButton => 'Über Home Assistant verbinden';
 
   @override

@@ -1578,6 +1578,10 @@ class AppLocalizationsCs extends AppLocalizations {
       'Přihlášení se nedokončilo. Zkus to znovu, nebo použij dlouhodobý token.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT běží v Home Assistant? Přeskočte broker a jeho přihlášení: přihlaste se účtem správce Home Assistant. Funguje z jakékoli sítě.';
+
+  @override
   String get haConnectButton => 'Připojit přes Home Assistant';
 
   @override

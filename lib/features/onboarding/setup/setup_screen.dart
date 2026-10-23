@@ -141,6 +141,7 @@ class SetupScreen extends ConsumerWidget {
             onSelect: coordinator.selectCandidate,
             onPlatform: coordinator.setPlatform,
             onManual: manual,
+            onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
           ),
           SetupScanEmpty() => _ScanEmpty(
             state: state,
@@ -159,6 +160,7 @@ class SetupScreen extends ConsumerWidget {
             state: state,
             onSubmit: coordinator.submitCredentials,
             onDemo: tryDemo,
+            onConnectViaHa: (host) => context.push(Routes.haConnectAt(host)),
           ),
           SetupFailed(kind: SetupErrorKind.notZigbee2Mqtt) => _NoZigbee2Mqtt(
             base: coordinator.base,
@@ -368,11 +370,13 @@ class _Scanning extends StatelessWidget {
     required this.onSelect,
     required this.onPlatform,
     required this.onManual,
+    required this.onConnectViaHa,
   });
   final SetupScanning state;
   final ValueChanged<SetupCandidate> onSelect;
   final ValueChanged<SetupPlatform?> onPlatform;
   final VoidCallback onManual;
+  final ValueChanged<String?> onConnectViaHa;
 
   @override
   Widget build(BuildContext context) {
@@ -422,6 +426,17 @@ class _Scanning extends StatelessWidget {
           onChanged: onPlatform,
           done: state.done,
         ),
+        if (state.platform == SetupPlatform.homeAssistant) ...[
+          const SizedBox(height: 16),
+          _HaShortcut(
+            onPressed: () => onConnectViaHa(
+              state.hubs
+                  .where((h) => h.kind == HubKind.homeAssistant)
+                  .firstOrNull
+                  ?.host,
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         for (final h in state.hubs)
           Card(
@@ -630,6 +645,15 @@ class _ScanEmpty extends StatelessWidget {
         // action (2.6.4: five users saw it under the chips and none typed
         // into it); the chips and Try again follow.
         if (hub == null) ...[
+          // Always in the list, so the choices below keep their state when
+          // it appears (it does once a choice says Home Assistant).
+          if (platform == SetupPlatform.homeAssistant)
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: _HaShortcut(onPressed: () => onConnectViaHa(null)),
+            )
+          else
+            const SizedBox.shrink(),
           const SizedBox(height: 20),
           _EmptyChoices(
             onChoice: onChoice,
@@ -654,18 +678,19 @@ class _ScanEmpty extends StatelessWidget {
         // cannot work, so Try again (after installing Mosquitto) leads and
         // the demo sits right under it for ZHA users.
         if (haHub) ...[
+          // 3.1.2: Home Assistant's sign-in leads. Of 91 users who said
+          // they run Home Assistant in 30 days, 7 reached it as the
+          // second button; the broker needs a login they rarely have.
           FilledButton.icon(
-            onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
-            label: Text(l10n.setupTryAgain),
-          ),
-          const SizedBox(height: 8),
-          // 2.10: the broker may be out of reach or need a login the user
-          // doesn't have; Home Assistant can carry the connection.
-          OutlinedButton.icon(
             onPressed: () => onConnectViaHa(hub!.host),
             icon: const Icon(Icons.home_outlined),
             label: Text(l10n.haConnectButton),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.setupTryAgain),
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
@@ -1238,10 +1263,12 @@ class _AuthPrompt extends StatefulWidget {
     required this.state,
     required this.onSubmit,
     required this.onDemo,
+    required this.onConnectViaHa,
   });
   final SetupNeedsAuth state;
   final void Function(String username, String password) onSubmit;
   final VoidCallback onDemo;
+  final ValueChanged<String?> onConnectViaHa;
 
   @override
   State<_AuthPrompt> createState() => _AuthPromptState();
@@ -1296,6 +1323,14 @@ class _AuthPromptState extends State<_AuthPrompt> {
         if (widget.state.rejected) ...[
           const SizedBox(height: 8),
           Text(l10n.setupAuthRejectedZ2m, style: theme.textTheme.bodyMedium),
+        ],
+        // 3.1.2: no MQTT user at hand? Home Assistant's own sign-in needs
+        // none (48 asked for a login and 20 were refused in 30 days).
+        if (widget.state.platform == SetupPlatform.homeAssistant) ...[
+          const SizedBox(height: 12),
+          _HaShortcut(
+            onPressed: () => widget.onConnectViaHa(widget.state.candidate.host),
+          ),
         ],
         const SizedBox(height: 12),
         _LoginHint(platform: widget.state.platform),
@@ -1403,6 +1438,38 @@ class _LoginTrust extends StatelessWidget {
 /// Where the MQTT login lives, so nobody types their hub's web password
 /// here (setup-help-2.5.md, login step). One line for the platform the user
 /// named; all three when they didn't.
+/// Zigbee2MQTT in Home Assistant: sign in with Home Assistant instead of
+/// finding its broker and an MQTT login (3.1.2, ha-route.md).
+class _HaShortcut extends StatelessWidget {
+  const _HaShortcut({required this.onPressed});
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return Card.outlined(
+      key: const Key('setup-ha-shortcut'),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.setupHaShortcut, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: onPressed,
+              icon: const Icon(Icons.home_outlined),
+              label: Text(l10n.haConnectButton),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _LoginHint extends StatelessWidget {
   const _LoginHint({required this.platform});
   final SetupPlatform? platform;

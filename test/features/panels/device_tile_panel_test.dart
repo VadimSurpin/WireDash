@@ -241,6 +241,28 @@ void main() {
     expect(_text('48%'), findsOneWidget);
   });
 
+  testWidgets('a sensor tile offers its graph; a door and a bulb do not (3.1.2)',
+      (tester) async {
+    await tester.pumpWidget(_wrap(
+      _device([
+        {'type': 'numeric', 'name': 'temperature', 'property': 'temperature', 'access': 1, 'unit': '°C'},
+      ], name: 'Living room'),
+      state: {'temperature': 21.43},
+    ));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tile-history')), findsOneWidget);
+    expect(find.byTooltip('History'), findsOneWidget);
+
+    await tester.pumpWidget(_wrap(
+      _device([
+        {'type': 'binary', 'name': 'contact', 'property': 'contact', 'access': 1, 'value_on': true, 'value_off': false},
+      ], name: 'Front door'),
+      state: {'contact': true},
+    ));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tile-history')), findsNothing);
+  });
+
   testWidgets('contact true reads Closed', (tester) async {
     await tester.pumpWidget(_wrap(
       _device([

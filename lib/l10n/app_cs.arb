@@ -464,6 +464,7 @@
   "haConnectNotAdmin": "Tvůj uživatel v Home Assistantu není správce. ZigDash správce potřebuje pro MQTT Home Assistantu. Přihlas se jako správce, nebo vlož token, který správce vytvořil.",
   "haConnectNoMqtt": "Tento Home Assistant nemá integraci MQTT. Zigbee2MQTT ji potřebuje taky: v Home Assistantu přidej doplněk Mosquitto broker a integraci MQTT a zkus to znovu.",
   "haConnectSignInFailed": "Přihlášení se nedokončilo. Zkus to znovu, nebo použij dlouhodobý token.",
+  "setupHaShortcut": "Zigbee2MQTT běží v Home Assistant? Přeskočte broker a jeho přihlášení: přihlaste se účtem správce Home Assistant. Funguje z jakékoli sítě.",
   "haConnectButton": "Připojit přes Home Assistant",
   "haConnectManualLink": "Používáš Home Assistant? Připoj se raději přes něj",
   "haConnectEmptyNote": "Tento telefon na broker nedosáhne? Home Assistant může připojení přenést za tebe.",

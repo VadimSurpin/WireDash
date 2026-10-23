@@ -108,7 +108,21 @@ class ReadingPanel extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(text, style: theme.textTheme.headlineMedium),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(text, style: theme.textTheme.headlineMedium),
+                  ),
+                  // 3.1.2: says the tap opens a graph.
+                  if (openHistory != null)
+                    Icon(
+                      Icons.timeline,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                ],
+              ),
               name,
             ],
           ),

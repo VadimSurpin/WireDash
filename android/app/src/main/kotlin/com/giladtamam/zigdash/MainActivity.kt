@@ -36,6 +36,12 @@ class MainActivity : FlutterActivity() {
                     call.argument<String>("name") ?: ""))
                 "generateVapidKeys" -> result.success(generateVapidKeys())
                 "timeZoneId" -> result.success(java.util.TimeZone.getDefault().id)
+                // Google's test devices (Play's pre-launch report, Firebase
+                // Test Lab) set this; they send no usage data (3.1.2).
+                "isTestDevice" -> result.success(try {
+                    android.provider.Settings.System.getString(
+                        contentResolver, "firebase.test.lab") == "true"
+                } catch (_: Exception) { false })
                 // Setup's no-network screen (2.9.4): the Wi-Fi panel over the
                 // app on Android 10+, the Wi-Fi settings page before.
                 "openWifiSettings" -> {

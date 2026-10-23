@@ -1583,6 +1583,10 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вход не завершился. Попробуйте снова или используйте долгосрочный токен.';
 
   @override
+  String get setupHaShortcut =>
+      'Zigbee2MQTT работает в Home Assistant? Пропустите брокер и его логин: войдите с учётной записью администратора Home Assistant. Работает из любой сети.';
+
+  @override
   String get haConnectButton => 'Подключиться через Home Assistant';
 
   @override

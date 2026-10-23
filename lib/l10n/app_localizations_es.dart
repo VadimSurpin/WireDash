@@ -1582,6 +1582,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'El inicio de sesión no se completó. Inténtalo de nuevo o usa un token de larga duración.';
 
   @override
+  String get setupHaShortcut =>
+      '¿Zigbee2MQTT funciona en Home Assistant? Olvídate del broker y su usuario: inicia sesión con tu cuenta de administrador de Home Assistant. Funciona desde cualquier red.';
+
+  @override
   String get haConnectButton => 'Conectar a través de Home Assistant';
 
   @override

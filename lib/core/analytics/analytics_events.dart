@@ -319,6 +319,13 @@ enum Feature {
 
   /// A device was controlled from the app (2.9.2), with its kind in `tile`.
   control,
+
+  /// A new scene was saved (3.1.2). Never which scene or what it does.
+  sceneCreated,
+
+  /// A scene was run from the Scenes tab or a dashboard tile (3.1.2).
+  /// Widget runs are `shortcut_used` with kind `scene_widget`.
+  sceneRun,
 }
 
 /// The first use of a feature in a session.
