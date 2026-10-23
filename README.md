@@ -15,10 +15,10 @@ own server, cloud account or dashboard backend. Optional Node-RED flows on your
 hub provide recording, alerts and automation when the phone is offline.
 
 <p align="center">
-  <img src="docs/screenshots/dashboard-light.png" width="220" alt="WireDash green device panels in light mode">
-  <img src="docs/screenshots/dashboard-dark.png" width="220" alt="WireDash green device panels in dark mode">
-  <img src="docs/screenshots/device-controls.png" width="220" alt="Light, brightness and colour controls in the green theme">
-  <img src="docs/screenshots/devices.png" width="220" alt="The all-devices list in WireDash">
+  <img src="docs/screenshots/dashboard-light.png" width="200" alt="WireDash green device panels in light mode">
+  <img src="docs/screenshots/dashboard-dark.png" width="200" alt="WireDash green device panels in dark mode">
+  <img src="docs/screenshots/device-controls.png" width="200" alt="Light, brightness and colour controls in the green theme">
+  <img src="docs/screenshots/devices.png" width="200" alt="The all-devices list in WireDash">
 </p>
 
 These are rendered views of the actual app widgets with demo devices and values.
