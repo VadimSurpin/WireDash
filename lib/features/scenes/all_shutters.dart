@@ -75,7 +75,7 @@ Scene allShuttersScene(ShutterCommand c, String connectionId, String name) {
     connectionId: connectionId,
     name: name,
     iconCodepoint: allShuttersIcon(c),
-    colorSeed: SignalPalette.amberLight.toARGB32(),
+    colorSeed: SignalPalette.accentLight.toARGB32(),
     actions: '[]',
     sortOrder: c.index - ShutterCommand.values.length,
     createdAt: stamp,
