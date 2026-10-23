@@ -66,11 +66,11 @@ void main() {
 
   testWidgets('asked on the third day; a choice is sent once', (tester) async {
     final (prefs, sink) = await _card(tester, prefs: sharing);
-    expect(find.text('What should ZigDash do next?'), findsOneWidget);
+    expect(find.text('What should WireDash do next?'), findsOneWidget);
     await tester.tap(find.text('History graphs'));
     await tester.pumpAndSettle();
     expect(sink.sent, ['poll_answer {choice: history}']);
-    expect(find.text('What should ZigDash do next?'), findsNothing);
+    expect(find.text('What should WireDash do next?'), findsNothing);
     expect(prefs.getString(pollDoneKey), '1');
   });
 
@@ -79,7 +79,7 @@ void main() {
       tester,
       prefs: {'analytics_consent': true, 'review_sessions': 2},
     );
-    expect(find.text('What should ZigDash do next?'), findsNothing);
+    expect(find.text('What should WireDash do next?'), findsNothing);
   });
 
   testWidgets('Not now puts it away for good, sending nothing', (tester) async {
@@ -97,23 +97,23 @@ void main() {
       tester,
       prefs: {'analytics_consent': false, 'review_sessions': 5},
     );
-    expect(find.text('What should ZigDash do next?'), findsOneWidget);
+    expect(find.text('What should WireDash do next?'), findsOneWidget);
     expect(find.text('History graphs'), findsNothing);
     expect(find.text('Request a feature'), findsOneWidget);
   });
 
   testWidgets('waits while the usage-data question is open', (tester) async {
     await _card(tester, prefs: {'review_sessions': 5});
-    expect(find.text('What should ZigDash do next?'), findsNothing);
+    expect(find.text('What should WireDash do next?'), findsNothing);
   });
 
   testWidgets('never on the demo Home', (tester) async {
     await _card(tester, prefs: sharing, host: demoHost);
-    expect(find.text('What should ZigDash do next?'), findsNothing);
+    expect(find.text('What should WireDash do next?'), findsNothing);
   });
 
   testWidgets('asked only once', (tester) async {
     await _card(tester, prefs: {...sharing, pollDoneKey: '1'});
-    expect(find.text('What should ZigDash do next?'), findsNothing);
+    expect(find.text('What should WireDash do next?'), findsNothing);
   });
 }

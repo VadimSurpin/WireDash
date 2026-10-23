@@ -73,7 +73,7 @@ class SceneWidget : AppWidgetProvider() {
             val e = entry ?: ShortcutPrefs.sceneWidget(ctx, id)
             if (e == null) {
                 // Not set up (the picker was left): tapping opens it again.
-                v.setTextViewText(R.id.w_name, "ZigDash")
+                v.setTextViewText(R.id.w_name, "WireDash")
                 v.setTextViewText(R.id.w_line,
                     ShortcutPrefs.word(ctx, "chooseScene", "Choose a scene"))
                 v.setOnClickPendingIntent(R.id.w_root, PendingIntent.getActivity(ctx, id,

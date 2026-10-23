@@ -25,7 +25,7 @@ void main() {
     expect(ev('smoke').text(l10n), '🔥 Smoke — X');
     expect(ev('opened').text(l10n), '🚪 X opened');
     expect(ev('battery', value: 12).text(l10n), '🔋 Battery low — X, 12%');
-    expect(ev('test').text(l10n), 'ZigDash test alert');
+    expect(ev('test').text(l10n), 'WireDash test alert');
   });
 
   test('rubbish is rejected', () {

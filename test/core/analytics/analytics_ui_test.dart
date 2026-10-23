@@ -73,11 +73,11 @@ void main() {
       tester,
     ) async {
       final prefs = await _card(tester, host: '192.168.1.2');
-      expect(find.text('Help improve ZigDash?'), findsOneWidget);
+      expect(find.text('Help improve WireDash?'), findsOneWidget);
       await tester.tap(find.text('Share'));
       await tester.pump();
       expect(prefs.getBool('analytics_consent'), isTrue);
-      expect(find.text('Help improve ZigDash?'), findsNothing);
+      expect(find.text('Help improve WireDash?'), findsNothing);
     });
 
     testWidgets('No thanks is remembered', (tester) async {
@@ -85,12 +85,12 @@ void main() {
       await tester.tap(find.text('No thanks'));
       await tester.pump();
       expect(prefs.getBool('analytics_consent'), isFalse);
-      expect(find.text('Help improve ZigDash?'), findsNothing);
+      expect(find.text('Help improve WireDash?'), findsNothing);
     });
 
     testWidgets('never on the demo home', (tester) async {
       await _card(tester, host: demoHost);
-      expect(find.text('Help improve ZigDash?'), findsNothing);
+      expect(find.text('Help improve WireDash?'), findsNothing);
     });
 
     testWidgets('never once answered', (tester) async {
@@ -99,7 +99,7 @@ void main() {
         host: '192.168.1.2',
         prefs: {'analytics_consent': false},
       );
-      expect(find.text('Help improve ZigDash?'), findsNothing);
+      expect(find.text('Help improve WireDash?'), findsNothing);
     });
   });
 

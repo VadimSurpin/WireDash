@@ -62,7 +62,7 @@ void main() {
   testWidgets('bought: thanks, and nothing to buy', (tester) async {
     await _pump(tester, status: ProStatus.unlocked);
     expect(
-      find.text('Unlocked. Thank you for supporting ZigDash.'),
+      find.text('Unlocked. Thank you for supporting WireDash.'),
       findsOneWidget,
     );
     expect(find.byType(FilledButton), findsNothing);

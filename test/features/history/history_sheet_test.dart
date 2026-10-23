@@ -110,7 +110,7 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('7 days'));
     await tester.pump();
-    expect(find.textContaining('ZigDash Pro'), findsOneWidget);
+    expect(find.textContaining('WireDash Pro'), findsOneWidget);
     expect(find.text('Unlock'), findsOneWidget);
   });
 
@@ -123,7 +123,7 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('7 days'));
     await tester.pump();
-    expect(find.textContaining('ZigDash Pro'), findsOneWidget);
+    expect(find.textContaining('WireDash Pro'), findsOneWidget);
     expect(find.text('Unlock'), findsNothing);
   });
 
@@ -154,8 +154,9 @@ void main() {
   testWidgets('nothing installed: the plain set-up card', (tester) async {
     await tester.pumpWidget(_app(online: null, retained: ''));
     await tester.pump();
-    expect(find.textContaining('ZigDash has no server'), findsOneWidget);
+    expect(find.textContaining('WireDash has no server'), findsOneWidget);
     expect(find.textContaining("isn't reporting"), findsNothing);
+
   });
 
   testWidgets('no recorder on the hub: record on this device instead', (

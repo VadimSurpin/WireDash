@@ -1,6 +1,6 @@
 {
-    "name": "ZigDash",
-    "short_name": "ZigDash",
+    "name": "WireDash",
+    "short_name": "WireDash",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#5CB400",
