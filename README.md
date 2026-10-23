@@ -88,7 +88,7 @@ all app features without Play billing.
 Download the APK for your phone from [WireDash releases](https://github.com/VadimSurpin/WireDash/releases/latest):
 `arm64-v8a` for most current phones, `armeabi-v7a` for older 32-bit devices, or
 `x86_64` for compatible emulators. Releases include SHA-256 checksums. Android
-6.0 or newer is required. These are release-mode FOSS builds with all app
+7.0 or newer is required. These are release-mode FOSS builds with all app
 features unlocked and no Play billing.
 
 The first WireDash release uses the same local development signing certificate
