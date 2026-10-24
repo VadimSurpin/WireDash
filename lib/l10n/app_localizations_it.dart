@@ -3842,6 +3842,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get engineChecking => 'Controllo dell\'hub…';
 
   @override
+  String get engineAwayNoHubTitle =>
+      'Al momento il tuo hub non è raggiungibile';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Sei fuori casa e il tuo hub non è collegato all\'accesso remoto di ZigDash, oppure è senza internet. Le tue automazioni continuano a funzionare sull\'hub.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Potrai reinstallare l\'Engine quando sei a casa.';
+
+  @override
   String get engineNoConnection =>
       'ZigDash ora non raggiunge il broker di questa casa. Le automazioni si configurano da connessi, a casa.';
 
@@ -4303,6 +4315,70 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Connesso · Fuori casa via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Condividi con un altro telefono';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Aggiungi questa casa a un altro telefono con un codice QR';
+
+  @override
+  String get shareHomeIntro =>
+      'Sull\'altro telefono, a casa sulla stessa Wi-Fi, inquadra il codice con la fotocamera. ZigDash aggiunge questa casa con il suo accesso e le tue dashboard.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Il codice contiene l\'accesso al broker di questa casa. Resta visibile 2 minuti; mostralo solo a persone di cui ti fidi.';
+
+  @override
+  String get shareHomeShow => 'Mostra il codice';
+
+  @override
+  String get shareHomeAtHome =>
+      'Collegati prima da casa: la condivisione funziona solo sulla rete di casa.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Inquadralo con la fotocamera dell\'altro telefono. Il codice si nasconde tra 2 minuti.';
+
+  @override
+  String get shareHomeHide => 'Nascondi il codice';
+
+  @override
+  String get shareHomeViaHa =>
+      'Questa casa si collega tramite Home Assistant. Sull\'altro telefono installa ZigDash e accedi con Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Aggiungi una casa condivisa';
+
+  @override
+  String get joinHomeInvalid =>
+      'Questo codice non è un invito di ZigDash, oppure è danneggiato.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name è già su questo telefono.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Apri';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Aggiungere $name a questo telefono?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash aggiunge la casa con la stessa connessione e lo stesso accesso, e prende le dashboard dall\'altro telefono. Tieni questo telefono sulla Wi-Fi di casa.';
+
+  @override
+  String get joinHomeAdd => 'Aggiungi casa';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Casa aggiunta. Le dashboard non sono arrivate; i dispositivi sono nella scheda Dispositivi.';
 
   @override
   String get remoteTitle => 'Controllo remoto';

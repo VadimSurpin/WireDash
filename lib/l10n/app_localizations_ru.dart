@@ -3824,6 +3824,17 @@ class AppLocalizationsRu extends AppLocalizations {
   String get engineChecking => 'Проверка хаба…';
 
   @override
+  String get engineAwayNoHubTitle => 'Сейчас не удаётся связаться с хабом';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Вы не дома, и хаб не подключён к удалённому доступу ZigDash или у него нет интернета. Автоматизации продолжают работать на хабе.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Переустановить Engine можно, когда будете дома.';
+
+  @override
   String get engineNoConnection =>
       'ZigDash сейчас не может связаться с брокером этого дома. Автоматизации настраиваются дома, при подключении.';
 
@@ -4286,6 +4297,70 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Подключено · Вне дома через ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Поделиться с другим телефоном';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Добавьте этот дом на другой телефон одним QR-кодом';
+
+  @override
+  String get shareHomeIntro =>
+      'На другом телефоне, дома в той же Wi-Fi, отсканируйте код камерой. ZigDash добавит этот дом с логином и вашими панелями.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Код содержит логин брокера этого дома. Он виден 2 минуты; показывайте его только тем, кому доверяете.';
+
+  @override
+  String get shareHomeShow => 'Показать код';
+
+  @override
+  String get shareHomeAtHome =>
+      'Сначала подключитесь дома: делиться можно только в домашней сети.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Отсканируйте камерой другого телефона. Код скроется через 2 минуты.';
+
+  @override
+  String get shareHomeHide => 'Скрыть код';
+
+  @override
+  String get shareHomeViaHa =>
+      'Этот дом подключается через Home Assistant. На другом телефоне установите ZigDash и войдите через Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Добавить общий дом';
+
+  @override
+  String get joinHomeInvalid =>
+      'Этот код не приглашение ZigDash или повреждён.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name уже есть на этом телефоне.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Открыть';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Добавить $name на этот телефон?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash добавит дом с тем же подключением и логином и возьмёт панели с другого телефона. Оставайтесь в домашней Wi-Fi.';
+
+  @override
+  String get joinHomeAdd => 'Добавить дом';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Дом добавлен. Панели не пришли; устройства — на вкладке «Устройства».';
 
   @override
   String get remoteTitle => 'Удалённое управление';

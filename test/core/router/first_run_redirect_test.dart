@@ -22,6 +22,8 @@ void main() {
     test('setup, manual entry and help stay reachable', () {
       expect(redirect(Routes.setup), isNull);
       expect(redirect(Routes.guidedConnect), isNull);
+      // 3.1.7: a new phone scanning another phone's "Share this home" code.
+      expect(redirect(Routes.joinHome), isNull);
       expect(redirect(Routes.help), isNull);
     });
   });

@@ -3832,6 +3832,17 @@ class AppLocalizationsCs extends AppLocalizations {
   String get engineChecking => 'Kontrola hubu…';
 
   @override
+  String get engineAwayNoHubTitle => 'Teď se nedaří spojit s vaším hubem';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Jste pryč a váš hub není připojen ke vzdálenému přístupu ZigDash, nebo nemá internet. Vaše automatizace na hubu dál běží.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Engine můžete přeinstalovat, až budete doma.';
+
+  @override
   String get engineNoConnection =>
       'ZigDash teď nedosáhne na broker této domácnosti. Automatizace se nastavují doma, s připojením.';
 
@@ -4291,6 +4302,70 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Připojeno · Mimo domov přes ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Sdílet s dalším telefonem';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Přidejte tento domov do dalšího telefonu jedním QR kódem';
+
+  @override
+  String get shareHomeIntro =>
+      'Na druhém telefonu, doma na stejné Wi-Fi, naskenujte kód fotoaparátem. ZigDash přidá tento domov s přihlášením i vašimi nástěnkami.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Kód obsahuje přihlášení k brokeru tohoto domova. Zobrazí se na 2 minuty; ukazujte ho jen lidem, kterým věříte.';
+
+  @override
+  String get shareHomeShow => 'Zobrazit kód';
+
+  @override
+  String get shareHomeAtHome =>
+      'Nejdřív se připojte doma: sdílení funguje jen ve vaší domácí síti.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Naskenujte fotoaparátem druhého telefonu. Kód se za 2 minuty skryje.';
+
+  @override
+  String get shareHomeHide => 'Skrýt kód';
+
+  @override
+  String get shareHomeViaHa =>
+      'Tento domov se připojuje přes Home Assistant. Na druhém telefonu nainstalujte ZigDash a přihlaste se přes Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Přidat sdílený domov';
+
+  @override
+  String get joinHomeInvalid =>
+      'Tento kód není pozvánka do domova ZigDash, nebo je poškozený.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name už v tomto telefonu je.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Otevřít';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Přidat $name do tohoto telefonu?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash přidá domov se stejným připojením a přihlášením a převezme nástěnky z druhého telefonu. Nechte tento telefon na domácí Wi-Fi.';
+
+  @override
+  String get joinHomeAdd => 'Přidat domov';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Domov přidán. Nástěnky nedorazily; zařízení najdete na kartě Zařízení.';
 
   @override
   String get remoteTitle => 'Dálkové ovládání';

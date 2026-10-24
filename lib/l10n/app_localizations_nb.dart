@@ -3824,6 +3824,17 @@ class AppLocalizationsNb extends AppLocalizations {
   String get engineChecking => 'Sjekker huben…';
 
   @override
+  String get engineAwayNoHubTitle => 'Huben din kan ikke nås akkurat nå';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Du er borte, og huben er ikke koblet til ZigDash sin fjerntilgang, eller den mangler internett. Automasjonene dine fortsetter å kjøre på huben.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Du kan installere Engine på nytt når du er hjemme.';
+
+  @override
   String get engineNoConnection =>
       'ZigDash når ikke brokeren i dette hjemmet akkurat nå. Automasjoner settes opp hjemme, med tilkobling.';
 
@@ -4285,6 +4296,70 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Tilkoblet · Borte via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Del med en annen telefon';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Legg til dette hjemmet på en annen telefon med én QR-kode';
+
+  @override
+  String get shareHomeIntro =>
+      'På den andre telefonen, hjemme på samme Wi-Fi, skann koden med kameraet. ZigDash legger til hjemmet med pålogging og dashbordene dine.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Koden inneholder brokerpåloggingen for dette hjemmet. Den vises i 2 minutter; vis den bare til folk du stoler på.';
+
+  @override
+  String get shareHomeShow => 'Vis koden';
+
+  @override
+  String get shareHomeAtHome =>
+      'Koble til hjemme først: deling fungerer bare på hjemmenettet.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Skann med kameraet på den andre telefonen. Koden skjules om 2 minutter.';
+
+  @override
+  String get shareHomeHide => 'Skjul koden';
+
+  @override
+  String get shareHomeViaHa =>
+      'Dette hjemmet kobler til via Home Assistant. Installer ZigDash på den andre telefonen og logg inn med Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Legg til et delt hjem';
+
+  @override
+  String get joinHomeInvalid =>
+      'Denne koden er ikke en ZigDash-invitasjon, eller den er skadet.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name er allerede på denne telefonen.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Åpne';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Legge til $name på denne telefonen?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash legger til hjemmet med samme tilkobling og pålogging, og henter dashbordene fra den andre telefonen. Hold denne telefonen på hjemme-Wi-Fi.';
+
+  @override
+  String get joinHomeAdd => 'Legg til hjem';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Hjemmet er lagt til. Dashbordene kom ikke; enhetene dine er i fanen Enheter.';
 
   @override
   String get remoteTitle => 'Fjernstyring';
