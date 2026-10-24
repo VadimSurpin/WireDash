@@ -1690,6 +1690,20 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Letzter Schritt: Hake die gewünschten Geräte an und tippe unten auf Dashboard erstellen.';
+
+  @override
+  String get setupLeaveTitle => 'Dashboard erstellen?';
+
+  @override
+  String get setupLeaveBody =>
+      'Deine Geräte sind gefunden. Erstelle das Dashboard jetzt oder beginne die Einrichtung neu und verliere diese Liste.';
+
+  @override
+  String get setupStartOver => 'Neu beginnen';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Dashboard mit $count erstellen';
   }

@@ -1685,6 +1685,20 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Último passo: marque os dispositivos que quiser e toque em Criar painel abaixo.';
+
+  @override
+  String get setupLeaveTitle => 'Criar o seu painel?';
+
+  @override
+  String get setupLeaveBody =>
+      'Os seus dispositivos foram encontrados. Crie o painel agora ou recomece a configuração e perca esta lista.';
+
+  @override
+  String get setupStartOver => 'Recomeçar';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Criar painel com $count';
   }

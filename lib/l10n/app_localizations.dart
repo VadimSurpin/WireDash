@@ -3066,6 +3066,30 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 device found.} other{{count} devices found.}} Choose what goes on your first dashboard.'**
   String setupReviewSubtitle(int count);
 
+  /// No description provided for @setupReviewLastStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Last step: tick the devices you want, then tap Create dashboard below.'**
+  String get setupReviewLastStep;
+
+  /// No description provided for @setupLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your dashboard?'**
+  String get setupLeaveTitle;
+
+  /// No description provided for @setupLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices are found. Create the dashboard now, or start setup over and lose this list.'**
+  String get setupLeaveBody;
+
+  /// No description provided for @setupStartOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over'**
+  String get setupStartOver;
+
   /// No description provided for @setupCreateWithCount.
   ///
   /// In en, this message translates to:

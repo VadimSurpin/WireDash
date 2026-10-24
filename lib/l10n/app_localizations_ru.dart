@@ -1681,6 +1681,20 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Последний шаг: отметьте нужные устройства и нажмите «Создать панель» внизу.';
+
+  @override
+  String get setupLeaveTitle => 'Создать панель?';
+
+  @override
+  String get setupLeaveBody =>
+      'Ваши устройства найдены. Создайте панель сейчас или начните настройку заново и потеряйте этот список.';
+
+  @override
+  String get setupStartOver => 'Начать заново';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Создать дашборд ($count)';
   }

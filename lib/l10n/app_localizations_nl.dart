@@ -1686,6 +1686,20 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Laatste stap: vink de apparaten aan die je wilt en tik onderaan op Dashboard maken.';
+
+  @override
+  String get setupLeaveTitle => 'Je dashboard maken?';
+
+  @override
+  String get setupLeaveBody =>
+      'Je apparaten zijn gevonden. Maak het dashboard nu, of begin opnieuw en verlies deze lijst.';
+
+  @override
+  String get setupStartOver => 'Opnieuw beginnen';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Dashboard maken met $count';
   }

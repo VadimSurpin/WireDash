@@ -1682,6 +1682,20 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Poslední krok: zaškrtněte zařízení, která chcete, a dole klepněte na Vytvořit nástěnku.';
+
+  @override
+  String get setupLeaveTitle => 'Vytvořit nástěnku?';
+
+  @override
+  String get setupLeaveBody =>
+      'Vaše zařízení jsou nalezena. Vytvořte nástěnku hned, nebo začněte nastavení znovu a tento seznam ztratíte.';
+
+  @override
+  String get setupStartOver => 'Začít znovu';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Vytvořit nástěnku ($count)';
   }
