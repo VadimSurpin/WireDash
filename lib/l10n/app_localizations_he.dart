@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1547,6 +1548,13 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haConnectChecking => 'בודק את Home Assistant…';
+
+  @override
+  String get setupStillChecking => 'עדיין בודקים. זה יכול לקחת עד 30 שניות.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'לא בטוחים מה הכתובת? באפליקציית Home Assistant פתחו הגדרות › אפליקציה נלווית והקישו על השרת שלכם: הכתובת מופיעה שם. במחשב, זו הכתובת שהדפדפן מציג כש-Home Assistant פתוח.';
 
   @override
   String get haConnectNotAdmin =>

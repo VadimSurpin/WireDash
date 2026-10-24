@@ -2886,6 +2886,18 @@ abstract class AppLocalizations {
   /// **'Checking Home Assistant…'**
   String get haConnectChecking;
 
+  /// No description provided for @setupStillChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Still checking. This can take up to 30 seconds.'**
+  String get setupStillChecking;
+
+  /// No description provided for @haConnectWhereAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure what it is? In the Home Assistant app, open Settings › Companion app and tap your server: its address is there. On a computer, it\'s what the browser shows when Home Assistant is open.'**
+  String get haConnectWhereAddress;
+
   /// No description provided for @haConnectNotAdmin.
   ///
   /// In en, this message translates to:

@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1558,6 +1559,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get haConnectChecking => 'Checking Home Assistant…';
+
+  @override
+  String get setupStillChecking =>
+      'Still checking. This can take up to 30 seconds.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'Not sure what it is? In the Home Assistant app, open Settings › Companion app and tap your server: its address is there. On a computer, it\'s what the browser shows when Home Assistant is open.';
 
   @override
   String get haConnectNotAdmin =>

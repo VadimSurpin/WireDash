@@ -14,6 +14,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../ha_import/ha_auth.dart';
 import 'ha_connect.dart';
 import 'setup_providers.dart';
+import 'setup_waiting.dart';
 
 /// "Connect through Home Assistant" (docs/design/ha-route.md): the address,
 /// a sign-in (Home Assistant's login page, or a pasted token), a check,
@@ -63,6 +64,7 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
               .read(setupCoordinatorProvider)
               .adoptHomeAssistant(address: address, signIn: signIn)
         : _replaceSignIn(widget.again!, address, signIn),
+    reach: reachHomeAssistant,
     signIn: (base) => signInToHa(
       base,
       browser: (url) => FlutterWebAuth2.authenticate(
@@ -134,7 +136,11 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
             onToken: () =>
                 _controller.connectWithToken(_address.text, _token.text),
           ),
-          HaConnectChecking() || HaConnectDone() => Center(
+          HaConnectChecking() => SetupWaiting(
+            title: l10n.haConnectChecking,
+            onCancel: _controller.cancel,
+          ),
+          HaConnectDone() => Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -204,6 +210,11 @@ class _AskState extends State<_Ask> {
                 : null,
           ),
         ),
+        // 3.1.4: an empty address was every try on 3.1.3's first night.
+        if (problem == HaConnectProblem.noAddress) ...[
+          const SizedBox(height: 12),
+          Text(l10n.haConnectWhereAddress, style: theme.textTheme.bodyMedium),
+        ],
         if (problem != null &&
             problem != HaConnectProblem.noAddress &&
             problem != HaConnectProblem.noToken) ...[

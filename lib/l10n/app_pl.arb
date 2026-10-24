@@ -531,6 +531,8 @@
   "haConnectTokenHelp": "W Home Assistant otwórz swój profil, potem Bezpieczeństwo › Długoterminowe tokeny dostępu › Utwórz token. Skopiuj go i wklej tutaj. ZigDash zachowuje go na tym telefonie do łączenia; usuń go w Home Assistant, gdy zechcesz to zakończyć.",
   "haConnectWithToken": "Połącz z tokenem",
   "haConnectChecking": "Sprawdzanie Home Assistant…",
+  "setupStillChecking": "Nadal sprawdzam. Może to potrwać do 30 sekund.",
+  "haConnectWhereAddress": "Nie wiesz, jaki to adres? W aplikacji Home Assistant otwórz Ustawienia › Aplikacja towarzysząca i stuknij swój serwer: adres jest tam. Na komputerze to adres, który przeglądarka pokazuje przy otwartym Home Assistant.",
   "haConnectNotAdmin": "Twój użytkownik Home Assistant nie jest administratorem. ZigDash potrzebuje go do MQTT w Home Assistant. Zaloguj się jako administrator albo wklej token utworzony przez administratora.",
   "haConnectNoMqtt": "Ten Home Assistant nie ma integracji MQTT. Zigbee2MQTT też jej potrzebuje: w Home Assistant dodaj dodatek Mosquitto broker i integrację MQTT, a potem spróbuj ponownie.",
   "haConnectSignInFailed": "Logowanie nie zostało ukończone. Spróbuj ponownie albo użyj długoterminowego tokenu.",
