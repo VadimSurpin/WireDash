@@ -6798,6 +6798,24 @@ abstract class AppLocalizations {
   /// **'Checking your hub…'**
   String get engineChecking;
 
+  /// No description provided for @engineAwayNoHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach your hub right now'**
+  String get engineAwayNoHubTitle;
+
+  /// No description provided for @engineAwayNoHubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re away, and your hub isn\'t connected to ZigDash\'s remote access, or its internet is down. Your automations keep running on the hub.'**
+  String get engineAwayNoHubBody;
+
+  /// No description provided for @engineAwayReinstallAtHome.
+  ///
+  /// In en, this message translates to:
+  /// **'You can reinstall the Engine when you\'re at home.'**
+  String get engineAwayReinstallAtHome;
+
   /// No description provided for @engineNoConnection.
   ///
   /// In en, this message translates to:

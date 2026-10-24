@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -3843,6 +3844,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get engineChecking => 'Hub wird geprüft…';
+
+  @override
+  String get engineAwayNoHubTitle => 'Dein Hub ist gerade nicht erreichbar';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Du bist unterwegs, und dein Hub ist nicht mit dem Fernzugriff von ZigDash verbunden, oder sein Internet ist weg. Deine Automationen laufen auf dem Hub weiter.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Du kannst die Engine neu installieren, wenn du zu Hause bist.';
 
   @override
   String get engineNoConnection =>

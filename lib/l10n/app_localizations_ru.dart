@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -3822,6 +3823,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get engineChecking => 'Проверка хаба…';
+
+  @override
+  String get engineAwayNoHubTitle => 'Сейчас не удаётся связаться с хабом';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Вы не дома, и хаб не подключён к удалённому доступу ZigDash или у него нет интернета. Автоматизации продолжают работать на хабе.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Переустановить Engine можно, когда будете дома.';
 
   @override
   String get engineNoConnection =>
