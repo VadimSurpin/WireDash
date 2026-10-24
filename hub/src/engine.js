@@ -444,6 +444,14 @@ class ZigDashEngine {
 
   onMqtt(data) {
     if (data.topic === `${ROOT}/remote/set`) return this.onRemoteSet(data.message);
+    // 3.1.7: the retained state and last runs found on the broker at start
+    // go up too, so an away phone has them before the next run.
+    if ((data.topic === `${ROOT}/${PREFIX}/recent` || data.topic === `${ROOT}/${PREFIX}/state`) && data.message &&
+        !this.mirrored.has(data.topic)) {
+      this.mirrored.set(data.topic, String(data.message));
+      this.remoteForward(data.topic, String(data.message));
+      return;
+    }
     this.flowInput(data.topic, data.message);
     const prefix = `${ROOT}/${PREFIX}/`;
     if (!data.topic.startsWith(prefix)) return;

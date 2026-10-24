@@ -238,6 +238,15 @@ class MqttManager {
           if (m.topic.startsWith(prefix) && !_latest.containsKey(m.topic) && !m.topic.contains('/bridge/')) m,
       ];
 
+  /// The newest message for every topic starting with [prefix] received
+  /// in this app session only, never a value saved from an earlier one
+  /// (3.1.7). Through the relay every retained message arrives once, at
+  /// connect, so a wildcard subscriber opened later starts from these.
+  List<MqttRxMessage> liveUnder(String prefix) => [
+        for (final m in _latest.values)
+          if (m.topic.startsWith(prefix)) m,
+      ];
+
   /// Seeds saved values (loaded before [connect]). A later subscription to
   /// an exact topic starts with its saved value.
   void seedLastKnown(Iterable<MqttRxMessage> messages) {

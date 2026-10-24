@@ -572,3 +572,19 @@ test('remote: Start again works from away and is not kept', async () => {
   assert.ok(!control.retain, 'a one-off, never retained');
   await z.engine.stop();
 });
+
+test('remote: the last runs found on the broker at start go up before any new run', async () => {
+  const z = fakeZ2m();
+  const relay = fakeRelay();
+  z.engine.mqttConnect = () => relay;
+  await z.engine.start();
+  const recent = '[{"id":"a1","at":"2026-10-24T04:00:07.988Z","commands":1}]';
+  z.mqttIn('zigdash/automations/recent', recent);
+  z.mqttIn('zigdash/remote/set', JSON.stringify(remoteCfg));
+  relay.emit('connect');
+  const up = sealedUp(relay, 'zigdash/automations/recent');
+  assert.equal(up.length, 1);
+  assert.equal(H.unseal(remoteKey, up[0].payload).payload, recent);
+  await z.engine.stop();
+});
+

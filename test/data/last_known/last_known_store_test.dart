@@ -131,4 +131,23 @@ void main() {
     expect(got, isEmpty, reason: 'at home the live list always wins');
     expect(mgr.latestUnder('zigbee2mqtt/'), isEmpty);
   });
+
+  // 3.1.7: a wildcard reader opened after the relay delivered starts from
+  // this session's messages, never from saved ones.
+  test('liveUnder holds this session only', () async {
+    final mgr = MqttManager(
+      config: const BrokerConfig(
+          id: 'c1', host: 'h', port: 1883, protocol: MqttProtocol.tcp),
+      password: '',
+    );
+    addTearDown(mgr.dispose);
+    mgr.seedLastKnown([
+      MqttRxMessage(
+          topic: 'zigdash/automations/rules/old',
+          payload: '{}',
+          receivedAt: now,
+          connectionGeneration: -1),
+    ]);
+    expect(mgr.liveUnder('zigdash/automations/rules/'), isEmpty);
+  });
 }
