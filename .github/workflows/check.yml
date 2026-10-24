@@ -2,6 +2,11 @@ name: check
 
 on:
   workflow_dispatch:
+    inputs:
+      build_release:
+        description: Build release APKs after all checks pass
+        type: boolean
+        default: false
   pull_request:
   push:
     branches: [main, 'feat/**']
@@ -98,7 +103,7 @@ jobs:
 
   release-apks:
     # Release builds run only after all functional, visual and Go checks pass.
-    if: github.ref == 'refs/heads/feat/upstream-3.1.2-release'
+    if: startsWith(github.ref, 'refs/heads/feat/release-') || (github.event_name == 'workflow_dispatch' && inputs.build_release)
     needs: [wireguard, analyze-and-test]
     runs-on: ubuntu-latest
     timeout-minutes: 45
