@@ -1828,6 +1828,13 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupPlatformPi => 'Raspberry Pi או Docker';
 
   @override
+  String get setupPlatformZha => 'ZHA, בלי Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'ZigDash מציג מכשירים מ‑Zigbee2MQTT, ולכן הוא לא רואה מכשירים ב‑ZHA, ה‑Zigbee המובנה של Home Assistant. אפשר לנסות את בית ההדגמה כדי לראות איך ZigDash עובד.';
+
+  @override
   String get setupPlatformNotSure => 'לא בטוח';
 
   @override
@@ -1976,6 +1983,11 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String setupAddressNotResolved(String host) {
     return 'לא ניתן היה לפענח את $host. שמות שמסתיימים ב‑.local נכשלים לעיתים קרובות באנדרואיד; נסו את כתובת ה‑IP במקום. Home Assistant מציג אותה תחת הגדרות › מערכת › רשת.';
+  }
+
+  @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return 'לא ניתן למצוא את $host מהטלפון הזה; אנדרואיד לרוב לא מצליח לפענח שמות ‎.local. הקישו על $button למעלה והשתמשו בכתובת שבה אתם פותחים את Home Assistant בדפדפן, או הקלידו כאן את כתובת ה‑IP שלו. Home Assistant מציג אותה תחת הגדרות › מערכת › רשת.';
   }
 
   @override

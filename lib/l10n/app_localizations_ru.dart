@@ -1845,6 +1845,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupPlatformPi => 'Raspberry Pi или Docker';
 
   @override
+  String get setupPlatformZha => 'ZHA, без Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'ZigDash показывает устройства из Zigbee2MQTT, поэтому не видит устройства в ZHA, встроенном Zigbee Home Assistant. Попробуйте демо-дом, чтобы увидеть, как работает ZigDash.';
+
+  @override
   String get setupPlatformNotSure => 'Не знаю';
 
   @override
@@ -1995,6 +2002,11 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String setupAddressNotResolved(String host) {
     return 'Не удалось разрешить $host. Имена на .local часто не работают в Android; попробуйте IP-адрес. Home Assistant показывает его в Настройки › Система › Сеть.';
+  }
+
+  @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host не находится с этого телефона: Android часто не умеет разрешать имена .local. Нажмите «$button» выше и укажите адрес, по которому открываете Home Assistant в браузере, или введите здесь его IP-адрес. Home Assistant показывает его в Настройки › Система › Сеть.';
   }
 
   @override

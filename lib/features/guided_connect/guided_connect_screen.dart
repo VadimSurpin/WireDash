@@ -313,7 +313,17 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: TextButton.icon(
-              onPressed: () => context.push(Routes.haConnect),
+              onPressed: () {
+                ref
+                    .read(analyticsProvider)
+                    .track(
+                      const SetupStep(
+                        SetupStepKind.haOpened,
+                        choice: HaSignInFrom.manualForm,
+                      ),
+                    );
+                context.push(Routes.haConnect);
+              },
               icon: const Icon(Icons.home_outlined),
               label: Text(l10n.haConnectManualLink),
             ),
@@ -526,6 +536,16 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
                   if (!zeroDevices) await _buildFirstDashboard(id);
                   if (!mounted) return;
                   setState(() => _building = false);
+                  // 3.1.3: a home made here is a finished setup too.
+                  ref
+                      .read(analyticsProvider)
+                      .track(
+                        SetupStep(
+                          SetupStepKind.complete,
+                          devices: count,
+                          via: SetupVia.brokerForm,
+                        ),
+                      );
                   try {
                     await ref.read(firstRunProvider).finish(id);
                   } catch (_) {

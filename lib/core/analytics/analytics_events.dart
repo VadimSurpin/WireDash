@@ -110,6 +110,14 @@ enum SetupStepKind {
   /// [SetupStep.result]: ok, or why not (`HaConnectOutcome`).
   haConnect,
 
+  /// The Home Assistant sign-in was opened from setup (3.1.3), with
+  /// [SetupStep.choice] saying from where (a [HaSignInFrom]).
+  haOpened,
+
+  /// An answer to "where does Zigbee2MQTT run?" was picked (3.1.3), with
+  /// [SetupStep.platform]; counted when given, not only with later steps.
+  platformChosen,
+
   /// The review was left without creating a dashboard (2.10.2): back, or
   /// setup started over. Carries [SetupStep.devices] and
   /// [SetupStep.selected], the state of the list when it was left.
@@ -121,6 +129,24 @@ enum SetupStepKind {
 /// homeassistant.local), or a hub on another network (the guest-network
 /// note and usual names).
 enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
+
+/// How setup succeeded (3.1.3), on [SetupStepKind.complete]: the scan and
+/// its review, Home Assistant's sign-in (which also ends in the review), or
+/// the broker form, which until 3.1.3 sent no complete at all.
+enum SetupVia { scan, homeAssistant, brokerForm }
+
+/// Where setup opened the Home Assistant sign-in (3.1.3): while scanning,
+/// the card on an empty result, the note under "I use Home Assistant",
+/// the first button when Home Assistant was found without a broker, the
+/// broker's login prompt, or the link on the broker form.
+enum HaSignInFrom {
+  scanning,
+  emptyCard,
+  emptyChoice,
+  haFound,
+  login,
+  manualForm,
+}
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the
 /// first step that failed (name lookup, TCP connection, MQTT handshake,
@@ -183,12 +209,17 @@ class SetupStep extends AnalyticsEvent {
     this.choice,
     this.selected,
     this.portClass,
+    this.via,
   });
 
   final SetupStepKind step;
 
+  /// How setup succeeded, on [SetupStepKind.complete] (3.1.3).
+  final SetupVia? via;
+
   /// The choice tapped on the empty result (a [ScanEmptyChoice]), when
-  /// [step] is emptyChoice.
+  /// [step] is emptyChoice; where the sign-in was opened from (a
+  /// [HaSignInFrom]), when [step] is haOpened.
   final Enum? choice;
 
   /// The setup error kind's name, when [step] is failed.
@@ -264,6 +295,7 @@ class SetupStep extends AnalyticsEvent {
         top: '21+',
       ),
     if (platform != null) 'platform': _snake(platform!.name),
+    if (via != null) 'via': _snake(via!.name),
     if (step == SetupStepKind.scanEmpty)
       'hub': hub == null ? 'none' : _snake(hub!.name),
     if (hostsTried != null)

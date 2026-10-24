@@ -1859,6 +1859,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get setupPlatformPi => 'Raspberry Pi ou Docker';
 
   @override
+  String get setupPlatformZha => 'ZHA, pas de Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'ZigDash affiche les appareils de Zigbee2MQTT ; il ne voit donc pas les appareils de ZHA, le Zigbee intégré de Home Assistant. Essayez la maison de démo pour voir comment fonctionne ZigDash.';
+
+  @override
   String get setupPlatformNotSure => 'Je ne sais pas';
 
   @override
@@ -2011,6 +2018,11 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String setupAddressNotResolved(String host) {
     return 'Impossible de résoudre $host. Les noms en .local échouent souvent sur Android ; essayez l\'adresse IP. Home Assistant l\'affiche dans Paramètres › Système › Réseau.';
+  }
+
+  @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host est introuvable depuis ce téléphone ; Android ne sait souvent pas résoudre les noms en .local. Touchez $button ci-dessus et utilisez l\'adresse avec laquelle vous ouvrez Home Assistant dans le navigateur, ou saisissez ici son adresse IP. Home Assistant l\'affiche dans Paramètres › Système › Réseau.';
   }
 
   @override

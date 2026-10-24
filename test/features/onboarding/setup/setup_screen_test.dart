@@ -589,11 +589,34 @@ void main() {
         find.widgetWithText(TextField, 'homeassistant.local'),
         findsOneWidget,
       );
+      // 3.1.3: a Home Assistant user is sent to its sign-in, above.
       expect(
-        find.textContaining('homeassistant.local could not be looked up'),
+        find.textContaining("homeassistant.local can't be found"),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('Tap Connect through Home Assistant above'),
         findsOneWidget,
       );
       expect(choices(), ['home_assistant']);
+
+      // Which way into the sign-in is counted (3.1.3).
+      await tester.ensureVisible(find.byKey(const Key('setup-ha-shortcut')));
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('setup-ha-shortcut')),
+          matching: find.text('Connect through Home Assistant'),
+        ),
+      );
+      await tester.pump();
+      expect(
+        [
+          for (final (name, props) in sent)
+            if (name == 'setup_step' && props['step'] == 'ha_opened')
+              props['choice'],
+        ],
+        ['empty_card'],
+      );
     });
 
     testWidgets('another network explains, and checks a usual name', (
@@ -809,6 +832,47 @@ void main() {
     expect(find.byKey(const Key('setup-ha-shortcut')), findsOneWidget);
     expect(find.text('Connect through Home Assistant'), findsOneWidget);
   });
+
+  testWidgets(
+    'a ZHA answer is counted and says ZigDash cannot see ZHA (3.1.3)',
+    (tester) async {
+      final sent = <(String, Map<String, String>)>[];
+      final controller = StreamController<ScanEvent>();
+      addTearDown(controller.close);
+      await _pump(
+        tester,
+        run: (_, __) => ScanRun(events: controller.stream, addHub: (_) {}),
+        extra: [
+          analyticsProvider.overrideWithValue(
+            Analytics(_RecordingSink(sent), enabled: true),
+          ),
+        ],
+      );
+      await tester.tap(find.text('Find my setup'));
+      await tester.pump();
+      expect(find.byKey(const Key('setup-zha-note')), findsNothing);
+
+      await tester.tap(find.text('ZHA, no Zigbee2MQTT'));
+      await tester.pump();
+      expect(find.byKey(const Key('setup-zha-note')), findsOneWidget);
+      expect(find.textContaining("can't see devices in ZHA"), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('setup-zha-note')),
+          matching: find.text('Try demo'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        [
+          for (final (name, props) in sent)
+            if (name == 'setup_step' && props['step'] == 'platform_chosen')
+              props['platform'],
+        ],
+        ['zha'],
+      );
+    },
+  );
 
   testWidgets('the login prompt offers Home Assistant sign-in to its users', (
     tester,

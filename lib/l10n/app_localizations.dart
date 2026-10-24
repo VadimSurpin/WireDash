@@ -3360,6 +3360,18 @@ abstract class AppLocalizations {
   /// **'Raspberry Pi or Docker'**
   String get setupPlatformPi;
 
+  /// No description provided for @setupPlatformZha.
+  ///
+  /// In en, this message translates to:
+  /// **'ZHA, no Zigbee2MQTT'**
+  String get setupPlatformZha;
+
+  /// Under the setup answer for Home Assistant's own Zigbee (ZHA), 3.1.3: ZigDash cannot see ZHA devices; a Try demo button follows.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash shows devices from Zigbee2MQTT, so it can\'t see devices in ZHA, Home Assistant\'s own Zigbee. You can try the demo home to see how ZigDash works.'**
+  String get setupZhaNote;
+
   /// No description provided for @setupPlatformNotSure.
   ///
   /// In en, this message translates to:
@@ -3581,6 +3593,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{host} could not be looked up. Names ending in .local often fail on Android; try the IP address instead. Home Assistant shows it under Settings › System › Network.'**
   String setupAddressNotResolved(String host);
+
+  /// A .local name that did not resolve, for someone who said they use Home Assistant (3.1.3). {button} is the Connect through Home Assistant button above.
+  ///
+  /// In en, this message translates to:
+  /// **'{host} can\'t be found from this phone; Android often can\'t look up .local names. Tap {button} above and use the address you open Home Assistant with in your browser, or type its IP address here. Home Assistant shows it under Settings › System › Network.'**
+  String setupAddressNotResolvedHa(String host, String button);
 
   /// No description provided for @setupAddressNotLocal.
   ///
