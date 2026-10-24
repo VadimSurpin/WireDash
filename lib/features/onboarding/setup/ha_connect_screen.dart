@@ -264,9 +264,7 @@ class _AskState extends State<_Ask> {
             widget.address.text == widget.found.single.address) ...[
           const SizedBox(height: 12),
           Text(
-            l10n.setupHubSeenHa(
-              widget.found.single.name ?? _hostOf(widget.found.single),
-            ),
+            l10n.setupHubSeenHa(_hostOf(widget.found.single)),
             style: theme.textTheme.bodyMedium,
           ),
         ] else if (widget.found.length > 1) ...[

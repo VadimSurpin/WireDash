@@ -245,7 +245,7 @@ void main() {
       ]);
       await tester.pumpAndSettle();
       expect(field(tester).controller!.text, 'http://192.168.68.64:8123');
-      expect(find.text('Found Home Assistant at Home'), findsOneWidget);
+      expect(find.text('Found Home Assistant at 192.168.68.64:8123'), findsOneWidget);
     });
 
     testWidgets('a typed address is not replaced, and no look', (tester) async {
