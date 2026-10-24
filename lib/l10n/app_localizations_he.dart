@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1551,6 +1550,25 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get setupStillChecking => 'עדיין בודקים. זה יכול לקחת עד 30 שניות.';
+
+  @override
+  String get aiHelpTitle => 'נתקעתם? שאלו את עוזר ה-AI שלכם';
+
+  @override
+  String get aiHelpBody =>
+      'ZigDash מסכם את מה שמצא עבור ChatGPT, Claude, Gemini או כל אפליקציית AI, בלי סיסמאות או כתובות. תראו את הטקסט לפני השיתוף.';
+
+  @override
+  String get aiHelpButton => 'שאלו AI';
+
+  @override
+  String get aiHelpPreviewTitle => 'מה ישותף';
+
+  @override
+  String get aiHelpShare => 'שיתוף לאפליקציית AI';
+
+  @override
+  String get aiHelpCopied => 'הועתק. הדביקו בכל צ\'אט AI.';
 
   @override
   String get haConnectWhereAddress =>

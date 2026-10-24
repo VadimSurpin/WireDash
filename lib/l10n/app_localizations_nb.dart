@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1565,6 +1564,26 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get setupStillChecking =>
       'Sjekker fortsatt. Dette kan ta opptil 30 sekunder.';
+
+  @override
+  String get aiHelpTitle => 'Står du fast? Spør KI-assistenten din';
+
+  @override
+  String get aiHelpBody =>
+      'ZigDash skriver opp hva den fant for ChatGPT, Claude, Gemini eller en annen KI-app, uten passord eller adresser. Du ser det før det deles.';
+
+  @override
+  String get aiHelpButton => 'Spør en KI';
+
+  @override
+  String get aiHelpPreviewTitle => 'Dette blir delt';
+
+  @override
+  String get aiHelpShare => 'Del til en KI-app';
+
+  @override
+  String get aiHelpCopied =>
+      'Kopiert. Lim det inn i en hvilken som helst KI-chat.';
 
   @override
   String get haConnectWhereAddress =>

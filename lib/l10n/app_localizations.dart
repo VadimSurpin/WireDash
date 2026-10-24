@@ -2892,6 +2892,42 @@ abstract class AppLocalizations {
   /// **'Still checking. This can take up to 30 seconds.'**
   String get setupStillChecking;
 
+  /// No description provided for @aiHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stuck? Ask your AI assistant'**
+  String get aiHelpTitle;
+
+  /// No description provided for @aiHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash writes up what it found for ChatGPT, Claude, Gemini or any AI app, without passwords or addresses. You see it before it\'s shared.'**
+  String get aiHelpBody;
+
+  /// No description provided for @aiHelpButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask an AI'**
+  String get aiHelpButton;
+
+  /// No description provided for @aiHelpPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What will be shared'**
+  String get aiHelpPreviewTitle;
+
+  /// No description provided for @aiHelpShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share to an AI app'**
+  String get aiHelpShare;
+
+  /// No description provided for @aiHelpCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. Paste it into any AI chat.'**
+  String get aiHelpCopied;
+
   /// No description provided for @haConnectWhereAddress.
   ///
   /// In en, this message translates to:

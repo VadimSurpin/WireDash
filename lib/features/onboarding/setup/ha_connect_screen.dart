@@ -12,7 +12,9 @@ import '../../../core/l10n/l10n_ext.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../ha_import/ha_auth.dart';
+import 'ai_help.dart';
 import 'ha_connect.dart';
+import 'setup_coordinator.dart' show SetupPlatform;
 import 'setup_providers.dart';
 import 'setup_waiting.dart';
 
@@ -273,6 +275,17 @@ class _AskState extends State<_Ask> {
                   onPressed: widget.onToken,
                   child: Text(l10n.haConnectWithToken),
                 ),
+        ],
+        // 3.1.5: after a failed try, the user's own AI assistant.
+        if (problem != null) ...[
+          const SizedBox(height: 24),
+          AiHelpCard(
+            facts: AiHelpFacts(
+              from: AiHelpFrom.haConnect,
+              platform: SetupPlatform.homeAssistant,
+              haProblem: problem,
+            ),
+          ),
         ],
         const SizedBox(height: 24),
         Text(l10n.haConnectKeeps, style: theme.textTheme.bodySmall),
