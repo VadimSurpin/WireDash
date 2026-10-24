@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 
 import '../../../core/l10n/l10n_ext.dart';
+import '../../../core/utils/material_icon.dart';
 import '../../../data/database/database.dart';
 import '../../discovery/models/wirenboard_device.dart';
 import '../../discovery/providers/wirenboard_discovery_provider.dart';
@@ -96,6 +97,9 @@ class WirenBoardDevicePanel extends ConsumerWidget {
     final state = DeviceState(profile, values);
     return DeviceSummaryCard(
       name: panel.name,
+      icon: config.display.iconCodepoint == null
+          ? null
+          : materialIcon(config.display.iconCodepoint!),
       state: state,
       labels: labels,
       readings: [

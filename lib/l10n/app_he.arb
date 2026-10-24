@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "לפני התצוגה (JavaScript)",
   "displayExpressionSample": "ערך לדוגמה",
   "displayExpressionHint": "value מכיל את הערך הנכנס. שדה ריק משאיר אותו ללא שינוי. לתצוגה בלבד; הפקודות וההיסטוריה השמורה אינן משתנות.",
-  "getHelpCannotOpen": "לא ניתן לפתוח את GitHub. יש להעתיק את הפרטים ולפתוח את דיווחי WireDash בדפדפן."
+  "getHelpCannotOpen": "לא ניתן לפתוח את GitHub. יש להעתיק את הפרטים ולפתוח את דיווחי WireDash בדפדפן.",
+  "panelIconAutomatic": "אוטומטי"
 }

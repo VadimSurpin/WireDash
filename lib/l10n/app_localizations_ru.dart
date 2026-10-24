@@ -4421,4 +4421,7 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get getHelpCannotOpen =>
       'Не удалось открыть GitHub. Скопируйте сведения и откройте задачи WireDash в браузере.';
+
+  @override
+  String get panelIconAutomatic => 'Автоматически';
 }

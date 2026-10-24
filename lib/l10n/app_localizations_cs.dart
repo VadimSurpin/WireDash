@@ -4424,4 +4424,7 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get getHelpCannotOpen =>
       'GitHub nelze otevřít. Zkopírujte podrobnosti a otevřete hlášení WireDash v prohlížeči.';
+
+  @override
+  String get panelIconAutomatic => 'Automaticky';
 }

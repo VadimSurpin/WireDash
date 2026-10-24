@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "Przed wyświetleniem (JavaScript)",
   "displayExpressionSample": "Przykładowa wartość",
   "displayExpressionHint": "value zawiera odebraną wartość. Puste pole pozostawia ją bez zmian. Tylko wyświetlanie; polecenia i zapisana historia pozostają bez zmian.",
-  "getHelpCannotOpen": "Nie można otworzyć GitHuba. Skopiuj szczegóły i otwórz zgłoszenia WireDash w przeglądarce."
+  "getHelpCannotOpen": "Nie można otworzyć GitHuba. Skopiuj szczegóły i otwórz zgłoszenia WireDash w przeglądarce.",
+  "panelIconAutomatic": "Automatycznie"
 }

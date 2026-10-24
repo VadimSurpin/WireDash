@@ -33,7 +33,10 @@ property's + button to add one control with a label and widget choice, or the
 device's + button for a whole-device panel. Add tile uses the current dashboard.
 
 Non-built-in WB devices are added automatically after discovery. Whole-device
-panels support custom labels and visible properties in the panel editor.
+panels support custom labels, icons and visible properties in the panel editor.
+Switch panels offer separate on/off icons; choose Automatic to restore the
+default. Dashboard rows follow their contents, and narrow switch panels wrap
+the switch below the icon and label.
 See [Wiren Board discovery](WIRENBOARD_DISCOVERY.md).
 
 Import a WireGuard peer configuration in the initial connection form or the

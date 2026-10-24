@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "Vor der Anzeige (JavaScript)",
   "displayExpressionSample": "Beispielwert",
   "displayExpressionHint": "value enthält den eingehenden Wert. Leer lässt ihn unverändert. Nur Anzeige; Befehle und gespeicherter Verlauf bleiben unverändert.",
-  "getHelpCannotOpen": "GitHub konnte nicht geöffnet werden. Kopiere die Details und öffne die WireDash-Issues im Browser."
+  "getHelpCannotOpen": "GitHub konnte nicht geöffnet werden. Kopiere die Details und öffne die WireDash-Issues im Browser.",
+  "panelIconAutomatic": "Automatisch"
 }

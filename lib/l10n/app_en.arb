@@ -2230,5 +2230,6 @@
   },
   "problemReportGithub": "On GitHub",
   "problemReportGithubSubtitle": "Public draft: review and edit before posting.",
-  "getHelpCannotOpen": "Could not open GitHub. Copy the details and open the WireDash issue tracker in your browser."
+  "getHelpCannotOpen": "Could not open GitHub. Copy the details and open the WireDash issue tracker in your browser.",
+  "panelIconAutomatic": "Automatic"
 }

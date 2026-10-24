@@ -9,20 +9,12 @@ int gridColumns(double width, {double textScale = 1.0}) {
   return 4;
 }
 
-/// The smallest a tile may be, in dp, at the same window classes as
-/// [gridColumns]. A row is as tall as its tallest tile, never shorter.
-double minTileHeight(double width) {
-  if (width < 600) return 118;
-  if (width < 840) return 140;
-  return 176;
-}
-
 /// How many columns a tile of [size] spans in a grid of [columns].
 int tileSpan(PanelWidth size, int columns) => switch (size) {
-      PanelWidth.small => 1,
-      PanelWidth.wide => columns < 2 ? columns : 2,
-      PanelWidth.full => columns,
-    };
+  PanelWidth.small => 1,
+  PanelWidth.wide => columns < 2 ? columns : 2,
+  PanelWidth.full => columns,
+};
 
 /// One tile placed in a grid row.
 typedef PlacedTile<T> = ({T tile, int span});

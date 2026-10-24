@@ -22,22 +22,22 @@ import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 final _stamp = DateTime(2026, 10, 11);
 
 Panel _reading(ReadingConfig config) => Panel(
-      id: 'r1',
-      dashboardId: 'd1',
-      name: 'Bedroom humidity',
-      type: PanelType.reading,
-      topic: '',
-      subscribeTopic: '',
-      topicPrefixOverride: 'zigbee2mqtt/climate',
-      qos: 1,
-      retain: false,
-      width: PanelWidth.small,
-      sortOrder: 0,
-      config: config.encode(),
-      mergeFlags: 0,
-      createdAt: _stamp,
-      updatedAt: _stamp,
-    );
+  id: 'r1',
+  dashboardId: 'd1',
+  name: 'Bedroom humidity',
+  type: PanelType.reading,
+  topic: '',
+  subscribeTopic: '',
+  topicPrefixOverride: 'zigbee2mqtt/climate',
+  qos: 1,
+  retain: false,
+  width: PanelWidth.small,
+  sortOrder: 0,
+  config: config.encode(),
+  mergeFlags: 0,
+  createdAt: _stamp,
+  updatedAt: _stamp,
+);
 
 final _dashboard = Dashboard(
   id: 'd1',
@@ -53,38 +53,45 @@ final _dashboard = Dashboard(
 );
 
 Widget _app(_Panels panels) => ProviderScope(
-      overrides: [
-        panelRepoProvider.overrideWithValue(panels),
-        dashboardRepoProvider.overrideWithValue(_Dashboards()),
-        connectionsStreamProvider
-            .overrideWith((ref) => Stream.value(const <Connection>[])),
-        dashboardsForConnectionProvider
-            .overrideWith((ref, _) => Stream.value([_dashboard])),
-        mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
-        bridgeDevicesStreamProvider.overrideWith((ref, _) => Stream.value(const [])),
-      ],
-      child: MaterialApp.router(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        // Save pops the form, so it needs a route under it.
-        routerConfig: GoRouter(
-          initialLocation: '/form',
+  overrides: [
+    panelRepoProvider.overrideWithValue(panels),
+    dashboardRepoProvider.overrideWithValue(_Dashboards()),
+    connectionsStreamProvider.overrideWith(
+      (ref) => Stream.value(const <Connection>[]),
+    ),
+    dashboardsForConnectionProvider.overrideWith(
+      (ref, _) => Stream.value([_dashboard]),
+    ),
+    mqttManagerProvider.overrideWith((ref, _) => Completer<Never>().future),
+    bridgeDevicesStreamProvider.overrideWith(
+      (ref, _) => Stream.value(const []),
+    ),
+  ],
+  child: MaterialApp.router(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    // Save pops the form, so it needs a route under it.
+    routerConfig: GoRouter(
+      initialLocation: '/form',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, __) => const Scaffold(body: Text('dashboard')),
           routes: [
             GoRoute(
-              path: '/',
-              builder: (_, __) => const Scaffold(body: Text('dashboard')),
-              routes: [
-                GoRoute(
-                  path: 'form',
-                  builder: (_, __) => const PanelFormScreen(
-                      connectionId: 'c1', dashboardId: 'd1', panelId: 'r1'),
-                ),
-              ],
+              path: 'form',
+              builder: (_, __) => const PanelFormScreen(
+                connectionId: 'c1',
+                dashboardId: 'd1',
+                panelId: 'r1',
+              ),
             ),
           ],
         ),
-      ),
-    );
+      ],
+    ),
+  ),
+);
 
 Future<void> _tall(WidgetTester tester) async {
   tester.view.physicalSize = const Size(800, 2400);
@@ -99,28 +106,100 @@ Future<void> _settle(WidgetTester tester) async {
 }
 
 Finder _field(String text) => find.byWidgetPredicate(
-    (w) => w is EditableText && w.controller.text == text);
+  (w) => w is EditableText && w.controller.text == text,
+);
 
 void main() {
-  testWidgets('a value tile opens on Value with no gauge fields', (tester) async {
+  testWidgets(
+    'switch editor saves selected on/off icons with its MQTT settings',
+    (tester) async {
+      final config = ToggleConfig(
+        onPayload: '1',
+        offPayload: '0',
+        onMatch: '1',
+        jsonPath: null,
+        onIconCodepoint: Icons.thermostat.codePoint,
+      );
+      final panels = _Panels(
+        _reading(const ReadingConfig()).copyWith(
+          type: PanelType.toggle,
+          name: 'Kitchen relay',
+          config: config.encode(),
+        ),
+      );
+      await tester.pumpWidget(_app(panels));
+      await _settle(tester);
+      expect(
+        tester
+            .widget<IconButton>(
+              find.descendant(
+                of: find.byKey(const Key('toggle-on-icon')),
+                matching: find.byKey(
+                  ValueKey('panel-icon:${Icons.thermostat.codePoint}'),
+                ),
+              ),
+            )
+            .isSelected,
+        isTrue,
+      );
+      for (final (key, icon) in [
+        ('toggle-on-icon', Icons.lightbulb),
+        ('toggle-off-icon', Icons.outlet),
+      ]) {
+        final picker = find.byKey(Key(key));
+        final choice = find.descendant(
+          of: picker,
+          matching: find.byKey(ValueKey('panel-icon:${icon.codePoint}')),
+        );
+        await tester.ensureVisible(choice);
+        await _settle(tester);
+        await tester.tap(choice);
+        await tester.pump();
+      }
+      await tester.tap(find.text('Save'));
+      await _settle(tester);
+      final saved = panels.updated! as ToggleConfig;
+      expect(saved.onIconCodepoint, Icons.lightbulb.codePoint);
+      expect(saved.offIconCodepoint, Icons.outlet.codePoint);
+      expect(saved.onPayload, '1');
+      expect(saved.offPayload, '0');
+      expect(saved.jsonPath, isNull);
+      expect(saved.onMatch, '1');
+    },
+  );
+
+  testWidgets('a value tile opens on Value with no gauge fields', (
+    tester,
+  ) async {
     await tester.pumpWidget(
-        _app(_Panels(_reading(const ReadingConfig(jsonPath: 'humidity', unit: '%')))));
+      _app(
+        _Panels(_reading(const ReadingConfig(jsonPath: 'humidity', unit: '%'))),
+      ),
+    );
     await _settle(tester);
-    await tester.scrollUntilVisible(find.text('Show as'), 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Show as'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Gauge'), findsOneWidget);
     expect(find.text('Color bands'), findsNothing);
   });
 
-  testWidgets('switching to Gauge fills the preset range and bands',
-      (tester) async {
-    final panels =
-        _Panels(_reading(const ReadingConfig(jsonPath: 'humidity', unit: '%')));
+  testWidgets('switching to Gauge fills the preset range and bands', (
+    tester,
+  ) async {
+    final panels = _Panels(
+      _reading(const ReadingConfig(jsonPath: 'humidity', unit: '%')),
+    );
     await _tall(tester);
     await tester.pumpWidget(_app(panels));
     await _settle(tester);
-    await tester.scrollUntilVisible(find.text('Gauge'), 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Gauge'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.ensureVisible(find.text('Gauge'));
     await tester.tap(find.text('Gauge'), warnIfMissed: true);
     await _settle(tester);
@@ -131,58 +210,86 @@ void main() {
     expect(_field('60'), findsOneWidget, reason: 'good band to');
     expect(find.text('Good'), findsOneWidget);
 
-    await tester.scrollUntilVisible(find.text('Save'), 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Save'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Save'));
     await _settle(tester);
     final saved = panels.updated as ReadingConfig;
     expect(saved.style, ReadingStyle.gauge);
     expect((saved.min, saved.max), (0.0, 100.0));
-    expect(saved.bands, [const GaugeBand(from: 30, to: 60, tone: GaugeTone.good)]);
+    expect(saved.bands, [
+      const GaugeBand(from: 30, to: 60, tone: GaugeTone.good),
+    ]);
   });
 
-  testWidgets('a gauge tile opens with its own range, not the preset',
-      (tester) async {
-    await tester.pumpWidget(_app(_Panels(_reading(const ReadingConfig(
-      jsonPath: 'temperature',
-      unit: '°C',
-      style: ReadingStyle.gauge,
-      min: -10,
-      max: 35,
-      bands: [GaugeBand(from: 30, to: 35, tone: GaugeTone.attention)],
-    )))));
+  testWidgets('a gauge tile opens with its own range, not the preset', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        _Panels(
+          _reading(
+            const ReadingConfig(
+              jsonPath: 'temperature',
+              unit: '°C',
+              style: ReadingStyle.gauge,
+              min: -10,
+              max: 35,
+              bands: [GaugeBand(from: 30, to: 35, tone: GaugeTone.attention)],
+            ),
+          ),
+        ),
+      ),
+    );
     await _settle(tester);
-    await tester.scrollUntilVisible(find.text('Color bands'), 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Color bands'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(_field('-10'), findsOneWidget);
     expect(_field('35'), findsNWidgets(2), reason: 'max and the band end');
     expect(find.text('Attention'), findsOneWidget);
   });
 
-  testWidgets('a fourth band cannot be added; a removed band is gone on save',
-      (tester) async {
-    final panels = _Panels(_reading(const ReadingConfig(
-      jsonPath: 'humidity',
-      unit: '%',
-      style: ReadingStyle.gauge,
-      min: 0,
-      max: 100,
-      bands: [
-        GaugeBand(from: 0, to: 30, tone: GaugeTone.attention),
-        GaugeBand(from: 30, to: 60, tone: GaugeTone.good),
-        GaugeBand(from: 60, to: 100, tone: GaugeTone.attention),
-      ],
-    )));
+  testWidgets('a fourth band cannot be added; a removed band is gone on save', (
+    tester,
+  ) async {
+    final panels = _Panels(
+      _reading(
+        const ReadingConfig(
+          jsonPath: 'humidity',
+          unit: '%',
+          style: ReadingStyle.gauge,
+          min: 0,
+          max: 100,
+          bands: [
+            GaugeBand(from: 0, to: 30, tone: GaugeTone.attention),
+            GaugeBand(from: 30, to: 60, tone: GaugeTone.good),
+            GaugeBand(from: 60, to: 100, tone: GaugeTone.attention),
+          ],
+        ),
+      ),
+    );
     await tester.pumpWidget(_app(panels));
     await _settle(tester);
-    await tester.scrollUntilVisible(find.text('Color bands'), 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Color bands'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Add band'), findsNothing);
     await tester.tap(find.byTooltip('Remove band').last);
     await _settle(tester);
     expect(find.text('Add band'), findsOneWidget);
-    await tester.scrollUntilVisible(find.text('Save'), 200,
-        scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(
+      find.text('Save'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Save'));
     await _settle(tester);
     expect((panels.updated as ReadingConfig).bands, hasLength(2));

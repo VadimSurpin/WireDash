@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/core/theme/signal_colors.dart';
 import 'package:zigdash/core/theme/signal_icons.dart';
+import 'package:zigdash/core/utils/material_icon.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
@@ -21,11 +22,15 @@ import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _Recorder extends MqttManager {
   _Recorder()
-      : super(
-          config: const BrokerConfig(
-              id: 'c1', host: 'localhost', port: 1883, protocol: MqttProtocol.tcp),
-          password: '',
-        );
+    : super(
+        config: const BrokerConfig(
+          id: 'c1',
+          host: 'localhost',
+          port: 1883,
+          protocol: MqttProtocol.tcp,
+        ),
+        password: '',
+      );
 
   final sent = <(String, Map<String, Object?>)>[];
 
@@ -33,8 +38,13 @@ class _Recorder extends MqttManager {
   bool get isConnected => true;
 
   @override
-  void publish(String topic, String template, Object value,
-      {mc.MqttQos qos = mc.MqttQos.atLeastOnce, bool retain = false}) {
+  void publish(
+    String topic,
+    String template,
+    Object value, {
+    mc.MqttQos qos = mc.MqttQos.atLeastOnce,
+    bool retain = false,
+  }) {
     // State requests (once per connection) are not commands.
     if (topic.endsWith('/get')) return;
     sent.add((topic, json.decode(template) as Map<String, Object?>));
@@ -45,15 +55,43 @@ const _bulb = [
   {
     'type': 'light',
     'features': [
-      {'type': 'binary', 'name': 'state', 'property': 'state', 'access': 7, 'value_on': 'ON', 'value_off': 'OFF', 'value_toggle': 'TOGGLE'},
-      {'type': 'numeric', 'name': 'brightness', 'property': 'brightness', 'access': 7, 'value_min': 0, 'value_max': 254},
-      {'type': 'numeric', 'name': 'color_temp', 'property': 'color_temp', 'access': 7, 'value_min': 142, 'value_max': 500},
-      {'type': 'composite', 'name': 'color_xy', 'property': 'color', 'access': 7},
+      {
+        'type': 'binary',
+        'name': 'state',
+        'property': 'state',
+        'access': 7,
+        'value_on': 'ON',
+        'value_off': 'OFF',
+        'value_toggle': 'TOGGLE',
+      },
+      {
+        'type': 'numeric',
+        'name': 'brightness',
+        'property': 'brightness',
+        'access': 7,
+        'value_min': 0,
+        'value_max': 254,
+      },
+      {
+        'type': 'numeric',
+        'name': 'color_temp',
+        'property': 'color_temp',
+        'access': 7,
+        'value_min': 142,
+        'value_max': 500,
+      },
+      {
+        'type': 'composite',
+        'name': 'color_xy',
+        'property': 'color',
+        'access': 7,
+      },
     ],
   },
 ];
 
-Panel _device(List<Object?> exposes, {String name = 'Living room bulb'}) => Panel(
+Panel _device(List<Object?> exposes, {String name = 'Living room bulb'}) =>
+    Panel(
       id: 'p1',
       dashboardId: 'd1',
       name: name,
@@ -72,49 +110,59 @@ Panel _device(List<Object?> exposes, {String name = 'Living room bulb'}) => Pane
       deviceIeee: '0xc4d7fdbbfeba0000',
     );
 
-Widget _wrap(Panel panel,
-        {Object? state, _Recorder? mgr, bool animations = true}) =>
-    ProviderScope(
-      overrides: [
-        connectionStatusProvider
-            .overrideWith((ref, _) => Stream.value(MqttStatus.connected)),
-        if (mgr != null) mqttManagerProvider.overrideWith((ref, _) async => mgr),
-        panelValueSnapshotProvider.overrideWith((ref, _) => Stream.value(
-              PanelValueSnapshot(
-                value: state == null ? null : json.encode(state),
-                receivedAt: DateTime(2026, 9, 26),
-                connectionGeneration: 1,
-                freshness: PanelFreshness.fresh,
-              ),
-            )),
-        panelValueProvider.overrideWith((ref, _) =>
-            state == null ? const Stream.empty() : Stream.value(json.encode(state))),
-      ],
-      child: MaterialApp(
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(disableAnimations: !animations),
-          child: child!,
-        ),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: SizedBox(
-            width: 380,
-            child: PanelTile(
-              connectionId: 'c1',
-              dashboardId: 'd1',
-              topicPrefix: 'zigbee2mqtt',
-              panel: panel,
-              locked: true,
-            ),
-          ),
+Widget _wrap(
+  Panel panel, {
+  Object? state,
+  _Recorder? mgr,
+  bool animations = true,
+}) => ProviderScope(
+  overrides: [
+    connectionStatusProvider.overrideWith(
+      (ref, _) => Stream.value(MqttStatus.connected),
+    ),
+    if (mgr != null) mqttManagerProvider.overrideWith((ref, _) async => mgr),
+    panelValueSnapshotProvider.overrideWith(
+      (ref, _) => Stream.value(
+        PanelValueSnapshot(
+          value: state == null ? null : json.encode(state),
+          receivedAt: DateTime(2026, 9, 26),
+          connectionGeneration: 1,
+          freshness: PanelFreshness.fresh,
         ),
       ),
-    );
+    ),
+    panelValueProvider.overrideWith(
+      (ref, _) => state == null
+          ? const Stream.empty()
+          : Stream.value(json.encode(state)),
+    ),
+  ],
+  child: MaterialApp(
+    builder: (context, child) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(disableAnimations: !animations),
+      child: child!,
+    ),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(
+      body: SizedBox(
+        width: 380,
+        child: PanelTile(
+          connectionId: 'c1',
+          dashboardId: 'd1',
+          topicPrefix: 'zigbee2mqtt',
+          panel: panel,
+          locked: true,
+        ),
+      ),
+    ),
+  ),
+);
 
 /// Finds text ignoring the left-to-right isolates wrapped around values.
-Finder _text(String s) => find.byWidgetPredicate((w) =>
-    w is Text && w.data?.replaceAll(RegExp('[\u2066-\u2069]'), '') == s);
+Finder _text(String s) => find.byWidgetPredicate(
+  (w) => w is Text && w.data?.replaceAll(RegExp('[\u2066-\u2069]'), '') == s,
+);
 
 void main() {
   testWidgets(
@@ -161,53 +209,140 @@ void main() {
     },
   );
 
-  testWidgets('native panel display overrides label switches and filter properties without changing commands', (tester) async {
-    final original = _device([
-      {'type': 'binary', 'property': 'state', 'name': 'state', 'access': 3, 'value_on': 'ON', 'value_off': 'OFF'},
-      {'type': 'numeric', 'property': 'temperature', 'access': 1, 'unit': '°C'},
-      {'type': 'numeric', 'property': 'humidity', 'access': 1, 'unit': '%'},
-    ]);
-    final config = PanelConfig.decode(original.type, original.config) as DeviceTileConfig;
-    final panel = original.copyWith(config: DeviceTileConfig(profile: config.profile,
-      display: const DevicePanelDisplay(properties: ['state', 'humidity'], labels: {'state': 'Desk light', 'humidity': 'Room humidity'})).encode());
-    final manager = _Recorder();
-    addTearDown(manager.dispose);
-    await tester.pumpWidget(_wrap(panel, mgr: manager, state: {'state':'ON','temperature':21.4,'humidity':48}));
-    await tester.pumpAndSettle();
-    expect(find.text('Desk light'), findsOneWidget);
-    expect(find.text('Room humidity'), findsOneWidget);
-    expect(find.byKey(const ValueKey('summary-property:temperature')), findsNothing);
-    await tester.tap(find.byTooltip('Turn on or off'));
-    await tester.pumpAndSettle();
-    expect(manager.sent.single.$2, {'state':'OFF'});
-  });
+  testWidgets(
+    'native panel display overrides label switches and filter properties without changing commands',
+    (tester) async {
+      final original = _device([
+        {
+          'type': 'binary',
+          'property': 'state',
+          'name': 'state',
+          'access': 3,
+          'value_on': 'ON',
+          'value_off': 'OFF',
+        },
+        {
+          'type': 'numeric',
+          'property': 'temperature',
+          'access': 1,
+          'unit': '°C',
+        },
+        {'type': 'numeric', 'property': 'humidity', 'access': 1, 'unit': '%'},
+      ]);
+      final config =
+          PanelConfig.decode(original.type, original.config)
+              as DeviceTileConfig;
+      final panel = original.copyWith(
+        config: DeviceTileConfig(
+          profile: config.profile,
+          display: const DevicePanelDisplay(
+            properties: ['state', 'humidity'],
+            labels: {'state': 'Desk light', 'humidity': 'Room humidity'},
+          ),
+        ).encode(),
+      );
+      final manager = _Recorder();
+      addTearDown(manager.dispose);
+      await tester.pumpWidget(
+        _wrap(
+          panel,
+          mgr: manager,
+          state: {'state': 'ON', 'temperature': 21.4, 'humidity': 48},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Desk light'), findsOneWidget);
+      expect(find.text('Room humidity'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('summary-property:temperature')),
+        findsNothing,
+      );
+      await tester.tap(find.byTooltip('Turn on or off'));
+      await tester.pumpAndSettle();
+      expect(manager.sent.single.$2, {'state': 'OFF'});
+    },
+  );
 
-  testWidgets('changing only a native switch label keeps the default property selection', (tester) async {
-    final original = _device([
-      {'type':'binary','property':'state','name':'state','access':3},
-      {'type':'numeric','property':'temperature','access':1},
-      {'type':'numeric','property':'humidity','access':1},
-    ]);
-    final config = PanelConfig.decode(original.type, original.config) as DeviceTileConfig;
-    final panel = original.copyWith(config: DeviceTileConfig(profile:config.profile,
-      display:const DevicePanelDisplay(labels:{'state':'Desk'})).encode());
-    await tester.pumpWidget(_wrap(panel, state:{'state':true,'temperature':21,'humidity':48}));
-    await tester.pumpAndSettle();
-    expect(find.text('Desk'), findsOneWidget);
-    expect(find.byKey(const ValueKey('summary-property:temperature')), findsOneWidget);
-    expect(find.byKey(const ValueKey('summary-property:humidity')), findsNothing);
-  });
+  testWidgets(
+    'changing only a native switch label keeps the default property selection',
+    (tester) async {
+      final original = _device([
+        {'type': 'binary', 'property': 'state', 'name': 'state', 'access': 3},
+        {'type': 'numeric', 'property': 'temperature', 'access': 1},
+        {'type': 'numeric', 'property': 'humidity', 'access': 1},
+      ]);
+      final config =
+          PanelConfig.decode(original.type, original.config)
+              as DeviceTileConfig;
+      final panel = original.copyWith(
+        config: DeviceTileConfig(
+          profile: config.profile,
+          display: const DevicePanelDisplay(labels: {'state': 'Desk'}),
+        ).encode(),
+      );
+      await tester.pumpWidget(
+        _wrap(panel, state: {'state': true, 'temperature': 21, 'humidity': 48}),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Desk'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('summary-property:temperature')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('summary-property:humidity')),
+        findsNothing,
+      );
+    },
+  );
 
-  testWidgets('color light shows state, brightness and kelvin; icon toggles',
-      (tester) async {
+  testWidgets('a custom icon preserves default readings and commands', (
+    tester,
+  ) async {
     final mgr = _Recorder();
     addTearDown(mgr.dispose);
-    await tester.pumpWidget(_wrap(_device(_bulb), mgr: mgr, state: {
-      'state': 'ON',
-      'brightness': 254,
-      'color_mode': 'color_temp',
-      'color_temp': 500,
-    }));
+    final panel = _device(_bulb).copyWith(
+      config: DeviceTileConfig(
+        profile: classifyExposes(_bulb),
+        display: DevicePanelDisplay(iconCodepoint: Icons.sensor_door.codePoint),
+      ).encode(),
+    );
+    await tester.pumpWidget(
+      _wrap(
+        panel,
+        mgr: mgr,
+        state: {
+          'state': 'ON',
+          'brightness': 254,
+          'color_mode': 'color_temp',
+          'color_temp': 500,
+        },
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(_text('On · 100% · 2000 K'), findsOneWidget);
+    await tester.tap(find.byIcon(materialIcon(Icons.sensor_door.codePoint)));
+    await tester.pumpAndSettle();
+    expect(mgr.sent.single.$2, {'state': 'TOGGLE'});
+  });
+
+  testWidgets('color light shows state, brightness and kelvin; icon toggles', (
+    tester,
+  ) async {
+    final mgr = _Recorder();
+    addTearDown(mgr.dispose);
+    await tester.pumpWidget(
+      _wrap(
+        _device(_bulb),
+        mgr: mgr,
+        state: {
+          'state': 'ON',
+          'brightness': 254,
+          'color_mode': 'color_temp',
+          'color_temp': 500,
+        },
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Living room bulb'), findsOneWidget);
@@ -219,8 +354,9 @@ void main() {
     expect(mgr.sent.single.$2, {'state': 'TOGGLE'});
   });
 
-  testWidgets('before the first report the tile says so and still toggles',
-      (tester) async {
+  testWidgets('before the first report the tile says so and still toggles', (
+    tester,
+  ) async {
     final mgr = _Recorder();
     addTearDown(mgr.dispose);
     await tester.pumpWidget(_wrap(_device(_bulb), mgr: mgr));
@@ -232,8 +368,9 @@ void main() {
     expect(mgr.sent.single.$2, {'state': 'TOGGLE'});
   });
 
-  testWidgets('a device that ignores its state request reads Not responding',
-      (tester) async {
+  testWidgets('a device that ignores its state request reads Not responding', (
+    tester,
+  ) async {
     final mgr = _Recorder();
     addTearDown(mgr.dispose);
     await tester.pumpWidget(_wrap(_device(_bulb), mgr: mgr));
@@ -248,8 +385,18 @@ void main() {
   testWidgets('the color sheet sends a preset as hex', (tester) async {
     final mgr = _Recorder();
     addTearDown(mgr.dispose);
-    await tester.pumpWidget(_wrap(_device(_bulb), mgr: mgr,
-        state: {'state': 'ON', 'brightness': 100, 'color_mode': 'color_temp', 'color_temp': 300}));
+    await tester.pumpWidget(
+      _wrap(
+        _device(_bulb),
+        mgr: mgr,
+        state: {
+          'state': 'ON',
+          'brightness': 100,
+          'color_mode': 'color_temp',
+          'color_temp': 300,
+        },
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Living room bulb'));
@@ -265,32 +412,57 @@ void main() {
   });
 
   Panel leak() => _device([
-        {'type': 'binary', 'name': 'water_leak', 'property': 'water_leak', 'access': 1, 'value_on': true, 'value_off': false},
-        {'type': 'numeric', 'name': 'battery', 'property': 'battery', 'access': 1, 'unit': '%', 'category': 'diagnostic'},
-      ], name: 'Laundry leak');
+    {
+      'type': 'binary',
+      'name': 'water_leak',
+      'property': 'water_leak',
+      'access': 1,
+      'value_on': true,
+      'value_off': false,
+    },
+    {
+      'type': 'numeric',
+      'name': 'battery',
+      'property': 'battery',
+      'access': 1,
+      'unit': '%',
+      'category': 'diagnostic',
+    },
+  ], name: 'Laundry leak');
 
-  testWidgets('a leak alarm fills the tile with the attention colour',
-      (tester) async {
+  testWidgets('a leak alarm fills the tile with the attention colour', (
+    tester,
+  ) async {
     // Animations off: the fill holds steady, so the tile settles.
-    await tester.pumpWidget(_wrap(leak(),
-        state: {'water_leak': true, 'battery': 15}, animations: false));
+    await tester.pumpWidget(
+      _wrap(
+        leak(),
+        state: {'water_leak': true, 'battery': 15},
+        animations: false,
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(_text('Leak detected · 15%'), findsOneWidget);
     final card = tester.widget<Card>(find.byType(Card));
-    expect(card.color,
-        SignalColors.of(tester.element(find.byType(Card))).attention);
+    expect(
+      card.color,
+      SignalColors.of(tester.element(find.byType(Card))).attention,
+    );
   });
 
   testWidgets('a leak alarm pulses slowly (signal-2.0.md §6)', (tester) async {
     await tester.pumpWidget(
-        _wrap(leak(), state: {'water_leak': true, 'battery': 15}));
+      _wrap(leak(), state: {'water_leak': true, 'battery': 15}),
+    );
     await tester.pump(); // the alarm arrives; the pulse starts now
     final roles = SignalColors.of(tester.element(find.byType(Card)));
     Matcher near(Color c) => predicate<Color?>(
-        (f) => f != null &&
-            (f.r - c.r).abs() + (f.g - c.g).abs() + (f.b - c.b).abs() < 0.01,
-        'close to $c');
+      (f) =>
+          f != null &&
+          (f.r - c.r).abs() + (f.g - c.g).abs() + (f.b - c.b).abs() < 0.01,
+      'close to $c',
+    );
     Color? fill() => tester.widget<Card>(find.byType(Card)).color;
 
     // A second in, the fill reaches the far end of the pulse...
@@ -304,75 +476,128 @@ void main() {
 
   testWidgets('a dry leak sensor does not pulse', (tester) async {
     await tester.pumpWidget(
-        _wrap(leak(), state: {'water_leak': false, 'battery': 80}));
+      _wrap(leak(), state: {'water_leak': false, 'battery': 80}),
+    );
     await tester.pumpAndSettle();
     expect(tester.hasRunningAnimations, isFalse);
   });
 
   testWidgets('climate leads with the temperature', (tester) async {
-    await tester.pumpWidget(_wrap(
-      _device([
-        {'type': 'numeric', 'name': 'temperature', 'property': 'temperature', 'access': 1, 'unit': '°C'},
-        {'type': 'numeric', 'name': 'humidity', 'property': 'humidity', 'access': 1, 'unit': '%'},
-      ], name: 'Living room'),
-      state: {'temperature': 21.43, 'humidity': 48},
-    ));
+    await tester.pumpWidget(
+      _wrap(
+        _device([
+          {
+            'type': 'numeric',
+            'name': 'temperature',
+            'property': 'temperature',
+            'access': 1,
+            'unit': '°C',
+          },
+          {
+            'type': 'numeric',
+            'name': 'humidity',
+            'property': 'humidity',
+            'access': 1,
+            'unit': '%',
+          },
+        ], name: 'Living room'),
+        state: {'temperature': 21.43, 'humidity': 48},
+      ),
+    );
     await tester.pumpAndSettle();
     expect(_text('21.4°C'), findsOneWidget);
     expect(_text('48%'), findsOneWidget);
   });
 
-  testWidgets('a sensor tile offers its graph; a door and a bulb do not (3.1.2)',
-      (tester) async {
-    await tester.pumpWidget(_wrap(
-      _device([
-        {'type': 'numeric', 'name': 'temperature', 'property': 'temperature', 'access': 1, 'unit': '°C'},
-      ], name: 'Living room'),
-      state: {'temperature': 21.43},
-    ));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('tile-history')), findsOneWidget);
-    expect(find.byTooltip('History'), findsOneWidget);
+  testWidgets(
+    'a sensor tile offers its graph; a door and a bulb do not (3.1.2)',
+    (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          _device([
+            {
+              'type': 'numeric',
+              'name': 'temperature',
+              'property': 'temperature',
+              'access': 1,
+              'unit': '°C',
+            },
+          ], name: 'Living room'),
+          state: {'temperature': 21.43},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('tile-history')), findsOneWidget);
+      expect(find.byTooltip('History'), findsOneWidget);
 
-    await tester.pumpWidget(_wrap(
-      _device([
-        {'type': 'binary', 'name': 'contact', 'property': 'contact', 'access': 1, 'value_on': true, 'value_off': false},
-      ], name: 'Front door'),
-      state: {'contact': true},
-    ));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('tile-history')), findsNothing);
-  });
+      await tester.pumpWidget(
+        _wrap(
+          _device([
+            {
+              'type': 'binary',
+              'name': 'contact',
+              'property': 'contact',
+              'access': 1,
+              'value_on': true,
+              'value_off': false,
+            },
+          ], name: 'Front door'),
+          state: {'contact': true},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('tile-history')), findsNothing);
+    },
+  );
 
   testWidgets('contact true reads Closed', (tester) async {
-    await tester.pumpWidget(_wrap(
-      _device([
-        {'type': 'binary', 'name': 'contact', 'property': 'contact', 'access': 1, 'value_on': true, 'value_off': false},
-      ], name: 'Front door'),
-      state: {'contact': true},
-    ));
+    await tester.pumpWidget(
+      _wrap(
+        _device([
+          {
+            'type': 'binary',
+            'name': 'contact',
+            'property': 'contact',
+            'access': 1,
+            'value_on': true,
+            'value_off': false,
+          },
+        ], name: 'Front door'),
+        state: {'contact': true},
+      ),
+    );
     await tester.pumpAndSettle();
     expect(_text('Closed'), findsOneWidget);
   });
 
-  testWidgets('a two-gang switch shows both endpoints and toggles each',
-      (tester) async {
+  testWidgets('a two-gang switch shows both endpoints and toggles each', (
+    tester,
+  ) async {
     final mgr = _Recorder();
     addTearDown(mgr.dispose);
-    await tester.pumpWidget(_wrap(
-      _device([
-        for (final ep in ['l1', 'l2'])
-          {
-            'type': 'switch',
-            'endpoint': ep,
-            'features': [
-              {'type': 'binary', 'name': 'state', 'property': 'state_$ep', 'access': 7, 'value_on': 'ON', 'value_off': 'OFF'},
-            ],
-          },
-      ], name: 'Garden relay'),
-      mgr: mgr,
-      state: {'state_l1': 'ON', 'state_l2': 'OFF'},
-    ));
+    await tester.pumpWidget(
+      _wrap(
+        _device([
+          for (final ep in ['l1', 'l2'])
+            {
+              'type': 'switch',
+              'endpoint': ep,
+              'features': [
+                {
+                  'type': 'binary',
+                  'name': 'state',
+                  'property': 'state_$ep',
+                  'access': 7,
+                  'value_on': 'ON',
+                  'value_off': 'OFF',
+                },
+              ],
+            },
+        ], name: 'Garden relay'),
+        mgr: mgr,
+        state: {'state_l1': 'ON', 'state_l2': 'OFF'},
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(_text('1 on · 1 off'), findsOneWidget);

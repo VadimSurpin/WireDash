@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "Antes de exibir (JavaScript)",
   "displayExpressionSample": "Valor de exemplo",
   "displayExpressionHint": "value contém o valor recebido. Deixe vazio para não alterá-lo. Apenas exibição; os comandos e o histórico salvo não mudam.",
-  "getHelpCannotOpen": "Não foi possível abrir o GitHub. Copie os detalhes e abra os problemas do WireDash no navegador."
+  "getHelpCannotOpen": "Não foi possível abrir o GitHub. Copie os detalhes e abra os problemas do WireDash no navegador.",
+  "panelIconAutomatic": "Automático"
 }

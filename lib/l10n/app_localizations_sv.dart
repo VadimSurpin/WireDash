@@ -4420,4 +4420,7 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get getHelpCannotOpen =>
       'Kunde inte öppna GitHub. Kopiera detaljerna och öppna WireDash-ärenden i webbläsaren.';
+
+  @override
+  String get panelIconAutomatic => 'Automatiskt';
 }

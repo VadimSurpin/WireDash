@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/l10n_ext.dart';
+import '../../../core/utils/material_icon.dart';
 import '../../../core/router/routes.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../devices/device_profile.dart';
@@ -23,6 +24,7 @@ import '../services/auto_close_config_publisher.dart';
 import '../services/automation_config_publisher.dart';
 
 import '../widgets/device_panel_display_editor.dart';
+import '../widgets/panel_icon_picker.dart';
 
 import '../widgets/property_widget_selector.dart';
 import '../widgets/display_expression_field.dart';
@@ -110,6 +112,12 @@ class _State extends ConsumerState<PanelFormScreen> {
   final _name = TextEditingController();
   final _topic = TextEditingController();
   final _subscribeTopic = TextEditingController();
+
+  int? _onIcon;
+  int? _offIcon;
+  int? _buttonIcon;
+  int? _buttonColor;
+  bool _buttonIsJson = false;
 
   // Toggle fields
   final _onPayload = TextEditingController(text: '{"state":"ON"}');
@@ -384,6 +392,8 @@ class _State extends ConsumerState<PanelFormScreen> {
   void _applyConfig(PanelConfig cfg) {
     _valueExpression = cfg.valueExpression ?? '';
     if (cfg is ToggleConfig) {
+      _onIcon = cfg.onIconCodepoint;
+      _offIcon = cfg.offIconCodepoint;
       _onPayload.text = cfg.onPayload;
       _offPayload.text = cfg.offPayload;
       _onMatch.text = cfg.onMatch;
@@ -395,6 +405,9 @@ class _State extends ConsumerState<PanelFormScreen> {
       _sliderTemplate.text = cfg.valueTemplate;
       _sliderJsonPath.text = cfg.jsonPath ?? '';
     } else if (cfg is ButtonConfig) {
+      _buttonIcon = cfg.iconCodepoint;
+      _buttonColor = cfg.colorArgb;
+      _buttonIsJson = cfg.isJson;
       _buttonPayload.text = cfg.payload;
     } else if (cfg is LedConfig) {
       _ledJsonPath.text = cfg.jsonPath ?? '';
@@ -463,6 +476,8 @@ class _State extends ConsumerState<PanelFormScreen> {
       }
     }
   }
+
+  void _changeFields(VoidCallback update) => setState(update);
 
   void _setDeviceConfig(PanelConfig config) =>
       setState(() => _deviceConfig = config);
@@ -545,13 +560,20 @@ class _State extends ConsumerState<PanelFormScreen> {
   PanelConfig _buildConfig() {
     String? nullIfBlank(String s) => s.trim().isEmpty ? null : s.trim();
     return switch (_type) {
-      PanelType.button => ButtonConfig(payload: _buttonPayload.text),
+      PanelType.button => ButtonConfig(
+        payload: _buttonPayload.text,
+        iconCodepoint: _buttonIcon,
+        colorArgb: _buttonColor,
+        isJson: _buttonIsJson,
+      ),
       PanelType.toggle => ToggleConfig(
         valueExpression: nullIfBlank(_valueExpression),
         onPayload: _onPayload.text,
         offPayload: _offPayload.text,
         jsonPath: nullIfBlank(_toggleJsonPath.text),
         onMatch: _onMatch.text,
+        onIconCodepoint: _onIcon,
+        offIconCodepoint: _offIcon,
       ),
       PanelType.slider => SliderConfig(
         valueExpression: nullIfBlank(_valueExpression),

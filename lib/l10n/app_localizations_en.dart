@@ -4417,4 +4417,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get getHelpCannotOpen =>
       'Could not open GitHub. Copy the details and open the WireDash issue tracker in your browser.';
+
+  @override
+  String get panelIconAutomatic => 'Automatic';
 }

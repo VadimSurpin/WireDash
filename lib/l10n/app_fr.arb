@@ -1353,5 +1353,6 @@
   "displayExpressionTitle": "Avant affichage (JavaScript)",
   "displayExpressionSample": "Valeur d’exemple",
   "displayExpressionHint": "value contient la valeur reçue. Vide, elle reste inchangée. Affichage uniquement ; les commandes et l’historique enregistré restent inchangés.",
-  "getHelpCannotOpen": "Impossible d’ouvrir GitHub. Copiez les détails et ouvrez les tickets WireDash dans votre navigateur."
+  "getHelpCannotOpen": "Impossible d’ouvrir GitHub. Copiez les détails et ouvrez les tickets WireDash dans votre navigateur.",
+  "panelIconAutomatic": "Automatique"
 }

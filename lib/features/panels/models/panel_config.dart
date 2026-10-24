@@ -30,44 +30,42 @@ sealed class PanelConfig {
       PanelType.progress => ProgressConfig.fromJson(j),
       PanelType.multiState ||
       PanelType.combo ||
-      PanelType.radio =>
-        OptionsConfig.fromJson(j),
+      PanelType.radio => OptionsConfig.fromJson(j),
       PanelType.cover => CoverConfig.fromJson(j),
       PanelType.textInput => TextInputConfig.fromJson(j),
       PanelType.textLog => TextLogConfig.fromJson(j),
       PanelType.schedule => ScheduleConfig.fromJson(j),
       PanelType.scene => SceneConfig.fromJson(j),
       PanelType.autoClose => AutoCloseConfig.fromJson(j),
-      PanelType.device => j['protocol'] == 'wirenboard'
-          ? WirenBoardDeviceConfig.fromJson(j)
-          : DeviceTileConfig.fromJson(j),
+      PanelType.device =>
+        j['protocol'] == 'wirenboard'
+            ? WirenBoardDeviceConfig.fromJson(j)
+            : DeviceTileConfig.fromJson(j),
       PanelType.reading => ReadingConfig.fromJson(j),
     };
   }
 
   static PanelConfig defaultFor(PanelType type) => switch (type) {
-        PanelType.button => const ButtonConfig(payload: 'PRESS'),
-        PanelType.toggle => const ToggleConfig(),
-        PanelType.slider => const SliderConfig(),
-        PanelType.led => const LedConfig(),
-        PanelType.nodeStatus => const NodeStatusConfig(),
-        PanelType.progress => const ProgressConfig(),
-        PanelType.multiState ||
-        PanelType.combo ||
-        PanelType.radio =>
-          OptionsConfig.coverDefault(),
-        PanelType.cover => const CoverConfig(),
-        PanelType.textInput => const TextInputConfig(),
-        PanelType.textLog => const TextLogConfig(),
-        PanelType.schedule => const ScheduleConfig(),
-        PanelType.scene => const SceneConfig(),
-        PanelType.autoClose => AutoCloseConfig(),
-        PanelType.device => const DeviceTileConfig(
-            profile:
-                DeviceProfile(deviceClass: DeviceClass.generic, features: []),
-          ),
-        PanelType.reading => const ReadingConfig(),
-      };
+    PanelType.button => const ButtonConfig(payload: 'PRESS'),
+    PanelType.toggle => const ToggleConfig(),
+    PanelType.slider => const SliderConfig(),
+    PanelType.led => const LedConfig(),
+    PanelType.nodeStatus => const NodeStatusConfig(),
+    PanelType.progress => const ProgressConfig(),
+    PanelType.multiState ||
+    PanelType.combo ||
+    PanelType.radio => OptionsConfig.coverDefault(),
+    PanelType.cover => const CoverConfig(),
+    PanelType.textInput => const TextInputConfig(),
+    PanelType.textLog => const TextLogConfig(),
+    PanelType.schedule => const ScheduleConfig(),
+    PanelType.scene => const SceneConfig(),
+    PanelType.autoClose => AutoCloseConfig(),
+    PanelType.device => const DeviceTileConfig(
+      profile: DeviceProfile(deviceClass: DeviceClass.generic, features: []),
+    ),
+    PanelType.reading => const ReadingConfig(),
+  };
 }
 
 class ButtonConfig extends PanelConfig {
@@ -85,18 +83,18 @@ class ButtonConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'payload': payload,
-        if (colorArgb != null) 'color': colorArgb,
-        if (iconCodepoint != null) 'icon': iconCodepoint,
-        'isJson': isJson,
-      };
+    'payload': payload,
+    if (colorArgb != null) 'color': colorArgb,
+    if (iconCodepoint != null) 'icon': iconCodepoint,
+    'isJson': isJson,
+  };
 
   static ButtonConfig fromJson(Map<String, dynamic> j) => ButtonConfig(
-        payload: j['payload'] as String? ?? 'PRESS',
-        colorArgb: j['color'] as int?,
-        iconCodepoint: j['icon'] as int?,
-        isJson: j['isJson'] as bool? ?? false,
-      );
+    payload: j['payload'] as String? ?? 'PRESS',
+    colorArgb: j['color'] as int?,
+    iconCodepoint: j['icon'] as int?,
+    isJson: j['isJson'] as bool? ?? false,
+  );
 }
 
 class ToggleConfig extends PanelConfig {
@@ -122,24 +120,25 @@ class ToggleConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'onPayload': onPayload,
-        'offPayload': offPayload,
-        if (jsonPath != null) 'jsonPath': jsonPath,
-        'onMatch': onMatch,
-        if (onIconCodepoint != null) 'onIcon': onIconCodepoint,
-        if (offIconCodepoint != null) 'offIcon': offIconCodepoint,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'onPayload': onPayload,
+    'offPayload': offPayload,
+    if (jsonPath != null) 'jsonPath': jsonPath,
+    'onMatch': onMatch,
+    if (onIconCodepoint != null) 'onIcon': onIconCodepoint,
+    if (offIconCodepoint != null) 'offIcon': offIconCodepoint,
+  };
 
   static ToggleConfig fromJson(Map<String, dynamic> j) => ToggleConfig(
-        valueExpression: j['valueExpression'] as String?,
-        onPayload: j['onPayload'] as String? ?? '{"state":"ON"}',
-        offPayload: j['offPayload'] as String? ?? '{"state":"OFF"}',
-        jsonPath: j['jsonPath'] as String?,
-        onMatch: j['onMatch'] as String? ?? 'ON',
-        onIconCodepoint: j['onIcon'] as int?,
-        offIconCodepoint: j['offIcon'] as int?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    onPayload: j['onPayload'] as String? ?? '{"state":"ON"}',
+    offPayload: j['offPayload'] as String? ?? '{"state":"OFF"}',
+    jsonPath: j['jsonPath'] as String?,
+    onMatch: j['onMatch'] as String? ?? 'ON',
+    onIconCodepoint: j['onIcon'] as int?,
+    offIconCodepoint: j['offIcon'] as int?,
+  );
 }
 
 class SliderConfig extends PanelConfig {
@@ -165,24 +164,25 @@ class SliderConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'min': min,
-        'max': max,
-        'step': step,
-        'vertical': vertical,
-        'valueTemplate': valueTemplate,
-        if (jsonPath != null) 'jsonPath': jsonPath,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'min': min,
+    'max': max,
+    'step': step,
+    'vertical': vertical,
+    'valueTemplate': valueTemplate,
+    if (jsonPath != null) 'jsonPath': jsonPath,
+  };
 
   static SliderConfig fromJson(Map<String, dynamic> j) => SliderConfig(
-        valueExpression: j['valueExpression'] as String?,
-        min: (j['min'] as num?)?.toDouble() ?? 0,
-        max: (j['max'] as num?)?.toDouble() ?? 254,
-        step: (j['step'] as num?)?.toDouble() ?? 1,
-        vertical: j['vertical'] as bool? ?? false,
-        valueTemplate: j['valueTemplate'] as String? ?? '{"brightness":{value}}',
-        jsonPath: j['jsonPath'] as String?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    min: (j['min'] as num?)?.toDouble() ?? 0,
+    max: (j['max'] as num?)?.toDouble() ?? 254,
+    step: (j['step'] as num?)?.toDouble() ?? 1,
+    vertical: j['vertical'] as bool? ?? false,
+    valueTemplate: j['valueTemplate'] as String? ?? '{"brightness":{value}}',
+    jsonPath: j['jsonPath'] as String?,
+  );
 }
 
 /// Read-only colored indicator. Subscribes to a topic, extracts a value via
@@ -211,24 +211,25 @@ class LedConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        if (jsonPath != null) 'jsonPath': jsonPath,
-        'onMatch': onMatch,
-        if (onColorArgb != null) 'onColor': onColorArgb,
-        if (offColorArgb != null) 'offColor': offColorArgb,
-        if (onLabel != null) 'onLabel': onLabel,
-        if (offLabel != null) 'offLabel': offLabel,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    if (jsonPath != null) 'jsonPath': jsonPath,
+    'onMatch': onMatch,
+    if (onColorArgb != null) 'onColor': onColorArgb,
+    if (offColorArgb != null) 'offColor': offColorArgb,
+    if (onLabel != null) 'onLabel': onLabel,
+    if (offLabel != null) 'offLabel': offLabel,
+  };
 
   static LedConfig fromJson(Map<String, dynamic> j) => LedConfig(
-        valueExpression: j['valueExpression'] as String?,
-        jsonPath: j['jsonPath'] as String?,
-        onMatch: j['onMatch'] as String? ?? 'true',
-        onColorArgb: j['onColor'] as int?,
-        offColorArgb: j['offColor'] as int?,
-        onLabel: j['onLabel'] as String?,
-        offLabel: j['offLabel'] as String?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    jsonPath: j['jsonPath'] as String?,
+    onMatch: j['onMatch'] as String? ?? 'true',
+    onColorArgb: j['onColor'] as int?,
+    offColorArgb: j['offColor'] as int?,
+    onLabel: j['onLabel'] as String?,
+    offLabel: j['offLabel'] as String?,
+  );
 }
 
 /// Z2M device availability indicator. Subscribes to the availability topic
@@ -249,16 +250,17 @@ class NodeStatusConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'onlinePayload': onlinePayload,
-        if (jsonPath != null) 'jsonPath': jsonPath,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'onlinePayload': onlinePayload,
+    if (jsonPath != null) 'jsonPath': jsonPath,
+  };
 
   static NodeStatusConfig fromJson(Map<String, dynamic> j) => NodeStatusConfig(
-        valueExpression: j['valueExpression'] as String?,
-        onlinePayload: j['onlinePayload'] as String? ?? 'online',
-        jsonPath: j['jsonPath'] as String?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    onlinePayload: j['onlinePayload'] as String? ?? 'online',
+    jsonPath: j['jsonPath'] as String?,
+  );
 }
 
 /// Read-only progress bar. Useful for battery %, link quality, etc.
@@ -281,20 +283,21 @@ class ProgressConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'min': min,
-        'max': max,
-        if (jsonPath != null) 'jsonPath': jsonPath,
-        if (unit != null) 'unit': unit,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'min': min,
+    'max': max,
+    if (jsonPath != null) 'jsonPath': jsonPath,
+    if (unit != null) 'unit': unit,
+  };
 
   static ProgressConfig fromJson(Map<String, dynamic> j) => ProgressConfig(
-        valueExpression: j['valueExpression'] as String?,
-        min: (j['min'] as num?)?.toDouble() ?? 0,
-        max: (j['max'] as num?)?.toDouble() ?? 100,
-        jsonPath: j['jsonPath'] as String?,
-        unit: j['unit'] as String?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    min: (j['min'] as num?)?.toDouble() ?? 0,
+    max: (j['max'] as num?)?.toDouble() ?? 100,
+    jsonPath: j['jsonPath'] as String?,
+    unit: j['unit'] as String?,
+  );
 }
 
 /// A single choice in a Multi-State / Combo / Radio panel. [payload] is what
@@ -312,16 +315,16 @@ class SelectOption {
   final String match;
 
   Map<String, dynamic> toJson() => {
-        'label': label,
-        'payload': payload,
-        'match': match,
-      };
+    'label': label,
+    'payload': payload,
+    'match': match,
+  };
 
   static SelectOption fromJson(Map<String, dynamic> j) => SelectOption(
-        label: j['label'] as String? ?? '',
-        payload: j['payload'] as String? ?? '',
-        match: j['match'] as String? ?? '',
-      );
+    label: j['label'] as String? ?? '',
+    payload: j['payload'] as String? ?? '',
+    match: j['match'] as String? ?? '',
+  );
 }
 
 /// Shared config for the enum-selection panel types (Multi-State, Combo,
@@ -341,29 +344,35 @@ class OptionsConfig extends PanelConfig {
 
   /// Sensible default for Z2M covers: OPEN / STOP / CLOSE on the `state` field.
   factory OptionsConfig.coverDefault() => const OptionsConfig(
-        jsonPath: 'state',
-        options: [
-          SelectOption(label: 'Open', payload: '{"state":"OPEN"}', match: 'OPEN'),
-          SelectOption(label: 'Stop', payload: '{"state":"STOP"}', match: 'STOP'),
-          SelectOption(label: 'Close', payload: '{"state":"CLOSE"}', match: 'CLOSE'),
-        ],
-      );
+    jsonPath: 'state',
+    options: [
+      SelectOption(label: 'Open', payload: '{"state":"OPEN"}', match: 'OPEN'),
+      SelectOption(label: 'Stop', payload: '{"state":"STOP"}', match: 'STOP'),
+      SelectOption(
+        label: 'Close',
+        payload: '{"state":"CLOSE"}',
+        match: 'CLOSE',
+      ),
+    ],
+  );
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'options': options.map((o) => o.toJson()).toList(),
-        if (jsonPath != null) 'jsonPath': jsonPath,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'options': options.map((o) => o.toJson()).toList(),
+    if (jsonPath != null) 'jsonPath': jsonPath,
+  };
 
   static OptionsConfig fromJson(Map<String, dynamic> j) => OptionsConfig(
-        valueExpression: j['valueExpression'] as String?,
-        options: (j['options'] as List?)
-                ?.map((e) => SelectOption.fromJson(e as Map<String, dynamic>))
-                .toList() ??
-            const [],
-        jsonPath: j['jsonPath'] as String?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    options:
+        (j['options'] as List?)
+            ?.map((e) => SelectOption.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const [],
+    jsonPath: j['jsonPath'] as String?,
+  );
 }
 
 /// Composite Z2M cover control: OPEN/STOP/CLOSE buttons + a 0-100 position
@@ -394,28 +403,29 @@ class CoverConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'statePath': statePath,
-        'positionPath': positionPath,
-        'openPayload': openPayload,
-        'stopPayload': stopPayload,
-        'closePayload': closePayload,
-        'positionTemplate': positionTemplate,
-        'presets': presets,
-        'showSlider': showSlider,
-      };
+    'statePath': statePath,
+    'positionPath': positionPath,
+    'openPayload': openPayload,
+    'stopPayload': stopPayload,
+    'closePayload': closePayload,
+    'positionTemplate': positionTemplate,
+    'presets': presets,
+    'showSlider': showSlider,
+  };
 
   static CoverConfig fromJson(Map<String, dynamic> j) => CoverConfig(
-        statePath: j['statePath'] as String? ?? 'state',
-        positionPath: j['positionPath'] as String? ?? 'position',
-        openPayload: j['openPayload'] as String? ?? '{"state":"OPEN"}',
-        stopPayload: j['stopPayload'] as String? ?? '{"state":"STOP"}',
-        closePayload: j['closePayload'] as String? ?? '{"state":"CLOSE"}',
-        positionTemplate:
-            j['positionTemplate'] as String? ?? '{"position":{value}}',
-        presets: (j['presets'] as List?)?.map((e) => (e as num).toInt()).toList() ??
-            const [0, 25, 50, 75, 100],
-        showSlider: j['showSlider'] as bool? ?? true,
-      );
+    statePath: j['statePath'] as String? ?? 'state',
+    positionPath: j['positionPath'] as String? ?? 'position',
+    openPayload: j['openPayload'] as String? ?? '{"state":"OPEN"}',
+    stopPayload: j['stopPayload'] as String? ?? '{"state":"STOP"}',
+    closePayload: j['closePayload'] as String? ?? '{"state":"CLOSE"}',
+    positionTemplate:
+        j['positionTemplate'] as String? ?? '{"position":{value}}',
+    presets:
+        (j['presets'] as List?)?.map((e) => (e as num).toInt()).toList() ??
+        const [0, 25, 50, 75, 100],
+    showSlider: j['showSlider'] as bool? ?? true,
+  );
 }
 
 /// Free-form publish field. The typed text is substituted into [template]
@@ -434,16 +444,16 @@ class TextInputConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'hint': hint,
-        'template': template,
-        'clearOnSend': clearOnSend,
-      };
+    'hint': hint,
+    'template': template,
+    'clearOnSend': clearOnSend,
+  };
 
   static TextInputConfig fromJson(Map<String, dynamic> j) => TextInputConfig(
-        hint: j['hint'] as String? ?? '',
-        template: j['template'] as String? ?? '{value}',
-        clearOnSend: j['clearOnSend'] as bool? ?? false,
-      );
+    hint: j['hint'] as String? ?? '',
+    template: j['template'] as String? ?? '{value}',
+    clearOnSend: j['clearOnSend'] as bool? ?? false,
+  );
 }
 
 /// Read-only scrolling history of messages on a topic. Keeps the last
@@ -464,16 +474,17 @@ class TextLogConfig extends PanelConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'maxLines': maxLines,
-        if (jsonPath != null) 'jsonPath': jsonPath,
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'maxLines': maxLines,
+    if (jsonPath != null) 'jsonPath': jsonPath,
+  };
 
   static TextLogConfig fromJson(Map<String, dynamic> j) => TextLogConfig(
-        valueExpression: j['valueExpression'] as String?,
-        maxLines: (j['maxLines'] as num?)?.toInt() ?? 50,
-        jsonPath: j['jsonPath'] as String?,
-      );
+    valueExpression: j['valueExpression'] as String?,
+    maxLines: (j['maxLines'] as num?)?.toInt() ?? 50,
+    jsonPath: j['jsonPath'] as String?,
+  );
 }
 
 /// Configures a server-side daily open/close schedule executed by the
@@ -496,29 +507,29 @@ class ScheduleConfig extends PanelConfig {
   final bool enabled;
 
   ScheduleConfig copyWith({bool? enabled}) => ScheduleConfig(
-        openTime: openTime,
-        closeTime: closeTime,
-        openPayload: openPayload,
-        closePayload: closePayload,
-        enabled: enabled ?? this.enabled,
-      );
+    openTime: openTime,
+    closeTime: closeTime,
+    openPayload: openPayload,
+    closePayload: closePayload,
+    enabled: enabled ?? this.enabled,
+  );
 
   @override
   Map<String, dynamic> toJson() => {
-        'openTime': openTime,
-        'closeTime': closeTime,
-        'openPayload': openPayload,
-        'closePayload': closePayload,
-        'enabled': enabled,
-      };
+    'openTime': openTime,
+    'closeTime': closeTime,
+    'openPayload': openPayload,
+    'closePayload': closePayload,
+    'enabled': enabled,
+  };
 
   static ScheduleConfig fromJson(Map<String, dynamic> j) => ScheduleConfig(
-        openTime: j['openTime'] as String? ?? '07:00',
-        closeTime: j['closeTime'] as String? ?? '19:00',
-        openPayload: j['openPayload'] as String? ?? '{"state":"OPEN"}',
-        closePayload: j['closePayload'] as String? ?? '{"state":"CLOSE"}',
-        enabled: j['enabled'] as bool? ?? true,
-      );
+    openTime: j['openTime'] as String? ?? '07:00',
+    closeTime: j['closeTime'] as String? ?? '19:00',
+    openPayload: j['openPayload'] as String? ?? '{"state":"OPEN"}',
+    closePayload: j['closePayload'] as String? ?? '{"state":"CLOSE"}',
+    enabled: j['enabled'] as bool? ?? true,
+  );
 }
 
 class SceneConfig extends PanelConfig {
@@ -554,45 +565,49 @@ class AutoCloseConfig extends PanelConfig {
   final bool enabled;
 
   AutoCloseConfig copyWith({bool? enabled}) => AutoCloseConfig(
-        triggerPath: triggerPath,
-        triggerValue: triggerValue,
-        closePayload: closePayload,
-        delaySeconds: delaySeconds,
-        enabled: enabled ?? this.enabled,
-      );
+    triggerPath: triggerPath,
+    triggerValue: triggerValue,
+    closePayload: closePayload,
+    delaySeconds: delaySeconds,
+    enabled: enabled ?? this.enabled,
+  );
 
   @override
   Map<String, dynamic> toJson() => {
-        'triggerPath': triggerPath,
-        'triggerValue': triggerValue,
-        'closePayload': closePayload,
-        'delaySeconds': delaySeconds,
-        'enabled': enabled,
-      };
+    'triggerPath': triggerPath,
+    'triggerValue': triggerValue,
+    'closePayload': closePayload,
+    'delaySeconds': delaySeconds,
+    'enabled': enabled,
+  };
 
   static AutoCloseConfig fromJson(Map<String, dynamic> j) => AutoCloseConfig(
-        triggerPath: j['triggerPath'] as String? ?? 'state',
-        triggerValue: j['triggerValue'] as String? ?? 'ON',
-        closePayload: j['closePayload'] as String? ?? '{"state":"OFF"}',
-        delaySeconds: (j['delaySeconds'] as num?)?.toInt() ?? 60,
-        enabled: j['enabled'] as bool? ?? true,
-      );
+    triggerPath: j['triggerPath'] as String? ?? 'state',
+    triggerValue: j['triggerValue'] as String? ?? 'ON',
+    closePayload: j['closePayload'] as String? ?? '{"state":"OFF"}',
+    delaySeconds: (j['delaySeconds'] as num?)?.toInt() ?? 60,
+    enabled: j['enabled'] as bool? ?? true,
+  );
 }
 
 /// Presentation overrides belong to a saved panel, never to broker metadata.
 class DevicePanelDisplay {
   const DevicePanelDisplay({
+    this.iconCodepoint,
     this.properties,
     this.labels = const {},
     this.expressions = const {},
   });
+  final int? iconCodepoint;
   final List<String>? properties;
   final Map<String, String> labels;
   final Map<String, String> expressions;
-  bool get isDefault =>
-      properties == null && labels.isEmpty && expressions.isEmpty;
+  bool get hasPropertyOverrides =>
+      properties != null || labels.isNotEmpty || expressions.isNotEmpty;
+  bool get isDefault => iconCodepoint == null && !hasPropertyOverrides;
   String label(String id, String fallback) => labels[id] ?? fallback;
   Map<String, dynamic> toJson() => {
+    if (iconCodepoint != null) 'icon': iconCodepoint,
     if (properties != null) 'properties': properties,
     if (labels.isNotEmpty) 'labels': labels,
     if (expressions.isNotEmpty) 'expressions': expressions,
@@ -600,6 +615,7 @@ class DevicePanelDisplay {
   static DevicePanelDisplay fromJson(Object? value) {
     if (value is! Map) return const DevicePanelDisplay();
     return DevicePanelDisplay(
+      iconCodepoint: value['icon'] is int ? value['icon'] as int : null,
       properties: value['properties'] is List
           ? (value['properties'] as List).whereType<String>().toList()
           : null,
@@ -729,16 +745,17 @@ class GaugeBand {
 
   bool contains(num v) => v >= from && v <= to;
 
-  Map<String, dynamic> toJson() =>
-      {'from': from, 'to': to, 'tone': tone.name};
+  Map<String, dynamic> toJson() => {'from': from, 'to': to, 'tone': tone.name};
 
   static GaugeBand? fromJson(Object? raw) {
     if (raw is! Map) return null;
     final from = (raw['from'] as num?)?.toDouble();
     final to = (raw['to'] as num?)?.toDouble();
     if (from == null || to == null) return null;
-    final tone = GaugeTone.values
-        .firstWhere((t) => t.name == raw['tone'], orElse: () => GaugeTone.normal);
+    final tone = GaugeTone.values.firstWhere(
+      (t) => t.name == raw['tone'],
+      orElse: () => GaugeTone.normal,
+    );
     return GaugeBand(from: from, to: to, tone: tone);
   }
 
@@ -798,45 +815,47 @@ class ReadingConfig extends PanelConfig {
     double? min,
     double? max,
     List<GaugeBand>? bands,
-  }) =>
-      ReadingConfig(
-        valueExpression: valueExpression,
-        jsonPath: jsonPath ?? this.jsonPath,
-        unit: unit ?? this.unit,
-        decimals: decimals ?? this.decimals,
-        style: style ?? this.style,
-        min: min ?? this.min,
-        max: max ?? this.max,
-        bands: bands ?? this.bands,
-      );
+  }) => ReadingConfig(
+    valueExpression: valueExpression,
+    jsonPath: jsonPath ?? this.jsonPath,
+    unit: unit ?? this.unit,
+    decimals: decimals ?? this.decimals,
+    style: style ?? this.style,
+    min: min ?? this.min,
+    max: max ?? this.max,
+    bands: bands ?? this.bands,
+  );
 
   @override
   Map<String, dynamic> toJson() => {
-        if (valueExpression != null && valueExpression!.trim().isNotEmpty) 'valueExpression': valueExpression,
-        'jsonPath': jsonPath,
-        if (unit != null) 'unit': unit,
-        if (decimals != null) 'decimals': decimals,
-        if (style != ReadingStyle.value) 'style': style.name,
-        if (min != null) 'min': min,
-        if (max != null) 'max': max,
-        if (bands.isNotEmpty) 'bands': [for (final b in bands) b.toJson()],
-      };
+    if (valueExpression != null && valueExpression!.trim().isNotEmpty)
+      'valueExpression': valueExpression,
+    'jsonPath': jsonPath,
+    if (unit != null) 'unit': unit,
+    if (decimals != null) 'decimals': decimals,
+    if (style != ReadingStyle.value) 'style': style.name,
+    if (min != null) 'min': min,
+    if (max != null) 'max': max,
+    if (bands.isNotEmpty) 'bands': [for (final b in bands) b.toJson()],
+  };
 
   static ReadingConfig fromJson(Map<String, dynamic> j) => ReadingConfig(
-        valueExpression: j['valueExpression'] as String?,
-        jsonPath: j['jsonPath'] as String? ?? 'temperature',
-        unit: j['unit'] as String?,
-        decimals: (j['decimals'] as num?)?.toInt(),
-        style: ReadingStyle.values.firstWhere((s) => s.name == j['style'],
-            orElse: () => ReadingStyle.value),
-        min: (j['min'] as num?)?.toDouble(),
-        max: (j['max'] as num?)?.toDouble(),
-        bands: [
-          if (j['bands'] is List)
-            for (final b in (j['bands'] as List).take(gaugeMaxBands))
-              if (GaugeBand.fromJson(b) case final band?) band,
-        ],
-      );
+    valueExpression: j['valueExpression'] as String?,
+    jsonPath: j['jsonPath'] as String? ?? 'temperature',
+    unit: j['unit'] as String?,
+    decimals: (j['decimals'] as num?)?.toInt(),
+    style: ReadingStyle.values.firstWhere(
+      (s) => s.name == j['style'],
+      orElse: () => ReadingStyle.value,
+    ),
+    min: (j['min'] as num?)?.toDouble(),
+    max: (j['max'] as num?)?.toDouble(),
+    bands: [
+      if (j['bands'] is List)
+        for (final b in (j['bands'] as List).take(gaugeMaxBands))
+          if (GaugeBand.fromJson(b) case final band?) band,
+    ],
+  );
 }
 
 /// Scalar widgets with an incoming display value. Write-only widgets and

@@ -43,6 +43,9 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
   share the full device list, with matching backgrounds for WB and Z2M rows.
   Built-ins include cloud status, network connections, KNX gateway, battery and
   alarms.
+- **Compact panels and icons** — dashboard rows follow their contents. Switch
+  tiles wrap the control below the icon and label on narrow screens. Choose
+  icons in the panel editor, including separate on/off icons for switches.
 - **Panel-specific controls and labels** — whole-device WB panels use the same
   style as Zigbee2MQTT panels. In the panel editor, choose visible properties and
   give them custom labels. Single properties offer a widget selector. **Allow
@@ -127,7 +130,7 @@ tool/flutter test
 Build the ARM64 Android test APK:
 
 ```bash
-tool/flutter build apk --debug --flavor foss --target-platform android-arm64
+tool/flutter build apk --debug --flavor foss --split-per-abi --target-platform android-arm64
 ```
 
 For release APKs:

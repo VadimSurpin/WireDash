@@ -12,11 +12,15 @@ extension _PanelFormFields on _State {
     );
     if (topic.isEmpty) return const SizedBox.shrink();
 
-    final rawAsync = ref.watch(panelValueProvider(PanelStreamKey(
-      connectionId: widget.connectionId,
-      topic: topic,
-      jsonPath: null,
-    )));
+    final rawAsync = ref.watch(
+      panelValueProvider(
+        PanelStreamKey(
+          connectionId: widget.connectionId,
+          topic: topic,
+          jsonPath: null,
+        ),
+      ),
+    );
 
     final jsonPath = _currentJsonPath;
 
@@ -45,7 +49,8 @@ extension _PanelFormFields on _State {
                     children: [
                       Text(
                         l10n.previewTitle,
-                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
@@ -62,7 +67,8 @@ extension _PanelFormFields on _State {
                         ),
                         error: (_, __) => Text(
                           l10n.previewWaiting(topic),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
                                 color: Theme.of(context).colorScheme.outline,
                                 fontStyle: FontStyle.italic,
                               ),
@@ -87,8 +93,16 @@ extension _PanelFormFields on _State {
     if (_hasValueExpression && _valueExpression.trim().isNotEmpty) {
       final raw = jsonPath.isEmpty ? rawStr : extractByPath(rawStr, jsonPath);
       final displayed = displayValue(ref, _valueExpression, raw);
-      return DisplayExpressionResult(result: displayed, child: Text(displayed.text,
-        style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.secondary, fontFamily: 'monospace')));
+      return DisplayExpressionResult(
+        result: displayed,
+        child: Text(
+          displayed.text,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.secondary,
+            fontFamily: 'monospace',
+          ),
+        ),
+      );
     }
     if (jsonPath.isNotEmpty) {
       final extracted = extractByPath(rawStr, jsonPath);
@@ -122,7 +136,11 @@ extension _PanelFormFields on _State {
         panelContent = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.toggle_off, color: cs.outline, size: 32),
+            Icon(
+              _offIcon == null ? Icons.power_off : materialIcon(_offIcon!),
+              color: cs.outline,
+              size: 32,
+            ),
             const SizedBox(width: 8),
             Text(name, style: theme.textTheme.bodyMedium),
           ],
@@ -180,7 +198,13 @@ extension _PanelFormFields on _State {
         panelContent = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.send, color: cs.primary, size: 24),
+            Icon(
+              _buttonIcon == null
+                  ? Icons.touch_app
+                  : materialIcon(_buttonIcon!),
+              color: cs.primary,
+              size: 24,
+            ),
             const SizedBox(width: 8),
             Text(name, style: theme.textTheme.bodyMedium),
             const Spacer(),
@@ -188,7 +212,10 @@ extension _PanelFormFields on _State {
               onPressed: () {},
               style: FilledButton.styleFrom(
                 visualDensity: VisualDensity.compact,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
               ),
               child: const Text('SEND'),
             ),
@@ -219,7 +246,10 @@ extension _PanelFormFields on _State {
             const SizedBox(width: 8),
             Text(name, style: theme.textTheme.bodyMedium),
             const Spacer(),
-            Text('offline', style: theme.textTheme.bodySmall?.copyWith(color: cs.error)),
+            Text(
+              'offline',
+              style: theme.textTheme.bodySmall?.copyWith(color: cs.error),
+            ),
           ],
         );
       case PanelType.progress:
@@ -259,7 +289,10 @@ extension _PanelFormFields on _State {
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: ActionChip(
-                  label: Text(o.label.text, style: const TextStyle(fontSize: 10)),
+                  label: Text(
+                    o.label.text,
+                    style: const TextStyle(fontSize: 10),
+                  ),
                   onPressed: () {},
                   visualDensity: VisualDensity.compact,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -319,49 +352,60 @@ extension _PanelFormFields on _State {
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
-        child: SizedBox(
-          width: double.infinity,
-          child: panelContent,
-        ),
+        child: SizedBox(width: double.infinity, child: panelContent),
       ),
     );
   }
 
   IconData _panelTypeIcon(PanelType type) => switch (type) {
-        PanelType.toggle => Icons.toggle_on,
-        PanelType.slider => Icons.tune,
-        PanelType.cover => Icons.blinds_closed,
-        PanelType.button => Icons.send,
-        PanelType.led => Icons.circle,
-        PanelType.nodeStatus => Icons.cloud_done,
-        PanelType.progress => Icons.battery_5_bar,
-        PanelType.multiState => Icons.view_week,
-        PanelType.combo => Icons.arrow_drop_down_circle_outlined,
-        PanelType.radio => Icons.radio_button_checked,
-        PanelType.textInput => Icons.keyboard,
-        PanelType.textLog => Icons.notes,
-        PanelType.schedule => Icons.schedule,
-        PanelType.scene => Icons.auto_awesome,
-        PanelType.autoClose => Icons.timer_outlined,
-        PanelType.device => Icons.devices_other,
-        PanelType.reading => Icons.speed,
-      };
+    PanelType.toggle => Icons.toggle_on,
+    PanelType.slider => Icons.tune,
+    PanelType.cover => Icons.blinds_closed,
+    PanelType.button => Icons.send,
+    PanelType.led => Icons.circle,
+    PanelType.nodeStatus => Icons.cloud_done,
+    PanelType.progress => Icons.battery_5_bar,
+    PanelType.multiState => Icons.view_week,
+    PanelType.combo => Icons.arrow_drop_down_circle_outlined,
+    PanelType.radio => Icons.radio_button_checked,
+    PanelType.textInput => Icons.keyboard,
+    PanelType.textLog => Icons.notes,
+    PanelType.schedule => Icons.schedule,
+    PanelType.scene => Icons.auto_awesome,
+    PanelType.autoClose => Icons.timer_outlined,
+    PanelType.device => Icons.devices_other,
+    PanelType.reading => Icons.speed,
+  };
 
   List<Widget> _typeSpecificFields() {
     final l10n = context.l10n;
     switch (_type) {
       case PanelType.toggle:
         return [
+          PanelIconPicker(
+            key: const Key('toggle-on-icon'),
+            label: '${l10n.dashFormIcon} · ${l10n.panelStateOn}',
+            defaultIcon: Icons.power_settings_new,
+            value: _onIcon,
+            onChanged: (icon) => _changeFields(() => _onIcon = icon),
+          ),
+          const SizedBox(height: 12),
+          PanelIconPicker(
+            key: const Key('toggle-off-icon'),
+            label: '${l10n.dashFormIcon} · ${l10n.panelStateOff}',
+            defaultIcon: Icons.power_off,
+            value: _offIcon,
+            onChanged: (icon) => _changeFields(() => _offIcon = icon),
+          ),
+          const SizedBox(height: 12),
           TextFormField(
             controller: _onPayload,
-            decoration:
-                InputDecoration(labelText: l10n.panelToggleOnPayload),
+            decoration: InputDecoration(labelText: l10n.panelToggleOnPayload),
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _offPayload,
-            decoration:
-                InputDecoration(labelText: l10n.panelToggleOffPayload),
+            decoration: InputDecoration(labelText: l10n.panelToggleOffPayload),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -382,34 +426,33 @@ extension _PanelFormFields on _State {
         ];
       case PanelType.slider:
         return [
-          Row(children: [
-            Expanded(
-              child: TextFormField(
-                controller: _sliderMin,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: l10n.panelSliderMin),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _sliderMin,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: l10n.panelSliderMin),
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextFormField(
-                controller: _sliderMax,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: l10n.panelSliderMax),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextFormField(
+                  controller: _sliderMax,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: l10n.panelSliderMax),
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextFormField(
-                controller: _sliderStep,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: l10n.panelSliderStep),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextFormField(
+                  controller: _sliderStep,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: l10n.panelSliderStep),
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _sliderTemplate,
@@ -429,10 +472,15 @@ extension _PanelFormFields on _State {
         ];
       case PanelType.button:
         return [
+          PanelIconPicker(
+            value: _buttonIcon,
+            defaultIcon: Icons.touch_app,
+            onChanged: (icon) => _changeFields(() => _buttonIcon = icon),
+          ),
+          const SizedBox(height: 12),
           TextFormField(
             controller: _buttonPayload,
-            decoration:
-                InputDecoration(labelText: l10n.panelButtonPayload),
+            decoration: InputDecoration(labelText: l10n.panelButtonPayload),
           ),
         ];
       case PanelType.led:
@@ -454,27 +502,29 @@ extension _PanelFormFields on _State {
             ),
           ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
-              child: TextFormField(
-                controller: _ledOnLabel,
-                decoration: InputDecoration(
-                  labelText: l10n.panelLedOnLabel,
-                  hintText: l10n.panelLedOnLabelHint,
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _ledOnLabel,
+                  decoration: InputDecoration(
+                    labelText: l10n.panelLedOnLabel,
+                    hintText: l10n.panelLedOnLabelHint,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextFormField(
-                controller: _ledOffLabel,
-                decoration: InputDecoration(
-                  labelText: l10n.panelLedOffLabel,
-                  hintText: l10n.panelLedOffLabelHint,
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextFormField(
+                  controller: _ledOffLabel,
+                  decoration: InputDecoration(
+                    labelText: l10n.panelLedOffLabel,
+                    hintText: l10n.panelLedOffLabelHint,
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
         ];
       case PanelType.nodeStatus:
         return [
@@ -496,35 +546,35 @@ extension _PanelFormFields on _State {
         ];
       case PanelType.progress:
         return [
-          Row(children: [
-            Expanded(
-              child: TextFormField(
-                controller: _progressMin,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: l10n.panelProgressMin),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextFormField(
-                controller: _progressMax,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: l10n.panelProgressMax),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextFormField(
-                controller: _progressUnit,
-                decoration: InputDecoration(
-                  labelText: l10n.panelProgressUnit,
-                  hintText: l10n.panelProgressUnitHint,
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _progressMin,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: l10n.panelProgressMin),
                 ),
               ),
-            ),
-          ]),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextFormField(
+                  controller: _progressMax,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: l10n.panelProgressMax),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextFormField(
+                  controller: _progressUnit,
+                  decoration: InputDecoration(
+                    labelText: l10n.panelProgressUnit,
+                    hintText: l10n.panelProgressUnitHint,
+                  ),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _progressJsonPath,
@@ -544,8 +594,8 @@ extension _PanelFormFields on _State {
           Text(
             l10n.panelCoverDescription,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -560,7 +610,7 @@ extension _PanelFormFields on _State {
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.panelCoverShowSlider),
             value: _coverShowSlider,
-            onChanged: (v) => setState(() => _coverShowSlider = v), // ignore: invalid_use_of_protected_member
+            onChanged: (v) => _changeFields(() => _coverShowSlider = v),
           ),
         ];
       case PanelType.textInput:
@@ -584,7 +634,7 @@ extension _PanelFormFields on _State {
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.panelTextInputClearAfterSend),
             value: _textInputClearOnSend,
-            onChanged: (v) => setState(() => _textInputClearOnSend = v), // ignore: invalid_use_of_protected_member
+            onChanged: (v) => _changeFields(() => _textInputClearOnSend = v),
           ),
         ];
       case PanelType.textLog:
@@ -611,52 +661,56 @@ extension _PanelFormFields on _State {
           Text(
             l10n.panelScheduleDescription,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
           const SizedBox(height: 12),
-          Row(children: [
-            Expanded(
-              child: TextFormField(
-                controller: _scheduleOpenTime,
-                readOnly: true,
-                onTap: () => _pickTime(_scheduleOpenTime),
-                decoration: InputDecoration(
-                  labelText: l10n.panelScheduleOpenTime,
-                  suffixIcon: const Icon(Icons.access_time),
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _scheduleOpenTime,
+                  readOnly: true,
+                  onTap: () => _pickTime(_scheduleOpenTime),
+                  decoration: InputDecoration(
+                    labelText: l10n.panelScheduleOpenTime,
+                    suffixIcon: const Icon(Icons.access_time),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextFormField(
-                controller: _scheduleCloseTime,
-                readOnly: true,
-                onTap: () => _pickTime(_scheduleCloseTime),
-                decoration: InputDecoration(
-                  labelText: l10n.panelScheduleCloseTime,
-                  suffixIcon: const Icon(Icons.access_time),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextFormField(
+                  controller: _scheduleCloseTime,
+                  readOnly: true,
+                  onTap: () => _pickTime(_scheduleCloseTime),
+                  decoration: InputDecoration(
+                    labelText: l10n.panelScheduleCloseTime,
+                    suffixIcon: const Icon(Icons.access_time),
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _scheduleOpenPayload,
-            decoration:
-                InputDecoration(labelText: l10n.panelScheduleOpenPayload),
+            decoration: InputDecoration(
+              labelText: l10n.panelScheduleOpenPayload,
+            ),
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _scheduleClosePayload,
-            decoration:
-                InputDecoration(labelText: l10n.panelScheduleClosePayload),
+            decoration: InputDecoration(
+              labelText: l10n.panelScheduleClosePayload,
+            ),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.panelScheduleEnabled),
             value: _scheduleEnabled,
-            onChanged: (v) => setState(() => _scheduleEnabled = v), // ignore: invalid_use_of_protected_member
+            onChanged: (v) => _changeFields(() => _scheduleEnabled = v),
           ),
         ];
       case PanelType.scene:
@@ -732,8 +786,10 @@ extension _PanelFormFields on _State {
             ),
           ),
           const SizedBox(height: 16),
-          Text(l10n.readingShowAs,
-              style: Theme.of(context).textTheme.labelLarge),
+          Text(
+            l10n.readingShowAs,
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
           const SizedBox(height: 8),
           SegmentedButton<ReadingStyle>(
             segments: [
@@ -758,8 +814,8 @@ extension _PanelFormFields on _State {
           Text(
             l10n.panelAutoCloseDescription,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
           const SizedBox(height: 12),
           TextFormField(
@@ -798,7 +854,7 @@ extension _PanelFormFields on _State {
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.panelAutoCloseEnabled),
             value: _autoCloseEnabled,
-            onChanged: (v) => setState(() => _autoCloseEnabled = v), // ignore: invalid_use_of_protected_member
+            onChanged: (v) => _changeFields(() => _autoCloseEnabled = v),
           ),
         ];
     }
@@ -807,38 +863,44 @@ extension _PanelFormFields on _State {
   /// Range and colour bands of a reading tile shown as a gauge.
   List<Widget> _gaugeFields(AppLocalizations l10n) {
     String toneLabel(GaugeTone t) => switch (t) {
-          GaugeTone.normal => l10n.gaugeToneNormal,
-          GaugeTone.good => l10n.gaugeToneGood,
-          GaugeTone.attention => l10n.gaugeToneAttention,
-        };
+      GaugeTone.normal => l10n.gaugeToneNormal,
+      GaugeTone.good => l10n.gaugeToneGood,
+      GaugeTone.attention => l10n.gaugeToneAttention,
+    };
     return [
       const SizedBox(height: 12),
-      Row(children: [
-        Expanded(
-          child: TextFormField(
-            controller: _readingMin,
-            keyboardType:
-                const TextInputType.numberWithOptions(decimal: true, signed: true),
-            decoration: InputDecoration(labelText: l10n.panelProgressMin),
+      Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: _readingMin,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+                signed: true,
+              ),
+              decoration: InputDecoration(labelText: l10n.panelProgressMin),
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: TextFormField(
-            controller: _readingMax,
-            keyboardType:
-                const TextInputType.numberWithOptions(decimal: true, signed: true),
-            decoration: InputDecoration(labelText: l10n.panelProgressMax),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextFormField(
+              controller: _readingMax,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+                signed: true,
+              ),
+              decoration: InputDecoration(labelText: l10n.panelProgressMax),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
       const SizedBox(height: 16),
       Text(l10n.gaugeBands, style: Theme.of(context).textTheme.titleSmall),
       Text(
         l10n.gaugeBandsHelper,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
-            ),
+          color: Theme.of(context).colorScheme.outline,
+        ),
       ),
       const SizedBox(height: 8),
       for (var i = 0; i < _bandRows.length; i++)
@@ -851,9 +913,13 @@ extension _PanelFormFields on _State {
                 child: TextFormField(
                   controller: _bandRows[i].from,
                   keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true, signed: true),
+                    decimal: true,
+                    signed: true,
+                  ),
                   decoration: InputDecoration(
-                      labelText: l10n.gaugeBandFrom, isDense: true),
+                    labelText: l10n.gaugeBandFrom,
+                    isDense: true,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -861,9 +927,13 @@ extension _PanelFormFields on _State {
                 child: TextFormField(
                   controller: _bandRows[i].to,
                   keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true, signed: true),
-                  decoration:
-                      InputDecoration(labelText: l10n.gaugeBandTo, isDense: true),
+                    decimal: true,
+                    signed: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: l10n.gaugeBandTo,
+                    isDense: true,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -877,7 +947,7 @@ extension _PanelFormFields on _State {
                     for (final t in GaugeTone.values)
                       DropdownMenuItem(value: t, child: Text(toneLabel(t))),
                   ],
-                  onChanged: (t) => setState(() { // ignore: invalid_use_of_protected_member
+                  onChanged: (t) => _changeFields(() {
                     if (t != null) _bandRows[i].tone = t;
                   }),
                 ),
@@ -885,7 +955,7 @@ extension _PanelFormFields on _State {
               IconButton(
                 tooltip: l10n.gaugeBandRemove,
                 icon: const Icon(Icons.remove_circle_outline),
-                onPressed: () => setState(() { // ignore: invalid_use_of_protected_member
+                onPressed: () => _changeFields(() {
                   _bandRows.removeAt(i).dispose();
                 }),
               ),
@@ -896,7 +966,7 @@ extension _PanelFormFields on _State {
         Align(
           alignment: AlignmentDirectional.centerStart,
           child: TextButton.icon(
-            onPressed: () => setState(() { // ignore: invalid_use_of_protected_member
+            onPressed: () => _changeFields(() {
               _bandRows.add(_BandRow());
             }),
             icon: const Icon(Icons.add),
@@ -918,8 +988,10 @@ extension _PanelFormFields on _State {
         ),
       ),
       const SizedBox(height: 12),
-      Text(l10n.panelOptionsHeader,
-          style: Theme.of(context).textTheme.titleSmall),
+      Text(
+        l10n.panelOptionsHeader,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
       const SizedBox(height: 4),
       for (var i = 0; i < _optionRows.length; i++)
         Padding(
@@ -959,7 +1031,7 @@ extension _PanelFormFields on _State {
               IconButton(
                 tooltip: l10n.a11yDeleteOption,
                 icon: const Icon(Icons.remove_circle_outline),
-                onPressed: () => setState(() { // ignore: invalid_use_of_protected_member
+                onPressed: () => _changeFields(() {
                   _optionRows.removeAt(i).dispose();
                 }),
               ),
@@ -971,7 +1043,7 @@ extension _PanelFormFields on _State {
         child: TextButton.icon(
           icon: const Icon(Icons.add),
           label: Text(l10n.panelOptionsAdd),
-          onPressed: () => setState(() => _optionRows.add(_OptionRow())), // ignore: invalid_use_of_protected_member
+          onPressed: () => _changeFields(() => _optionRows.add(_OptionRow())),
         ),
       ),
     ];

@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "Перед отображением (JavaScript)",
   "displayExpressionSample": "Пример значения",
   "displayExpressionHint": "value — входящее значение. Пустое поле оставляет его без изменений. Влияет только на отображение, не на команды и сохранённую историю.",
-  "getHelpCannotOpen": "Не удалось открыть GitHub. Скопируйте сведения и откройте задачи WireDash в браузере."
+  "getHelpCannotOpen": "Не удалось открыть GitHub. Скопируйте сведения и откройте задачи WireDash в браузере.",
+  "panelIconAutomatic": "Автоматически"
 }

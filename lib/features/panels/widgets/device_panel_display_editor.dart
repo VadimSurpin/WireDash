@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/l10n/l10n_ext.dart';
 import '../models/panel_config.dart';
 import 'display_expression_field.dart';
+import 'panel_icon_picker.dart';
 
 typedef DeviceDisplayProperty = ({String id, String label});
 
@@ -52,6 +53,17 @@ class _DevicePanelDisplayEditorState extends State<DevicePanelDisplayEditor> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        PanelIconPicker(
+          value: _value.iconCodepoint,
+          onChanged: (icon) => _change(
+            DevicePanelDisplay(
+              iconCodepoint: icon,
+              properties: _value.properties,
+              labels: _value.labels,
+              expressions: _value.expressions,
+            ),
+          ),
+        ),
         const SizedBox(height: 16),
         Text(
           l10n.panelDisplayTitle,
@@ -81,6 +93,7 @@ class _DevicePanelDisplayEditorState extends State<DevicePanelDisplayEditor> {
                     }
                     _change(
                       DevicePanelDisplay(
+                        iconCodepoint: _value.iconCodepoint,
                         properties: ids.toList(),
                         labels: _value.labels,
                         expressions: _value.expressions,
@@ -107,6 +120,7 @@ class _DevicePanelDisplayEditorState extends State<DevicePanelDisplayEditor> {
                           }
                           _change(
                             DevicePanelDisplay(
+                              iconCodepoint: _value.iconCodepoint,
                               properties: _value.properties,
                               labels: labels,
                               expressions: _value.expressions,
@@ -130,6 +144,7 @@ class _DevicePanelDisplayEditorState extends State<DevicePanelDisplayEditor> {
                           }
                           _change(
                             DevicePanelDisplay(
+                              iconCodepoint: _value.iconCodepoint,
                               properties: _value.properties,
                               labels: _value.labels,
                               expressions: expressions,
@@ -148,7 +163,7 @@ class _DevicePanelDisplayEditorState extends State<DevicePanelDisplayEditor> {
           child: TextButton(
             onPressed: () {
               setState(() => _reset++);
-              _change(const DevicePanelDisplay());
+              _change(DevicePanelDisplay(iconCodepoint: _value.iconCodepoint));
             },
             child: Text(l10n.panelDisplayReset),
           ),

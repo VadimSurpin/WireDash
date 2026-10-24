@@ -10,6 +10,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/l10n/l10n_ext.dart';
+import '../../../core/utils/material_icon.dart';
 import '../../../data/database/database.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../mqtt/mqtt_status.dart';
@@ -75,7 +76,7 @@ class DeviceTilePanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selected =
         config.display.properties ??
-        (config.display.isDefault
+        (!config.display.hasPropertyOverrides
             ? null
             : defaultDeviceDisplayProperties(config.profile));
     final profile = selected == null
@@ -136,6 +137,9 @@ class DeviceTilePanel extends ConsumerWidget {
         : historyShownOnDeviceTile(profile).firstOrNull;
     return DeviceSummaryCard(
       name: panel.name,
+      icon: config.display.iconCodepoint == null
+          ? null
+          : materialIcon(config.display.iconCodepoint!),
       state: state,
       labels: {
         for (final f in profile.features)
@@ -144,7 +148,7 @@ class DeviceTilePanel extends ConsumerWidget {
             f.label ?? humanizeProperty(f.property),
           ),
       },
-      readings: config.display.isDefault
+      readings: !config.display.hasPropertyOverrides
           ? null
           : [
               for (final f in profile.features)
@@ -249,6 +253,7 @@ class DeviceSummaryCard extends StatelessWidget {
     required this.onToggle,
     this.notResponding = false,
     this.onHistory,
+    this.icon,
     this.labels = const {},
     this.readings,
 
@@ -257,6 +262,7 @@ class DeviceSummaryCard extends StatelessWidget {
   });
 
   final String name;
+  final IconData? icon;
   final DeviceState state;
   final VoidCallback onOpen;
   final ValueChanged<DeviceFeature> onToggle;
@@ -374,10 +380,12 @@ class DeviceSummaryCard extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       _QuickAction(
-                                        icon: deviceClassIcon(
-                                          cls,
-                                          alarm: state.alarm,
-                                        ),
+                                        icon:
+                                            icon ??
+                                            deviceClassIcon(
+                                              cls,
+                                              alarm: state.alarm,
+                                            ),
                                         on: state.isOn(f),
                                         tooltip: l10n.deviceToggle,
                                         onPressed: () => onToggle(f),
@@ -408,7 +416,7 @@ class DeviceSummaryCard extends StatelessWidget {
                       )
                     else ...[
                       SignalIcon(
-                        deviceClassIcon(cls, alarm: state.alarm),
+                        icon ?? deviceClassIcon(cls, alarm: state.alarm),
                         active: filled,
                         color: fgVariant,
                       ),

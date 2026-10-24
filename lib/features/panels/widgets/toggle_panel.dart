@@ -75,26 +75,36 @@ class TogglePanel extends ConsumerWidget {
         onTap: () => _toggle(context, ref, isOn),
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Row(
+          child: OverflowBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            spacing: 12,
+            overflowSpacing: 4,
+            overflowAlignment: OverflowBarAlignment.start,
             children: [
-              Icon(
-                _icon(isOn),
-                size: 28,
-                color: isOn ? Theme.of(context).colorScheme.primary : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _icon(isOn),
+                    size: 28,
+                    color: isOn ? Theme.of(context).colorScheme.primary : null,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
                       panel.name,
                       style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    AnimatedSwitcher(
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: AnimatedSwitcher(
                       duration: SignalMotion.of(
                         context,
                         SignalMotion.stateChange,
@@ -109,11 +119,13 @@ class TogglePanel extends ConsumerWidget {
                                 ? context.l10n.panelToggleNoState
                                 : displayed.applied
                                 ? displayed.text
-                                : (isOn
-                                      ? context.l10n.panelStateOn
-                                      : context.l10n.panelStateOff),
+                                : isOn
+                                ? context.l10n.panelStateOn
+                                : context.l10n.panelStateOff,
                           ),
                           key: ValueKey(isOn),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.outline,
@@ -121,12 +133,16 @@ class TogglePanel extends ConsumerWidget {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Switch.adaptive(
-                value: isOn,
-                onChanged: (_) => _toggle(context, ref, isOn),
+                  ),
+                  const SizedBox(width: 4),
+                  Semantics(
+                    label: panel.name,
+                    child: Switch.adaptive(
+                      value: isOn,
+                      onChanged: (_) => _toggle(context, ref, isOn),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

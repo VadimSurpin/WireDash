@@ -7799,6 +7799,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not open GitHub. Copy the details and open the WireDash issue tracker in your browser.'**
   String get getHelpCannotOpen;
+
+  /// No description provided for @panelIconAutomatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get panelIconAutomatic;
 }
 
 class _AppLocalizationsDelegate

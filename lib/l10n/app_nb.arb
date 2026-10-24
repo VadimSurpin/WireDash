@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "Før visning (JavaScript)",
   "displayExpressionSample": "Eksempelverdi",
   "displayExpressionHint": "value inneholder den mottatte verdien. Tomt felt beholder den uendret. Bare visning; kommandoer og lagret historikk endres ikke.",
-  "getHelpCannotOpen": "Kunne ikke åpne GitHub. Kopier detaljene og åpne WireDash-saker i nettleseren."
+  "getHelpCannotOpen": "Kunne ikke åpne GitHub. Kopier detaljene og åpne WireDash-saker i nettleseren.",
+  "panelIconAutomatic": "Automatisk"
 }

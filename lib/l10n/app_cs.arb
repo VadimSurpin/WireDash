@@ -1279,5 +1279,6 @@
   "displayExpressionTitle": "Před zobrazením (JavaScript)",
   "displayExpressionSample": "Ukázková hodnota",
   "displayExpressionHint": "Vstupní hodnota je v proměnné value. Prázdné pole ji nemění. Jen zobrazení; příkazy a uložená historie se nemění.",
-  "getHelpCannotOpen": "GitHub nelze otevřít. Zkopírujte podrobnosti a otevřete hlášení WireDash v prohlížeči."
+  "getHelpCannotOpen": "GitHub nelze otevřít. Zkopírujte podrobnosti a otevřete hlášení WireDash v prohlížeči.",
+  "panelIconAutomatic": "Automaticky"
 }

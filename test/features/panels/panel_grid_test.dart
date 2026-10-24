@@ -19,47 +19,46 @@ Panel _panel(
   PanelType type,
   PanelWidth width, {
   String? sectionId,
-}) =>
-    Panel(
-      id: id,
-      dashboardId: 'd1',
-      name: name,
-      type: type,
-      topic: 'light/$id',
-      subscribeTopic: null,
-      topicPrefixOverride: null,
-      qos: 1,
-      retain: false,
-      width: width,
-      sortOrder: 0,
-      config: PanelConfig.defaultFor(type).encode(),
-      mergeFlags: 0,
-      createdAt: DateTime(2026, 8, 5),
-      updatedAt: DateTime(2026, 8, 5),
-      sectionId: sectionId,
-    );
+}) => Panel(
+  id: id,
+  dashboardId: 'd1',
+  name: name,
+  type: type,
+  topic: 'light/$id',
+  subscribeTopic: null,
+  topicPrefixOverride: null,
+  qos: 1,
+  retain: false,
+  width: width,
+  sortOrder: 0,
+  config: PanelConfig.defaultFor(type).encode(),
+  mergeFlags: 0,
+  createdAt: DateTime(2026, 8, 5),
+  updatedAt: DateTime(2026, 8, 5),
+  sectionId: sectionId,
+);
 
 Section _section(String id, String name) => Section(
-      id: id,
-      dashboardId: 'd1',
-      name: name,
-      sortOrder: 0,
-      createdAt: DateTime(2026, 8, 5),
-      updatedAt: DateTime(2026, 8, 5),
-    );
+  id: id,
+  dashboardId: 'd1',
+  name: name,
+  sortOrder: 0,
+  createdAt: DateTime(2026, 8, 5),
+  updatedAt: DateTime(2026, 8, 5),
+);
 
 Dashboard _dashboard() => Dashboard(
-      id: 'd1',
-      connectionId: 'c1',
-      name: 'My Home',
-      topicPrefix: 'zigbee2mqtt',
-      colorSeed: 0xFF3B82F6,
-      iconCodepoint: 0xe318,
-      locked: false,
-      sortOrder: 0,
-      createdAt: DateTime(2026, 8, 5),
-      updatedAt: DateTime(2026, 8, 5),
-    );
+  id: 'd1',
+  connectionId: 'c1',
+  name: 'My Home',
+  topicPrefix: 'zigbee2mqtt',
+  colorSeed: 0xFF3B82F6,
+  iconCodepoint: 0xe318,
+  locked: false,
+  sortOrder: 0,
+  createdAt: DateTime(2026, 8, 5),
+  updatedAt: DateTime(2026, 8, 5),
+);
 
 /// Faked providers: panels come from a plain value stream (no drift watch
 /// streams — those leave pending timers that fail widget-test teardown), the
@@ -68,46 +67,97 @@ Dashboard _dashboard() => Dashboard(
 List<Override> _overrides({
   required List<Panel> panels,
   List<Section> sections = const [],
-}) =>
-    [
-      sectionsForDashboardProvider.overrideWith(
-        (ref, _) => Stream<List<Section>>.value(sections),
+}) => [
+  sectionsForDashboardProvider.overrideWith(
+    (ref, _) => Stream<List<Section>>.value(sections),
+  ),
+  panelsForDashboardProvider.overrideWith(
+    (ref, _) => Stream<List<Panel>>.value(panels),
+  ),
+  connectionStatusProvider.overrideWith(
+    (ref, _) => Stream.value(MqttStatus.connected),
+  ),
+  panelValueSnapshotProvider.overrideWith(
+    (ref, _) => Stream.value(
+      PanelValueSnapshot(
+        value: null,
+        receivedAt: DateTime(2026, 8, 5),
+        connectionGeneration: 1,
+        freshness: PanelFreshness.fresh,
       ),
-      panelsForDashboardProvider.overrideWith(
-        (ref, _) => Stream<List<Panel>>.value(panels),
-      ),
-      connectionStatusProvider.overrideWith(
-        (ref, _) => Stream.value(MqttStatus.connected),
-      ),
-      panelValueSnapshotProvider.overrideWith(
-        (ref, _) => Stream.value(PanelValueSnapshot(
-          value: null,
-          receivedAt: DateTime(2026, 8, 5),
-          connectionGeneration: 1,
-          freshness: PanelFreshness.fresh,
-        )),
-      ),
-      panelValueProvider.overrideWith(
-        (ref, _) => Stream<Object?>.value(null),
-      ),
-    ];
+    ),
+  ),
+  panelValueProvider.overrideWith((ref, _) => Stream<Object?>.value(null)),
+];
 
 Widget _wrap({
   required List<Panel> panels,
   List<Section> sections = const [],
-}) =>
-    ProviderScope(
-      overrides: _overrides(panels: panels, sections: sections),
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: PanelGrid(connectionId: 'c1', dashboard: _dashboard()),
-        ),
-      ),
-    );
+}) => ProviderScope(
+  overrides: _overrides(panels: panels, sections: sections),
+  child: MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(
+      body: PanelGrid(connectionId: 'c1', dashboard: _dashboard()),
+    ),
+  ),
+);
 
 void main() {
+  testWidgets('wide switch tiles have content height and equal padding', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(panels: [_panel('p1', 'Lamp', PanelType.toggle, PanelWidth.full)]),
+    );
+    await tester.pumpAndSettle();
+    final card = tester.getRect(find.byType(Card));
+    final content = tester.getRect(find.byType(OverflowBar));
+    expect(
+      card.height,
+      lessThan(100),
+      reason: 'no fixed 140dp row on a medium window',
+    );
+    expect(content.top - card.top, closeTo(content.left - card.left, 0.1));
+    expect(
+      card.bottom - content.bottom,
+      closeTo(card.right - content.right, 0.1),
+    );
+    expect(
+      tester.getCenter(find.text('Lamp')).dy,
+      closeTo(tester.getCenter(find.byType(Switch)).dy, 0.1),
+    );
+  });
+
+  testWidgets('phone switch wraps below icon and label without overflow', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      _wrap(
+        panels: [
+          _panel(
+            'p1',
+            'Kitchen ceiling relay',
+            PanelType.toggle,
+            PanelWidth.small,
+          ),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+    final label = tester.getRect(find.text('Kitchen ceiling relay'));
+    final control = tester.getRect(find.byType(Switch));
+    expect(control.top, greaterThanOrEqualTo(label.bottom));
+    final content = tester.getRect(find.byType(OverflowBar));
+    final icon = tester.getRect(find.byIcon(Icons.power_off));
+    expect(icon.left, closeTo(content.left, 0.1));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('empty dashboard shows the no-panels message', (tester) async {
     await tester.pumpWidget(_wrap(panels: []));
     await tester.pumpAndSettle();
@@ -116,11 +166,15 @@ void main() {
   });
 
   testWidgets('renders a panel tile per row with its name', (tester) async {
-    await tester.pumpWidget(_wrap(panels: [
-      _panel('p1', 'Living Room Light', PanelType.toggle, PanelWidth.full),
-      _panel('p2', 'Brightness', PanelType.slider, PanelWidth.small),
-      _panel('p3', 'Fan Mode', PanelType.multiState, PanelWidth.wide),
-    ]));
+    await tester.pumpWidget(
+      _wrap(
+        panels: [
+          _panel('p1', 'Living Room Light', PanelType.toggle, PanelWidth.full),
+          _panel('p2', 'Brightness', PanelType.slider, PanelWidth.small),
+          _panel('p3', 'Fan Mode', PanelType.multiState, PanelWidth.wide),
+        ],
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Living Room Light'), findsOneWidget);
@@ -145,24 +199,28 @@ void main() {
     expect(find.text('Kitchen Plug'), findsOneWidget);
   });
 
-  testWidgets('sizes span 1, 2 and all columns of a 3-column grid',
-      (tester) async {
+  testWidgets('sizes span 1, 2 and all columns of a 3-column grid', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(800, 600);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(_wrap(panels: [
-      _panel('p1', 'Full', PanelType.toggle, PanelWidth.full),
-      _panel('p2', 'Small', PanelType.toggle, PanelWidth.small),
-      _panel('p3', 'Wide', PanelType.toggle, PanelWidth.wide),
-    ]));
+    await tester.pumpWidget(
+      _wrap(
+        panels: [
+          _panel('p1', 'Full', PanelType.toggle, PanelWidth.full),
+          _panel('p2', 'Small', PanelType.toggle, PanelWidth.small),
+          _panel('p3', 'Wide', PanelType.toggle, PanelWidth.wide),
+        ],
+      ),
+    );
     await tester.pumpAndSettle();
 
-    Rect card(String name) => tester.getRect(find.ancestor(
-          of: find.text(name),
-          matching: find.byType(Card),
-        ));
+    Rect card(String name) => tester.getRect(
+      find.ancestor(of: find.text(name), matching: find.byType(Card)),
+    );
 
     // 800 dp is medium: 3 columns of (800 - 16 padding - 2 × 8 gap) / 3.
     const column = (800 - 16 - 16) / 3;
@@ -174,17 +232,31 @@ void main() {
     expect(card('Small').height, card('Wide').height);
   });
 
-  testWidgets('tiles with no section come first, then each section',
-      (tester) async {
-    await tester.pumpWidget(_wrap(
-      sections: [_section('s1', 'Lights'), _section('s2', 'Sensors')],
-      panels: [
-        _panel('p1', 'Door', PanelType.led, PanelWidth.small, sectionId: 's2'),
-        _panel('p2', 'Lamp', PanelType.toggle, PanelWidth.small,
-            sectionId: 's1'),
-        _panel('p3', 'Log', PanelType.textLog, PanelWidth.full),
-      ],
-    ));
+  testWidgets('tiles with no section come first, then each section', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        sections: [_section('s1', 'Lights'), _section('s2', 'Sensors')],
+        panels: [
+          _panel(
+            'p1',
+            'Door',
+            PanelType.led,
+            PanelWidth.small,
+            sectionId: 's2',
+          ),
+          _panel(
+            'p2',
+            'Lamp',
+            PanelType.toggle,
+            PanelWidth.small,
+            sectionId: 's1',
+          ),
+          _panel('p3', 'Log', PanelType.textLog, PanelWidth.full),
+        ],
+      ),
+    );
     await tester.pumpAndSettle();
 
     double top(String text) => tester.getTopLeft(find.text(text)).dy;

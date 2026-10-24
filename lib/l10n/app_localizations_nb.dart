@@ -4422,4 +4422,7 @@ class AppLocalizationsNb extends AppLocalizations {
   @override
   String get getHelpCannotOpen =>
       'Kunne ikke åpne GitHub. Kopier detaljene og åpne WireDash-saker i nettleseren.';
+
+  @override
+  String get panelIconAutomatic => 'Automatisk';
 }

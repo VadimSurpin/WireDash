@@ -1499,5 +1499,6 @@
   "displayExpressionTitle": "Voor weergave (JavaScript)",
   "displayExpressionSample": "Voorbeeldwaarde",
   "displayExpressionHint": "value bevat de ontvangen waarde. Leeg laat deze ongewijzigd. Alleen weergave; opdrachten en opgeslagen geschiedenis blijven ongewijzigd.",
-  "getHelpCannotOpen": "Kan GitHub niet openen. Kopieer de details en open WireDash-issues in je browser."
+  "getHelpCannotOpen": "Kan GitHub niet openen. Kopieer de details en open WireDash-issues in je browser.",
+  "panelIconAutomatic": "Automatisch"
 }

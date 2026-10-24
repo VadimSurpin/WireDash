@@ -79,7 +79,6 @@ class PanelGrid extends ConsumerWidget {
               window,
               textScale: MediaQuery.textScalerOf(ctx).scale(1),
             );
-            final minHeight = minTileHeight(window);
             final columnWidth =
                 (width - 16 - (columns - 1) * _GridRow.gap) / columns;
             Widget tile(Panel p) {
@@ -112,7 +111,6 @@ class PanelGrid extends ConsumerWidget {
                 children.add(
                   _GridRow(
                     columnWidth: columnWidth,
-                    minHeight: minHeight,
                     cells: [
                       for (final c in row) (child: tile(c.tile), span: c.span),
                     ],
@@ -160,18 +158,13 @@ class PanelGrid extends ConsumerWidget {
 }
 
 /// One grid row: cells share the row's height (the tallest cell's, never
-/// below [minHeight]); an unfilled end stays empty.
+/// forced to a minimum height); an unfilled end stays empty.
 class _GridRow extends StatelessWidget {
-  const _GridRow({
-    required this.columnWidth,
-    required this.minHeight,
-    required this.cells,
-  });
+  const _GridRow({required this.columnWidth, required this.cells});
 
   static const gap = 8.0;
 
   final double columnWidth;
-  final double minHeight;
   final List<({Widget child, int span})> cells;
 
   @override
@@ -186,10 +179,7 @@ class _GridRow extends StatelessWidget {
             for (final c in cells)
               SizedBox(
                 width: c.span * columnWidth + (c.span - 1) * gap,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: minHeight),
-                  child: c.child,
-                ),
+                child: c.child,
               ),
           ],
         ),
