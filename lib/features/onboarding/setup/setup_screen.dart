@@ -21,6 +21,7 @@ import 'recommendation_policy.dart';
 import 'setup_candidate.dart';
 import 'setup_coordinator.dart';
 import 'setup_error_guidance.dart';
+import 'ai_help.dart';
 import 'setup_analytics.dart';
 import 'setup_providers.dart';
 import 'setup_waiting.dart';
@@ -785,6 +786,18 @@ class _ScanEmpty extends StatelessWidget {
             label: Text(l10n.setupTryAgain),
           ),
         ],
+        // 3.1.5: the user's own AI assistant, with what the scan found.
+        const SizedBox(height: 16),
+        AiHelpCard(
+          facts: AiHelpFacts(
+            from: AiHelpFrom.scanEmpty,
+            platform: platform,
+            network: state.network,
+            phoneAddress: state.deviceIp,
+            tried: state.tried,
+            hubSeen: hub?.kind,
+          ),
+        ),
         GetHelpLink(
           onPressed: () =>
               context.push(Routes.getHelpFrom(HelpFrom.noConnection.name)),
@@ -1282,6 +1295,13 @@ class _NoZigbee2MqttState extends State<_NoZigbee2Mqtt> {
             ),
           ],
         ),
+        const SizedBox(height: 16),
+        AiHelpCard(
+          facts: AiHelpFacts(
+            from: AiHelpFrom.noZigbee2mqtt,
+            baseTopic: widget.base,
+          ),
+        ),
         Align(
           alignment: AlignmentDirectional.centerStart,
           child: GetHelpLink(
@@ -1421,6 +1441,14 @@ class _AuthPromptState extends State<_AuthPrompt> {
           builder: (context, value, _) => FilledButton(
             onPressed: value.text.trim().isEmpty ? null : _submit,
             child: Text(l10n.setupErrAuthRequiredAction),
+          ),
+        ),
+        const SizedBox(height: 16),
+        AiHelpCard(
+          facts: AiHelpFacts(
+            from: AiHelpFrom.login,
+            platform: widget.state.platform,
+            loginRejected: widget.state.rejected,
           ),
         ),
         GetHelpLink(
@@ -1604,6 +1632,12 @@ class _Failure extends StatelessWidget {
           icon: const Icon(Icons.refresh),
           label: Text(_guidanceText(l10n, guidance.actionKey)),
         ),
+        if (state.kind != SetupErrorKind.saveFailed) ...[
+          const SizedBox(height: 16),
+          AiHelpCard(
+            facts: AiHelpFacts(from: AiHelpFrom.failed, error: state.kind),
+          ),
+        ],
         GetHelpLink(
           onPressed: () => context.push(
             Routes.getHelpFrom(

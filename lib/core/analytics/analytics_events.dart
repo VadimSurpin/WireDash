@@ -118,6 +118,12 @@ enum SetupStepKind {
   /// [SetupStep.platform]; counted when given, not only with later steps.
   platformChosen,
 
+  /// "Ask your AI" on a screen where setup is stuck (3.1.5): its
+  /// [SetupStep.choice] says which screen (an `AiHelpFrom`), its
+  /// [SetupStep.result] what was done (opened, shared, copied). Never the
+  /// write-up itself.
+  aiHelp,
+
   /// The review was left without creating a dashboard (2.10.2): back, or
   /// setup started over. Carries [SetupStep.devices] and
   /// [SetupStep.selected], the state of the list when it was left.

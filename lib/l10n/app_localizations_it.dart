@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1571,6 +1570,25 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get setupStillChecking =>
       'Verifica in corso. Può richiedere fino a 30 secondi.';
+
+  @override
+  String get aiHelpTitle => 'Bloccato? Chiedi al tuo assistente IA';
+
+  @override
+  String get aiHelpBody =>
+      'ZigDash riassume ciò che ha trovato per ChatGPT, Claude, Gemini o qualsiasi app di IA, senza password né indirizzi. Lo vedi prima di condividerlo.';
+
+  @override
+  String get aiHelpButton => 'Chiedi a un\'IA';
+
+  @override
+  String get aiHelpPreviewTitle => 'Cosa verrà condiviso';
+
+  @override
+  String get aiHelpShare => 'Condividi con un\'app di IA';
+
+  @override
+  String get aiHelpCopied => 'Copiato. Incollalo in qualsiasi chat di IA.';
 
   @override
   String get haConnectWhereAddress =>
