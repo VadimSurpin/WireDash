@@ -1664,6 +1664,20 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'שלב אחרון: סמנו את המכשירים שאתם רוצים, ואז הקישו על יצירת לוח בקרה למטה.';
+
+  @override
+  String get setupLeaveTitle => 'ליצור את לוח הבקרה?';
+
+  @override
+  String get setupLeaveBody =>
+      'המכשירים שלכם נמצאו. צרו את לוח הבקרה עכשיו, או התחילו את ההגדרה מחדש ותאבדו את הרשימה הזו.';
+
+  @override
+  String get setupStartOver => 'להתחיל מחדש';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'צרו לוח עם $count';
   }

@@ -1694,6 +1694,20 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Dernière étape : cochez les appareils voulus, puis touchez Créer le tableau de bord en bas.';
+
+  @override
+  String get setupLeaveTitle => 'Créer votre tableau de bord ?';
+
+  @override
+  String get setupLeaveBody =>
+      'Vos appareils sont trouvés. Créez le tableau de bord maintenant, ou recommencez la configuration et perdez cette liste.';
+
+  @override
+  String get setupStartOver => 'Recommencer';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Créer le tableau de bord avec $count';
   }

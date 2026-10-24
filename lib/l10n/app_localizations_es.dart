@@ -1686,6 +1686,20 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Último paso: marca los dispositivos que quieras y toca Crear panel abajo.';
+
+  @override
+  String get setupLeaveTitle => '¿Crear tu panel?';
+
+  @override
+  String get setupLeaveBody =>
+      'Tus dispositivos ya están encontrados. Crea el panel ahora o empieza de nuevo y pierde esta lista.';
+
+  @override
+  String get setupStartOver => 'Empezar de nuevo';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Crear panel con $count';
   }

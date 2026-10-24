@@ -1678,6 +1678,20 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Sista steget: bocka för enheterna du vill ha och tryck på Skapa instrumentpanel längst ner.';
+
+  @override
+  String get setupLeaveTitle => 'Skapa instrumentpanelen?';
+
+  @override
+  String get setupLeaveBody =>
+      'Dina enheter är hittade. Skapa instrumentpanelen nu, eller börja om och förlora den här listan.';
+
+  @override
+  String get setupStartOver => 'Börja om';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Skapa dashboard med $count';
   }

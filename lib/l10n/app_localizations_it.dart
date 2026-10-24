@@ -1684,6 +1684,20 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Ultimo passo: spunta i dispositivi che vuoi, poi tocca Crea dashboard in basso.';
+
+  @override
+  String get setupLeaveTitle => 'Creare la dashboard?';
+
+  @override
+  String get setupLeaveBody =>
+      'I tuoi dispositivi sono stati trovati. Crea la dashboard ora, oppure ricomincia la configurazione e perdi questo elenco.';
+
+  @override
+  String get setupStartOver => 'Ricomincia';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Crea la dashboard con $count';
   }

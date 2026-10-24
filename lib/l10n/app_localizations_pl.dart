@@ -1685,6 +1685,20 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Ostatni krok: zaznacz urządzenia, które chcesz, a potem stuknij Utwórz pulpit na dole.';
+
+  @override
+  String get setupLeaveTitle => 'Utworzyć pulpit?';
+
+  @override
+  String get setupLeaveBody =>
+      'Twoje urządzenia są znalezione. Utwórz pulpit teraz albo zacznij konfigurację od nowa i strać tę listę.';
+
+  @override
+  String get setupStartOver => 'Zacznij od nowa';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Utwórz dashboard (urządzenia: $count)';
   }

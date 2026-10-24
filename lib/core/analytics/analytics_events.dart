@@ -124,6 +124,10 @@ enum SetupStepKind {
   /// write-up itself.
   aiHelp,
 
+  /// Back on the review asked first (3.1.6): its [SetupStep.result] is the
+  /// answer (a `ReviewBackAnswer`): create, start over, or stay.
+  reviewBack,
+
   /// The review was left without creating a dashboard (2.10.2): back, or
   /// setup started over. Carries [SetupStep.devices] and
   /// [SetupStep.selected], the state of the list when it was left.

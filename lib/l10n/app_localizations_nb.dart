@@ -1679,6 +1679,20 @@ class AppLocalizationsNb extends AppLocalizations {
   }
 
   @override
+  String get setupReviewLastStep =>
+      'Siste steg: kryss av enhetene du vil ha, og trykk på Opprett dashbord nederst.';
+
+  @override
+  String get setupLeaveTitle => 'Opprette dashbordet?';
+
+  @override
+  String get setupLeaveBody =>
+      'Enhetene dine er funnet. Opprett dashbordet nå, eller start oppsettet på nytt og mist denne listen.';
+
+  @override
+  String get setupStartOver => 'Start på nytt';
+
+  @override
   String setupCreateWithCount(Object count) {
     return 'Lag dashbord med $count';
   }
