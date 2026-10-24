@@ -143,7 +143,7 @@ enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
 /// How setup succeeded (3.1.3), on [SetupStepKind.complete]: the scan and
 /// its review, Home Assistant's sign-in (which also ends in the review), or
 /// the broker form, which until 3.1.3 sent no complete at all.
-enum SetupVia { scan, homeAssistant, brokerForm }
+enum SetupVia { scan, homeAssistant, brokerForm, shared }
 
 /// Where setup opened the Home Assistant sign-in (3.1.3): while scanning,
 /// the card on an empty result, the note under "I use Home Assistant",
@@ -867,3 +867,20 @@ class AutomationSaved extends AnalyticsEvent {
         'count': bucket(homeCount, const [1, 2, 3], ranges: const [(4, 10)], top: '11+'),
       };
 }
+
+/// "Share this home" (3.1.7): a phone showed its code, another joined, and
+/// whether the dashboards arrived. Never the home, the address or a login.
+enum HomeShareStep { codeShown, joined, dashboardsImported, dashboardsMissing }
+
+class HomeShareEvent extends AnalyticsEvent {
+  const HomeShareEvent(this.step);
+
+  final HomeShareStep step;
+
+  @override
+  String get name => 'home_share';
+
+  @override
+  Map<String, String> get props => {'step': _snake(step.name)};
+}
+

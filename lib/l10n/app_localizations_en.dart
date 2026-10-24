@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4297,6 +4296,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Connected · Away via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Share with another phone';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Add this home to another phone with one QR code';
+
+  @override
+  String get shareHomeIntro =>
+      'On the other phone, at home on the same Wi-Fi, scan the code with the camera. ZigDash adds this home with its login and your dashboards.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'The code includes this home\'s broker login. It shows for 2 minutes; show it only to people you trust.';
+
+  @override
+  String get shareHomeShow => 'Show the code';
+
+  @override
+  String get shareHomeAtHome =>
+      'Connect at home first: sharing works only on your home network.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Scan with the other phone\'s camera. The code hides in 2 minutes.';
+
+  @override
+  String get shareHomeHide => 'Hide the code';
+
+  @override
+  String get shareHomeViaHa =>
+      'This home connects through Home Assistant. On the other phone, install ZigDash and sign in with Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Add a shared home';
+
+  @override
+  String get joinHomeInvalid =>
+      'This code isn\'t a ZigDash home invitation, or it\'s damaged.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name is already on this phone.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Open it';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Add $name to this phone?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash adds the home with the same connection and login, and takes the dashboards from the other phone. Keep this phone on your home Wi-Fi.';
+
+  @override
+  String get joinHomeAdd => 'Add home';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Home added. The dashboards didn\'t arrive; your devices are on the Devices tab.';
 
   @override
   String get remoteTitle => 'Remote control';

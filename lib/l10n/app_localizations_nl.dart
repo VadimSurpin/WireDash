@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4313,6 +4312,70 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Verbonden · Onderweg via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Delen met een andere telefoon';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Voeg dit huis met één QR-code toe aan een andere telefoon';
+
+  @override
+  String get shareHomeIntro =>
+      'Scan op de andere telefoon, thuis op dezelfde wifi, de code met de camera. ZigDash voegt dit huis toe met de inloggegevens en je dashboards.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'De code bevat de broker-inlog van dit huis. Hij staat 2 minuten in beeld; laat hem alleen zien aan mensen die je vertrouwt.';
+
+  @override
+  String get shareHomeShow => 'Code tonen';
+
+  @override
+  String get shareHomeAtHome =>
+      'Maak eerst thuis verbinding: delen werkt alleen op je thuisnetwerk.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Scan met de camera van de andere telefoon. De code verdwijnt na 2 minuten.';
+
+  @override
+  String get shareHomeHide => 'Code verbergen';
+
+  @override
+  String get shareHomeViaHa =>
+      'Dit huis maakt verbinding via Home Assistant. Installeer ZigDash op de andere telefoon en log in met Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Een gedeeld huis toevoegen';
+
+  @override
+  String get joinHomeInvalid =>
+      'Deze code is geen ZigDash-uitnodiging, of hij is beschadigd.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name staat al op deze telefoon.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Openen';
+
+  @override
+  String joinHomeAsk(String name) {
+    return '$name aan deze telefoon toevoegen?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash voegt het huis toe met dezelfde verbinding en inlog, en neemt de dashboards over van de andere telefoon. Houd deze telefoon op de wifi thuis.';
+
+  @override
+  String get joinHomeAdd => 'Huis toevoegen';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Huis toegevoegd. De dashboards kwamen niet aan; je apparaten staan op het tabblad Apparaten.';
 
   @override
   String get remoteTitle => 'Bediening op afstand';

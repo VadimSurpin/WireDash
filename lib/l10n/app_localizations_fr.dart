@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4328,6 +4327,70 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Connecté · À distance via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Partager avec un autre téléphone';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Ajoutez ce domicile à un autre téléphone avec un seul QR code';
+
+  @override
+  String get shareHomeIntro =>
+      'Sur l\'autre téléphone, à la maison sur le même Wi-Fi, scannez le code avec l\'appareil photo. ZigDash ajoute ce domicile avec ses identifiants et vos tableaux de bord.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Le code contient les identifiants du broker de ce domicile. Il s\'affiche 2 minutes ; ne le montrez qu\'à des personnes de confiance.';
+
+  @override
+  String get shareHomeShow => 'Afficher le code';
+
+  @override
+  String get shareHomeAtHome =>
+      'Connectez-vous d\'abord à la maison : le partage ne marche que sur votre réseau local.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Scannez avec l\'appareil photo de l\'autre téléphone. Le code disparaît dans 2 minutes.';
+
+  @override
+  String get shareHomeHide => 'Masquer le code';
+
+  @override
+  String get shareHomeViaHa =>
+      'Ce domicile se connecte via Home Assistant. Sur l\'autre téléphone, installez ZigDash et connectez-vous avec Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Ajouter un domicile partagé';
+
+  @override
+  String get joinHomeInvalid =>
+      'Ce code n\'est pas une invitation ZigDash, ou il est abîmé.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name est déjà sur ce téléphone.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Ouvrir';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Ajouter $name à ce téléphone ?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash ajoute le domicile avec la même connexion et les mêmes identifiants, et reprend les tableaux de bord de l\'autre téléphone. Restez sur le Wi-Fi de la maison.';
+
+  @override
+  String get joinHomeAdd => 'Ajouter le domicile';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Domicile ajouté. Les tableaux de bord ne sont pas arrivés ; vos appareils sont dans l\'onglet Appareils.';
 
   @override
   String get remoteTitle => 'Contrôle à distance';

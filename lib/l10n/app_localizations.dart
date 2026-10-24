@@ -7596,6 +7596,108 @@ abstract class AppLocalizations {
   /// **'Connected · Away via ZigDash'**
   String get statusConnectedRelay;
 
+  /// No description provided for @shareHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with another phone'**
+  String get shareHomeTitle;
+
+  /// No description provided for @shareHomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this home to another phone with one QR code'**
+  String get shareHomeSubtitle;
+
+  /// No description provided for @shareHomeIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'On the other phone, at home on the same Wi-Fi, scan the code with the camera. ZigDash adds this home with its login and your dashboards.'**
+  String get shareHomeIntro;
+
+  /// No description provided for @shareHomeLoginWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'The code includes this home\'s broker login. It shows for 2 minutes; show it only to people you trust.'**
+  String get shareHomeLoginWarning;
+
+  /// No description provided for @shareHomeShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the code'**
+  String get shareHomeShow;
+
+  /// No description provided for @shareHomeAtHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect at home first: sharing works only on your home network.'**
+  String get shareHomeAtHome;
+
+  /// No description provided for @shareHomeScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with the other phone\'s camera. The code hides in 2 minutes.'**
+  String get shareHomeScanHint;
+
+  /// No description provided for @shareHomeHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the code'**
+  String get shareHomeHide;
+
+  /// No description provided for @shareHomeViaHa.
+  ///
+  /// In en, this message translates to:
+  /// **'This home connects through Home Assistant. On the other phone, install ZigDash and sign in with Home Assistant.'**
+  String get shareHomeViaHa;
+
+  /// No description provided for @joinHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a shared home'**
+  String get joinHomeTitle;
+
+  /// No description provided for @joinHomeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This code isn\'t a ZigDash home invitation, or it\'s damaged.'**
+  String get joinHomeInvalid;
+
+  /// No description provided for @joinHomeAlready.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is already on this phone.'**
+  String joinHomeAlready(String name);
+
+  /// No description provided for @joinHomeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open it'**
+  String get joinHomeOpen;
+
+  /// No description provided for @joinHomeAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {name} to this phone?'**
+  String joinHomeAsk(String name);
+
+  /// No description provided for @joinHomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ZigDash adds the home with the same connection and login, and takes the dashboards from the other phone. Keep this phone on your home Wi-Fi.'**
+  String get joinHomeBody;
+
+  /// No description provided for @joinHomeAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add home'**
+  String get joinHomeAdd;
+
+  /// No description provided for @joinHomeNoDashboards.
+  ///
+  /// In en, this message translates to:
+  /// **'Home added. The dashboards didn\'t arrive; your devices are on the Devices tab.'**
+  String get joinHomeNoDashboards;
+
   /// No description provided for @remoteTitle.
   ///
   /// In en, this message translates to:

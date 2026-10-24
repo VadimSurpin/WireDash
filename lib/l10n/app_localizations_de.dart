@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4320,6 +4319,70 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Verbunden · Unterwegs über ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Mit einem anderen Handy teilen';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Dieses Zuhause mit einem QR-Code zu einem anderen Handy hinzufügen';
+
+  @override
+  String get shareHomeIntro =>
+      'Scanne den Code auf dem anderen Handy zu Hause im selben WLAN mit der Kamera. ZigDash fügt dieses Zuhause mit Login und deinen Dashboards hinzu.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Der Code enthält den Broker-Login dieses Zuhauses. Er wird 2 Minuten angezeigt; zeig ihn nur Leuten, denen du vertraust.';
+
+  @override
+  String get shareHomeShow => 'Code anzeigen';
+
+  @override
+  String get shareHomeAtHome =>
+      'Verbinde dich zuerst zu Hause: Teilen geht nur im Heimnetz.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Mit der Kamera des anderen Handys scannen. Der Code verschwindet nach 2 Minuten.';
+
+  @override
+  String get shareHomeHide => 'Code ausblenden';
+
+  @override
+  String get shareHomeViaHa =>
+      'Dieses Zuhause verbindet sich über Home Assistant. Installiere ZigDash auf dem anderen Handy und melde dich mit Home Assistant an.';
+
+  @override
+  String get joinHomeTitle => 'Geteiltes Zuhause hinzufügen';
+
+  @override
+  String get joinHomeInvalid =>
+      'Dieser Code ist keine ZigDash-Einladung oder beschädigt.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name ist schon auf diesem Handy.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Öffnen';
+
+  @override
+  String joinHomeAsk(String name) {
+    return '$name zu diesem Handy hinzufügen?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash fügt das Zuhause mit derselben Verbindung und demselben Login hinzu und übernimmt die Dashboards vom anderen Handy. Lass dieses Handy im WLAN zu Hause.';
+
+  @override
+  String get joinHomeAdd => 'Zuhause hinzufügen';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Zuhause hinzugefügt. Die Dashboards kamen nicht an; deine Geräte findest du im Tab Geräte.';
 
   @override
   String get remoteTitle => 'Fernsteuerung';

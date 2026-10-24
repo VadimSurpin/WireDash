@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4258,6 +4257,68 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'מחובר · מחוץ לבית דרך ZigDash';
+
+  @override
+  String get shareHomeTitle => 'שיתוף עם טלפון נוסף';
+
+  @override
+  String get shareHomeSubtitle => 'הוספת הבית הזה לטלפון נוסף עם קוד QR אחד';
+
+  @override
+  String get shareHomeIntro =>
+      'בטלפון השני, בבית על אותה רשת Wi-Fi, סרקו את הקוד במצלמה. ZigDash מוסיף את הבית עם פרטי ההתחברות ולוחות הבקרה שלכם.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'הקוד כולל את פרטי ההתחברות לברוקר של הבית. הוא מוצג 2 דקות; הראו אותו רק לאנשים שאתם סומכים עליהם.';
+
+  @override
+  String get shareHomeShow => 'הצגת הקוד';
+
+  @override
+  String get shareHomeAtHome => 'התחברו קודם מהבית: שיתוף עובד רק ברשת הביתית.';
+
+  @override
+  String get shareHomeScanHint =>
+      'סרקו במצלמה של הטלפון השני. הקוד יוסתר בעוד 2 דקות.';
+
+  @override
+  String get shareHomeHide => 'הסתרת הקוד';
+
+  @override
+  String get shareHomeViaHa =>
+      'הבית הזה מתחבר דרך Home Assistant. בטלפון השני התקינו את ZigDash והתחברו עם Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'הוספת בית משותף';
+
+  @override
+  String get joinHomeInvalid =>
+      'הקוד הזה אינו הזמנה לבית של ZigDash, או שהוא פגום.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name כבר נמצא בטלפון הזה.';
+  }
+
+  @override
+  String get joinHomeOpen => 'פתיחה';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'להוסיף את $name לטלפון הזה?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash מוסיף את הבית עם אותו חיבור ואותם פרטי התחברות, ולוקח את לוחות הבקרה מהטלפון השני. השאירו את הטלפון ב-Wi-Fi של הבית.';
+
+  @override
+  String get joinHomeAdd => 'הוספת בית';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'הבית נוסף. לוחות הבקרה לא הגיעו; המכשירים נמצאים בלשונית מכשירים.';
 
   @override
   String get remoteTitle => 'שליטה מרחוק';

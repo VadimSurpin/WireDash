@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4310,6 +4309,70 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Conectado · Fora de casa via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Compartilhar com outro telefone';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Adicione esta casa a outro telefone com um código QR';
+
+  @override
+  String get shareHomeIntro =>
+      'No outro telefone, em casa na mesma Wi-Fi, leia o código com a câmera. O ZigDash adiciona esta casa com o login e seus painéis.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'O código inclui o login do broker desta casa. Ele aparece por 2 minutos; mostre só a pessoas de confiança.';
+
+  @override
+  String get shareHomeShow => 'Mostrar o código';
+
+  @override
+  String get shareHomeAtHome =>
+      'Conecte-se em casa primeiro: compartilhar só funciona na rede de casa.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Leia com a câmera do outro telefone. O código some em 2 minutos.';
+
+  @override
+  String get shareHomeHide => 'Ocultar o código';
+
+  @override
+  String get shareHomeViaHa =>
+      'Esta casa se conecta pelo Home Assistant. No outro telefone, instale o ZigDash e entre com o Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Adicionar uma casa compartilhada';
+
+  @override
+  String get joinHomeInvalid =>
+      'Este código não é um convite do ZigDash ou está danificado.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name já está neste telefone.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Abrir';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Adicionar $name a este telefone?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'O ZigDash adiciona a casa com a mesma conexão e login, e pega os painéis do outro telefone. Mantenha este telefone na Wi-Fi de casa.';
+
+  @override
+  String get joinHomeAdd => 'Adicionar casa';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Casa adicionada. Os painéis não chegaram; seus dispositivos estão na aba Dispositivos.';
 
   @override
   String get remoteTitle => 'Controle remoto';

@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4297,6 +4296,70 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get statusConnectedRelay => 'Ansluten · Borta via ZigDash';
+
+  @override
+  String get shareHomeTitle => 'Dela med en annan telefon';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Lägg till hemmet på en annan telefon med en QR-kod';
+
+  @override
+  String get shareHomeIntro =>
+      'På den andra telefonen, hemma på samma wifi, skanna koden med kameran. ZigDash lägger till hemmet med inloggning och dina instrumentpaneler.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Koden innehåller hemmets broker-inloggning. Den visas i 2 minuter; visa den bara för personer du litar på.';
+
+  @override
+  String get shareHomeShow => 'Visa koden';
+
+  @override
+  String get shareHomeAtHome =>
+      'Anslut hemma först: delning fungerar bara på hemnätverket.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Skanna med den andra telefonens kamera. Koden döljs om 2 minuter.';
+
+  @override
+  String get shareHomeHide => 'Dölj koden';
+
+  @override
+  String get shareHomeViaHa =>
+      'Det här hemmet ansluter via Home Assistant. Installera ZigDash på den andra telefonen och logga in med Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Lägg till ett delat hem';
+
+  @override
+  String get joinHomeInvalid =>
+      'Koden är ingen ZigDash-inbjudan, eller så är den skadad.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name finns redan på den här telefonen.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Öppna';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Lägga till $name på den här telefonen?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'ZigDash lägger till hemmet med samma anslutning och inloggning och hämtar instrumentpanelerna från den andra telefonen. Håll telefonen på hemmets wifi.';
+
+  @override
+  String get joinHomeAdd => 'Lägg till hem';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Hemmet är tillagt. Instrumentpanelerna kom inte fram; dina enheter finns under fliken Enheter.';
 
   @override
   String get remoteTitle => 'Fjärrstyrning';
