@@ -2934,6 +2934,24 @@ abstract class AppLocalizations {
   /// **'Not sure what it is? In the Home Assistant app, open Settings › Companion app and tap your server: its address is there. On a computer, it\'s what the browser shows when Home Assistant is open.'**
   String get haConnectWhereAddress;
 
+  /// No description provided for @haFindLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for Home Assistant on this network…'**
+  String get haFindLooking;
+
+  /// No description provided for @haFindSeveral.
+  ///
+  /// In en, this message translates to:
+  /// **'Found more than one Home Assistant. Tap the one to use:'**
+  String get haFindSeveral;
+
+  /// No description provided for @haFindNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant didn\'t answer on this network. Check that the phone is on your home Wi-Fi, or type its address.'**
+  String get haFindNone;
+
   /// No description provided for @haConnectNotAdmin.
   ///
   /// In en, this message translates to:

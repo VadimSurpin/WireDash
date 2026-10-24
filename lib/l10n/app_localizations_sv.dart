@@ -1589,6 +1589,17 @@ class AppLocalizationsSv extends AppLocalizations {
       'Osäker på vilken den är? I Home Assistant-appen öppnar du Inställningar › Companion-app och trycker på din server: adressen finns där. På en dator är det adressen webbläsaren visar när Home Assistant är öppet.';
 
   @override
+  String get haFindLooking => 'Letar efter Home Assistant i det här nätverket…';
+
+  @override
+  String get haFindSeveral =>
+      'Hittade mer än en Home Assistant. Tryck på den du vill använda:';
+
+  @override
+  String get haFindNone =>
+      'Home Assistant svarade inte i det här nätverket. Kontrollera att telefonen är på wifi hemma, eller skriv in adressen.';
+
+  @override
   String get haConnectNotAdmin =>
       'Din Home Assistant-användare är inte administratör. ZigDash behöver en för Home Assistants MQTT. Logga in som administratör, eller klistra in en token som en administratör skapat.';
 

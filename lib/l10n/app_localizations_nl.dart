@@ -1597,6 +1597,17 @@ class AppLocalizationsNl extends AppLocalizations {
       'Weet je het niet zeker? Open in de Home Assistant-app Instellingen › Companion-app en tik op je server: daar staat het adres. Op een computer is het het adres dat de browser toont als Home Assistant open is.';
 
   @override
+  String get haFindLooking => 'Zoeken naar Home Assistant op dit netwerk…';
+
+  @override
+  String get haFindSeveral =>
+      'Meer dan één Home Assistant gevonden. Tik op de juiste:';
+
+  @override
+  String get haFindNone =>
+      'Home Assistant gaf geen antwoord op dit netwerk. Controleer of de telefoon op je wifi thuis zit, of typ het adres.';
+
+  @override
   String get haConnectNotAdmin =>
       'Je Home Assistant-gebruiker is geen beheerder. ZigDash heeft er een nodig voor de MQTT van Home Assistant. Meld je aan als beheerder, of plak een token dat een beheerder heeft aangemaakt.';
 

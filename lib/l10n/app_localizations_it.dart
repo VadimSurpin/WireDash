@@ -1595,6 +1595,17 @@ class AppLocalizationsIt extends AppLocalizations {
       'Non sai qual è? Nell\'app Home Assistant apri Impostazioni › App companion e tocca il tuo server: l\'indirizzo è lì. Sul computer, è quello che il browser mostra con Home Assistant aperto.';
 
   @override
+  String get haFindLooking => 'Ricerca di Home Assistant su questa rete…';
+
+  @override
+  String get haFindSeveral =>
+      'Trovato più di un Home Assistant. Tocca quello da usare:';
+
+  @override
+  String get haFindNone =>
+      'Home Assistant non ha risposto su questa rete. Verifica che il telefono sia sul Wi-Fi di casa, oppure digita il suo indirizzo.';
+
+  @override
   String get haConnectNotAdmin =>
       'Il tuo utente Home Assistant non è amministratore. ZigDash ne ha bisogno per l\'MQTT di Home Assistant. Accedi come amministratore, oppure incolla un token creato da un amministratore.';
 

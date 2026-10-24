@@ -1598,6 +1598,17 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не знаете адрес? В приложении Home Assistant откройте Настройки › Приложение-компаньон и нажмите на свой сервер: адрес там. На компьютере это адрес, который браузер показывает при открытом Home Assistant.';
 
   @override
+  String get haFindLooking => 'Ищем Home Assistant в этой сети…';
+
+  @override
+  String get haFindSeveral =>
+      'Найдено несколько Home Assistant. Нажмите на нужный:';
+
+  @override
+  String get haFindNone =>
+      'Home Assistant не ответил в этой сети. Проверьте, что телефон подключён к домашнему Wi-Fi, или введите адрес.';
+
+  @override
   String get haConnectNotAdmin =>
       'Ваш пользователь Home Assistant не администратор. ZigDash нужен администратор для MQTT в Home Assistant. Войдите как администратор или вставьте токен, созданный администратором.';
 

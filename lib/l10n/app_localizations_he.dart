@@ -1575,6 +1575,17 @@ class AppLocalizationsHe extends AppLocalizations {
       'לא בטוחים מה הכתובת? באפליקציית Home Assistant פתחו הגדרות › אפליקציה נלווית והקישו על השרת שלכם: הכתובת מופיעה שם. במחשב, זו הכתובת שהדפדפן מציג כש-Home Assistant פתוח.';
 
   @override
+  String get haFindLooking => 'מחפש את Home Assistant ברשת הזו…';
+
+  @override
+  String get haFindSeveral =>
+      'נמצא יותר מ-Home Assistant אחד. הקש על זה שבו להשתמש:';
+
+  @override
+  String get haFindNone =>
+      'Home Assistant לא ענה ברשת הזו. ודא שהטלפון מחובר ל-Wi-Fi של הבית, או הקלד את הכתובת שלו.';
+
+  @override
   String get haConnectNotAdmin =>
       'המשתמש שלכם ב-Home Assistant אינו מנהל. ZigDash צריך מנהל בשביל ה-MQTT של Home Assistant. היכנסו כמנהל, או הדביקו אסימון שמנהל יצר.';
 
