@@ -12,6 +12,7 @@ SetupStep? setupStepFor(
   SetupState? previous,
   SetupState next, {
   SetupPlatform? platform,
+  bool aiHelped = false,
 }) => switch (next) {
   SetupScanning() when previous is! SetupScanning => const SetupStep(
     SetupStepKind.started,
@@ -98,6 +99,7 @@ SetupStep? setupStepFor(
     devices: result.panelCount,
     platform: platform,
     via: via,
+    aiHelped: aiHelped,
   ),
   _ => null,
 };

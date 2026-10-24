@@ -216,9 +216,14 @@ class SetupStep extends AnalyticsEvent {
     this.selected,
     this.portClass,
     this.via,
+    this.aiHelped,
   });
 
   final SetupStepKind step;
+
+  /// Whether "Ask your AI" was shared or copied earlier in this setup, on
+  /// [SetupStepKind.complete] (3.1.5).
+  final bool? aiHelped;
 
   /// How setup succeeded, on [SetupStepKind.complete] (3.1.3).
   final SetupVia? via;
@@ -302,6 +307,7 @@ class SetupStep extends AnalyticsEvent {
       ),
     if (platform != null) 'platform': _snake(platform!.name),
     if (via != null) 'via': _snake(via!.name),
+    if (aiHelped != null) 'ai': aiHelped! ? 'yes' : 'no',
     if (step == SetupStepKind.scanEmpty)
       'hub': hub == null ? 'none' : _snake(hub!.name),
     if (hostsTried != null)

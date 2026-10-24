@@ -75,9 +75,12 @@ class SetupScreen extends ConsumerWidget {
         previous?.valueOrNull,
         s,
         platform: coordinator.platform,
+        aiHelped: ref.read(aiHelpUsedProvider),
       );
       if (step != null) ref.read(analyticsProvider).track(step);
       if (s is SetupComplete) {
+        // 3.1.5: the next setup starts without "Ask your AI" behind it.
+        ref.read(aiHelpUsedProvider.notifier).state = false;
         ref.read(setupReminderProvider).cancel();
         context.go(Routes.homeDashboards(s.result.connectionId));
       }

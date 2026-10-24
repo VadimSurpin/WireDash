@@ -20,6 +20,10 @@ enum AiHelpFrom { scanEmpty, failed, noZigbee2mqtt, login, haConnect }
 /// app or copied.
 enum AiHelpAction { opened, shared, copied }
 
+/// Whether the write-up was shared or copied since setup last finished, so
+/// `complete` can say whether "Ask your AI" came first (3.1.5).
+final aiHelpUsedProvider = StateProvider<bool>((_) => false);
+
 /// What setup knows when it is stuck, for the write-up. Never an address,
 /// a device name or a login.
 class AiHelpFacts {
@@ -240,14 +244,19 @@ Future<void> showAiHelp(
   AiHelpFacts facts,
 ) {
   final analytics = ref.read(analyticsProvider);
-  void count(AiHelpAction action) => analytics.track(
-    SetupStep(
-      SetupStepKind.aiHelp,
-      choice: facts.from,
-      result: action,
-      platform: facts.platform,
-    ),
-  );
+  final used = ref.read(aiHelpUsedProvider.notifier);
+  void count(AiHelpAction action) {
+    analytics.track(
+      SetupStep(
+        SetupStepKind.aiHelp,
+        choice: facts.from,
+        result: action,
+        platform: facts.platform,
+      ),
+    );
+    if (action != AiHelpAction.opened) used.state = true;
+  }
+
   final text = aiHelpText(
     facts,
     languageCode: Localizations.localeOf(context).languageCode,

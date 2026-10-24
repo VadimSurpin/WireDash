@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../onboarding/setup/ai_help.dart' show aiHelpUsedProvider;
 import '../support/support_details.dart';
 import '../support/get_help_screen.dart' show GetHelpLink;
 import '../support/community.dart';
@@ -544,8 +545,10 @@ class _GuidedConnectScreenState extends ConsumerState<GuidedConnectScreen> {
                           SetupStepKind.complete,
                           devices: count,
                           via: SetupVia.brokerForm,
+                          aiHelped: ref.read(aiHelpUsedProvider),
                         ),
                       );
+                  ref.read(aiHelpUsedProvider.notifier).state = false;
                   try {
                     await ref.read(firstRunProvider).finish(id);
                   } catch (_) {

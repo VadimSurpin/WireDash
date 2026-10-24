@@ -174,6 +174,10 @@ void main() {
         },
       ]);
       expect(find.text('What will be shared'), findsNothing);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AiHelpCard)),
+      );
+      expect(container.read(aiHelpUsedProvider), isTrue);
     });
 
     testWidgets('without a share sheet it copies, and says so', (tester) async {
