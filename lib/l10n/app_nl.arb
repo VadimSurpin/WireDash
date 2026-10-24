@@ -536,6 +536,8 @@
   "haConnectTokenHelp": "Open in Home Assistant je profiel, dan Beveiliging › Langdurige toegangstokens › Token aanmaken. Kopieer het en plak het hier. ZigDash bewaart het op deze telefoon om te verbinden; verwijder het in Home Assistant wanneer je dat wilt beëindigen.",
   "haConnectWithToken": "Verbinden met token",
   "haConnectChecking": "Home Assistant controleren…",
+  "setupStillChecking": "Nog bezig met controleren. Dit kan tot 30 seconden duren.",
+  "haConnectWhereAddress": "Weet je het niet zeker? Open in de Home Assistant-app Instellingen › Companion-app en tik op je server: daar staat het adres. Op een computer is het het adres dat de browser toont als Home Assistant open is.",
   "haConnectNotAdmin": "Je Home Assistant-gebruiker is geen beheerder. ZigDash heeft er een nodig voor de MQTT van Home Assistant. Meld je aan als beheerder, of plak een token dat een beheerder heeft aangemaakt.",
   "haConnectNoMqtt": "Deze Home Assistant heeft geen MQTT-integratie. Zigbee2MQTT heeft die ook nodig: voeg in Home Assistant de Mosquitto broker-add-on en de MQTT-integratie toe en probeer het opnieuw.",
   "haConnectSignInFailed": "De aanmelding is niet voltooid. Probeer het opnieuw, of gebruik een langdurig token.",

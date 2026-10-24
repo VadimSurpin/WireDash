@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1564,6 +1565,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haConnectChecking => 'Kontroluji Home Assistant…';
+
+  @override
+  String get setupStillChecking => 'Stále ověřuji. Může to trvat až 30 sekund.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'Nevíte, jaká je? V aplikaci Home Assistant otevřete Nastavení › Doprovodná aplikace a klepněte na svůj server: adresa je tam. Na počítači je to adresa, kterou prohlížeč ukazuje při otevřeném Home Assistantu.';
 
   @override
   String get haConnectNotAdmin =>

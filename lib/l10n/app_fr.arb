@@ -461,6 +461,8 @@
   "haConnectTokenHelp": "Dans Home Assistant, ouvrez votre profil, puis Sécurité › Jetons d'accès longue durée › Créer un jeton. Copiez-le et collez-le ici. ZigDash le garde sur ce téléphone pour se connecter ; supprimez-le dans Home Assistant quand vous voulez y mettre fin.",
   "haConnectWithToken": "Se connecter avec un jeton",
   "haConnectChecking": "Vérification de Home Assistant…",
+  "setupStillChecking": "Vérification en cours. Cela peut prendre jusqu'à 30 secondes.",
+  "haConnectWhereAddress": "Vous ne la connaissez pas ? Dans l'app Home Assistant, ouvrez Paramètres › Application compagnon et touchez votre serveur : l'adresse y figure. Sur un ordinateur, c'est celle qu'affiche le navigateur quand Home Assistant est ouvert.",
   "haConnectNotAdmin": "Votre utilisateur Home Assistant n'est pas administrateur. ZigDash en a besoin pour le MQTT de Home Assistant. Connectez-vous en tant qu'administrateur, ou collez un jeton créé par un administrateur.",
   "haConnectNoMqtt": "Ce Home Assistant n'a pas d'intégration MQTT. Zigbee2MQTT en a aussi besoin : dans Home Assistant, ajoutez le module complémentaire Mosquitto broker et l'intégration MQTT, puis réessayez.",
   "haConnectSignInFailed": "La connexion ne s'est pas terminée. Réessayez, ou utilisez un jeton longue durée.",

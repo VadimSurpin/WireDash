@@ -23,6 +23,7 @@ import 'setup_coordinator.dart';
 import 'setup_error_guidance.dart';
 import 'setup_analytics.dart';
 import 'setup_providers.dart';
+import 'setup_waiting.dart';
 import 'setup_reminder.dart';
 
 /// zigdash.app's Hubs page: the small hubs that run Zigbee2MQTT, for the
@@ -145,72 +146,87 @@ class SetupScreen extends ConsumerWidget {
       } catch (_) {}
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.setupWelcomeTitle)),
-      body: SafeArea(
-        child: switch (state) {
-          SetupIdle() => _Welcome(
-            onFind: coordinator.startScan,
-            onManual: manual,
-            onDemo: () => tryDemo(kind: SetupStepKind.welcomeDemo),
-            onHubs: welcomeHubs,
-          ),
-          SetupScanning() => _Scanning(
-            state: state,
-            onSelect: coordinator.selectCandidate,
-            onPlatform: choosePlatform,
-            onManual: manual,
-            onDemo: tryDemo,
-            onConnectViaHa: viaHa,
-          ),
-          SetupScanEmpty() => _ScanEmpty(
-            state: state,
-            onRetry: coordinator.retry,
-            onPlatform: choosePlatform,
-            onCheckAddress: coordinator.checkAddress,
-            onChoice: emptyChoice,
-            onManual: manual,
-            onManualTo: manualTo,
-            onManualPort: manualPort,
-            onDemo: tryDemo,
-            onConnectViaHa: viaHa,
-          ),
-          SetupVerifying() => const _Verifying(),
-          SetupNeedsAuth() => _AuthPrompt(
-            state: state,
-            onSubmit: coordinator.submitCredentials,
-            onDemo: tryDemo,
-            onConnectViaHa: viaHa,
-          ),
-          SetupFailed(kind: SetupErrorKind.notZigbee2Mqtt) => _NoZigbee2Mqtt(
-            base: coordinator.base,
-            onRetry: coordinator.retryWithBase,
-            onDemo: tryDemo,
-            onManual: manual,
-          ),
-          SetupFailed(kind: SetupErrorKind.scanFailed) => _NoNetwork(
-            state: state,
-            onManual: manual,
-          ),
-          SetupFailed() => _Failure(
-            state: state,
-            onRetry: coordinator.retry,
-            onManual: manual,
-          ),
-          SetupReview() => _Review(
-            state: state,
-            onToggle: coordinator.toggleDevice,
-            onCreate: coordinator.createDashboard,
-          ),
-          SetupCreating() => _Review(
-            state: state.review,
-            busy: true,
-            onToggle: (_) {},
-            onCreate: () {},
-          ),
-          // Navigation to the dashboard is under way (see ref.listen above).
-          SetupComplete() => const SizedBox.shrink(),
-        },
+    // 3.1.4: on first run setup is the only page, so back closed the app
+    // from the middle of setup. It now starts setup over instead.
+    final midway =
+        state is! SetupIdle &&
+        state is! SetupCreating &&
+        state is! SetupComplete;
+    return PopScope(
+      canPop: !midway || Navigator.canPop(context),
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) coordinator.cancel();
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text(l10n.setupWelcomeTitle)),
+        body: SafeArea(
+          child: switch (state) {
+            SetupIdle() => _Welcome(
+              onFind: coordinator.startScan,
+              onManual: manual,
+              onDemo: () => tryDemo(kind: SetupStepKind.welcomeDemo),
+              onHubs: welcomeHubs,
+            ),
+            SetupScanning() => _Scanning(
+              state: state,
+              onSelect: coordinator.selectCandidate,
+              onPlatform: choosePlatform,
+              onManual: manual,
+              onDemo: tryDemo,
+              onConnectViaHa: viaHa,
+            ),
+            SetupScanEmpty() => _ScanEmpty(
+              state: state,
+              onRetry: coordinator.retry,
+              onPlatform: choosePlatform,
+              onCheckAddress: coordinator.checkAddress,
+              onChoice: emptyChoice,
+              onManual: manual,
+              onManualTo: manualTo,
+              onManualPort: manualPort,
+              onDemo: tryDemo,
+              onConnectViaHa: viaHa,
+            ),
+            SetupVerifying() => SetupWaiting(
+              title: l10n.setupVerifyingTitle,
+              onCancel: coordinator.cancel,
+            ),
+            SetupNeedsAuth() => _AuthPrompt(
+              state: state,
+              onSubmit: coordinator.submitCredentials,
+              onDemo: tryDemo,
+              onConnectViaHa: viaHa,
+            ),
+            SetupFailed(kind: SetupErrorKind.notZigbee2Mqtt) => _NoZigbee2Mqtt(
+              base: coordinator.base,
+              onRetry: coordinator.retryWithBase,
+              onDemo: tryDemo,
+              onManual: manual,
+            ),
+            SetupFailed(kind: SetupErrorKind.scanFailed) => _NoNetwork(
+              state: state,
+              onManual: manual,
+            ),
+            SetupFailed() => _Failure(
+              state: state,
+              onRetry: coordinator.retry,
+              onManual: manual,
+            ),
+            SetupReview() => _Review(
+              state: state,
+              onToggle: coordinator.toggleDevice,
+              onCreate: coordinator.createDashboard,
+            ),
+            SetupCreating() => _Review(
+              state: state.review,
+              busy: true,
+              onToggle: (_) {},
+              onCreate: () {},
+            ),
+            // Navigation to the dashboard is under way (see ref.listen above).
+            SetupComplete() => const SizedBox.shrink(),
+          },
+        ),
       ),
     );
   }
@@ -1296,27 +1312,6 @@ class _NoZigbee2MqttState extends State<_NoZigbee2Mqtt> {
           child: Text(l10n.setupManualEntry),
         ),
       ],
-    );
-  }
-}
-
-class _Verifying extends StatelessWidget {
-  const _Verifying();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(),
-          const SizedBox(height: 16),
-          Semantics(
-            liveRegion: true,
-            child: Text(context.l10n.setupVerifyingTitle),
-          ),
-        ],
-      ),
     );
   }
 }

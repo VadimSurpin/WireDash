@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1574,6 +1575,14 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get haConnectChecking => 'Sprawdzanie Home Assistant…';
+
+  @override
+  String get setupStillChecking =>
+      'Nadal sprawdzam. Może to potrwać do 30 sekund.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'Nie wiesz, jaki to adres? W aplikacji Home Assistant otwórz Ustawienia › Aplikacja towarzysząca i stuknij swój serwer: adres jest tam. Na komputerze to adres, który przeglądarka pokazuje przy otwartym Home Assistant.';
 
   @override
   String get haConnectNotAdmin =>
