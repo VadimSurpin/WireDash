@@ -1528,7 +1528,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'הכתובת שאיתה אתם פותחים את Home Assistant: 192.168.1.20:8123, homeassistant.local, או הכתובת המרוחקת שלכם, כמו https://xyz.ui.nabu.casa';
+      'הכתובת שאיתה אתם פותחים את Home Assistant: 192.168.1.20:8123, או כתובת מרוחקת כמו כתובת Nabu Casa או Cloudflare שלכם';
 
   @override
   String get haConnectSignInHelp =>
@@ -1583,7 +1583,10 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant לא ענה ברשת הזו. ודא שהטלפון מחובר ל-Wi-Fi של הבית, או הקלד את הכתובת שלו.';
+      'Home Assistant לא ענה ברשת הזו. הקלידו את הכתובת שלו: של הבית, או כתובת מרוחקת.';
+
+  @override
+  String get setupNoWifiHa => 'משתמש ב-Home Assistant? התחבר';
 
   @override
   String get haConnectNotAdmin =>

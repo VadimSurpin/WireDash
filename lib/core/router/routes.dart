@@ -21,6 +21,13 @@ class Routes {
       ? haConnect
       : Uri(path: haConnect, queryParameters: {'host': host}).toString();
 
+  /// Connecting through Home Assistant from the no-Wi-Fi screen (3.1.9):
+  /// no network to look on, so the address (a remote one) is typed.
+  static final haConnectOffWifi = Uri(
+    path: haConnect,
+    queryParameters: {'wifi': 'off'},
+  ).toString();
+
   /// Signing in again for a home that connects through Home Assistant
   /// (2.10.1): a new phone, or a token the user removed.
   static String haConnectAgain(String connectionId, String host) => Uri(

@@ -116,6 +116,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               HaConnectScreen(
                 initialHost: state.uri.queryParameters['host'],
                 again: state.uri.queryParameters['again'],
+                offWifi: state.uri.queryParameters['wifi'] == 'off',
               ),
             ),
           ),

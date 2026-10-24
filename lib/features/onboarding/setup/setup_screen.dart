@@ -217,6 +217,17 @@ class SetupScreen extends ConsumerWidget {
             SetupFailed(kind: SetupErrorKind.scanFailed) => _NoNetwork(
               state: state,
               onManual: manual,
+              onHa: () {
+                ref
+                    .read(analyticsProvider)
+                    .track(
+                      const SetupStep(
+                        SetupStepKind.haOpened,
+                        choice: HaSignInFrom.noWifi,
+                      ),
+                    );
+                context.push(Routes.haConnectOffWifi);
+              },
             ),
             SetupFailed() => _Failure(
               state: state,
@@ -1669,9 +1680,17 @@ class _Failure extends StatelessWidget {
 /// network), opens the Wi-Fi panel, and waits; the coordinator scans again
 /// by itself once Wi-Fi is back, so there is no Try again to tap repeatedly.
 class _NoNetwork extends StatelessWidget {
-  const _NoNetwork({required this.state, required this.onManual});
+  const _NoNetwork({
+    required this.state,
+    required this.onManual,
+    required this.onHa,
+  });
   final SetupFailed state;
   final VoidCallback onManual;
+
+  /// Home Assistant's sign-in (3.1.9): with its remote address it works
+  /// on mobile data, where the scan can't.
+  final VoidCallback onHa;
 
   static Future<void> _openWifi() async {
     try {
@@ -1738,6 +1757,12 @@ class _NoNetwork extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: onHa,
+          icon: const Icon(Icons.home_outlined),
+          label: Text(l10n.setupNoWifiHa),
         ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),

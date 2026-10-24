@@ -1549,7 +1549,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'Het adres waarmee je Home Assistant opent: 192.168.1.20:8123, homeassistant.local of je externe adres, zoals https://xyz.ui.nabu.casa';
+      'Het adres waarmee je Home Assistant opent: 192.168.1.20:8123, of een extern adres zoals je Nabu Casa- of Cloudflare-adres';
 
   @override
   String get haConnectSignInHelp =>
@@ -1605,7 +1605,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant gaf geen antwoord op dit netwerk. Controleer of de telefoon op je wifi thuis zit, of typ het adres.';
+      'Home Assistant gaf geen antwoord op dit netwerk. Typ het adres: dat van thuis, of een extern adres.';
+
+  @override
+  String get setupNoWifiHa => 'Gebruik je Home Assistant? Inloggen';
 
   @override
   String get haConnectNotAdmin =>

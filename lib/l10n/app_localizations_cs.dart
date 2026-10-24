@@ -1545,7 +1545,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'Adresa, kterou otevíráš Home Assistant: 192.168.1.20:8123, homeassistant.local nebo tvoje vzdálená adresa, třeba https://xyz.ui.nabu.casa';
+      'Adresa, kterou otevíráš Home Assistant: 192.168.1.20:8123, nebo vzdálená adresa, třeba tvoje adresa Nabu Casa nebo Cloudflare';
 
   @override
   String get haConnectSignInHelp =>
@@ -1600,7 +1600,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant v této síti neodpověděl. Zkontrolujte, že je telefon připojen k domácí Wi-Fi, nebo zadejte jeho adresu.';
+      'Home Assistant v této síti neodpověděl. Zadejte jeho adresu: domácí, nebo vzdálenou.';
+
+  @override
+  String get setupNoWifiHa => 'Používáte Home Assistant? Přihlásit se';
 
   @override
   String get haConnectNotAdmin =>

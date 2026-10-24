@@ -23,6 +23,7 @@ void main() {
     Future<HaConnectProblem?>? slowProbe,
     HaFind? findHa,
     bool settle = true,
+    bool offWifi = false,
   }) async {
     final controller = HaConnectController(
       address: initialHost ?? '',
@@ -45,6 +46,7 @@ void main() {
             initialHost: initialHost,
             controller: controller,
             again: again,
+            offWifi: offWifi,
           ),
         ),
       ],
@@ -245,7 +247,10 @@ void main() {
       ]);
       await tester.pumpAndSettle();
       expect(field(tester).controller!.text, 'http://192.168.68.64:8123');
-      expect(find.text('Found Home Assistant at 192.168.68.64:8123'), findsOneWidget);
+      expect(
+        find.text('Found Home Assistant at 192.168.68.64:8123'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('a typed address is not replaced, and no look', (tester) async {
@@ -293,5 +298,26 @@ void main() {
       );
       expect(find.textContaining('Companion app'), findsOneWidget);
     });
+  });
+
+  testWidgets('3.1.9: from the no-Wi-Fi screen, no look; remote is named', (
+    tester,
+  ) async {
+    var looks = 0;
+    await pump(
+      tester,
+      signIn: (accessToken: 'a', refreshToken: 'r', error: null),
+      offWifi: true,
+      findHa: () async {
+        looks++;
+        return [];
+      },
+    );
+    expect(looks, 0);
+    expect(
+      find.text('Looking for Home Assistant on this network…'),
+      findsNothing,
+    );
+    expect(find.textContaining('Nabu Casa or Cloudflare'), findsOneWidget);
   });
 }

@@ -28,6 +28,7 @@ class HaConnectScreen extends ConsumerStatefulWidget {
     this.initialHost,
     this.controller,
     this.again,
+    this.offWifi = false,
   });
 
   /// The Home Assistant the scan saw, if any.
@@ -36,6 +37,10 @@ class HaConnectScreen extends ConsumerStatefulWidget {
   /// Signing in again for this existing home (2.10.1): the new sign-in
   /// replaces the stored one, and the screen returns to the home's form.
   final String? again;
+
+  /// Opened from the no-Wi-Fi screen (3.1.9): no network to look on, so
+  /// the address is typed (a remote one, on mobile data).
+  final bool offWifi;
 
   /// Tests pass one; the screen builds its own otherwise.
   final HaConnectController? controller;
@@ -58,7 +63,9 @@ class _HaConnectScreenState extends ConsumerState<HaConnectScreen> {
     };
     _controller.addListener(_onState);
     // 3.1.8: nothing to go on, so look for Home Assistant on the network.
-    if (_address.text.trim().isEmpty && widget.again == null) {
+    if (_address.text.trim().isEmpty &&
+        widget.again == null &&
+        !widget.offWifi) {
       _controller.look();
     }
   }

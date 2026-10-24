@@ -153,7 +153,8 @@ enum SetupVia { scan, homeAssistant, brokerForm, shared }
 /// Where setup opened the Home Assistant sign-in (3.1.3): while scanning,
 /// the card on an empty result, the note under "I use Home Assistant",
 /// the first button when Home Assistant was found without a broker, the
-/// broker's login prompt, or the link on the broker form.
+/// broker's login prompt, or the link on the broker form; from 3.1.9 also
+/// the no-Wi-Fi screen ([noWifi]), where a remote address is the way in.
 enum HaSignInFrom {
   scanning,
   emptyCard,
@@ -161,6 +162,7 @@ enum HaSignInFrom {
   haFound,
   login,
   manualForm,
+  noWifi,
 }
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the
