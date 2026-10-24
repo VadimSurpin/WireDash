@@ -128,6 +128,11 @@ enum SetupStepKind {
   /// answer (a `ReviewBackAnswer`): create, start over, or stay.
   reviewBack,
 
+  /// Looking for Home Assistant on the network (3.1.8), with its
+  /// [SetupStep.result] (a `HaDiscoveryOutcome`): one, several, by_name or
+  /// none when the look ends; used when a sign-in goes to a found address.
+  haDiscovery,
+
   /// The review was left without creating a dashboard (2.10.2): back, or
   /// setup started over. Carries [SetupStep.devices] and
   /// [SetupStep.selected], the state of the list when it was left.

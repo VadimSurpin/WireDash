@@ -1592,6 +1592,17 @@ class AppLocalizationsCs extends AppLocalizations {
       'Nevíte, jaká je? V aplikaci Home Assistant otevřete Nastavení › Doprovodná aplikace a klepněte na svůj server: adresa je tam. Na počítači je to adresa, kterou prohlížeč ukazuje při otevřeném Home Assistantu.';
 
   @override
+  String get haFindLooking => 'Hledám Home Assistant v této síti…';
+
+  @override
+  String get haFindSeveral =>
+      'Nalezeno více instancí Home Assistant. Klepněte na tu, kterou chcete použít:';
+
+  @override
+  String get haFindNone =>
+      'Home Assistant v této síti neodpověděl. Zkontrolujte, že je telefon připojen k domácí Wi-Fi, nebo zadejte jeho adresu.';
+
+  @override
   String get haConnectNotAdmin =>
       'Tvůj uživatel v Home Assistantu není správce. ZigDash správce potřebuje pro MQTT Home Assistantu. Přihlas se jako správce, nebo vlož token, který správce vytvořil.';
 

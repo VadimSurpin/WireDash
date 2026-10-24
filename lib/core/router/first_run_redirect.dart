@@ -8,6 +8,9 @@ const _firstRunLocations = {
   Routes.setup,
   Routes.joinHome,
   Routes.guidedConnect,
+  // 3.1.8: Home Assistant's sign-in, opened from setup and from manual
+  // entry; without it every button to it led back to setup.
+  Routes.haConnect,
   Routes.help,
   Routes.getHelp,
 };
