@@ -5526,6 +5526,54 @@ abstract class AppLocalizations {
   /// **'Thanks! That helps decide what comes next.'**
   String get pollThanks;
 
+  /// One-time dashboard card after the first setup, asking why the user tried the app.
+  ///
+  /// In en, this message translates to:
+  /// **'What made you try ZigDash?'**
+  String get whyTitle;
+
+  /// Body of the why card.
+  ///
+  /// In en, this message translates to:
+  /// **'One tap helps decide what to build. Your answer is sent with your anonymous usage data.'**
+  String get whyBody;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Quicker than my other app'**
+  String get whyFaster;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy for the family'**
+  String get whyFamily;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'A wall tablet'**
+  String get whyWallTablet;
+
+  /// Why-card choice: direct MQTT keeps working with no Home Assistant or while it is down.
+  ///
+  /// In en, this message translates to:
+  /// **'Works without Home Assistant'**
+  String get whyWithoutHa;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get whyOther;
+
+  /// Snackbar after answering the why card.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for telling us!'**
+  String get whyThanks;
+
   /// Poll card text for people who don't share usage data.
   ///
   /// In en, this message translates to:

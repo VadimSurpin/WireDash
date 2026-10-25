@@ -644,6 +644,32 @@ class PollAnswer extends AnalyticsEvent {
   Map<String, String> get props => {'choice': choice.wire};
 }
 
+/// What made someone try ZigDash (3.1.10), from the one-time card after
+/// setup.
+enum WhyChoice {
+  faster('faster'),
+  family('family'),
+  wallTablet('wall_tablet'),
+  withoutHa('without_ha'),
+  other('other');
+
+  const WhyChoice(this.wire);
+  final String wire;
+}
+
+/// The one-time "What made you try ZigDash?" card was answered.
+class WhyAnswer extends AnalyticsEvent {
+  const WhyAnswer(this.choice);
+
+  final WhyChoice choice;
+
+  @override
+  String get name => 'why_zigdash';
+
+  @override
+  Map<String, String> get props => {'choice': choice.wire};
+}
+
 /// What happened when the review prompt policy allowed a request:
 /// Play's in-app review dialog was requested, or the review flow was not
 /// available on the device (not installed from Play, no Play Services).
