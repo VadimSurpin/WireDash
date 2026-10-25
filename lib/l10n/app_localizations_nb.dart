@@ -1541,7 +1541,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'Adressen du åpner Home Assistant med: 192.168.1.20:8123, homeassistant.local eller fjernadressen din, som https://xyz.ui.nabu.casa';
+      'Adressen du åpner Home Assistant med: 192.168.1.20:8123, eller en ekstern adresse som Nabu Casa- eller Cloudflare-adressen din';
 
   @override
   String get haConnectSignInHelp =>
@@ -1598,7 +1598,10 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant svarte ikke på dette nettverket. Sjekk at telefonen er på Wi-Fi hjemme, eller skriv inn adressen.';
+      'Home Assistant svarte ikke på dette nettverket. Skriv inn adressen: den hjemme, eller en ekstern.';
+
+  @override
+  String get setupNoWifiHa => 'Bruker du Home Assistant? Logg inn';
 
   @override
   String get haConnectNotAdmin =>

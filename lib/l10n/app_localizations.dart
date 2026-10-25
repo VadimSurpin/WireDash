@@ -2853,7 +2853,7 @@ abstract class AppLocalizations {
   /// No description provided for @haConnectAddressHelp.
   ///
   /// In en, this message translates to:
-  /// **'The address you open Home Assistant with: 192.168.1.20:8123, homeassistant.local, or your remote address, like https://xyz.ui.nabu.casa'**
+  /// **'The address you open Home Assistant with: 192.168.1.20:8123, or a remote address like your Nabu Casa or Cloudflare address'**
   String get haConnectAddressHelp;
 
   /// No description provided for @haConnectSignInHelp.
@@ -2949,8 +2949,14 @@ abstract class AppLocalizations {
   /// No description provided for @haFindNone.
   ///
   /// In en, this message translates to:
-  /// **'Home Assistant didn\'t answer on this network. Check that the phone is on your home Wi-Fi, or type its address.'**
+  /// **'Home Assistant didn\'t answer on this network. Type its address: the home one, or a remote one.'**
   String get haFindNone;
+
+  /// No description provided for @setupNoWifiHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Home Assistant? Sign in'**
+  String get setupNoWifiHa;
 
   /// No description provided for @haConnectNotAdmin.
   ///

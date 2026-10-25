@@ -1550,7 +1550,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'Адрес, по которому вы открываете Home Assistant: 192.168.1.20:8123, homeassistant.local или ваш удалённый адрес, например https://xyz.ui.nabu.casa';
+      'Адрес, по которому вы открываете Home Assistant: 192.168.1.20:8123 или удалённый адрес, например ваш адрес Nabu Casa или Cloudflare';
 
   @override
   String get haConnectSignInHelp =>
@@ -1606,7 +1606,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant не ответил в этой сети. Проверьте, что телефон подключён к домашнему Wi-Fi, или введите адрес.';
+      'Home Assistant не ответил в этой сети. Введите его адрес: домашний или удалённый.';
+
+  @override
+  String get setupNoWifiHa => 'Используете Home Assistant? Войти';
 
   @override
   String get haConnectNotAdmin =>

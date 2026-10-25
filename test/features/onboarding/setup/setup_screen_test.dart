@@ -204,6 +204,14 @@ Future<SetupCoordinator> _pump(
               ),
             ),
             GoRoute(
+              path: '/setup/home-assistant',
+              builder: (_, state) => Text(
+                state.uri.hasQuery
+                    ? 'home assistant ${state.uri.query}'
+                    : 'home assistant',
+              ),
+            ),
+            GoRoute(
               path: '/connections/:id/dashboards',
               builder: (_, state) =>
                   Text('dashboards of ${state.pathParameters['id']}'),
@@ -1123,6 +1131,14 @@ void main() {
     await tester.tap(find.text('Open Wi-Fi settings'));
     await tester.pump();
     expect(calls, ['openWifiSettings']);
+
+    // 3.1.9: Home Assistant by its remote address works on mobile data.
+    final remote = find.text('Use Home Assistant? Sign in');
+    await tester.ensureVisible(remote);
+    await tester.tap(remote);
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('home assistant wifi=off'), findsOneWidget);
     await c.cancel();
   });
 
