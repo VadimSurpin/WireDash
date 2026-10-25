@@ -68,18 +68,20 @@ void main() {
 
   // 3.1.9 in the wild: set up at 22:35, a light switched at 01:00. Two
   // calendar days, two sessions, and the prompt came 2.5 hours after install.
-  test('does not ask the night after setup (sessions either side of midnight)',
-      () {
-    expect(
-      policy.shouldPrompt(
-        sessions: 2,
-        firstSessionDay: DateTime(2026, 10, 24),
-        lastPromptDay: null,
-        today: DateTime(2026, 10, 25),
-      ),
-      isFalse,
-    );
-  });
+  test(
+    'does not ask the night after setup (sessions either side of midnight)',
+    () {
+      expect(
+        policy.shouldPrompt(
+          sessions: 2,
+          firstSessionDay: DateTime(2026, 10, 24),
+          lastPromptDay: null,
+          today: DateTime(2026, 10, 25),
+        ),
+        isFalse,
+      );
+    },
+  );
 
   test('counts calendar days across a daylight-saving change', () {
     // Europe springs forward on Mar 29, 2026: Mar 28 to Mar 30 is 47 hours

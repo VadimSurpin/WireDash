@@ -48,9 +48,7 @@ Future<(SharedPreferences, _Sink)> _card(
 void main() {
   const asked = {'analytics_consent': true, whyAskKey: 'c1'};
 
-  testWidgets('asked on the first home; a choice is sent once', (
-    tester,
-  ) async {
+  testWidgets('asked on the first home; a choice is sent once', (tester) async {
     final (prefs, sink) = await _card(tester, prefs: asked);
     expect(find.text(_title), findsOneWidget);
     await tester.tap(find.text('Easy for the family'));
@@ -60,9 +58,7 @@ void main() {
     expect(prefs.getString(whyAskKey), isNull);
   });
 
-  testWidgets('Not now puts it away for good, sending nothing', (
-    tester,
-  ) async {
+  testWidgets('Not now puts it away for good, sending nothing', (tester) async {
     final (prefs, sink) = await _card(tester, prefs: asked);
     await tester.tap(find.text('Not now'));
     await tester.pumpAndSettle();
@@ -71,10 +67,7 @@ void main() {
   });
 
   testWidgets('not on another home', (tester) async {
-    await _card(
-      tester,
-      prefs: {'analytics_consent': true, whyAskKey: 'other'},
-    );
+    await _card(tester, prefs: {'analytics_consent': true, whyAskKey: 'other'});
     expect(find.text(_title), findsNothing);
   });
 
@@ -89,10 +82,7 @@ void main() {
   });
 
   testWidgets('waits for the Home Assistant import offer', (tester) async {
-    await _card(
-      tester,
-      prefs: {...asked, HaImportOffer.key: 'c1'},
-    );
+    await _card(tester, prefs: {...asked, HaImportOffer.key: 'c1'});
     expect(find.text(_title), findsNothing);
   });
 
