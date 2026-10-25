@@ -60,6 +60,7 @@ class PanelRepo {
   Future<void> update({
     required String id,
     required String name,
+    PanelType? type,
     required String topic,
     String? subscribeTopic,
     String? topicPrefixOverride,
@@ -72,6 +73,7 @@ class PanelRepo {
       id,
       PanelsCompanion(
         name: Value(name),
+        type: type == null ? const Value.absent() : Value(type),
         topic: Value(topic),
         subscribeTopic: Value(subscribeTopic),
         topicPrefixOverride: Value(topicPrefixOverride),

@@ -41,6 +41,7 @@ class _RecordingPanelRepo extends PanelRepo {
   Future<void> update({
     required String id,
     required String name,
+    PanelType? type,
     required String topic,
     String? subscribeTopic,
     String? topicPrefixOverride,

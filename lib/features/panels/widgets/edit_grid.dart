@@ -336,34 +336,58 @@ class _EditableSectionHeaderState extends ConsumerState<EditableSectionHeader>
 
 /// Asks for a section name; null when cancelled or blank.
 Future<String?> askSectionName(BuildContext context, {String initial = ''}) async {
-  final l10n = context.l10n;
-  final controller = TextEditingController(text: initial);
   final name = await showDialog<String>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text(initial.isEmpty ? l10n.editAddSection : l10n.editRenameSection),
+    builder: (_) => _SectionNameDialog(initial: initial),
+  );
+  final trimmed = name?.trim();
+  return trimmed == null || trimmed.isEmpty ? null : trimmed;
+}
+
+class _SectionNameDialog extends StatefulWidget {
+  const _SectionNameDialog({required this.initial});
+
+  final String initial;
+
+  @override
+  State<_SectionNameDialog> createState() => _SectionNameDialogState();
+}
+
+class _SectionNameDialogState extends State<_SectionNameDialog> {
+  late final _controller = TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(
+        widget.initial.isEmpty ? l10n.editAddSection : l10n.editRenameSection,
+      ),
       content: TextField(
-        controller: controller,
+        controller: _controller,
         autofocus: true,
         maxLength: 64,
         decoration: InputDecoration(labelText: l10n.editSectionName),
-        onSubmitted: (v) => Navigator.pop(ctx, v),
+        onSubmitted: (v) => Navigator.pop(context, v),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(ctx),
+          onPressed: () => Navigator.pop(context),
           child: Text(l10n.editCancel),
         ),
         FilledButton(
-          onPressed: () => Navigator.pop(ctx, controller.text),
+          onPressed: () => Navigator.pop(context, _controller.text),
           child: Text(l10n.editSave),
         ),
       ],
-    ),
-  );
-  controller.dispose();
-  final trimmed = name?.trim();
-  return trimmed == null || trimmed.isEmpty ? null : trimmed;
+    );
+  }
 }
 
 /// "N devices aren't on any dashboard" with Add (Add tile, which lists

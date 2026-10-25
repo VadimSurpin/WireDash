@@ -45,7 +45,7 @@ extension _PanelFormTopics on _State {
           FilledButton.tonalIcon(
             icon: const Icon(Icons.devices_other),
             label: Text(l10n.panelFormPickDevice),
-            onPressed: devices.isEmpty ? null : () => _pickDevice(devices, base),
+            onPressed: () => _pickDevice(base),
           ),
         ],
       ),
@@ -169,48 +169,60 @@ extension _PanelFormTopics on _State {
 
   /// Fills the topics from a device (relative to the effective prefix),
   /// links the tile to it, and prefills the command topic.
-  Future<void> _pickDevice(List<Z2mDevice> devices, String base) async {
-    final picked = await showModalBottomSheet<Z2mDevice>(
+  Future<void> _pickDevice(String base) async {
+    final picked = await showModalBottomSheet<PanelDevicePick>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
-      builder: (ctx) => SafeArea(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.sizeOf(ctx).height * 0.7),
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              for (final d in devices)
-                ListTile(
-                  leading: Icon(deviceClassIcon(
-                      classifyExposes(d.rawExposes).deviceClass)),
-                  title: Text(d.friendlyName),
-                  subtitle: deviceModelLabel(d) == null
-                      ? null
-                      : Text(deviceModelLabel(d)!),
-                  onTap: () => Navigator.pop(ctx, d),
-                ),
-            ],
-          ),
-        ),
+      builder: (ctx) => PanelDevicePicker(
+        connectionId: widget.connectionId,
+        base: base,
+        type: _type,
       ),
     );
     if (picked == null || !mounted) return;
+    if (picked.suggestion case final suggestion?) {
+      setState(() {
+        final name = _name.text;
+        final expression = _valueExpression;
+        _suggestion = suggestion;
+        _allowPropertyCommands = false;
+        _applySuggestion(suggestion);
+        if (name.trim().isNotEmpty) _name.text = name;
+        _valueExpression = expression;
+        _deviceIeee = null;
+      });
+      return;
+    }
+    final device = picked.z2m!;
+    final wasWirenBoard = _effectivePrefix.startsWith('/devices/');
     final topics = deviceTopics(
-      deviceTopic: '$base/${picked.friendlyName}',
+      deviceTopic: '$base/${device.friendlyName}',
       prefix: _effectivePrefix,
       base: base,
     );
     setState(() {
+      if (wasWirenBoard) {
+        final expression = _valueExpression;
+        _applyConfig(PanelConfig.defaultFor(_type));
+        _valueExpression = expression;
+      }
+      _suggestion = null;
+      _allowPropertyCommands = false;
       if (topics.prefixOverride != null) {
         _topicPrefixOverride.text = topics.prefixOverride!;
       }
       _subscribeTopic.text = topics.state;
       if (!_isReadOnly) _topic.text = commandFor(topics.state);
       _commandEdited = false;
-      _deviceIeee = picked.ieeeAddress;
-      if (_name.text.trim().isEmpty) _name.text = picked.friendlyName;
+      _deviceIeee = device.ieeeAddress;
+      if (_type == PanelType.device) {
+        _deviceConfig = DeviceTileConfig(
+          profile: classifyExposes(device.rawExposes),
+          model: deviceModelLabel(device),
+        );
+      }
+      if (_name.text.trim().isEmpty) _name.text = device.friendlyName;
     });
   }
 

@@ -90,4 +90,30 @@ void main() {
     await panels.restore(before);
     expect(await panels.getById(ids['c']!), before);
   });
+
+  test('changing a picked property saves its tile type and preserves placement', () async {
+    final id = ids['a']!;
+    await panels.update(
+      id: id,
+      name: 'Temperature',
+      type: PanelType.reading,
+      topic: '',
+      subscribeTopic: '',
+      topicPrefixOverride: '/devices/hwmon/controls/Board temperature',
+      config: const ReadingConfig(jsonPath: '', unit: '°C'),
+    );
+    final saved = (await panels.getById(id))!;
+    expect(saved.type, PanelType.reading);
+    expect(saved.sectionId, lights);
+    expect(saved.sortOrder, 0);
+    expect((PanelConfig.decode(saved.type, saved.config) as ReadingConfig).unit, '°C');
+
+    await panels.update(
+      id: id,
+      name: 'Board temperature',
+      topic: '',
+      config: const ReadingConfig(jsonPath: ''),
+    );
+    expect((await panels.getById(id))!.type, PanelType.reading);
+  });
 }

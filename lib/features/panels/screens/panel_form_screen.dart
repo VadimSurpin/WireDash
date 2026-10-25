@@ -11,7 +11,7 @@ import '../../devices/device_tiles.dart';
 import '../../devices/devices_providers.dart';
 import '../../discovery/models/z2m_device.dart';
 import '../../discovery/providers/discovery_provider.dart';
-import '../widgets/device_tile_panel.dart' show deviceClassIcon;
+import '../widgets/panel_device_picker.dart';
 import '../../../data/database/tables/panels.dart';
 import '../../../mqtt/json_path.dart';
 import '../../../data/repositories/dashboard_repo.dart';
@@ -208,6 +208,7 @@ class _State extends ConsumerState<PanelFormScreen> {
   bool _loaded = false;
   bool _saving = false;
   bool _allowPropertyCommands = false;
+  late PanelSuggestion? _suggestion = widget.suggestion;
   String _valueExpression = '';
   bool get _hasValueExpression => supportsDisplayExpression(_type);
   String? _topicPrefixHint;
@@ -293,8 +294,7 @@ class _State extends ConsumerState<PanelFormScreen> {
     }
   }
 
-  /// Pre-fills controllers from a [PanelSuggestion] when creating a new panel.
-  /// No-op when [suggestion] is null or when editing an existing panel.
+  /// Fills controllers from discovery defaults, including scalar payloads.
   void _applySuggestion(PanelSuggestion? suggestion) {
     if (suggestion == null) return;
 
@@ -734,6 +734,7 @@ class _State extends ConsumerState<PanelFormScreen> {
         await repo.update(
           id: widget.panelId!,
           name: _name.text.trim(),
+          type: _type,
           topic: _topic.text,
           subscribeTopic: subTopic,
           topicPrefixOverride: prefixOverride,
@@ -919,7 +920,7 @@ class _State extends ConsumerState<PanelFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            if (widget.suggestion case final suggestion?
+            if (_suggestion case final suggestion?
                 when suggestion.widgetChoices.length > 1 ||
                     suggestion.commandWidgetChoices.isNotEmpty) ...[
               PropertyWidgetSelector(
