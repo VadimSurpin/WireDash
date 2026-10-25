@@ -3101,6 +3101,31 @@ class AppLocalizationsDe extends AppLocalizations {
       'Danke! Das hilft bei der Entscheidung, was als Nächstes kommt.';
 
   @override
+  String get whyTitle => 'Warum hast du ZigDash ausprobiert?';
+
+  @override
+  String get whyBody =>
+      'Ein Tipp hilft bei der Entscheidung, was als Nächstes kommt. Die Antwort wird mit deinen anonymen Nutzungsdaten gesendet.';
+
+  @override
+  String get whyFaster => 'Schneller als meine andere App';
+
+  @override
+  String get whyFamily => 'Einfach für die Familie';
+
+  @override
+  String get whyWallTablet => 'Ein Wandtablet';
+
+  @override
+  String get whyWithoutHa => 'Läuft ohne Home Assistant';
+
+  @override
+  String get whyOther => 'Etwas anderes';
+
+  @override
+  String get whyThanks => 'Danke für deine Antwort!';
+
+  @override
   String get pollNoAnalytics =>
       'Nutzungsdaten sind aus, daher wird von hier nichts gesendet. Sag es uns stattdessen über Funktion vorschlagen.';
 

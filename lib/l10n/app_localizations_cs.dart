@@ -3088,6 +3088,31 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pollThanks => 'Díky! Pomůže to rozhodnout, co přijde dál.';
 
   @override
+  String get whyTitle => 'Proč jsi vyzkoušel ZigDash?';
+
+  @override
+  String get whyBody =>
+      'Jedno klepnutí pomůže rozhodnout, co dál. Tvoje odpověď se odešle s anonymními daty o používání.';
+
+  @override
+  String get whyFaster => 'Rychlejší než moje jiná aplikace';
+
+  @override
+  String get whyFamily => 'Jednoduchý pro rodinu';
+
+  @override
+  String get whyWallTablet => 'Tablet na zdi';
+
+  @override
+  String get whyWithoutHa => 'Funguje bez Home Assistantu';
+
+  @override
+  String get whyOther => 'Něco jiného';
+
+  @override
+  String get whyThanks => 'Díky za odpověď!';
+
+  @override
   String get pollNoAnalytics =>
       'Data o používání jsou vypnutá, takže odsud se nic neodešle. Napiš nám raději přes Navrhnout funkci.';
 

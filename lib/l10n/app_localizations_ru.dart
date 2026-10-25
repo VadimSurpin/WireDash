@@ -3088,6 +3088,31 @@ class AppLocalizationsRu extends AppLocalizations {
   String get pollThanks => 'Спасибо! Это помогает решить, что делать дальше.';
 
   @override
+  String get whyTitle => 'Почему вы попробовали ZigDash?';
+
+  @override
+  String get whyBody =>
+      'Одно касание поможет решить, что делать дальше. Ответ отправится вместе с анонимными данными об использовании.';
+
+  @override
+  String get whyFaster => 'Быстрее моего другого приложения';
+
+  @override
+  String get whyFamily => 'Просто для всей семьи';
+
+  @override
+  String get whyWallTablet => 'Планшет на стене';
+
+  @override
+  String get whyWithoutHa => 'Работает без Home Assistant';
+
+  @override
+  String get whyOther => 'Другое';
+
+  @override
+  String get whyThanks => 'Спасибо, что рассказали!';
+
+  @override
   String get pollNoAnalytics =>
       'Данные об использовании выключены, поэтому отсюда ничего не отправляется. Расскажите нам через «Предложить функцию».';
 
