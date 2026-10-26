@@ -180,14 +180,34 @@ void main() {
       expect(packet.header!.retain, isFalse);
       if (curtain) {
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('wb-cover-OPEN')));
+        await _pump(tester);
+        expect(client.sent, hasLength(2));
+        expect(
+          client.sent.last.variableHeader!.topicName,
+          '${control.topic}/on',
+        );
+        expect(utf8.decode(client.sent.last.payload.message), '1');
+        expect(client.sent.last.header!.retain, isFalse);
         // Publishing a command is not a state acknowledgement.
         client.feedback('${control.topic}/on', '1');
         await _pump(tester);
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
       }
-      client.feedback(control.topic, '1');
+      client.feedback(control.topic, curtain ? '0' : '1');
       await _pump(tester);
       if (curtain) {
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        await tester.tap(find.byKey(const ValueKey('wb-cover-OPEN')));
+        await _pump(tester);
+        expect(client.sent, hasLength(3));
+        expect(
+          client.sent.last.variableHeader!.topicName,
+          '${control.topic}/on',
+        );
+        expect(utf8.decode(client.sent.last.payload.message), '1');
+        client.feedback(control.topic, '1');
+        await _pump(tester);
         expect(find.byType(CircularProgressIndicator), findsNothing);
         final binding = (suggestion.config! as CoverConfig).wirenBoard!;
         await tester.tap(find.byKey(const ValueKey('wb-cover-CLOSE')));

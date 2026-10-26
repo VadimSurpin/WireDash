@@ -47,15 +47,19 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
 
   void _confirm() {
     if (_pending == null || _sentAt == null) return;
-    bool matches(PanelValueSnapshot? state, String expected) =>
+    bool matches(PanelValueSnapshot? state, [String? expected]) =>
         state != null &&
         state.freshness == PanelFreshness.fresh &&
         state.connectionGeneration == _generation &&
         state.receivedAt.isAfter(_sentAt!) &&
-        state.value.toString() == expected;
+        (expected == null
+            ? const ['0', '1'].contains(state.value.toString())
+            : state.value.toString() == expected);
     final confirmed = switch (_pending) {
-      'OPEN' => matches(_open, '1'),
-      'CLOSE' => matches(_close, '1'),
+      // Pulse-driven gates can report zero before the next state update.
+      // Feedback confirms an update, not the gate's position or direction.
+      'OPEN' => matches(_open),
+      'CLOSE' => matches(_close),
       'STOP' => matches(_open, '0') && matches(_close, '0'),
       _ => false,
     };
@@ -179,7 +183,8 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
       key: ValueKey('wb-cover-$action'),
       // Direction commands are explicit and the relay enforces interlocking.
       // Missing retained feedback must not prevent issuing the first command.
-      onPressed: connected && _pending != action ? () => _send(action) : null,
+      // A pending spinner must allow another 1 for step-by-step gate inputs.
+      onPressed: connected ? () => _send(action) : null,
       style: active == action
           ? FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,

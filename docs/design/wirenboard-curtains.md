@@ -56,16 +56,23 @@ Recommended feedback behavior:
 | Event or received state | Presentation |
 | --- | --- |
 | User taps a direction | Immediately show a pending spinner on that button |
+| User taps the same button again, including while pending | Publish another `1` on the same command topic; restart the pending confirmation window |
 | Fresh Open=`1`, Close=`0` | Replace the pending spinner with the configured icon and highlight Open |
 | Fresh Open=`0`, Close=`1` | Replace the pending spinner with the configured icon and highlight Close |
 | Both controls=`0` | Clear direction highlighting |
 | Stop tapped | Show pending feedback until both reported states are zero |
 | Feedback missing, invalid or disconnected | Show unknown/stale or not-confirmed state |
 
-Keep the pending command separate from the reported movement state. Receiving
-`1` acknowledges the requested direction and removes the spinner. The button
-remains highlighted until the later `0`. This also reflects actions initiated
-by a wall button or another MQTT client.
+Keep the pending command separate from the reported movement state. A fresh
+binary update on the commanded control removes the spinner, including `0`:
+a pulse can already have reset before the next feedback message. Highlight
+only the reported active relay, without inferring gate position. This also
+reflects actions initiated by a wall button or another MQTT client.
+
+Buttons stay tappable while waiting for feedback. Every explicit direction tap
+sends `1` again; it never changes to `0` based on the current state. A gate
+controller wired for step-by-step operation can then perform its own
+open/stop/close cycle. The app does not simulate that cycle or send extra pulses.
 
 Confirm commands using a newer state message in the current connection
 generation, not MQTT PUBACK or a cached value. Subscribe before issuing the

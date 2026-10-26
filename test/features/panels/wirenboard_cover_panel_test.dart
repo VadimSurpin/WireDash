@@ -154,6 +154,64 @@ void main() {
   setUp(() => f = _Fixture());
   tearDown(() => f.dispose());
 
+  for (final action in ['OPEN', 'CLOSE']) {
+    testWidgets(
+      '$action sends 1 on every tap, including while pending and after pulse feedback',
+      (tester) async {
+        await tester.pumpWidget(_app(f));
+        await _pump(tester);
+        final button = find.byKey(ValueKey('wb-cover-$action'));
+        final topic = action == 'OPEN'
+            ? _binding.openTopic
+            : _binding.closeTopic;
+        final feedback = action == 'OPEN' ? f.open : f.close;
+        final other = action == 'OPEN' ? f.close : f.open;
+
+        await tester.tap(button);
+        await _pump(tester);
+        await tester.pump(const Duration(seconds: 8));
+        await tester.tap(button);
+        await _pump(tester);
+        expect(f.manager.sent, [
+          ('$topic/on', '1', false),
+          ('$topic/on', '1', false),
+        ]);
+        // The second tap starts a new confirmation window.
+        await tester.pump(const Duration(seconds: 8));
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        other.add(_state('0'));
+        feedback.add(_state('invalid'));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        feedback.add(_state('0', fresh: false));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        feedback.add(_state('0', old: true));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        feedback.add(_state('0', generation: 6));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        // A pulse may have reset to zero before the next MQTT state report.
+        feedback.add(_state('0'));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        await tester.tap(button);
+        await _pump(tester);
+        feedback.add(_state('1'));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        // An active/highlighted button must also remain repeatable.
+        await tester.tap(button);
+        await _pump(tester);
+        expect(f.manager.sent, List.filled(4, ('$topic/on', '1', false)));
+        feedback.add(_state('0'));
+        await _pump(tester);
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+      },
+    );
+  }
+
   testWidgets(
     'two buttons send scalar non-retained commands; spinner waits for fresh matching feedback',
     (tester) async {
@@ -171,7 +229,7 @@ void main() {
       f.open.add(_state('1', generation: 6));
       await _pump(tester);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      f.open.add(_state('0'));
+      f.open.add(_state('invalid'));
       await _pump(tester);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       f.close.add(_state('0'));
