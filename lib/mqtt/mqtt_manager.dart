@@ -415,11 +415,19 @@ class MqttManager {
   /// Force an immediate reconnect, bypassing any pending backoff timer. Called
   /// when the app returns to the foreground: a backgrounded socket is usually
   /// dead and the next scheduled attempt may be up to [_maxBackoffMs] away, so
-  /// we reset the backoff and retry now. No-op if already connected/connecting
-  /// or if the user explicitly disconnected.
-  void reconnectNow() {
+  /// we reset the backoff and retry now. [force] replaces an established session
+  /// even if it reports connected, restoring incoming state subscriptions after
+  /// background suspension. A live connect attempt is shared, and an explicit
+  /// user disconnect is respected.
+  void reconnectNow({bool force = false}) {
     if (_disposed || _userInitiatedDisconnect) return;
-    unawaited(ensureConnected());
+    if (force && _connectInFlight && _status.value != MqttStatus.connected) {
+      // Preserve a valid attempt but expose recovery on the dashboard while
+      // its WireGuard route or MQTT handshake is still being established.
+      _reconnectInProgress = true;
+      _emit(MqttStatus.reconnecting);
+    }
+    unawaited(ensureConnected(forceReconnect: force));
   }
 
   /// Connects now for a command (a shortcut tap) or a return to the app,
@@ -434,11 +442,12 @@ class MqttManager {
   Future<bool> ensureConnected({
     Duration timeout = const Duration(seconds: 8),
     Duration? maxSilence,
+    bool forceReconnect = false,
   }) async {
     if (_disposed || _userInitiatedDisconnect) return false;
     final status = _status.value;
     if (status == MqttStatus.connected) {
-      if (!_isStale(maxSilence)) return true;
+      if (!forceReconnect && isConnected && !_isStale(maxSilence)) return true;
       _dropDeadConnection();
     } else if (_connectInFlight && !_attemptHung) {
       final waiter = Completer<bool>();

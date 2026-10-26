@@ -595,6 +595,31 @@ void main() {
     });
   });
 
+  test('forced resume respects an explicit disconnect', () {
+    fakeAsync((async) {
+      var factoryCalls = 0;
+      final manager = MqttManager(
+        config: const BrokerConfig(
+          id: 'conn-1', host: localHost, port: 1883, protocol: MqttProtocol.tcp,
+        ),
+        password: '',
+        clientFactory: (config, clientId, {host}) {
+          factoryCalls++;
+          return _FakeClient(host ?? config.host, _Behavior.succeed);
+        },
+      );
+      manager.connect();
+      async.flushMicrotasks();
+      manager.disconnect();
+      manager.reconnectNow(force: true);
+      async.elapse(const Duration(seconds: 10));
+      expect(factoryCalls, 1);
+      expect(manager.status, MqttStatus.disconnected);
+      manager.dispose();
+      async.flushMicrotasks();
+    });
+  });
+
   test('scheduled retry after connection loss stays reconnecting', () {
     fakeAsync((async) {
       final clients = <_FakeClient>[];

@@ -25,9 +25,9 @@ class MqttManagerRegistry {
   void register(MqttManager manager) => _managers.add(manager);
   void unregister(MqttManager manager) => _managers.remove(manager);
 
-  void reconnectAll() {
+  void reconnectAll({bool force = false}) {
     for (final manager in _managers) {
-      manager.reconnectNow();
+      manager.reconnectNow(force: force);
     }
   }
 }

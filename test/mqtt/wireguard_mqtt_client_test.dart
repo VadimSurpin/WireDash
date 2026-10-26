@@ -237,6 +237,17 @@ void main() {
           '21.5',
         );
         expect(backend.targets, ['broker.internal.invalid']);
+        // Returning from the background must reopen the private route and
+        // receive state on the existing subscription, even after recent data.
+        final generation = manager.connectionGeneration;
+        final refreshed = manager.messages.firstWhere(
+          (message) => message.connectionGeneration > generation,
+        );
+        expect(await manager.ensureConnected(forceReconnect: true), isTrue);
+        expect((await refreshed.timeout(const Duration(seconds: 3))).payload, '21.5');
+        expect(backend.routes, hasLength(2));
+        expect(backend.routes.first.closed, isTrue);
+        expect(backend.routes.last.closed, isFalse);
       },
     );
   }

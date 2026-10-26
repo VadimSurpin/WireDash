@@ -22,6 +22,8 @@ class AppLifecycleReconnector extends ConsumerStatefulWidget {
 class _AppLifecycleReconnectorState
     extends ConsumerState<AppLifecycleReconnector>
     with WidgetsBindingObserver {
+  bool _wasPaused = false;
+
   @override
   void initState() {
     super.initState();
@@ -37,8 +39,16 @@ class _AppLifecycleReconnectorState
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(mqttManagerRegistryProvider).reconnectAll();
+      final force = _wasPaused;
+      _wasPaused = false;
+      // A socket can still report connected after Android suspended it, while
+      // its receiving side no longer supplies state updates. Rebuild the MQTT
+      // session and subscriptions after a real background transition, even if
+      // the last received message was recent. Brief interruptions such as the
+      // notification shade do not need a new session.
+      ref.read(mqttManagerRegistryProvider).reconnectAll(force: force);
     } else if (state == AppLifecycleState.paused) {
+      _wasPaused = true;
       // Save pending last-known values before Android may end the process.
       ref.read(lastKnownStoreProvider).flush().ignore();
     }

@@ -15,9 +15,13 @@ import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 /// Registry stand-in that just counts reconnectAll() calls.
 class _RecordingRegistry extends MqttManagerRegistry {
   int reconnectAllCalls = 0;
+  final forces = <bool>[];
 
   @override
-  void reconnectAll() => reconnectAllCalls++;
+  void reconnectAll({bool force = false}) {
+    reconnectAllCalls++;
+    forces.add(force);
+  }
 }
 
 class _HangingClient extends mc.MqttClient {
@@ -79,6 +83,12 @@ void main() {
     await _setLifecycle(tester, AppLifecycleState.inactive);
     await _setLifecycle(tester, AppLifecycleState.resumed);
     expect(registry.reconnectAllCalls, 1);
+    expect(registry.forces, [true]);
+
+    // A brief system overlay does not tear down a healthy MQTT session.
+    await _setLifecycle(tester, AppLifecycleState.inactive);
+    await _setLifecycle(tester, AppLifecycleState.resumed);
+    expect(registry.forces, [true, false]);
   });
 
   testWidgets('observer is removed on dispose (no reconnect after unmount)', (
@@ -142,9 +152,11 @@ void main() {
       ),
     );
     await _setLifecycle(tester, AppLifecycleState.inactive);
+    await _setLifecycle(tester, AppLifecycleState.paused);
+    await _setLifecycle(tester, AppLifecycleState.inactive);
     await _setLifecycle(tester, AppLifecycleState.resumed);
 
-    expect(manager.status, MqttStatus.connecting);
+    expect(manager.status, MqttStatus.reconnecting);
     expect(
       clientFactoryCalls,
       1,

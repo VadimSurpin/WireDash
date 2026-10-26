@@ -80,6 +80,11 @@ gauges, text controls, scenes, schedules and auto-close rules. It supports
 multiple brokers, automatic reconnect, dashboard sections, per-panel editing
 and JSON backup/restore.
 
+After returning from the background, WireDash rebuilds the MQTT session through
+the configured transport, including WireGuard, and restores active state
+subscriptions. The dashboard shows its connection banner while reconnecting;
+commands are not replayed.
+
 For wall tablets, use fullscreen, dimming, a PIN-protected kiosk, a clock with
 readings, motion wake-up and on-screen alarms. Android shortcuts include Quick
 Settings tiles, Device Controls and home-screen widgets. Optional Node-RED
