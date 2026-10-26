@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/alerts/alert_event.dart';
-import 'package:zigdash/l10n/app_localizations_en.dart';
+import 'package:wiredash/alerts/alert_event.dart';
+import 'package:wiredash/l10n/app_localizations_en.dart';
 
 void main() {
   final l10n = AppLocalizationsEn();

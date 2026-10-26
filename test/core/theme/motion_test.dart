@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/theme/motion.dart';
+import 'package:wiredash/core/theme/motion.dart';
 
 /// signal-2.0.md §6: with MediaQuery.disableAnimations set, every animation
 /// becomes an instant change.

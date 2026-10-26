@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 void main() {
   test('wirenboard UI has explicit translations in every supported locale', () {

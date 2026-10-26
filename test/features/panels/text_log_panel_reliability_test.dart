@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/panels/widgets/text_log_panel.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/widgets/text_log_panel.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 PanelValueSnapshot _snapshot({
   required DateTime receivedAt,

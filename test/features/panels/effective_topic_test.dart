@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
 
 void main() {
   test('a full WB topic keeps its leading slash without a prefix', () {

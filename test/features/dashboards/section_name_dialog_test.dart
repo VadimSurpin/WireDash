@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/repositories/section_repo.dart';
-import 'package:zigdash/features/home/home_shell.dart';
-import 'package:zigdash/features/panels/widgets/edit_grid.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/repositories/section_repo.dart';
+import 'package:wiredash/features/home/home_shell.dart';
+import 'package:wiredash/features/panels/widgets/edit_grid.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 class _Sections implements SectionRepo {
   final created = <({String dashboardId, String name, int sortOrder})>[];

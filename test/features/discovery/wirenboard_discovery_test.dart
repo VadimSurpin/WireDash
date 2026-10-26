@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_panel_suggestion.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/mqtt/json_path.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_panel_suggestion.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/mqtt/json_path.dart';
 
 void main() {
   const topic = '/devices/wb-mr6c_12/controls/Relay 1';

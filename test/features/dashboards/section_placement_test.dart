@@ -1,15 +1,15 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/daos/panel_dao.dart';
-import 'package:zigdash/data/database/daos/section_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/data/repositories/section_repo.dart';
-import 'package:zigdash/features/dashboards/section_placement.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:wiredash/data/database/daos/panel_dao.dart';
+import 'package:wiredash/data/database/daos/section_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/data/repositories/section_repo.dart';
+import 'package:wiredash/features/dashboards/section_placement.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
 
 // A tile added from the Scenes tab or a device page lands in a section
 // (2.4.1), not unsectioned at the top of the dashboard.

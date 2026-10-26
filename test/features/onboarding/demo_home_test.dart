@@ -2,19 +2,19 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/theme/dashboard_accent.dart';
-import 'package:zigdash/data/database/daos/panel_dao.dart';
-import 'package:zigdash/data/database/daos/section_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/devices/device_health.dart';
-import 'package:zigdash/features/devices/z2m_bridge.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/onboarding/demo_home.dart';
-import 'package:zigdash/features/onboarding/demo_service.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
+import 'package:wiredash/core/theme/dashboard_accent.dart';
+import 'package:wiredash/data/database/daos/panel_dao.dart';
+import 'package:wiredash/data/database/daos/section_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/devices/device_health.dart';
+import 'package:wiredash/features/devices/z2m_bridge.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/onboarding/demo_home.dart';
+import 'package:wiredash/features/onboarding/demo_service.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
 
 void main() {
   test('the demo is sectioned device tiles with current values', () async {

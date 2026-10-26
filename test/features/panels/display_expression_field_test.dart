@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/panels/widgets/display_expression_field.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/features/panels/widgets/display_expression_field.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 void main() {
   testWidgets(

@@ -1,13 +1,13 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/storage/secure_storage.dart';
-import 'package:zigdash/data/database/daos/connection_dao.dart';
-import 'package:zigdash/data/database/daos/dashboard_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/features/settings/home_rename.dart';
+import 'package:wiredash/core/storage/secure_storage.dart';
+import 'package:wiredash/data/database/daos/connection_dao.dart';
+import 'package:wiredash/data/database/daos/dashboard_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/features/settings/home_rename.dart';
 
 class _MemSecure implements SecureStore {
   final _wireGuard = <String, String>{};

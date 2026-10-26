@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/connections/widgets/status_badge.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/endpoint.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
+import 'package:wiredash/features/connections/widgets/status_badge.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/endpoint.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,

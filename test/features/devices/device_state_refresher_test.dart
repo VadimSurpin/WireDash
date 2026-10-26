@@ -1,11 +1,11 @@
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/devices/device_state_refresher.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/devices/device_state_refresher.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
 
 class _Mgr extends MqttManager {
   _Mgr()

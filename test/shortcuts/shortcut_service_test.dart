@@ -5,16 +5,16 @@ import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/data/database/daos/shortcut_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/database/tables/shortcuts.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/shortcuts/shortcut_service.dart';
-import 'package:zigdash/shortcuts/shortcut_store.dart';
+import 'package:wiredash/data/database/daos/shortcut_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/database/tables/shortcuts.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/shortcuts/shortcut_service.dart';
+import 'package:wiredash/shortcuts/shortcut_store.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

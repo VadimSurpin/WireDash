@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/scenes/models/scene.dart';
-import 'package:zigdash/features/scenes/scene_capture.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/scenes/models/scene.dart';
+import 'package:wiredash/features/scenes/scene_capture.dart';
 
 // A light device: state + brightness + color_temp are settable (access 7),
 // linkquality is read-only (access 1).

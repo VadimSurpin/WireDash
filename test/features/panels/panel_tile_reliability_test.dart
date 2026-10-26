@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/panels/widgets/panel_reliability_frame.dart';
-import 'package:zigdash/features/panels/widgets/panel_tile.dart';
-import 'package:zigdash/features/panels/widgets/slider_panel.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/widgets/panel_reliability_frame.dart';
+import 'package:wiredash/features/panels/widgets/panel_tile.dart';
+import 'package:wiredash/features/panels/widgets/slider_panel.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _RecordingMqttManager extends MqttManager {
   _RecordingMqttManager()

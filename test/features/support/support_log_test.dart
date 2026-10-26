@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/support/support_details.dart';
-import 'package:zigdash/features/support/support_log.dart';
+import 'package:wiredash/features/support/support_details.dart';
+import 'package:wiredash/features/support/support_log.dart';
 
 void main() {
   const scan = ScanSummary(

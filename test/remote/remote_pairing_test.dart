@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/remote/remote_home.dart';
-import 'package:zigdash/remote/remote_pairing.dart';
-import 'package:zigdash/remote/remote_seal.dart';
+import 'package:wiredash/remote/remote_home.dart';
+import 'package:wiredash/remote/remote_pairing.dart';
+import 'package:wiredash/remote/remote_seal.dart';
 
 void main() {
   final home = RemoteHome(homeId: 'a1b2', url: 'wss://relay.example/mqtt', username: 'phone-a1b2-ff', password: 'secret', key: RemoteSeal.newKey());
 
   test('a pairing link carries the whole login and opens as a deep link', () {
     final link = RemotePairing.link(home);
-    expect(link, startsWith('zigdash://remote/pair-phone?c='));
+    expect(link, startsWith('wiredash://remote/pair-phone?c='));
     final code = Uri.parse(link).queryParameters['c'];
     final back = RemotePairing.fromCode(code)!;
     expect(back.toJson(), home.toJson());

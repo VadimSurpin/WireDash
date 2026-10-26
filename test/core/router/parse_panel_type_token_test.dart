@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/router/app_router.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
+import 'package:wiredash/core/router/app_router.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
 
 void main() {
   group('parsePanelTypeToken', () {

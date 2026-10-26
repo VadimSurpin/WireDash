@@ -3,22 +3,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/theme/signal_colors.dart';
-import 'package:zigdash/core/theme/signal_icons.dart';
-import 'package:zigdash/core/utils/material_icon.dart';
+import 'package:wiredash/core/theme/signal_colors.dart';
+import 'package:wiredash/core/theme/signal_icons.dart';
+import 'package:wiredash/core/utils/material_icon.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/panels/widgets/panel_tile.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/widgets/panel_tile.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _Recorder extends MqttManager {
   _Recorder()

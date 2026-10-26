@@ -1,8 +1,8 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zigdash/core/theme/app_theme.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/theme/app_theme.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 import '../flutter_test_config.dart' show hebrewFallbackFont;
 

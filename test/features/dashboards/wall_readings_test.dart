@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/data/database/database.dart' show Dashboard, Panel;
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/features/dashboards/wall_display.dart';
-import 'package:zigdash/features/dashboards/wall_readings.dart';
-import 'package:zigdash/features/dashboards/widgets/wall_idle_screen.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/data/database/database.dart' show Dashboard, Panel;
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/features/dashboards/wall_display.dart';
+import 'package:wiredash/features/dashboards/wall_readings.dart';
+import 'package:wiredash/features/dashboards/widgets/wall_idle_screen.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 Map<String, Object?> _num(String p, String unit) => {
   'type': 'numeric',

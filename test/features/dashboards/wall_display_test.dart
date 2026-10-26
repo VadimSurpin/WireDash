@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/features/dashboards/wall_display.dart';
-import 'package:zigdash/features/dashboards/widgets/wall_idle_screen.dart';
-import 'package:zigdash/features/pro/pro.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/features/dashboards/wall_display.dart';
+import 'package:wiredash/features/dashboards/widgets/wall_idle_screen.dart';
+import 'package:wiredash/features/pro/pro.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 class _Wake extends ScreenWake {
   final calls = <bool>[];

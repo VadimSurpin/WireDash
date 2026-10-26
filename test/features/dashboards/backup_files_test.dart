@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/repositories/backup_files.dart';
-import 'package:zigdash/data/repositories/backup_service.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/features/dashboards/screens/dashboards_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/repositories/backup_files.dart';
+import 'package:wiredash/data/repositories/backup_service.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/features/dashboards/screens/dashboards_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 /// Backup to and from a .json file (asked for in a Play review), through a
 /// fake file picker.

@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
-import 'package:zigdash/features/discovery/providers/wirenboard_discovery_provider.dart';
-import 'package:zigdash/features/devices/devices_providers.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/screens/panel_form_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/providers/discovery_provider.dart';
+import 'package:wiredash/features/discovery/providers/wirenboard_discovery_provider.dart';
+import 'package:wiredash/features/devices/devices_providers.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/screens/panel_form_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 void main() {
   group('deviceTopics (Pick a device)', () {

@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _FakeMqttManager extends MqttManager {
   _FakeMqttManager()

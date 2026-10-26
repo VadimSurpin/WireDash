@@ -10,11 +10,11 @@
 
 import 'dart:io';
 
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/client_factory.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart' show MqttClientFactory;
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/client_factory.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart' show MqttClientFactory;
 
 Future<void> main(List<String> args) async {
   final opts = _parse(args);

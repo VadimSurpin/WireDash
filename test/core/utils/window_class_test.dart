@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/utils/window_class.dart';
-import 'package:zigdash/features/panels/models/grid_layout.dart';
+import 'package:wiredash/core/utils/window_class.dart';
+import 'package:wiredash/features/panels/models/grid_layout.dart';
 
 void main() {
   test('window classes at the Material 3 breakpoints', () {

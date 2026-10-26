@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/engine/automation.dart';
-import 'package:zigdash/engine/automations_repo.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/scenes/models/scene.dart';
+import 'package:wiredash/engine/automation.dart';
+import 'package:wiredash/engine/automations_repo.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/scenes/models/scene.dart';
 
 Z2mDevice _device(String name, String ieee, List<Map<String, Object?>> exposes) => parseBridgeDevices(jsonEncode([{
       'friendly_name': name,

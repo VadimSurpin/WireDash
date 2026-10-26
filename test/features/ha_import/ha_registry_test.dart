@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/ha_import/ha_registry.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/ha_import/ha_registry.dart';
 
 // Shaped like the user's Home Assistant 2026.1.1 on 2026-10-16 (see
 // docs/design/ha-import.md, "Checked on a real Home Assistant"): three

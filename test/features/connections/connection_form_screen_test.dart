@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/features/onboarding/first_run.dart';
-import 'package:zigdash/core/storage/secure_storage.dart';
-import 'package:zigdash/data/database/daos/connection_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics_provider.dart';
-import 'package:zigdash/features/connections/screens/connection_form_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
+import 'package:wiredash/features/onboarding/first_run.dart';
+import 'package:wiredash/core/storage/secure_storage.dart';
+import 'package:wiredash/data/database/daos/connection_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics_provider.dart';
+import 'package:wiredash/features/connections/screens/connection_form_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
 
 // ---------------------------------------------------------------------------
 // In-memory SecureStore stub (avoids platform-channel calls in tests).

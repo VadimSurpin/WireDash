@@ -3,15 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/native.dart';
 
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/daos/panel_dao.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/panels/services/auto_close_config_publisher.dart';
-import 'package:zigdash/features/panels/widgets/auto_close_panel.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/daos/panel_dao.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/services/auto_close_config_publisher.dart';
+import 'package:wiredash/features/panels/widgets/auto_close_panel.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 Panel _panel({String name = 'Door auto-close'}) => Panel(
       id: 'p1',

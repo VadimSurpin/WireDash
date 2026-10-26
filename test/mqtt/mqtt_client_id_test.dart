@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
 
 void main() {
   const config = BrokerConfig(

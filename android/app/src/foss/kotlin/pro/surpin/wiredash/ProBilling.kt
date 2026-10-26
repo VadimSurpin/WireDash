@@ -1,4 +1,4 @@
-package com.giladtamam.zigdash
+package pro.surpin.wiredash
 
 import android.app.Activity
 import io.flutter.plugin.common.BinaryMessenger

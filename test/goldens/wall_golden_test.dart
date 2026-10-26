@@ -1,17 +1,17 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/data/database/database.dart' show Dashboard, Panel;
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/features/dashboards/wall_display.dart';
-import 'package:zigdash/features/dashboards/wall_sensors.dart';
-import 'package:zigdash/features/dashboards/widgets/wall_alarm_screen.dart';
-import 'package:zigdash/features/dashboards/widgets/wall_idle_screen.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/data/database/database.dart' show Dashboard, Panel;
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/features/dashboards/wall_display.dart';
+import 'package:wiredash/features/dashboards/wall_sensors.dart';
+import 'package:wiredash/features/dashboards/widgets/wall_alarm_screen.dart';
+import 'package:wiredash/features/dashboards/widgets/wall_idle_screen.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 import 'golden_harness.dart';
 

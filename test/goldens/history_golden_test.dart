@@ -3,10 +3,10 @@ import 'dart:math' as math;
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/history/history_record.dart';
-import 'package:zigdash/features/history/history_service.dart';
-import 'package:zigdash/features/history/history_sheet.dart';
-import 'package:zigdash/features/pro/pro.dart';
+import 'package:wiredash/features/history/history_record.dart';
+import 'package:wiredash/features/history/history_service.dart';
+import 'package:wiredash/features/history/history_sheet.dart';
+import 'package:wiredash/features/pro/pro.dart';
 
 import 'golden_harness.dart';
 

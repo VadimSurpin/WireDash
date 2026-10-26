@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/panels/widgets/control_action.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/panels/widgets/control_action.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 void main() {
   testWidgets('disconnected control action shows snackbar and does not publish', (tester) async {

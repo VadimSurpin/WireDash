@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/app.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/app.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 /// End-to-end discovery-first setup on a real device/emulator against a real
 /// MQTT broker on the host. From the emulator, the host is reachable inside

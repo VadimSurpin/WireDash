@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_curtain.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_panel_suggestion.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_curtain.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_panel_suggestion.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
 
 void main() {
   WirenBoardDevice device({bool complete = true, bool readOnly = false}) =>

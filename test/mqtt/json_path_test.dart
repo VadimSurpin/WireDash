@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/mqtt/json_path.dart';
+import 'package:wiredash/mqtt/json_path.dart';
 
 void main() {
   group('extractByPath', () {

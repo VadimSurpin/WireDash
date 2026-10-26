@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/review/review_launcher.dart';
-import 'package:zigdash/core/review/review_prompt_controller.dart';
+import 'package:wiredash/core/review/review_launcher.dart';
+import 'package:wiredash/core/review/review_prompt_controller.dart';
 
 class _FakeLauncher implements ReviewLauncher {
   _FakeLauncher({this.available = true});

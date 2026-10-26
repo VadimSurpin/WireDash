@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/pro/pro.dart';
-import 'package:zigdash/features/pro/pro_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/features/pro/pro.dart';
+import 'package:wiredash/features/pro/pro_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 Future<void> _pump(
   WidgetTester tester, {

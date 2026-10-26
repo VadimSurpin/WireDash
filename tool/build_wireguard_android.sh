@@ -19,5 +19,5 @@ fi
 export PATH="$tools_dir:$PATH"
 cd "$repo_dir/native/wireguard"
 gomobile bind -target=android/arm,android/arm64,android/amd64 -androidapi=24 \
-  -javapkg=com.giladtamam.zigdash.wireguard \
+  -javapkg=pro.surpin.wiredash.wireguard \
   -o "$repo_dir/android/app/libs/wireguard.aar" .

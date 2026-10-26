@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/support/support_facts.dart';
+import 'package:wiredash/features/support/support_facts.dart';
 
 void main() {
   test('z2mVersionOf reads only the version', () {

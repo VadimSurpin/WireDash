@@ -1,13 +1,13 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/ha_import/ha_import_apply.dart';
-import 'package:zigdash/features/ha_import/ha_import_controller.dart';
-import 'package:zigdash/features/ha_import/ha_import_screen.dart';
-import 'package:zigdash/features/ha_import/ha_registry.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/ha_import/ha_import_apply.dart';
+import 'package:wiredash/features/ha_import/ha_import_controller.dart';
+import 'package:wiredash/features/ha_import/ha_import_screen.dart';
+import 'package:wiredash/features/ha_import/ha_registry.dart';
 
 import 'golden_harness.dart';
 

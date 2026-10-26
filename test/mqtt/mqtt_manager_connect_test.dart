@@ -5,14 +5,14 @@ import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:typed_data/typed_data.dart' as typed;
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/connection_failure.dart';
-import 'package:zigdash/mqtt/endpoint.dart';
-import 'package:zigdash/remote/remote_home.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/connection_failure.dart';
+import 'package:wiredash/mqtt/endpoint.dart';
+import 'package:wiredash/remote/remote_home.dart';
 import 'dart:typed_data';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
 
 /// How a fake client's [connect] behaves — the three cases a candidate hits.
 enum _Behavior {

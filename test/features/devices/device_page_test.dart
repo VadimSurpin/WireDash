@@ -2,17 +2,17 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/features/devices/device_health.dart';
-import 'package:zigdash/features/devices/device_registry.dart';
-import 'package:zigdash/features/devices/devices_providers.dart';
-import 'package:zigdash/features/devices/screens/device_page.dart';
-import 'package:zigdash/features/devices/z2m_bridge.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/features/devices/device_health.dart';
+import 'package:wiredash/features/devices/device_registry.dart';
+import 'package:wiredash/features/devices/devices_providers.dart';
+import 'package:wiredash/features/devices/screens/device_page.dart';
+import 'package:wiredash/features/devices/z2m_bridge.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/providers/discovery_provider.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 const _door = Z2mDevice(
   friendlyName: 'Back door',

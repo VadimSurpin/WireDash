@@ -23,7 +23,7 @@ emulator="$sdk/emulator/emulator"
 avdmanager="$sdk/cmdline-tools/latest/bin/avdmanager"
 image="system-images;android-36;google_apis;arm64-v8a"
 store_root="${STORE_ROOT:-$root/store/captures}"
-app_id="com.giladtamam.zigdash"
+app_id="pro.surpin.wiredash"
 
 forms=(phone tablet)
 locales=(en fr de es he ru pl pt nl sv nb)

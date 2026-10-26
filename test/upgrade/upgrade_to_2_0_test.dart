@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/theme/dashboard_accent.dart';
-import 'package:zigdash/core/utils/material_icon.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/core/theme/dashboard_accent.dart';
+import 'package:wiredash/core/utils/material_icon.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 import '../drift/generated/schema.dart';
 import '../drift/generated/schema_v5.dart' as v5;

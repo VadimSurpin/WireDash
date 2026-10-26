@@ -8,11 +8,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/onboarding/setup/ha_connect.dart';
-import 'package:zigdash/features/onboarding/setup/z2m_probe.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/ha_address.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/onboarding/setup/ha_connect.dart';
+import 'package:wiredash/features/onboarding/setup/z2m_probe.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/ha_address.dart';
 
 void main() {
   final tokenFile = File('${Platform.environment['HOME']}/.ha_pi_token');

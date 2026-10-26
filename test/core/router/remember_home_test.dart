@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/router/last_dashboard_store.dart';
-import 'package:zigdash/core/router/routes.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/core/router/last_dashboard_store.dart';
+import 'package:wiredash/core/router/routes.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 void main() {
   testWidgets('a remembered home that no longer exists is forgotten and the '

@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/theme/app_theme.dart';
-import 'package:zigdash/core/theme/signal_colors.dart';
+import 'package:wiredash/core/theme/app_theme.dart';
+import 'package:wiredash/core/theme/signal_colors.dart';
 
 /// WCAG contrast ratio between two opaque colours.
 double contrast(Color a, Color b) {

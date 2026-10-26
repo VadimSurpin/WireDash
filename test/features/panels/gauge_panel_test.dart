@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/theme/signal_colors.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/panels/widgets/device_tile_panel.dart' show ltr;
-import 'package:zigdash/features/panels/widgets/gauge_panel.dart';
-import 'package:zigdash/features/panels/widgets/reading_panel.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/theme/signal_colors.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/widgets/device_tile_panel.dart' show ltr;
+import 'package:wiredash/features/panels/widgets/gauge_panel.dart';
+import 'package:wiredash/features/panels/widgets/reading_panel.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 const _bands = [
   GaugeBand(from: 0, to: 20, tone: GaugeTone.attention),

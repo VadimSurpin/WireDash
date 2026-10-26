@@ -7,8 +7,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
-import 'package:zigdash/mqtt/ha_mqtt_client.dart';
-import 'package:zigdash/mqtt/ha_token.dart';
+import 'package:wiredash/mqtt/ha_mqtt_client.dart';
+import 'package:wiredash/mqtt/ha_token.dart';
 
 /// What the fake Home Assistant does.
 class _FakeHa {

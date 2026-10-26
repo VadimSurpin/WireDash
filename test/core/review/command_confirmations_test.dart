@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/review/command_confirmations.dart';
+import 'package:wiredash/core/review/command_confirmations.dart';
 
 void main() {
   final t0 = DateTime(2026, 9, 26, 12);

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/ha_import/ha_auth.dart';
-import 'package:zigdash/features/ha_import/ha_client.dart';
-import 'package:zigdash/features/ha_import/ha_import_apply.dart';
-import 'package:zigdash/features/ha_import/ha_import_controller.dart';
-import 'package:zigdash/features/ha_import/ha_registry.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/ha_import/ha_auth.dart';
+import 'package:wiredash/features/ha_import/ha_client.dart';
+import 'package:wiredash/features/ha_import/ha_import_apply.dart';
+import 'package:wiredash/features/ha_import/ha_import_controller.dart';
+import 'package:wiredash/features/ha_import/ha_registry.dart';
 
 final _sensor = Z2mDevice(
   friendlyName: '0xa4c13836276df66f',

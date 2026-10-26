@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/theme/app_theme.dart';
-import 'package:zigdash/core/theme/font_licenses.dart';
-import 'package:zigdash/core/theme/tokens.dart';
+import 'package:wiredash/core/theme/app_theme.dart';
+import 'package:wiredash/core/theme/font_licenses.dart';
+import 'package:wiredash/core/theme/tokens.dart';
 
 /// signal-2.0.md §2: bundled fonts (never fetched), within budget, licensed,
 /// and with Hebrew falling back to Plex Hebrew.

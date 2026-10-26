@@ -37,12 +37,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <!-- Remote control (3.1): a paired phone shows a QR code holding
-                 zigdash://remote/pair-phone?c=…; the camera app opens it here. -->
+                 wiredash://remote/pair-phone?c=…; the camera app opens it here. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="zigdash" android:host="remote" />
+                <data android:scheme="wiredash" android:host="remote" />
             </intent-filter>
         </activity>
         <!-- The shutter pop-up, opened by a shutter's tile or widget. -->
@@ -50,7 +50,7 @@
             android:name=".CoverControlActivity"
             android:exported="false"
             android:excludeFromRecents="true"
-            android:taskAffinity="com.giladtamam.zigdash.cover"
+            android:taskAffinity="pro.surpin.wiredash.cover"
             android:launchMode="singleTask"
             android:theme="@style/CoverPopup" />
         <!-- The setup reminder (2.9.7): flutter_local_notifications shows it
@@ -111,7 +111,7 @@
             android:name=".WidgetConfigActivity"
             android:exported="true"
             android:excludeFromRecents="true"
-            android:taskAffinity="com.giladtamam.zigdash.widget"
+            android:taskAffinity="pro.surpin.wiredash.widget"
             android:theme="@style/CoverPopup">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

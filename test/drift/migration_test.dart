@@ -1,10 +1,10 @@
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/daos/panel_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:wiredash/data/database/daos/panel_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
 
 import 'generated/schema.dart';
 import 'generated/schema_v5.dart' as v5;

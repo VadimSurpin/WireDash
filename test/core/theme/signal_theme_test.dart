@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/theme/app_theme.dart';
-import 'package:zigdash/core/theme/signal_colors.dart';
-import 'package:zigdash/core/utils/material_icon.dart';
+import 'package:wiredash/core/theme/app_theme.dart';
+import 'package:wiredash/core/theme/signal_colors.dart';
+import 'package:wiredash/core/utils/material_icon.dart';
 
 void main() {
   group('materialIcon draws stored icons rounded (ADR 0005)', () {

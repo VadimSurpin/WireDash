@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/router/app_router.dart';
-import 'package:zigdash/core/router/routes.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/onboarding/onboarding_provider.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/router/app_router.dart';
+import 'package:wiredash/core/router/routes.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/features/onboarding/onboarding_provider.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 /// The onboarding redirect lives in the router (not in MaterialApp's builder):
 /// a builder-wrapped child sits above the InheritedGoRouter, so the old

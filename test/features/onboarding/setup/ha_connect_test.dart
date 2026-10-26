@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/ha_import/ha_auth.dart';
-import 'package:zigdash/features/onboarding/setup/ha_connect.dart';
-import 'package:zigdash/mqtt/ha_token.dart';
+import 'package:wiredash/features/ha_import/ha_auth.dart';
+import 'package:wiredash/features/onboarding/setup/ha_connect.dart';
+import 'package:wiredash/mqtt/ha_token.dart';
 
 void main() {
   late List<(Uri, String)> probed;

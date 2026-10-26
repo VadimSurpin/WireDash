@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/build/store_capture.dart';
+import 'package:wiredash/core/build/store_capture.dart';
 
 void main() {
   test('store capture is off unless the capture script asks for it', () {

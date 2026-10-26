@@ -1,19 +1,19 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/daos/dashboard_dao.dart';
-import 'package:zigdash/data/database/daos/device_registry_dao.dart';
-import 'package:zigdash/data/database/daos/panel_dao.dart';
-import 'package:zigdash/data/database/daos/section_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/data/repositories/section_repo.dart';
-import 'package:zigdash/features/devices/device_tiles.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/ha_import/ha_import_apply.dart';
-import 'package:zigdash/features/ha_import/ha_registry.dart';
+import 'package:wiredash/data/database/daos/dashboard_dao.dart';
+import 'package:wiredash/data/database/daos/device_registry_dao.dart';
+import 'package:wiredash/data/database/daos/panel_dao.dart';
+import 'package:wiredash/data/database/daos/section_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/data/repositories/section_repo.dart';
+import 'package:wiredash/features/devices/device_tiles.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/ha_import/ha_import_apply.dart';
+import 'package:wiredash/features/ha_import/ha_registry.dart';
 
 Z2mDevice _sensor(String ieee) => Z2mDevice(
   friendlyName: ieee,

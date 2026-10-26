@@ -1,6 +1,6 @@
-import 'package:zigdash/data/database/tables/panels.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
 import '../../panels/models/panel_config.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
 
 /// The set of binary `property` values that map to a read-only **led** panel
 /// (presence/safety sensors).

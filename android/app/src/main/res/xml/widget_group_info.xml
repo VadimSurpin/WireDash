@@ -3,7 +3,7 @@
      Chosen in WidgetConfigActivity (group mode); reconfigured by
      long-press on Android 12+. -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.giladtamam.zigdash.WidgetConfigActivity"
+    android:configure="pro.surpin.wiredash.WidgetConfigActivity"
     android:description="@string/widget_group_description"
     android:initialLayout="@layout/widget_group"
     android:minWidth="250dp"

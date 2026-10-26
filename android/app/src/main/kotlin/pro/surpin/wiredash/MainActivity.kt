@@ -1,4 +1,4 @@
-package com.giladtamam.zigdash
+package pro.surpin.wiredash
 
 import android.app.StatusBarManager
 import android.content.ComponentName

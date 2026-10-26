@@ -1,25 +1,25 @@
-import 'package:zigdash/data/database/daos/connection_dao.dart';
-import 'package:zigdash/data/database/daos/dashboard_dao.dart';
-import 'package:zigdash/data/database/daos/section_dao.dart';
-import 'package:zigdash/data/database/daos/panel_dao.dart';
+import 'package:wiredash/data/database/daos/connection_dao.dart';
+import 'package:wiredash/data/database/daos/dashboard_dao.dart';
+import 'package:wiredash/data/database/daos/section_dao.dart';
+import 'package:wiredash/data/database/daos/panel_dao.dart';
 import 'package:drift/native.dart';
 import 'dart:ui' show Locale;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/data/repositories/section_repo.dart';
-import 'package:zigdash/core/storage/secure_storage.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/discovery/wirenboard_dashboard_importer.dart';
-import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/data/repositories/section_repo.dart';
+import 'package:wiredash/core/storage/secure_storage.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/wirenboard_dashboard_importer.dart';
+import 'package:wiredash/features/onboarding/setup/setup_creator.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 class _Storage implements SecureStore {
   @override

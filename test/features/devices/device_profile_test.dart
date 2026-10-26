@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/devices/device_state.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/devices/device_state.dart';
 
 // Captured from the reference SMHUB (Z2M 2.13, 2026-09-26); see
 // docs/design/research/device-classes.md.

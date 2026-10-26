@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/router/last_dashboard_store.dart';
-import 'package:zigdash/core/router/routes.dart';
+import 'package:wiredash/core/router/last_dashboard_store.dart';
+import 'package:wiredash/core/router/routes.dart';
 
 void main() {
   late SharedPreferences prefs;

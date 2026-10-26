@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/features/onboarding/onboarding_provider.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/features/onboarding/onboarding_provider.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 ProviderContainer _containerWith(SharedPreferences prefs) => ProviderContainer(
       overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],

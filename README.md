@@ -141,9 +141,17 @@ tool/flutter build apk --release --flavor foss --split-per-abi \
 ```
 
 Signing uses `android/key.properties` (gitignored). Keep your signing key stable
-for updates. The Android application ID remains `com.giladtamam.zigdash` for
-compatibility with the existing development APKs; renaming the GitHub fork does
-not rename the package.
+for updates. WireDash uses Android application ID and namespace
+`pro.surpin.wiredash`, and Dart package name `wiredash`. It installs alongside
+the original ZigDash app, with separate settings, widgets and storage.
+
+Earlier WireDash development APKs used ZigDash's application ID. Re-create
+the connection in WireDash and import a dashboard backup exported from the
+earlier app. Android does not transfer settings or widgets between application
+IDs, and dashboard backups do not include connection credentials.
+
+Home Assistant browser sign-in still uses the registered upstream OAuth return
+link. If Android asks which app should handle that link, select WireDash.
 
 ## Help and upstream credits
 

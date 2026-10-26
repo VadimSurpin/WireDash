@@ -1,11 +1,11 @@
 import 'package:drift/native.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/last_known/last_known_db.dart';
-import 'package:zigdash/data/last_known/last_known_store.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/last_known/last_known_db.dart';
+import 'package:wiredash/data/last_known/last_known_store.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
 
 MqttRxMessage _m(String topic, String payload, DateTime at) => MqttRxMessage(
     topic: topic, payload: payload, receivedAt: at, connectionGeneration: 3);

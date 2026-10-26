@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/onboarding/setup/recommendation_policy.dart';
 
 Z2mDevice dev(
   String name, {

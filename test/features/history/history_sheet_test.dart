@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/features/history/history_chart.dart';
-import 'package:zigdash/features/history/history_record.dart';
-import 'package:zigdash/features/history/history_service.dart';
-import 'package:zigdash/features/history/history_sheet.dart';
-import 'package:zigdash/features/kiosk/kiosk.dart';
-import 'package:zigdash/features/pro/pro.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/features/history/history_chart.dart';
+import 'package:wiredash/features/history/history_record.dart';
+import 'package:wiredash/features/history/history_service.dart';
+import 'package:wiredash/features/history/history_sheet.dart';
+import 'package:wiredash/features/kiosk/kiosk.dart';
+import 'package:wiredash/features/pro/pro.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 final _now = DateTime(2026, 10, 15, 12);
 

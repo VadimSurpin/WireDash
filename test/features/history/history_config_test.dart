@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/database.dart' show Panel;
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/history/history_config.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:wiredash/data/database/database.dart' show Panel;
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/history/history_config.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
 
 Map<String, Object?> _num(String p, String unit) => {
   'type': 'numeric',

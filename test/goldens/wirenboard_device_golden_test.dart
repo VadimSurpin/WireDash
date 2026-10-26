@@ -1,16 +1,16 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/providers/wirenboard_discovery_provider.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
-import 'package:zigdash/features/panels/widgets/panel_tile.dart';
-import 'package:zigdash/features/panels/widgets/device_panel_display_editor.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/providers/wirenboard_discovery_provider.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/providers/panel_value_provider.dart';
+import 'package:wiredash/features/panels/widgets/panel_tile.dart';
+import 'package:wiredash/features/panels/widgets/device_panel_display_editor.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 import 'golden_harness.dart';
 

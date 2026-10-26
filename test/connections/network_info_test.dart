@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/connections/discovery/network_info_io.dart';
+import 'package:wiredash/features/connections/discovery/network_info_io.dart';
 
 void main() {
   test('Samsung with Wi-Fi Direct listed first: picks wlan0', () {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/dashboards/widgets/connection_status_banner.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
+import 'package:wiredash/features/dashboards/widgets/connection_status_banner.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
 
 Widget _wrap(
   MqttStatus status, {

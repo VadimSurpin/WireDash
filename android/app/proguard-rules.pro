@@ -9,7 +9,7 @@
 
 # gomobile calls these by name from JNI.
 -keep class go.** { *; }
--keep class com.giladtamam.zigdash.wireguard.** { *; }
+-keep class pro.surpin.wiredash.wireguard.** { *; }
 
 # Keep JNI native method names (sqlite3_flutter_libs and other native plugins).
 -keepclasseswithmembernames class * {

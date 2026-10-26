@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/history/app_history_recorder.dart';
-import 'package:zigdash/features/history/history_config.dart';
-import 'package:zigdash/features/history/history_service.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/history/app_history_recorder.dart';
+import 'package:wiredash/features/history/history_config.dart';
+import 'package:wiredash/features/history/history_service.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 /// A broker in memory: subscriptions by exact topic or `+` pattern.
 class _Broker extends MqttManager {

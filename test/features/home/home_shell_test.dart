@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/core/router/routes.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/devices/device_registry.dart';
-import 'package:zigdash/features/devices/devices_providers.dart';
-import 'package:zigdash/features/history/app_history_recorder.dart';
-import 'package:zigdash/features/home/home_shell.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/router/routes.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/features/devices/device_registry.dart';
+import 'package:wiredash/features/devices/devices_providers.dart';
+import 'package:wiredash/features/history/app_history_recorder.dart';
+import 'package:wiredash/features/home/home_shell.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 final _stamp = DateTime(2026, 9, 26);
 Connection _home(String id, String name) => Connection(

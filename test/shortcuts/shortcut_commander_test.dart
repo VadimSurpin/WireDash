@@ -6,13 +6,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:typed_data/typed_data.dart' as typed;
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/scenes/models/scene.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/shortcuts/shortcut_commander.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/scenes/models/scene.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/shortcuts/shortcut_commander.dart';
 
 /// A broker that answers like Zigbee2MQTT: a `/set` is echoed back as the
 /// device's new state, unless [silent].

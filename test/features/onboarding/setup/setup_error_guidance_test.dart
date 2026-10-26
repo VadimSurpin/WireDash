@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
-import 'package:zigdash/features/onboarding/setup/setup_error_guidance.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:wiredash/features/onboarding/setup/setup_error_guidance.dart';
 
 StepResult fail(DiagnosticStep step, String key) =>
     StepResult(step: step, status: StepStatus.fail, detailKey: key);

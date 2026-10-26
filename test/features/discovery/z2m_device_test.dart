@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
 
 // Fixture: a realistic bridge/devices payload with:
 //   - an IKEA light (Router, light expose with state+brightness)

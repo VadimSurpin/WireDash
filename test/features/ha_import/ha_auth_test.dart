@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/ha_import/ha_auth.dart';
+import 'package:wiredash/features/ha_import/ha_auth.dart';
 
 /// A fake Home Assistant token endpoint: trades `the-code` for tokens when
 /// the PKCE verifier matches, and records revocations.

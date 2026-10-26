@@ -3,14 +3,14 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/router/last_dashboard_store.dart';
-import 'package:zigdash/data/database/daos/connection_dao.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/features/onboarding/demo_service.dart';
-import 'package:zigdash/features/onboarding/first_run.dart';
-import 'package:zigdash/features/onboarding/onboarding_provider.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/core/router/last_dashboard_store.dart';
+import 'package:wiredash/data/database/daos/connection_dao.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/features/onboarding/demo_service.dart';
+import 'package:wiredash/features/onboarding/first_run.dart';
+import 'package:wiredash/features/onboarding/onboarding_provider.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 void main() {
   late ProviderContainer c;

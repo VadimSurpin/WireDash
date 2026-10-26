@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/mqtt/topic_matcher.dart';
+import 'package:wiredash/mqtt/topic_matcher.dart';
 
 void main() {
   group('topicMatches', () {

@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
-import 'package:zigdash/features/connections/discovery/z2m_frontend_fetch.dart';
+import 'package:wiredash/features/connections/discovery/z2m_frontend.dart';
+import 'package:wiredash/features/connections/discovery/z2m_frontend_fetch.dart';
 
 void main() {
   late HttpServer server;

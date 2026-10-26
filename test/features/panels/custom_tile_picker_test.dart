@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/core/router/app_router.dart' show parsePanelTypeToken;
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/dashboards/screens/dashboards_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/router/app_router.dart' show parsePanelTypeToken;
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/dashboards/screens/dashboards_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 /// Exit check 2 (docs/design/dashboard-1.12.md §11): every raw panel type
 /// stays reachable under Custom MQTT tile. Scene tiles are added from the

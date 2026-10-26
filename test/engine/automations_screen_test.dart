@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/engine/automations_repo.dart';
-import 'package:zigdash/engine/automations_screen.dart';
-import 'package:zigdash/engine/engine_installer.dart';
-import 'package:zigdash/engine/engine_providers.dart';
-import 'package:zigdash/engine/engine_status.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/engine/automations_repo.dart';
+import 'package:wiredash/engine/automations_screen.dart';
+import 'package:wiredash/engine/engine_installer.dart';
+import 'package:wiredash/engine/engine_providers.dart';
+import 'package:wiredash/engine/engine_status.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 import 'engine_test.dart' show FakeLink;
 

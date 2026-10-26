@@ -1,21 +1,21 @@
-import 'package:zigdash/features/devices/devices_providers.dart'
+import 'package:wiredash/features/devices/devices_providers.dart'
     show homeBaseTopicProvider;
-import 'package:zigdash/features/discovery/wirenboard_dashboard_importer.dart';
+import 'package:wiredash/features/discovery/wirenboard_dashboard_importer.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/discovery/models/device_panel_suggestion.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
-import 'package:zigdash/features/discovery/screens/device_picker_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/providers/wirenboard_discovery_provider.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/discovery/models/device_panel_suggestion.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/providers/discovery_provider.dart';
+import 'package:wiredash/features/discovery/screens/device_picker_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/providers/wirenboard_discovery_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Fixtures

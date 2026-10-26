@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/engine/engine_installer.dart';
-import 'package:zigdash/engine/engine_status.dart';
+import 'package:wiredash/engine/engine_installer.dart';
+import 'package:wiredash/engine/engine_status.dart';
 
 /// A broker stand-in: records publishes and lets the test answer them.
 class FakeLink implements HubLink {

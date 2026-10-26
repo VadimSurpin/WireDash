@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/app.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/data/repositories/dashboard_repo.dart';
-import 'package:zigdash/data/repositories/panel_repo.dart';
-import 'package:zigdash/data/repositories/section_repo.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics_provider.dart';
-import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
-import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
-import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
-import 'package:zigdash/features/onboarding/setup/setup_providers.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/app.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/data/repositories/dashboard_repo.dart';
+import 'package:wiredash/data/repositories/panel_repo.dart';
+import 'package:wiredash/data/repositories/section_repo.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics_provider.dart';
+import 'package:wiredash/features/connections/discovery/broker_scan_service.dart';
+import 'package:wiredash/features/onboarding/setup/setup_coordinator.dart';
+import 'package:wiredash/features/onboarding/setup/setup_creator.dart';
+import 'package:wiredash/features/onboarding/setup/setup_providers.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
 
 /// End-to-end first run into the demo on a fresh install:
 /// setup → Find my setup finds nothing → Try demo → the demo dashboard opens

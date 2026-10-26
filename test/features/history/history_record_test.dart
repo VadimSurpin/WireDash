@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/history/history_record.dart';
+import 'package:wiredash/features/history/history_record.dart';
 
 void main() {
   final day = DateTime(2026, 10, 15);

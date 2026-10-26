@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/ha_import/ha_client.dart';
+import 'package:wiredash/features/ha_import/ha_client.dart';
 
 /// A fake Home Assistant: the WebSocket handshake and the four registry
 /// reads, as Home Assistant answers them. [noFloors] answers the floor

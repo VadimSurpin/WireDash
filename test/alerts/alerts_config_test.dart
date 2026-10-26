@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/alerts/alerts_config.dart';
+import 'package:wiredash/alerts/alerts_config.dart';
 
 void main() {
   const phone = AlertPhone(

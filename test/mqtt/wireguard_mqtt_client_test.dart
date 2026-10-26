@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/wireguard/backend.dart';
-import 'package:zigdash/mqtt/wireguard/wireguard_mqtt_client.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/wireguard/backend.dart';
+import 'package:wiredash/mqtt/wireguard/wireguard_mqtt_client.dart';
 
 // Transport-only test double: validates the native route's token and forwards
 // to a local broker. The app must use this socket for an unresolvable private

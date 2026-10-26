@@ -6,6 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application>
         <!-- Debug only: drive the shortcut engine from adb (ShortcutDebugReceiver.kt). -->
-        <receiver android:name="com.giladtamam.zigdash.ShortcutDebugReceiver" android:exported="true" />
+        <receiver android:name="pro.surpin.wiredash.ShortcutDebugReceiver" android:exported="true" />
     </application>
 </manifest>

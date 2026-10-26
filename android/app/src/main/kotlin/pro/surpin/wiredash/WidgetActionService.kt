@@ -1,4 +1,4 @@
-package com.giladtamam.zigdash
+package pro.surpin.wiredash
 
 import android.app.Notification
 import android.app.NotificationChannel

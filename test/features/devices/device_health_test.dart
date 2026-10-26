@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/daos/device_registry_dao.dart';
-import 'package:zigdash/features/devices/device_health.dart';
-import 'package:zigdash/features/devices/z2m_bridge.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/data/database/daos/device_registry_dao.dart';
+import 'package:wiredash/features/devices/device_health.dart';
+import 'package:wiredash/features/devices/z2m_bridge.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
 
 const _door = Z2mDevice(
   friendlyName: 'Back door',

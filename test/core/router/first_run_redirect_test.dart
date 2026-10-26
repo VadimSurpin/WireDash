@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/router/first_run_redirect.dart';
-import 'package:zigdash/core/router/routes.dart';
+import 'package:wiredash/core/router/first_run_redirect.dart';
+import 'package:wiredash/core/router/routes.dart';
 
 void main() {
   const start = '/connections/c1/dashboards';

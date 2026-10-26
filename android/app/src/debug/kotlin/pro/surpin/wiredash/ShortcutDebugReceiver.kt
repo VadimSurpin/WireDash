@@ -1,4 +1,4 @@
-package com.giladtamam.zigdash
+package pro.surpin.wiredash
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,7 +7,7 @@ import android.util.Log
 
 /**
  * Debug builds only: drives the shortcut engine from adb.
- *   adb shell am broadcast -n com.giladtamam.zigdash/.ShortcutDebugReceiver \
+ *   adb shell am broadcast -n pro.surpin.wiredash/.ShortcutDebugReceiver \
  *     --es cmd toggle --es home <connectionId> --es ieee <0x...>
  *   ... --es cmd scene --es home <connectionId> --es scene <sceneId>
  */

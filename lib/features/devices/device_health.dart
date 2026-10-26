@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
 
 /// Battery at or below this percentage counts as low.
 const lowBatteryPercent = 20;

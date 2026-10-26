@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/connections/discovery/broker_probe.dart';
-import 'package:zigdash/features/onboarding/setup/setup_candidate.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/connections/discovery/broker_probe.dart';
+import 'package:wiredash/features/onboarding/setup/setup_candidate.dart';
 
 void main() {
   group('SetupCandidate.fromProbe', () {

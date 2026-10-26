@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/core/review/review_prompt_policy.dart';
+import 'package:wiredash/core/review/review_prompt_policy.dart';
 
 void main() {
   const policy = ReviewPromptPolicy();

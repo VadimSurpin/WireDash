@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/panels/models/grid_layout.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/panels/models/grid_layout.dart';
 
 void main() {
   test('columns follow the window class', () {

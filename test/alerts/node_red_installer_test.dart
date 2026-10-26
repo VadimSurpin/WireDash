@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/alerts/node_red_installer.dart';
+import 'package:wiredash/alerts/node_red_installer.dart';
 
 void main() {
   final flow = File('node-red/alerts-flow.json').readAsStringSync();

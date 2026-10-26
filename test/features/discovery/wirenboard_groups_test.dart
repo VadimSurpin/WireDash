@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/discovery/providers/discovery_provider.dart';
-import 'package:zigdash/features/discovery/providers/wirenboard_discovery_provider.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/discovery/providers/discovery_provider.dart';
+import 'package:wiredash/features/discovery/providers/wirenboard_discovery_provider.dart';
 
 WirenBoardDevice device(String id, {String? driver, String? title}) =>
     WirenBoardDevice(

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/panels/widgets/cover_panel.dart';
+import 'package:wiredash/features/panels/widgets/cover_panel.dart';
 
 void main() {
   group('resolveCoverAction', () {

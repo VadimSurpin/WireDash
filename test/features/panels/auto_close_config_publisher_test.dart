@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
-import 'package:zigdash/features/panels/services/auto_close_config_publisher.dart';
-import 'package:zigdash/features/panels/services/automation_config_publisher.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
+import 'package:wiredash/features/panels/services/auto_close_config_publisher.dart';
+import 'package:wiredash/features/panels/services/automation_config_publisher.dart';
 
 void main() {
   group('AutoCloseConfigPublisher builders', () {

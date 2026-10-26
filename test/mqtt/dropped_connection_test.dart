@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/mqtt/dropped_connection.dart';
+import 'package:wiredash/mqtt/dropped_connection.dart';
 
 void main() {
   test('a dead broker socket is swallowed', () {

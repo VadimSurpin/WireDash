@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/connections/widgets/broker_fields.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/connections/widgets/broker_fields.dart';
 
 /// Runs [tidyBrokerAddress] on a host/port pair; returns host, port, protocol.
 (String, String, MqttProtocol) tidy(

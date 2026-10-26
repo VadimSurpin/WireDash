@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/connections/discovery/address_check.dart';
-import 'package:zigdash/features/connections/discovery/address_checker_io.dart';
-import 'package:zigdash/features/connections/discovery/broker_probe.dart';
-import 'package:zigdash/features/connections/discovery/broker_prober_io.dart';
-import 'package:zigdash/features/connections/discovery/hub_probe.dart';
+import 'package:wiredash/features/connections/discovery/address_check.dart';
+import 'package:wiredash/features/connections/discovery/address_checker_io.dart';
+import 'package:wiredash/features/connections/discovery/broker_probe.dart';
+import 'package:wiredash/features/connections/discovery/broker_prober_io.dart';
+import 'package:wiredash/features/connections/discovery/hub_probe.dart';
 
 class _FakeProber extends HostProber {
   _FakeProber(this.brokers);

@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/scenes/all_shutters.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/scenes/all_shutters.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 const _cover = {
   'type': 'cover',

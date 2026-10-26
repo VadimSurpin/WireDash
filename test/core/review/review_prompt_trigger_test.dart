@@ -4,13 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/core/review/review_launcher.dart';
-import 'package:zigdash/core/review/review_prompt_controller.dart';
-import 'package:zigdash/core/review/command_confirmations.dart';
-import 'package:zigdash/core/review/review_prompt_trigger.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
-import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
+import 'package:wiredash/core/review/review_launcher.dart';
+import 'package:wiredash/core/review/review_prompt_controller.dart';
+import 'package:wiredash/core/review/command_confirmations.dart';
+import 'package:wiredash/core/review/review_prompt_trigger.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
+import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 class _FakeLauncher implements ReviewLauncher {
   int requests = 0;

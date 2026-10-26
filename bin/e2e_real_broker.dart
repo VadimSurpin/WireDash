@@ -18,10 +18,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
-import 'package:zigdash/mqtt/mqtt_status.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/mqtt_status.dart';
 
 late Map<String, String> opts;
 var failures = 0;

@@ -1,9 +1,9 @@
-package com.giladtamam.zigdash
+package pro.surpin.wiredash
 
 import android.os.Handler
 import android.os.Looper
-import com.giladtamam.zigdash.wireguard.wgbridge.Route
-import com.giladtamam.zigdash.wireguard.wgbridge.Wgbridge
+import pro.surpin.wiredash.wireguard.wgbridge.Route
+import pro.surpin.wiredash.wireguard.wgbridge.Wgbridge
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

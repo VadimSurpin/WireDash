@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/core/router/routes.dart';
-import 'package:zigdash/features/ha_import/ha_auth.dart';
-import 'package:zigdash/features/onboarding/setup/ha_connect.dart';
-import 'package:zigdash/features/onboarding/setup/ha_connect_screen.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/router/routes.dart';
+import 'package:wiredash/features/ha_import/ha_auth.dart';
+import 'package:wiredash/features/onboarding/setup/ha_connect.dart';
+import 'package:wiredash/features/onboarding/setup/ha_connect_screen.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 void main() {
   Future<HaConnectController> pump(

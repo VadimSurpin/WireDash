@@ -3,11 +3,11 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/endpoint.dart';
-import 'package:zigdash/remote/remote_home.dart';
-import 'package:zigdash/remote/remote_seal.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/endpoint.dart';
+import 'package:wiredash/remote/remote_home.dart';
+import 'package:wiredash/remote/remote_seal.dart';
 
 /// Runs [js] with ZigDash Engine's helpers as `H` and returns its stdout.
 Future<String> node(String js) async {

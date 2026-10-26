@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_data.dart' as typed;
-import 'package:zigdash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
 
 /// Non-ASCII device names (Hebrew, accented, CJK) end up in Zigbee2MQTT
 /// topics; mqtt_client's MQTT 3.1 rules reject them on the way out and

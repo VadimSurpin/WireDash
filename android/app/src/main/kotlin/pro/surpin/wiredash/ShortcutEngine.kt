@@ -1,4 +1,4 @@
-package com.giladtamam.zigdash
+package pro.surpin.wiredash
 
 import android.content.Context
 import android.os.Handler
@@ -93,7 +93,7 @@ object ShortcutEngine {
         // name alone.
         engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint(
             loader.findAppBundlePath(),
-            "package:zigdash/shortcuts/shortcut_engine.dart", "shortcutEngine"))
+            "package:wiredash/shortcuts/shortcut_engine.dart", "shortcutEngine"))
         FlutterEngineCache.getInstance().put(ID, engine)
     }
 

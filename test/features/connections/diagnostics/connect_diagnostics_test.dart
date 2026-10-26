@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
-import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
-import 'package:zigdash/features/connections/discovery/hub_probe.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:wiredash/features/connections/discovery/z2m_frontend.dart';
+import 'package:wiredash/features/connections/discovery/hub_probe.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
 
 /// How the fake client's [connect] behaves.
 enum _ConnectBehavior {

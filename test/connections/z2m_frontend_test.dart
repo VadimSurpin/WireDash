@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/connections/discovery/z2m_frontend.dart';
+import 'package:wiredash/features/connections/discovery/z2m_frontend.dart';
 
 // 2.7.2: where Zigbee2MQTT's web page says its broker is.
 void main() {

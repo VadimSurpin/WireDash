@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/devices/z2m_bridge.dart';
+import 'package:wiredash/features/devices/z2m_bridge.dart';
 
 void main() {
   const base = 'zigbee2mqtt';

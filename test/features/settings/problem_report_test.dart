@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:zigdash/features/support/support_details.dart';
-import 'package:zigdash/features/support/support_facts.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/core/review/review_launcher.dart';
-import 'package:zigdash/features/settings/screens/settings_screen.dart';
-import 'package:zigdash/features/support/project_links.dart';
+import 'package:wiredash/features/support/support_details.dart';
+import 'package:wiredash/features/support/support_facts.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/core/review/review_launcher.dart';
+import 'package:wiredash/features/settings/screens/settings_screen.dart';
+import 'package:wiredash/features/support/project_links.dart';
 
 void main() {
   for (final copy in [true, false]) {

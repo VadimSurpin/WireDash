@@ -3,7 +3,7 @@
      resizable down to a 4×1 strip. Chosen in WidgetConfigActivity;
      reconfigured by long-press on Android 12+. -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.giladtamam.zigdash.WidgetConfigActivity"
+    android:configure="pro.surpin.wiredash.WidgetConfigActivity"
     android:description="@string/widget_device_description"
     android:initialLayout="@layout/widget_device"
     android:minWidth="110dp"

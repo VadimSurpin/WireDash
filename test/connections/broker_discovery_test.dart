@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:zigdash/features/connections/discovery/broker_probe.dart';
-import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
-import 'package:zigdash/features/connections/discovery/hub_probe.dart';
-import 'package:zigdash/features/connections/discovery/subnet.dart';
+import 'package:wiredash/features/connections/discovery/broker_probe.dart';
+import 'package:wiredash/features/connections/discovery/broker_scan_service.dart';
+import 'package:wiredash/features/connections/discovery/hub_probe.dart';
+import 'package:wiredash/features/connections/discovery/subnet.dart';
 
 /// Fake prober: returns hits for a fixed set of `host:port`, and tracks the
 /// peak number of concurrent probe calls so we can assert the cap.

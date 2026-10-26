@@ -10,12 +10,12 @@ import 'remote_home.dart';
 /// a link for a QR code shown at home, and a passphrase-sealed backup file
 /// for a phone that was lost.
 abstract final class RemotePairing {
-  /// `zigdash://remote/pair-phone?c=<base64url JSON>`
+  /// `wiredash://remote/pair-phone?c=<base64url JSON>`
   static const linkPath = '/pair-phone';
 
   static String link(RemoteHome home) {
     final c = base64Url.encode(utf8.encode(jsonEncode({'v': 1, ...home.toJson()}))).replaceAll('=', '');
-    return 'zigdash://remote$linkPath?c=$c';
+    return 'wiredash://remote$linkPath?c=$c';
   }
 
   /// The login in a pairing link's `c` parameter, or null.

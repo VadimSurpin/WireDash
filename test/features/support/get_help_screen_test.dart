@@ -1,16 +1,16 @@
-import 'package:zigdash/features/support/help_context.dart';
+import 'package:wiredash/features/support/help_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/onboarding/setup/setup_error_guidance.dart';
-import 'package:zigdash/features/support/community.dart';
-import 'package:zigdash/features/support/get_help_screen.dart';
-import 'package:zigdash/features/support/project_links.dart';
-import 'package:zigdash/features/support/help_tips.dart';
-import 'package:zigdash/features/support/support_facts.dart';
-import 'package:zigdash/features/support/support_log.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/features/onboarding/setup/setup_error_guidance.dart';
+import 'package:wiredash/features/support/community.dart';
+import 'package:wiredash/features/support/get_help_screen.dart';
+import 'package:wiredash/features/support/project_links.dart';
+import 'package:wiredash/features/support/help_tips.dart';
+import 'package:wiredash/features/support/support_facts.dart';
+import 'package:wiredash/features/support/support_log.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 Widget _app(Widget child, {SupportLog? log}) => ProviderScope(
   overrides: [

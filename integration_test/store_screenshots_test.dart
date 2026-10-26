@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zigdash/app.dart';
-import 'package:zigdash/core/build/store_capture.dart';
-import 'package:zigdash/core/router/app_router.dart';
-import 'package:zigdash/core/router/routes.dart';
-import 'package:zigdash/features/onboarding/first_run.dart';
-import 'package:zigdash/features/settings/providers/settings_controller.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/app.dart';
+import 'package:wiredash/core/build/store_capture.dart';
+import 'package:wiredash/core/router/app_router.dart';
+import 'package:wiredash/core/router/routes.dart';
+import 'package:wiredash/features/onboarding/first_run.dart';
+import 'package:wiredash/features/settings/providers/settings_controller.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 /// Play Store screenshots (signal-2.0.md §10), from the demo home on a fresh
 /// install. Run by tool/store/capture.sh, one locale and form factor per run:

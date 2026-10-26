@@ -10,7 +10,7 @@ import 'remote_pairing.dart';
 import 'remote_setup.dart';
 
 /// Opened by the camera app from another phone's QR code
-/// (zigdash://remote/pair-phone?c=…): gives one of this phone's Homes the
+/// (wiredash://remote/pair-phone?c=…): gives one of this phone's Homes the
 /// remote login it carries.
 class PairPhoneScreen extends ConsumerWidget {
   const PairPhoneScreen({super.key, required this.code});

@@ -1,19 +1,19 @@
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
-import 'package:zigdash/features/discovery/models/z2m_device.dart';
-import 'package:zigdash/features/connections/discovery/broker_scan_service.dart';
-import 'package:zigdash/features/connections/discovery/hub_probe.dart';
-import 'package:zigdash/features/onboarding/setup/recommendation_policy.dart';
-import 'package:zigdash/features/onboarding/setup/setup_candidate.dart';
-import 'package:zigdash/features/onboarding/setup/setup_coordinator.dart';
-import 'package:zigdash/features/onboarding/setup/setup_creator.dart';
-import 'package:zigdash/features/onboarding/setup/setup_error_guidance.dart';
-import 'package:zigdash/features/onboarding/setup/setup_providers.dart';
-import 'package:zigdash/features/onboarding/setup/setup_screen.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/features/connections/diagnostics/connect_diagnostics.dart';
+import 'package:wiredash/features/discovery/models/z2m_device.dart';
+import 'package:wiredash/features/connections/discovery/broker_scan_service.dart';
+import 'package:wiredash/features/connections/discovery/hub_probe.dart';
+import 'package:wiredash/features/onboarding/setup/recommendation_policy.dart';
+import 'package:wiredash/features/onboarding/setup/setup_candidate.dart';
+import 'package:wiredash/features/onboarding/setup/setup_coordinator.dart';
+import 'package:wiredash/features/onboarding/setup/setup_creator.dart';
+import 'package:wiredash/features/onboarding/setup/setup_error_guidance.dart';
+import 'package:wiredash/features/onboarding/setup/setup_providers.dart';
+import 'package:wiredash/features/onboarding/setup/setup_screen.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
 
 import 'golden_harness.dart';
 

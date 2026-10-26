@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zigdash/core/router/routes.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/onboarding/demo_banner.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
+import 'package:wiredash/core/router/routes.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/data/repositories/connection_repo.dart';
+import 'package:wiredash/features/onboarding/demo_banner.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
 
 Connection _conn(String host) => Connection(
   transport: ConnectionTransport.mqtt,

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/features/history/app_recorder.dart';
-import 'package:zigdash/features/history/history_config.dart';
-import 'package:zigdash/features/history/history_record.dart';
+import 'package:wiredash/features/history/app_recorder.dart';
+import 'package:wiredash/features/history/history_config.dart';
+import 'package:wiredash/features/history/history_record.dart';
 
 const _temp = HistoryReading(
   ieee: '0xa1',

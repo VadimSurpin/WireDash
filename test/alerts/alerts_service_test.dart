@@ -6,13 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mc;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:typed_data/typed_data.dart' as typed;
-import 'package:zigdash/alerts/alert_push.dart';
-import 'package:zigdash/alerts/alerts_config.dart';
-import 'package:zigdash/alerts/alerts_service.dart';
-import 'package:zigdash/data/database/database.dart';
-import 'package:zigdash/data/database/tables/connections.dart';
-import 'package:zigdash/mqtt/broker_config.dart';
-import 'package:zigdash/mqtt/mqtt_manager.dart';
+import 'package:wiredash/alerts/alert_push.dart';
+import 'package:wiredash/alerts/alerts_config.dart';
+import 'package:wiredash/alerts/alerts_service.dart';
+import 'package:wiredash/data/database/database.dart';
+import 'package:wiredash/data/database/tables/connections.dart';
+import 'package:wiredash/mqtt/broker_config.dart';
+import 'package:wiredash/mqtt/mqtt_manager.dart';
 
 /// A broker that records publishes and lets a test feed messages.
 class _Broker extends mc.MqttClient {

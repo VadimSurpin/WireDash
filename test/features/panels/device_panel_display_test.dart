@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zigdash/l10n/app_localizations.dart';
-import 'package:zigdash/features/panels/widgets/device_panel_display_editor.dart';
+import 'package:wiredash/l10n/app_localizations.dart';
+import 'package:wiredash/features/panels/widgets/device_panel_display_editor.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zigdash/data/database/tables/panels.dart';
-import 'package:zigdash/features/devices/device_profile.dart';
-import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
-import 'package:zigdash/features/panels/models/panel_config.dart';
+import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
+import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
+import 'package:wiredash/features/panels/models/panel_config.dart';
 
 void main() {
   testWidgets('reset restores default visibility and removes panel-specific labels', (tester) async {
