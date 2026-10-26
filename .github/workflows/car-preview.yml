@@ -47,11 +47,15 @@ jobs:
         run: |
           mkdir -p android/app/src/fossDebug
           cp tool/car_preview/AndroidManifest.xml android/app/src/fossDebug/AndroidManifest.xml
-          cat >> android/app/build.gradle.kts <<'EOF'
-
-          android { defaultConfig { minSdk = 29 } }
-          dependencies { implementation("androidx.car.app:app-automotive:1.8.0-rc01") }
-          EOF
+          python3 - <<'PY'
+          from pathlib import Path
+          build = Path('android/app/build.gradle.kts')
+          source = build.read_text()
+          projected = 'androidx.car.app:app-projected:1.8.0-rc01'
+          assert source.count(projected) == 1
+          source = source.replace(projected, 'androidx.car.app:app-automotive:1.8.0-rc01')
+          build.write_text(source + '\nandroid { defaultConfig { minSdk = 29 } }\n')
+          PY
           flutter build apk --debug --flavor foss --split-per-abi --target-platform android-x64
           (cd android && ./gradlew --stop)
       - name: Run Automotive emulator and capture actual host UI
