@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 import os
 import re
+import socket
 import subprocess
 import threading
 import time
@@ -136,10 +137,23 @@ try:
 
     broker_config = output / "mosquitto.conf"
     broker_config.write_text("listener 18884 127.0.0.1\nallow_anonymous true\npersistence false\n")
+    # Ubuntu confines Mosquitto's config access to /etc/mosquitto.
+    installed_config = "/etc/mosquitto/wiredash-preview.conf"
+    run("sudo", "install", "-m", "644", str(broker_config), installed_config)
     broker_log = (output / "broker.log").open("w")
-    processes.append(subprocess.Popen(["mosquitto", "-c", str(broker_config), "-v"],
-                                     stdout=broker_log, stderr=subprocess.STDOUT))
-    time.sleep(1)
+    broker = subprocess.Popen(["mosquitto", "-c", installed_config, "-v"],
+                              stdout=broker_log, stderr=subprocess.STDOUT)
+    processes.append(broker)
+    for _ in range(50):
+        if broker.poll() is not None:
+            raise RuntimeError((output / "broker.log").read_text())
+        try:
+            with socket.create_connection(("127.0.0.1", 18884), timeout=1):
+                break
+        except OSError:
+            time.sleep(0.2)
+    else:
+        raise RuntimeError("Demo MQTT broker did not start: " + (output / "broker.log").read_text())
     watcher = subprocess.Popen(["mosquitto_sub", "-p", "18884", "-t", "/devices/preview/controls/#",
                                 "-F", "%t|%p"], stdout=subprocess.PIPE, text=True)
     processes.append(watcher)
