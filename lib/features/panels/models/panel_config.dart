@@ -392,6 +392,7 @@ class CoverConfig extends PanelConfig {
     this.positionTemplate = '{"position":{value}}',
     this.presets = const [0, 25, 50, 75, 100],
     this.showSlider = true,
+    this.waitForFeedback = true,
     this.wirenBoard,
     this.openButton = const CoverButtonConfig(),
     this.closeButton = const CoverButtonConfig(),
@@ -406,6 +407,7 @@ class CoverConfig extends PanelConfig {
   final String positionTemplate;
   final List<int> presets;
   final bool showSlider;
+  final bool waitForFeedback;
   final WirenBoardCoverBinding? wirenBoard;
   final CoverButtonConfig openButton, closeButton, stopButton;
 
@@ -415,6 +417,7 @@ class CoverConfig extends PanelConfig {
     CoverButtonConfig? stopButton,
     List<int>? presets,
     bool? showSlider,
+    bool? waitForFeedback,
   }) => CoverConfig(
     statePath: statePath,
     positionPath: positionPath,
@@ -424,6 +427,7 @@ class CoverConfig extends PanelConfig {
     positionTemplate: positionTemplate,
     presets: presets ?? this.presets,
     showSlider: showSlider ?? this.showSlider,
+    waitForFeedback: waitForFeedback ?? this.waitForFeedback,
     wirenBoard: wirenBoard,
     openButton: openButton ?? this.openButton,
     closeButton: closeButton ?? this.closeButton,
@@ -440,6 +444,7 @@ class CoverConfig extends PanelConfig {
     'positionTemplate': positionTemplate,
     'presets': presets,
     'showSlider': showSlider,
+    'waitForFeedback': waitForFeedback,
     if (wirenBoard != null) 'wirenBoard': wirenBoard!.toJson(),
     'openButton': openButton.toJson(),
     'closeButton': closeButton.toJson(),
@@ -458,6 +463,7 @@ class CoverConfig extends PanelConfig {
         (j['presets'] as List?)?.map((e) => (e as num).toInt()).toList() ??
         const [0, 25, 50, 75, 100],
     showSlider: j['showSlider'] as bool? ?? true,
+    waitForFeedback: j['waitForFeedback'] as bool? ?? true,
     wirenBoard: j['wirenBoard'] is Map
         ? WirenBoardCoverBinding.fromJson(
             Map<String, dynamic>.from(j['wirenBoard'] as Map),

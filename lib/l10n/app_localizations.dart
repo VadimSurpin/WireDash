@@ -120,6 +120,18 @@ abstract class AppLocalizations {
     Locale('sv'),
   ];
 
+  /// No description provided for @coverWaitForFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for MQTT feedback'**
+  String get coverWaitForFeedback;
+
+  /// No description provided for @coverWaitForFeedbackHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'When off, show a spinner for 1 second without displaying device state.'**
+  String get coverWaitForFeedbackHelper;
+
   /// No description provided for @coverButtonTitle.
   ///
   /// In en, this message translates to:

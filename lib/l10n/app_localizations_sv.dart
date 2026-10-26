@@ -9,6 +9,13 @@ class AppLocalizationsSv extends AppLocalizations {
   AppLocalizationsSv([String locale = 'sv']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Vänta på MQTT-status';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'När avstängt, visa en laddningsindikator i 1 sekund utan att visa enhetens tillstånd.';
+
+  @override
   String get coverButtonTitle => 'Knapptext';
 
   @override

@@ -210,7 +210,9 @@ class PanelTile extends ConsumerWidget {
       panel.subscribeTopic ?? panel.topic,
     );
     final config = PanelConfig.decode(panel.type, panel.config);
-    final reliability = panelReliabilityPolicy(panel.type);
+    final reliability = config is CoverConfig && !config.waitForFeedback
+        ? const PanelReliabilityPolicy.publishOnly()
+        : panelReliabilityPolicy(panel.type);
     final connectionStatus = ref
         .watch(connectionStatusProvider(connectionId))
         .valueOrNull;

@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Vent på MQTT-tilbakemelding",
+  "coverWaitForFeedbackHelper": "Når av, vis en lasteindikator i 1 sekund uten å vise enhetens tilstand.",
   "coverButtonTitle": "Knappetekst",
   "coverShowButton": "Vis knapp",
   "coverRollerOpen": "Rullegardin åpen",

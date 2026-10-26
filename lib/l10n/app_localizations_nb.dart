@@ -9,6 +9,13 @@ class AppLocalizationsNb extends AppLocalizations {
   AppLocalizationsNb([String locale = 'nb']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Vent på MQTT-tilbakemelding';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Når av, vis en lasteindikator i 1 sekund uten å vise enhetens tilstand.';
+
+  @override
   String get coverButtonTitle => 'Knappetekst';
 
   @override

@@ -43,6 +43,15 @@ Source: [WB support explanation of MQTT curtain control](https://support.wirenbo
 
 ## Widget and feedback
 
+Each cover has a **Wait for MQTT feedback** setting (on by default for existing
+configurations). Switch it off for a stateless command button: every tap sends
+the configured command, shows a spinner for one second, then restores its
+normal icon. This mode does not subscribe to state, show relay highlighting,
+position controls, stale indicators or confirmation warnings. Repeated taps
+remain enabled and restart the one-second animation; they do not replay any
+commands automatically. The setting is available in both tile creation and
+editing and is included in dashboard backups.
+
 Extend the existing **Cover** tile with a WB paired-topic binding. Use one
 compact card with Open and Close buttons by default. Each of Open, Close and
 Stop has configurable visibility, title and icon. Roller and gate icons include

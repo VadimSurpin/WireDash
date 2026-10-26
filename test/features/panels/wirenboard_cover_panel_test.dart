@@ -70,6 +70,7 @@ PanelValueSnapshot _state(
 
 class _Fixture {
   final manager = _Manager();
+  final watchedTopics = <String>[];
   final open = BehaviorSubject<PanelValueSnapshot>.seeded(
     _state('0', old: true),
   );
@@ -112,13 +113,14 @@ Widget _app(
     overrides: [
       mqttManagerProvider.overrideWith((ref, _) async => f.manager),
       connectionStatusProvider.overrideWith((ref, _) => f.status.stream),
-      panelValueSnapshotProvider.overrideWith(
-        (ref, key) => !feedback
+      panelValueSnapshotProvider.overrideWith((ref, key) {
+        f.watchedTopics.add(key.topic);
+        return !feedback
             ? const Stream<PanelValueSnapshot>.empty()
             : key.topic == _binding.closeTopic
             ? f.close.stream
-            : f.open.stream,
-      ),
+            : f.open.stream;
+      }),
     ],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -153,6 +155,115 @@ void main() {
   late _Fixture f;
   setUp(() => f = _Fixture());
   tearDown(() => f.dispose());
+
+  for (final wb in [true, false]) {
+    testWidgets(
+      '${wb ? 'WB' : 'JSON'} command-only cover spins for one second and never displays state',
+      (tester) async {
+        final config = wb
+            ? _config.copyWith(waitForFeedback: false)
+            : const CoverConfig(waitForFeedback: false);
+        f.open.add(_state('1'));
+        await tester.pumpWidget(_app(f, config: config));
+        await _pump(tester);
+        expect(f.watchedTopics, isEmpty);
+        expect(find.byType(Slider), findsNothing);
+        expect(find.byType(ActionChip), findsNothing);
+        expect(find.text('—'), findsNothing);
+        final button = wb
+            ? find.byKey(const ValueKey('wb-cover-OPEN'))
+            : find.text('Open');
+        await tester.tap(button);
+        await tester.pump();
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        f.open.add(_state('0'));
+        f.close.add(_state('1'));
+        await tester.pump(const Duration(milliseconds: 999));
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        await tester.pump(const Duration(milliseconds: 1));
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        if (wb) {
+          expect(tester.widget<FilledButton>(button).style, isNull);
+        } else {
+          expect(
+            tester
+                .widget<SegmentedButton<String>>(
+                  find.byType(SegmentedButton<String>),
+                )
+                .selected,
+            isEmpty,
+          );
+        }
+        await tester.tap(button);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 600));
+        await tester.tap(button);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        await tester.pump(const Duration(milliseconds: 500));
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        expect(
+          f.manager.sent,
+          List.filled(3, (
+            '${_binding.openTopic}/on',
+            wb ? '1' : '{"state":"OPEN"}',
+            !wb,
+          )),
+        );
+        await tester.pump(const Duration(seconds: 20));
+        expect(find.text('Not confirmed'), findsNothing);
+        expect(find.text('Last known'), findsNothing);
+        expect(f.watchedTopics, isEmpty);
+      },
+    );
+  }
+
+  testWidgets(
+    'changing to command-only mode cancels an outstanding confirmation',
+    (tester) async {
+      await tester.pumpWidget(_app(f));
+      await _pump(tester);
+      await tester.tap(find.text('Open'));
+      await _pump(tester);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pumpWidget(
+        _app(f, config: _config.copyWith(waitForFeedback: false)),
+      );
+      await tester.pump();
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      await tester.pump(const Duration(seconds: 16));
+      expect(find.text('Not confirmed'), findsNothing);
+    },
+  );
+
+  testWidgets('command-only animation finishes independently of reconnects', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(f, config: _config.copyWith(waitForFeedback: false)),
+    );
+    await _pump(tester);
+    await tester.tap(find.text('Open'));
+    await tester.pump();
+    f.manager.connected = false;
+    f.status.add(MqttStatus.disconnected);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 999));
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1));
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    f.manager.connected = true;
+    f.status.add(MqttStatus.connected);
+    await _pump(tester);
+    expect(f.manager.sent, [('${_binding.openTopic}/on', '1', false)]);
+    expect(find.text('Not confirmed'), findsNothing);
+    expect(f.watchedTopics, isEmpty);
+  });
 
   for (final action in ['OPEN', 'CLOSE']) {
     testWidgets(

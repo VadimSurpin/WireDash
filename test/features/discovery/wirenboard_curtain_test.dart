@@ -67,6 +67,7 @@ void main() {
     'cover config retains pair, titles, icons and visibility through backup encoding',
     () {
       final config = CoverConfig(
+        waitForFeedback: false,
         wirenBoard: const WirenBoardCoverBinding(deviceId: 'relay', number: 2),
         openButton: const CoverButtonConfig(
           title: 'Entrance',
@@ -85,6 +86,8 @@ void main() {
       expect(restored.toJson(), config.toJson());
       expect(restored.wirenBoard!.number, 2);
       expect(restored.stopButton.visible, false);
+      expect(restored.waitForFeedback, false);
+      expect(restored.copyWith(showSlider: false).waitForFeedback, false);
     },
   );
 
@@ -99,6 +102,7 @@ void main() {
         'stopPayload': 'halt',
       });
       expect(old.wirenBoard, isNull);
+      expect(old.waitForFeedback, true);
       expect(
         [
           old.openButton.visible,

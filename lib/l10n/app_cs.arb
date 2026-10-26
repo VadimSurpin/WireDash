@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Čekat na stav z MQTT",
+  "coverWaitForFeedbackHelper": "Při vypnutí zobrazit indikátor na 1 sekundu bez zobrazení stavu zařízení.",
   "coverButtonTitle": "Popisek tlačítka",
   "coverShowButton": "Zobrazit tlačítko",
   "coverRollerOpen": "Roleta otevřená",

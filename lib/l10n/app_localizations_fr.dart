@@ -9,6 +9,13 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Attendre le retour MQTT';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Si désactivé, afficher un indicateur pendant 1 seconde sans afficher l’état de l’appareil.';
+
+  @override
   String get coverButtonTitle => 'Libellé du bouton';
 
   @override

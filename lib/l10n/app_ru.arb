@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Ждать состояние из MQTT",
+  "coverWaitForFeedbackHelper": "Если выключено, показывать спиннер 1 секунду без отображения состояния устройства.",
   "coverButtonTitle": "Название кнопки",
   "coverShowButton": "Показывать кнопку",
   "coverRollerOpen": "Рольставни открыты",

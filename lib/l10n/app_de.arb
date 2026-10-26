@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Auf MQTT-Rückmeldung warten",
+  "coverWaitForFeedbackHelper": "Wenn deaktiviert, wird 1 Sekunde lang ein Ladesymbol ohne Gerätestatus angezeigt.",
   "coverButtonTitle": "Beschriftung",
   "coverShowButton": "Schaltfläche anzeigen",
   "coverRollerOpen": "Rollladen offen",

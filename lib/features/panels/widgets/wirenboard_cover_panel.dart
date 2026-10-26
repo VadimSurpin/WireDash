@@ -46,7 +46,9 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
   }
 
   void _confirm() {
-    if (_pending == null || _sentAt == null) return;
+    if (!widget.config.waitForFeedback || _pending == null || _sentAt == null) {
+      return;
+    }
     bool matches(PanelValueSnapshot? state, [String? expected]) =>
         state != null &&
         state.freshness == PanelFreshness.fresh &&
@@ -74,9 +76,11 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
       _failed = false;
       _sentAt = null;
     });
-    _timeout = Timer(const Duration(seconds: 15), () {
-      if (mounted && request == _request) _finish(failed: true);
-    });
+    if (widget.config.waitForFeedback) {
+      _timeout = Timer(const Duration(seconds: 15), () {
+        if (mounted && request == _request) _finish(failed: true);
+      });
+    }
     try {
       await runControlAction(context, ref, widget.connectionId, (manager) {
         if (!mounted || request != _request) return;
@@ -95,12 +99,19 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
             retain: false,
           );
         }
+        if (!widget.config.waitForFeedback) {
+          _timeout = Timer(const Duration(seconds: 1), () {
+            if (mounted && request == _request) _finish();
+          });
+        }
       });
       if (mounted && request == _request && _sentAt == null) {
-        _finish(failed: true);
+        _finish(failed: widget.config.waitForFeedback);
       }
     } catch (_) {
-      if (mounted && request == _request) _finish(failed: true);
+      if (mounted && request == _request) {
+        _finish(failed: widget.config.waitForFeedback);
+      }
     }
   }
 
@@ -108,6 +119,7 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
   void didUpdateWidget(WirenBoardCoverPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.connectionId != widget.connectionId ||
+        oldWidget.config.waitForFeedback != widget.config.waitForFeedback ||
         oldWidget.config.wirenBoard?.openTopic !=
             widget.config.wirenBoard?.openTopic) {
       _timeout?.cancel();
@@ -139,21 +151,28 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
       topic: binding.closeTopic,
       jsonPath: null,
     );
-    _open = ref.watch(panelValueSnapshotProvider(openKey)).valueOrNull;
-    _close = ref.watch(panelValueSnapshotProvider(closeKey)).valueOrNull;
-    ref.listen(panelValueSnapshotProvider(openKey), (_, next) {
-      _open = next.valueOrNull;
-      _confirm();
-    });
-    ref.listen(panelValueSnapshotProvider(closeKey), (_, next) {
-      _close = next.valueOrNull;
-      _confirm();
-    });
+    if (widget.config.waitForFeedback) {
+      _open = ref.watch(panelValueSnapshotProvider(openKey)).valueOrNull;
+      _close = ref.watch(panelValueSnapshotProvider(closeKey)).valueOrNull;
+      ref.listen(panelValueSnapshotProvider(openKey), (_, next) {
+        _open = next.valueOrNull;
+        _confirm();
+      });
+      ref.listen(panelValueSnapshotProvider(closeKey), (_, next) {
+        _close = next.valueOrNull;
+        _confirm();
+      });
+    } else {
+      _open = null;
+      _close = null;
+    }
     final connection = ref
         .watch(connectionStatusProvider(widget.connectionId))
         .valueOrNull;
     ref.listen(connectionStatusProvider(widget.connectionId), (_, next) {
-      if (_pending != null && next.valueOrNull != MqttStatus.connected) {
+      if (widget.config.waitForFeedback &&
+          _pending != null &&
+          next.valueOrNull != MqttStatus.connected) {
         _finish(failed: true);
       }
     });
@@ -246,12 +265,12 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
                   ),
               ],
             ),
-            if (_failed)
+            if (cfg.waitForFeedback && _failed)
               Text(
                 l10n.shortcutNotConfirmed,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
-            if (!hasFeedback)
+            if (cfg.waitForFeedback && !hasFeedback)
               Text(
                 connection == MqttStatus.connected
                     ? l10n.reliabilityLastKnown

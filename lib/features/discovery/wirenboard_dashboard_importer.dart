@@ -103,6 +103,7 @@ class WirenBoardDashboardImporter {
                 openButton: coverConfig.openButton,
                 closeButton: coverConfig.closeButton,
                 stopButton: coverConfig.stopButton,
+                waitForFeedback: coverConfig.waitForFeedback,
               )
             : suggestion.config!,
       );

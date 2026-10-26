@@ -9,6 +9,13 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Auf MQTT-Rückmeldung warten';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Wenn deaktiviert, wird 1 Sekunde lang ein Ladesymbol ohne Gerätestatus angezeigt.';
+
+  @override
   String get coverButtonTitle => 'Beschriftung';
 
   @override

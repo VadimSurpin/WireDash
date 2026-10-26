@@ -100,6 +100,17 @@ class _CoverControlsEditorState extends State<CoverControlsEditor> {
     );
     return Column(
       children: [
+        SwitchListTile(
+          key: const ValueKey('cover-wait-for-feedback'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.coverWaitForFeedback),
+          subtitle: Text(l10n.coverWaitForFeedbackHelper),
+          value: config.waitForFeedback,
+          onChanged: (value) {
+            setState(() => config = config.copyWith(waitForFeedback: value));
+            widget.onChanged(config);
+          },
+        ),
         button(
           'open',
           l10n.panelCoverOpen,

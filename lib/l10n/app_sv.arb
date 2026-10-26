@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Vänta på MQTT-status",
+  "coverWaitForFeedbackHelper": "När avstängt, visa en laddningsindikator i 1 sekund utan att visa enhetens tillstånd.",
   "coverButtonTitle": "Knapptext",
   "coverShowButton": "Visa knapp",
   "coverRollerOpen": "Rullgardin öppen",

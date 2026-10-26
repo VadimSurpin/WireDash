@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Czekaj na stan MQTT",
+  "coverWaitForFeedbackHelper": "Po wyłączeniu pokazuj wskaźnik przez 1 sekundę bez wyświetlania stanu urządzenia.",
   "coverButtonTitle": "Etykieta przycisku",
   "coverShowButton": "Pokaż przycisk",
   "coverRollerOpen": "Roleta otwarta",

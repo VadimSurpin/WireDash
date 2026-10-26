@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "Aguardar resposta MQTT",
+  "coverWaitForFeedbackHelper": "Quando desativado, mostrar um indicador por 1 segundo sem exibir o estado do dispositivo.",
   "coverButtonTitle": "Título do botão",
   "coverShowButton": "Mostrar botão",
   "coverRollerOpen": "Persiana aberta",

@@ -175,6 +175,53 @@ void main() {
   );
 
   test(
+    'adding a command-only cover preserves the mode and discovered binding',
+    () async {
+      final device =
+          (WirenBoardDiscovery()
+                ..apply(
+                  '/devices/drive/controls/Curtain 1 Open/meta',
+                  '{"type":"switch"}',
+                )
+                ..apply(
+                  '/devices/drive/controls/Curtain 1 Close/meta',
+                  '{"type":"switch"}',
+                ))
+              .devices
+              .single;
+      final importer = WirenBoardDashboardImporter(
+        dashboardId: dashboard,
+        panels: panels,
+        sections: sections,
+        l10n: lookupAppLocalizations(const Locale('en')),
+      );
+      await importer.addControl(
+        device,
+        device.controls.first,
+        label: 'Gate',
+        widgetType: PanelType.cover,
+        coverConfig: const CoverConfig(
+          waitForFeedback: false,
+          wirenBoard: WirenBoardCoverBinding(deviceId: 'unrelated', number: 3),
+          openButton: CoverButtonConfig(title: 'Cycle'),
+        ),
+      );
+      final saved = (await panels.getByDashboard(dashboard)).single;
+      final config =
+          PanelConfig.decode(saved.type, saved.config) as CoverConfig;
+      expect(config.waitForFeedback, false);
+      expect(config.openButton.title, 'Cycle');
+      expect(config.wirenBoard!.deviceId, 'drive');
+      expect(config.wirenBoard!.number, 1);
+      expect(
+        saved.topicPrefixOverride,
+        '/devices/drive/controls/Curtain 1 Open',
+      );
+      expect(saved.topic, 'on');
+    },
+  );
+
+  test(
     'writable nonnumeric controls save raw input tiles and readonly ones reject input',
     () async {
       final importer = WirenBoardDashboardImporter(

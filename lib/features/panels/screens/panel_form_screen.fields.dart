@@ -625,7 +625,7 @@ extension _PanelFormFields on _State {
           const SizedBox(height: 12),
           if (_coverConfig.wirenBoard != null)
             Text(l10n.coverPairedDescription),
-          if (_coverConfig.wirenBoard == null) ...[
+          if (_coverConfig.wirenBoard == null && _coverConfig.waitForFeedback) ...[
             Text(
               l10n.panelCoverDescription,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(

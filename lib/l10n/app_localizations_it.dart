@@ -9,6 +9,13 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Attendi risposta MQTT';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Se disattivato, mostra un indicatore per 1 secondo senza visualizzare lo stato del dispositivo.';
+
+  @override
   String get coverButtonTitle => 'Titolo del pulsante';
 
   @override

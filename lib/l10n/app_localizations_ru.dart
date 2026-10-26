@@ -9,6 +9,13 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Ждать состояние из MQTT';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Если выключено, показывать спиннер 1 секунду без отображения состояния устройства.';
+
+  @override
   String get coverButtonTitle => 'Название кнопки';
 
   @override

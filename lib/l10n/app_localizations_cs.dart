@@ -9,6 +9,13 @@ class AppLocalizationsCs extends AppLocalizations {
   AppLocalizationsCs([String locale = 'cs']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Čekat na stav z MQTT';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Při vypnutí zobrazit indikátor na 1 sekundu bez zobrazení stavu zařízení.';
+
+  @override
   String get coverButtonTitle => 'Popisek tlačítka';
 
   @override

@@ -1,4 +1,6 @@
 {
+  "coverWaitForFeedback": "המתנה לעדכון מצב מ־MQTT",
+  "coverWaitForFeedbackHelper": "כשהאפשרות כבויה, יוצג מחוון למשך שנייה אחת ללא הצגת מצב המכשיר.",
   "coverButtonTitle": "כותרת הכפתור",
   "coverShowButton": "הצגת כפתור",
   "coverRollerOpen": "תריס פתוח",

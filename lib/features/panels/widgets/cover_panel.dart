@@ -57,6 +57,7 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
   void didUpdateWidget(CoverPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.connectionId != widget.connectionId ||
+        oldWidget.config.waitForFeedback != widget.config.waitForFeedback ||
         oldWidget.subscribeTopic != widget.subscribeTopic ||
         oldWidget.publishTopic != widget.publishTopic ||
         oldWidget.config.wirenBoard?.openTopic !=
@@ -90,14 +91,16 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
       setState(() => _pending = null);
     }
 
-    _confirmationTimeout = Timer(const Duration(seconds: 15), () {
-      finish();
-      if (mounted && request == _request) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.shortcutNotConfirmed)),
-        );
-      }
-    });
+    if (widget.config.waitForFeedback) {
+      _confirmationTimeout = Timer(const Duration(seconds: 15), () {
+        finish();
+        if (mounted && request == _request) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.shortcutNotConfirmed)),
+          );
+        }
+      });
+    }
     try {
       await runControlAction(context, ref, widget.connectionId, (mgr) {
         if (!mounted || request != _request || _pending == null) return;
@@ -110,6 +113,9 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
           qos: mc.MqttQos.values[widget.panel.qos.clamp(0, 2)],
           retain: widget.panel.retain,
         );
+        if (!widget.config.waitForFeedback) {
+          _confirmationTimeout = Timer(const Duration(seconds: 1), finish);
+        }
       });
       if (_sentAt == null) finish();
     } catch (_) {
@@ -156,48 +162,52 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
         config: widget.config,
       );
     }
-    // One subscription, whole payload (jsonPath null → raw string).
-    final valueAsync = ref.watch(
-      panelValueProvider(
-        PanelStreamKey(
-          connectionId: widget.connectionId,
-          topic: widget.subscribeTopic,
-          jsonPath: null,
-        ),
-      ),
-    );
-
     final cfg = widget.config;
+    // Command-only covers do not subscribe to device state.
+    final valueAsync = cfg.waitForFeedback
+        ? ref.watch(
+            panelValueProvider(
+              PanelStreamKey(
+                connectionId: widget.connectionId,
+                topic: widget.subscribeTopic,
+                jsonPath: null,
+              ),
+            ),
+          )
+        : const AsyncValue<Object?>.data(null);
+
     final feedbackKey = PanelStreamKey(
       connectionId: widget.connectionId,
       topic: widget.subscribeTopic,
       jsonPath: null,
     );
-    ref.listen(panelValueSnapshotProvider(feedbackKey), (_, next) {
-      final message = next.valueOrNull;
-      if (_pending == null ||
-          _sentAt == null ||
-          message == null ||
-          message.freshness != PanelFreshness.fresh ||
-          message.connectionGeneration != _generation ||
-          !message.receivedAt.isAfter(_sentAt!)) {
-        return;
-      }
-      final reported = extractByPath(
-        message.value.toString(),
-        cfg.statePath,
-      )?.toString().toUpperCase();
-      final confirmed = switch (_pending) {
-        'OPEN' => const ['OPEN', 'OPENING'].contains(reported),
-        'CLOSE' => const ['CLOSE', 'CLOSED', 'CLOSING'].contains(reported),
-        'STOP' => const ['STOP', 'STOPPED'].contains(reported),
-        _ => false,
-      };
-      if (confirmed) {
-        _confirmationTimeout?.cancel();
-        setState(() => _pending = null);
-      }
-    });
+    if (cfg.waitForFeedback) {
+      ref.listen(panelValueSnapshotProvider(feedbackKey), (_, next) {
+        final message = next.valueOrNull;
+        if (_pending == null ||
+            _sentAt == null ||
+            message == null ||
+            message.freshness != PanelFreshness.fresh ||
+            message.connectionGeneration != _generation ||
+            !message.receivedAt.isAfter(_sentAt!)) {
+          return;
+        }
+        final reported = extractByPath(
+          message.value.toString(),
+          cfg.statePath,
+        )?.toString().toUpperCase();
+        final confirmed = switch (_pending) {
+          'OPEN' => const ['OPEN', 'OPENING'].contains(reported),
+          'CLOSE' => const ['CLOSE', 'CLOSED', 'CLOSING'].contains(reported),
+          'STOP' => const ['STOP', 'STOPPED'].contains(reported),
+          _ => false,
+        };
+        if (confirmed) {
+          _confirmationTimeout?.cancel();
+          setState(() => _pending = null);
+        }
+      });
+    }
     Widget buttonIcon(String action, CoverButtonIcon icon) => _pending == action
         ? SizedBox.square(
             dimension: 18,
@@ -242,10 +252,11 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text(
-                  position == null ? '—' : '${position!.round()} %',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                if (cfg.waitForFeedback)
+                  Text(
+                    position == null ? '—' : '${position!.round()} %',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
               ],
             ),
             const SizedBox(height: 8),
@@ -316,7 +327,7 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
                 ),
               ),
             const SizedBox(height: 12),
-            if (cfg.presets.isNotEmpty)
+            if (cfg.waitForFeedback && cfg.presets.isNotEmpty)
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -329,7 +340,7 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
                     )
                     .toList(),
               ),
-            if (cfg.showSlider) ...[
+            if (cfg.waitForFeedback && cfg.showSlider) ...[
               // Merged so the slider node itself carries the panel name.
               MergeSemantics(
                 child: Semantics(

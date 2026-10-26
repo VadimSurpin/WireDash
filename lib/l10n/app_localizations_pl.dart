@@ -9,6 +9,13 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
+  String get coverWaitForFeedback => 'Czekaj na stan MQTT';
+
+  @override
+  String get coverWaitForFeedbackHelper =>
+      'Po wyłączeniu pokazuj wskaźnik przez 1 sekundę bez wyświetlania stanu urządzenia.';
+
+  @override
   String get coverButtonTitle => 'Etykieta przycisku';
 
   @override

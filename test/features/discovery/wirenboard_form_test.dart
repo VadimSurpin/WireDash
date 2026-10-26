@@ -314,11 +314,15 @@ void main() {
       }
       if (curtain) {
         final title = find.byKey(const ValueKey('cover-open-title'));
+        final wait = find.byKey(const ValueKey('cover-wait-for-feedback'));
         expect(find.textContaining('$topic/on'), findsOneWidget);
         expect(
           find.textContaining('/devices/board/controls/Curtain 1 Close/on'),
           findsOneWidget,
         );
+        await tester.ensureVisible(wait);
+        await tester.tap(wait);
+        await tester.pump();
         await tester.ensureVisible(title);
         await tester.enterText(title, 'Entrance');
         final icon = find.byKey(const ValueKey('cover-open-icon:gatePartial'));
@@ -348,6 +352,7 @@ void main() {
         expect(config.closeButton.title, 'Shut');
         expect(config.stopButton.visible, true);
         expect(config.showSlider, false);
+        expect(config.waitForFeedback, false);
       } else if (custom) {
         final config = saved[#config] as PanelConfig;
         final display = config is WirenBoardDeviceConfig
