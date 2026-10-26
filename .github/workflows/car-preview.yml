@@ -7,11 +7,6 @@ on:
         description: Reuse a compiled emulator APK from this workflow run (UI sources must match)
         type: string
         default: ''
-  push:
-    branches: ['feat/android-auto']
-    paths:
-      - '.github/workflows/car-preview.yml'
-      - 'tool/car_preview/**'
 
 concurrency:
   group: car-preview-${{ github.ref }}

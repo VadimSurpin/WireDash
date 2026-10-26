@@ -31,11 +31,30 @@ def shell(*args, timeout=60):
     return subprocess.check_output([adb, "shell", *args], timeout=timeout, text=True).strip()
 
 
-def screenshot(name):
-    data = subprocess.check_output([adb, "exec-out", "screencap", "-p"], timeout=30)
-    assert data.startswith(b"\x89PNG"), "screencap did not return an image"
-    (output / name).write_bytes(data)
-    print("Captured", name, flush=True)
+def screenshot(name, optional=False):
+    for attempt in range(6):
+        if attempt == 0:
+            result = subprocess.run([adb, "exec-out", "screencap", "-p"],
+                                    capture_output=True, timeout=30)
+        else:
+            # Some emulator builds race screencap's stdout Binder teardown.
+            # A device file also preserves the PNG if teardown prints a warning.
+            shell("rm", "-f", "/sdcard/wiredash-screen.png")
+            shot = subprocess.run([adb, "shell", "screencap", "-p", "/sdcard/wiredash-screen.png"],
+                                  capture_output=True, timeout=30)
+            result = subprocess.run([adb, "exec-out", "cat", "/sdcard/wiredash-screen.png"],
+                                    capture_output=True, timeout=30)
+            result.stderr += shot.stdout + shot.stderr
+        start = result.stdout.find(b"\x89PNG\r\n\x1a\n")
+        end = result.stdout.find(b"IEND\xaeB`\x82", max(start, 0))
+        if start >= 0 and end >= 0:
+            (output / name).write_bytes(result.stdout[start:end + 8])
+            print("Captured", name, flush=True)
+            return
+        (output / f"screencap-failure-{attempt}.txt").write_bytes(result.stdout + result.stderr)
+        time.sleep(2)
+    if not optional:
+        raise RuntimeError("screencap did not return an image after startup retries")
 
 
 def ui(name="current-ui.xml"):
@@ -112,7 +131,8 @@ try:
     for setting in ["window_animation_scale", "transition_animation_scale", "animator_duration_scale"]:
         shell("settings", "put", "global", setting, "0")
     shell("input", "keyevent", "82")
-    screenshot("emulator-boot.png")
+    time.sleep(10)  # Automotive's foreground user unlocks after sys.boot_completed.
+    screenshot("emulator-boot.png", optional=True)
 
     broker_config = output / "mosquitto.conf"
     broker_config.write_text("listener 18884 127.0.0.1\nallow_anonymous true\npersistence false\n")
