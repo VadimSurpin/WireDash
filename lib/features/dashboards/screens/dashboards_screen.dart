@@ -37,6 +37,7 @@ import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
 import '../../../engine/automations_paused_chip.dart';
 import '../widgets/poll_card.dart';
+import '../widgets/remote_offer_card.dart';
 import '../widgets/why_card.dart';
 import '../widgets/connection_status_banner.dart';
 
@@ -295,6 +296,7 @@ class _DashboardsTabbed extends ConsumerWidget {
                       HaImportOfferCard(connectionId: connectionId),
                       AnalyticsConsentCard(connectionId: connectionId),
                       WhyCard(connectionId: connectionId),
+                      RemoteOfferCard(connectionId: connectionId),
                       PollCard(connectionId: connectionId),
                     ],
                     AlertsPausedBanner(connectionId: connectionId),

@@ -799,6 +799,27 @@ class ProEvent extends AnalyticsEvent {
   Map<String, String> get props => {'step': _snake(step.name)};
 }
 
+/// Remote control (3.1.11): the one-time offer on the dashboard was shown,
+/// opened or put away, and remote control was turned on or off. [pro] is
+/// whether this phone has Pro. Nothing about the home or the relay.
+enum RemoteStep { offerShown, offerOpened, offerNotNow, turnedOn, turnedOff }
+
+class RemoteEvent extends AnalyticsEvent {
+  const RemoteEvent(this.step, {this.pro});
+
+  final RemoteStep step;
+  final bool? pro;
+
+  @override
+  String get name => 'remote';
+
+  @override
+  Map<String, String> get props => {
+        'step': _snake(step.name),
+        if (pro != null) 'pro': pro! ? 'yes' : 'no',
+      };
+}
+
 /// [n] as a coarse label: an exact value from [exact], a "lo-hi" range from
 /// [ranges], else [top].
 String bucket(

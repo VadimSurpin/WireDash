@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4346,7 +4347,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Fernsteuerung von überall, über das ZigDash-Relay';
+      'Fernsteuerung von überall, über das ZigDash-Relay, ohne monatliche Gebühr';
 
   @override
   String get proRemoteFair =>
@@ -4432,6 +4433,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get remoteIntroTitle => 'Steuern Sie Ihr Zuhause von überall';
+
+  @override
+  String get remoteOfferBody =>
+      'Erreichen Sie Ihre Geräte auch unterwegs, über das verschlüsselte ZigDash-Relay. Teil von Pro: einmal zahlen, keine monatliche Gebühr. Richten Sie es zu Hause ein.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Sie haben Pro: Schalten Sie die Fernsteuerung zu Hause ein, dann erreichen Sie Ihre Geräte von überall.';
+
+  @override
+  String get remoteOfferShow => 'Zeigen';
 
   @override
   String get remoteIntroBody =>

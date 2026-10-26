@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4330,7 +4331,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Zdalne sterowanie z dowolnego miejsca przez przekaźnik ZigDash';
+      'Zdalne sterowanie z dowolnego miejsca przez przekaźnik ZigDash, bez miesięcznej opłaty';
 
   @override
   String get proRemoteFair =>
@@ -4416,6 +4417,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get remoteIntroTitle => 'Steruj domem z dowolnego miejsca';
+
+  @override
+  String get remoteOfferBody =>
+      'Steruj urządzeniami poza domem, przez szyfrowany przekaźnik ZigDash. Część Pro: jedna płatność, bez miesięcznej opłaty. Skonfiguruj to, będąc w domu.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Masz Pro: włącz zdalne sterowanie, będąc w domu, a potem steruj urządzeniami z dowolnego miejsca.';
+
+  @override
+  String get remoteOfferShow => 'Pokaż';
 
   @override
   String get remoteIntroBody =>

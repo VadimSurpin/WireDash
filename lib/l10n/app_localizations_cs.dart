@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4329,7 +4330,8 @@ class AppLocalizationsCs extends AppLocalizations {
       'Neomezené automatizace; tři na domácnost jsou zdarma';
 
   @override
-  String get proGetRemote => 'Ovládání odkudkoli přes relay ZigDash';
+  String get proGetRemote =>
+      'Ovládání odkudkoli přes relay ZigDash, bez měsíčního poplatku';
 
   @override
   String get proRemoteFair =>
@@ -4415,6 +4417,17 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remoteIntroTitle => 'Ovládejte domácnost odkudkoli';
+
+  @override
+  String get remoteOfferBody =>
+      'Ovládejte zařízení i mimo domov, přes šifrovaný relay ZigDash. Součást Pro: jedna platba, žádný měsíční poplatek. Nastavte to, když jste doma.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Máte Pro: zapněte ovládání na dálku, když jste doma, a pak ovládejte zařízení odkudkoli.';
+
+  @override
+  String get remoteOfferShow => 'Ukázat';
 
   @override
   String get remoteIntroBody =>

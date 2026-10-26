@@ -9,6 +9,7 @@ import '../../onboarding/demo_service.dart' show isDemoConnection;
 import '../../settings/providers/settings_controller.dart'
     show sharedPreferencesProvider;
 import '../../settings/screens/settings_screen.dart' show sendFeedback;
+import 'remote_offer_card.dart' show remoteOfferProvider;
 
 /// "1" once the poll was answered or put away: it is asked only once.
 const pollDoneKey = 'poll_next_done';
@@ -52,7 +53,9 @@ class _PollCardState extends ConsumerState<PollCard> {
         host == null ||
         isDemoConnection(host) ||
         // The usage-data question comes first; the cards don't stack.
-        (available && consent == AnalyticsConsent.unasked)) {
+        (available && consent == AnalyticsConsent.unasked) ||
+        // The remote control offer goes first while it shows (3.1.11).
+        ref.watch(remoteOfferProvider(widget.connectionId))) {
       return const SizedBox.shrink();
     }
     final l10n = context.l10n;

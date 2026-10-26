@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4323,7 +4324,8 @@ class AppLocalizationsSv extends AppLocalizations {
       'Obegränsade automationer; tre per hem är gratis';
 
   @override
-  String get proGetRemote => 'Fjärrstyrning var du än är, via ZigDash-reläet';
+  String get proGetRemote =>
+      'Fjärrstyrning var du än är, via ZigDash-reläet, utan månadsavgift';
 
   @override
   String get proRemoteFair =>
@@ -4409,6 +4411,17 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get remoteIntroTitle => 'Styr ditt hem var du än är';
+
+  @override
+  String get remoteOfferBody =>
+      'Nå dina enheter när du är borta, via ZigDashs krypterade relä. Ingår i Pro: en betalning, ingen månadsavgift. Ställ in det medan du är hemma.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Du har Pro: slå på fjärrstyrning medan du är hemma, så når du dina enheter var du än är.';
+
+  @override
+  String get remoteOfferShow => 'Visa';
 
   @override
   String get remoteIntroBody =>

@@ -7647,7 +7647,7 @@ abstract class AppLocalizations {
   /// No description provided for @proGetRemote.
   ///
   /// In en, this message translates to:
-  /// **'Remote control from anywhere, through the ZigDash relay'**
+  /// **'Remote control from anywhere, through the ZigDash relay, with no monthly fee'**
   String get proGetRemote;
 
   /// No description provided for @proRemoteFair.
@@ -7787,6 +7787,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Control your home from anywhere'**
   String get remoteIntroTitle;
+
+  /// No description provided for @remoteOfferBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach your devices when you\'re away, through ZigDash\'s encrypted relay. Part of Pro: one payment, no monthly fee. Set it up while you\'re at home.'**
+  String get remoteOfferBody;
+
+  /// No description provided for @remoteOfferBodyPro.
+  ///
+  /// In en, this message translates to:
+  /// **'You have Pro: turn on remote control while you\'re at home, then reach your devices from anywhere.'**
+  String get remoteOfferBodyPro;
+
+  /// No description provided for @remoteOfferShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show me'**
+  String get remoteOfferShow;
 
   /// No description provided for @remoteIntroBody.
   ///

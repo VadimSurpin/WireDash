@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4324,7 +4325,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Управление откуда угодно через ретранслятор ZigDash';
+      'Управление откуда угодно через ретранслятор ZigDash, без ежемесячной оплаты';
 
   @override
   String get proRemoteFair =>
@@ -4410,6 +4411,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get remoteIntroTitle => 'Управляйте домом откуда угодно';
+
+  @override
+  String get remoteOfferBody =>
+      'Управляйте устройствами вне дома через зашифрованный ретранслятор ZigDash. Входит в Pro: один платёж, без ежемесячной оплаты. Настройте, пока вы дома.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'У вас есть Pro: включите удалённое управление, пока вы дома, и управляйте устройствами откуда угодно.';
+
+  @override
+  String get remoteOfferShow => 'Показать';
 
   @override
   String get remoteIntroBody =>
