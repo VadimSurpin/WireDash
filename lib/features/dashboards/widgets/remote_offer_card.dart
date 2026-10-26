@@ -17,7 +17,6 @@ import '../../pro/pro.dart';
 import '../../pro/pro_screen.dart';
 import '../../settings/providers/settings_controller.dart'
     show sharedPreferencesProvider;
-import 'why_card.dart' show whyAskKey;
 
 /// "1" once the remote control offer was opened or put away: asked once.
 const remoteOfferDoneKey = 'remote_offer_done';
@@ -52,8 +51,9 @@ final atHomeProvider = Provider.autoDispose.family<bool, String>((
 /// Whether the remote control offer shows on [connectionId]'s dashboard
 /// (3.1.11): once, after [remoteOfferAfterDays] days, where Pro is sold,
 /// on a real home without remote control, and only at home, where it can
-/// be turned on. The other first-run cards come first; the poll waits for
-/// it.
+/// be turned on. The usage-data question and the Home Assistant import
+/// come first; "What made you try ZigDash?" is long gone by day five (it
+/// stops on day three, answered or not); the poll waits for it.
 final remoteOfferProvider = Provider.autoDispose.family<bool, String>((
   ref,
   connectionId,
@@ -72,7 +72,6 @@ final remoteOfferProvider = Provider.autoDispose.family<bool, String>((
       ref.watch(analyticsConsentProvider) == AnalyticsConsent.unasked) {
     return false;
   }
-  if (prefs.getString(whyAskKey) != null) return false;
   if (ref.watch(haImportOfferProvider) == connectionId) return false;
   final remote = ref.watch(remoteHomeProvider(connectionId));
   if (!remote.hasValue || remote.value != null) return false;

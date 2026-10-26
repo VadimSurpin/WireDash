@@ -186,10 +186,15 @@ void main() {
   testWidgets('the other first-run cards come first', (tester) async {
     await _card(tester, prefs: {'review_sessions': 5});
     expect(find.text(_title), findsNothing);
-    await _card(tester, prefs: {..._ready, whyAskKey: 'c1'});
-    expect(find.text(_title), findsNothing);
     await _card(tester, prefs: {..._ready, HaImportOffer.key: 'c1'});
     expect(find.text(_title), findsNothing);
+  });
+
+  // The first-setup note for "What made you try ZigDash?" stays when it was
+  // never answered (usage data off, or ignored until day three).
+  testWidgets('not held back by an unanswered why question', (tester) async {
+    await _card(tester, prefs: {..._ready, whyAskKey: 'c1'});
+    expect(find.text(_title), findsOneWidget);
   });
 
   testWidgets('the poll waits for it, and comes after', (tester) async {
