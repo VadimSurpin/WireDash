@@ -76,7 +76,9 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 
 This branch also includes an **[Android Auto IoT preview](docs/ANDROID_AUTO.md)**
 for dashboard switches, command buttons and gate/roller controls, using the
-configured MQTT/WireGuard connection. Real-car installation requires a trusted
+configured MQTT/WireGuard connection. On current Android Auto hosts, saved
+groups and their buttons appear directly in a scrolling dashboard with no
+control-detail step or Next/Previous pages. Real-car installation requires a trusted
 Google Play test install; the documentation includes Desktop Head Unit testing.
 
 WireDash also retains the original project's Zigbee2MQTT auto-discovery,

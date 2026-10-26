@@ -10,6 +10,10 @@ import androidx.car.app.model.GridTemplate
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Row
+import androidx.car.app.model.Item
+import androidx.car.app.model.Section
+import androidx.car.app.model.SectionedItemTemplate
+import androidx.car.app.serialization.Bundleable
 import androidx.car.app.testing.ScreenController
 import androidx.car.app.testing.TestCarContext
 import androidx.lifecycle.Lifecycle
@@ -76,6 +80,149 @@ class CarScreensTest {
     }
     private fun actions(screen: ActionsCarScreen): List<GridItem> =
         (screen.onGetTemplate() as GridTemplate).singleList!!.items.map { it as GridItem }
+
+    private fun modernHost() {
+        context.updateHandshakeInfo(HandshakeInfo("com.google.android.projection.gearhead", 8))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun items(section: Section<*>): List<Item> {
+        val delegate = section.itemsDelegate
+        if (delegate.size == 0) return emptyList()
+        var result: List<Item>? = null
+        delegate.requestItemRange(0, delegate.size - 1, object : OnDoneCallback {
+            override fun onSuccess(response: Bundleable?) { result = response!!.get() as List<Item> }
+            override fun onFailure(response: Bundleable) { fail("Host item request failed: ${response.get()}") }
+        })
+        shadowOf(Looper.getMainLooper()).idle()
+        return requireNotNull(result)
+    }
+
+    private fun dashboardItems(screen: DashboardControlsCarScreen): List<GridItem> =
+        (screen.onGetTemplate() as SectionedItemTemplate).sections.flatMap { items(it) }.map { it as GridItem }
+
+    private fun commandButton(id: String, section: String? = null): JSONObject = JSONObject()
+        .put("id", id).put("name", id).put("kind", "button").put("sectionId", section)
+        .put("waitForFeedback", false).put("state", JSONObject.NULL)
+        .put("pending", JSONObject.NULL).put("failed", false)
+        .put("actions", JSONArray().put(JSONObject().put("id", "PRESS").put("title", id).put("icon", "on")))
+
+    @Test fun modernDashboardShowsSavedGroupsWithDirectGateButtons() {
+        modernHost()
+        val gate = bridge.response.getJSONArray("controls").getJSONObject(0).put("sectionId", "gates")
+        bridge.response.put("sections", JSONArray()
+            .put(JSONObject().put("id", "gates").put("name", "Gates"))
+            .put(JSONObject().put("id", "lights").put("name", "Lights")))
+            .put("controls", JSONArray().put(commandButton("Loose"))
+                .put(gate).put(commandButton("Driveway light", "lights")))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val template = screen.onGetTemplate() as SectionedItemTemplate
+        assertEquals(listOf(null, "Gates", "Lights"), template.sections.map { it.title?.toString() })
+        assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX, template.scrollStatePersistenceStrategy)
+        val buttons = dashboardItems(screen)
+        assertEquals(listOf("Loose", "Enter", "Exit", "Driveway light"), buttons.map { it.title.toString() })
+        assertEquals("Gate", buttons[1].text.toString())
+        buttons[1].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OPEN", bridge.commands.single()["actionId"])
+        assertEquals("gate", bridge.commands.single()["controlId"])
+        assertTrue(dashboardItems(screen)[1].isLoading)
+        assertFalse(dashboardItems(screen)[2].isLoading)
+    }
+
+    @Test fun commandSpinnersAreIndependentAndIgnoreStaleBackendPending() {
+        modernHost()
+        val a = commandButton("A").put("pending", "PRESS")
+        val b = commandButton("B")
+        bridge.response.put("controls", JSONArray().put(a).put(b))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        assertFalse(dashboardItems(screen)[0].isLoading)
+        dashboardItems(screen)[0].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idleFor(100, TimeUnit.MILLISECONDS)
+        dashboardItems(screen)[1].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idleFor(899, TimeUnit.MILLISECONDS)
+        assertTrue(dashboardItems(screen).all { it.isLoading })
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.MILLISECONDS)
+        assertFalse(dashboardItems(screen)[0].isLoading)
+        assertTrue(dashboardItems(screen)[1].isLoading)
+        shadowOf(Looper.getMainLooper()).idleFor(100, TimeUnit.MILLISECONDS)
+        assertTrue(dashboardItems(screen).none { it.isLoading })
+        dashboardItems(screen)[0].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(listOf("A", "B", "A"), bridge.commands.map { it["controlId"] })
+    }
+
+    @Test fun modernSwitchUsesOneTileAndSendsTheOppositeOfItsState() {
+        modernHost()
+        val control = commandButton("Light").put("kind", "switch").put("state", "ON")
+            .put("waitForFeedback", true).put("actions", JSONArray()
+                .put(JSONObject().put("id", "ON").put("title", "On").put("icon", "on"))
+                .put(JSONObject().put("id", "OFF").put("title", "Off").put("icon", "off")))
+        bridge.response.put("controls", JSONArray().put(control))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        assertEquals("Light", dashboardItems(screen).single().title.toString())
+        dashboardItems(screen).single().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OFF", bridge.commands.single()["actionId"])
+    }
+
+    @Test fun modernScrollingExposesAllButtonsAndCatalogRowsWithoutPageItems() {
+        modernHost()
+        val limit = context.getCarService(ConstraintManager::class.java)
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_GRID)
+        val count = limit + 25
+        val controls = JSONArray()
+        repeat(count) { controls.put(commandButton("Button $it")) }
+        bridge.response.put("controls", controls)
+        val dashboard = DashboardControlsCarScreen(context, bridge, "d")
+        start(dashboard)
+        assertEquals(count, dashboardItems(dashboard).size)
+        dashboardItems(dashboard).last().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("Button ${count - 1}", bridge.commands.single()["controlId"])
+
+        val dashboards = JSONArray()
+        repeat(count) { dashboards.put(JSONObject().put("id", "$it").put("name", "Dashboard $it").put("home", "Home")) }
+        bridge.response = JSONObject().put("dashboards", dashboards)
+        val catalog = DashboardCarScreen(context, bridge)
+        start(catalog)
+        val template = catalog.onGetTemplate() as SectionedItemTemplate
+        val rows = template.sections.flatMap { items(it) }.map { it as Row }
+        assertEquals(count, rows.size)
+        assertEquals("Dashboard ${count - 1}", rows.last().title.toString())
+        assertTrue(rows.none { it.title.toString() in listOf("Next", "Previous") })
+        assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX, template.scrollStatePersistenceStrategy)
+    }
+
+    @Test fun modernDashboardResumeClearsSpinnersAndIgnoresOldCallbacks() {
+        modernHost()
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        dashboardItems(screen).first().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(dashboardItems(screen).first().isLoading)
+        bridge.delayed = true
+        lifecycle.moveToState(Lifecycle.State.CREATED)
+        lifecycle.moveToState(Lifecycle.State.RESUMED)
+        val old = bridge.callbacks.removeAt(0)
+        lifecycle.moveToState(Lifecycle.State.CREATED)
+        lifecycle.moveToState(Lifecycle.State.RESUMED)
+        old(JSONObject().put("outcome", "error"))
+        bridge.callbacks.removeAt(0)(FakeBridge.snapshot())
+        assertFalse(dashboardItems(screen).first().isLoading)
+    }
+
+    @Test fun modernDisconnectedDashboardHasNoClickableActions() {
+        modernHost()
+        bridge.response = FakeBridge.snapshot(false)
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        assertTrue(dashboardItems(screen).all { it.onClickDelegate == null && it.text.toString().contains("Reconnecting") })
+        assertTrue(bridge.commands.isEmpty())
+    }
 
     @Test fun gateUsesConfiguredButtonsAndSpinnerThenAllowsAnotherPulse() {
         val screen = ActionsCarScreen(context, bridge, "d", "gate")

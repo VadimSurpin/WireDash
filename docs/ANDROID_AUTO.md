@@ -1,8 +1,9 @@
 # Android Auto preview
 
 This branch adds a projected Android Auto **IoT** app using AndroidX Car App
-Library 1.7.0 and Car App API 6. Configure WireDash on the phone; the car presents
-native dashboard lists and large action buttons.
+Library 1.8.0-rc01. Configure WireDash on the phone; the car presents native
+dashboard groups and large action buttons. On hosts supporting Car App API 8,
+select a dashboard once and operate its buttons directly in a scrolling grid.
 
 ## Controls
 
@@ -13,6 +14,13 @@ curtain pairs are grouped into Open/Close controls. Other panel types remain on
 the phone. A separate dashboard named "Car" is a useful way to group gates,
 garage doors and driveway lights.
 
+Saved section names and section order follow the phone dashboard. Unsectioned
+tiles appear first, followed by each group in order. Empty groups are omitted.
+Command buttons retain their names and configured Material icons/colors;
+switches use one tile with their saved state icons and send the opposite state
+on tap. Covers show their configured action buttons together, with the control
+name below each action so similarly named Open/Close buttons are distinguishable.
+
 Cover button visibility, titles and gate/roller icons follow the phone editor.
 Command-only covers send the saved command, spin for one second and return to
 their initial appearance without a state subscription. State-aware controls
@@ -22,8 +30,17 @@ for a WB pulse input. WB command topics retain their leading slash, append
 `/on`, and are never retained. The host disallows clicking a loading grid item;
 the action becomes available again when its spinner finishes.
 
-The car host's list limit is respected with Previous/Next pages. Editing,
-credentials, text entry and connection setup are handled on the phone.
+The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.
+The host fetches more items while scrolling; WireDash does not insert Next or
+Previous items or truncate the grid at the older template's item limit. Scroll
+position is preserved across state/spinner updates. Spinners on different
+controls are independent. Android Auto still determines grid geometry, button
+sizes, and scrolling affordances; the phone's Flutter layout is not mirrored.
+
+API 6/7 hosts retain the previous list/detail screens and pagination to respect
+their hard content limits. Update Android Auto for the grouped scrolling UI.
+The 1.8 release candidate is used for the API 8 template and scroll preservation.
+Editing, credentials, text entry and connection setup are handled on the phone.
 
 ## Connections and lifecycle
 
@@ -59,10 +76,14 @@ For development, use Google's [Desktop Head Unit (DHU)](https://developer.androi
 3. Enable the head-unit server from Android Auto's developer menu.
 4. Connect the phone by USB, then run `adb forward tcp:5277 tcp:5277` and start
    the SDK's `extras/google/auto/desktop-head-unit`.
-5. Open WireDash in the DHU launcher. Select a dashboard, then a control.
+5. Open WireDash in the DHU launcher. Select a dashboard. On an API 8 host,
+   check that the saved groups and buttons are shown directly; scroll through
+   a dashboard larger than one screen without Next/Previous controls.
 6. Check a scalar WB switch and a gate: command topics/payloads must match the
    phone, button titles/icons must match, and repeated gate taps must publish
    another `1`. Test a command-only cover without state messages.
+   Tap two different controls and verify each spinner clears independently
+   after one second, without jumping back to the top of the dashboard.
 7. Hide/return to the car app and disconnect/reconnect its network route.
    Reconnecting must appear, state must recover, and no command may be replayed.
 
@@ -75,12 +96,15 @@ vehicle) are separate distribution steps.
 
 `flutter test test/car` exercises saved-control routing, exact WB topics,
 non-retained pulses, visibility, repeat commands, one-second timing, session
-freshness, missing/removed controls, and offline/expired-command handling.
+freshness, missing/removed controls, offline/expired-command handling, and saved
+section ordering, orphaned tiles, group renaming and configured button appearance.
 
 `cd android && ./gradlew :app:testFossDebugUnitTest` uses Robolectric and the
-Car App testing library to build real host templates, check pagination, test
-spinner timing and verify that stale callbacks/spinners do not survive hiding
-and resuming the car screen. CI runs these tests before uploading the APK.
+Car App testing library to build real host templates, request all items beyond
+the old list/grid limits, check direct button commands and independent spinner
+timing, require scroll preservation, and verify that stale callbacks/spinners do
+not survive hiding and resuming the car screen. The older-host pagination
+fallback is also tested. CI runs these tests before uploading the APK.
 
 Official references: [IoT apps](https://developer.android.com/training/cars/apps/iot),
 [projected-app manifest](https://developer.android.com/training/cars/apps/auto),

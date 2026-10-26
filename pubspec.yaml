@@ -1,7 +1,7 @@
 name: wiredash
 description: "Material 3 MQTT dashboard for Zigbee2MQTT control."
 publish_to: 'none'
-version: 3.1.6+77
+version: 3.1.7+78
 
 environment:
   sdk: ^3.8.0

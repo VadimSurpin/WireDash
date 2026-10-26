@@ -18,6 +18,9 @@ import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Row
+import androidx.car.app.model.RowSection
+import androidx.car.app.model.SectionedItemTemplate
+import androidx.car.app.model.Header
 import androidx.car.app.model.Template
 import androidx.car.app.CarToast
 import androidx.core.graphics.drawable.IconCompat
@@ -117,6 +120,7 @@ internal abstract class PollingCarScreen(
             "up" -> R.drawable.car_up
             "left" -> R.drawable.car_left
             "right" -> R.drawable.car_right
+            "refresh" -> R.drawable.car_refresh
             "off" -> R.drawable.car_off
             "on" -> R.drawable.car_on
             else -> R.drawable.ic_shortcut_tile
@@ -133,6 +137,15 @@ internal abstract class PagedCarScreen(context: CarContext, bridge: CarBridge) :
     private var offset = 0
     protected fun list(title: String, root: Boolean, entries: List<JSONObject>,
         row: (JSONObject) -> Row): Template {
+        if (carContext.carAppApiLevel >= 8) {
+            // The host lazily requests items as the user scrolls. Do not
+            // apply the older ListTemplate limit or insert page controls.
+            return SectionedItemTemplate.Builder()
+                .setHeader(Header.Builder().setTitle(title)
+                    .setStartHeaderAction(if (root) Action.APP_ICON else Action.BACK).build())
+                .setScrollStatePersistenceStrategy(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX)
+                .addSection(RowSection.Builder().setItems(entries.map(row)).build()).build()
+        }
         val limit = carContext.getCarService(ConstraintManager::class.java)
             .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST).coerceAtLeast(3)
         val count = if (entries.size > limit) limit - 2 else limit
@@ -162,7 +175,9 @@ internal class DashboardCarScreen(context: CarContext, bridge: CarBridge) : Page
         return list("WireDash", true, entries) { entry ->
             Row.Builder().setTitle(entry.getString("name")).addText(entry.getString("home"))
                 .setBrowsable(true).setOnClickListener {
-                    screenManager.push(ControlsCarScreen(carContext, bridge, entry.getString("id")))
+                    screenManager.push(if (carContext.carAppApiLevel >= 8)
+                        DashboardControlsCarScreen(carContext, bridge, entry.getString("id"))
+                    else ControlsCarScreen(carContext, bridge, entry.getString("id")))
                 }.build()
         }
     }

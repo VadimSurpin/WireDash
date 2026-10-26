@@ -5,6 +5,7 @@ import 'package:mqtt_client/mqtt_client.dart' as mc;
 import '../data/database/database.dart';
 import '../data/database/daos/dashboard_dao.dart';
 import '../data/database/daos/panel_dao.dart';
+import '../data/database/daos/section_dao.dart';
 import '../l10n/app_localizations.dart';
 import '../mqtt/json_path.dart';
 import '../mqtt/mqtt_manager.dart';
@@ -40,6 +41,7 @@ class CarDashboardService {
   MqttManager? _manager;
   Dashboard? _dashboard;
   List<CarControl> _controls = [];
+  List<Section> _sections = [];
   final _subscriptions = <String, StreamSubscription<MqttRxMessage>>{};
   final _states = <String, MqttRxMessage>{};
   final _pending = <String, _Pending>{};
@@ -96,7 +98,18 @@ class CarDashboardService {
     }
     _dashboard = dash;
     final previous = {for (final c in _controls) c.id: c.commandSignature};
-    _controls = carControls(dash, await PanelDao(db).getByDashboard(id), l10n);
+    _sections = await SectionDao(db).getByDashboard(id);
+    final panels = await PanelDao(db).getByDashboard(id);
+    final knownSections = _sections.map((s) => s.id).toSet();
+    // Match the phone: unsectioned/orphaned tiles first, then saved section
+    // order, retaining panel order inside each section.
+    _controls = carControls(dash, [
+      for (final panel in panels)
+        if (!knownSections.contains(panel.sectionId)) panel,
+      for (final section in _sections)
+        for (final panel in panels)
+          if (panel.sectionId == section.id) panel,
+    ], l10n);
     for (final c in _controls) {
       if (previous[c.id] != c.commandSignature) {
         _finish(c.id);
@@ -135,6 +148,11 @@ class CarDashboardService {
       'name': dash.name,
       'connected': mgr.isConnected && mgr.status == MqttStatus.connected,
       'status': mgr.status.name,
+      'sections': [
+        for (final section in _sections)
+          if (_controls.any((c) => c.sectionId == section.id))
+            {'id': section.id, 'name': section.name},
+      ],
       'strings': {
         'on': l10n.panelStateOn,
         'off': l10n.panelStateOff,
@@ -190,6 +208,9 @@ class CarDashboardService {
       'id': c.id,
       'name': c.name,
       'kind': c.kind,
+      'sectionId': _sections.any((s) => s.id == c.sectionId)
+          ? c.sectionId
+          : null,
       'waitForFeedback': c.waitForFeedback,
       'state': state,
       'pending': _pending[c.id]?.action.id,
@@ -307,5 +328,6 @@ class CarDashboardService {
     _pending.clear();
     _failed.clear();
     _controls = [];
+    _sections = [];
   }
 }

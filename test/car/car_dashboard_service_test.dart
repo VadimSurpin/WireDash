@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' show Locale;
 
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -113,6 +114,8 @@ Panel _panel(
   String topic = 'set',
   String? subscribeTopic = 'state',
   String? prefix,
+  String? sectionId,
+  int sortOrder = 0,
   bool retain = true,
 }) => Panel(
   id: id,
@@ -122,10 +125,11 @@ Panel _panel(
   topic: topic,
   subscribeTopic: subscribeTopic,
   topicPrefixOverride: prefix,
+  sectionId: sectionId,
   qos: 1,
   retain: retain,
   width: PanelWidth.wide,
-  sortOrder: 0,
+  sortOrder: sortOrder,
   config: config.encode(),
   mergeFlags: 0,
   createdAt: _time,
@@ -294,6 +298,108 @@ void main() {
         db.into(db.panels).insertOnConflictUpdate(panel.toCompanion(false));
     Map<String, Object?> first(Map<String, Object?> snapshot) =>
         (snapshot['controls'] as List).first as Map<String, Object?>;
+
+    test(
+      'car groups match phone order, include orphans and preserve button appearance',
+      () async {
+        for (final entry in [
+          ('later', 'Second group', 20),
+          ('first', 'First group', 10),
+          ('empty', 'Empty', 30),
+        ]) {
+          await db
+              .into(db.sections)
+              .insert(
+                SectionsCompanion.insert(
+                  id: entry.$1,
+                  dashboardId: 'd',
+                  name: entry.$2,
+                  sortOrder: Value(entry.$3),
+                  createdAt: _time,
+                  updatedAt: _time,
+                ),
+              );
+        }
+        const cfg = ButtonConfig(
+          payload: '1',
+          iconCodepoint: 0xe88a,
+          colorArgb: 0xff123456,
+        );
+        await save(
+          _panel(
+            cfg,
+            id: 'second',
+            type: PanelType.button,
+            sectionId: 'later',
+            sortOrder: 0,
+          ),
+        );
+        await save(
+          _panel(
+            cfg,
+            id: 'first-b',
+            type: PanelType.button,
+            sectionId: 'first',
+            sortOrder: 2,
+          ),
+        );
+        await save(
+          _panel(
+            cfg,
+            id: 'first-a',
+            type: PanelType.button,
+            sectionId: 'first',
+            sortOrder: 1,
+          ),
+        );
+        // Older backups can contain a reference to a missing section.
+        await db.customStatement('PRAGMA foreign_keys = OFF');
+        await save(
+          _panel(
+            cfg,
+            id: 'orphan',
+            type: PanelType.button,
+            sectionId: 'deleted',
+            sortOrder: 3,
+          ),
+        );
+        await db.customStatement('PRAGMA foreign_keys = ON');
+        await save(
+          _panel(cfg, id: 'loose', type: PanelType.button, sortOrder: 4),
+        );
+        final data = await service.open('d');
+        expect(data['sections'], [
+          {'id': 'first', 'name': 'First group'},
+          {'id': 'later', 'name': 'Second group'},
+        ]);
+        final controls = (data['controls'] as List)
+            .cast<Map<String, Object?>>();
+        expect(controls.map((c) => c['id']), [
+          'orphan',
+          'loose',
+          'first-a',
+          'first-b',
+          'second',
+        ]);
+        expect(controls.take(2).every((c) => c['sectionId'] == null), isTrue);
+        final action = (controls.last['actions'] as List).single as Map;
+        expect(action['iconCodepoint'], 0xe88a);
+        expect(action['colorArgb'], 0xff123456);
+
+        // Moving/renaming a group on the phone is reflected by the next poll.
+        await (db.update(
+          db.sections,
+        )..where((s) => s.id.equals('later'))).write(
+          const SectionsCompanion(sortOrder: Value(0), name: Value('Renamed')),
+        );
+        final updated = await service.open('d');
+        expect((updated['sections'] as List).first, {
+          'id': 'later',
+          'name': 'Renamed',
+        });
+        expect(mgr.sent, isEmpty);
+      },
+    );
 
     test(
       'catalog works with phone closed and excludes unsupported dashboard content',

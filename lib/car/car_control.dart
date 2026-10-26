@@ -24,10 +24,24 @@ class CarCommand {
 }
 
 class CarAction {
-  const CarAction(this.id, this.title, this.icon, this.commands);
+  const CarAction(
+    this.id,
+    this.title,
+    this.icon,
+    this.commands, {
+    this.iconCodepoint,
+    this.colorArgb,
+  });
   final String id, title, icon;
   final List<CarCommand> commands;
-  Map<String, Object?> toJson() => {'id': id, 'title': title, 'icon': icon};
+  final int? iconCodepoint, colorArgb;
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'title': title,
+    'icon': icon,
+    if (iconCodepoint != null) 'iconCodepoint': iconCodepoint,
+    if (colorArgb != null) 'colorArgb': colorArgb,
+  };
 }
 
 class CarControl {
@@ -36,6 +50,7 @@ class CarControl {
     required this.name,
     required this.kind,
     required this.actions,
+    this.sectionId,
     this.topics = const [],
     this.path,
     this.onMatch = 'ON',
@@ -43,6 +58,7 @@ class CarControl {
     this.binding,
   });
   final String id, name, kind;
+  final String? sectionId;
   final List<CarAction> actions;
   final List<String> topics;
   final String? path;
@@ -100,17 +116,22 @@ List<CarControl> carControls(
         String? path,
         String onMatch,
         CarCommand on,
-        CarCommand off,
-      ) => CarControl(
+        CarCommand off, {
+        int? onIcon,
+        int? offIcon,
+      }) => CarControl(
         id: id,
         name: name,
         kind: 'switch',
+        sectionId: panel.sectionId,
         topics: [topic],
         path: path,
         onMatch: onMatch,
         actions: [
-          CarAction('ON', l10n.panelStateOn, 'on', [on]),
-          CarAction('OFF', l10n.panelStateOff, 'off', [off]),
+          CarAction('ON', l10n.panelStateOn, 'on', [on], iconCodepoint: onIcon),
+          CarAction('OFF', l10n.panelStateOff, 'off', [
+            off,
+          ], iconCodepoint: offIcon),
         ],
       );
       CarControl cover(String id, String name, CoverConfig cfg) {
@@ -147,6 +168,7 @@ List<CarControl> carControls(
           id: id,
           name: name,
           kind: 'cover',
+          sectionId: panel.sectionId,
           waitForFeedback: cfg.waitForFeedback,
           binding: wb,
           topics: !cfg.waitForFeedback
@@ -195,6 +217,8 @@ List<CarControl> carControls(
               c.onMatch,
               command(c.onPayload),
               command(c.offPayload),
+              onIcon: c.onIconCodepoint,
+              offIcon: c.offIconCodepoint,
             ),
           );
         case ButtonConfig c:
@@ -203,9 +227,17 @@ List<CarControl> carControls(
               id: panel.id,
               name: panel.name,
               kind: 'button',
+              sectionId: panel.sectionId,
               waitForFeedback: false,
               actions: [
-                CarAction('PRESS', panel.name, 'send', [command(c.payload)]),
+                CarAction(
+                  'PRESS',
+                  panel.name,
+                  'send',
+                  [command(c.payload)],
+                  iconCodepoint: c.iconCodepoint,
+                  colorArgb: c.colorArgb,
+                ),
               ],
             ),
           );
@@ -253,6 +285,7 @@ List<CarControl> carControls(
                   id: '${panel.id}/${control.id}',
                   name: title,
                   kind: 'button',
+                  sectionId: panel.sectionId,
                   waitForFeedback: false,
                   actions: [
                     CarAction('PRESS', title, 'send', [
