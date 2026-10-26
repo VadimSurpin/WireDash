@@ -12,6 +12,7 @@ import 'package:wiredash/car/car_dashboard_service.dart';
 import 'package:wiredash/data/database/database.dart';
 import 'package:wiredash/data/database/tables/connections.dart';
 import 'package:wiredash/data/database/tables/panels.dart';
+import 'package:wiredash/features/devices/device_profile.dart';
 import 'package:wiredash/features/discovery/models/wirenboard_device.dart';
 import 'package:wiredash/features/panels/models/panel_config.dart';
 import 'package:wiredash/l10n/app_localizations.dart';
@@ -231,6 +232,25 @@ void main() {
     },
   );
 
+  test('read-only Z2M covers are not exposed as commands', () {
+    for (final writable in [false, true]) {
+      final profile = DeviceProfile(
+        deviceClass: DeviceClass.cover,
+        features: [
+          DeviceFeature(
+            type: 'enum',
+            property: 'state',
+            access: writable ? accessState | accessSet : accessState,
+          ),
+        ],
+      );
+      final controls = carControls(_dashboard(), [
+        _panel(DeviceTileConfig(profile: profile), type: PanelType.device),
+      ], _l10n);
+      expect(controls.length, writable ? 1 : 0);
+    }
+  });
+
   group('headless car session', () {
     late AppDatabase db;
     late _Manager mgr;
@@ -416,6 +436,70 @@ void main() {
           'removed',
         );
         expect(mgr.sent, isEmpty);
+      },
+    );
+
+    test(
+      'command-only spinner is independent of another tile watching the same relay',
+      () async {
+        await save(_panel(const CoverConfig(wirenBoard: _binding)));
+        await save(
+          _panel(
+            const CoverConfig(wirenBoard: _binding, waitForFeedback: true),
+            id: 'watcher',
+          ),
+        );
+        await service.open('d');
+        await service.command('d', 'gate', 'OPEN');
+        now = now.add(const Duration(milliseconds: 200));
+        mgr.feedback(_binding.openTopic, '1', now);
+        await Future<void>.delayed(Duration.zero);
+        final controls = (await service.open('d'))['controls'] as List;
+        final gate = controls.cast<Map<String, Object?>>().firstWhere(
+          (c) => c['id'] == 'gate',
+        );
+        expect(gate['pending'], 'OPEN');
+        timers.elapse(const Duration(seconds: 1));
+        expect(first(await service.open('d'))['pending'], isNull);
+      },
+    );
+
+    test(
+      'changing the phone tile to command-only clears an old confirmation failure',
+      () async {
+        await save(
+          _panel(
+            const CoverConfig(wirenBoard: _binding, waitForFeedback: true),
+          ),
+        );
+        await service.open('d');
+        await service.command('d', 'gate', 'OPEN');
+        timers.elapse(const Duration(seconds: 15));
+        expect(first(await service.open('d'))['failed'], isTrue);
+        await save(
+          _panel(
+            const CoverConfig(wirenBoard: _binding, waitForFeedback: false),
+          ),
+        );
+        final state = first(await service.open('d'));
+        expect(state['failed'], isFalse);
+        expect(state['pending'], isNull);
+        expect(state['state'], isNull);
+      },
+    );
+
+    test(
+      'JSON CLOSED feedback confirms Close and selects its car action',
+      () async {
+        await save(_panel(const CoverConfig()));
+        await service.open('d');
+        await service.command('d', 'gate', 'CLOSE');
+        now = now.add(const Duration(seconds: 1));
+        mgr.feedback('ignored/state', '{"state":"CLOSED"}', now);
+        await Future<void>.delayed(Duration.zero);
+        final state = first(await service.open('d'));
+        expect(state['pending'], isNull);
+        expect(state['state'], 'CLOSE');
       },
     );
 

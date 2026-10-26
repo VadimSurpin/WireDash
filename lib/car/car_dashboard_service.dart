@@ -95,7 +95,14 @@ class CarDashboardService {
       mgr.reconnectNow(force: true);
     }
     _dashboard = dash;
+    final previous = {for (final c in _controls) c.id: c.commandSignature};
     _controls = carControls(dash, await PanelDao(db).getByDashboard(id), l10n);
+    for (final c in _controls) {
+      if (previous[c.id] != c.commandSignature) {
+        _finish(c.id);
+        _failed.remove(c.id);
+      }
+    }
     final topics = _controls.expand((c) => c.topics).toSet();
     for (final topic in _subscriptions.keys.toList()) {
       if (!topics.contains(topic)) {
@@ -131,6 +138,9 @@ class CarDashboardService {
       'strings': {
         'on': l10n.panelStateOn,
         'off': l10n.panelStateOff,
+        'open': l10n.panelCoverOpen,
+        'close': l10n.panelCoverClose,
+        'stop': l10n.panelCoverStop,
         'reconnecting': l10n.connectionReconnecting,
         'working': l10n.shortcutWorking,
         'unconfirmed': l10n.shortcutNotConfirmed,
@@ -161,7 +171,14 @@ class CarDashboardService {
     }
     final message = c.topics.isEmpty ? null : _states[c.topics.first];
     if (!_fresh(message)) return null;
-    return extractByPath(message!.payload, c.path)?.toString();
+    final raw = extractByPath(message!.payload, c.path)?.toString();
+    if (c.kind != 'cover') return raw;
+    return switch (raw?.toUpperCase()) {
+      'CLOSED' => 'CLOSE',
+      'OPENED' => 'OPEN',
+      'STOPPED' => 'STOP',
+      final value => value,
+    };
   }
 
   Map<String, Object?> _describe(CarControl c) {
@@ -176,12 +193,13 @@ class CarDashboardService {
       'waitForFeedback': c.waitForFeedback,
       'state': state,
       'pending': _pending[c.id]?.action.id,
-      'failed': _failed.contains(c.id),
+      'failed': c.waitForFeedback && _failed.contains(c.id),
       'actions': [for (final action in c.actions) action.toJson()],
     };
   }
 
   bool _confirms(CarControl c, _Pending p) {
+    if (!c.waitForFeedback) return false;
     bool after(String topic, [String? value]) {
       final m = _states[topic];
       return _fresh(m) &&

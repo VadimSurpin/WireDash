@@ -186,6 +186,9 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
                 row.addText(when (state) {
                     "ON" -> current.optJSONObject("strings")?.optString("on") ?: "On"
                     "OFF" -> current.optJSONObject("strings")?.optString("off") ?: "Off"
+                    "OPEN" -> current.optJSONObject("strings")?.optString("open") ?: "Open"
+                    "CLOSE" -> current.optJSONObject("strings")?.optString("close") ?: "Close"
+                    "STOP" -> current.optJSONObject("strings")?.optString("stop") ?: "Stop"
                     null -> carContext.getString(R.string.car_unknown)
                     else -> state
                 })

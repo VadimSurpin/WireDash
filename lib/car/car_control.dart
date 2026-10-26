@@ -49,6 +49,24 @@ class CarControl {
   final String onMatch;
   final bool waitForFeedback;
   final WirenBoardCoverBinding? binding;
+
+  /// A phone-side edit invalidates a pending command if its meaning changed.
+  String get commandSignature => jsonEncode({
+    'wait': waitForFeedback,
+    'topics': topics,
+    'path': path,
+    'on': onMatch,
+    'binding': binding?.toJson(),
+    'actions': [
+      for (final a in actions)
+        {
+          'id': a.id,
+          'commands': [
+            for (final c in a.commands) [c.topic, c.payload, c.retain, c.qos],
+          ],
+        },
+    ],
+  });
 }
 
 /// The car exposes simple IoT actions. Editors, text input, schedules and
@@ -247,7 +265,9 @@ List<CarControl> carControls(
           }
         case DeviceTileConfig c:
           if (c.profile.deviceClass == DeviceClass.cover) {
-            result.add(cover(panel.id, panel.name, const CoverConfig()));
+            if (c.profile.feature('state')?.settable == true) {
+              result.add(cover(panel.id, panel.name, const CoverConfig()));
+            }
           } else {
             for (final feature in c.profile.switches) {
               if (c.display.properties != null &&
