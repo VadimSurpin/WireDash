@@ -43,8 +43,12 @@ Source: [WB support explanation of MQTT curtain control](https://support.wirenbo
 
 ## Widget and feedback
 
-Each cover has a **Wait for MQTT feedback** setting (on by default for existing
-configurations). Switch it off for a stateless command button: every tap sends
+Each cover has a **Wait for MQTT feedback** setting. WB paired controls default
+to command-only mode, including tiles saved by earlier builds. Feedback is an
+explicit opt-in in the editor; that choice is preserved after saving. Other
+cover types retain their existing feedback setting.
+
+With feedback off, every tap sends
 the configured command, shows a spinner for one second, then restores its
 normal icon. This mode does not subscribe to state, show relay highlighting,
 position controls, stale indicators or confirmation warnings. Repeated taps

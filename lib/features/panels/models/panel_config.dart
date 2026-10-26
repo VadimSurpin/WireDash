@@ -392,12 +392,12 @@ class CoverConfig extends PanelConfig {
     this.positionTemplate = '{"position":{value}}',
     this.presets = const [0, 25, 50, 75, 100],
     this.showSlider = true,
-    this.waitForFeedback = true,
+    bool? waitForFeedback,
     this.wirenBoard,
     this.openButton = const CoverButtonConfig(),
     this.closeButton = const CoverButtonConfig(),
     this.stopButton = const CoverButtonConfig(),
-  });
+  }) : waitForFeedback = waitForFeedback ?? (wirenBoard == null);
 
   final String statePath;
   final String positionPath;
@@ -445,6 +445,7 @@ class CoverConfig extends PanelConfig {
     'presets': presets,
     'showSlider': showSlider,
     'waitForFeedback': waitForFeedback,
+    'feedbackMode': waitForFeedback ? 'mqtt' : 'commandOnly',
     if (wirenBoard != null) 'wirenBoard': wirenBoard!.toJson(),
     'openButton': openButton.toJson(),
     'closeButton': closeButton.toJson(),
@@ -463,7 +464,14 @@ class CoverConfig extends PanelConfig {
         (j['presets'] as List?)?.map((e) => (e as num).toInt()).toList() ??
         const [0, 25, 50, 75, 100],
     showSlider: j['showSlider'] as bool? ?? true,
-    waitForFeedback: j['waitForFeedback'] as bool? ?? true,
+    // Older WB tiles saved `true` even when feedback was never chosen.
+    // A named mode distinguishes a new explicit opt-in from that old default.
+    waitForFeedback: switch (j['feedbackMode']) {
+      'mqtt' => true,
+      'commandOnly' => false,
+      _ =>
+        j['wirenBoard'] is Map ? false : j['waitForFeedback'] as bool? ?? true,
+    },
     wirenBoard: j['wirenBoard'] is Map
         ? WirenBoardCoverBinding.fromJson(
             Map<String, dynamic>.from(j['wirenBoard'] as Map),

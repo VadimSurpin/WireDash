@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +20,7 @@ import 'package:wiredash/mqtt/providers/mqtt_manager_provider.dart';
 
 const _binding = WirenBoardCoverBinding(deviceId: 'relay', number: 1);
 const _config = CoverConfig(
+  waitForFeedback: true,
   wirenBoard: _binding,
   presets: [],
   showSlider: false,
@@ -90,6 +93,7 @@ Widget _app(
   CoverConfig config = _config,
   double scale = 1,
   bool feedback = true,
+  bool legacy = false,
 }) {
   final now = DateTime(2026);
   final panel = Panel(
@@ -104,7 +108,9 @@ Widget _app(
     retain: true,
     width: PanelWidth.wide,
     sortOrder: 0,
-    config: config.encode(),
+    config: legacy
+        ? jsonEncode(config.toJson()..remove('feedbackMode'))
+        : config.encode(),
     mergeFlags: 0,
     createdAt: now,
     updatedAt: now,
@@ -155,6 +161,25 @@ void main() {
   late _Fixture f;
   setUp(() => f = _Fixture());
   tearDown(() => f.dispose());
+
+  testWidgets(
+    'an unchanged tile from the previous APK upgrades to a one-second command button',
+    (tester) async {
+      await tester.pumpWidget(_app(f, legacy: true));
+      await _pump(tester);
+      expect(f.watchedTopics, isEmpty);
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 999));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      await tester.pump(const Duration(seconds: 20));
+      expect(find.text('Not confirmed'), findsNothing);
+      expect(find.text('Last known'), findsNothing);
+      expect(f.manager.sent, [('${_binding.openTopic}/on', '1', false)]);
+    },
+  );
 
   for (final wb in [true, false]) {
     testWidgets(

@@ -36,6 +36,7 @@ void main() {
           '/devices/relay/controls/Curtain 1 Close',
         );
         expect(cfg.showSlider, false);
+        expect(cfg.waitForFeedback, false);
         expect(cfg.presets, isEmpty);
         expect(cfg.stopButton.visible, false);
         expect(
@@ -120,4 +121,31 @@ void main() {
       expect(edited.stopPayload, 'halt');
     },
   );
+
+  test(
+    'legacy WB covers use command-only mode even with the previous default saved',
+    () {
+      for (final previous in [null, true, false]) {
+        final config = CoverConfig.fromJson({
+          'wirenBoard': {'deviceId': 'relay', 'number': 1},
+          if (previous != null) 'waitForFeedback': previous,
+        });
+        expect(config.waitForFeedback, false);
+        expect(
+          config
+              .copyWith(openButton: const CoverButtonConfig(title: 'Gate'))
+              .waitForFeedback,
+          false,
+        );
+      }
+    },
+  );
+
+  test('explicit MQTT feedback opt-in persists for WB covers', () {
+    final config = const CoverConfig(
+      wirenBoard: WirenBoardCoverBinding(deviceId: 'relay', number: 1),
+    ).copyWith(waitForFeedback: true);
+    final restored = CoverConfig.fromJson(config.toJson());
+    expect(restored.waitForFeedback, true);
+  });
 }

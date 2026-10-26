@@ -120,7 +120,11 @@ void main() {
         retain: false,
         width: PanelWidth.wide,
         sortOrder: 0,
-        config: suggestion.config!.encode(),
+        config: curtain
+            ? (suggestion.config! as CoverConfig)
+                  .copyWith(waitForFeedback: true)
+                  .encode()
+            : suggestion.config!.encode(),
         mergeFlags: 0,
         createdAt: DateTime(2026),
         updatedAt: DateTime(2026),

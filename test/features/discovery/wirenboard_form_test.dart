@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -160,7 +161,13 @@ void main() {
           retain: false,
           width: PanelWidth.wide,
           sortOrder: 0,
-          config: suggestion.config!.encode(),
+          config: curtain
+              ? jsonEncode(
+                  suggestion.config!.toJson()
+                    ..remove('feedbackMode')
+                    ..['waitForFeedback'] = true,
+                )
+              : suggestion.config!.encode(),
           mergeFlags: 0,
           createdAt: DateTime(2026),
           updatedAt: DateTime(2026),
@@ -321,8 +328,13 @@ void main() {
           findsOneWidget,
         );
         await tester.ensureVisible(wait);
+        expect(tester.widget<SwitchListTile>(wait).value, false);
         await tester.tap(wait);
         await tester.pump();
+        if (!editing) {
+          await tester.tap(wait);
+          await tester.pump();
+        }
         await tester.ensureVisible(title);
         await tester.enterText(title, 'Entrance');
         final icon = find.byKey(const ValueKey('cover-open-icon:gatePartial'));
@@ -352,7 +364,8 @@ void main() {
         expect(config.closeButton.title, 'Shut');
         expect(config.stopButton.visible, true);
         expect(config.showSlider, false);
-        expect(config.waitForFeedback, false);
+        expect(config.waitForFeedback, editing);
+        expect(CoverConfig.fromJson(config.toJson()).waitForFeedback, editing);
       } else if (custom) {
         final config = saved[#config] as PanelConfig;
         final display = config is WirenBoardDeviceConfig
