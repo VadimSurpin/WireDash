@@ -81,9 +81,13 @@ def mirror_switches(stream):
 
 try:
     assert Path("/dev/kvm").exists(), "KVM is required for this CI emulator harness"
+    avd_home = root / "build/car-preview-avds"
+    avd_home.mkdir(parents=True, exist_ok=True)
+    os.environ["ANDROID_AVD_HOME"] = str(avd_home)
+    avd_path = avd_home / "wiredash-car-preview.avd"
     run(str(sdk / "cmdline-tools/latest/bin/avdmanager"), "create", "avd", "--force",
-        "--name", "wiredash-car-preview", "--package", image, input=b"no\n")
-    avd = Path.home() / ".android/avd/wiredash-car-preview.avd/config.ini"
+        "--name", "wiredash-car-preview", "--package", image, "--path", str(avd_path), input=b"no\n")
+    avd = avd_path / "config.ini"
     config = avd.read_text()
     for key, value in [("hw.lcd.width", 1280), ("hw.lcd.height", 720), ("hw.lcd.density", 160)]:
         config = re.sub(rf"^{re.escape(key)}=.*\n?", "", config, flags=re.MULTILINE)

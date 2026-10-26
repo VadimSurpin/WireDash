@@ -2,6 +2,11 @@ name: car-preview
 
 on:
   workflow_dispatch:
+    inputs:
+      apk_run:
+        description: Reuse a compiled emulator APK from this workflow run (UI sources must match)
+        type: string
+        default: ''
   push:
     branches: ['feat/android-auto']
     paths:
@@ -44,6 +49,7 @@ jobs:
       - name: Generate isolated demo dashboard
         run: flutter test tool/car_preview/create_fixture.dart
       - name: Build x86_64 emulator harness with the unchanged car screens
+        if: inputs.apk_run == ''
         run: |
           mkdir -p android/app/src/fossDebug
           cp tool/car_preview/AndroidManifest.xml android/app/src/fossDebug/AndroidManifest.xml
@@ -58,6 +64,22 @@ jobs:
           PY
           flutter build apk --debug --flavor foss --split-per-abi --target-platform android-x64
           (cd android && ./gradlew --stop)
+      - name: Reuse matching compiled emulator APK
+        if: inputs.apk_run != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APK_RUN: ${{ inputs.apk_run }}
+        run: |
+          previous=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$APK_RUN" --jq .head_sha)
+          git fetch origin "$previous" --depth=1
+          git diff --exit-code "$previous" HEAD -- lib android/app/src/main android/app/build.gradle.kts pubspec.yaml tool/car_preview/AndroidManifest.xml
+          gh run download "$APK_RUN" --name wiredash-car-emulator-apk --dir build/app/outputs/flutter-apk
+      - name: Preserve compiled emulator APK for capture retries
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiredash-car-emulator-apk
+          path: build/app/outputs/flutter-apk/app-x86_64-foss-debug.apk
+          if-no-files-found: error
       - name: Run Automotive emulator and capture actual host UI
         run: |
           sudo apt-get update -qq
