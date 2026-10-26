@@ -52,6 +52,27 @@ object ShortcutEngine {
     fun scene(ctx: Context, connectionId: String, sceneId: String, done: (String) -> Unit) =
         call(ctx, "scene", mapOf("connectionId" to connectionId, "sceneId" to sceneId), done)
 
+    /** Android Auto uses the same headless engine and private WireGuard stack. */
+    fun car(ctx: Context, method: String, args: Map<String, Any>, done: (String) -> Unit) {
+        require(method in setOf("carCatalog", "carOpen", "carCommand", "carClose", "carReconnect"))
+        val main = Handler(Looper.getMainLooper())
+        var completed = false
+        val timeout = Runnable {
+            if (!completed) {
+                completed = true
+                done("{\"outcome\":\"unreachable\"}")
+            }
+        }
+        main.postDelayed(timeout, 12_000)
+        call(ctx, method, args) { json ->
+            if (!completed) {
+                completed = true
+                main.removeCallbacks(timeout)
+                done(json)
+            }
+        }
+    }
+
     fun forgetHome(ctx: Context, connectionId: String, done: (String) -> Unit) {
         if (channel == null) done("{}")
         else call(ctx, "forgetHome", mapOf("connectionId" to connectionId), done)

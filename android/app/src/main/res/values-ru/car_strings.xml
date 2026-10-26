@@ -1,0 +1,14 @@
+<resources>
+    <string name="car_loading">Загрузка…</string>
+    <string name="car_setup">Откройте WireDash на телефоне и добавьте на панель переключатели, кнопки или шторы.</string>
+    <string name="car_removed">Панель или элемент удалён. Обновите панели на телефоне.</string>
+    <string name="car_error">Не удалось загрузить элементы. Откройте WireDash на телефоне и повторите попытку.</string>
+    <string name="car_reconnecting">Переподключение…</string>
+    <string name="car_working">Отправка…</string>
+    <string name="car_unconfirmed">Не подтверждено</string>
+    <string name="car_unknown">Состояние неизвестно</string>
+    <string name="car_next">Далее</string>
+    <string name="car_previous">Назад</string>
+    <string name="car_retry">Повторить</string>
+    <string name="car_unreachable">Нет соединения — команда не отправлена</string>
+</resources>

@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import '../car/car_dashboard_service.dart';
+import '../remote/remote_home.dart';
+import '../mqtt/client_factory.dart' show probeHome;
+
 import '../data/database/tables/connections.dart';
 
 import 'dart:convert';
@@ -51,6 +55,25 @@ void shortcutEngine() {
   channel.setMethodCallHandler((call) async {
     final args = Map<String, Object?>.from(call.arguments as Map? ?? {});
     switch (call.method) {
+      case 'carCatalog':
+        return jsonEncode(await engine.car.catalog());
+      case 'carOpen':
+        return jsonEncode(await engine.car.open(args['dashboardId'] as String));
+      case 'carCommand':
+        return jsonEncode(
+          await engine.car.command(
+            args['dashboardId'] as String,
+            args['controlId'] as String,
+            args['actionId'] as String,
+            expiresAt: args['expiresAt'] as int?,
+          ),
+        );
+      case 'carClose':
+        await engine.car.close();
+        return '{}';
+      case 'carReconnect':
+        await engine.car.close();
+        return '{}';
       case 'forgetHome':
         await engine.forgetHome(args['connectionId'] as String);
         return '{}';
@@ -116,13 +139,26 @@ void shortcutEngine() {
 class ShortcutEngine {
   Future<AppDatabase>? _db;
 
+  late final car = CarDashboardService(
+    database: () => _database,
+    manager: _manager,
+    localizations: () async => (await _commander()).l10n,
+  );
+
   /// The app's database, read-only: the app may be running (and migrating
   /// after an update) at the same time.
-  Future<AppDatabase> get _database => _db ??= _openReadOnly();
+  Future<AppDatabase> get _database =>
+      _db ??= _openReadOnly().catchError((Object error, StackTrace stack) {
+        _db = null;
+        Error.throwWithStackTrace(error, stack);
+      });
 
   static Future<AppDatabase> _openReadOnly() async {
     final dir = await getApplicationDocumentsDirectory();
     final file = File(p.join(dir.path, 'zigdash.sqlite'));
+    if (!await file.exists()) {
+      throw StateError('Open WireDash on the phone first');
+    }
     late final AppDatabase db;
     db = AppDatabase.readOnly(
       NativeDatabase(
@@ -185,6 +221,9 @@ class ShortcutEngine {
     final wireGuardConfig = await createSecureStore().readWireGuard(
       connectionId,
     );
+    final relay = transportOf(conn.transport) == ConnectionTransport.wireGuard
+        ? null
+        : await createRemoteHomeStore().read(connectionId);
     final key = [
       conn.host,
       conn.port,
@@ -195,6 +234,7 @@ class ShortcutEngine {
       transportOf(conn.transport).name,
       password,
       wireGuardConfig,
+      if (relay != null) jsonEncode(relay.toJson()),
     ].join('|');
     final cached = _managers[connectionId];
     if (cached != null && cached.key == key) return cached.mgr;
@@ -210,8 +250,10 @@ class ShortcutEngine {
         remoteHost: conn.remoteHost,
         transport: transportOf(conn.transport),
         wireGuardConfig: wireGuardConfig,
+        relay: relay,
       ),
       password: password,
+      homeProbe: relay == null ? null : probeHome,
     );
     _managers[connectionId] = (key: key, mgr: mgr);
     return mgr;

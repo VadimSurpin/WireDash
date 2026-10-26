@@ -74,6 +74,11 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 
 ## Dashboard features
 
+This branch also includes an **[Android Auto IoT preview](docs/ANDROID_AUTO.md)**
+for dashboard switches, command buttons and gate/roller controls, using the
+configured MQTT/WireGuard connection. Real-car installation requires a trusted
+Google Play test install; the documentation includes Desktop Head Unit testing.
+
 WireDash also retains the original project's Zigbee2MQTT auto-discovery,
 custom MQTT topics, JSON-path extraction, switches, sliders, covers, readings,
 gauges, text controls, scenes, schedules and auto-close rules. It supports

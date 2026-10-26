@@ -1,0 +1,14 @@
+<resources>
+    <string name="car_loading">Loading…</string>
+    <string name="car_setup">Open WireDash on your phone and add switches, buttons or covers to a dashboard.</string>
+    <string name="car_removed">This dashboard or control was removed. Update your dashboards on the phone.</string>
+    <string name="car_error">Could not load controls. Open WireDash on the phone, then try again.</string>
+    <string name="car_reconnecting">Reconnecting…</string>
+    <string name="car_working">Sending…</string>
+    <string name="car_unconfirmed">Not confirmed</string>
+    <string name="car_unknown">State unavailable</string>
+    <string name="car_next">Next</string>
+    <string name="car_previous">Previous</string>
+    <string name="car_retry">Retry</string>
+    <string name="car_unreachable">Not connected — command not sent</string>
+</resources>

@@ -49,6 +49,18 @@ jobs:
       - run: flutter pub get
       - name: Build Android debug APK
         run: flutter build apk --debug --flavor foss --split-per-abi --target-platform android-arm64
+      - name: Android Auto template and lifecycle tests
+        run: ./gradlew :app:testFossDebugUnitTest
+        working-directory: android
+      - name: Android Auto test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-auto-test-results
+          path: |
+            build/app/reports/tests/testFossDebugUnitTest/
+            build/app/test-results/testFossDebugUnitTest/
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
           name: wiredash-debug-arm64
