@@ -94,6 +94,21 @@ vehicle) are separate distribution steps.
 
 ## Verification
 
+The manual `car-preview` workflow runs an Automotive OS emulator with an
+isolated demo database and a loopback MQTT broker. It preserves screenshots,
+UI dumps, MQTT traffic and logcat even when the host fails. Its Automotive
+adapter is only a test overlay; the phone APK is unchanged.
+
+Runtime result on 2026-10-26: the latest available Google APIs image,
+`android-35-ext15;android-automotive;x86_64` revision 4, opens the session but
+logs `No presenter available for template type: SectionedItemTemplate` and
+displays a blank surface. This workflow currently provides a diagnostic,
+not a successful preview of the new scrolling dashboard. Google introduced
+full support for this template on Android Auto first; see the
+[1.8 release notes](https://developer.android.com/jetpack/androidx/releases/car-app#1.8.0-alpha01).
+Use a phone connected to the DHU to verify the projected Android Auto layout.
+Do not present an Automotive emulator capture as a projected Android Auto test.
+
 `flutter test test/car` exercises saved-control routing, exact WB topics,
 non-retained pulses, visibility, repeat commands, one-second timing, session
 freshness, missing/removed controls, offline/expired-command handling, and saved
