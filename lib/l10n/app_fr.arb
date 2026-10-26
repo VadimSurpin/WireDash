@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Libellé du bouton",
+  "coverShowButton": "Afficher le bouton",
+  "coverRollerOpen": "Volet ouvert",
+  "coverRollerClosed": "Volet fermé",
+  "coverGateOpen": "Portail ouvert",
+  "coverGateClosed": "Portail fermé",
+  "coverGatePartial": "Portail entrouvert",
+  "coverPairedDescription": "Commande de moteur appairée. La durée du mouvement est gérée par l’appareil.",
   "@@locale": "fr",
   "reliabilityLastKnown": "Dernière valeur connue",
   "reliabilityControlsUnavailable": "Commandes indisponibles",

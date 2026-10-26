@@ -1,4 +1,5 @@
 import 'package:zigdash/features/panels/screens/add_tile_screen.dart';
+import 'package:zigdash/features/panels/models/panel_config.dart';
 import 'dart:async';
 import 'package:zigdash/features/discovery/models/wirenboard_device.dart';
 import 'package:zigdash/mqtt/providers/mqtt_manager_provider.dart';
@@ -79,6 +80,7 @@ class _RecordingWbImporter implements WirenBoardDashboardImporter {
     PanelType? widgetType,
     bool allowCommands = false,
     String? valueExpression,
+    CoverConfig? coverConfig,
   }) async {
     calls.add((label: label, ids: [control.id]));
     widgetTypes.add(widgetType);

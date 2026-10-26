@@ -65,6 +65,7 @@ class WirenBoardDashboardImporter {
     PanelType? widgetType,
     bool allowCommands = false,
     String? valueExpression,
+    CoverConfig? coverConfig,
   }) {
     final operation = _pending.then((_) async {
       if (control.deviceId != device.id ||
@@ -87,7 +88,9 @@ class WirenBoardDashboardImporter {
         topic: suggestion.publishTopicSuffix,
         subscribeTopic: suggestion.subscribeTopicSuffix,
         topicPrefixOverride: suggestion.topicPrefixOverride,
-        width: suggestion.type == PanelType.slider
+        width:
+            suggestion.type == PanelType.slider ||
+                suggestion.type == PanelType.cover
             ? PanelWidth.wide
             : PanelWidth.small,
         sortOrder: tiles.fold<int>(
@@ -95,7 +98,13 @@ class WirenBoardDashboardImporter {
           (n, p) => p.sortOrder >= n ? p.sortOrder + 1 : n,
         ),
         sectionId: await _sectionFor(device.group),
-        config: suggestion.config!,
+        config: suggestion.type == PanelType.cover && coverConfig != null
+            ? (suggestion.config! as CoverConfig).copyWith(
+                openButton: coverConfig.openButton,
+                closeButton: coverConfig.closeButton,
+                stopButton: coverConfig.stopButton,
+              )
+            : suggestion.config!,
       );
     });
     _pending = operation.then<void>(

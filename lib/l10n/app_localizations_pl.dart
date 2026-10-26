@@ -9,6 +9,31 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Etykieta przycisku';
+
+  @override
+  String get coverShowButton => 'Pokaż przycisk';
+
+  @override
+  String get coverRollerOpen => 'Roleta otwarta';
+
+  @override
+  String get coverRollerClosed => 'Roleta zamknięta';
+
+  @override
+  String get coverGateOpen => 'Brama otwarta';
+
+  @override
+  String get coverGateClosed => 'Brama zamknięta';
+
+  @override
+  String get coverGatePartial => 'Brama częściowo otwarta';
+
+  @override
+  String get coverPairedDescription =>
+      'Sterowanie sparowanym napędem. Czas ruchu ustawia się w urządzeniu.';
+
+  @override
   String get reliabilityLastKnown => 'Ostatnio znane';
 
   @override

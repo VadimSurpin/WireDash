@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show immutable;
+import 'cover_controls.dart';
+export 'cover_controls.dart';
 
 import '../../../data/database/tables/panels.dart';
 import '../../devices/device_profile.dart';
@@ -390,6 +392,10 @@ class CoverConfig extends PanelConfig {
     this.positionTemplate = '{"position":{value}}',
     this.presets = const [0, 25, 50, 75, 100],
     this.showSlider = true,
+    this.wirenBoard,
+    this.openButton = const CoverButtonConfig(),
+    this.closeButton = const CoverButtonConfig(),
+    this.stopButton = const CoverButtonConfig(),
   });
 
   final String statePath;
@@ -400,6 +406,29 @@ class CoverConfig extends PanelConfig {
   final String positionTemplate;
   final List<int> presets;
   final bool showSlider;
+  final WirenBoardCoverBinding? wirenBoard;
+  final CoverButtonConfig openButton, closeButton, stopButton;
+
+  CoverConfig copyWith({
+    CoverButtonConfig? openButton,
+    CoverButtonConfig? closeButton,
+    CoverButtonConfig? stopButton,
+    List<int>? presets,
+    bool? showSlider,
+  }) => CoverConfig(
+    statePath: statePath,
+    positionPath: positionPath,
+    openPayload: openPayload,
+    closePayload: closePayload,
+    stopPayload: stopPayload,
+    positionTemplate: positionTemplate,
+    presets: presets ?? this.presets,
+    showSlider: showSlider ?? this.showSlider,
+    wirenBoard: wirenBoard,
+    openButton: openButton ?? this.openButton,
+    closeButton: closeButton ?? this.closeButton,
+    stopButton: stopButton ?? this.stopButton,
+  );
 
   @override
   Map<String, dynamic> toJson() => {
@@ -411,6 +440,10 @@ class CoverConfig extends PanelConfig {
     'positionTemplate': positionTemplate,
     'presets': presets,
     'showSlider': showSlider,
+    if (wirenBoard != null) 'wirenBoard': wirenBoard!.toJson(),
+    'openButton': openButton.toJson(),
+    'closeButton': closeButton.toJson(),
+    'stopButton': stopButton.toJson(),
   };
 
   static CoverConfig fromJson(Map<String, dynamic> j) => CoverConfig(
@@ -425,6 +458,20 @@ class CoverConfig extends PanelConfig {
         (j['presets'] as List?)?.map((e) => (e as num).toInt()).toList() ??
         const [0, 25, 50, 75, 100],
     showSlider: j['showSlider'] as bool? ?? true,
+    wirenBoard: j['wirenBoard'] is Map
+        ? WirenBoardCoverBinding.fromJson(
+            Map<String, dynamic>.from(j['wirenBoard'] as Map),
+          )
+        : null,
+    openButton: CoverButtonConfig.fromJson(
+      Map<String, dynamic>.from(j['openButton'] as Map? ?? const {}),
+    ),
+    closeButton: CoverButtonConfig.fromJson(
+      Map<String, dynamic>.from(j['closeButton'] as Map? ?? const {}),
+    ),
+    stopButton: CoverButtonConfig.fromJson(
+      Map<String, dynamic>.from(j['stopButton'] as Map? ?? const {}),
+    ),
   );
 }
 

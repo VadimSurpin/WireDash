@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Beschriftung",
+  "coverShowButton": "Schaltfläche anzeigen",
+  "coverRollerOpen": "Rollladen offen",
+  "coverRollerClosed": "Rollladen geschlossen",
+  "coverGateOpen": "Tor offen",
+  "coverGateClosed": "Tor geschlossen",
+  "coverGatePartial": "Tor teilweise offen",
+  "coverPairedDescription": "Gekoppelte Antriebssteuerung. Die Laufzeit wird im Gerät eingestellt.",
   "reliabilityLastKnown": "Zuletzt bekannt",
   "reliabilityControlsUnavailable": "Steuerung nicht verfügbar",
   "@@locale": "de",

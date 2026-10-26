@@ -9,6 +9,31 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Titolo del pulsante';
+
+  @override
+  String get coverShowButton => 'Mostra pulsante';
+
+  @override
+  String get coverRollerOpen => 'Tapparella aperta';
+
+  @override
+  String get coverRollerClosed => 'Tapparella chiusa';
+
+  @override
+  String get coverGateOpen => 'Cancello aperto';
+
+  @override
+  String get coverGateClosed => 'Cancello chiuso';
+
+  @override
+  String get coverGatePartial => 'Cancello socchiuso';
+
+  @override
+  String get coverPairedDescription =>
+      'Controllo abbinato del motore. Il dispositivo gestisce la durata del movimento.';
+
+  @override
   String get reliabilityLastKnown => 'Ultimo valore noto';
 
   @override

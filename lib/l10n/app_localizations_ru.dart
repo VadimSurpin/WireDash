@@ -9,6 +9,31 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Название кнопки';
+
+  @override
+  String get coverShowButton => 'Показывать кнопку';
+
+  @override
+  String get coverRollerOpen => 'Рольставни открыты';
+
+  @override
+  String get coverRollerClosed => 'Рольставни закрыты';
+
+  @override
+  String get coverGateOpen => 'Ворота открыты';
+
+  @override
+  String get coverGateClosed => 'Ворота закрыты';
+
+  @override
+  String get coverGatePartial => 'Ворота приоткрыты';
+
+  @override
+  String get coverPairedDescription =>
+      'Парное управление приводом. Время движения задаётся в устройстве.';
+
+  @override
   String get reliabilityLastKnown => 'Последнее известное';
 
   @override

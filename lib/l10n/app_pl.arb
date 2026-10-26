@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Etykieta przycisku",
+  "coverShowButton": "Pokaż przycisk",
+  "coverRollerOpen": "Roleta otwarta",
+  "coverRollerClosed": "Roleta zamknięta",
+  "coverGateOpen": "Brama otwarta",
+  "coverGateClosed": "Brama zamknięta",
+  "coverGatePartial": "Brama częściowo otwarta",
+  "coverPairedDescription": "Sterowanie sparowanym napędem. Czas ruchu ustawia się w urządzeniu.",
   "reliabilityLastKnown": "Ostatnio znane",
   "reliabilityControlsUnavailable": "Sterowanie niedostępne",
   "@@locale": "pl",

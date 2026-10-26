@@ -12,6 +12,8 @@ import '../../devices/devices_providers.dart';
 import '../../discovery/models/z2m_device.dart';
 import '../../discovery/providers/discovery_provider.dart';
 import '../widgets/panel_device_picker.dart';
+import '../widgets/cover_controls_editor.dart';
+import '../widgets/cover_button_icon.dart';
 import '../../../data/database/tables/panels.dart';
 import '../../../mqtt/json_path.dart';
 import '../../../data/repositories/dashboard_repo.dart';
@@ -170,6 +172,7 @@ class _State extends ConsumerState<PanelFormScreen> {
   // Cover fields
   final _coverPresets = TextEditingController(text: '0, 25, 50, 75, 100');
   bool _coverShowSlider = true;
+  CoverConfig _coverConfig = const CoverConfig();
 
   // Scene field — preserved across generic-form edits (no UI field here; scene
   // panels are created/edited from the Scenes screen).
@@ -443,6 +446,7 @@ class _State extends ConsumerState<PanelFormScreen> {
       _textLogMaxLines.text = cfg.maxLines.toString();
       _textLogJsonPath.text = cfg.jsonPath ?? '';
     } else if (cfg is CoverConfig) {
+      _coverConfig = cfg;
       _coverPresets.text = cfg.presets.join(', ');
       _coverShowSlider = cfg.showSlider;
     } else if (cfg is ScheduleConfig) {
@@ -618,7 +622,7 @@ class _State extends ConsumerState<PanelFormScreen> {
               ),
         ],
       ),
-      PanelType.cover => CoverConfig(
+      PanelType.cover => _coverConfig.copyWith(
         presets: _parsePresets(_coverPresets.text),
         showSlider: _coverShowSlider,
       ),
@@ -938,6 +942,7 @@ class _State extends ConsumerState<PanelFormScreen> {
                             : suggestion.widgetChoices;
                         final option = options.first;
                         _type = option.type;
+                        _topicPrefixOverride.text = option.topicPrefixOverride;
                         _topic.text = option.publishTopicSuffix;
                         _subscribeTopic.text = option.subscribeTopicSuffix;
                         _commandEdited = true;
@@ -955,6 +960,10 @@ class _State extends ConsumerState<PanelFormScreen> {
                                     : suggestion.widgetChoices)
                                 .firstWhere((c) => c.type == type);
                         _type = type;
+                        _topicPrefixOverride.text = option.topicPrefixOverride;
+                        _topic.text = option.publishTopicSuffix;
+                        _subscribeTopic.text = option.subscribeTopicSuffix;
+                        _commandEdited = true;
                         final expression = _valueExpression;
                         _applyConfig(option.config!);
                         _valueExpression = expression;

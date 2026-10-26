@@ -9,6 +9,31 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Knoptekst';
+
+  @override
+  String get coverShowButton => 'Knop tonen';
+
+  @override
+  String get coverRollerOpen => 'Rolluik open';
+
+  @override
+  String get coverRollerClosed => 'Rolluik gesloten';
+
+  @override
+  String get coverGateOpen => 'Poort open';
+
+  @override
+  String get coverGateClosed => 'Poort gesloten';
+
+  @override
+  String get coverGatePartial => 'Poort gedeeltelijk open';
+
+  @override
+  String get coverPairedDescription =>
+      'Gekoppelde aandrijfbesturing. Het apparaat regelt de looptijd.';
+
+  @override
   String get reliabilityLastKnown => 'Laatst bekend';
 
   @override

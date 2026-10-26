@@ -9,6 +9,31 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Beschriftung';
+
+  @override
+  String get coverShowButton => 'Schaltfläche anzeigen';
+
+  @override
+  String get coverRollerOpen => 'Rollladen offen';
+
+  @override
+  String get coverRollerClosed => 'Rollladen geschlossen';
+
+  @override
+  String get coverGateOpen => 'Tor offen';
+
+  @override
+  String get coverGateClosed => 'Tor geschlossen';
+
+  @override
+  String get coverGatePartial => 'Tor teilweise offen';
+
+  @override
+  String get coverPairedDescription =>
+      'Gekoppelte Antriebssteuerung. Die Laufzeit wird im Gerät eingestellt.';
+
+  @override
   String get reliabilityLastKnown => 'Zuletzt bekannt';
 
   @override

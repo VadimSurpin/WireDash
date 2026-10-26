@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "כותרת הכפתור",
+  "coverShowButton": "הצגת כפתור",
+  "coverRollerOpen": "תריס פתוח",
+  "coverRollerClosed": "תריס סגור",
+  "coverGateOpen": "שער פתוח",
+  "coverGateClosed": "שער סגור",
+  "coverGatePartial": "שער פתוח חלקית",
+  "coverPairedDescription": "בקרת מנוע משולבת. משך התנועה מוגדר במכשיר.",
   "reliabilityLastKnown": "ערך אחרון ידוע",
   "reliabilityControlsUnavailable": "הפקדים אינם זמינים",
   "@@locale": "he",

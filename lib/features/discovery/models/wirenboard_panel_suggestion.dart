@@ -2,6 +2,7 @@ import '../../../data/database/tables/panels.dart';
 import '../../panels/models/panel_config.dart';
 import 'device_panel_suggestion.dart';
 import 'wirenboard_device.dart';
+import 'wirenboard_curtain.dart';
 
 PanelSuggestion suggestWirenBoardDevicePanel(
   WirenBoardDevice device, {
@@ -119,11 +120,13 @@ PanelSuggestion suggestWirenBoardPanel(
     language: language,
     allowCommands: allowCommands,
   );
+  final curtain = wirenBoardCurtainFor(device, control);
   final binary = const {'switch', 'wo-switch', 'alarm'}.contains(control.type);
   final numeric = control.numeric;
   final min = control.min ?? 0;
   final max = control.max ?? (control.type == 'range' ? 255 : 100);
   final types = <PanelType>{
+    if (curtain != null) PanelType.cover,
     recommended.type,
     if (binary) PanelType.led,
     if (numeric) PanelType.reading,
@@ -142,6 +145,18 @@ PanelSuggestion suggestWirenBoardPanel(
     PanelType.textLog,
   };
   PanelConfig configFor(PanelType type) {
+    if (type == PanelType.cover && curtain != null) {
+      return CoverConfig(
+        wirenBoard: curtain,
+        showSlider: false,
+        presets: const [],
+        openButton: const CoverButtonConfig(icon: CoverButtonIcon.rollerOpen),
+        closeButton: const CoverButtonConfig(
+          icon: CoverButtonIcon.rollerClosed,
+        ),
+        stopButton: const CoverButtonConfig(visible: false),
+      );
+    }
     if (type == recommended.type) return recommended.config!;
     return switch (type) {
       PanelType.toggle => const ToggleConfig(
@@ -189,14 +204,16 @@ PanelSuggestion suggestWirenBoardPanel(
     };
   }
 
-  final selected = widgetType ?? recommended.type;
+  final selected = widgetType ?? types.first;
   if (!types.contains(selected)) {
     throw ArgumentError('Widget is not compatible with this control');
   }
   PanelSuggestion option(PanelType type) => PanelSuggestion(
     type: type,
     name: recommended.name,
-    topicPrefixOverride: control.topic,
+    topicPrefixOverride: type == PanelType.cover
+        ? curtain!.openTopic
+        : control.topic,
     publishTopicSuffix: readOnly ? '' : 'on',
     subscribeTopicSuffix: '',
     config: withDisplayExpression(type, configFor(type), valueExpression),

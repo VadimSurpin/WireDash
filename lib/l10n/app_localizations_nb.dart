@@ -9,6 +9,31 @@ class AppLocalizationsNb extends AppLocalizations {
   AppLocalizationsNb([String locale = 'nb']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Knappetekst';
+
+  @override
+  String get coverShowButton => 'Vis knapp';
+
+  @override
+  String get coverRollerOpen => 'Rullegardin åpen';
+
+  @override
+  String get coverRollerClosed => 'Rullegardin lukket';
+
+  @override
+  String get coverGateOpen => 'Port åpen';
+
+  @override
+  String get coverGateClosed => 'Port lukket';
+
+  @override
+  String get coverGatePartial => 'Port delvis åpen';
+
+  @override
+  String get coverPairedDescription =>
+      'Paret motorstyring. Enheten styrer bevegelsestiden.';
+
+  @override
   String get reliabilityLastKnown => 'Sist kjente';
 
   @override

@@ -175,22 +175,46 @@ extension _PanelFormFields on _State {
           ],
         );
       case PanelType.cover:
-        panelContent = Row(
+        panelContent = Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.blinds_closed, color: cs.primary, size: 28),
-            const SizedBox(width: 8),
             Text(name, style: theme.textTheme.bodyMedium),
-            const Spacer(),
-            FilledButton.tonalIcon(
-              onPressed: () {},
-              icon: const Icon(Icons.arrow_upward, size: 16),
-              label: const Text('OPEN'),
-              style: FilledButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                textStyle: const TextStyle(fontSize: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                for (final entry in [
+                  (
+                    _coverConfig.openButton,
+                    context.l10n.panelCoverOpen,
+                    CoverButtonIcon.up,
+                  ),
+                  (
+                    _coverConfig.stopButton,
+                    context.l10n.panelCoverStop,
+                    CoverButtonIcon.stop,
+                  ),
+                  (
+                    _coverConfig.closeButton,
+                    context.l10n.panelCoverClose,
+                    CoverButtonIcon.down,
+                  ),
+                ])
+                  if (entry.$1.visible)
+                    OutlinedButton.icon(
+                      onPressed: null,
+                      icon: CoverButtonGlyph(
+                        entry.$1.icon ?? entry.$3,
+                        size: 18,
+                      ),
+                      label: Text(
+                        entry.$1.title?.trim().isNotEmpty == true
+                            ? entry.$1.title!
+                            : entry.$2,
+                      ),
+                    ),
+              ],
             ),
           ],
         );
@@ -591,27 +615,39 @@ extension _PanelFormFields on _State {
         return _optionsFields();
       case PanelType.cover:
         return [
-          Text(
-            l10n.panelCoverDescription,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+          CoverControlsEditor(
+            key: ValueKey(
+              'cover-controls:${_coverConfig.wirenBoard?.openTopic}',
             ),
+            config: _coverConfig,
+            onChanged: (config) => _changeFields(() => _coverConfig = config),
           ),
           const SizedBox(height: 12),
-          TextFormField(
-            controller: _coverPresets,
-            decoration: InputDecoration(
-              labelText: l10n.panelCoverPresets,
-              hintText: l10n.panelCoverPresetsHint,
-              helperText: l10n.panelCoverPresetsHelper,
+          if (_coverConfig.wirenBoard != null)
+            Text(l10n.coverPairedDescription),
+          if (_coverConfig.wirenBoard == null) ...[
+            Text(
+              l10n.panelCoverDescription,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
-          ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.panelCoverShowSlider),
-            value: _coverShowSlider,
-            onChanged: (v) => _changeFields(() => _coverShowSlider = v),
-          ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _coverPresets,
+              decoration: InputDecoration(
+                labelText: l10n.panelCoverPresets,
+                hintText: l10n.panelCoverPresetsHint,
+                helperText: l10n.panelCoverPresetsHelper,
+              ),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.panelCoverShowSlider),
+              value: _coverShowSlider,
+              onChanged: (v) => _changeFields(() => _coverShowSlider = v),
+            ),
+          ],
         ];
       case PanelType.textInput:
         return [

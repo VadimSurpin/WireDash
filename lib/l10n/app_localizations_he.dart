@@ -9,6 +9,31 @@ class AppLocalizationsHe extends AppLocalizations {
   AppLocalizationsHe([String locale = 'he']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'כותרת הכפתור';
+
+  @override
+  String get coverShowButton => 'הצגת כפתור';
+
+  @override
+  String get coverRollerOpen => 'תריס פתוח';
+
+  @override
+  String get coverRollerClosed => 'תריס סגור';
+
+  @override
+  String get coverGateOpen => 'שער פתוח';
+
+  @override
+  String get coverGateClosed => 'שער סגור';
+
+  @override
+  String get coverGatePartial => 'שער פתוח חלקית';
+
+  @override
+  String get coverPairedDescription =>
+      'בקרת מנוע משולבת. משך התנועה מוגדר במכשיר.';
+
+  @override
   String get reliabilityLastKnown => 'ערך אחרון ידוע';
 
   @override

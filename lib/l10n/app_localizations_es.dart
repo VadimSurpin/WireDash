@@ -9,6 +9,31 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Título del botón';
+
+  @override
+  String get coverShowButton => 'Mostrar botón';
+
+  @override
+  String get coverRollerOpen => 'Persiana abierta';
+
+  @override
+  String get coverRollerClosed => 'Persiana cerrada';
+
+  @override
+  String get coverGateOpen => 'Portón abierto';
+
+  @override
+  String get coverGateClosed => 'Portón cerrado';
+
+  @override
+  String get coverGatePartial => 'Portón entreabierto';
+
+  @override
+  String get coverPairedDescription =>
+      'Control de accionamiento emparejado. El dispositivo gestiona el tiempo de movimiento.';
+
+  @override
   String get reliabilityLastKnown => 'Último valor conocido';
 
   @override

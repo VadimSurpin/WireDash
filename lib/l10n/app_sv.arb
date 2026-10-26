@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Knapptext",
+  "coverShowButton": "Visa knapp",
+  "coverRollerOpen": "Rullgardin öppen",
+  "coverRollerClosed": "Rullgardin stängd",
+  "coverGateOpen": "Grind öppen",
+  "coverGateClosed": "Grind stängd",
+  "coverGatePartial": "Grind delvis öppen",
+  "coverPairedDescription": "Parkopplad motorstyrning. Enheten styr rörelsetiden.",
   "reliabilityLastKnown": "Senast kända",
   "reliabilityControlsUnavailable": "Kontroller inte tillgängliga",
   "@@locale": "sv",

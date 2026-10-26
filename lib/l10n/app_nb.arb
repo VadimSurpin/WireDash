@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Knappetekst",
+  "coverShowButton": "Vis knapp",
+  "coverRollerOpen": "Rullegardin åpen",
+  "coverRollerClosed": "Rullegardin lukket",
+  "coverGateOpen": "Port åpen",
+  "coverGateClosed": "Port lukket",
+  "coverGatePartial": "Port delvis åpen",
+  "coverPairedDescription": "Paret motorstyring. Enheten styrer bevegelsestiden.",
   "reliabilityLastKnown": "Sist kjente",
   "reliabilityControlsUnavailable": "Kontroller utilgjengelige",
   "@@locale": "nb",

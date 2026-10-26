@@ -9,6 +9,31 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Libellé du bouton';
+
+  @override
+  String get coverShowButton => 'Afficher le bouton';
+
+  @override
+  String get coverRollerOpen => 'Volet ouvert';
+
+  @override
+  String get coverRollerClosed => 'Volet fermé';
+
+  @override
+  String get coverGateOpen => 'Portail ouvert';
+
+  @override
+  String get coverGateClosed => 'Portail fermé';
+
+  @override
+  String get coverGatePartial => 'Portail entrouvert';
+
+  @override
+  String get coverPairedDescription =>
+      'Commande de moteur appairée. La durée du mouvement est gérée par l’appareil.';
+
+  @override
   String get reliabilityLastKnown => 'Dernière valeur connue';
 
   @override

@@ -24,6 +24,7 @@ extension _PanelFormTopics on _State {
     final theme = Theme.of(context);
     final prefix = _effectivePrefix;
     final lead = prefix.isEmpty ? null : '$prefix/';
+    final pairedCover = _type == PanelType.cover && _coverConfig.wirenBoard != null;
     final base = ref.watch(homeBaseTopicProvider(widget.connectionId)) ??
         'zigbee2mqtt';
     final devices = ref
@@ -50,7 +51,7 @@ extension _PanelFormTopics on _State {
         ],
       ),
       const SizedBox(height: 8),
-      if (!_isWriteOnly) ...[
+      if (!_isWriteOnly && !pairedCover) ...[
         TextFormField(
           controller: _subscribeTopic,
           // Topics are left-to-right, also in Hebrew.
@@ -67,7 +68,7 @@ extension _PanelFormTopics on _State {
         ),
         const SizedBox(height: 12),
       ],
-      if (!_isReadOnly) ...[
+      if (!_isReadOnly && !pairedCover) ...[
         TextFormField(
           controller: _topic,
           textDirection: TextDirection.ltr,
@@ -82,6 +83,12 @@ extension _PanelFormTopics on _State {
         ),
         const SizedBox(height: 12),
       ],
+      if (pairedCover)
+        Text(
+          '${_coverConfig.wirenBoard!.openTopic}\n${_coverConfig.wirenBoard!.closeTopic}',
+          textDirection: TextDirection.ltr,
+          style: theme.textTheme.bodySmall,
+        ),
       if (_deviceIeee != null)
         Card.filled(
           margin: const EdgeInsets.only(bottom: 12),

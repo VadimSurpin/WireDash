@@ -9,6 +9,31 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Button title';
+
+  @override
+  String get coverShowButton => 'Show button';
+
+  @override
+  String get coverRollerOpen => 'Roller open';
+
+  @override
+  String get coverRollerClosed => 'Roller closed';
+
+  @override
+  String get coverGateOpen => 'Gate open';
+
+  @override
+  String get coverGateClosed => 'Gate closed';
+
+  @override
+  String get coverGatePartial => 'Gate partially open';
+
+  @override
+  String get coverPairedDescription =>
+      'Paired drive controls. Movement timing is managed by the device.';
+
+  @override
   String get reliabilityLastKnown => 'Last known';
 
   @override

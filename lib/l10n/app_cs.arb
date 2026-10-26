@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Popisek tlačítka",
+  "coverShowButton": "Zobrazit tlačítko",
+  "coverRollerOpen": "Roleta otevřená",
+  "coverRollerClosed": "Roleta zavřená",
+  "coverGateOpen": "Brána otevřená",
+  "coverGateClosed": "Brána zavřená",
+  "coverGatePartial": "Brána pootevřená",
+  "coverPairedDescription": "Párové ovládání pohonu. Dobu pohybu řídí zařízení.",
   "@@locale": "cs",
   "reliabilityLastKnown": "Naposledy známé",
   "reliabilityControlsUnavailable": "Ovládání není dostupné",

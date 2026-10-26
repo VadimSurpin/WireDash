@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Titolo del pulsante",
+  "coverShowButton": "Mostra pulsante",
+  "coverRollerOpen": "Tapparella aperta",
+  "coverRollerClosed": "Tapparella chiusa",
+  "coverGateOpen": "Cancello aperto",
+  "coverGateClosed": "Cancello chiuso",
+  "coverGatePartial": "Cancello socchiuso",
+  "coverPairedDescription": "Controllo abbinato del motore. Il dispositivo gestisce la durata del movimento.",
   "@@locale": "it",
   "reliabilityLastKnown": "Ultimo valore noto",
   "reliabilityControlsUnavailable": "Controlli non disponibili",

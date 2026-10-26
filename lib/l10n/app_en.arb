@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Button title",
+  "coverShowButton": "Show button",
+  "coverRollerOpen": "Roller open",
+  "coverRollerClosed": "Roller closed",
+  "coverGateOpen": "Gate open",
+  "coverGateClosed": "Gate closed",
+  "coverGatePartial": "Gate partially open",
+  "coverPairedDescription": "Paired drive controls. Movement timing is managed by the device.",
   "reliabilityLastKnown": "Last known",
   "reliabilityControlsUnavailable": "Controls unavailable",
   "@@locale": "en",

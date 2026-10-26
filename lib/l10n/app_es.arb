@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Título del botón",
+  "coverShowButton": "Mostrar botón",
+  "coverRollerOpen": "Persiana abierta",
+  "coverRollerClosed": "Persiana cerrada",
+  "coverGateOpen": "Portón abierto",
+  "coverGateClosed": "Portón cerrado",
+  "coverGatePartial": "Portón entreabierto",
+  "coverPairedDescription": "Control de accionamiento emparejado. El dispositivo gestiona el tiempo de movimiento.",
   "reliabilityLastKnown": "Último valor conocido",
   "reliabilityControlsUnavailable": "Controles no disponibles",
   "@@locale": "es",

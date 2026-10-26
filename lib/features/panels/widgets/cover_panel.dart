@@ -10,6 +10,8 @@ import '../../../mqtt/json_path.dart';
 import '../models/panel_config.dart';
 import '../providers/panel_value_provider.dart';
 import 'control_action.dart';
+import 'cover_button_icon.dart';
+import 'wirenboard_cover_panel.dart';
 
 /// Resolves which cover command a [SegmentedButton] selection change maps to.
 ///
@@ -45,26 +47,74 @@ class CoverPanel extends ConsumerStatefulWidget {
 class _CoverPanelState extends ConsumerState<CoverPanel> {
   double? _draggingValue;
   Timer? _debounce;
+  Timer? _confirmationTimeout;
+  String? _pending;
+  DateTime? _sentAt;
+  int? _generation;
+  int _request = 0;
+
+  @override
+  void didUpdateWidget(CoverPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.connectionId != widget.connectionId ||
+        oldWidget.subscribeTopic != widget.subscribeTopic ||
+        oldWidget.publishTopic != widget.publishTopic ||
+        oldWidget.config.wirenBoard?.openTopic !=
+            widget.config.wirenBoard?.openTopic) {
+      _debounce?.cancel();
+      _confirmationTimeout?.cancel();
+      _request++;
+      _pending = null;
+      _sentAt = null;
+      _draggingValue = null;
+    }
+  }
 
   @override
   void dispose() {
     _debounce?.cancel();
+    _confirmationTimeout?.cancel();
     super.dispose();
   }
 
-  Future<void> _publishRaw(String payload) async {
-    await runControlAction(
-      context,
-      ref,
-      widget.connectionId,
-      (mgr) => mgr.publish(
-        widget.publishTopic,
-        payload,
-        '',
-        qos: mc.MqttQos.values[widget.panel.qos.clamp(0, 2)],
-        retain: widget.panel.retain,
-      ),
-    );
+  Future<void> _publishRaw(String payload, String action) async {
+    final request = ++_request;
+    _confirmationTimeout?.cancel();
+    setState(() {
+      _pending = action;
+      _sentAt = null;
+    });
+    void finish() {
+      if (!mounted || request != _request) return;
+      _confirmationTimeout?.cancel();
+      setState(() => _pending = null);
+    }
+
+    _confirmationTimeout = Timer(const Duration(seconds: 15), () {
+      finish();
+      if (mounted && request == _request) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.shortcutNotConfirmed)),
+        );
+      }
+    });
+    try {
+      await runControlAction(context, ref, widget.connectionId, (mgr) {
+        if (!mounted || request != _request || _pending == null) return;
+        _sentAt = DateTime.now();
+        _generation = mgr.connectionGeneration;
+        mgr.publish(
+          widget.publishTopic,
+          payload,
+          '',
+          qos: mc.MqttQos.values[widget.panel.qos.clamp(0, 2)],
+          retain: widget.panel.retain,
+        );
+      });
+      if (_sentAt == null) finish();
+    } catch (_) {
+      finish();
+    }
   }
 
   Future<void> _publishPosition(double v) async {
@@ -99,6 +149,13 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.config.wirenBoard != null) {
+      return WirenBoardCoverPanel(
+        connectionId: widget.connectionId,
+        panel: widget.panel,
+        config: widget.config,
+      );
+    }
     // One subscription, whole payload (jsonPath null → raw string).
     final valueAsync = ref.watch(
       panelValueProvider(
@@ -111,6 +168,45 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
     );
 
     final cfg = widget.config;
+    final feedbackKey = PanelStreamKey(
+      connectionId: widget.connectionId,
+      topic: widget.subscribeTopic,
+      jsonPath: null,
+    );
+    ref.listen(panelValueSnapshotProvider(feedbackKey), (_, next) {
+      final message = next.valueOrNull;
+      if (_pending == null ||
+          _sentAt == null ||
+          message == null ||
+          message.freshness != PanelFreshness.fresh ||
+          message.connectionGeneration != _generation ||
+          !message.receivedAt.isAfter(_sentAt!)) {
+        return;
+      }
+      final reported = extractByPath(
+        message.value.toString(),
+        cfg.statePath,
+      )?.toString().toUpperCase();
+      final confirmed = switch (_pending) {
+        'OPEN' => const ['OPEN', 'OPENING'].contains(reported),
+        'CLOSE' => const ['CLOSE', 'CLOSED', 'CLOSING'].contains(reported),
+        'STOP' => const ['STOP', 'STOPPED'].contains(reported),
+        _ => false,
+      };
+      if (confirmed) {
+        _confirmationTimeout?.cancel();
+        setState(() => _pending = null);
+      }
+    });
+    Widget buttonIcon(String action, CoverButtonIcon icon) => _pending == action
+        ? SizedBox.square(
+            dimension: 18,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              semanticsLabel: context.l10n.shortcutWorking,
+            ),
+          )
+        : CoverButtonGlyph(icon);
     String? state;
     double? position;
     valueAsync.whenData((raw) {
@@ -153,41 +249,72 @@ class _CoverPanelState extends ConsumerState<CoverPanel> {
               ],
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: SegmentedButton<String>(
-                emptySelectionAllowed: true,
-                showSelectedIcon: false,
-                segments: [
-                  ButtonSegment(
-                    value: 'OPEN',
-                    label: Text(context.l10n.panelCoverOpen),
-                    icon: const Icon(Icons.keyboard_arrow_up),
-                  ),
-                  ButtonSegment(
-                    value: 'STOP',
-                    label: Text(context.l10n.panelCoverStop),
-                    icon: const Icon(Icons.stop),
-                  ),
-                  ButtonSegment(
-                    value: 'CLOSE',
-                    label: Text(context.l10n.panelCoverClose),
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                  ),
-                ],
-                selected: {if (state != null) state!},
-                onSelectionChanged: (sel) {
-                  switch (resolveCoverAction(sel, state)) {
-                    case 'OPEN':
-                      _publishRaw(cfg.openPayload);
-                    case 'STOP':
-                      _publishRaw(cfg.stopPayload);
-                    case 'CLOSE':
-                      _publishRaw(cfg.closePayload);
-                  }
-                },
+            if (cfg.openButton.visible ||
+                cfg.closeButton.visible ||
+                cfg.stopButton.visible)
+              SizedBox(
+                width: double.infinity,
+                child: SegmentedButton<String>(
+                  emptySelectionAllowed: true,
+                  showSelectedIcon: false,
+                  segments: [
+                    if (cfg.openButton.visible)
+                      ButtonSegment(
+                        value: 'OPEN',
+                        label: Text(
+                          cfg.openButton.title?.trim().isNotEmpty == true
+                              ? cfg.openButton.title!
+                              : context.l10n.panelCoverOpen,
+                        ),
+                        icon: buttonIcon(
+                          'OPEN',
+                          cfg.openButton.icon ?? CoverButtonIcon.up,
+                        ),
+                      ),
+                    if (cfg.stopButton.visible)
+                      ButtonSegment(
+                        value: 'STOP',
+                        label: Text(
+                          cfg.stopButton.title?.trim().isNotEmpty == true
+                              ? cfg.stopButton.title!
+                              : context.l10n.panelCoverStop,
+                        ),
+                        icon: buttonIcon(
+                          'STOP',
+                          cfg.stopButton.icon ?? CoverButtonIcon.stop,
+                        ),
+                      ),
+                    if (cfg.closeButton.visible)
+                      ButtonSegment(
+                        value: 'CLOSE',
+                        label: Text(
+                          cfg.closeButton.title?.trim().isNotEmpty == true
+                              ? cfg.closeButton.title!
+                              : context.l10n.panelCoverClose,
+                        ),
+                        icon: buttonIcon(
+                          'CLOSE',
+                          cfg.closeButton.icon ?? CoverButtonIcon.down,
+                        ),
+                      ),
+                  ],
+                  selected: {
+                    if (state == 'OPEN' && cfg.openButton.visible) 'OPEN',
+                    if (state == 'CLOSE' && cfg.closeButton.visible) 'CLOSE',
+                    if (state == 'STOP' && cfg.stopButton.visible) 'STOP',
+                  },
+                  onSelectionChanged: (sel) {
+                    switch (resolveCoverAction(sel, state)) {
+                      case 'OPEN':
+                        _publishRaw(cfg.openPayload, 'OPEN');
+                      case 'STOP':
+                        _publishRaw(cfg.stopPayload, 'STOP');
+                      case 'CLOSE':
+                        _publishRaw(cfg.closePayload, 'CLOSE');
+                    }
+                  },
+                ),
               ),
-            ),
             const SizedBox(height: 12),
             if (cfg.presets.isNotEmpty)
               Wrap(

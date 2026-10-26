@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Knoptekst",
+  "coverShowButton": "Knop tonen",
+  "coverRollerOpen": "Rolluik open",
+  "coverRollerClosed": "Rolluik gesloten",
+  "coverGateOpen": "Poort open",
+  "coverGateClosed": "Poort gesloten",
+  "coverGatePartial": "Poort gedeeltelijk open",
+  "coverPairedDescription": "Gekoppelde aandrijfbesturing. Het apparaat regelt de looptijd.",
   "reliabilityLastKnown": "Laatst bekend",
   "reliabilityControlsUnavailable": "Bediening niet beschikbaar",
   "@@locale": "nl",

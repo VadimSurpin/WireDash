@@ -63,6 +63,8 @@ class _Dashboards implements DashboardRepo {
 
 void main() {
   const cases = {
+    'curtain': '{"type":"switch"}',
+    'curtain edit': '{"type":"switch"}',
     'device edit': '{"type":"switch"}',
     'device display edit': '{"type":"switch"}',
     'native display edit': '{"type":"switch"}',
@@ -85,9 +87,18 @@ void main() {
     testWidgets('${entry.key} survives the tile form and saves scalar config', (
       tester,
     ) async {
-      const topic = '/devices/board/controls/Control 1';
+      final curtain = entry.key.startsWith('curtain');
+      final topic = curtain
+          ? '/devices/board/controls/Curtain 1 Open'
+          : '/devices/board/controls/Control 1';
       final discovery = WirenBoardDiscovery()
         ..apply('$topic/meta', entry.value);
+      if (curtain) {
+        discovery.apply(
+          '/devices/board/controls/Curtain 1 Close/meta',
+          '{"type":"switch"}',
+        );
+      }
       if (entry.key == 'device display edit') {
         discovery.apply(
           '/devices/board/controls/Temperature/meta',
@@ -131,7 +142,10 @@ void main() {
             )
           : whole
           ? suggestWirenBoardDevicePanel(device)
-          : suggestWirenBoardPanel(device, device.controls.single);
+          : suggestWirenBoardPanel(
+              device,
+              device.controls.firstWhere((c) => c.topic == topic),
+            );
       final panels = _Panels();
       if (editing) {
         panels.existing = Panel(
@@ -298,12 +312,38 @@ void main() {
           'Supply voltage',
         );
       }
+      if (curtain) {
+        final title = find.byKey(const ValueKey('cover-open-title'));
+        await tester.ensureVisible(title);
+        await tester.enterText(title, 'Entrance');
+        final icon = find.byKey(const ValueKey('cover-open-icon:gatePartial'));
+        await tester.ensureVisible(icon);
+        await tester.tap(icon);
+        final closeTitle = find.byKey(const ValueKey('cover-close-title'));
+        await tester.ensureVisible(closeTitle);
+        await tester.enterText(closeTitle, 'Shut');
+        final stop = find.byKey(const ValueKey('cover-stop-visible'));
+        await tester.ensureVisible(stop);
+        await tester.tap(stop);
+        for (var i = 0; i < 5; i++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
       await tester.tap(find.text('Save'));
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 100));
       }
       final saved = panels.saved!;
-      if (custom) {
+      if (curtain) {
+        final config = saved[#config] as CoverConfig;
+        expect(config.wirenBoard!.deviceId, 'board');
+        expect(config.wirenBoard!.number, 1);
+        expect(config.openButton.title, 'Entrance');
+        expect(config.openButton.icon, CoverButtonIcon.gatePartial);
+        expect(config.closeButton.title, 'Shut');
+        expect(config.stopButton.visible, true);
+        expect(config.showSlider, false);
+      } else if (custom) {
         final config = saved[#config] as PanelConfig;
         final display = config is WirenBoardDeviceConfig
             ? config.display
@@ -357,7 +397,8 @@ void main() {
         ),
         whole ? '/devices/board' : topic,
       );
-      if (!whole && !device.controls.single.readOnly) {
+      if (!whole &&
+          !device.controls.firstWhere((c) => c.topic == topic).readOnly) {
         expect(
           composeTopic(saved[#topicPrefixOverride], saved[#topic]),
           '$topic/on',

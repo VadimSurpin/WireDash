@@ -120,6 +120,54 @@ abstract class AppLocalizations {
     Locale('sv'),
   ];
 
+  /// No description provided for @coverButtonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Button title'**
+  String get coverButtonTitle;
+
+  /// No description provided for @coverShowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show button'**
+  String get coverShowButton;
+
+  /// No description provided for @coverRollerOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Roller open'**
+  String get coverRollerOpen;
+
+  /// No description provided for @coverRollerClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Roller closed'**
+  String get coverRollerClosed;
+
+  /// No description provided for @coverGateOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate open'**
+  String get coverGateOpen;
+
+  /// No description provided for @coverGateClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate closed'**
+  String get coverGateClosed;
+
+  /// No description provided for @coverGatePartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Gate partially open'**
+  String get coverGatePartial;
+
+  /// No description provided for @coverPairedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired drive controls. Movement timing is managed by the device.'**
+  String get coverPairedDescription;
+
   /// No description provided for @reliabilityLastKnown.
   ///
   /// In en, this message translates to:

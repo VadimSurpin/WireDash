@@ -1,4 +1,12 @@
 {
+  "coverButtonTitle": "Название кнопки",
+  "coverShowButton": "Показывать кнопку",
+  "coverRollerOpen": "Рольставни открыты",
+  "coverRollerClosed": "Рольставни закрыты",
+  "coverGateOpen": "Ворота открыты",
+  "coverGateClosed": "Ворота закрыты",
+  "coverGatePartial": "Ворота приоткрыты",
+  "coverPairedDescription": "Парное управление приводом. Время движения задаётся в устройстве.",
   "reliabilityLastKnown": "Последнее известное",
   "reliabilityControlsUnavailable": "Управление недоступно",
   "@@locale": "ru",

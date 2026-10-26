@@ -9,6 +9,31 @@ class AppLocalizationsCs extends AppLocalizations {
   AppLocalizationsCs([String locale = 'cs']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Popisek tlačítka';
+
+  @override
+  String get coverShowButton => 'Zobrazit tlačítko';
+
+  @override
+  String get coverRollerOpen => 'Roleta otevřená';
+
+  @override
+  String get coverRollerClosed => 'Roleta zavřená';
+
+  @override
+  String get coverGateOpen => 'Brána otevřená';
+
+  @override
+  String get coverGateClosed => 'Brána zavřená';
+
+  @override
+  String get coverGatePartial => 'Brána pootevřená';
+
+  @override
+  String get coverPairedDescription =>
+      'Párové ovládání pohonu. Dobu pohybu řídí zařízení.';
+
+  @override
   String get reliabilityLastKnown => 'Naposledy známé';
 
   @override

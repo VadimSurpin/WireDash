@@ -8,6 +8,7 @@ import '../../../data/database/tables/panels.dart';
 import '../../panels/widgets/property_widget_selector.dart';
 import '../../panels/widgets/display_expression_field.dart';
 import '../../panels/models/panel_config.dart';
+import '../../panels/widgets/cover_controls_editor.dart';
 import '../models/wirenboard_panel_suggestion.dart';
 import '../models/wirenboard_device.dart';
 import '../wirenboard_dashboard_importer.dart';
@@ -60,6 +61,7 @@ class _AddWirenBoardPanelSheetState
   bool _saving = false;
   bool _allowCommands = false;
   String _valueExpression = '';
+  CoverConfig? _coverConfig;
 
   @override
   void didChangeDependencies() {
@@ -111,6 +113,7 @@ class _AddWirenBoardPanelSheetState
           widgetType: _widgetType,
           allowCommands: _allowCommands,
           valueExpression: _valueExpression,
+          coverConfig: _coverConfig,
         );
       } else {
         await importer.addDevice(widget.device, label: _label.text.trim());
@@ -202,6 +205,12 @@ class _AddWirenBoardPanelSheetState
                       : (type) => setState(() => _widgetType = type),
                 ),
               ],
+              if (suggestion?.config is CoverConfig &&
+                  (_widgetType == null || _widgetType == PanelType.cover))
+                CoverControlsEditor(
+                  config: _coverConfig ?? suggestion!.config! as CoverConfig,
+                  onChanged: (value) => setState(() => _coverConfig = value),
+                ),
               if (suggestion != null &&
                   supportsDisplayExpression(_widgetType ?? suggestion.type))
                 DisplayExpressionField(

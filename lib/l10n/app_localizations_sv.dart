@@ -9,6 +9,31 @@ class AppLocalizationsSv extends AppLocalizations {
   AppLocalizationsSv([String locale = 'sv']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Knapptext';
+
+  @override
+  String get coverShowButton => 'Visa knapp';
+
+  @override
+  String get coverRollerOpen => 'Rullgardin öppen';
+
+  @override
+  String get coverRollerClosed => 'Rullgardin stängd';
+
+  @override
+  String get coverGateOpen => 'Grind öppen';
+
+  @override
+  String get coverGateClosed => 'Grind stängd';
+
+  @override
+  String get coverGatePartial => 'Grind delvis öppen';
+
+  @override
+  String get coverPairedDescription =>
+      'Parkopplad motorstyrning. Enheten styr rörelsetiden.';
+
+  @override
   String get reliabilityLastKnown => 'Senast kända';
 
   @override

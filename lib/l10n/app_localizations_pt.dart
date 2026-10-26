@@ -9,6 +9,31 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get coverButtonTitle => 'Título do botão';
+
+  @override
+  String get coverShowButton => 'Mostrar botão';
+
+  @override
+  String get coverRollerOpen => 'Persiana aberta';
+
+  @override
+  String get coverRollerClosed => 'Persiana fechada';
+
+  @override
+  String get coverGateOpen => 'Portão aberto';
+
+  @override
+  String get coverGateClosed => 'Portão fechado';
+
+  @override
+  String get coverGatePartial => 'Portão parcialmente aberto';
+
+  @override
+  String get coverPairedDescription =>
+      'Controlo de acionamento emparelhado. O dispositivo gere o tempo de movimento.';
+
+  @override
   String get reliabilityLastKnown => 'Último valor conhecido';
 
   @override
