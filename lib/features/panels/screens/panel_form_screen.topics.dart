@@ -85,7 +85,10 @@ extension _PanelFormTopics on _State {
       ],
       if (pairedCover)
         Text(
-          '${_coverConfig.wirenBoard!.openTopic}\n${_coverConfig.wirenBoard!.closeTopic}',
+          '${l10n.panelFormStateTopic}:\n'
+          '${_coverConfig.wirenBoard!.openTopic}\n${_coverConfig.wirenBoard!.closeTopic}\n\n'
+          '${l10n.panelFormCommandTopic}:\n'
+          '${_coverConfig.wirenBoard!.openTopic}/on\n${_coverConfig.wirenBoard!.closeTopic}/on',
           textDirection: TextDirection.ltr,
           style: theme.textTheme.bodySmall,
         ),

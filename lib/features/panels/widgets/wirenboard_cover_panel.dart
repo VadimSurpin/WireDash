@@ -153,8 +153,9 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
         _finish(failed: true);
       }
     });
-    final ready =
-        connection == MqttStatus.connected &&
+    final connected = connection == MqttStatus.connected;
+    final hasFeedback =
+        connected &&
         _open?.freshness == PanelFreshness.fresh &&
         _close?.freshness == PanelFreshness.fresh &&
         _open?.connectionGeneration == _close?.connectionGeneration &&
@@ -162,8 +163,9 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
         const ['0', '1'].contains(_close?.value.toString());
     final cfg = widget.config;
     final l10n = context.l10n;
-    final active =
-        _open?.value.toString() == '1' && _close?.value.toString() == '0'
+    final active = !hasFeedback
+        ? null
+        : _open?.value.toString() == '1' && _close?.value.toString() == '0'
         ? 'OPEN'
         : _close?.value.toString() == '1' && _open?.value.toString() == '0'
         ? 'CLOSE'
@@ -175,8 +177,10 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
       CoverButtonIcon fallback,
     ) => FilledButton.tonalIcon(
       key: ValueKey('wb-cover-$action'),
-      onPressed: ready && _pending != action ? () => _send(action) : null,
-      style: active == action && ready
+      // Direction commands are explicit and the relay enforces interlocking.
+      // Missing retained feedback must not prevent issuing the first command.
+      onPressed: connected && _pending != action ? () => _send(action) : null,
+      style: active == action
           ? FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
@@ -242,7 +246,7 @@ class _WirenBoardCoverPanelState extends ConsumerState<WirenBoardCoverPanel> {
                 l10n.shortcutNotConfirmed,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
-            if (!ready)
+            if (!hasFeedback)
               Text(
                 connection == MqttStatus.connected
                     ? l10n.reliabilityLastKnown

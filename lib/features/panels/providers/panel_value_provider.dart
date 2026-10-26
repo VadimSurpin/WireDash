@@ -48,15 +48,16 @@ class _ExtractedPanelMessage {
 }
 
 /// Compose an absolute MQTT topic from an optional dashboard prefix and a
-/// panel-level suffix. Leading slashes on the suffix are trimmed (they
-/// mean nothing here — MQTT topics aren't paths). Empty suffix collapses
+/// panel-level suffix. Without a prefix, use the topic exactly as entered:
+/// `/devices/...` and `devices/...` are different MQTT topics. With a prefix,
+/// leading suffix slashes are treated as join separators. Empty suffix collapses
 /// to just the prefix — useful for Z2M state topics where the state lives
 /// at the device's friendly name and commands at `friendlyName/set`.
 /// For an absolute topic that ignores the prefix entirely, clear the
 /// prefix on the dashboard.
 String composeTopic(String? prefix, String suffix) {
+  if (prefix == null || prefix.isEmpty) return suffix;
   final cleanSuffix = suffix.startsWith('/') ? suffix.replaceFirst(RegExp(r'^/+'), '') : suffix;
-  if (prefix == null || prefix.isEmpty) return cleanSuffix;
   if (cleanSuffix.isEmpty) return prefix;
   return '$prefix/$cleanSuffix';
 }

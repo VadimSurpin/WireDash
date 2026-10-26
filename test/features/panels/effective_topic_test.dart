@@ -2,6 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zigdash/features/panels/providers/panel_value_provider.dart';
 
 void main() {
+  test('a full WB topic keeps its leading slash without a prefix', () {
+    const state = '/devices/wb-mr6c_1/controls/K1';
+    for (final prefix in [null, '']) {
+      expect(composeTopic(prefix, state), state);
+      expect(composeTopic(prefix, '$state/on'), '$state/on');
+    }
+  });
+
   group('effectiveSubscribeTopic', () {
     test('override wins over dashboard prefix', () {
       expect(

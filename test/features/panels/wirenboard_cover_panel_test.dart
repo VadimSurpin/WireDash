@@ -84,7 +84,12 @@ class _Fixture {
   }
 }
 
-Widget _app(_Fixture f, {CoverConfig config = _config, double scale = 1}) {
+Widget _app(
+  _Fixture f, {
+  CoverConfig config = _config,
+  double scale = 1,
+  bool feedback = true,
+}) {
   final now = DateTime(2026);
   final panel = Panel(
     id: 'p1',
@@ -108,8 +113,11 @@ Widget _app(_Fixture f, {CoverConfig config = _config, double scale = 1}) {
       mqttManagerProvider.overrideWith((ref, _) async => f.manager),
       connectionStatusProvider.overrideWith((ref, _) => f.status.stream),
       panelValueSnapshotProvider.overrideWith(
-        (ref, key) =>
-            key.topic == _binding.closeTopic ? f.close.stream : f.open.stream,
+        (ref, key) => !feedback
+            ? const Stream<PanelValueSnapshot>.empty()
+            : key.topic == _binding.closeTopic
+            ? f.close.stream
+            : f.open.stream,
       ),
     ],
     child: MaterialApp(
@@ -277,7 +285,22 @@ void main() {
   );
 
   testWidgets(
-    'large text wraps on a narrow tile and stale state disables commands',
+    'connected cover can publish before either feedback topic arrives',
+    (tester) async {
+      await tester.pumpWidget(_app(f, feedback: false));
+      await _pump(tester);
+      await tester.tap(find.byKey(const ValueKey('wb-cover-OPEN')));
+      await _pump(tester);
+      expect(f.manager.sent, [('${_binding.openTopic}/on', '1', false)]);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pump(const Duration(seconds: 16));
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('Not confirmed'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'large text wraps and stale feedback does not block a connected command',
     (tester) async {
       await tester.pumpWidget(_app(f, scale: 2));
       await _pump(tester);
@@ -287,8 +310,16 @@ void main() {
       final button = tester.widget<FilledButton>(
         find.byKey(const ValueKey('wb-cover-OPEN')),
       );
-      expect(button.onPressed, isNull);
-      expect(f.manager.sent, isEmpty);
+      expect(button.onPressed, isNotNull);
+      await tester.tap(find.byKey(const ValueKey('wb-cover-OPEN')));
+      await _pump(tester);
+      expect(f.manager.sent, [('${_binding.openTopic}/on', '1', false)]);
+      f.open.add(_state('1', fresh: false));
+      await _pump(tester);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      f.open.add(_state('1'));
+      await _pump(tester);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
     },
   );
 

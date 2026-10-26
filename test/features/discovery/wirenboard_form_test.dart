@@ -314,6 +314,11 @@ void main() {
       }
       if (curtain) {
         final title = find.byKey(const ValueKey('cover-open-title'));
+        expect(find.textContaining('$topic/on'), findsOneWidget);
+        expect(
+          find.textContaining('/devices/board/controls/Curtain 1 Close/on'),
+          findsOneWidget,
+        );
         await tester.ensureVisible(title);
         await tester.enterText(title, 'Entrance');
         final icon = find.byKey(const ValueKey('cover-open-icon:gatePartial'));
