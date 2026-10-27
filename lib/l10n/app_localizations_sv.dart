@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1598,7 +1597,20 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant svarade inte i det här nätverket. Skriv in adressen: den hemma, eller en fjärradress.';
+      'Den här telefonen ser inte Home Assistant på det här wifi-nätverket. Använd adressen som din Home Assistant-app öppnar: ofta en fjärradress, som https://abcd1234.ui.nabu.casa eller https://mitthem.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Adressen ligger i ett annat nätverk än den här telefonen, som är på $network. Använd adressen som din Home Assistant-app öppnar, ofta en fjärradress, eller anslut telefonen till nätverket där Home Assistant finns.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Telefonen hittade inte det namnet: Android kan ofta inte öppna .local-namn. Skriv Home Assistants IP-adress (som 192.168.1.20:8123) eller dess fjärradress.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Inget svarade på den fjärradressen. Öppna den i telefonens webbläsare för att kontrollera att den fungerar, och kopiera den exakt som din Home Assistant-app visar den.';
 
   @override
   String get setupNoWifiHa => 'Använder du Home Assistant? Logga in';

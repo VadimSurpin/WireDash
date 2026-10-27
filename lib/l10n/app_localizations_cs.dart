@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1601,7 +1600,20 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant v této síti neodpověděl. Zadejte jeho adresu: domácí, nebo vzdálenou.';
+      'Tento telefon v této Wi-Fi Home Assistant nevidí. Použijte adresu, kterou otevírá vaše aplikace Home Assistant: často vzdálenou, například https://abcd1234.ui.nabu.casa nebo https://mujdum.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Tato adresa je v jiné síti než tento telefon, který je v $network. Použijte adresu, kterou otevírá vaše aplikace Home Assistant, často vzdálenou, nebo připojte telefon k síti, ve které je Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Tento telefon to jméno nenašel: Android často neotevře jména .local. Zadejte IP adresu Home Assistantu (například 192.168.1.20:8123) nebo jeho vzdálenou adresu.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Na této vzdálené adrese nic neodpovědělo. Otevřete ji v prohlížeči tohoto telefonu a ověřte, že funguje, a zkopírujte ji přesně tak, jak ji ukazuje vaše aplikace Home Assistant.';
 
   @override
   String get setupNoWifiHa => 'Používáte Home Assistant? Přihlásit se';

@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1609,7 +1608,20 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant hat in diesem Netzwerk nicht geantwortet. Gib die Adresse ein: die von zu Hause oder eine Fernzugriffsadresse.';
+      'Dieses Handy sieht Home Assistant in diesem WLAN nicht. Nimm die Adresse, die deine Home-Assistant-App öffnet: oft eine Fernzugriffsadresse wie https://abcd1234.ui.nabu.casa oder https://meinzuhause.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Diese Adresse liegt in einem anderen Netzwerk als dieses Handy, das in $network ist. Nimm die Adresse, die deine Home-Assistant-App öffnet, oft eine Fernzugriffsadresse, oder verbinde das Handy mit dem Netzwerk von Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Dieses Handy hat den Namen nicht gefunden: Android kann .local-Namen oft nicht öffnen. Gib die IP-Adresse von Home Assistant ein (z. B. 192.168.1.20:8123) oder seine Fernzugriffsadresse.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Unter dieser Fernzugriffsadresse hat nichts geantwortet. Öffne sie im Browser dieses Handys, um zu prüfen, ob sie funktioniert, und kopiere sie genau so, wie deine Home-Assistant-App sie zeigt.';
 
   @override
   String get setupNoWifiHa => 'Home Assistant? Anmelden';

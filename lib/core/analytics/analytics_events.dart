@@ -228,9 +228,15 @@ class SetupStep extends AnalyticsEvent {
     this.portClass,
     this.via,
     this.aiHelped,
+    this.shape,
   });
 
   final SetupStepKind step;
+
+  /// The kind of address a Home Assistant try went to (an
+  /// [HaAddressShape]), on [SetupStepKind.haConnect] (3.1.12). Never the
+  /// address.
+  final Enum? shape;
 
   /// Whether "Ask your AI" was shared or copied earlier in this setup, on
   /// [SetupStepKind.complete] (3.1.5).
@@ -351,6 +357,7 @@ class SetupStep extends AnalyticsEvent {
     if (portClass != null) 'port': portClass!,
     if (noNetwork != null) 'why': _snake(noNetwork!.name),
     if (choice != null) 'choice': _snake(choice!.name),
+    if (shape != null) 'shape': _snake(shape!.name),
   };
 
   /// The interface kind as a fixed label: wifi, ethernet or other.

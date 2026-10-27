@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1584,7 +1583,20 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant לא ענה ברשת הזו. הקלידו את הכתובת שלו: של הבית, או כתובת מרוחקת.';
+      'הטלפון הזה לא רואה את Home Assistant ברשת ה-Wi-Fi הזו. השתמשו בכתובת שאפליקציית Home Assistant שלכם פותחת: לרוב כתובת מרוחקת, כמו https://abcd1234.ui.nabu.casa או https://myhome.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'הכתובת הזו נמצאת ברשת אחרת מזו של הטלפון, שנמצא ב-$network. השתמשו בכתובת שאפליקציית Home Assistant שלכם פותחת, לרוב כתובת מרוחקת, או חברו את הטלפון לרשת שבה נמצא Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'הטלפון לא מצא את השם הזה: אנדרואיד לרוב לא פותח שמות ‎.local. הקלידו את כתובת ה-IP של Home Assistant (למשל 192.168.1.20:8123), או את הכתובת המרוחקת שלו.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'אף אחד לא ענה בכתובת המרוחקת הזו. פתחו אותה בדפדפן של הטלפון כדי לבדוק שהיא עובדת, והעתיקו אותה בדיוק כפי שאפליקציית Home Assistant מציגה אותה.';
 
   @override
   String get setupNoWifiHa => 'משתמש ב-Home Assistant? התחבר';

@@ -2949,8 +2949,26 @@ abstract class AppLocalizations {
   /// No description provided for @haFindNone.
   ///
   /// In en, this message translates to:
-  /// **'Home Assistant didn\'t answer on this network. Type its address: the home one, or a remote one.'**
+  /// **'This phone can\'t see Home Assistant on this Wi-Fi. Use the address your Home Assistant app opens: often a remote one, like https://abcd1234.ui.nabu.casa or https://myhome.duckdns.org.'**
   String get haFindNone;
+
+  /// No description provided for @haConnectOtherNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'That address is on a different network from this phone, which is on {network}. Use the address your Home Assistant app opens, often a remote one, or connect the phone to the network Home Assistant is on.'**
+  String haConnectOtherNetwork(String network);
+
+  /// No description provided for @haConnectLocalNameUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone couldn\'t find that name: Android often can\'t open .local names. Type Home Assistant\'s IP address (like 192.168.1.20:8123), or its remote address.'**
+  String get haConnectLocalNameUnreachable;
+
+  /// No description provided for @haConnectRemoteUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered at that remote address. Open it in this phone\'s browser to check that it works, and copy it exactly as your Home Assistant app shows it.'**
+  String get haConnectRemoteUnreachable;
 
   /// No description provided for @setupNoWifiHa.
   ///

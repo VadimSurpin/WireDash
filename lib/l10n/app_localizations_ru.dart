@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1607,7 +1606,20 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant не ответил в этой сети. Введите его адрес: домашний или удалённый.';
+      'Этот телефон не видит Home Assistant в этой сети Wi-Fi. Используйте адрес, который открывает ваше приложение Home Assistant: часто удалённый, например https://abcd1234.ui.nabu.casa или https://myhome.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Этот адрес в другой сети, чем телефон, который находится в $network. Используйте адрес, который открывает ваше приложение Home Assistant, часто удалённый, или подключите телефон к сети, где работает Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Телефон не нашёл это имя: Android часто не открывает имена .local. Введите IP-адрес Home Assistant (например, 192.168.1.20:8123) или его удалённый адрес.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'По этому удалённому адресу ничего не ответило. Откройте его в браузере этого телефона, чтобы проверить, что он работает, и скопируйте его точно так, как показывает приложение Home Assistant.';
 
   @override
   String get setupNoWifiHa => 'Используете Home Assistant? Войти';
