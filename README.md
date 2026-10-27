@@ -99,6 +99,9 @@ all app features without Play billing.
 
 ## Android Auto
 
+**For the current test APK, enable Android Auto developer mode and turn on
+Unknown sources in its developer settings.**
+
 Set up connections and dashboards on the phone, then open WireDash in Android
 Auto and select a dashboard. Switches, command buttons, covers, gates and rollers
 use their saved labels, icons and action settings. Writable controls on

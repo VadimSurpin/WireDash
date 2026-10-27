@@ -69,18 +69,20 @@ system renderer permission. Debug builds allow development hosts for DHU use.
 
 ## Test and install
 
-**A normal sideloaded APK is not sufficient for Android Auto in a real car.**
-Google requires apps using the Car App Library to be installed from a trusted
-source, such as Google Play internal app sharing or an internal testing track.
-Android Auto's **Unknown sources** option does not apply to these templated
-apps. See [Android's real-vehicle testing rules](https://developer.android.com/training/cars/testing).
+**For the current test APK, enable Android Auto developer mode and turn on
+Unknown sources in its developer settings.** This is the setup used for the
+tested development installation.
+
+Google Play internal app sharing or an internal testing track provides another
+installation route. See [Android's testing guide](https://developer.android.com/training/cars/testing).
 
 For development, use Google's [Desktop Head Unit (DHU)](https://developer.android.com/training/cars/testing/dhu):
 
 1. Install the branch's APK on a phone and configure the broker/WireGuard
    connection and dashboards in WireDash.
 2. Update Android Auto and enable its developer mode by tapping its version
-   information ten times in Android Auto settings.
+   information ten times in Android Auto settings. Open the developer settings
+   and enable **Unknown sources**.
 3. Enable the head-unit server from Android Auto's developer menu.
 4. Connect the phone by USB, then run `adb forward tcp:5277 tcp:5277` and start
    the SDK's `extras/google/auto/desktop-head-unit`.
@@ -95,8 +97,8 @@ For development, use Google's [Desktop Head Unit (DHU)](https://developer.androi
 7. Hide/return to the car app and disconnect/reconnect its network route.
    Reconnecting must appear, state must recover, and no command may be replayed.
 
-For a real vehicle, upload the signed APK through your Play Console internal
-test/internal app sharing and install it from that trusted link. Google Play
+For distribution through Google Play, upload the signed APK through your Play
+Console internal test/internal app sharing and install it from that link. Google Play
 production review and Android Automotive OS (apps installed directly in the
 vehicle) are separate distribution steps.
 
