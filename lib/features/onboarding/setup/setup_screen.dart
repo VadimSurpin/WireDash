@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/net/mdns_lookup.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -2091,6 +2093,17 @@ Future<void> _askZ2mPage(BuildContext context, SetupCoordinator coordinator) asy
   );
   final parsed = address == null ? null : z2mPageAddress(address);
   if (parsed == null) return;
-  await coordinator.adoptZ2mPage(host: parsed.$1, port: parsed.$2);
+  var host = parsed.$1;
+  // 3.2 spike: a .local name Android may not resolve, looked up by ZigDash.
+  if (host.toLowerCase().endsWith('.local')) {
+    final ip = await mdnsLookup(host);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(ip == null ? 'No answer for $host on this network' : 'Found $host at ${ip.address}'),
+      ));
+    }
+    if (ip != null) host = ip.address;
+  }
+  await coordinator.adoptZ2mPage(host: host, port: parsed.$2);
 }
 
