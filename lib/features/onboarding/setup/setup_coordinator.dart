@@ -488,6 +488,10 @@ class SetupCoordinator {
 
   // --- Intents ---
 
+  /// The platform came from the welcome's question (3.2): the scan then
+  /// doesn't ask it again.
+  bool answeredFirst = false;
+
   /// Whether the running scan covers the whole /22 (3.2: only after
   /// "Look on the whole network"; the phone's own /24 first).
   bool get widen => _widen;
@@ -965,6 +969,7 @@ class SetupCoordinator {
     _password = null;
     _rows = null;
     _platform = null;
+    answeredFirst = false;
     _emit(const SetupIdle());
   }
 

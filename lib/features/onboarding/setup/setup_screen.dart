@@ -176,7 +176,10 @@ class SetupScreen extends ConsumerWidget {
           child: switch (state) {
             SetupIdle() => _Welcome(
               onFind: coordinator.startScan,
-              onPlatform: choosePlatform,
+              onPlatform: (p) {
+                coordinator.answeredFirst = true;
+                choosePlatform(p);
+              },
               onHa: () => viaHa(null, HaSignInFrom.welcome),
               onZ2mPage: () => _askZ2mPage(context, coordinator),
               onManual: manual,
@@ -185,6 +188,7 @@ class SetupScreen extends ConsumerWidget {
             ),
             SetupScanning() => _Scanning(
               state: state,
+              askPlatform: !coordinator.answeredFirst,
               onSelect: coordinator.selectCandidate,
               onPlatform: choosePlatform,
               onManual: manual,
@@ -523,6 +527,7 @@ class _WelcomeState extends ConsumerState<_Welcome> {
 class _Scanning extends StatelessWidget {
   const _Scanning({
     required this.state,
+    this.askPlatform = true,
     required this.onSelect,
     required this.onPlatform,
     required this.onManual,
@@ -530,6 +535,9 @@ class _Scanning extends StatelessWidget {
     required this.onConnectViaHa,
   });
   final SetupScanning state;
+
+  /// False when the welcome already asked (3.2).
+  final bool askPlatform;
   final ValueChanged<SetupCandidate> onSelect;
   final ValueChanged<SetupPlatform?> onPlatform;
   final VoidCallback onManual;
@@ -578,13 +586,15 @@ class _Scanning extends StatelessWidget {
         ],
         // Kept after the scan ends (2.7.1): a fast scan used to hide the
         // question before anyone could answer it.
-        const SizedBox(height: 20),
-        _PlatformChips(
-          value: state.platform,
-          onChanged: onPlatform,
-          onDemo: onDemo,
-          done: state.done,
-        ),
+        if (askPlatform) ...[
+          const SizedBox(height: 20),
+          _PlatformChips(
+            value: state.platform,
+            onChanged: onPlatform,
+            onDemo: onDemo,
+            done: state.done,
+          ),
+        ],
         if (state.platform == SetupPlatform.homeAssistant) ...[
           const SizedBox(height: 16),
           _HaShortcut(
