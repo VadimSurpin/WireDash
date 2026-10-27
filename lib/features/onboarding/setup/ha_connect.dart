@@ -274,6 +274,7 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
     final signIn = _signIn;
     if (signIn == null) return;
     var base = haBaseUri(address);
+    final typed = address;
     final t = ++_try;
     if (base == null && _looking != null) {
       // Signed in before the look ended, with nothing typed: wait for it.
@@ -307,8 +308,14 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
       );
     }
     _checking(address);
-    final shape = await _shapeOf(address);
+    // A typed `.local` name swapped for the found Home Assistant is
+    // counted as typed, and gets no advice by kind: it would be about
+    // another address than the one in the field. An empty field took the
+    // found address, which then fills the field.
+    final swapped = address != typed && typed.trim().isNotEmpty;
+    final shape = await _shapeOf(swapped ? typed : address);
     if (t != _try) return;
+    final advice = swapped ? null : shape;
     // A Home Assistant that can't be reached would open the browser on an
     // error page, and closing it read as nothing happening (3.1.4).
     final unreached = await _reach?.call(base);
@@ -321,7 +328,7 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
         shape,
         base,
       );
-      return _ask(address, unreached, shape);
+      return _ask(address, unreached, advice);
     }
     final signed = await signIn(base);
     if (t != _try) return;
@@ -330,13 +337,13 @@ class HaConnectController extends ValueNotifier<HaConnectState> {
       switch (signed.error) {
         case HaSignInError.cancelled || null:
           _count(HaConnectOutcome.signInCancelled, shape, base);
-          return _ask(address, null, shape);
+          return _ask(address, null, advice);
         case HaSignInError.refused:
           _count(HaConnectOutcome.signInRefused, shape, base);
-          return _ask(address, HaConnectProblem.signInRefused, shape);
+          return _ask(address, HaConnectProblem.signInRefused, advice);
         case HaSignInError.failed:
           _count(HaConnectOutcome.signInFailed, shape, base);
-          return _ask(address, HaConnectProblem.signInFailed, shape);
+          return _ask(address, HaConnectProblem.signInFailed, advice);
       }
     }
     // Kept as the refresh token when there is one: access tokens last

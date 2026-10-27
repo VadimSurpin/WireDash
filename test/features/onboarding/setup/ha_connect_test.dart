@@ -337,5 +337,24 @@ void main() {
       expect(events.last['port'], '443');
       expect(c.value, isA<HaConnectDone>());
     });
+  
+    test('a .local name swapped for the found one: counted as typed, '
+        'no advice by kind', () async {
+      final c = make(
+        signIn: ok,
+        phoneIp: '10.0.2.15',
+        find: () async => [const HaFound(address: 'http://192.168.7.3:8123')],
+        reach: (_) async => HaConnectProblem.unreachable,
+      );
+      await c.look();
+      await c.signInAndConnect('myha.local');
+      final ask = c.value as HaConnectAsk;
+      expect(ask.problem, HaConnectProblem.unreachable);
+      expect(ask.shape, isNull);
+      expect(
+        events.lastWhere((e) => e['step'] == 'ha_connect')['shape'],
+        'local_name',
+      );
+    });
   });
 }
