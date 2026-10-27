@@ -15,6 +15,7 @@ import '../../connections/discovery/broker_scan_providers.dart';
 import '../../connections/discovery/hub_probe.dart';
 import '../../connections/discovery/z2m_frontend.dart';
 import '../../connections/discovery/z2m_frontend_fetch.dart';
+import '../../discovery/models/z2m_device.dart' show parseBridgeDevices;
 import '../../connections/discovery/network_info.dart';
 import '../../support/support_details.dart';
 import '../../support/support_log.dart';
@@ -62,6 +63,12 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
       await fetchZ2mMqttConfig(host, port),
       frontendHost: host,
     ),
+    // The page's usual port; the Home Assistant add-on's sits behind
+    // ingress, where only the Home Assistant route reaches it.
+    pageDevices: (host) async {
+      final list = await fetchZ2mDeviceList(host, 8080);
+      return list == null ? null : parseBridgeDevices(list);
+    },
     probeBroker: scanner.prober.probe,
     checkAddress: createAddressChecker(
       prober: scanner.prober,

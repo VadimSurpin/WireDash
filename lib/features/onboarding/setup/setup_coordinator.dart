@@ -24,7 +24,13 @@ class Z2mFetchResult {
     required this.detected,
     required this.devices,
     this.otherBases = const [],
+    this.devicesMissing = false,
   });
+
+  /// Zigbee2MQTT answered (state or info) but its retained `bridge/devices`
+  /// never came (3.1.13): a broker that lost its retained messages, which
+  /// Zigbee2MQTT before 2.14.2 doesn't republish until it restarts.
+  final bool devicesMissing;
 
   /// True only after `$base/bridge/...` topics verified Zigbee2MQTT — the UI
   /// may not claim Z2M was found before this.
@@ -65,6 +71,11 @@ Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
 /// [z2mBrokerSetting].
 typedef Z2mBrokerLookup =
     Future<Z2mBrokerSetting?> Function(String host, int port);
+
+/// Reads Zigbee2MQTT's device list from its web page on [host] (3.1.13),
+/// which sends the list on connect even when the broker lost it. Null when
+/// the page doesn't answer, is locked, or sends no list.
+typedef Z2mPageDevices = Future<List<Z2mDevice>?> Function(String host);
 
 /// Probes one host:port for an MQTT broker.
 typedef BrokerPortProbe = Future<ProbeResult?> Function(String host, int port);
@@ -314,6 +325,7 @@ class SetupCoordinator {
     AddressChecker? checkAddress,
     HubIdentifier? identifyHub,
     Z2mBrokerLookup? askZ2m,
+    Z2mPageDevices? pageDevices,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
     NoNetworkProvider? noNetwork,
@@ -329,6 +341,7 @@ class SetupCoordinator {
        _checkAddress = checkAddress,
        _identifyHub = identifyHub,
        _askZ2m = askZ2m,
+       _pageDevices = pageDevices,
        _probeBroker = probeBroker,
        _networkFacts = networkFacts,
        _noNetwork = noNetwork;
@@ -352,6 +365,7 @@ class SetupCoordinator {
   /// page but no broker (2.7.2), and probes the answer. Null where the
   /// platform cannot.
   final Z2mBrokerLookup? _askZ2m;
+  final Z2mPageDevices? _pageDevices;
   final BrokerPortProbe? _probeBroker;
 
   /// The username Zigbee2MQTT logs in with, from its web page, for the login
@@ -1022,14 +1036,39 @@ class SetupCoordinator {
         await _verify(candidate);
         return;
       }
-      _emit(SetupFailed(SetupErrorKind.notZigbee2Mqtt, candidate: candidate));
+      // Signed in to Home Assistant, and its MQTT has no Zigbee2MQTT: ZHA,
+      // or a stopped add-on; no broker to pick (3.1.13).
+      _emit(
+        SetupFailed(
+          candidate.viaHomeAssistant
+              ? SetupErrorKind.haNoZigbee2Mqtt
+              : SetupErrorKind.notZigbee2Mqtt,
+          candidate: candidate,
+        ),
+      );
       return;
     }
-    if (fetch.devices.isEmpty) {
+    var devices = fetch.devices;
+    if (fetch.devicesMissing) {
+      // The broker lost the list: Zigbee2MQTT's web page still has it.
+      final page = _pageDevices;
+      final fromPage = page == null || candidate.viaHomeAssistant
+          ? null
+          : await page(candidate.host).catchError((_) => null);
+      if (op != _op) return;
+      if (fromPage == null) {
+        _emit(
+          SetupFailed(SetupErrorKind.devicesListMissing, candidate: candidate),
+        );
+        return;
+      }
+      devices = fromPage;
+    }
+    if (devices.isEmpty) {
       _emit(SetupFailed(SetupErrorKind.noDevices, candidate: candidate));
       return;
     }
-    final rows = recommendDevices(fetch.devices, base: base);
+    final rows = recommendDevices(devices, base: base);
     _rows = rows;
     _emit(SetupReview(candidate, rows));
   }

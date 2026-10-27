@@ -3294,6 +3294,42 @@ abstract class AppLocalizations {
   /// **'Check again'**
   String get setupErrNoDevicesAction;
 
+  /// No description provided for @setupErrListMissingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT didn\'t send its device list'**
+  String get setupErrListMissingTitle;
+
+  /// No description provided for @setupErrListMissingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT answers, but its device list didn\'t come. This usually happens after the MQTT broker restarts: Zigbee2MQTT before 2.14.2 only sends the list again when it restarts. Restart Zigbee2MQTT (or update it), then try again.'**
+  String get setupErrListMissingBody;
+
+  /// No description provided for @setupErrListMissingAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrListMissingAction;
+
+  /// No description provided for @setupErrHaNoZ2mTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Zigbee2MQTT in this Home Assistant'**
+  String get setupErrHaNoZ2mTitle;
+
+  /// No description provided for @setupErrHaNoZ2mBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re signed in to Home Assistant, but Zigbee2MQTT isn\'t sending anything on its MQTT. If your Zigbee devices are in ZHA (Home Assistant\'s built-in Zigbee), ZigDash can\'t see them: it works with Zigbee2MQTT. If you use the Zigbee2MQTT add-on, open it in Home Assistant, check that it\'s started, then try again.'**
+  String get setupErrHaNoZ2mBody;
+
+  /// No description provided for @setupErrHaNoZ2mAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrHaNoZ2mAction;
+
   /// No description provided for @setupErrScanFailedTitle.
   ///
   /// In en, this message translates to:

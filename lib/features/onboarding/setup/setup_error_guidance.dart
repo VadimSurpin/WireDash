@@ -27,6 +27,15 @@ enum SetupErrorKind {
   /// Zigbee2MQTT verified but no devices were published during verification.
   noDevices,
 
+  /// Zigbee2MQTT answered but its device list never came, and its web page
+  /// couldn't give it either (3.1.13): the broker lost its retained
+  /// messages. Restarting Zigbee2MQTT republishes the list.
+  devicesListMissing,
+
+  /// Signed in to Home Assistant, but no Zigbee2MQTT on its MQTT (3.1.13):
+  /// Zigbee through ZHA, or the Zigbee2MQTT add-on stopped.
+  haNoZigbee2Mqtt,
+
   /// The scan itself failed (e.g. no local network) before any candidate.
   scanFailed,
 
@@ -115,6 +124,16 @@ SetupGuidance guidanceFor(SetupErrorKind kind) => switch (kind) {
     titleKey: 'setupErrNotZ2mTitle',
     explanationKey: 'setupErrNotZ2mBody',
     actionKey: 'setupErrNotZ2mAction',
+  ),
+  SetupErrorKind.devicesListMissing => const SetupGuidance(
+    titleKey: 'setupErrListMissingTitle',
+    explanationKey: 'setupErrListMissingBody',
+    actionKey: 'setupErrListMissingAction',
+  ),
+  SetupErrorKind.haNoZigbee2Mqtt => const SetupGuidance(
+    titleKey: 'setupErrHaNoZ2mTitle',
+    explanationKey: 'setupErrHaNoZ2mBody',
+    actionKey: 'setupErrHaNoZ2mAction',
   ),
   SetupErrorKind.noDevices => const SetupGuidance(
     titleKey: 'setupErrNoDevicesTitle',

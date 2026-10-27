@@ -119,6 +119,7 @@ class _Harness {
     AddressChecker? checkAddress,
     HubIdentifier? identifyHub,
     Z2mBrokerLookup? askZ2m,
+    Z2mPageDevices? pageDevices,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
     DeviceIpProvider? deviceIp,
@@ -148,6 +149,7 @@ class _Harness {
       checkAddress: checkAddress,
       identifyHub: identifyHub,
       askZ2m: askZ2m,
+      pageDevices: pageDevices,
       probeBroker: probeBroker,
       networkFacts: networkFacts,
     );
@@ -606,6 +608,54 @@ void main() {
         (h.coordinator.state as SetupFailed).kind,
         SetupErrorKind.notZigbee2Mqtt,
       );
+    });
+
+    group('3.1.13: the device list never came', () {
+      const missing = Z2mFetchResult(
+        detected: true,
+        devices: [],
+        devicesMissing: true,
+      );
+
+      test("Zigbee2MQTT's web page has it: on to the review", () async {
+        final asked = <String>[];
+        final h = _Harness(
+          fetch: missing,
+          pageDevices: (host) async {
+            asked.add(host);
+            return const [_lamp, _plug];
+          },
+        );
+        await h.coordinator.selectCandidate(candidate);
+        expect(asked, ['192.168.1.10']);
+        expect(h.coordinator.state, isA<SetupReview>());
+      });
+
+      test('the page has nothing: says the list is missing', () async {
+        final h = _Harness(fetch: missing, pageDevices: (_) async => null);
+        await h.coordinator.selectCandidate(candidate);
+        expect(
+          (h.coordinator.state as SetupFailed).kind,
+          SetupErrorKind.devicesListMissing,
+        );
+      });
+
+      test('a list that came empty is still no devices', () async {
+        var asked = false;
+        final h = _Harness(
+          fetch: const Z2mFetchResult(detected: true, devices: []),
+          pageDevices: (_) async {
+            asked = true;
+            return null;
+          },
+        );
+        await h.coordinator.selectCandidate(candidate);
+        expect(asked, isFalse);
+        expect(
+          (h.coordinator.state as SetupFailed).kind,
+          SetupErrorKind.noDevices,
+        );
+      });
     });
 
     test('Zigbee2MQTT detected but no devices → noDevices', () async {
@@ -1151,7 +1201,8 @@ void main() {
           signIn: 'eyJ.long.lived',
         );
         final failed = h.coordinator.state as SetupFailed;
-        expect(failed.kind, SetupErrorKind.notZigbee2Mqtt);
+        // 3.1.13: its own kind: there is no other broker to pick.
+        expect(failed.kind, SetupErrorKind.haNoZigbee2Mqtt);
         expect(failed.candidate?.transport, ConnectionTransport.homeAssistant);
       },
     );

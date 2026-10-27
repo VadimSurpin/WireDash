@@ -1815,6 +1815,26 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupErrNoDevicesAction => 'Zkontrolovat znovu';
 
   @override
+  String get setupErrListMissingTitle => 'Zigbee2MQTT neposlal seznam zařízení';
+
+  @override
+  String get setupErrListMissingBody =>
+      'Zigbee2MQTT odpovídá, ale jeho seznam zařízení nepřišel. Obvykle se to stane po restartu MQTT brokeru: Zigbee2MQTT před verzí 2.14.2 pošle seznam znovu až po svém vlastním restartu. Restartujte Zigbee2MQTT (nebo ho aktualizujte) a zkuste to znovu.';
+
+  @override
+  String get setupErrListMissingAction => 'Zkusit znovu';
+
+  @override
+  String get setupErrHaNoZ2mTitle => 'V tomto Home Assistantu není Zigbee2MQTT';
+
+  @override
+  String get setupErrHaNoZ2mBody =>
+      'Jste přihlášeni do Home Assistantu, ale Zigbee2MQTT přes jeho MQTT nic neposílá. Pokud máte zařízení Zigbee v ZHA (vestavěném Zigbee Home Assistantu), ZigDash je nevidí: pracuje se Zigbee2MQTT. Pokud používáte doplněk Zigbee2MQTT, otevřete ho v Home Assistantu, zkontrolujte, že běží, a zkuste to znovu.';
+
+  @override
+  String get setupErrHaNoZ2mAction => 'Zkusit znovu';
+
+  @override
   String get setupErrScanFailedTitle => 'Žádná místní síť';
 
   @override

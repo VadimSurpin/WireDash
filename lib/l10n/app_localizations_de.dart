@@ -1823,6 +1823,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get setupErrNoDevicesAction => 'Erneut prüfen';
 
   @override
+  String get setupErrListMissingTitle =>
+      'Zigbee2MQTT hat seine Geräteliste nicht gesendet';
+
+  @override
+  String get setupErrListMissingBody =>
+      'Zigbee2MQTT antwortet, aber seine Geräteliste kam nicht. Das passiert meist nach einem Neustart des MQTT-Brokers: Zigbee2MQTT vor 2.14.2 sendet die Liste erst nach einem eigenen Neustart wieder. Starte Zigbee2MQTT neu (oder aktualisiere es) und versuche es dann noch einmal.';
+
+  @override
+  String get setupErrListMissingAction => 'Noch einmal versuchen';
+
+  @override
+  String get setupErrHaNoZ2mTitle =>
+      'Kein Zigbee2MQTT in diesem Home Assistant';
+
+  @override
+  String get setupErrHaNoZ2mBody =>
+      'Du bist bei Home Assistant angemeldet, aber Zigbee2MQTT sendet nichts über dessen MQTT. Wenn deine Zigbee-Geräte in ZHA sind (dem eingebauten Zigbee von Home Assistant), kann ZigDash sie nicht sehen: Es arbeitet mit Zigbee2MQTT. Wenn du das Zigbee2MQTT-Add-on nutzt, öffne es in Home Assistant, prüfe, ob es läuft, und versuche es dann noch einmal.';
+
+  @override
+  String get setupErrHaNoZ2mAction => 'Noch einmal versuchen';
+
+  @override
   String get setupErrScanFailedTitle => 'Kein lokales Netzwerk';
 
   @override
