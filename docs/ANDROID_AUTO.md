@@ -9,7 +9,9 @@ select a dashboard once and operate its buttons directly in a scrolling grid.
 
 The car shows saved dashboards containing supported controls, in dashboard
 order. Supported panels are command buttons, switches, covers, and writable
-switches/buttons on whole-device Wiren Board or Zigbee2MQTT panels. Complete WB
+switches/buttons on whole-device Wiren Board or Zigbee2MQTT panels. Legacy
+radio/enum shutter tiles are included with their saved labels and payloads.
+Endpoint-specific Zigbee shutter state properties are retained. Complete WB
 curtain pairs are grouped into Open/Close controls. Other panel types remain on
 the phone. A separate dashboard named "Car" is a useful way to group gates,
 garage doors and driveway lights.
@@ -27,8 +29,10 @@ their initial appearance without a state subscription. State-aware controls
 use current-session MQTT feedback; relay activity is not a gate-position
 estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
-`/on`, and are never retained. The host disallows clicking a loading grid item;
-the action becomes available again when its spinner finishes.
+`/on`, and are never retained. Sending feedback rotates a native icon while
+keeping each grid cell's image and click structure intact, to avoid hosts
+rebuilding the grid at the top. Duplicate taps on the busy action are ignored;
+the other cover directions (including Stop) remain usable.
 
 The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.
 The host fetches more items while scrolling; WireDash does not insert Next or
@@ -46,7 +50,11 @@ Editing, credentials, text entry and connection setup are handled on the phone.
 
 The car uses the existing headless shortcut engine, the app's read-only
 database, secure credentials and configured MQTT transport, including embedded
-WireGuard. It does not require the phone dashboard to be open. The native
+WireGuard. It does not require the phone dashboard to be open. Flutter's cold
+initialization waits in the background, and the headless engine initializes
+SQLite independently of the phone UI. Timed-out requests are removed from the
+startup queue. Transient engine errors retain the current dashboard with
+Reconnecting feedback rather than replacing it with another template. The native
 WireGuard implementation shares its peer with phone widgets and the phone UI.
 
 Opening a dashboard after the car app was hidden rebuilds its MQTT connection

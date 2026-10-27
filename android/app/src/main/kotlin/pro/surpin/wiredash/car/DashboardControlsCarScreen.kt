@@ -28,7 +28,7 @@ internal class DashboardControlsCarScreen(
     override val method = "carOpen"
     override val arguments get() = mapOf("dashboardId" to dashboardId)
 
-    private class Sending(val action: String, var awaitingSnapshot: Boolean = false)
+    private class Sending(val action: String, var awaitingSnapshot: Boolean = false, var frame: Int = 0)
     private val sending = mutableMapOf<String, Sending>()
     private val materialIcons = mutableMapOf<Int, Bitmap>()
     private val materialFont by lazy {
@@ -99,16 +99,37 @@ internal class DashboardControlsCarScreen(
         val loading = pending != null && (switch || pending == actionId)
         val connected = snapshot.optBoolean("connected")
         val item = GridItem.Builder().setTitle(title)
-        if (loading) item.setLoading(true)
-        else item.setImage(actionIcon(appearance, if (switch) control.optString("state") == "ON"
+        // Keep the cell's image/click structure stable. GridItem.setLoading()
+        // removes both; some projection hosts treat that as a new grid and
+        // scroll to the top despite SCROLL_STATE_PRESERVE_INDEX.
+        item.setImage(if (loading) sendingIcon(sending[controlId]?.frame ?: 0)
+            else actionIcon(appearance, if (switch) control.optString("state") == "ON"
             else control.optString("state") == appearance.optString("id")), GridItem.IMAGE_TYPE_ICON)
         when {
             !connected -> item.setText(word("reconnecting", R.string.car_reconnecting))
             control.optBoolean("failed") -> item.setText(word("unconfirmed", R.string.car_unconfirmed))
             subtitle != null -> item.setText(subtitle)
         }
-        if (connected && !loading) item.setOnClickListener { send(controlId, actionId) }
+        if (connected) item.setOnClickListener { send(controlId, actionId) }
         return item.build()
+    }
+
+    private fun sendingIcon(frame: Int): CarIcon = CarIcon.Builder(IconCompat.createWithResource(
+        carContext, when (frame % 4) {
+            1 -> R.drawable.car_sending_1
+            2 -> R.drawable.car_sending_2
+            3 -> R.drawable.car_sending_3
+            else -> R.drawable.car_sending_0
+        })).build()
+
+    private fun animate(controlId: String, request: Sending) {
+        handler.postDelayed({
+            if (visible && sending[controlId] === request) {
+                request.frame++
+                invalidate()
+                animate(controlId, request)
+            }
+        }, 250)
     }
 
     private fun actionIcon(action: JSONObject, selected: Boolean): CarIcon {
@@ -137,8 +158,15 @@ internal class DashboardControlsCarScreen(
     }
 
     private fun send(controlId: String, actionId: String) {
+        // A stable click listener does not permit repeated commands while busy.
+        val control = data?.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
+        val pending = sending[controlId]?.action ?: if (control?.optBoolean("waitForFeedback") == true)
+            control.optString("pending").takeUnless { control.isNull("pending") } else null
+        if (data?.optBoolean("connected") != true || pending == actionId ||
+            (control?.optString("kind") == "switch" && pending != null)) return
         val request = Sending(actionId)
         sending[controlId] = request
+        animate(controlId, request)
         invalidate()
         bridge.call("carCommand", mapOf("dashboardId" to dashboardId,
             "controlId" to controlId, "actionId" to actionId,

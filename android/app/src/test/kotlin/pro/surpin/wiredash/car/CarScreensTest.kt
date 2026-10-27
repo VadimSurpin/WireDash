@@ -17,6 +17,7 @@ import androidx.car.app.serialization.Bundleable
 import androidx.car.app.testing.ScreenController
 import androidx.car.app.testing.TestCarContext
 import androidx.lifecycle.Lifecycle
+import pro.surpin.wiredash.R
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.After
@@ -107,6 +108,50 @@ class CarScreensTest {
         .put("pending", JSONObject.NULL).put("failed", false)
         .put("actions", JSONArray().put(JSONObject().put("id", "PRESS").put("title", id).put("icon", "on")))
 
+    private fun sending(item: GridItem): Boolean = item.image?.icon?.resId in setOf(
+        R.drawable.car_sending_0, R.drawable.car_sending_1,
+        R.drawable.car_sending_2, R.drawable.car_sending_3)
+
+    @Test fun sendingKeepsGridStructureAndBlocksDoubleTaps() {
+        modernHost()
+        val controls = JSONArray()
+        repeat(40) { controls.put(commandButton("Button $it")) }
+        bridge.response.put("controls", controls)
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val before = dashboardItems(screen)
+        before.last().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        val during = dashboardItems(screen)
+        assertEquals(before.map { it.title.toString() }, during.map { it.title.toString() })
+        assertTrue(during.all { !it.isLoading && it.image != null && it.onClickDelegate != null })
+        assertTrue(sending(during.last()))
+        during.last().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(1, bridge.commands.size)
+        shadowOf(Looper.getMainLooper()).idleFor(250, TimeUnit.MILLISECONDS)
+        assertNotEquals(during.last().image, dashboardItems(screen).last().image)
+        shadowOf(Looper.getMainLooper()).idleFor(750, TimeUnit.MILLISECONDS)
+        val after = dashboardItems(screen)
+        assertEquals(before.map { it.title.toString() }, after.map { it.title.toString() })
+        assertFalse(sending(after.last()))
+        assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX,
+            (screen.onGetTemplate() as SectionedItemTemplate).scrollStatePersistenceStrategy)
+    }
+
+    @Test fun transientEngineFailureKeepsDashboardAndRecovers() {
+        modernHost()
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        bridge.response = JSONObject().put("outcome", "unreachable")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(listOf("Enter", "Exit"), dashboardItems(screen).map { it.title.toString() })
+        assertTrue(dashboardItems(screen).all { it.onClickDelegate == null })
+        bridge.response = FakeBridge.snapshot()
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertTrue(dashboardItems(screen).all { it.onClickDelegate != null })
+    }
+
     @Test fun modernDashboardShowsSavedGroupsWithDirectGateButtons() {
         modernHost()
         val gate = bridge.response.getJSONArray("controls").getJSONObject(0).put("sectionId", "gates")
@@ -127,8 +172,8 @@ class CarScreensTest {
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals("OPEN", bridge.commands.single()["actionId"])
         assertEquals("gate", bridge.commands.single()["controlId"])
-        assertTrue(dashboardItems(screen)[1].isLoading)
-        assertFalse(dashboardItems(screen)[2].isLoading)
+        assertTrue(sending(dashboardItems(screen)[1]))
+        assertFalse(sending(dashboardItems(screen)[2]))
     }
 
     @Test fun commandSpinnersAreIndependentAndIgnoreStaleBackendPending() {
@@ -138,17 +183,17 @@ class CarScreensTest {
         bridge.response.put("controls", JSONArray().put(a).put(b))
         val screen = DashboardControlsCarScreen(context, bridge, "d")
         start(screen)
-        assertFalse(dashboardItems(screen)[0].isLoading)
+        assertFalse(sending(dashboardItems(screen)[0]))
         dashboardItems(screen)[0].onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idleFor(100, TimeUnit.MILLISECONDS)
         dashboardItems(screen)[1].onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idleFor(899, TimeUnit.MILLISECONDS)
-        assertTrue(dashboardItems(screen).all { it.isLoading })
+        assertTrue(dashboardItems(screen).all { sending(it) })
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.MILLISECONDS)
-        assertFalse(dashboardItems(screen)[0].isLoading)
-        assertTrue(dashboardItems(screen)[1].isLoading)
+        assertFalse(sending(dashboardItems(screen)[0]))
+        assertTrue(sending(dashboardItems(screen)[1]))
         shadowOf(Looper.getMainLooper()).idleFor(100, TimeUnit.MILLISECONDS)
-        assertTrue(dashboardItems(screen).none { it.isLoading })
+        assertTrue(dashboardItems(screen).none { sending(it) })
         dashboardItems(screen)[0].onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(listOf("A", "B", "A"), bridge.commands.map { it["controlId"] })
@@ -203,7 +248,7 @@ class CarScreensTest {
         val lifecycle = start(screen)
         dashboardItems(screen).first().onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
-        assertTrue(dashboardItems(screen).first().isLoading)
+        assertTrue(sending(dashboardItems(screen).first()))
         bridge.delayed = true
         lifecycle.moveToState(Lifecycle.State.CREATED)
         lifecycle.moveToState(Lifecycle.State.RESUMED)
@@ -212,7 +257,7 @@ class CarScreensTest {
         lifecycle.moveToState(Lifecycle.State.RESUMED)
         old(JSONObject().put("outcome", "error"))
         bridge.callbacks.removeAt(0)(FakeBridge.snapshot())
-        assertFalse(dashboardItems(screen).first().isLoading)
+        assertFalse(sending(dashboardItems(screen).first()))
     }
 
     @Test fun modernDisconnectedDashboardHasNoClickableActions() {

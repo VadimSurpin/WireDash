@@ -8,9 +8,15 @@ import androidx.car.app.Session
 import androidx.car.app.validation.HostValidator
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import pro.surpin.wiredash.ShortcutEngine
 
 /** Projected Android Auto IoT app. The phone app remains the setup/editor UI. */
 class WireDashCarService : CarAppService() {
+    override fun onCreate() {
+        super.onCreate()
+        ShortcutEngine.warm(this)
+    }
+
     override fun createHostValidator(): HostValidator =
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
             HostValidator.ALLOW_ALL_HOSTS_VALIDATOR

@@ -87,8 +87,14 @@ internal abstract class PollingCarScreen(
         bridge.call(method, arguments) { next ->
             if (!visible || generation != request) return@call
             fetching = false
-            val changed = data?.toString() != next.toString()
-            data = next
+            // A temporary headless-engine timeout must not replace a usable
+            // dashboard with an error template (which also loses scroll).
+            val update = if (next.has("outcome") && next.optString("outcome") != "removed" &&
+                data != null && !data!!.has("outcome")) {
+                JSONObject(data.toString()).put("connected", false).put("status", "reconnecting")
+            } else next
+            val changed = data?.toString() != update.toString()
+            data = update
             if (onData() || changed) invalidate()
             handler.postDelayed(poll, 1_000)
         }

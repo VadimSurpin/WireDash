@@ -138,6 +138,70 @@ Panel _panel(
 
 void main() {
   test(
+    'built-in radio shutters retain their labels, payloads and state topic',
+    () {
+      final controls = carControls(_dashboard(), [
+        _panel(
+          OptionsConfig.coverDefault(),
+          type: PanelType.radio,
+          prefix: 'zigbee2mqtt/bedroom',
+          subscribeTopic: '',
+        ),
+      ], _l10n);
+      final cover = controls.single;
+      expect(cover.kind, 'cover');
+      expect(cover.topics, ['zigbee2mqtt/bedroom']);
+      expect(cover.path, 'state');
+      expect(cover.actions.map((a) => a.id), ['OPEN', 'STOP', 'CLOSE']);
+      expect(cover.actions.map((a) => a.title), ['Open', 'Stop', 'Close']);
+      expect(cover.actions.map((a) => a.commands.single.payload), [
+        '{"state":"OPEN"}',
+        '{"state":"STOP"}',
+        '{"state":"CLOSE"}',
+      ]);
+      expect(
+        cover.actions.every(
+          (a) => a.commands.single.topic == 'zigbee2mqtt/bedroom/set',
+        ),
+        isTrue,
+      );
+    },
+  );
+
+  test('device shutter endpoint uses its writable state property', () {
+    const profile = DeviceProfile(
+      deviceClass: DeviceClass.cover,
+      features: [
+        DeviceFeature(
+          type: 'enum',
+          name: 'state',
+          property: 'state_left',
+          parent: 'cover',
+          access: accessState | accessSet,
+        ),
+      ],
+    );
+    final cover = carControls(_dashboard(), [
+      _panel(
+        const DeviceTileConfig(profile: profile),
+        type: PanelType.device,
+        prefix: 'zigbee2mqtt/shutter',
+        subscribeTopic: '',
+      ),
+    ], _l10n).single;
+    expect(cover.path, 'state_left');
+    expect(cover.actions.map((a) => a.commands.single.payload), [
+      '{"state_left":"OPEN"}',
+      '{"state_left":"CLOSE"}',
+      '{"state_left":"STOP"}',
+    ]);
+    expect(
+      cover.actions.first.commands.single.topic,
+      'zigbee2mqtt/shutter/set',
+    );
+  });
+
+  test(
     'WB cover keeps exact /on topics, raw repeated 1, custom titles/icons and hidden stop',
     () {
       final cfg = CoverConfig(

@@ -20,11 +20,24 @@ object ShortcutEngine {
     private const val TAG = "ZigDashShortcuts"
     private const val ID = "shortcuts"
     private var channel: MethodChannel? = null
-    private var ready = false
-    private val pending = mutableListOf<() -> Unit>()
+    private val main = Handler(Looper.getMainLooper())
+    private var requests: ShortcutRequests? = null
+
+    private fun requests(app: Context): ShortcutRequests = requests ?: ShortcutRequests(main,
+        { ready, failed -> start(app, ready, failed) },
+        { method, args, done ->
+            channel!!.invokeMethod(method, args, object : MethodChannel.Result {
+                override fun success(result: Any?) = done(result as? String ?: "{}")
+                override fun error(code: String, msg: String?, details: Any?) {
+                    Log.e(TAG, "$method failed: $code")
+                    done("{\"outcome\":\"error\"}")
+                }
+                override fun notImplemented() = done("{\"outcome\":\"error\"}")
+            })
+        }).also { requests = it }
 
     /** Starts the engine early (a tile does this when the panel opens). */
-    fun warm(ctx: Context) = ensure(ctx.applicationContext)
+    fun warm(ctx: Context) = onMain { requests(ctx.applicationContext).warm() }
 
     fun toggle(ctx: Context, connectionId: String, ieee: String, done: (String) -> Unit) =
         call(ctx, "toggle", mapOf("connectionId" to connectionId, "ieee" to ieee), done)
@@ -55,22 +68,7 @@ object ShortcutEngine {
     /** Android Auto uses the same headless engine and private WireGuard stack. */
     fun car(ctx: Context, method: String, args: Map<String, Any>, done: (String) -> Unit) {
         require(method in setOf("carCatalog", "carOpen", "carCommand", "carClose", "carReconnect"))
-        val main = Handler(Looper.getMainLooper())
-        var completed = false
-        val timeout = Runnable {
-            if (!completed) {
-                completed = true
-                done("{\"outcome\":\"unreachable\"}")
-            }
-        }
-        main.postDelayed(timeout, 12_000)
-        call(ctx, method, args) { json ->
-            if (!completed) {
-                completed = true
-                main.removeCallbacks(timeout)
-                done(json)
-            }
-        }
+        onMain { requests(ctx.applicationContext).call(method, args, 12_000, done) }
     }
 
     fun forgetHome(ctx: Context, connectionId: String, done: (String) -> Unit) {
@@ -79,43 +77,41 @@ object ShortcutEngine {
     }
 
     private fun call(ctx: Context, method: String, args: Map<String, Any>, done: (String) -> Unit) {
-        ensure(ctx.applicationContext)
-        val run = {
-            channel!!.invokeMethod(method, args, object : MethodChannel.Result {
-                override fun success(result: Any?) = done(result as? String ?: "{}")
-                override fun error(code: String, msg: String?, details: Any?) {
-                    Log.e(TAG, "$method failed: $code $msg")
-                    done("{\"outcome\":\"error\"}")
-                }
-                override fun notImplemented() = done("{\"outcome\":\"error\"}")
-            })
-        }
-        if (ready) run() else pending.add(run)
+        onMain { requests(ctx.applicationContext).call(method, args, 30_000, done) }
     }
 
-    private fun ensure(app: Context) {
-        if (FlutterEngineCache.getInstance().get(ID) != null) return
+    private fun start(app: Context, ready: () -> Unit, failed: () -> Unit) {
         val loader = FlutterInjector.instance().flutterLoader()
         loader.startInitialization(app)
-        loader.ensureInitializationComplete(app, null)
+        // Loading the VM/unpacking assets can take seconds on a cold phone.
+        // Waiting synchronously here blocks CarAppService's main/Binder thread.
+        loader.ensureInitializationCompleteAsync(app, null, main) {
+            try { startDart(app, loader.findAppBundlePath(), ready) }
+            catch (error: Exception) {
+                Log.e(TAG, "Headless engine startup failed", error)
+                FlutterEngineCache.getInstance().get(ID)?.destroy()
+                FlutterEngineCache.getInstance().remove(ID)
+                channel = null
+                failed()
+            }
+        }
+    }
+
+    private fun startDart(app: Context, bundle: String, ready: () -> Unit) {
         val engine = FlutterEngine(app)
-        engine.plugins.add(WireGuardPlugin())
+        FlutterEngineCache.getInstance().put(ID, engine)
+        if (!engine.plugins.has(WireGuardPlugin::class.java)) engine.plugins.add(WireGuardPlugin())
         val ch = MethodChannel(engine.dartExecutor.binaryMessenger, "zigdash/shortcuts")
         ch.setMethodCallHandler { call, result ->
-            if (call.method == "ready") {
-                ready = true
-                pending.forEach { it() }
-                pending.clear()
-            }
             result.success(null)
+            if (call.method == "ready") ready()
         }
         channel = ch
         // Library-qualified: an entrypoint outside main.dart isn't found by
         // name alone.
         engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint(
-            loader.findAppBundlePath(),
+            bundle,
             "package:wiredash/shortcuts/shortcut_engine.dart", "shortcutEngine"))
-        FlutterEngineCache.getInstance().put(ID, engine)
     }
 
     fun onMain(block: () -> Unit) = Handler(Looper.getMainLooper()).post(block)

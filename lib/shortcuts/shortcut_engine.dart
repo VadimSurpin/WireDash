@@ -17,6 +17,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart' show PlatformDispatcher;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqlite3/sqlite3.dart';
+import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 import '../core/l10n/app_l10n.dart';
 import '../core/storage/secure_storage.dart';
@@ -158,6 +160,13 @@ class ShortcutEngine {
     final file = File(p.join(dir.path, 'zigdash.sqlite'));
     if (!await file.exists()) {
       throw StateError('Open WireDash on the phone first');
+    }
+    // drift_flutter performs these steps for the phone database. The car can
+    // be the process's first Flutter engine and must not depend on that side
+    // effect to load SQLite or give it an accessible temporary directory.
+    if (Platform.isAndroid) {
+      await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
+      sqlite3.tempDirectory = (await getTemporaryDirectory()).path;
     }
     late final AppDatabase db;
     db = AppDatabase.readOnly(

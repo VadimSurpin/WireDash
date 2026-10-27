@@ -243,6 +243,41 @@ List<CarControl> carControls(
           );
         case CoverConfig c:
           result.add(cover(panel.id, panel.name, c));
+        case OptionsConfig c:
+          // Older built-in shutter tiles use the radio/enum presentation.
+          // Preserve their saved labels, state matches and payloads verbatim.
+          if (c.options.isNotEmpty &&
+              c.options.every(
+                (o) => const [
+                  'OPEN',
+                  'CLOSE',
+                  'STOP',
+                ].contains(o.match.toUpperCase()),
+              )) {
+            result.add(
+              CarControl(
+                id: panel.id,
+                name: panel.name,
+                kind: 'cover',
+                sectionId: panel.sectionId,
+                topics: [subscribe],
+                path: c.jsonPath,
+                actions: [
+                  for (final option in c.options)
+                    CarAction(
+                      option.match.toUpperCase(),
+                      option.label,
+                      switch (option.match.toUpperCase()) {
+                        'OPEN' => 'rollerOpen',
+                        'CLOSE' => 'rollerClosed',
+                        _ => 'stop',
+                      },
+                      [command(option.payload)],
+                    ),
+                ],
+              ),
+            );
+          }
         case WirenBoardDeviceConfig c:
           final device = c.visibleDevice(c.device);
           final visible =
@@ -298,8 +333,29 @@ List<CarControl> carControls(
           }
         case DeviceTileConfig c:
           if (c.profile.deviceClass == DeviceClass.cover) {
-            if (c.profile.feature('state')?.settable == true) {
-              result.add(cover(panel.id, panel.name, const CoverConfig()));
+            final state =
+                c.profile.feature('state') ??
+                c.profile.normal
+                    .where(
+                      (f) =>
+                          f.name == 'state' &&
+                          f.parent == 'cover' &&
+                          f.settable,
+                    )
+                    .firstOrNull;
+            if (state?.settable == true) {
+              result.add(
+                cover(
+                  panel.id,
+                  panel.name,
+                  CoverConfig(
+                    statePath: state!.property,
+                    openPayload: jsonEncode({state.property: 'OPEN'}),
+                    closePayload: jsonEncode({state.property: 'CLOSE'}),
+                    stopPayload: jsonEncode({state.property: 'STOP'}),
+                  ),
+                ),
+              );
             }
           } else {
             for (final feature in c.profile.switches) {
