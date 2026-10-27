@@ -6,6 +6,10 @@
 
 **Zigbee2MQTT bridge** — the Zigbee2MQTT instance publishing under a base topic (default `zigbee2mqtt`) on a broker. A broker can be reachable while no bridge publishes on it.
 
+**ZHA** — Home Assistant's own Zigbee integration: the Zigbee network runs inside Home Assistant with no Zigbee2MQTT and no broker. ZigDash cannot show or control a ZHA home. Not to be confused with a Home Assistant home whose Zigbee runs in Zigbee2MQTT, which ZigDash serves.
+
+**Migration** — moving a home's Zigbee network from ZHA to Zigbee2MQTT, so ZigDash can serve it. The user's devices, not their Home Assistant setup, move: Home Assistant automations that used the moved devices must be updated by the user. Not the Home Assistant import, which only copies names and rooms.
+
 **Device** — a Zigbee device the bridge reports in `bridge/devices`. Devices exist independently of dashboards.
 
 **Dashboard** — a named, user-arranged screen of tiles belonging to one home; the primary object users work with. Rooms are not a concept: a user who wants rooms names dashboards after them. The app opens on the last-used dashboard.

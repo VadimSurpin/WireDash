@@ -11,10 +11,18 @@ DiagnosticsReport report(List<StepResult> steps, {int? deviceCount}) =>
 void main() {
   group('mapLadderFailure', () {
     test('resolve failure → hostUnreachable', () {
-      expect(mapLadderFailure(report([fail(DiagnosticStep.resolve, 'diagResolveFail')])),
-          SetupErrorKind.hostUnreachable);
-      expect(mapLadderFailure(report([fail(DiagnosticStep.resolve, 'diagResolveTimeout')])),
-          SetupErrorKind.hostUnreachable);
+      expect(
+        mapLadderFailure(
+          report([fail(DiagnosticStep.resolve, 'diagResolveFail')]),
+        ),
+        SetupErrorKind.hostUnreachable,
+      );
+      expect(
+        mapLadderFailure(
+          report([fail(DiagnosticStep.resolve, 'diagResolveTimeout')]),
+        ),
+        SetupErrorKind.hostUnreachable,
+      );
     });
 
     test('tcp timeout → hostUnreachable', () {
@@ -26,32 +34,46 @@ void main() {
     });
 
     test('tcp refused → portClosed', () {
-      expect(mapLadderFailure(report([fail(DiagnosticStep.tcp, 'diagTcpFail')])),
-          SetupErrorKind.portClosed);
+      expect(
+        mapLadderFailure(report([fail(DiagnosticStep.tcp, 'diagTcpFail')])),
+        SetupErrorKind.portClosed,
+      );
     });
 
     test('connack failure → portClosed', () {
       expect(
-          mapLadderFailure(report([fail(DiagnosticStep.connack, 'diagConnackFail')])),
-          SetupErrorKind.portClosed);
+        mapLadderFailure(
+          report([fail(DiagnosticStep.connack, 'diagConnackFail')]),
+        ),
+        SetupErrorKind.portClosed,
+      );
     });
 
     test('auth rejected → authRejected', () {
       expect(
-          mapLadderFailure(report([fail(DiagnosticStep.auth, 'diagAuthRejected')])),
-          SetupErrorKind.authRejected);
+        mapLadderFailure(
+          report([fail(DiagnosticStep.auth, 'diagAuthRejected')]),
+        ),
+        SetupErrorKind.authRejected,
+      );
     });
 
     test('auth refused (other) → authRejected', () {
       expect(
-          mapLadderFailure(report([fail(DiagnosticStep.auth, 'diagAuthRefused')])),
-          SetupErrorKind.authRejected);
+        mapLadderFailure(
+          report([fail(DiagnosticStep.auth, 'diagAuthRefused')]),
+        ),
+        SetupErrorKind.authRejected,
+      );
     });
 
     test('a login with no answer → loginNoAnswer', () {
       expect(
-          mapLadderFailure(report([fail(DiagnosticStep.connack, 'diagLoginNoAnswer')])),
-          SetupErrorKind.loginNoAnswer);
+        mapLadderFailure(
+          report([fail(DiagnosticStep.connack, 'diagLoginNoAnswer')]),
+        ),
+        SetupErrorKind.loginNoAnswer,
+      );
     });
 
     test('no failing step → unknown', () {

@@ -9,7 +9,7 @@ on:
         default: false
   pull_request:
   push:
-    branches: [main, 'feat/**']
+    branches: [main, 'feat/**', 'sync/**']
 
 concurrency:
   group: check-${{ github.ref }}

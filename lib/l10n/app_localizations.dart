@@ -2853,7 +2853,7 @@ abstract class AppLocalizations {
   /// No description provided for @haConnectAddressHelp.
   ///
   /// In en, this message translates to:
-  /// **'The address you open Home Assistant with: 192.168.1.20:8123, homeassistant.local, or your remote address, like https://xyz.ui.nabu.casa'**
+  /// **'The address you open Home Assistant with: 192.168.1.20:8123, or a remote address like your Nabu Casa or Cloudflare address'**
   String get haConnectAddressHelp;
 
   /// No description provided for @haConnectSignInHelp.
@@ -5373,7 +5373,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Alerts are paused: ZigDash Engine on your hub isn\'t reporting'**
+  /// **'Alerts are paused: WireDash Engine on your hub isn\'t reporting'**
   String get alertsStatusPaused;
 
   /// Alerts screen.
@@ -5445,7 +5445,7 @@ abstract class AppLocalizations {
   /// Alerts screen.
   ///
   /// In en, this message translates to:
-  /// **'Zigbee2MQTT didn\'t accept ZigDash Engine'**
+  /// **'Zigbee2MQTT didn\'t accept WireDash Engine'**
   String get alertsHubFailed;
 
   /// Alerts screen.
@@ -6291,13 +6291,13 @@ abstract class AppLocalizations {
   /// No description provided for @historyNeedsPassword.
   ///
   /// In en, this message translates to:
-  /// **'One more step: your broker asks for a login. Open Node-RED at {host}:1880, double-click \"ZigDash history broker\", type the MQTT password on its Security tab, then Deploy. WireDash never sends your password to the hub.'**
+  /// **'One more step: your broker asks for a login. Open Node-RED at {host}:1880, double-click \"WireDash history broker\", type the MQTT password on its Security tab, then Deploy. WireDash never sends your password to the hub.'**
   String historyNeedsPassword(String host);
 
   /// No description provided for @historyNotConnected.
   ///
   /// In en, this message translates to:
-  /// **'The recorder isn\'t reporting. Open Automations to check ZigDash Engine on your hub.'**
+  /// **'The recorder isn\'t reporting. Open Automations to check WireDash Engine on your hub.'**
   String get historyNotConnected;
 
   /// No description provided for @historyPersistence.
@@ -6621,7 +6621,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineIntroBody.
   ///
   /// In en, this message translates to:
-  /// **'WireDash puts ZigDash Engine inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.'**
+  /// **'WireDash puts WireDash Engine inside Zigbee2MQTT on your hub. It watches your devices and runs your rules, so a light turns on when the door opens even with your phone off and the internet down.'**
   String get engineIntroBody;
 
   /// No description provided for @engineIntroNothingByHand.
@@ -6675,7 +6675,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineConsentBody.
   ///
   /// In en, this message translates to:
-  /// **'Your Zigbee2MQTT blocks add-ons like ZigDash Engine, as new installs do. To run automations on your hub, WireDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.'**
+  /// **'Your Zigbee2MQTT blocks add-ons like WireDash Engine, as new installs do. To run automations on your hub, WireDash would turn on \"Allow external JavaScript\" in Zigbee2MQTT and restart it.'**
   String get engineConsentBody;
 
   /// No description provided for @engineConsentOutage.
@@ -6687,7 +6687,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineConsentOpen.
   ///
   /// In en, this message translates to:
-  /// **'ZigDash Engine is open source. You can read it on your Zigbee2MQTT page under Extensions.'**
+  /// **'WireDash Engine is open source. You can read it on your Zigbee2MQTT page under Extensions.'**
   String get engineConsentOpen;
 
   /// No description provided for @engineConsentUndo.
@@ -6729,7 +6729,7 @@ abstract class AppLocalizations {
   /// No description provided for @engineStoppedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Automations paused: ZigDash Engine stopped itself'**
+  /// **'Automations paused: WireDash Engine stopped itself'**
   String get engineStoppedTitle;
 
   /// No description provided for @engineStoppedBody.
@@ -6771,13 +6771,13 @@ abstract class AppLocalizations {
   /// No description provided for @engineRulesUnknown.
   ///
   /// In en, this message translates to:
-  /// **'Rules ZigDash Engine on your hub can\'t run yet: {count}. Update it by reinstalling.'**
+  /// **'Rules WireDash Engine on your hub can\'t run yet: {count}. Update it by reinstalling.'**
   String engineRulesUnknown(Object count);
 
   /// No description provided for @engineInstallRefused.
   ///
   /// In en, this message translates to:
-  /// **'Zigbee2MQTT refused ZigDash Engine: {error}'**
+  /// **'Zigbee2MQTT refused WireDash Engine: {error}'**
   String engineInstallRefused(Object error);
 
   /// No description provided for @engineInstallNoAnswer.
@@ -7317,13 +7317,13 @@ abstract class AppLocalizations {
   /// No description provided for @engineRemoveTitle.
   ///
   /// In en, this message translates to:
-  /// **'Remove ZigDash Engine from your hub?'**
+  /// **'Remove WireDash Engine from your hub?'**
   String get engineRemoveTitle;
 
   /// No description provided for @engineRemoveBody.
   ///
   /// In en, this message translates to:
-  /// **'Automations stop running. Your rules stay on the hub, so installing ZigDash Engine again brings them back.'**
+  /// **'Automations stop running. Your rules stay on the hub, so installing WireDash Engine again brings them back.'**
   String get engineRemoveBody;
 
   /// No description provided for @autoNoTargets.
@@ -7341,13 +7341,13 @@ abstract class AppLocalizations {
   /// No description provided for @proGetRemote.
   ///
   /// In en, this message translates to:
-  /// **'Remote control from anywhere, through the ZigDash relay'**
+  /// **'Remote control from anywhere, through the WireDash relay, with no monthly fee'**
   String get proGetRemote;
 
   /// No description provided for @proRemoteFair.
   ///
   /// In en, this message translates to:
-  /// **'Remote access is included while the ZigDash relay runs, for one home, up to five phones and normal household use. It may change or end with notice.'**
+  /// **'Remote access is included while the WireDash relay runs, for one home, up to five phones and normal household use. It may change or end with notice.'**
   String get proRemoteFair;
 
   /// No description provided for @autoDeleteConfirm.
@@ -7389,7 +7389,7 @@ abstract class AppLocalizations {
   /// No description provided for @remoteNeedsEngine.
   ///
   /// In en, this message translates to:
-  /// **'Remote control runs in ZigDash Engine. Install it under Automations first.'**
+  /// **'Remote control runs in WireDash Engine. Install it under Automations first.'**
   String get remoteNeedsEngine;
 
   /// No description provided for @remoteSetUp.
@@ -7865,6 +7865,534 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automatic'**
   String get panelIconAutomatic;
+
+  /// No description provided for @setupErrPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT\'s page didn\'t answer'**
+  String get setupErrPageTitle;
+
+  /// No description provided for @setupErrPageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered as a Zigbee2MQTT page at that address. Open it in this phone\'s browser to check it, and copy the address exactly (with its port, often 8080). If the page asks for a token, enter your broker details instead.'**
+  String get setupErrPageBody;
+
+  /// No description provided for @setupErrPageAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrPageAction;
+
+  /// No description provided for @setupLookWider.
+  ///
+  /// In en, this message translates to:
+  /// **'Look on the whole network'**
+  String get setupLookWider;
+
+  /// No description provided for @setupAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What runs your Zigbee?'**
+  String get setupAsk;
+
+  /// No description provided for @setupAskZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT'**
+  String get setupAskZ2m;
+
+  /// No description provided for @setupAskZ2mSub.
+  ///
+  /// In en, this message translates to:
+  /// **'On a Raspberry Pi, a server or Docker'**
+  String get setupAskZ2mSub;
+
+  /// No description provided for @setupAskHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant'**
+  String get setupAskHa;
+
+  /// No description provided for @setupAskHaSub.
+  ///
+  /// In en, this message translates to:
+  /// **'With the Zigbee2MQTT add-on, or ZHA'**
+  String get setupAskHaSub;
+
+  /// No description provided for @setupAskSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'An SMLIGHT hub'**
+  String get setupAskSmlight;
+
+  /// No description provided for @setupAskSmlightSub.
+  ///
+  /// In en, this message translates to:
+  /// **'SLZB or SMHUB running Zigbee2MQTT'**
+  String get setupAskSmlightSub;
+
+  /// No description provided for @setupAskNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet?'**
+  String get setupAskNothing;
+
+  /// No description provided for @setupAskHaWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'How does your Home Assistant run Zigbee?'**
+  String get setupAskHaWhich;
+
+  /// No description provided for @setupAskHaZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'The Zigbee2MQTT add-on'**
+  String get setupAskHaZ2m;
+
+  /// No description provided for @setupAskHaZ2mSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Home Assistant'**
+  String get setupAskHaZ2mSub;
+
+  /// No description provided for @setupAskHaZha.
+  ///
+  /// In en, this message translates to:
+  /// **'ZHA, Home Assistant\'s own Zigbee'**
+  String get setupAskHaZha;
+
+  /// No description provided for @setupAskHaZhaSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee Home Automation, no Zigbee2MQTT'**
+  String get setupAskHaZhaSub;
+
+  /// No description provided for @setupZ2mPageEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to my Zigbee2MQTT page'**
+  String get setupZ2mPageEntry;
+
+  /// No description provided for @setupManualEntryAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter broker details (advanced)'**
+  String get setupManualEntryAdvanced;
+
+  /// No description provided for @z2mPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT page'**
+  String get z2mPageTitle;
+
+  /// No description provided for @z2mPageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The address in your browser when the Zigbee2MQTT page is open, the one you pair devices on. No MQTT username or password needed.'**
+  String get z2mPageBody;
+
+  /// No description provided for @z2mPageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Page address'**
+  String get z2mPageLabel;
+
+  /// No description provided for @z2mPageConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get z2mPageConnect;
+
+  /// No description provided for @z2mPageFoundName.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {host} at {ip}'**
+  String z2mPageFoundName(String host, String ip);
+
+  /// No description provided for @z2mPageNoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered for {host} on this network'**
+  String z2mPageNoName(String host);
+
+  /// No description provided for @engineNeedsBrokerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations need your MQTT broker'**
+  String get engineNeedsBrokerTitle;
+
+  /// No description provided for @engineNeedsBrokerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This home connects through the Zigbee2MQTT page, which is all your dashboards need. Automations, Alerts and history run in the WireDash Engine on your hub, which talks through your MQTT broker. Add its details once, and WireDash connects through the broker from then on.'**
+  String get engineNeedsBrokerBody;
+
+  /// No description provided for @engineNeedsBrokerButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add broker details'**
+  String get engineNeedsBrokerButton;
+
+  /// No description provided for @connFromPageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This home connects through the Zigbee2MQTT page. Enter your MQTT broker (usually the same machine, port 1883) to turn on Automations, Alerts and history. After saving, WireDash connects through the broker.'**
+  String get connFromPageNote;
+
+  /// No description provided for @setupStillChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Still checking. This can take up to 30 seconds.'**
+  String get setupStillChecking;
+
+  /// No description provided for @aiHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stuck? Ask your AI assistant'**
+  String get aiHelpTitle;
+
+  /// No description provided for @aiHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'WireDash writes up what it found for ChatGPT, Claude, Gemini or any AI app, without passwords or addresses. You see it before it\'s shared.'**
+  String get aiHelpBody;
+
+  /// No description provided for @aiHelpButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask an AI'**
+  String get aiHelpButton;
+
+  /// No description provided for @aiHelpPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What will be shared'**
+  String get aiHelpPreviewTitle;
+
+  /// No description provided for @aiHelpShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share to an AI app'**
+  String get aiHelpShare;
+
+  /// No description provided for @aiHelpCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. Paste it into any AI chat.'**
+  String get aiHelpCopied;
+
+  /// No description provided for @haConnectWhereAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure what it is? In the Home Assistant app, open Settings › Companion app and tap your server: its address is there. On a computer, it\'s what the browser shows when Home Assistant is open.'**
+  String get haConnectWhereAddress;
+
+  /// No description provided for @haFindLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for Home Assistant on this network…'**
+  String get haFindLooking;
+
+  /// No description provided for @haFindSeveral.
+  ///
+  /// In en, this message translates to:
+  /// **'Found more than one Home Assistant. Tap the one to use:'**
+  String get haFindSeveral;
+
+  /// No description provided for @haFindNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone can\'t see Home Assistant on this Wi-Fi. Use the address your Home Assistant app opens: often a remote one, like https://abcd1234.ui.nabu.casa or https://myhome.duckdns.org.'**
+  String get haFindNone;
+
+  /// No description provided for @haConnectOtherNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'That address is on a different network from this phone, which is on {network}. Use the address your Home Assistant app opens, often a remote one, or connect the phone to the network Home Assistant is on.'**
+  String haConnectOtherNetwork(String network);
+
+  /// No description provided for @haConnectLocalNameUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone couldn\'t find that name: Android often can\'t open .local names. Type Home Assistant\'s IP address (like 192.168.1.20:8123), or its remote address.'**
+  String get haConnectLocalNameUnreachable;
+
+  /// No description provided for @haConnectRemoteUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered at that remote address. Open it in this phone\'s browser to check that it works, and copy it exactly as your Home Assistant app shows it.'**
+  String get haConnectRemoteUnreachable;
+
+  /// No description provided for @setupNoWifiHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Home Assistant? Sign in'**
+  String get setupNoWifiHa;
+
+  /// No description provided for @setupReviewLastStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Last step: tick the devices you want, then tap Create dashboard below.'**
+  String get setupReviewLastStep;
+
+  /// No description provided for @setupLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your dashboard?'**
+  String get setupLeaveTitle;
+
+  /// No description provided for @setupLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices are found. Create the dashboard now, or start setup over and lose this list.'**
+  String get setupLeaveBody;
+
+  /// No description provided for @setupStartOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over'**
+  String get setupStartOver;
+
+  /// No description provided for @setupErrListMissingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT didn\'t send its device list'**
+  String get setupErrListMissingTitle;
+
+  /// No description provided for @setupErrListMissingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT answers, but its device list didn\'t come. This usually happens after the MQTT broker restarts: Zigbee2MQTT before 2.14.2 only sends the list again when it restarts. Restart Zigbee2MQTT (or update it), then try again.'**
+  String get setupErrListMissingBody;
+
+  /// No description provided for @setupErrListMissingAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrListMissingAction;
+
+  /// No description provided for @setupErrHaNoZ2mTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Zigbee2MQTT in this Home Assistant'**
+  String get setupErrHaNoZ2mTitle;
+
+  /// No description provided for @setupErrHaNoZ2mBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re signed in to Home Assistant, but Zigbee2MQTT isn\'t sending anything on its MQTT. If your Zigbee devices are in ZHA (Home Assistant\'s built-in Zigbee), WireDash can\'t see them: it works with Zigbee2MQTT. If you use the Zigbee2MQTT add-on, open it in Home Assistant, check that it\'s started, then try again.'**
+  String get setupErrHaNoZ2mBody;
+
+  /// No description provided for @setupErrHaNoZ2mAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrHaNoZ2mAction;
+
+  /// No description provided for @setupPlatformZha.
+  ///
+  /// In en, this message translates to:
+  /// **'ZHA, no Zigbee2MQTT'**
+  String get setupPlatformZha;
+
+  /// Under the setup answer for Home Assistant's own Zigbee (ZHA), 3.1.3: ZigDash cannot see ZHA devices; a Try demo button follows.
+  ///
+  /// In en, this message translates to:
+  /// **'WireDash shows devices from Zigbee2MQTT, so it can\'t see devices in ZHA, Home Assistant\'s own Zigbee. You can try the demo home to see how WireDash works.'**
+  String get setupZhaNote;
+
+  /// A .local name that did not resolve, for someone who said they use Home Assistant (3.1.3). {button} is the Connect through Home Assistant button above.
+  ///
+  /// In en, this message translates to:
+  /// **'{host} can\'t be found from this phone; Android often can\'t look up .local names. Tap {button} above and use the address you open Home Assistant with in your browser, or type its IP address here. Home Assistant shows it under Settings › System › Network.'**
+  String setupAddressNotResolvedHa(String host, String button);
+
+  /// One-time dashboard card after the first setup, asking why the user tried the app.
+  ///
+  /// In en, this message translates to:
+  /// **'What made you try WireDash?'**
+  String get whyTitle;
+
+  /// Body of the why card.
+  ///
+  /// In en, this message translates to:
+  /// **'One tap helps decide what to build. Your answer is sent with your anonymous usage data.'**
+  String get whyBody;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Quicker than my other app'**
+  String get whyFaster;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy for the family'**
+  String get whyFamily;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'A wall tablet'**
+  String get whyWallTablet;
+
+  /// Why-card choice: direct MQTT keeps working with no Home Assistant or while it is down.
+  ///
+  /// In en, this message translates to:
+  /// **'Works without Home Assistant'**
+  String get whyWithoutHa;
+
+  /// Why-card choice.
+  ///
+  /// In en, this message translates to:
+  /// **'Something else'**
+  String get whyOther;
+
+  /// Snackbar after answering the why card.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for telling us!'**
+  String get whyThanks;
+
+  /// No description provided for @engineAwayNoHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach your hub right now'**
+  String get engineAwayNoHubTitle;
+
+  /// No description provided for @engineAwayNoHubBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re away, and your hub isn\'t connected to WireDash\'s remote access, or its internet is down. Your automations keep running on the hub.'**
+  String get engineAwayNoHubBody;
+
+  /// No description provided for @engineAwayReinstallAtHome.
+  ///
+  /// In en, this message translates to:
+  /// **'You can reinstall the Engine when you\'re at home.'**
+  String get engineAwayReinstallAtHome;
+
+  /// No description provided for @shareHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with another phone'**
+  String get shareHomeTitle;
+
+  /// No description provided for @shareHomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add this home to another phone with one QR code'**
+  String get shareHomeSubtitle;
+
+  /// No description provided for @shareHomeIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'On the other phone, at home on the same Wi-Fi, scan the code with the camera. WireDash adds this home with its login and your dashboards.'**
+  String get shareHomeIntro;
+
+  /// No description provided for @shareHomeLoginWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'The code includes this home\'s broker login. It shows for 2 minutes; show it only to people you trust.'**
+  String get shareHomeLoginWarning;
+
+  /// No description provided for @shareHomeShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the code'**
+  String get shareHomeShow;
+
+  /// No description provided for @shareHomeAtHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect at home first: sharing works only on your home network.'**
+  String get shareHomeAtHome;
+
+  /// No description provided for @shareHomeScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan with the other phone\'s camera. The code hides in 2 minutes.'**
+  String get shareHomeScanHint;
+
+  /// No description provided for @shareHomeHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the code'**
+  String get shareHomeHide;
+
+  /// No description provided for @shareHomeViaHa.
+  ///
+  /// In en, this message translates to:
+  /// **'This home connects through Home Assistant. On the other phone, install WireDash and sign in with Home Assistant.'**
+  String get shareHomeViaHa;
+
+  /// No description provided for @joinHomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a shared home'**
+  String get joinHomeTitle;
+
+  /// No description provided for @joinHomeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This code isn\'t a WireDash home invitation, or it\'s damaged.'**
+  String get joinHomeInvalid;
+
+  /// No description provided for @joinHomeAlready.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is already on this phone.'**
+  String joinHomeAlready(String name);
+
+  /// No description provided for @joinHomeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open it'**
+  String get joinHomeOpen;
+
+  /// No description provided for @joinHomeAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {name} to this phone?'**
+  String joinHomeAsk(String name);
+
+  /// No description provided for @joinHomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'WireDash adds the home with the same connection and login, and takes the dashboards from the other phone. Keep this phone on your home Wi-Fi.'**
+  String get joinHomeBody;
+
+  /// No description provided for @joinHomeAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add home'**
+  String get joinHomeAdd;
+
+  /// No description provided for @joinHomeNoDashboards.
+  ///
+  /// In en, this message translates to:
+  /// **'Home added. The dashboards didn\'t arrive; your devices are on the Devices tab.'**
+  String get joinHomeNoDashboards;
+
+  /// No description provided for @remoteOfferBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach your devices when you\'re away, through WireDash\'s encrypted relay. Part of Pro: one payment, no monthly fee. Set it up while you\'re at home.'**
+  String get remoteOfferBody;
+
+  /// No description provided for @remoteOfferBodyPro.
+  ///
+  /// In en, this message translates to:
+  /// **'You have Pro: turn on remote control while you\'re at home, then reach your devices from anywhere.'**
+  String get remoteOfferBodyPro;
+
+  /// No description provided for @remoteOfferShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show me'**
+  String get remoteOfferShow;
 }
 
 class _AppLocalizationsDelegate

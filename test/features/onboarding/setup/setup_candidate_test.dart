@@ -7,14 +7,16 @@ void main() {
   group('SetupCandidate.fromProbe', () {
     test('port 8883 maps to tcpSsl', () {
       final c = SetupCandidate.fromProbe(
-          const ProbeResult(host: '192.168.1.10', port: 8883));
+        const ProbeResult(host: '192.168.1.10', port: 8883),
+      );
       expect(c.protocol, MqttProtocol.tcpSsl);
       expect(c.needsAuth, isFalse);
     });
 
     test('other ports map to tcp', () {
       final c = SetupCandidate.fromProbe(
-          const ProbeResult(host: '192.168.1.10', port: 1883, needsAuth: true));
+        const ProbeResult(host: '192.168.1.10', port: 1883, needsAuth: true),
+      );
       expect(c.protocol, MqttProtocol.tcp);
       expect(c.needsAuth, isTrue);
     });

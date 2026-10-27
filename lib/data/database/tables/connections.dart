@@ -7,7 +7,8 @@ enum MqttProtocol { tcp, tcpSsl, ws, wss }
 /// phones that cannot reach the broker (docs/design/ha-route.md). For a
 /// Home Assistant home, `host` is the Home Assistant address the user
 /// typed, `remoteHost` an optional second one.
-enum ConnectionTransport { mqtt, homeAssistant, wireGuard }
+/// [z2mPage] uses Zigbee2MQTT’s frontend WebSocket without a broker.
+enum ConnectionTransport { mqtt, homeAssistant, wireGuard, z2mPage }
 
 /// The transport of a stored connection, MQTT when unset.
 ConnectionTransport transportOf(ConnectionTransport? stored) =>

@@ -34,7 +34,7 @@ const forceRelay = bool.fromEnvironment('ZIGDASH_FORCE_RELAY');
 List<MqttCandidate> endpointCandidates(BrokerConfig config) {
   if (forceRelay &&
       config.relay != null &&
-      !config.viaHomeAssistant &&
+      !config.notBroker &&
       !config.viaWireGuard) {
     return [
       (
@@ -45,13 +45,13 @@ List<MqttCandidate> endpointCandidates(BrokerConfig config) {
     ];
   }
   final remote = config.remoteHost?.trim();
-  final standard = config.viaHomeAssistant
+  final standard = config.notBroker
       ? homeAssistantConnectTimeoutMs
       : config.viaWireGuard
       ? wireGuardConnectTimeoutMs
       : standardConnectTimeoutMs;
   final relay =
-      config.relay != null && !config.viaHomeAssistant && !config.viaWireGuard
+      config.relay != null && !config.notBroker && !config.viaWireGuard
       ? [
           (
             kind: MqttEndpoint.relay,

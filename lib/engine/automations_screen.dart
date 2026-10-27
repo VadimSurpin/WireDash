@@ -258,6 +258,30 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
     switch (v.phase) {
       case HubEnginePhase.checking:
         return [_Progress(text: l10n.engineChecking)];
+      case HubEnginePhase.unreachable:
+        return [
+          _Message(
+            key: const Key('engine-away-unreachable'),
+            title: l10n.engineAwayNoHubTitle,
+            body: l10n.engineAwayNoHubBody,
+          ),
+        ];
+      case HubEnginePhase.needsBroker:
+        // 3.2: a Home set up through the Zigbee2MQTT page has no broker
+        // yet; the Engine's Automations, Alerts and history need one.
+        return [
+          _Message(
+            key: const Key('engine-needs-broker'),
+            title: l10n.engineNeedsBrokerTitle,
+            body: l10n.engineNeedsBrokerBody,
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: () => context.push('/connections/${widget.connectionId}/edit'),
+            icon: const Icon(Icons.settings_ethernet),
+            label: Text(l10n.engineNeedsBrokerButton),
+          ),
+        ];
       case HubEnginePhase.tooOld:
         return [
           _Message(
@@ -321,9 +345,11 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
         return [
           _Alert(
             title: l10n.automationsPausedTitle,
-            body: l10n.automationsPausedBody,
-            action: l10n.engineReinstall,
-            onAction: _install,
+            body: v.away
+                ? '${l10n.automationsPausedBody}\n\n${l10n.engineAwayReinstallAtHome}'
+                : l10n.automationsPausedBody,
+            action: v.away ? null : l10n.engineReinstall,
+            onAction: v.away ? null : _install,
           ),
         ];
       case HubEnginePhase.stoppedSelf:
@@ -378,7 +404,7 @@ class _Progress extends StatelessWidget {
 }
 
 class _Message extends StatelessWidget {
-  const _Message({required this.title, required this.body});
+  const _Message({super.key, required this.title, required this.body});
   final String title;
   final String body;
 
@@ -426,15 +452,15 @@ class _Alert extends StatelessWidget {
   const _Alert({
     required this.title,
     required this.body,
-    required this.action,
-    required this.onAction,
+    this.action,
+    this.onAction,
     this.secondary,
     this.onSecondary,
   });
   final String title;
   final String body;
-  final String action;
-  final VoidCallback onAction;
+  final String? action;
+  final VoidCallback? onAction;
   final String? secondary;
   final VoidCallback? onSecondary;
 
@@ -460,9 +486,8 @@ class _Alert extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: [
-                FilledButton.tonal(onPressed: onAction, child: Text(action)),
-                if (secondary != null)
-                  TextButton(onPressed: onSecondary, child: Text(secondary!)),
+                if (action != null) FilledButton.tonal(onPressed: onAction, child: Text(action!)),
+                if (secondary != null) TextButton(onPressed: onSecondary, child: Text(secondary!)),
               ],
             ),
           ],

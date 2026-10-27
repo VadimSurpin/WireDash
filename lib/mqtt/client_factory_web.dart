@@ -13,9 +13,9 @@ mc.MqttClient buildPlatformClient(
   if (config.viaWireGuard) {
     throw UnsupportedError('Embedded WireGuard is available on Android only.');
   }
-  if (config.viaHomeAssistant) {
+  if (config.notBroker) {
     throw UnsupportedError(
-      'Connecting through Home Assistant needs the Android app.',
+      'Connecting through Home Assistant or Zigbee2MQTT’s page needs the Android app.',
     );
   }
   if (!isWebSocketProtocol(config.protocol)) {

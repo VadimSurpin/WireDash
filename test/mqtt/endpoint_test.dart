@@ -64,6 +64,36 @@ void main() {
     },
   );
 
+  test(
+    'HA and frontend transports keep their timeout and exclude MQTT relay',
+    () {
+      for (final transport in [
+        ConnectionTransport.homeAssistant,
+        ConnectionTransport.z2mPage,
+      ]) {
+        final candidates = endpointCandidates(
+          BrokerConfig(
+            id: 'page',
+            host: '192.168.1.20',
+            port: 8080,
+            protocol: MqttProtocol.tcp,
+            transport: transport,
+            relay: RemoteHome(
+              homeId: 'home',
+              url: 'wss://relay.example/mqtt',
+              username: 'phone',
+              password: 'secret',
+              key: Uint8List(32),
+            ),
+          ),
+        );
+        expect(candidates, hasLength(1));
+        expect(candidates.single.kind, MqttEndpoint.local);
+        expect(candidates.single.timeoutMs, homeAssistantConnectTimeoutMs);
+      }
+    },
+  );
+
   test('whitespace-only remote host is treated as none', () {
     final c = endpointCandidates(_cfg(remoteHost: '   '));
     expect(c.length, 1);
