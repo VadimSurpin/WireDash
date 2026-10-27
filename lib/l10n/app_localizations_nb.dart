@@ -1540,7 +1540,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'Adressen du åpner Home Assistant med: 192.168.1.20:8123, homeassistant.local eller fjernadressen din, som https://xyz.ui.nabu.casa';
+      'Adressen du åpner Home Assistant med: 192.168.1.20:8123, eller en ekstern adresse som Nabu Casa- eller Cloudflare-adressen din';
 
   @override
   String get haConnectSignInHelp =>
@@ -3003,7 +3003,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Varsler satt på pause: ZigDash Engine på huben melder seg ikke';
+      'Varsler satt på pause: WireDash Engine på huben melder seg ikke';
 
   @override
   String get alertsStatusNotSetUp => 'Ikke satt opp';
@@ -3044,7 +3044,7 @@ class AppLocalizationsNb extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT godtok ikke ZigDash Engine';
+  String get alertsHubFailed => 'Zigbee2MQTT godtok ikke WireDash Engine';
 
   @override
   String get alertsRecent => 'Siste varsler';
@@ -3520,12 +3520,12 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String historyNeedsPassword(String host) {
-    return 'Ett steg til: brokeren din krever innlogging. Åpne Node-RED på $host:1880, dobbeltklikk på «ZigDash history broker», skriv MQTT-passordet i fanen Security og trykk Deploy. WireDash sender aldri passordet ditt til huben.';
+    return 'Ett steg til: brokeren din krever innlogging. Åpne Node-RED på $host:1880, dobbeltklikk på «WireDash history broker», skriv MQTT-passordet i fanen Security og trykk Deploy. WireDash sender aldri passordet ditt til huben.';
   }
 
   @override
   String get historyNotConnected =>
-      'Opptaket melder seg ikke. Åpne Automasjoner for å sjekke ZigDash Engine på huben.';
+      'Opptaket melder seg ikke. Åpne Automasjoner for å sjekke WireDash Engine på huben.';
 
   @override
   String get historyPersistence =>
@@ -3723,7 +3723,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'WireDash legger ZigDash Engine inn i Zigbee2MQTT på huben din. Det følger med på enhetene og kjører reglene dine, så en lampe tennes når døren åpnes selv med telefonen av og uten internett.';
+      'WireDash legger WireDash Engine inn i Zigbee2MQTT på huben din. Det følger med på enhetene og kjører reglene dine, så en lampe tennes når døren åpnes selv med telefonen av og uten internett.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3756,7 +3756,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Zigbee2MQTT blokkerer tillegg som ZigDash Engine, slik nye installasjoner gjør. For å kjøre automasjoner på huben ville WireDash slå på «Tillat ekstern JavaScript» i Zigbee2MQTT og starte det på nytt.';
+      'Zigbee2MQTT blokkerer tillegg som WireDash Engine, slik nye installasjoner gjør. For å kjøre automasjoner på huben ville WireDash slå på «Tillat ekstern JavaScript» i Zigbee2MQTT og starte det på nytt.';
 
   @override
   String get engineConsentOutage =>
@@ -3764,7 +3764,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'ZigDash Engine er åpen kildekode. Du kan lese det på Zigbee2MQTT-siden under Utvidelser.';
+      'WireDash Engine er åpen kildekode. Du kan lese det på Zigbee2MQTT-siden under Utvidelser.';
 
   @override
   String get engineConsentUndo =>
@@ -3788,7 +3788,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automasjoner satt på pause: ZigDash Engine stoppet seg selv';
+      'Automasjoner satt på pause: WireDash Engine stoppet seg selv';
 
   @override
   String get engineStoppedBody =>
@@ -3814,12 +3814,12 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Regler ZigDash Engine på huben ikke kan kjøre ennå: $count. Installer det på nytt for å oppdatere.';
+    return 'Regler WireDash Engine på huben ikke kan kjøre ennå: $count. Installer det på nytt for å oppdatere.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT avviste ZigDash Engine: $error';
+    return 'Zigbee2MQTT avviste WireDash Engine: $error';
   }
 
   @override
@@ -4132,11 +4132,11 @@ class AppLocalizationsNb extends AppLocalizations {
   String get engineRemove => 'Fjern fra huben';
 
   @override
-  String get engineRemoveTitle => 'Fjerne ZigDash Engine fra huben?';
+  String get engineRemoveTitle => 'Fjerne WireDash Engine fra huben?';
 
   @override
   String get engineRemoveBody =>
-      'Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon av ZigDash Engine henter dem tilbake.';
+      'Automasjonene slutter å kjøre. Reglene blir liggende på huben, så en ny installasjon av WireDash Engine henter dem tilbake.';
 
   @override
   String get autoNoTargets =>
@@ -4148,7 +4148,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Fjernstyring fra hvor som helst, via WireDash-reléet';
+      'Fjernstyring fra hvor som helst, via WireDash-reléet, uten månedsavgift';
 
   @override
   String get proRemoteFair =>
@@ -4177,7 +4177,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get remoteNeedsEngine =>
-      'Fjernstyring kjører i ZigDash Engine. Installer det først under Automasjoner.';
+      'Fjernstyring kjører i WireDash Engine. Installer det først under Automasjoner.';
 
   @override
   String get remoteSetUp => 'Slå på fjernstyring';
@@ -4457,4 +4457,312 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get panelIconAutomatic => 'Automatisk';
+
+  @override
+  String get setupErrPageTitle => 'Zigbee2MQTT-siden svarte ikke';
+
+  @override
+  String get setupErrPageBody =>
+      'Ingen Zigbee2MQTT-side svarte på den adressen. Åpne den i nettleseren på telefonen for å sjekke, og kopier adressen nøyaktig (med port, ofte 8080). Hvis siden ber om et token, skriv inn megler-detaljene i stedet.';
+
+  @override
+  String get setupErrPageAction => 'Prøv igjen';
+
+  @override
+  String get setupLookWider => 'Søk i hele nettverket';
+
+  @override
+  String get setupAsk => 'Hva driver Zigbee-en din?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'På en Raspberry Pi, en server eller i Docker';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'Med Zigbee2MQTT-tillegget, eller ZHA';
+
+  @override
+  String get setupAskSmlight => 'En SMLIGHT-hub';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB eller SMHUB med Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Ingenting ennå?';
+
+  @override
+  String get setupAskHaWhich => 'Hvordan kjører Home Assistant-en din Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'Zigbee2MQTT-tillegget';
+
+  @override
+  String get setupAskHaZ2mSub => 'Logg inn med Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, Home Assistants egen Zigbee';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, uten Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Koble til Zigbee2MQTT-siden min';
+
+  @override
+  String get setupManualEntryAdvanced => 'Skriv inn megler-detaljer (avansert)';
+
+  @override
+  String get z2mPageTitle => 'Zigbee2MQTT-siden din';
+
+  @override
+  String get z2mPageBody =>
+      'Adressen i nettleseren når Zigbee2MQTT-siden er åpen, den du parer enheter på. Ingen MQTT-brukernavn eller passord trengs.';
+
+  @override
+  String get z2mPageLabel => 'Sidens adresse';
+
+  @override
+  String get z2mPageConnect => 'Koble til';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return 'Fant $host på $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Ingenting svarte for $host på dette nettverket';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle => 'Automasjoner trenger MQTT-megleren din';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Dette hjemmet kobler seg til via Zigbee2MQTT-siden, og det holder for dashbordene. Automasjoner, varsler og historikk kjører i WireDash Engine på huben din, som snakker via MQTT-megleren. Skriv inn detaljene én gang, så kobler WireDash seg til via megleren fra da av.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Skriv inn megler-detaljer';
+
+  @override
+  String get connFromPageNote =>
+      'Dette hjemmet kobler seg til via Zigbee2MQTT-siden. Skriv inn MQTT-megleren din (som regel samme maskin, port 1883) for å slå på automasjoner, varsler og historikk. Etter lagring kobler WireDash seg til via megleren.';
+
+  @override
+  String get setupStillChecking =>
+      'Sjekker fortsatt. Dette kan ta opptil 30 sekunder.';
+
+  @override
+  String get aiHelpTitle => 'Står du fast? Spør KI-assistenten din';
+
+  @override
+  String get aiHelpBody =>
+      'WireDash skriver opp hva den fant for ChatGPT, Claude, Gemini eller en annen KI-app, uten passord eller adresser. Du ser det før det deles.';
+
+  @override
+  String get aiHelpButton => 'Spør en KI';
+
+  @override
+  String get aiHelpPreviewTitle => 'Dette blir delt';
+
+  @override
+  String get aiHelpShare => 'Del til en KI-app';
+
+  @override
+  String get aiHelpCopied =>
+      'Kopiert. Lim det inn i en hvilken som helst KI-chat.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'Usikker på hva den er? I Home Assistant-appen åpner du Innstillinger › Companion-app og trykker på serveren din: adressen står der. På en datamaskin er det adressen nettleseren viser når Home Assistant er åpen.';
+
+  @override
+  String get haFindLooking => 'Leter etter Home Assistant på dette nettverket…';
+
+  @override
+  String get haFindSeveral =>
+      'Fant mer enn én Home Assistant. Trykk på den du vil bruke:';
+
+  @override
+  String get haFindNone =>
+      'Denne telefonen ser ikke Home Assistant på dette wifi-nettet. Bruk adressen Home Assistant-appen din åpner: ofte en ekstern, som https://abcd1234.ui.nabu.casa eller https://mitthjem.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Den adressen er på et annet nettverk enn denne telefonen, som er på $network. Bruk adressen Home Assistant-appen din åpner, ofte en ekstern, eller koble telefonen til nettverket Home Assistant er på.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Telefonen fant ikke det navnet: Android klarer ofte ikke å åpne .local-navn. Skriv inn IP-adressen til Home Assistant (som 192.168.1.20:8123), eller den eksterne adressen.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Ingenting svarte på den eksterne adressen. Åpne den i nettleseren på denne telefonen for å sjekke at den virker, og kopier den nøyaktig slik Home Assistant-appen viser den.';
+
+  @override
+  String get setupNoWifiHa => 'Bruker du Home Assistant? Logg inn';
+
+  @override
+  String get setupReviewLastStep =>
+      'Siste steg: kryss av enhetene du vil ha, og trykk på Opprett dashbord nederst.';
+
+  @override
+  String get setupLeaveTitle => 'Opprette dashbordet?';
+
+  @override
+  String get setupLeaveBody =>
+      'Enhetene dine er funnet. Opprett dashbordet nå, eller start oppsettet på nytt og mist denne listen.';
+
+  @override
+  String get setupStartOver => 'Start på nytt';
+
+  @override
+  String get setupErrListMissingTitle =>
+      'Zigbee2MQTT sendte ikke enhetslisten sin';
+
+  @override
+  String get setupErrListMissingBody =>
+      'Zigbee2MQTT svarer, men enhetslisten kom ikke. Dette skjer som regel etter at MQTT-megleren er startet på nytt: Zigbee2MQTT før 2.14.2 sender listen igjen først når det selv starter på nytt. Start Zigbee2MQTT på nytt (eller oppdater det), og prøv igjen.';
+
+  @override
+  String get setupErrListMissingAction => 'Prøv igjen';
+
+  @override
+  String get setupErrHaNoZ2mTitle => 'Ingen Zigbee2MQTT i denne Home Assistant';
+
+  @override
+  String get setupErrHaNoZ2mBody =>
+      'Du er logget inn i Home Assistant, men Zigbee2MQTT sender ingenting via MQTT-en dens. Hvis Zigbee-enhetene dine er i ZHA (Home Assistants innebygde Zigbee), kan ikke WireDash se dem: det fungerer med Zigbee2MQTT. Hvis du bruker Zigbee2MQTT-tillegget, åpne det i Home Assistant, sjekk at det kjører, og prøv igjen.';
+
+  @override
+  String get setupErrHaNoZ2mAction => 'Prøv igjen';
+
+  @override
+  String get setupPlatformZha => 'ZHA, ikke Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'WireDash viser enheter fra Zigbee2MQTT, så den ser ikke enheter i ZHA, Home Assistants egen Zigbee. Du kan prøve demohjemmet for å se hvordan WireDash fungerer.';
+
+  @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host finnes ikke fra denne telefonen; Android klarer ofte ikke å slå opp .local-navn. Trykk på $button ovenfor og bruk adressen du åpner Home Assistant med i nettleseren, eller skriv IP-adressen her. Home Assistant viser den under Innstillinger › System › Nettverk.';
+  }
+
+  @override
+  String get whyTitle => 'Hvorfor prøvde du WireDash?';
+
+  @override
+  String get whyBody =>
+      'Ett trykk hjelper oss å velge hva vi lager. Svaret sendes med de anonyme bruksdataene dine.';
+
+  @override
+  String get whyFaster => 'Raskere enn den andre appen min';
+
+  @override
+  String get whyFamily => 'Enkel for familien';
+
+  @override
+  String get whyWallTablet => 'Et nettbrett på veggen';
+
+  @override
+  String get whyWithoutHa => 'Virker uten Home Assistant';
+
+  @override
+  String get whyOther => 'Noe annet';
+
+  @override
+  String get whyThanks => 'Takk for svaret!';
+
+  @override
+  String get engineAwayNoHubTitle => 'Huben din kan ikke nås akkurat nå';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Du er borte, og huben er ikke koblet til WireDash sin fjerntilgang, eller den mangler internett. Automasjonene dine fortsetter å kjøre på huben.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Du kan installere Engine på nytt når du er hjemme.';
+
+  @override
+  String get shareHomeTitle => 'Del med en annen telefon';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Legg til dette hjemmet på en annen telefon med én QR-kode';
+
+  @override
+  String get shareHomeIntro =>
+      'På den andre telefonen, hjemme på samme Wi-Fi, skann koden med kameraet. WireDash legger til hjemmet med pålogging og dashbordene dine.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Koden inneholder brokerpåloggingen for dette hjemmet. Den vises i 2 minutter; vis den bare til folk du stoler på.';
+
+  @override
+  String get shareHomeShow => 'Vis koden';
+
+  @override
+  String get shareHomeAtHome =>
+      'Koble til hjemme først: deling fungerer bare på hjemmenettet.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Skann med kameraet på den andre telefonen. Koden skjules om 2 minutter.';
+
+  @override
+  String get shareHomeHide => 'Skjul koden';
+
+  @override
+  String get shareHomeViaHa =>
+      'Dette hjemmet kobler til via Home Assistant. Installer WireDash på den andre telefonen og logg inn med Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Legg til et delt hjem';
+
+  @override
+  String get joinHomeInvalid =>
+      'Denne koden er ikke en WireDash-invitasjon, eller den er skadet.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name er allerede på denne telefonen.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Åpne';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Legge til $name på denne telefonen?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'WireDash legger til hjemmet med samme tilkobling og pålogging, og henter dashbordene fra den andre telefonen. Hold denne telefonen på hjemme-Wi-Fi.';
+
+  @override
+  String get joinHomeAdd => 'Legg til hjem';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Hjemmet er lagt til. Dashbordene kom ikke; enhetene dine er i fanen Enheter.';
+
+  @override
+  String get remoteOfferBody =>
+      'Nå enhetene dine når du er borte, via WireDash sitt krypterte relé. Del av Pro: én betaling, ingen månedsavgift. Sett det opp mens du er hjemme.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Du har Pro: slå på fjernstyring mens du er hjemme, så når du enhetene dine fra hvor som helst.';
+
+  @override
+  String get remoteOfferShow => 'Vis meg';
 }

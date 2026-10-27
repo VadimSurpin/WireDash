@@ -1,3 +1,4 @@
+import 'setup_origin.dart';
 import 'dart:async';
 
 import '../../../data/database/tables/connections.dart';
@@ -25,7 +26,13 @@ class Z2mFetchResult {
     required this.devices,
     this.otherBases = const [],
     this.wirenBoardDevices = const [],
+    this.devicesMissing = false,
   });
+
+  /// Zigbee2MQTT answered (state or info) but its retained `bridge/devices`
+  /// never came (3.1.13): a broker that lost its retained messages, which
+  /// Zigbee2MQTT before 2.14.2 doesn't republish until it restarts.
+  final bool devicesMissing;
 
   /// True only after `$base/bridge/...` topics verified Zigbee2MQTT — the UI
   /// may not claim Z2M was found before this.
@@ -51,7 +58,10 @@ typedef ScanRunFactory = ScanRun Function(String deviceIp, Set<HubKind> hubs);
 /// Where the user says Zigbee2MQTT runs, asked while the scan runs (2.5).
 /// Not an answer and [notSure] both mean the plain scan; the others add a
 /// pass or change what the empty result says.
-enum SetupPlatform { homeAssistant, smlight, piOrDocker, notSure }
+/// The answer to "where does Zigbee2MQTT run?". [zha] (3.1.3) is Home
+/// Assistant's own Zigbee with no Zigbee2MQTT, which ZigDash can't serve;
+/// counted to size a move from ZHA (wayfinder map "ZHA to ZigDash").
+enum SetupPlatform { homeAssistant, smlight, piOrDocker, zha, notSure }
 
 /// The hub kinds a platform answer makes the scan look for, on top of the
 /// default ones (Home Assistant and the Zigbee2MQTT frontend).
@@ -64,6 +74,15 @@ Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
 /// [z2mBrokerSetting].
 typedef Z2mBrokerLookup =
     Future<Z2mBrokerSetting?> Function(String host, int port);
+
+/// Whether Zigbee2MQTT's web page answers at [host]:[port] without a token
+/// (3.2): then setup connects through it and never asks for a broker login.
+typedef Z2mPagePresent = Future<bool> Function(String host, int port);
+
+/// Reads Zigbee2MQTT's device list from its web page on [host] (3.1.13),
+/// which sends the list on connect even when the broker lost it. Null when
+/// the page doesn't answer, is locked, or sends no list.
+typedef Z2mPageDevices = Future<List<Z2mDevice>?> Function(String host);
 
 /// Probes one host:port for an MQTT broker.
 typedef BrokerPortProbe = Future<ProbeResult?> Function(String host, int port);
@@ -84,7 +103,7 @@ typedef ScanTried = ({
   int lateHosts,
 });
 
-/// The network the scan ran on, for the empty result's analytics (2.6.2):
+/// The network the scan ran on, for local setup guidance:
 /// the interface kind as Support details names it ("Wi-Fi", "Ethernet",
 /// "other") and whether a VPN was up. Never an address.
 typedef NetworkFacts = ({String? kind, bool vpn});
@@ -293,8 +312,11 @@ class SetupCreating extends SetupState {
 
 /// Done — the dashboard is ready.
 class SetupComplete extends SetupState {
-  const SetupComplete(this.result);
+  const SetupComplete(this.result, {this.via = SetupVia.scan});
   final SetupResult result;
+
+  /// The local setup path that produced this home.
+  final SetupVia via;
 }
 
 // --- Coordinator ----------------------------------------------------------
@@ -317,6 +339,8 @@ class SetupCoordinator {
     AddressChecker? checkAddress,
     HubIdentifier? identifyHub,
     Z2mBrokerLookup? askZ2m,
+    Z2mPageDevices? pageDevices,
+    Z2mPagePresent? pagePresent,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
     NoNetworkProvider? noNetwork,
@@ -332,6 +356,8 @@ class SetupCoordinator {
        _checkAddress = checkAddress,
        _identifyHub = identifyHub,
        _askZ2m = askZ2m,
+       _pageDevices = pageDevices,
+       _pagePresent = pagePresent,
        _probeBroker = probeBroker,
        _networkFacts = networkFacts,
        _noNetwork = noNetwork;
@@ -355,6 +381,42 @@ class SetupCoordinator {
   /// page but no broker (2.7.2), and probes the answer. Null where the
   /// platform cannot.
   final Z2mBrokerLookup? _askZ2m;
+  final Z2mPageDevices? _pageDevices;
+  final Z2mPagePresent? _pagePresent;
+
+  /// 3.2: the first Zigbee2MQTT page in [pages] that answers; setup then
+  /// goes through it. False when none does (or the platform can't look),
+  /// and the broker path carries on as before.
+  Future<bool> _tryPages(List<(String, int)> pages) async {
+    final present = _pagePresent;
+    if (present == null) return false;
+    final op = _op;
+    for (final (host, port) in {...pages}) {
+      bool ok;
+      try {
+        ok = await present(host, port);
+      } catch (_) {
+        ok = false;
+      }
+      if (op != _op) return true; // cancelled or moved on: stop here
+      if (ok) {
+        await adoptZ2mPage(host: host, port: port);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Where Zigbee2MQTT's page may be for [candidate]: on the same machine,
+  /// and any page the scan saw.
+  List<(String, int)> _pagesFor(SetupCandidate candidate) => [
+    (candidate.host, hubPorts[HubKind.zigbee2mqtt]!),
+    for (final h in switch (_state) {
+      SetupScanning(:final hubs) || SetupScanEmpty(:final hubs) => hubs,
+      _ => const <HubFound>[],
+    })
+      if (h.kind == HubKind.zigbee2mqtt) (h.host, h.port),
+  ];
   final BrokerPortProbe? _probeBroker;
 
   /// The username Zigbee2MQTT logs in with, from its web page, for the login
@@ -437,7 +499,17 @@ class SetupCoordinator {
 
   // --- Intents ---
 
-  Future<void> startScan() async {
+  /// The platform came from the welcome's question (3.2): the scan then
+  /// doesn't ask it again.
+  bool answeredFirst = false;
+
+  /// Whether the running scan covers the whole /22 (3.2: only after
+  /// "Look on the whole network"; the phone's own /24 first).
+  bool get widen => _widen;
+  var _widen = false;
+
+  Future<void> startScan({bool widen = false}) async {
+    _widen = widen;
     _triedOtherBase = false;
     final op = ++_op;
     _cancelScan();
@@ -568,8 +640,10 @@ class SetupCoordinator {
           (h.host, hubPorts[HubKind.zigbee2mqtt]!),
     ];
     if (pages.isEmpty) return;
-    final op = ++_op;
     _emit(s.copyWith(z2m: (status: Z2mAnswerStatus.asking, server: '')));
+    // 3.2: the page itself is the way in; its broker only when it is locked.
+    if (await _tryPages(pages)) return;
+    final op = ++_op;
     var locked = false;
     for (final (host, port) in pages) {
       Z2mBrokerSetting? setting;
@@ -792,6 +866,25 @@ class SetupCoordinator {
     await _verify(candidate);
   }
 
+  /// Setup through Zigbee2MQTT's own web page (3.2 spike): no broker, no
+  /// MQTT login; [token] only when the page has one.
+  Future<void> adoptZ2mPage({
+    required String host,
+    int port = 8080,
+    String? token,
+  }) async {
+    _username = null;
+    _password = token;
+    await _verify(
+      SetupCandidate(
+        host: host,
+        port: port,
+        protocol: MqttProtocol.ws,
+        transport: ConnectionTransport.z2mPage,
+      ),
+    );
+  }
+
   Future<void> submitCredentials(String username, String password) async {
     final s = _state;
     if (s is! SetupNeedsAuth) return;
@@ -847,7 +940,17 @@ class SetupCoordinator {
         // failing must not turn a working setup into an error.
       }
       if (op != _op) return;
-      _emit(SetupComplete(result));
+      _emit(
+        SetupComplete(
+          result,
+          via: switch (candidate.transport) {
+            ConnectionTransport.homeAssistant => SetupVia.homeAssistant,
+            ConnectionTransport.z2mPage => SetupVia.z2mPage,
+            ConnectionTransport.mqtt ||
+            ConnectionTransport.wireGuard => SetupVia.scan,
+          },
+        ),
+      );
     } catch (_) {
       if (op != _op) return;
       _emit(
@@ -865,7 +968,7 @@ class SetupCoordinator {
   Future<void> retry() async {
     final s = _state;
     if (s is SetupScanEmpty) {
-      await startScan();
+      await startScan(widen: _widen);
     } else if (s is SetupFailed) {
       if (s.failedAtCreation) {
         await createDashboard();
@@ -897,6 +1000,7 @@ class SetupCoordinator {
     _rows = null;
     _wirenBoardDevices = const [];
     _platform = null;
+    answeredFirst = false;
     _emit(const SetupIdle());
   }
 
@@ -955,6 +1059,17 @@ class SetupCoordinator {
   };
 
   Future<void> _verify(SetupCandidate candidate, {int? lateHosts}) async {
+    // 3.2: a broker that wants a login, and Zigbee2MQTT's page next to it:
+    // the page needs none. 23 of 30 people at the login never tried one.
+    if (candidate.needsAuth &&
+        _username == null &&
+        !candidate.notBroker &&
+        _pagePresent != null) {
+      if (_state is! SetupVerifying) {
+        _emit(SetupVerifying(candidate, lateHosts: lateHosts));
+      }
+      if (await _tryPages(_pagesFor(candidate))) return;
+    }
     if (candidate.needsAuth && _username == null) {
       _emit(
         SetupNeedsAuth(candidate, platform: _platform, suggestedUser: _z2mUser),
@@ -974,7 +1089,7 @@ class SetupCoordinator {
     // Through Home Assistant the sign-in was checked before the candidate
     // existed (ha_connect.dart); the broker ladder is MQTT-shaped.
     final DiagnosticsReport? report;
-    if (candidate.viaHomeAssistant) {
+    if (candidate.viaHomeAssistant || candidate.viaZ2mPage) {
       report = null;
     } else {
       try {
@@ -994,6 +1109,7 @@ class SetupCoordinator {
     if (report != null && !report.connected) {
       final kind = mapLadderFailure(report);
       if (kind == SetupErrorKind.authRejected) {
+        if (_username == null && await _tryPages(_pagesFor(candidate))) return;
         // No credentials yet → first-time prompt; tried already → rejected.
         _emit(
           SetupNeedsAuth(
@@ -1027,14 +1143,42 @@ class SetupCoordinator {
         await _verify(candidate);
         return;
       }
-      _emit(SetupFailed(SetupErrorKind.notZigbee2Mqtt, candidate: candidate));
+      // Signed in to Home Assistant, and its MQTT has no Zigbee2MQTT: ZHA,
+      // or a stopped add-on; no broker to pick (3.1.13).
+      _emit(
+        SetupFailed(
+          candidate.viaHomeAssistant
+              ? SetupErrorKind.haNoZigbee2Mqtt
+              : candidate.viaZ2mPage
+              ? SetupErrorKind.pageNoAnswer
+              : SetupErrorKind.notZigbee2Mqtt,
+          candidate: candidate,
+        ),
+      );
       return;
     }
-    if (fetch.devices.isEmpty && fetch.wirenBoardDevices.isEmpty) {
+    var devices = fetch.devices;
+    if (fetch.devicesMissing) {
+      // The broker lost the list: Zigbee2MQTT's web page still has it.
+      final page = _pageDevices;
+      final fromPage =
+          page == null || candidate.viaHomeAssistant || candidate.viaZ2mPage
+          ? null
+          : await page(candidate.host).catchError((_) => null);
+      if (op != _op) return;
+      if (fromPage == null) {
+        _emit(
+          SetupFailed(SetupErrorKind.devicesListMissing, candidate: candidate),
+        );
+        return;
+      }
+      devices = fromPage;
+    }
+    if (devices.isEmpty && fetch.wirenBoardDevices.isEmpty) {
       _emit(SetupFailed(SetupErrorKind.noDevices, candidate: candidate));
       return;
     }
-    final rows = recommendDevices(fetch.devices, base: base);
+    final rows = recommendDevices(devices, base: base);
     _rows = rows;
     _wirenBoardDevices = fetch.wirenBoardDevices;
     _emit(SetupReview(candidate, rows, wirenBoardDevices: _wirenBoardDevices));

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../../engine/engine_providers.dart';
+import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +12,6 @@ import '../../onboarding/first_run.dart';
 import '../../../data/database/tables/connections.dart';
 import '../../../data/repositories/connection_repo.dart';
 import '../../../mqtt/broker_config.dart';
-import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../../../shortcuts/shortcut_service.dart' show forgetShortcutHome;
 import '../diagnostics/connect_diagnostics.dart';
 import '../diagnostics/connect_diagnostics_provider.dart';
@@ -57,6 +58,10 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
   ConnectionTransport _transport = ConnectionTransport.mqtt;
   bool get _viaHa => _transport == ConnectionTransport.homeAssistant;
 
+  /// 3.2: a Home set up through the Zigbee2MQTT page, getting its broker
+  /// here; saving moves it onto the broker.
+  bool _fromPage = false;
+
   bool get _isEdit => widget.connectionId != null;
 
   @override
@@ -88,6 +93,14 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
       _autoConnect = c.autoConnect;
       _transport = transportOf(c.transport);
       _wireGuard.text = wireGuard ?? '';
+      _fromPage = _transport == ConnectionTransport.z2mPage;
+      if (_fromPage) {
+        _transport = ConnectionTransport.mqtt;
+        // The page's port and token are not the broker's.
+        _port.text = '1883';
+        _protocol = MqttProtocol.tcp;
+        _passwordExists = false;
+      }
       _loaded = true;
     });
   }
@@ -127,7 +140,8 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
     final repo = ref.read(connectionRepoProvider);
     final port = int.parse(_port.text);
     final keepAlive = int.parse(_keepAlive.text);
-    final passwordToWrite = _password.text.isEmpty && _isEdit
+    // From the page, the stored secret is the page's token: always replace.
+    final passwordToWrite = _password.text.isEmpty && _isEdit && !_fromPage
         ? null
         : _password.text;
 
@@ -159,6 +173,9 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
         );
         ref.invalidate(mqttManagerProvider(widget.connectionId!));
         await forgetShortcutHome(widget.connectionId!);
+        if (_fromPage) {
+          ref.invalidate(engineViewProvider(widget.connectionId!));
+        }
       } else {
         final id = await repo.create(
           transport: _transport,
@@ -222,7 +239,7 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
           return;
         }
       }
-      final password = _password.text.isEmpty && _isEdit
+      final password = _password.text.isEmpty && _isEdit && !_fromPage
           ? await ref
                     .read(connectionRepoProvider)
                     .readPassword(widget.connectionId!) ??
@@ -333,6 +350,16 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (_fromPage) ...[
+              Card.outlined(
+                key: const Key('conn-from-page'),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(context.l10n.connFromPageNote),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
               controller: _name,
               decoration: InputDecoration(

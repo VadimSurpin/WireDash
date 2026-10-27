@@ -61,19 +61,22 @@ class _FakeDiagnostics extends ConnectDiagnostics {
   }) async => report;
 }
 
-List<Override> _overrides(AppDatabase db, {ConnectDiagnostics? diagnostics}) =>
-    [
-      appDatabaseProvider.overrideWithValue(db),
-      secureStorageProvider.overrideWithValue(_MemSecure()),
-      connectionRepoProvider.overrideWith(
-        (ref) => ConnectionRepo(
-          ConnectionDao(ref.read(appDatabaseProvider)),
-          ref.read(secureStorageProvider),
-        ),
-      ),
-      if (diagnostics != null)
-        connectDiagnosticsProvider.overrideWithValue(diagnostics),
-    ];
+List<Override> _overrides(
+  AppDatabase db, {
+  ConnectDiagnostics? diagnostics,
+  SecureStore? secure,
+}) => [
+  appDatabaseProvider.overrideWithValue(db),
+  secureStorageProvider.overrideWithValue(secure ?? _MemSecure()),
+  connectionRepoProvider.overrideWith(
+    (ref) => ConnectionRepo(
+      ConnectionDao(ref.read(appDatabaseProvider)),
+      ref.read(secureStorageProvider),
+    ),
+  ),
+  if (diagnostics != null)
+    connectDiagnosticsProvider.overrideWithValue(diagnostics),
+];
 
 Widget _wrap(AppDatabase db, {ConnectDiagnostics? diagnostics}) =>
     ProviderScope(
@@ -99,6 +102,81 @@ class _RecordingFirstRun implements FirstRun {
 }
 
 void main() {
+  testWidgets(
+    'page-to-broker upgrade clears frontend token after toggling WireGuard',
+    (tester) async {
+      final db = AppDatabase.test(NativeDatabase.memory());
+      addTearDown(db.close);
+      final secure = _MemSecure();
+      await secure.writePassword('page1', 'frontend-token');
+      final now = DateTime.now();
+      await ConnectionDao(db).insertRow(
+        ConnectionsCompanion.insert(
+          id: 'page1',
+          name: 'Page home',
+          host: '192.168.1.20',
+          port: 8080,
+          protocol: MqttProtocol.tcp,
+          transport: const Value(ConnectionTransport.z2mPage),
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      final router = GoRouter(
+        routes: [
+          GoRoute(path: '/', builder: (_, __) => const Text('list')),
+          GoRoute(
+            path: '/form',
+            builder: (_, __) =>
+                const ConnectionFormScreen(connectionId: 'page1'),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: _overrides(db, secure: secure),
+          child: MaterialApp.router(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router,
+          ),
+        ),
+      );
+      router.push('/form');
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 300)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('conn-from-page')), findsOneWidget);
+      final toggle = find.widgetWithText(
+        SwitchListTile,
+        'Use embedded WireGuard',
+      );
+      await tester.scrollUntilVisible(
+        toggle,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save'));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 300)),
+      );
+      await tester.pump();
+      final saved = await tester.runAsync(
+        () => ConnectionDao(db).getById('page1'),
+      );
+      expect(saved!.transport, ConnectionTransport.mqtt);
+      expect(saved.port, 1883);
+      expect(await secure.readPassword('page1'), isNull);
+    },
+  );
+
   testWidgets('WireGuard configuration can be pasted with its line breaks', (
     tester,
   ) async {

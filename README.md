@@ -111,15 +111,12 @@ as the previously supplied WireDash test APKs, allowing in-place updates.
 Keep that certificate stable when building updates. This is not the upstream
 ZigDash Play signing key.
 
-The default branch, `feat/wireguard-wirenboard`, includes ZigDash main through
-3.1.2 (`550394f`) and combines these feature branches:
+The default branch, `main`, contains the accepted Android Auto implementation,
+embedded WireGuard, Wiren Board support, custom controls, the green theme and
+telemetry removal. It includes upstream ZigDash 3.2.0 (`a1da985`).
 
-| Branch | Change |
-| --- | --- |
-| `feat/embedded-wireguard` | Embedded WireGuard transport and connection settings |
-| `feat/wirenboard-discovery` | WB discovery, panels, display expressions and WireDash branding |
-| `feat/remove-telemetry-feature-requests` | Telemetry SDK/hooks and feature-request/poll removal |
-| `feat/wirenboard-green-theme` | Green light/dark theme |
+See [upstream integration](docs/UPSTREAM.md) for the branch and merge workflow.
+Historical feature branches remain as references; new work starts from `main`.
 
 ## Build and test
 

@@ -1544,7 +1544,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'L\'indirizzo con cui apri Home Assistant: 192.168.1.20:8123, homeassistant.local, oppure il tuo indirizzo remoto, come https://xyz.ui.nabu.casa';
+      'L\'indirizzo con cui apri Home Assistant: 192.168.1.20:8123, oppure un indirizzo remoto come quello di Nabu Casa o Cloudflare';
 
   @override
   String get haConnectSignInHelp =>
@@ -3011,7 +3011,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Avvisi in pausa: ZigDash Engine sull\'hub non dà notizie';
+      'Avvisi in pausa: WireDash Engine sull\'hub non dà notizie';
 
   @override
   String get alertsStatusNotSetUp => 'Non configurati';
@@ -3052,7 +3052,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT non ha accettato ZigDash Engine';
+  String get alertsHubFailed => 'Zigbee2MQTT non ha accettato WireDash Engine';
 
   @override
   String get alertsRecent => 'Avvisi recenti';
@@ -3531,12 +3531,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String historyNeedsPassword(String host) {
-    return 'Ancora un passaggio: il tuo broker chiede un login. Apri Node-RED su $host:1880, fai doppio clic su \"ZigDash history broker\", scrivi la password MQTT nella scheda Security, poi fai Deploy. WireDash non invia mai la tua password all\'hub.';
+    return 'Ancora un passaggio: il tuo broker chiede un login. Apri Node-RED su $host:1880, fai doppio clic su \"WireDash history broker\", scrivi la password MQTT nella scheda Security, poi fai Deploy. WireDash non invia mai la tua password all\'hub.';
   }
 
   @override
   String get historyNotConnected =>
-      'La registrazione non dà notizie. Apri Automazioni per controllare ZigDash Engine sull\'hub.';
+      'La registrazione non dà notizie. Apri Automazioni per controllare WireDash Engine sull\'hub.';
 
   @override
   String get historyPersistence =>
@@ -3737,7 +3737,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'WireDash mette ZigDash Engine dentro Zigbee2MQTT sul tuo hub. Osserva i dispositivi ed esegue le tue regole, così una luce si accende quando la porta si apre anche col telefono spento e senza internet.';
+      'WireDash mette WireDash Engine dentro Zigbee2MQTT sul tuo hub. Osserva i dispositivi ed esegue le tue regole, così una luce si accende quando la porta si apre anche col telefono spento e senza internet.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3770,7 +3770,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Il tuo Zigbee2MQTT blocca estensioni come ZigDash Engine, come fanno le nuove installazioni. Per eseguire automazioni sull\'hub, WireDash attiverebbe «Consenti JavaScript esterno» in Zigbee2MQTT e lo riavvierebbe.';
+      'Il tuo Zigbee2MQTT blocca estensioni come WireDash Engine, come fanno le nuove installazioni. Per eseguire automazioni sull\'hub, WireDash attiverebbe «Consenti JavaScript esterno» in Zigbee2MQTT e lo riavvierebbe.';
 
   @override
   String get engineConsentOutage =>
@@ -3778,7 +3778,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'ZigDash Engine è open source. Puoi leggerlo nella pagina di Zigbee2MQTT, in Estensioni.';
+      'WireDash Engine è open source. Puoi leggerlo nella pagina di Zigbee2MQTT, in Estensioni.';
 
   @override
   String get engineConsentUndo =>
@@ -3802,7 +3802,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automazioni in pausa: ZigDash Engine si è fermato';
+      'Automazioni in pausa: WireDash Engine si è fermato';
 
   @override
   String get engineStoppedBody =>
@@ -3828,12 +3828,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Regole che ZigDash Engine sull\'hub non sa ancora eseguire: $count. Reinstallalo per aggiornarlo.';
+    return 'Regole che WireDash Engine sull\'hub non sa ancora eseguire: $count. Reinstallalo per aggiornarlo.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT ha rifiutato ZigDash Engine: $error';
+    return 'Zigbee2MQTT ha rifiutato WireDash Engine: $error';
   }
 
   @override
@@ -4146,11 +4146,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get engineRemove => 'Rimuovi dall\'hub';
 
   @override
-  String get engineRemoveTitle => 'Rimuovere ZigDash Engine dall\'hub?';
+  String get engineRemoveTitle => 'Rimuovere WireDash Engine dall\'hub?';
 
   @override
   String get engineRemoveBody =>
-      'Le automazioni smettono di girare. Le regole restano sull\'hub, quindi reinstallando ZigDash Engine tornano.';
+      'Le automazioni smettono di girare. Le regole restano sull\'hub, quindi reinstallando WireDash Engine tornano.';
 
   @override
   String get autoNoTargets =>
@@ -4162,7 +4162,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Controllo remoto ovunque, tramite il relay di WireDash';
+      'Controllo remoto ovunque, tramite il relay di WireDash, senza canone mensile';
 
   @override
   String get proRemoteFair =>
@@ -4191,7 +4191,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get remoteNeedsEngine =>
-      'Il controllo remoto gira in ZigDash Engine. Installalo prima in Automazioni.';
+      'Il controllo remoto gira in WireDash Engine. Installalo prima in Automazioni.';
 
   @override
   String get remoteSetUp => 'Attiva il controllo remoto';
@@ -4472,4 +4472,314 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get panelIconAutomatic => 'Automatico';
+
+  @override
+  String get setupErrPageTitle => 'La pagina Zigbee2MQTT non ha risposto';
+
+  @override
+  String get setupErrPageBody =>
+      'Nessuna pagina Zigbee2MQTT ha risposto a quell\'indirizzo. Aprilo nel browser di questo telefono per controllarlo e copia l\'indirizzo esatto (con la porta, spesso 8080). Se la pagina chiede un token, inserisci invece i dati del broker.';
+
+  @override
+  String get setupErrPageAction => 'Riprova';
+
+  @override
+  String get setupLookWider => 'Cerca su tutta la rete';
+
+  @override
+  String get setupAsk => 'Cosa fa funzionare il tuo Zigbee?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'Su un Raspberry Pi, un server o Docker';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'Con il componente aggiuntivo Zigbee2MQTT, o ZHA';
+
+  @override
+  String get setupAskSmlight => 'Un hub SMLIGHT';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB o SMHUB con Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Ancora niente?';
+
+  @override
+  String get setupAskHaWhich => 'Come gestisce Zigbee il tuo Home Assistant?';
+
+  @override
+  String get setupAskHaZ2m => 'Il componente aggiuntivo Zigbee2MQTT';
+
+  @override
+  String get setupAskHaZ2mSub => 'Accedi con Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, lo Zigbee integrato di Home Assistant';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, senza Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Collegati alla mia pagina Zigbee2MQTT';
+
+  @override
+  String get setupManualEntryAdvanced => 'Dati del broker (avanzato)';
+
+  @override
+  String get z2mPageTitle => 'La tua pagina Zigbee2MQTT';
+
+  @override
+  String get z2mPageBody =>
+      'L\'indirizzo nel browser quando la pagina Zigbee2MQTT è aperta, quella dove abbini i dispositivi. Non servono nome utente né password MQTT.';
+
+  @override
+  String get z2mPageLabel => 'Indirizzo della pagina';
+
+  @override
+  String get z2mPageConnect => 'Collega';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return '$host trovato a $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Nessuna risposta per $host su questa rete';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle =>
+      'Le automazioni hanno bisogno del tuo broker MQTT';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Questa casa si collega tramite la pagina Zigbee2MQTT, che basta per le dashboard. Automazioni, avvisi e cronologia funzionano nel WireDash Engine sul tuo hub, che comunica tramite il broker MQTT. Inserisci i suoi dati una volta e da allora WireDash si collegherà tramite il broker.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Inserisci i dati del broker';
+
+  @override
+  String get connFromPageNote =>
+      'Questa casa si collega tramite la pagina Zigbee2MQTT. Inserisci il tuo broker MQTT (di solito la stessa macchina, porta 1883) per attivare automazioni, avvisi e cronologia. Dopo il salvataggio WireDash si collega tramite il broker.';
+
+  @override
+  String get setupStillChecking =>
+      'Verifica in corso. Può richiedere fino a 30 secondi.';
+
+  @override
+  String get aiHelpTitle => 'Bloccato? Chiedi al tuo assistente IA';
+
+  @override
+  String get aiHelpBody =>
+      'WireDash riassume ciò che ha trovato per ChatGPT, Claude, Gemini o qualsiasi app di IA, senza password né indirizzi. Lo vedi prima di condividerlo.';
+
+  @override
+  String get aiHelpButton => 'Chiedi a un\'IA';
+
+  @override
+  String get aiHelpPreviewTitle => 'Cosa verrà condiviso';
+
+  @override
+  String get aiHelpShare => 'Condividi con un\'app di IA';
+
+  @override
+  String get aiHelpCopied => 'Copiato. Incollalo in qualsiasi chat di IA.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'Non sai qual è? Nell\'app Home Assistant apri Impostazioni › App companion e tocca il tuo server: l\'indirizzo è lì. Sul computer, è quello che il browser mostra con Home Assistant aperto.';
+
+  @override
+  String get haFindLooking => 'Ricerca di Home Assistant su questa rete…';
+
+  @override
+  String get haFindSeveral =>
+      'Trovato più di un Home Assistant. Tocca quello da usare:';
+
+  @override
+  String get haFindNone =>
+      'Questo telefono non vede Home Assistant su questa rete Wi-Fi. Usa l\'indirizzo che apre la tua app Home Assistant: spesso uno remoto, come https://abcd1234.ui.nabu.casa o https://casamia.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Quell\'indirizzo è su una rete diversa da quella di questo telefono, che è su $network. Usa l\'indirizzo che apre la tua app Home Assistant, spesso uno remoto, oppure collega il telefono alla rete di Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Questo telefono non ha trovato quel nome: Android spesso non apre i nomi .local. Digita l\'indirizzo IP di Home Assistant (come 192.168.1.20:8123) o il suo indirizzo remoto.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Non ha risposto nulla a quell\'indirizzo remoto. Aprilo nel browser di questo telefono per controllare che funzioni, e copialo esattamente come lo mostra la tua app Home Assistant.';
+
+  @override
+  String get setupNoWifiHa => 'Usi Home Assistant? Accedi';
+
+  @override
+  String get setupReviewLastStep =>
+      'Ultimo passo: spunta i dispositivi che vuoi, poi tocca Crea dashboard in basso.';
+
+  @override
+  String get setupLeaveTitle => 'Creare la dashboard?';
+
+  @override
+  String get setupLeaveBody =>
+      'I tuoi dispositivi sono stati trovati. Crea la dashboard ora, oppure ricomincia la configurazione e perdi questo elenco.';
+
+  @override
+  String get setupStartOver => 'Ricomincia';
+
+  @override
+  String get setupErrListMissingTitle =>
+      'Zigbee2MQTT non ha inviato l\'elenco dei dispositivi';
+
+  @override
+  String get setupErrListMissingBody =>
+      'Zigbee2MQTT risponde, ma l\'elenco dei dispositivi non è arrivato. Succede di solito dopo il riavvio del broker MQTT: prima della 2.14.2, Zigbee2MQTT invia di nuovo l\'elenco solo quando si riavvia. Riavvia Zigbee2MQTT (o aggiornalo), poi riprova.';
+
+  @override
+  String get setupErrListMissingAction => 'Riprova';
+
+  @override
+  String get setupErrHaNoZ2mTitle =>
+      'Nessun Zigbee2MQTT in questo Home Assistant';
+
+  @override
+  String get setupErrHaNoZ2mBody =>
+      'Hai effettuato l\'accesso a Home Assistant, ma Zigbee2MQTT non invia nulla sul suo MQTT. Se i tuoi dispositivi Zigbee sono in ZHA (lo Zigbee integrato di Home Assistant), WireDash non può vederli: funziona con Zigbee2MQTT. Se usi il componente aggiuntivo Zigbee2MQTT, aprilo in Home Assistant, controlla che sia avviato, poi riprova.';
+
+  @override
+  String get setupErrHaNoZ2mAction => 'Riprova';
+
+  @override
+  String get setupPlatformZha => 'ZHA, senza Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'WireDash mostra i dispositivi di Zigbee2MQTT, quindi non vede i dispositivi di ZHA, lo Zigbee integrato di Home Assistant. Puoi provare la casa demo per vedere come funziona WireDash.';
+
+  @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host non si trova da questo telefono; spesso Android non riesce a risolvere i nomi .local. Tocca $button qui sopra e usa l\'indirizzo con cui apri Home Assistant nel browser, oppure scrivi qui il suo indirizzo IP. Home Assistant lo mostra in Impostazioni › Sistema › Rete.';
+  }
+
+  @override
+  String get whyTitle => 'Perché hai provato WireDash?';
+
+  @override
+  String get whyBody =>
+      'Un tocco aiuta a decidere cosa costruire. La tua risposta viene inviata con i tuoi dati di utilizzo anonimi.';
+
+  @override
+  String get whyFaster => 'Più veloce della mia altra app';
+
+  @override
+  String get whyFamily => 'Semplice per la famiglia';
+
+  @override
+  String get whyWallTablet => 'Un tablet a parete';
+
+  @override
+  String get whyWithoutHa => 'Funziona senza Home Assistant';
+
+  @override
+  String get whyOther => 'Altro';
+
+  @override
+  String get whyThanks => 'Grazie per avercelo detto!';
+
+  @override
+  String get engineAwayNoHubTitle =>
+      'Al momento il tuo hub non è raggiungibile';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Sei fuori casa e il tuo hub non è collegato all\'accesso remoto di WireDash, oppure è senza internet. Le tue automazioni continuano a funzionare sull\'hub.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Potrai reinstallare l\'Engine quando sei a casa.';
+
+  @override
+  String get shareHomeTitle => 'Condividi con un altro telefono';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Aggiungi questa casa a un altro telefono con un codice QR';
+
+  @override
+  String get shareHomeIntro =>
+      'Sull\'altro telefono, a casa sulla stessa Wi-Fi, inquadra il codice con la fotocamera. WireDash aggiunge questa casa con il suo accesso e le tue dashboard.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Il codice contiene l\'accesso al broker di questa casa. Resta visibile 2 minuti; mostralo solo a persone di cui ti fidi.';
+
+  @override
+  String get shareHomeShow => 'Mostra il codice';
+
+  @override
+  String get shareHomeAtHome =>
+      'Collegati prima da casa: la condivisione funziona solo sulla rete di casa.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Inquadralo con la fotocamera dell\'altro telefono. Il codice si nasconde tra 2 minuti.';
+
+  @override
+  String get shareHomeHide => 'Nascondi il codice';
+
+  @override
+  String get shareHomeViaHa =>
+      'Questa casa si collega tramite Home Assistant. Sull\'altro telefono installa WireDash e accedi con Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Aggiungi una casa condivisa';
+
+  @override
+  String get joinHomeInvalid =>
+      'Questo codice non è un invito di WireDash, oppure è danneggiato.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name è già su questo telefono.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Apri';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Aggiungere $name a questo telefono?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'WireDash aggiunge la casa con la stessa connessione e lo stesso accesso, e prende le dashboard dall\'altro telefono. Tieni questo telefono sulla Wi-Fi di casa.';
+
+  @override
+  String get joinHomeAdd => 'Aggiungi casa';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Casa aggiunta. Le dashboard non sono arrivate; i dispositivi sono nella scheda Dispositivi.';
+
+  @override
+  String get remoteOfferBody =>
+      'Raggiungi i tuoi dispositivi quando sei fuori, tramite il relay cifrato di WireDash. Incluso in Pro: un solo pagamento, nessun canone mensile. Configuralo mentre sei a casa.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Hai Pro: attiva il controllo remoto mentre sei a casa, poi raggiungi i tuoi dispositivi da ovunque.';
+
+  @override
+  String get remoteOfferShow => 'Mostra';
 }

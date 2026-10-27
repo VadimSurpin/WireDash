@@ -1543,7 +1543,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get haConnectAddressHelp =>
-      'Adresa, kterou otevíráš Home Assistant: 192.168.1.20:8123, homeassistant.local nebo tvoje vzdálená adresa, třeba https://xyz.ui.nabu.casa';
+      'Adresa, kterou otevíráš Home Assistant: 192.168.1.20:8123, nebo vzdálená adresa, třeba tvoje adresa Nabu Casa nebo Cloudflare';
 
   @override
   String get haConnectSignInHelp =>
@@ -3005,7 +3005,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get alertsStatusPaused =>
-      'Upozornění pozastavena: ZigDash Engine na hubu se nehlásí';
+      'Upozornění pozastavena: WireDash Engine na hubu se nehlásí';
 
   @override
   String get alertsStatusNotSetUp => 'Nenastaveno';
@@ -3046,7 +3046,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get alertsHubFailed => 'Zigbee2MQTT nepřijal ZigDash Engine';
+  String get alertsHubFailed => 'Zigbee2MQTT nepřijal WireDash Engine';
 
   @override
   String get alertsRecent => 'Nedávná upozornění';
@@ -3524,12 +3524,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String historyNeedsPassword(String host) {
-    return 'Ještě jeden krok: tvůj broker vyžaduje přihlášení. Otevři Node-RED na $host:1880, dvakrát klikni na „ZigDash history broker“, na kartě Security zadej heslo k MQTT a dej Deploy. WireDash tvoje heslo na hub nikdy neposílá.';
+    return 'Ještě jeden krok: tvůj broker vyžaduje přihlášení. Otevři Node-RED na $host:1880, dvakrát klikni na „WireDash history broker“, na kartě Security zadej heslo k MQTT a dej Deploy. WireDash tvoje heslo na hub nikdy neposílá.';
   }
 
   @override
   String get historyNotConnected =>
-      'Záznam se nehlásí. Otevřete Automatizace a zkontrolujte ZigDash Engine na hubu.';
+      'Záznam se nehlásí. Otevřete Automatizace a zkontrolujte WireDash Engine na hubu.';
 
   @override
   String get historyPersistence =>
@@ -3730,7 +3730,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineIntroBody =>
-      'WireDash vloží ZigDash Engine do Zigbee2MQTT na vašem hubu. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
+      'WireDash vloží WireDash Engine do Zigbee2MQTT na vašem hubu. Sleduje vaše zařízení a spouští pravidla, takže se světlo rozsvítí při otevření dveří, i když je telefon vypnutý a nejde internet.';
 
   @override
   String get engineIntroNothingByHand =>
@@ -3763,7 +3763,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineConsentBody =>
-      'Váš Zigbee2MQTT blokuje rozšíření jako ZigDash Engine, jak to dělají nové instalace. Aby automatizace běžely na hubu, WireDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
+      'Váš Zigbee2MQTT blokuje rozšíření jako WireDash Engine, jak to dělají nové instalace. Aby automatizace běžely na hubu, WireDash by v Zigbee2MQTT zapnul „Povolit externí JavaScript“ a restartoval ho.';
 
   @override
   String get engineConsentOutage =>
@@ -3771,7 +3771,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineConsentOpen =>
-      'ZigDash Engine má otevřený kód. Můžete si ho přečíst na stránce Zigbee2MQTT v části Rozšíření.';
+      'WireDash Engine má otevřený kód. Můžete si ho přečíst na stránce Zigbee2MQTT v části Rozšíření.';
 
   @override
   String get engineConsentUndo =>
@@ -3795,7 +3795,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get engineStoppedTitle =>
-      'Automatizace pozastaveny: ZigDash Engine se sám zastavil';
+      'Automatizace pozastaveny: WireDash Engine se sám zastavil';
 
   @override
   String get engineStoppedBody =>
@@ -3821,12 +3821,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String engineRulesUnknown(Object count) {
-    return 'Pravidla, která ZigDash Engine na hubu zatím neumí spustit: $count. Nainstalujte ho znovu, aby se aktualizoval.';
+    return 'Pravidla, která WireDash Engine na hubu zatím neumí spustit: $count. Nainstalujte ho znovu, aby se aktualizoval.';
   }
 
   @override
   String engineInstallRefused(Object error) {
-    return 'Zigbee2MQTT odmítl ZigDash Engine: $error';
+    return 'Zigbee2MQTT odmítl WireDash Engine: $error';
   }
 
   @override
@@ -4139,11 +4139,11 @@ class AppLocalizationsCs extends AppLocalizations {
   String get engineRemove => 'Odebrat z hubu';
 
   @override
-  String get engineRemoveTitle => 'Odebrat ZigDash Engine z hubu?';
+  String get engineRemoveTitle => 'Odebrat WireDash Engine z hubu?';
 
   @override
   String get engineRemoveBody =>
-      'Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace ZigDash Engine vrátí.';
+      'Automatizace přestanou běžet. Pravidla zůstanou na hubu, takže je nová instalace WireDash Engine vrátí.';
 
   @override
   String get autoNoTargets =>
@@ -4154,7 +4154,8 @@ class AppLocalizationsCs extends AppLocalizations {
       'Neomezené automatizace; tři na domácnost jsou zdarma';
 
   @override
-  String get proGetRemote => 'Ovládání odkudkoli přes relay WireDash';
+  String get proGetRemote =>
+      'Ovládání odkudkoli přes relay WireDash, bez měsíčního poplatku';
 
   @override
   String get proRemoteFair =>
@@ -4183,7 +4184,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get remoteNeedsEngine =>
-      'Dálkové ovládání běží v ZigDash Engine. Nejdřív ho nainstalujte v Automatizacích.';
+      'Dálkové ovládání běží v WireDash Engine. Nejdřív ho nainstalujte v Automatizacích.';
 
   @override
   String get remoteSetUp => 'Zapnout dálkové ovládání';
@@ -4459,4 +4460,309 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get panelIconAutomatic => 'Automaticky';
+
+  @override
+  String get setupErrPageTitle => 'Stránka Zigbee2MQTT neodpověděla';
+
+  @override
+  String get setupErrPageBody =>
+      'Na této adrese neodpověděla žádná stránka Zigbee2MQTT. Otevřete ji v prohlížeči tohoto telefonu a zkontrolujte ji, a adresu zkopírujte přesně (i s portem, často 8080). Pokud stránka chce token, zadejte místo toho údaje brokeru.';
+
+  @override
+  String get setupErrPageAction => 'Zkusit znovu';
+
+  @override
+  String get setupLookWider => 'Hledat v celé síti';
+
+  @override
+  String get setupAsk => 'Co pohání vaše Zigbee?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'Na Raspberry Pi, serveru nebo v Dockeru';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'S doplňkem Zigbee2MQTT, nebo ZHA';
+
+  @override
+  String get setupAskSmlight => 'Hub SMLIGHT';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB nebo SMHUB se Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Zatím nic?';
+
+  @override
+  String get setupAskHaWhich => 'Jak váš Home Assistant provozuje Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'Doplněk Zigbee2MQTT';
+
+  @override
+  String get setupAskHaZ2mSub => 'Přihlásit se přes Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, vlastní Zigbee Home Assistantu';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, bez Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Připojit se k mé stránce Zigbee2MQTT';
+
+  @override
+  String get setupManualEntryAdvanced => 'Zadat údaje brokeru (pokročilé)';
+
+  @override
+  String get z2mPageTitle => 'Vaše stránka Zigbee2MQTT';
+
+  @override
+  String get z2mPageBody =>
+      'Adresa v prohlížeči, když máte otevřenou stránku Zigbee2MQTT – tu, kde párujete zařízení. Není potřeba uživatelské jméno ani heslo MQTT.';
+
+  @override
+  String get z2mPageLabel => 'Adresa stránky';
+
+  @override
+  String get z2mPageConnect => 'Připojit';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return '$host nalezen na $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Pro $host v této síti nic neodpovědělo';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle => 'Automatizace potřebují váš MQTT broker';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Tento domov se připojuje přes stránku Zigbee2MQTT, což dashboardům stačí. Automatizace, upozornění a historie běží v WireDash Engine na vašem hubu, který komunikuje přes váš MQTT broker. Zadejte jeho údaje jednou a WireDash se od té doby bude připojovat přes broker.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Zadat údaje brokeru';
+
+  @override
+  String get connFromPageNote =>
+      'Tento domov se připojuje přes stránku Zigbee2MQTT. Zadejte svůj MQTT broker (obvykle stejný stroj, port 1883), abyste zapnuli automatizace, upozornění a historii. Po uložení se WireDash připojuje přes broker.';
+
+  @override
+  String get setupStillChecking => 'Stále ověřuji. Může to trvat až 30 sekund.';
+
+  @override
+  String get aiHelpTitle => 'Zaseknuto? Zeptejte se svého AI asistenta';
+
+  @override
+  String get aiHelpBody =>
+      'WireDash sepíše, co našel, pro ChatGPT, Claude, Gemini nebo jinou AI aplikaci, bez hesel a adres. Uvidíte to dřív, než to sdílíte.';
+
+  @override
+  String get aiHelpButton => 'Zeptat se AI';
+
+  @override
+  String get aiHelpPreviewTitle => 'Co se bude sdílet';
+
+  @override
+  String get aiHelpShare => 'Sdílet do AI aplikace';
+
+  @override
+  String get aiHelpCopied => 'Zkopírováno. Vložte to do libovolného AI chatu.';
+
+  @override
+  String get haConnectWhereAddress =>
+      'Nevíte, jaká je? V aplikaci Home Assistant otevřete Nastavení › Doprovodná aplikace a klepněte na svůj server: adresa je tam. Na počítači je to adresa, kterou prohlížeč ukazuje při otevřeném Home Assistantu.';
+
+  @override
+  String get haFindLooking => 'Hledám Home Assistant v této síti…';
+
+  @override
+  String get haFindSeveral =>
+      'Nalezeno více instancí Home Assistant. Klepněte na tu, kterou chcete použít:';
+
+  @override
+  String get haFindNone =>
+      'Tento telefon v této Wi-Fi Home Assistant nevidí. Použijte adresu, kterou otevírá vaše aplikace Home Assistant: často vzdálenou, například https://abcd1234.ui.nabu.casa nebo https://mujdum.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Tato adresa je v jiné síti než tento telefon, který je v $network. Použijte adresu, kterou otevírá vaše aplikace Home Assistant, často vzdálenou, nebo připojte telefon k síti, ve které je Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Tento telefon to jméno nenašel: Android často neotevře jména .local. Zadejte IP adresu Home Assistantu (například 192.168.1.20:8123) nebo jeho vzdálenou adresu.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Na této vzdálené adrese nic neodpovědělo. Otevřete ji v prohlížeči tohoto telefonu a ověřte, že funguje, a zkopírujte ji přesně tak, jak ji ukazuje vaše aplikace Home Assistant.';
+
+  @override
+  String get setupNoWifiHa => 'Používáte Home Assistant? Přihlásit se';
+
+  @override
+  String get setupReviewLastStep =>
+      'Poslední krok: zaškrtněte zařízení, která chcete, a dole klepněte na Vytvořit nástěnku.';
+
+  @override
+  String get setupLeaveTitle => 'Vytvořit nástěnku?';
+
+  @override
+  String get setupLeaveBody =>
+      'Vaše zařízení jsou nalezena. Vytvořte nástěnku hned, nebo začněte nastavení znovu a tento seznam ztratíte.';
+
+  @override
+  String get setupStartOver => 'Začít znovu';
+
+  @override
+  String get setupErrListMissingTitle => 'Zigbee2MQTT neposlal seznam zařízení';
+
+  @override
+  String get setupErrListMissingBody =>
+      'Zigbee2MQTT odpovídá, ale jeho seznam zařízení nepřišel. Obvykle se to stane po restartu MQTT brokeru: Zigbee2MQTT před verzí 2.14.2 pošle seznam znovu až po svém vlastním restartu. Restartujte Zigbee2MQTT (nebo ho aktualizujte) a zkuste to znovu.';
+
+  @override
+  String get setupErrListMissingAction => 'Zkusit znovu';
+
+  @override
+  String get setupErrHaNoZ2mTitle => 'V tomto Home Assistantu není Zigbee2MQTT';
+
+  @override
+  String get setupErrHaNoZ2mBody =>
+      'Jste přihlášeni do Home Assistantu, ale Zigbee2MQTT přes jeho MQTT nic neposílá. Pokud máte zařízení Zigbee v ZHA (vestavěném Zigbee Home Assistantu), WireDash je nevidí: pracuje se Zigbee2MQTT. Pokud používáte doplněk Zigbee2MQTT, otevřete ho v Home Assistantu, zkontrolujte, že běží, a zkuste to znovu.';
+
+  @override
+  String get setupErrHaNoZ2mAction => 'Zkusit znovu';
+
+  @override
+  String get setupPlatformZha => 'ZHA, bez Zigbee2MQTT';
+
+  @override
+  String get setupZhaNote =>
+      'WireDash zobrazuje zařízení ze Zigbee2MQTT, takže nevidí zařízení v ZHA, vlastním Zigbee Home Assistantu. Můžeš vyzkoušet ukázkovou domácnost a podívat se, jak WireDash funguje.';
+
+  @override
+  String setupAddressNotResolvedHa(String host, String button) {
+    return '$host z tohoto telefonu nelze najít; Android často neumí vyhledat názvy .local. Klepni výše na $button a použij adresu, kterou Home Assistant otevíráš v prohlížeči, nebo sem napiš jeho IP adresu. Home Assistant ji ukazuje v Nastavení › Systém › Síť.';
+  }
+
+  @override
+  String get whyTitle => 'Proč jsi vyzkoušel WireDash?';
+
+  @override
+  String get whyBody =>
+      'Jedno klepnutí pomůže rozhodnout, co dál. Tvoje odpověď se odešle s anonymními daty o používání.';
+
+  @override
+  String get whyFaster => 'Rychlejší než moje jiná aplikace';
+
+  @override
+  String get whyFamily => 'Jednoduchý pro rodinu';
+
+  @override
+  String get whyWallTablet => 'Tablet na zdi';
+
+  @override
+  String get whyWithoutHa => 'Funguje bez Home Assistantu';
+
+  @override
+  String get whyOther => 'Něco jiného';
+
+  @override
+  String get whyThanks => 'Díky za odpověď!';
+
+  @override
+  String get engineAwayNoHubTitle => 'Teď se nedaří spojit s vaším hubem';
+
+  @override
+  String get engineAwayNoHubBody =>
+      'Jste pryč a váš hub není připojen ke vzdálenému přístupu WireDash, nebo nemá internet. Vaše automatizace na hubu dál běží.';
+
+  @override
+  String get engineAwayReinstallAtHome =>
+      'Engine můžete přeinstalovat, až budete doma.';
+
+  @override
+  String get shareHomeTitle => 'Sdílet s dalším telefonem';
+
+  @override
+  String get shareHomeSubtitle =>
+      'Přidejte tento domov do dalšího telefonu jedním QR kódem';
+
+  @override
+  String get shareHomeIntro =>
+      'Na druhém telefonu, doma na stejné Wi-Fi, naskenujte kód fotoaparátem. WireDash přidá tento domov s přihlášením i vašimi nástěnkami.';
+
+  @override
+  String get shareHomeLoginWarning =>
+      'Kód obsahuje přihlášení k brokeru tohoto domova. Zobrazí se na 2 minuty; ukazujte ho jen lidem, kterým věříte.';
+
+  @override
+  String get shareHomeShow => 'Zobrazit kód';
+
+  @override
+  String get shareHomeAtHome =>
+      'Nejdřív se připojte doma: sdílení funguje jen ve vaší domácí síti.';
+
+  @override
+  String get shareHomeScanHint =>
+      'Naskenujte fotoaparátem druhého telefonu. Kód se za 2 minuty skryje.';
+
+  @override
+  String get shareHomeHide => 'Skrýt kód';
+
+  @override
+  String get shareHomeViaHa =>
+      'Tento domov se připojuje přes Home Assistant. Na druhém telefonu nainstalujte WireDash a přihlaste se přes Home Assistant.';
+
+  @override
+  String get joinHomeTitle => 'Přidat sdílený domov';
+
+  @override
+  String get joinHomeInvalid =>
+      'Tento kód není pozvánka do domova WireDash, nebo je poškozený.';
+
+  @override
+  String joinHomeAlready(String name) {
+    return '$name už v tomto telefonu je.';
+  }
+
+  @override
+  String get joinHomeOpen => 'Otevřít';
+
+  @override
+  String joinHomeAsk(String name) {
+    return 'Přidat $name do tohoto telefonu?';
+  }
+
+  @override
+  String get joinHomeBody =>
+      'WireDash přidá domov se stejným připojením a přihlášením a převezme nástěnky z druhého telefonu. Nechte tento telefon na domácí Wi-Fi.';
+
+  @override
+  String get joinHomeAdd => 'Přidat domov';
+
+  @override
+  String get joinHomeNoDashboards =>
+      'Domov přidán. Nástěnky nedorazily; zařízení najdete na kartě Zařízení.';
+
+  @override
+  String get remoteOfferBody =>
+      'Ovládejte zařízení i mimo domov, přes šifrovaný relay WireDash. Součást Pro: jedna platba, žádný měsíční poplatek. Nastavte to, když jste doma.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Máte Pro: zapněte ovládání na dálku, když jste doma, a pak ovládejte zařízení odkudkoli.';
+
+  @override
+  String get remoteOfferShow => 'Ukázat';
 }

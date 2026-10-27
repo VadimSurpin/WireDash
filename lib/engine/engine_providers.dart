@@ -1,3 +1,5 @@
+import '../data/repositories/connection_repo.dart';
+import '../data/database/tables/connections.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -7,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/devices/devices_providers.dart' show homeBaseTopicProvider;
 import '../features/settings/providers/settings_controller.dart' show sharedPreferencesProvider;
+import '../mqtt/endpoint.dart';
 import '../mqtt/mqtt_manager.dart';
 import '../mqtt/providers/mqtt_manager_provider.dart';
 import 'engine_installer.dart';
@@ -47,7 +50,12 @@ class EngineView {
     this.report,
     this.clockOff = false,
     this.declined = false,
+    this.away = false,
   });
+
+  /// Reached through the relay (3.1.7): installing, reinstalling and
+  /// consent wait until the phone is home.
+  final bool away;
 
   final HubEnginePhase phase;
   final HubInfo? hub;
@@ -70,6 +78,13 @@ class EngineView {
 /// "paused" without a new message. Silently re-saves an older Engine.
 final engineViewProvider =
     StreamProvider.autoDispose.family<EngineView, String>((ref, connectionId) async* {
+  // 3.2: through Zigbee2MQTT's page there is no broker for the Engine's
+  // topics (Automations, Alerts, history): ask for it before anything.
+  final home = await ref.read(connectionRepoProvider).getById(connectionId);
+  if (transportOf(home?.transport) == ConnectionTransport.z2mPage) {
+    yield const EngineView(phase: HubEnginePhase.needsBroker);
+    return;
+  }
   final mgr = await ref.watch(mqttManagerProvider(connectionId).future);
   final base = ref.read(homeBaseTopicProvider(connectionId)) ?? 'zigbee2mqtt';
   final prefs = ref.read(sharedPreferencesProvider);
@@ -81,16 +96,32 @@ final engineViewProvider =
   DateTime? heardAt;
   var clockOff = false;
   var updateTried = false;
+  final startedAt = DateTime.now();
+  bool viaRelay() => mgr.activeEndpoint == MqttEndpoint.relay;
+
+  /// How long to wait for the Engine's word through the relay (3.1.7).
+  const relayWait = Duration(seconds: 15);
 
   final out = StreamController<EngineView>();
-  EngineView view() => EngineView(
-        phase: EngineHealth.phase(
-            hub: hub, extensions: extensions, report: report, lastHeardAt: heardAt, now: DateTime.now()),
-        hub: hub,
-        report: report,
-        clockOff: clockOff,
-        declined: engineDeclined(prefs, connectionId),
-      );
+  EngineView view() {
+    final now = DateTime.now();
+    final away = viaRelay();
+    return EngineView(
+      phase: EngineHealth.phase(
+          hub: hub,
+          extensions: extensions,
+          report: report,
+          lastHeardAt: heardAt,
+          now: now,
+          viaRelay: away,
+          gaveUp: now.difference(startedAt) > relayWait),
+      hub: hub,
+      report: report,
+      clockOff: clockOff,
+      declined: engineDeclined(prefs, connectionId),
+      away: away,
+    );
+  }
   void emit() {
     if (out.isClosed) return;
     final v = view();
@@ -100,7 +131,9 @@ final engineViewProvider =
     } else if (v.phase == HubEnginePhase.notInstalled || v.phase == HubEnginePhase.needsConsent) {
       unawaited(prefs.remove(_installedKey(connectionId)));
     }
-    if (!updateTried && v.phase == HubEnginePhase.running) {
+    // A silent update needs Zigbee2MQTT's bridge, which the relay never
+    // carries: it waits until the phone is home.
+    if (!updateTried && v.phase == HubEnginePhase.running && !v.away) {
       updateTried = true;
       unawaited(_updateIfOutdated(ref, link, base, report));
     }
@@ -124,8 +157,11 @@ final engineViewProvider =
     }),
   ];
   final ticker = Timer.periodic(const Duration(seconds: 15), (_) => emit());
+  // Through the relay, the wait for the Engine ends on time, not on a tick.
+  final gaveUpTimer = Timer(relayWait + const Duration(milliseconds: 100), emit);
   ref.onDispose(() {
     ticker.cancel();
+    gaveUpTimer.cancel();
     for (final s in subs) {
       unawaited(s.cancel());
     }

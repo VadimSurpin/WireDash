@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,6 +8,7 @@ import 'package:wiredash/core/router/routes.dart';
 import 'package:wiredash/features/ha_import/ha_auth.dart';
 import 'package:wiredash/features/onboarding/setup/ha_connect.dart';
 import 'package:wiredash/features/onboarding/setup/ha_connect_screen.dart';
+import 'package:wiredash/features/onboarding/setup/ha_discovery.dart';
 import 'package:wiredash/l10n/app_localizations.dart';
 
 void main() {
@@ -16,12 +19,21 @@ void main() {
     List<(Uri, String)>? adopted,
     String? initialHost,
     String? again,
+    Future<HaConnectProblem?>? slowProbe,
+    HaFind? findHa,
+    bool settle = true,
+    bool offWifi = false,
+    HaReach? reach,
+    String? phoneIp,
   }) async {
     final controller = HaConnectController(
       address: initialHost ?? '',
       adopt: (a, s) async => adopted?.add((a, s)),
-      probe: (_, __) async => problem,
+      probe: (_, __) async => slowProbe != null ? await slowProbe : problem,
       signIn: signIn == null ? null : (_) async => signIn,
+      find: findHa,
+      reach: reach,
+      phoneIp: phoneIp == null ? null : () async => phoneIp,
     );
     tester.view.physicalSize = const Size(1200, 2600);
     tester.view.devicePixelRatio = 1;
@@ -37,6 +49,7 @@ void main() {
             initialHost: initialHost,
             controller: controller,
             again: again,
+            offWifi: offWifi,
           ),
         ),
       ],
@@ -51,7 +64,13 @@ void main() {
       ),
     );
     router.push(Routes.haConnect);
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      // A spinner never settles: past the route's transition.
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+    }
     return controller;
   }
 
@@ -162,5 +181,197 @@ void main() {
     expect(adopted.single.$2, 'eyJ.new');
     await tester.pumpAndSettle();
     expect(find.text('setup'), findsOneWidget, reason: 'popped back');
+  });
+
+  testWidgets('3.1.4: a long check says so and can be cancelled', (
+    tester,
+  ) async {
+    final answer = Completer<HaConnectProblem?>();
+    final adopted = <(Uri, String)>[];
+    await pump(tester, adopted: adopted, slowProbe: answer.future);
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Home Assistant address'),
+      '192.168.1.20',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Long-lived access token'),
+      'eyJ.tok',
+    );
+    await tester.tap(find.text('Connect with token'));
+    await tester.pump();
+    expect(find.text('Checking Home Assistant…'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+    expect(find.textContaining('up to 30 seconds'), findsNothing);
+    await tester.pump(const Duration(seconds: 6));
+    expect(find.textContaining('up to 30 seconds'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pump();
+    expect(find.widgetWithText(TextField, '192.168.1.20'), findsOneWidget);
+    answer.complete(null);
+    await tester.pumpAndSettle();
+    expect(adopted, isEmpty);
+    expect(find.text('setup'), findsNothing, reason: 'still on this screen');
+  });
+
+  testWidgets('3.1.4: an empty address says where to find it', (tester) async {
+    await pump(
+      tester,
+      signIn: (accessToken: 'a', refreshToken: 'r', error: null),
+    );
+    expect(find.textContaining('Companion app'), findsNothing);
+    await tester.tap(find.text('Sign in with Home Assistant'));
+    await tester.pump();
+    expect(
+      find.text('Type the address you open Home Assistant with.'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Companion app'), findsOneWidget);
+  });
+
+  group('3.1.8: Home Assistant found on the network', () {
+    const signIn = (accessToken: 'a', refreshToken: 'r', error: null);
+    TextField field(WidgetTester tester) =>
+        tester.widget<TextField>(find.byType(TextField).first);
+
+    testWidgets('one: fills the address and says so', (tester) async {
+      final found = Completer<List<HaFound>>();
+      await pump(
+        tester,
+        signIn: signIn,
+        findHa: () => found.future,
+        settle: false,
+      );
+      expect(
+        find.text('Looking for Home Assistant on this network…'),
+        findsOneWidget,
+      );
+      found.complete([
+        const HaFound(address: 'http://192.168.68.64:8123', name: 'Home'),
+      ]);
+      await tester.pumpAndSettle();
+      expect(field(tester).controller!.text, 'http://192.168.68.64:8123');
+      expect(
+        find.text('Found Home Assistant at 192.168.68.64:8123'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a typed address is not replaced, and no look', (tester) async {
+      var looks = 0;
+      await pump(
+        tester,
+        signIn: signIn,
+        initialHost: '192.168.1.5',
+        findHa: () async {
+          looks++;
+          return [];
+        },
+      );
+      expect(looks, 0);
+      expect(field(tester).controller!.text, '192.168.1.5');
+    });
+
+    testWidgets('several: one chip each, a tap fills it', (tester) async {
+      await pump(
+        tester,
+        signIn: signIn,
+        findHa: () async => const [
+          HaFound(address: 'http://192.168.68.64:8123', name: 'Home'),
+          HaFound(address: 'http://192.168.68.70:8123'),
+        ],
+      );
+      expect(
+        find.text('Found more than one Home Assistant. Tap the one to use:'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('192.168.68.70:8123'));
+      await tester.pump();
+      expect(field(tester).controller!.text, 'http://192.168.68.70:8123');
+      expect(find.text('Home · 192.168.68.64:8123'), findsOneWidget);
+    });
+
+    testWidgets('3.1.12: none says so at once, and names the remote address', (
+      tester,
+    ) async {
+      await pump(tester, signIn: signIn, findHa: () async => []);
+      expect(
+        find.textContaining("can't see Home Assistant on this Wi-Fi"),
+        findsOneWidget,
+      );
+      expect(find.textContaining('ui.nabu.casa'), findsWidgets);
+      expect(find.textContaining('Companion app'), findsOneWidget);
+      await tester.tap(find.text('Sign in with Home Assistant'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Companion app'), findsOneWidget);
+    });
+  });
+
+  testWidgets('3.1.9: from the no-Wi-Fi screen, no look; remote is named', (
+    tester,
+  ) async {
+    var looks = 0;
+    await pump(
+      tester,
+      signIn: (accessToken: 'a', refreshToken: 'r', error: null),
+      offWifi: true,
+      findHa: () async {
+        looks++;
+        return [];
+      },
+    );
+    expect(looks, 0);
+    expect(
+      find.text('Looking for Home Assistant on this network…'),
+      findsNothing,
+    );
+    expect(find.textContaining('Nabu Casa or Cloudflare'), findsOneWidget);
+  });
+
+  group('3.1.12: nothing answered, told by the kind of address', () {
+    const signIn = (accessToken: 'acc', refreshToken: 'ref', error: null);
+
+    Future<void> tryAddress(WidgetTester tester, String address) async {
+      await tester.enterText(find.byType(TextField).first, address);
+      await tester.tap(find.text('Sign in with Home Assistant'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets("another network: names the phone's", (tester) async {
+      await pump(
+        tester,
+        signIn: signIn,
+        phoneIp: '192.168.68.40',
+        reach: (_) async => HaConnectProblem.unreachable,
+      );
+      await tryAddress(tester, '192.168.1.20');
+      expect(
+        find.textContaining('different network from this phone'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('192.168.68.x'), findsOneWidget);
+    });
+
+    testWidgets('a .local name: type the IP', (tester) async {
+      await pump(
+        tester,
+        signIn: signIn,
+        reach: (_) async => HaConnectProblem.unreachable,
+      );
+      await tryAddress(tester, 'homeassistant.local');
+      expect(find.textContaining('.local names'), findsOneWidget);
+    });
+
+    testWidgets("a remote address: try it in the phone's browser", (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        signIn: signIn,
+        reach: (_) async => HaConnectProblem.unreachable,
+      );
+      await tryAddress(tester, 'https://home.duckdns.org');
+      expect(find.textContaining('remote address'), findsWidgets);
+      expect(find.textContaining("this phone's browser"), findsOneWidget);
+    });
   });
 }

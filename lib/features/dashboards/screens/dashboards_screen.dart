@@ -35,6 +35,7 @@ import '../../kiosk/wall_display_sheet.dart';
 import '../widgets/export_dialog.dart';
 import '../../../alerts/alerts_paused_banner.dart';
 import '../../../engine/automations_paused_chip.dart';
+import '../widgets/remote_offer_card.dart';
 import '../widgets/connection_status_banner.dart';
 
 /// Per-connection dashboards screen. Shows a TabBar of all dashboards
@@ -296,6 +297,7 @@ class _DashboardsTabbed extends ConsumerWidget {
                     DemoBanner(connectionId: connectionId),
                     if (!kiosk) ...[
                       HaImportOfferCard(connectionId: connectionId),
+                      RemoteOfferCard(connectionId: connectionId),
                     ],
                     AlertsPausedBanner(connectionId: connectionId),
                     AutomationsPausedBanner(connectionId: connectionId),

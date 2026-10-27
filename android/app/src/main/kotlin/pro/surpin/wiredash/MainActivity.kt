@@ -47,6 +47,25 @@ class MainActivity : FlutterActivity() {
                     android.provider.Settings.System.getString(
                         contentResolver, "firebase.test.lab") == "true"
                 } catch (_: Exception) { false })
+                // "Ask your AI" in setup (3.1.5): Android's share sheet, so
+                // the write-up reaches whichever AI app the user picks.
+                "shareText" -> {
+                    val send = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, call.argument<String>("text") ?: "")
+                    }
+                    try {
+                        startActivity(Intent.createChooser(send, call.argument<String>("title")))
+                        result.success(true)
+                    } catch (_: Exception) {
+                        result.success(false)
+                    }
+                }
+                // Setup (3.1.8): Home Assistant on the network, by DNS-SD.
+                "findServices" -> ServiceFinder(this).find(
+                    call.argument<String>("type") ?: "",
+                    (call.argument<Int>("timeoutMs") ?: 3000).toLong(),
+                ) { result.success(it) }
                 // Setup's no-network screen (2.9.4): the Wi-Fi panel over the
                 // app on Android 10+, the Wi-Fi settings page before.
                 "openWifiSettings" -> {
