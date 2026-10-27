@@ -488,7 +488,13 @@ class SetupCoordinator {
 
   // --- Intents ---
 
-  Future<void> startScan() async {
+  /// Whether the running scan covers the whole /22 (3.2: only after
+  /// "Look on the whole network"; the phone's own /24 first).
+  bool get widen => _widen;
+  var _widen = false;
+
+  Future<void> startScan({bool widen = false}) async {
+    _widen = widen;
     _triedOtherBase = false;
     final op = ++_op;
     _cancelScan();
@@ -928,7 +934,7 @@ class SetupCoordinator {
   Future<void> retry() async {
     final s = _state;
     if (s is SetupScanEmpty) {
-      await startScan();
+      await startScan(widen: _widen);
     } else if (s is SetupFailed) {
       if (s.failedAtCreation) {
         await createDashboard();

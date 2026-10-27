@@ -1468,6 +1468,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupFindMySetup => 'Find my setup';
 
   @override
+  String get setupLookWider => 'Look on the whole network';
+
+  @override
   String get setupAsk => 'What runs your Zigbee?';
 
   @override

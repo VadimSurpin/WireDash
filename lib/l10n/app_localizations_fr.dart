@@ -1484,6 +1484,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get setupFindMySetup => 'Trouver mon installation';
 
   @override
+  String get setupLookWider => 'Chercher sur tout le réseau';
+
+  @override
   String get setupAsk => 'Qu\'est-ce qui fait tourner votre Zigbee ?';
 
   @override

@@ -1470,6 +1470,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupFindMySetup => 'Hitta min installation';
 
   @override
+  String get setupLookWider => 'Sök i hela nätverket';
+
+  @override
   String get setupAsk => 'Vad driver ditt Zigbee?';
 
   @override

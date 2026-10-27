@@ -1469,6 +1469,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get setupFindMySetup => 'Finn oppsettet mitt';
 
   @override
+  String get setupLookWider => 'Søk i hele nettverket';
+
+  @override
   String get setupAsk => 'Hva driver Zigbee-en din?';
 
   @override

@@ -509,6 +509,7 @@
   "setupWelcomeHeadline": "Je Zigbee-huis, op je telefoon",
   "setupWelcomeBody": "Een kleine hub met Zigbee2MQTT is alles wat je nodig hebt: een SMLIGHT-hub, een Raspberry Pi of elke Linux-machine. Geen Home Assistant nodig, en als je het hebt, werkt ZigDash er ook mee. Alles blijft lokaal, zonder cloud.",
   "setupFindMySetup": "Vind mijn installatie",
+  "setupLookWider": "Zoek op het hele netwerk",
   "setupAsk": "Wat stuurt je Zigbee aan?",
   "setupAskZ2m": "Zigbee2MQTT",
   "setupAskZ2mSub": "Op een Raspberry Pi, een server of Docker",

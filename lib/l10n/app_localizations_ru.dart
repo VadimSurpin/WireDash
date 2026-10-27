@@ -1479,6 +1479,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupFindMySetup => 'Найти мою систему';
 
   @override
+  String get setupLookWider => 'Искать во всей сети';
+
+  @override
   String get setupAsk => 'Что управляет вашим Zigbee?';
 
   @override

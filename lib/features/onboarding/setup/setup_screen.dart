@@ -194,6 +194,7 @@ class SetupScreen extends ConsumerWidget {
             SetupScanEmpty() => _ScanEmpty(
               state: state,
               onZ2mPage: () => _askZ2mPage(context, coordinator),
+              onWiden: () => coordinator.startScan(widen: true),
               onRetry: coordinator.retry,
               onPlatform: choosePlatform,
               onCheckAddress: coordinator.checkAddress,
@@ -712,6 +713,7 @@ class _ScanEmpty extends StatelessWidget {
   const _ScanEmpty({
     required this.state,
     required this.onZ2mPage,
+    required this.onWiden,
     required this.onRetry,
     required this.onPlatform,
     required this.onManual,
@@ -726,6 +728,9 @@ class _ScanEmpty extends StatelessWidget {
 
   /// 3.2: the Zigbee2MQTT page's address, as the browser shows it.
   final VoidCallback onZ2mPage;
+
+  /// 3.2: the rest of the /22, when only the phone's /24 was scanned.
+  final VoidCallback onWiden;
   final VoidCallback onRetry;
   final ValueChanged<SetupPlatform?> onPlatform;
   final ValueChanged<String> onCheckAddress;
@@ -901,6 +906,15 @@ class _ScanEmpty extends StatelessWidget {
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
             label: Text(l10n.setupTryAgain),
+          ),
+        ],
+        if (!(state.tried?.widened ?? true)) ...[
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            key: const Key('setup-look-wider'),
+            onPressed: onWiden,
+            icon: const Icon(Icons.zoom_out_map),
+            label: Text(l10n.setupLookWider),
           ),
         ],
         const SizedBox(height: 16),

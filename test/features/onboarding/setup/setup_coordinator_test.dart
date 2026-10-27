@@ -1258,5 +1258,16 @@ void main() {
       expect(asked, 1);
     });
   });
+
+  test("3.2: the phone's own /24 first; wider on request, and a retry keeps it", () async {
+    final h = _Harness(scan: (_) => const Stream.empty());
+    await h.coordinator.startScan();
+    expect(h.coordinator.widen, isFalse);
+    await h.coordinator.startScan(widen: true);
+    expect(h.coordinator.widen, isTrue);
+    await Future<void>.delayed(Duration.zero);
+    await h.coordinator.retry();
+    expect(h.coordinator.widen, isTrue);
+  });
 }
 

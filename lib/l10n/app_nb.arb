@@ -509,6 +509,7 @@
   "setupWelcomeHeadline": "Zigbee-hjemmet ditt, på mobilen",
   "setupWelcomeBody": "Alt du trenger er en liten hub som kjører Zigbee2MQTT: en SMLIGHT-hub, en Raspberry Pi eller en hvilken som helst Linux-maskin. Du trenger ikke Home Assistant, og har du det, fungerer ZigDash med det også. Alt blir lokalt, uten sky.",
   "setupFindMySetup": "Finn oppsettet mitt",
+  "setupLookWider": "Søk i hele nettverket",
   "setupAsk": "Hva driver Zigbee-en din?",
   "setupAskZ2m": "Zigbee2MQTT",
   "setupAskZ2mSub": "På en Raspberry Pi, en server eller i Docker",

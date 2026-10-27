@@ -578,6 +578,7 @@
   "setupWelcomeHeadline": "בית ה-Zigbee שלך, בטלפון",
   "setupWelcomeBody": "כל מה שצריך הוא רכזת קטנה שמריצה Zigbee2MQTT: רכזת SMLIGHT, ‏Raspberry Pi או כל מחשב Linux. לא צריך Home Assistant, ואם יש לך, ZigDash עובד גם איתו. הכול נשאר מקומי, בלי ענן.",
   "setupFindMySetup": "מצאו את ההתקנה שלי",
+  "setupLookWider": "חיפוש בכל הרשת",
   "setupAsk": "מה מריץ את ה-Zigbee שלכם?",
   "setupAskZ2m": "Zigbee2MQTT",
   "setupAskZ2mSub": "על Raspberry Pi, שרת או Docker",

@@ -434,6 +434,7 @@
   "setupWelcomeHeadline": "Tvůj Zigbee domov v telefonu",
   "setupWelcomeBody": "Stačí malý hub se Zigbee2MQTT: hub SMLIGHT, Raspberry Pi nebo jakýkoli linuxový počítač. Home Assistant nepotřebuješ, a pokud ho máš, ZigDash s ním funguje taky. Všechno zůstává lokálně, bez cloudu.",
   "setupFindMySetup": "Najít moje zařízení",
+  "setupLookWider": "Hledat v celé síti",
   "setupAsk": "Co pohání vaše Zigbee?",
   "setupAskZ2m": "Zigbee2MQTT",
   "setupAskZ2mSub": "Na Raspberry Pi, serveru nebo v Dockeru",

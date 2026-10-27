@@ -42,6 +42,7 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
     scan: (ip, hubs) => scanner.run(
       ip,
       hubs: hubs,
+      widen: coordinator.widen,
       onDone: (st) => support.recordScan(
         ScanSummary(
           widened: st.widened,

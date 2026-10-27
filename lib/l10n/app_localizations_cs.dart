@@ -1474,6 +1474,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupFindMySetup => 'Najít moje zařízení';
 
   @override
+  String get setupLookWider => 'Hledat v celé síti';
+
+  @override
   String get setupAsk => 'Co pohání vaše Zigbee?';
 
   @override

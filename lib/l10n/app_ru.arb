@@ -504,6 +504,7 @@
   "setupWelcomeHeadline": "Ваш дом на Zigbee — в телефоне",
   "setupWelcomeBody": "Нужен только маленький хаб с Zigbee2MQTT: хаб SMLIGHT, Raspberry Pi или любой компьютер с Linux. Home Assistant не нужен, а если он у вас есть, ZigDash работает и с ним. Всё остаётся локально, без облака.",
   "setupFindMySetup": "Найти мою систему",
+  "setupLookWider": "Искать во всей сети",
   "setupAsk": "Что управляет вашим Zigbee?",
   "setupAskZ2m": "Zigbee2MQTT",
   "setupAskZ2mSub": "На Raspberry Pi, сервере или в Docker",

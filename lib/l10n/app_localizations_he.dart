@@ -1457,6 +1457,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupFindMySetup => 'מצאו את ההתקנה שלי';
 
   @override
+  String get setupLookWider => 'חיפוש בכל הרשת';
+
+  @override
   String get setupAsk => 'מה מריץ את ה-Zigbee שלכם?';
 
   @override

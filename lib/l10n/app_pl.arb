@@ -504,6 +504,7 @@
   "setupWelcomeHeadline": "Twój dom Zigbee w telefonie",
   "setupWelcomeBody": "Wystarczy mały hub z Zigbee2MQTT: hub SMLIGHT, Raspberry Pi albo dowolny komputer z Linuksem. Home Assistant nie jest potrzebny, a jeśli go masz, ZigDash też z nim działa. Wszystko zostaje lokalnie, bez chmury.",
   "setupFindMySetup": "Znajdź moją instalację",
+  "setupLookWider": "Szukaj w całej sieci",
   "setupAsk": "Co obsługuje Twoje Zigbee?",
   "setupAskZ2m": "Zigbee2MQTT",
   "setupAskZ2mSub": "Na Raspberry Pi, serwerze lub w Dockerze",

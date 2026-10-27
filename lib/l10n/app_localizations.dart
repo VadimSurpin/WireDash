@@ -2724,6 +2724,12 @@ abstract class AppLocalizations {
   /// **'Find my setup'**
   String get setupFindMySetup;
 
+  /// No description provided for @setupLookWider.
+  ///
+  /// In en, this message translates to:
+  /// **'Look on the whole network'**
+  String get setupLookWider;
+
   /// No description provided for @setupAsk.
   ///
   /// In en, this message translates to:

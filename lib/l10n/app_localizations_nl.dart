@@ -1478,6 +1478,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupFindMySetup => 'Vind mijn installatie';
 
   @override
+  String get setupLookWider => 'Zoek op het hele netwerk';
+
+  @override
   String get setupAsk => 'Wat stuurt je Zigbee aan?';
 
   @override
