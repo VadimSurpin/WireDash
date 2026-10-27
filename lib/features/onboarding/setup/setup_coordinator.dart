@@ -802,6 +802,14 @@ class SetupCoordinator {
     await _verify(candidate);
   }
 
+  /// Setup through Zigbee2MQTT's own web page (3.2 spike): no broker, no
+  /// MQTT login; [token] only when the page has one.
+  Future<void> adoptZ2mPage({required String host, int port = 8080, String? token}) async {
+    _username = null;
+    _password = token;
+    await _verify(SetupCandidate(host: host, port: port, protocol: MqttProtocol.ws, transport: ConnectionTransport.z2mPage));
+  }
+
   Future<void> submitCredentials(String username, String password) async {
     final s = _state;
     if (s is! SetupNeedsAuth) return;
@@ -983,7 +991,7 @@ class SetupCoordinator {
     // Through Home Assistant the sign-in was checked before the candidate
     // existed (ha_connect.dart); the broker ladder is MQTT-shaped.
     final DiagnosticsReport? report;
-    if (candidate.viaHomeAssistant) {
+    if (candidate.viaHomeAssistant || candidate.viaZ2mPage) {
       report = null;
     } else {
       try {
@@ -1052,7 +1060,7 @@ class SetupCoordinator {
     if (fetch.devicesMissing) {
       // The broker lost the list: Zigbee2MQTT's web page still has it.
       final page = _pageDevices;
-      final fromPage = page == null || candidate.viaHomeAssistant
+      final fromPage = page == null || candidate.viaHomeAssistant || candidate.viaZ2mPage
           ? null
           : await page(candidate.host).catchError((_) => null);
       if (op != _op) return;

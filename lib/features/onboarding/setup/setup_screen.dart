@@ -174,6 +174,7 @@ class SetupScreen extends ConsumerWidget {
           child: switch (state) {
             SetupIdle() => _Welcome(
               onFind: coordinator.startScan,
+              onZ2mPage: () => _askZ2mPage(context, coordinator),
               onManual: manual,
               onDemo: () => tryDemo(kind: SetupStepKind.welcomeDemo),
               onHubs: welcomeHubs,
@@ -301,12 +302,16 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
 class _Welcome extends ConsumerStatefulWidget {
   const _Welcome({
     required this.onFind,
+    this.onZ2mPage,
     required this.onManual,
     required this.onDemo,
     required this.onHubs,
   });
   final VoidCallback onFind;
   final VoidCallback onManual;
+
+  /// 3.2 spike: connect through Zigbee2MQTT's web page, no broker.
+  final VoidCallback? onZ2mPage;
 
   /// "No Zigbee2MQTT yet?": nothing to scan for, so the demo home or which
   /// hub to get (2.9.7).
@@ -379,6 +384,14 @@ class _WelcomeState extends ConsumerState<_Welcome> {
           label: Text(l10n.setupFindMySetup),
         ),
         const SizedBox(height: 8),
+        if (widget.onZ2mPage != null) ...[
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: widget.onZ2mPage,
+            icon: const Icon(Icons.language),
+            label: const Text('Connect to my Zigbee2MQTT page'),
+          ),
+        ],
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
         const SizedBox(height: 24),
         Text(
@@ -2037,3 +2050,47 @@ Future<void> _askBeforeLeavingReview(
       break;
   }
 }
+
+/// 3.2 spike: the address of Zigbee2MQTT's web page, as the browser shows it
+/// (`192.168.1.20:8080`, `http://zigbee.local:8080/#/devices`): host and port.
+(String, int)? z2mPageAddress(String input) {
+  var text = input.trim();
+  if (text.isEmpty) return null;
+  if (!text.contains('://')) text = 'http://$text';
+  final uri = Uri.tryParse(text);
+  if (uri == null || uri.host.isEmpty) return null;
+  return (uri.host, uri.hasPort ? uri.port : 8080);
+}
+
+Future<void> _askZ2mPage(BuildContext context, SetupCoordinator coordinator) async {
+  final controller = TextEditingController();
+  final address = await showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Your Zigbee2MQTT page'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('The address in your browser when the Zigbee2MQTT page is open, the one you pair devices on. '
+              'No MQTT username or password needed.'),
+          const SizedBox(height: 12),
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.url,
+            autocorrect: false,
+            decoration: const InputDecoration(labelText: 'Page address', hintText: '192.168.1.20:8080'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        FilledButton(onPressed: () => Navigator.pop(context, controller.text), child: const Text('Connect')),
+      ],
+    ),
+  );
+  final parsed = address == null ? null : z2mPageAddress(address);
+  if (parsed == null) return;
+  await coordinator.adoptZ2mPage(host: parsed.$1, port: parsed.$2);
+}
+
