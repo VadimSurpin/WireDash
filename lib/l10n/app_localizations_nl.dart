@@ -1478,6 +1478,103 @@ class AppLocalizationsNl extends AppLocalizations {
   String get setupFindMySetup => 'Vind mijn installatie';
 
   @override
+  String get setupErrPageTitle => 'De Zigbee2MQTT-pagina antwoordde niet';
+
+  @override
+  String get setupErrPageBody =>
+      'Op dat adres antwoordde geen Zigbee2MQTT-pagina. Open het in de browser van deze telefoon om het te controleren en kopieer het adres precies (met poort, vaak 8080). Vraagt de pagina om een token, voer dan je brokergegevens in.';
+
+  @override
+  String get setupErrPageAction => 'Opnieuw proberen';
+
+  @override
+  String get setupLookWider => 'Zoek op het hele netwerk';
+
+  @override
+  String get setupAsk => 'Wat stuurt je Zigbee aan?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'Op een Raspberry Pi, een server of Docker';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'Met de Zigbee2MQTT-add-on, of ZHA';
+
+  @override
+  String get setupAskSmlight => 'Een SMLIGHT-hub';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB of SMHUB met Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Nog niets?';
+
+  @override
+  String get setupAskHaWhich => 'Hoe draait je Home Assistant Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'De Zigbee2MQTT-add-on';
+
+  @override
+  String get setupAskHaZ2mSub => 'Inloggen met Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, de eigen Zigbee van Home Assistant';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, zonder Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Verbinden met mijn Zigbee2MQTT-pagina';
+
+  @override
+  String get setupManualEntryAdvanced =>
+      'Brokergegevens invoeren (geavanceerd)';
+
+  @override
+  String get z2mPageTitle => 'Je Zigbee2MQTT-pagina';
+
+  @override
+  String get z2mPageBody =>
+      'Het adres in je browser als de Zigbee2MQTT-pagina open is, de pagina waarop je apparaten koppelt. Geen MQTT-gebruikersnaam of -wachtwoord nodig.';
+
+  @override
+  String get z2mPageLabel => 'Adres van de pagina';
+
+  @override
+  String get z2mPageConnect => 'Verbinden';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return '$host gevonden op $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Niets antwoordde voor $host op dit netwerk';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle =>
+      'Automatiseringen hebben je MQTT-broker nodig';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Dit huis verbindt via de Zigbee2MQTT-pagina, genoeg voor je dashboards. Automatiseringen, meldingen en geschiedenis draaien in de ZigDash Engine op je hub, die via je MQTT-broker praat. Voer de gegevens één keer in, daarna verbindt ZigDash via de broker.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Brokergegevens invoeren';
+
+  @override
+  String get connFromPageNote =>
+      'Dit huis verbindt via de Zigbee2MQTT-pagina. Voer je MQTT-broker in (meestal hetzelfde apparaat, poort 1883) om automatiseringen, meldingen en geschiedenis aan te zetten. Na opslaan verbindt ZigDash via de broker.';
+
+  @override
   String get setupManualEntry => 'Gegevens handmatig invoeren';
 
   @override
@@ -1605,7 +1702,20 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get haFindNone =>
-      'Home Assistant gaf geen antwoord op dit netwerk. Typ het adres: dat van thuis, of een extern adres.';
+      'Deze telefoon ziet Home Assistant niet op deze wifi. Gebruik het adres dat je Home Assistant-app opent: vaak een extern adres, zoals https://abcd1234.ui.nabu.casa of https://mijnhuis.duckdns.org.';
+
+  @override
+  String haConnectOtherNetwork(String network) {
+    return 'Dat adres zit op een ander netwerk dan deze telefoon, die op $network zit. Gebruik het adres dat je Home Assistant-app opent, vaak een extern adres, of verbind de telefoon met het netwerk van Home Assistant.';
+  }
+
+  @override
+  String get haConnectLocalNameUnreachable =>
+      'Deze telefoon vond die naam niet: Android kan .local-namen vaak niet openen. Typ het IP-adres van Home Assistant (zoals 192.168.1.20:8123) of het externe adres.';
+
+  @override
+  String get haConnectRemoteUnreachable =>
+      'Er antwoordde niets op dat externe adres. Open het in de browser van deze telefoon om te controleren of het werkt, en kopieer het precies zoals je Home Assistant-app het toont.';
 
   @override
   String get setupNoWifiHa => 'Gebruik je Home Assistant? Inloggen';
@@ -1804,6 +1914,27 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get setupErrNoDevicesAction => 'Opnieuw controleren';
+
+  @override
+  String get setupErrListMissingTitle =>
+      'Zigbee2MQTT stuurde zijn apparatenlijst niet';
+
+  @override
+  String get setupErrListMissingBody =>
+      'Zigbee2MQTT antwoordt, maar zijn apparatenlijst kwam niet. Dat gebeurt meestal nadat de MQTT-broker opnieuw is gestart: Zigbee2MQTT vóór 2.14.2 stuurt de lijst pas opnieuw als het zelf herstart. Herstart Zigbee2MQTT (of werk het bij) en probeer het opnieuw.';
+
+  @override
+  String get setupErrListMissingAction => 'Opnieuw proberen';
+
+  @override
+  String get setupErrHaNoZ2mTitle => 'Geen Zigbee2MQTT in deze Home Assistant';
+
+  @override
+  String get setupErrHaNoZ2mBody =>
+      'Je bent ingelogd bij Home Assistant, maar Zigbee2MQTT stuurt niets via zijn MQTT. Staan je Zigbee-apparaten in ZHA (de ingebouwde Zigbee van Home Assistant), dan kan ZigDash ze niet zien: het werkt met Zigbee2MQTT. Gebruik je de Zigbee2MQTT-add-on, open hem dan in Home Assistant, controleer of hij draait en probeer het opnieuw.';
+
+  @override
+  String get setupErrHaNoZ2mAction => 'Opnieuw proberen';
 
   @override
   String get setupErrScanFailedTitle => 'Geen lokaal netwerk';
@@ -4339,7 +4470,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get proGetRemote =>
-      'Bediening op afstand van overal, via de ZigDash-relay';
+      'Bediening op afstand van overal, via de ZigDash-relay, zonder maandelijkse kosten';
 
   @override
   String get proRemoteFair =>
@@ -4424,6 +4555,17 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get remoteIntroTitle => 'Bedien je huis overal';
+
+  @override
+  String get remoteOfferBody =>
+      'Bereik je apparaten als je weg bent, via de versleutelde relay van ZigDash. Onderdeel van Pro: één betaling, geen maandelijkse kosten. Stel het in terwijl je thuis bent.';
+
+  @override
+  String get remoteOfferBodyPro =>
+      'Je hebt Pro: zet bediening op afstand aan terwijl je thuis bent, en bereik je apparaten daarna overal.';
+
+  @override
+  String get remoteOfferShow => 'Laat zien';
 
   @override
   String get remoteIntroBody =>
