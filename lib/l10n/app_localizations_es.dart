@@ -1478,6 +1478,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get setupFindMySetup => 'Encontrar mi instalación';
 
   @override
+  String get setupErrPageTitle => 'La página de Zigbee2MQTT no respondió';
+
+  @override
+  String get setupErrPageBody =>
+      'Ninguna página de Zigbee2MQTT respondió en esa dirección. Ábrela en el navegador de este teléfono para comprobarla y copia la dirección exacta (con su puerto, a menudo 8080). Si la página pide un token, introduce los datos de tu broker.';
+
+  @override
+  String get setupErrPageAction => 'Reintentar';
+
+  @override
   String get setupLookWider => 'Buscar en toda la red';
 
   @override

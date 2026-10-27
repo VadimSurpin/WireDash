@@ -285,6 +285,9 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
   'setupErrListMissingTitle' => l10n.setupErrListMissingTitle,
   'setupErrListMissingBody' => l10n.setupErrListMissingBody,
   'setupErrListMissingAction' => l10n.setupErrListMissingAction,
+  'setupErrPageTitle' => l10n.setupErrPageTitle,
+  'setupErrPageBody' => l10n.setupErrPageBody,
+  'setupErrPageAction' => l10n.setupErrPageAction,
   'setupErrHaNoZ2mTitle' => l10n.setupErrHaNoZ2mTitle,
   'setupErrHaNoZ2mBody' => l10n.setupErrHaNoZ2mBody,
   'setupErrHaNoZ2mAction' => l10n.setupErrHaNoZ2mAction,
@@ -625,7 +628,7 @@ class _Scanning extends StatelessWidget {
               onTap: () => onSelect(c),
             ),
           ),
-        TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+        TextButton(onPressed: onManual, child: Text(l10n.setupManualEntryAdvanced)),
       ],
     );
   }
@@ -822,6 +825,19 @@ class _ScanEmpty extends StatelessWidget {
           const SizedBox(height: 12),
           _VpnHint(text: l10n.setupIsolatedHint),
         ],
+        // 3.2: the page people pair devices on comes before any broker
+        // wording; the three chips (18 "no hub" taps in 128 empty results)
+        // and the platform question are gone: the welcome asks it first.
+        if (hub == null && platform != SetupPlatform.homeAssistant) ...[
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            key: const Key('setup-z2m-page'),
+            onPressed: onZ2mPage,
+            icon: const Icon(Icons.language),
+            label: Text(l10n.setupZ2mPageEntry),
+          ),
+          const SizedBox(height: 12),
+        ],
         const SizedBox(height: 8),
         // Once Zigbee2MQTT has said where its broker is (2.7.2), its answer
         // replaces the general guess.
@@ -859,18 +875,6 @@ class _ScanEmpty extends StatelessWidget {
             )
           else
             const SizedBox.shrink(),
-          // 3.2: the page people pair devices on is the way in; the three
-          // chips (18 "no hub" taps in 128 empty results) and the platform
-          // question are gone: the welcome asks it first.
-          if (platform != SetupPlatform.homeAssistant) ...[
-            const SizedBox(height: 20),
-            FilledButton.icon(
-              key: const Key('setup-z2m-page'),
-              onPressed: onZ2mPage,
-              icon: const Icon(Icons.language),
-              label: Text(l10n.setupZ2mPageEntry),
-            ),
-          ],
           const SizedBox(height: 20),
           _AddressField(
             platform: platform,

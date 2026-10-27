@@ -1468,6 +1468,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupFindMySetup => 'Find my setup';
 
   @override
+  String get setupErrPageTitle => 'Zigbee2MQTT\'s page didn\'t answer';
+
+  @override
+  String get setupErrPageBody =>
+      'Nothing answered as a Zigbee2MQTT page at that address. Open it in this phone\'s browser to check it, and copy the address exactly (with its port, often 8080). If the page asks for a token, enter your broker details instead.';
+
+  @override
+  String get setupErrPageAction => 'Try again';
+
+  @override
   String get setupLookWider => 'Look on the whole network';
 
   @override

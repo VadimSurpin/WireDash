@@ -1269,5 +1269,11 @@ void main() {
     await h.coordinator.retry();
     expect(h.coordinator.widen, isTrue);
   });
+
+  test('3.2: a page that does not answer gets its own failure, not the broker one', () async {
+    final h = _Harness(fetch: const Z2mFetchResult(detected: false, devices: []));
+    await h.coordinator.adoptZ2mPage(host: '192.168.1.30');
+    expect((h.coordinator.state as SetupFailed).kind, SetupErrorKind.pageNoAnswer);
+  });
 }
 

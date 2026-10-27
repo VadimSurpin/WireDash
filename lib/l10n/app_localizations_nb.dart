@@ -1469,6 +1469,16 @@ class AppLocalizationsNb extends AppLocalizations {
   String get setupFindMySetup => 'Finn oppsettet mitt';
 
   @override
+  String get setupErrPageTitle => 'Zigbee2MQTT-siden svarte ikke';
+
+  @override
+  String get setupErrPageBody =>
+      'Ingen Zigbee2MQTT-side svarte på den adressen. Åpne den i nettleseren på telefonen for å sjekke, og kopier adressen nøyaktig (med port, ofte 8080). Hvis siden ber om et token, skriv inn megler-detaljene i stedet.';
+
+  @override
+  String get setupErrPageAction => 'Prøv igjen';
+
+  @override
   String get setupLookWider => 'Søk i hele nettverket';
 
   @override

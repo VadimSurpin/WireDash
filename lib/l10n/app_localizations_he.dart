@@ -1457,6 +1457,16 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupFindMySetup => 'מצאו את ההתקנה שלי';
 
   @override
+  String get setupErrPageTitle => 'דף ה-Zigbee2MQTT לא ענה';
+
+  @override
+  String get setupErrPageBody =>
+      'אף דף Zigbee2MQTT לא ענה בכתובת הזו. פתחו אותה בדפדפן של הטלפון כדי לבדוק, והעתיקו את הכתובת בדיוק (עם הפורט, לרוב 8080). אם הדף מבקש טוקן, הזינו במקום זאת את פרטי הברוקר.';
+
+  @override
+  String get setupErrPageAction => 'לנסות שוב';
+
+  @override
   String get setupLookWider => 'חיפוש בכל הרשת';
 
   @override

@@ -32,6 +32,10 @@ enum SetupErrorKind {
   /// messages. Restarting Zigbee2MQTT republishes the list.
   devicesListMissing,
 
+  /// Zigbee2MQTT's page did not answer at the address given, or wants a
+  /// token (3.2): no broker message, it is not a broker.
+  pageNoAnswer,
+
   /// Signed in to Home Assistant, but no Zigbee2MQTT on its MQTT (3.1.13):
   /// Zigbee through ZHA, or the Zigbee2MQTT add-on stopped.
   haNoZigbee2Mqtt,
@@ -129,6 +133,11 @@ SetupGuidance guidanceFor(SetupErrorKind kind) => switch (kind) {
     titleKey: 'setupErrListMissingTitle',
     explanationKey: 'setupErrListMissingBody',
     actionKey: 'setupErrListMissingAction',
+  ),
+  SetupErrorKind.pageNoAnswer => const SetupGuidance(
+    titleKey: 'setupErrPageTitle',
+    explanationKey: 'setupErrPageBody',
+    actionKey: 'setupErrPageAction',
   ),
   SetupErrorKind.haNoZigbee2Mqtt => const SetupGuidance(
     titleKey: 'setupErrHaNoZ2mTitle',

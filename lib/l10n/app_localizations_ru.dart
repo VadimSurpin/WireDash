@@ -1479,6 +1479,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get setupFindMySetup => 'Найти мою систему';
 
   @override
+  String get setupErrPageTitle => 'Страница Zigbee2MQTT не ответила';
+
+  @override
+  String get setupErrPageBody =>
+      'По этому адресу не ответила страница Zigbee2MQTT. Откройте его в браузере телефона, чтобы проверить, и скопируйте адрес точно (с портом, часто 8080). Если страница просит токен, введите вместо этого данные брокера.';
+
+  @override
+  String get setupErrPageAction => 'Попробовать ещё раз';
+
+  @override
   String get setupLookWider => 'Искать во всей сети';
 
   @override

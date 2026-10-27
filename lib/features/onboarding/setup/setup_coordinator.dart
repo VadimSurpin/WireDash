@@ -1113,6 +1113,8 @@ class SetupCoordinator {
         SetupFailed(
           candidate.viaHomeAssistant
               ? SetupErrorKind.haNoZigbee2Mqtt
+              : candidate.viaZ2mPage
+              ? SetupErrorKind.pageNoAnswer
               : SetupErrorKind.notZigbee2Mqtt,
           candidate: candidate,
         ),

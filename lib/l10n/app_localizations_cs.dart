@@ -1474,6 +1474,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupFindMySetup => 'Najít moje zařízení';
 
   @override
+  String get setupErrPageTitle => 'Stránka Zigbee2MQTT neodpověděla';
+
+  @override
+  String get setupErrPageBody =>
+      'Na této adrese neodpověděla žádná stránka Zigbee2MQTT. Otevřete ji v prohlížeči tohoto telefonu a zkontrolujte ji, a adresu zkopírujte přesně (i s portem, často 8080). Pokud stránka chce token, zadejte místo toho údaje brokeru.';
+
+  @override
+  String get setupErrPageAction => 'Zkusit znovu';
+
+  @override
   String get setupLookWider => 'Hledat v celé síti';
 
   @override

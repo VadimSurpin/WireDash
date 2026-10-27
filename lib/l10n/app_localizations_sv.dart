@@ -1470,6 +1470,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get setupFindMySetup => 'Hitta min installation';
 
   @override
+  String get setupErrPageTitle => 'Zigbee2MQTT-sidan svarade inte';
+
+  @override
+  String get setupErrPageBody =>
+      'Ingen Zigbee2MQTT-sida svarade på den adressen. Öppna den i telefonens webbläsare för att kontrollera och kopiera adressen exakt (med port, ofta 8080). Om sidan ber om en token, ange brokeruppgifterna i stället.';
+
+  @override
+  String get setupErrPageAction => 'Försök igen';
+
+  @override
   String get setupLookWider => 'Sök i hela nätverket';
 
   @override

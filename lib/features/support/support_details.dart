@@ -48,7 +48,8 @@ FailureKind failureKindFromSetup(SetupErrorKind kind) => switch (kind) {
   SetupErrorKind.notZigbee2Mqtt => FailureKind.noZigbee2mqtt,
   SetupErrorKind.noDevices ||
   SetupErrorKind.devicesListMissing => FailureKind.noDevices,
-  SetupErrorKind.haNoZigbee2Mqtt => FailureKind.noZigbee2mqtt,
+  SetupErrorKind.haNoZigbee2Mqtt ||
+  SetupErrorKind.pageNoAnswer => FailureKind.noZigbee2mqtt,
   SetupErrorKind.scanFailed => FailureKind.noLocalNetwork,
   SetupErrorKind.saveFailed => FailureKind.saveFailed,
   SetupErrorKind.unknown => FailureKind.unknown,

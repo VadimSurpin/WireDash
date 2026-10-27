@@ -2724,6 +2724,24 @@ abstract class AppLocalizations {
   /// **'Find my setup'**
   String get setupFindMySetup;
 
+  /// No description provided for @setupErrPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT\'s page didn\'t answer'**
+  String get setupErrPageTitle;
+
+  /// No description provided for @setupErrPageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered as a Zigbee2MQTT page at that address. Open it in this phone\'s browser to check it, and copy the address exactly (with its port, often 8080). If the page asks for a token, enter your broker details instead.'**
+  String get setupErrPageBody;
+
+  /// No description provided for @setupErrPageAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get setupErrPageAction;
+
   /// No description provided for @setupLookWider.
   ///
   /// In en, this message translates to:

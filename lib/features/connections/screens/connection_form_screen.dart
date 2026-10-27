@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../../engine/engine_providers.dart';
+import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -153,6 +155,12 @@ class _ConnectionFormScreenState extends ConsumerState<ConnectionFormScreen> {
               : _remoteHost.text.trim(),
           transport: _fromPage ? ConnectionTransport.mqtt : null,
         );
+        if (_fromPage) {
+          // The Home now goes through the broker: reconnect it, and let the
+          // Engine screens look again.
+          ref.invalidate(mqttManagerProvider(widget.connectionId!));
+          ref.invalidate(engineViewProvider(widget.connectionId!));
+        }
       } else {
         final id = await repo.create(
           name: _name.text.trim(),
