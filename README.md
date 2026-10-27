@@ -1,6 +1,7 @@
 # WireDash
 
-**An Android MQTT dashboard for Wiren Board, Zigbee2MQTT and custom MQTT devices, with embedded WireGuard.**
+**An Android MQTT dashboard for Wiren Board, Zigbee2MQTT and custom MQTT devices,
+with embedded WireGuard and Android Auto support.**
 
 WireDash is a fork of [ZigDash](https://github.com/giladtamam/zigdash), created by
 [Gilad Tamam](https://github.com/giladtamam). It keeps the original MIT license
@@ -28,6 +29,11 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 
 ## Changes in this fork
 
+- **[Android Auto support](docs/ANDROID_AUTO.md)** — control switches, command
+  buttons, gates and rollers from the car. Saved dashboard groups appear in a
+  scrolling grid on supported hosts, with configured button titles and icons.
+  Uses the phone's MQTT/WireGuard connection and works while the phone
+  dashboard is closed.
 - **[Embedded WireGuard](docs/EMBEDDED_WIREGUARD.md)** — import a peer configuration
   in the initial connection form or a home's settings. MQTT TCP, TLS, WebSocket
   and WSS can use the app's own tunnel, without a separate VPN app or system VPN
@@ -74,13 +80,6 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 
 ## Dashboard features
 
-This branch also includes an **[Android Auto IoT preview](docs/ANDROID_AUTO.md)**
-for dashboard switches, command buttons and gate/roller controls, using the
-configured MQTT/WireGuard connection. On current Android Auto hosts, saved
-groups and their buttons appear directly in a scrolling dashboard with no
-control-detail step or Next/Previous pages. Real-car installation requires a trusted
-Google Play test install; the documentation includes Desktop Head Unit testing.
-
 WireDash also retains the original project's Zigbee2MQTT auto-discovery,
 custom MQTT topics, JSON-path extraction, switches, sliders, covers, readings,
 gauges, text controls, scenes, schedules and auto-close rules. It supports
@@ -97,6 +96,27 @@ readings, motion wake-up and on-screen alarms. Android shortcuts include Quick
 Settings tiles, Device Controls and home-screen widgets. Optional Node-RED
 flows provide longer history and hub-side automation. The `foss` build exposes
 all app features without Play billing.
+
+## Android Auto
+
+Set up connections and dashboards on the phone, then open WireDash in Android
+Auto and select a dashboard. Switches, command buttons, covers, gates and rollers
+use their saved labels, icons and action settings. Writable controls on
+whole-device Wiren Board and Zigbee2MQTT panels are also supported.
+
+On Car App API 8 hosts, dashboard sections and buttons appear together in a
+scrolling grid. Button feedback preserves the scroll position. Older API 6/7
+hosts use list/detail screens with paging. Layout and button sizes follow the
+car host's native templates.
+
+The car can connect through MQTT or embedded WireGuard without the phone
+dashboard running. It restores connections and state subscriptions when
+returning from the background and shows reconnecting feedback. Configure
+command-only gate/roller buttons to send a command, spin for one second and
+return to their initial appearance.
+
+See the [Android Auto guide](docs/ANDROID_AUTO.md) for supported controls,
+installation, host requirements and Desktop Head Unit testing.
 
 ## Install
 
