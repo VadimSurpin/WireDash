@@ -9,9 +9,7 @@ import 'package:zigdash/core/analytics/analytics.dart';
 import 'package:zigdash/data/database/database.dart';
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/data/repositories/connection_repo.dart';
-import 'package:zigdash/features/dashboards/widgets/poll_card.dart';
 import 'package:zigdash/features/dashboards/widgets/remote_offer_card.dart';
-import 'package:zigdash/features/dashboards/widgets/why_card.dart';
 import 'package:zigdash/features/ha_import/ha_import_offer.dart';
 import 'package:zigdash/features/onboarding/demo_service.dart' show demoHost;
 import 'package:zigdash/features/pro/pro.dart';
@@ -54,7 +52,6 @@ Future<(SharedPreferences, _Sink, GoRouter)> _card(
   bool atHome = true,
   RemoteHome? remote,
   String host = '192.168.1.10',
-  bool withPoll = false,
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
   final p = await SharedPreferences.getInstance();
@@ -67,7 +64,6 @@ Future<(SharedPreferences, _Sink, GoRouter)> _card(
           body: Column(
             children: [
               const RemoteOfferCard(connectionId: 'c1'),
-              if (withPoll) const PollCard(connectionId: 'c1'),
             ],
           ),
         ),
@@ -188,22 +184,5 @@ void main() {
     expect(find.text(_title), findsNothing);
     await _card(tester, prefs: {..._ready, HaImportOffer.key: 'c1'});
     expect(find.text(_title), findsNothing);
-  });
-
-  // The first-setup note for "What made you try ZigDash?" stays when it was
-  // never answered (usage data off, or ignored until day three).
-  testWidgets('not held back by an unanswered why question', (tester) async {
-    await _card(tester, prefs: {..._ready, whyAskKey: 'c1'});
-    expect(find.text(_title), findsOneWidget);
-  });
-
-  testWidgets('the poll waits for it, and comes after', (tester) async {
-    await _card(tester, withPoll: true);
-    expect(find.text(_title), findsOneWidget);
-    expect(find.text('What should ZigDash do next?'), findsNothing);
-    await tester.tap(find.text('Not now'));
-    await tester.pumpAndSettle();
-    expect(find.text(_title), findsNothing);
-    expect(find.text('What should ZigDash do next?'), findsOneWidget);
   });
 }

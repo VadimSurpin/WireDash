@@ -176,6 +176,8 @@ class SetupScreen extends ConsumerWidget {
           child: switch (state) {
             SetupIdle() => _Welcome(
               onFind: coordinator.startScan,
+              onPlatform: choosePlatform,
+              onHa: () => viaHa(null, HaSignInFrom.welcome),
               onZ2mPage: () => _askZ2mPage(context, coordinator),
               onManual: manual,
               onDemo: () => tryDemo(kind: SetupStepKind.welcomeDemo),
@@ -191,6 +193,7 @@ class SetupScreen extends ConsumerWidget {
             ),
             SetupScanEmpty() => _ScanEmpty(
               state: state,
+              onZ2mPage: () => _askZ2mPage(context, coordinator),
               onRetry: coordinator.retry,
               onPlatform: choosePlatform,
               onCheckAddress: coordinator.checkAddress,
@@ -304,6 +307,8 @@ String _guidanceText(AppLocalizations l10n, String key) => switch (key) {
 class _Welcome extends ConsumerStatefulWidget {
   const _Welcome({
     required this.onFind,
+    required this.onPlatform,
+    required this.onHa,
     this.onZ2mPage,
     required this.onManual,
     required this.onDemo,
@@ -312,8 +317,14 @@ class _Welcome extends ConsumerStatefulWidget {
   final VoidCallback onFind;
   final VoidCallback onManual;
 
-  /// 3.2 spike: connect through Zigbee2MQTT's web page, no broker.
+  /// 3.2: connect through Zigbee2MQTT's web page, no broker.
   final VoidCallback? onZ2mPage;
+
+  /// 3.2: the answer to "What runs your Zigbee?", before any scan.
+  final ValueChanged<SetupPlatform?> onPlatform;
+
+  /// 3.2: Home Assistant with the Zigbee2MQTT add-on: its sign-in.
+  final VoidCallback onHa;
 
   /// "No Zigbee2MQTT yet?": nothing to scan for, so the demo home or which
   /// hub to get (2.9.7).
@@ -351,57 +362,114 @@ class _WelcomeState extends ConsumerState<_Welcome> {
     next();
   }
 
+  /// 3.2: Home Assistant runs Zigbee one of two ways; only one works here.
+  Future<void> _homeAssistant() async {
+    final l10n = context.l10n;
+    final pick = await showModalBottomSheet<SetupPlatform>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+              child: Text(l10n.setupAskHaWhich, style: Theme.of(context).textTheme.titleMedium),
+            ),
+            ListTile(
+              leading: const Icon(Icons.extension_outlined),
+              title: Text(l10n.setupAskHaZ2m),
+              subtitle: Text(l10n.setupAskHaZ2mSub),
+              onTap: () => Navigator.pop(context, SetupPlatform.homeAssistant),
+            ),
+            ListTile(
+              leading: const Icon(Icons.hub_outlined),
+              title: Text(l10n.setupAskHaZha),
+              subtitle: Text(l10n.setupAskHaZhaSub),
+              onTap: () => Navigator.pop(context, SetupPlatform.zha),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+    if (pick == null || !mounted) return;
+    widget.onPlatform(pick);
+    if (pick == SetupPlatform.homeAssistant) {
+      widget.onHa();
+      return;
+    }
+    // ZHA: said plainly, with the demo; no scan for what can't be shown.
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(l10n.setupZhaNote),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              widget.onDemo();
+            },
+            child: Text(l10n.setupWelcomeDemo),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    void onFind() => _then(widget.onFind);
+    final theme = Theme.of(context);
+    void find(SetupPlatform platform) => _then(() {
+      widget.onPlatform(platform);
+      widget.onFind();
+    });
     void onManual() => _then(widget.onManual);
     void onDemo() => _then(widget.onDemo);
     void onHubs() => _then(widget.onHubs);
+    Widget answer(IconData icon, String title, String subtitle, VoidCallback onTap, {Key? key}) => Card.outlined(
+      key: key,
+      margin: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: Icon(icon, color: theme.colorScheme.primary),
+        title: Text(title, style: theme.textTheme.titleMedium),
+        subtitle: Text(subtitle),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
+    );
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const SizedBox(height: 32),
-        Icon(
-          Icons.home_outlined,
-          size: 64,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 8),
         Text(
           l10n.setupWelcomeHeadline,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: theme.textTheme.headlineSmall,
         ),
+        const SizedBox(height: 20),
+        // 3.2: one question first. Two thirds of setups never answered it
+        // under a running scan, and half of them had something to connect.
+        Text(l10n.setupAsk, style: theme.textTheme.titleMedium),
         const SizedBox(height: 12),
-        Text(
-          l10n.setupWelcomeBody,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        const SizedBox(height: 32),
-        FilledButton.icon(
-          onPressed: onFind,
+        answer(Icons.memory, l10n.setupAskZ2m, l10n.setupAskZ2mSub, () => find(SetupPlatform.piOrDocker),
+            key: const Key('ask-z2m')),
+        answer(Icons.home_outlined, l10n.setupAskHa, l10n.setupAskHaSub, () => _then(_homeAssistant),
+            key: const Key('ask-ha')),
+        answer(Icons.router_outlined, l10n.setupAskSmlight, l10n.setupAskSmlightSub, () => find(SetupPlatform.smlight),
+            key: const Key('ask-smlight')),
+        // Not sure: the plain scan, as before 3.2 (23 "not sure" answers
+        // in 17 days).
+        TextButton.icon(
+          onPressed: () => _then(widget.onFind),
           icon: const Icon(Icons.wifi_find),
           label: Text(l10n.setupFindMySetup),
         ),
         const SizedBox(height: 8),
-        if (widget.onZ2mPage != null) ...[
-          const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: widget.onZ2mPage,
-            icon: const Icon(Icons.language),
-            label: const Text('Connect to my Zigbee2MQTT page'),
-          ),
-        ],
-        TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
-        const SizedBox(height: 24),
-        Text(
-          l10n.setupWelcomeNoZ2m,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: 4),
+        Text(l10n.setupAskNothing, textAlign: TextAlign.center, style: theme.textTheme.titleSmall),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
@@ -413,11 +481,19 @@ class _WelcomeState extends ConsumerState<_Welcome> {
             ),
             TextButton.icon(
               onPressed: onHubs,
-              icon: const Icon(Icons.router_outlined),
+              icon: const Icon(Icons.shopping_bag_outlined),
               label: Text(l10n.setupWelcomeHubs),
             ),
           ],
         ),
+        const Divider(height: 32),
+        if (widget.onZ2mPage != null)
+          TextButton.icon(
+            onPressed: () => _then(widget.onZ2mPage!),
+            icon: const Icon(Icons.language),
+            label: Text(l10n.setupZ2mPageEntry),
+          ),
+        TextButton(onPressed: onManual, child: Text(l10n.setupManualEntryAdvanced)),
         if (_asking) ...[
           const SizedBox(height: 24),
           CheckboxListTile(
@@ -635,6 +711,7 @@ class _PlatformChips extends StatelessWidget {
 class _ScanEmpty extends StatelessWidget {
   const _ScanEmpty({
     required this.state,
+    required this.onZ2mPage,
     required this.onRetry,
     required this.onPlatform,
     required this.onManual,
@@ -646,6 +723,9 @@ class _ScanEmpty extends StatelessWidget {
     required this.onConnectViaHa,
   });
   final SetupScanEmpty state;
+
+  /// 3.2: the Zigbee2MQTT page's address, as the browser shows it.
+  final VoidCallback onZ2mPage;
   final VoidCallback onRetry;
   final ValueChanged<SetupPlatform?> onPlatform;
   final ValueChanged<String> onCheckAddress;
@@ -764,28 +844,23 @@ class _ScanEmpty extends StatelessWidget {
             )
           else
             const SizedBox.shrink(),
-          const SizedBox(height: 20),
-          _EmptyChoices(
-            onChoice: onChoice,
-            onConnectViaHa: () =>
-                onConnectViaHa(null, HaSignInFrom.emptyChoice),
-            onHomeAssistant: () {
-              onPlatform(SetupPlatform.homeAssistant);
-              onCheckAddress('homeassistant.local');
-            },
-            onCheckAddress: onCheckAddress,
-          ),
+          // 3.2: the page people pair devices on is the way in; the three
+          // chips (18 "no hub" taps in 128 empty results) and the platform
+          // question are gone: the welcome asks it first.
+          if (platform != SetupPlatform.homeAssistant) ...[
+            const SizedBox(height: 20),
+            FilledButton.icon(
+              key: const Key('setup-z2m-page'),
+              onPressed: onZ2mPage,
+              icon: const Icon(Icons.language),
+              label: Text(l10n.setupZ2mPageEntry),
+            ),
+          ],
           const SizedBox(height: 20),
           _AddressField(
             platform: platform,
             check: state.address,
             onCheck: onCheckAddress,
-          ),
-          const SizedBox(height: 20),
-          _PlatformChips(
-            value: platform,
-            onChanged: onPlatform,
-            onDemo: onDemo,
           ),
         ],
         const SizedBox(height: 24),
@@ -828,18 +903,7 @@ class _ScanEmpty extends StatelessWidget {
             label: Text(l10n.setupTryAgain),
           ),
         ],
-        // 3.1.5: the user's own AI assistant, with what the scan found.
         const SizedBox(height: 16),
-        AiHelpCard(
-          facts: AiHelpFacts(
-            from: AiHelpFrom.scanEmpty,
-            platform: platform,
-            network: state.network,
-            phoneAddress: state.deviceIp,
-            tried: state.tried,
-            hubSeen: hub?.kind,
-          ),
-        ),
         GetHelpLink(
           onPressed: () =>
               context.push(Routes.getHelpFrom(HelpFrom.noConnection.name)),
@@ -852,11 +916,9 @@ class _ScanEmpty extends StatelessWidget {
             child: Text(l10n.setupConnectTo(hub!.host)),
           )
         else ...[
-          TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
+          TextButton(onPressed: onManual, child: Text(l10n.setupManualEntryAdvanced)),
           TextButton(onPressed: onDemo, child: Text(l10n.onboardingDemo)),
         ],
-        // 2.9.7: not at home, or no time now: a nudge tomorrow.
-        const RemindMeLater(),
       ],
     );
   }
@@ -1691,7 +1753,6 @@ class _Failure extends StatelessWidget {
         const CommunityLink(from: HelpFrom.setupError),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
-        const RemindMeLater(),
       ],
     );
   }
@@ -1787,7 +1848,6 @@ class _NoNetwork extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextButton(onPressed: onManual, child: Text(l10n.setupManualEntry)),
-        const RemindMeLater(),
         GetHelpLink(
           onPressed: () => context.push(
             Routes.getHelpFrom(
@@ -2069,25 +2129,24 @@ Future<void> _askZ2mPage(BuildContext context, SetupCoordinator coordinator) asy
   final address = await showDialog<String>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Your Zigbee2MQTT page'),
+      title: Text(context.l10n.z2mPageTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('The address in your browser when the Zigbee2MQTT page is open, the one you pair devices on. '
-              'No MQTT username or password needed.'),
+          Text(context.l10n.z2mPageBody),
           const SizedBox(height: 12),
           TextField(
             controller: controller,
             keyboardType: TextInputType.url,
             autocorrect: false,
-            decoration: const InputDecoration(labelText: 'Page address', hintText: '192.168.1.20:8080'),
+            decoration: InputDecoration(labelText: context.l10n.z2mPageLabel, hintText: '192.168.1.20:8080'),
           ),
         ],
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-        FilledButton(onPressed: () => Navigator.pop(context, controller.text), child: const Text('Connect')),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(context.l10n.cancel)),
+        FilledButton(onPressed: () => Navigator.pop(context, controller.text), child: Text(context.l10n.z2mPageConnect)),
       ],
     ),
   );
@@ -2099,7 +2158,7 @@ Future<void> _askZ2mPage(BuildContext context, SetupCoordinator coordinator) asy
     final ip = await mdnsLookup(host);
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(ip == null ? 'No answer for $host on this network' : 'Found $host at ${ip.address}'),
+        content: Text(ip == null ? context.l10n.z2mPageNoName(host) : context.l10n.z2mPageFoundName(host, ip.address)),
       ));
     }
     if (ip != null) host = ip.address;

@@ -1484,6 +1484,89 @@ class AppLocalizationsPl extends AppLocalizations {
   String get setupFindMySetup => 'Znajdź moją instalację';
 
   @override
+  String get setupAsk => 'Co obsługuje Twoje Zigbee?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'Na Raspberry Pi, serwerze lub w Dockerze';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'Z dodatkiem Zigbee2MQTT albo ZHA';
+
+  @override
+  String get setupAskSmlight => 'Hub SMLIGHT';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB lub SMHUB z Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Jeszcze nic?';
+
+  @override
+  String get setupAskHaWhich => 'Jak Twój Home Assistant obsługuje Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'Dodatek Zigbee2MQTT';
+
+  @override
+  String get setupAskHaZ2mSub => 'Zaloguj się przez Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, wbudowane Zigbee Home Assistanta';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, bez Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Połącz z moją stroną Zigbee2MQTT';
+
+  @override
+  String get setupManualEntryAdvanced => 'Dane brokera (zaawansowane)';
+
+  @override
+  String get z2mPageTitle => 'Twoja strona Zigbee2MQTT';
+
+  @override
+  String get z2mPageBody =>
+      'Adres w przeglądarce, gdy strona Zigbee2MQTT jest otwarta – ta, na której parujesz urządzenia. Nie trzeba nazwy użytkownika ani hasła MQTT.';
+
+  @override
+  String get z2mPageLabel => 'Adres strony';
+
+  @override
+  String get z2mPageConnect => 'Połącz';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return 'Znaleziono $host pod $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Nic nie odpowiedziało dla $host w tej sieci';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle =>
+      'Automatyzacje potrzebują Twojego brokera MQTT';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Ten dom łączy się przez stronę Zigbee2MQTT, co wystarcza dla pulpitów. Automatyzacje, alerty i historia działają w ZigDash Engine na Twoim hubie, który komunikuje się przez broker MQTT. Podaj jego dane raz, a od tej pory ZigDash będzie łączyć się przez broker.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Podaj dane brokera';
+
+  @override
+  String get connFromPageNote =>
+      'Ten dom łączy się przez stronę Zigbee2MQTT. Podaj swój broker MQTT (zwykle to samo urządzenie, port 1883), aby włączyć automatyzacje, alerty i historię. Po zapisaniu ZigDash łączy się przez broker.';
+
+  @override
   String get setupManualEntry => 'Wpisz dane ręcznie';
 
   @override

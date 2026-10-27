@@ -164,6 +164,9 @@ enum HaSignInFrom {
   login,
   manualForm,
   noWifi,
+
+  /// The welcome question's "Home Assistant" › "Zigbee2MQTT add-on" (3.2).
+  welcome,
 }
 
 /// How Test & connect on the broker form ended (2.7.2): connected, or the

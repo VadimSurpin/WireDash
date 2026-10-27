@@ -1457,6 +1457,88 @@ class AppLocalizationsHe extends AppLocalizations {
   String get setupFindMySetup => 'מצאו את ההתקנה שלי';
 
   @override
+  String get setupAsk => 'מה מריץ את ה-Zigbee שלכם?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'על Raspberry Pi, שרת או Docker';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'עם התוסף Zigbee2MQTT, או ZHA';
+
+  @override
+  String get setupAskSmlight => 'רכזת SMLIGHT';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB או SMHUB עם Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'עוד אין כלום?';
+
+  @override
+  String get setupAskHaWhich => 'איך ה-Home Assistant שלכם מריץ Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'התוסף Zigbee2MQTT';
+
+  @override
+  String get setupAskHaZ2mSub => 'התחברות עם Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, ה-Zigbee המובנה של Home Assistant';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, בלי Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'התחברות לדף ה-Zigbee2MQTT שלי';
+
+  @override
+  String get setupManualEntryAdvanced => 'פרטי ברוקר (מתקדם)';
+
+  @override
+  String get z2mPageTitle => 'דף ה-Zigbee2MQTT שלכם';
+
+  @override
+  String get z2mPageBody =>
+      'הכתובת בדפדפן כשדף ה-Zigbee2MQTT פתוח, זה שבו אתם מצמידים מכשירים. לא צריך שם משתמש או סיסמה של MQTT.';
+
+  @override
+  String get z2mPageLabel => 'כתובת הדף';
+
+  @override
+  String get z2mPageConnect => 'התחברות';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return '$host נמצא בכתובת $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'אף אחד לא ענה עבור $host ברשת הזו';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle => 'אוטומציות צריכות את ברוקר ה-MQTT שלכם';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'הבית הזה מתחבר דרך דף ה-Zigbee2MQTT, וזה מספיק ללוחות שלכם. אוטומציות, התראות והיסטוריה רצות ב-ZigDash Engine שעל הרכזת, שמדבר דרך ברוקר ה-MQTT. הוסיפו את פרטיו פעם אחת, ומאז ZigDash יתחבר דרך הברוקר.';
+
+  @override
+  String get engineNeedsBrokerButton => 'הוספת פרטי ברוקר';
+
+  @override
+  String get connFromPageNote =>
+      'הבית הזה מתחבר דרך דף ה-Zigbee2MQTT. הזינו את ברוקר ה-MQTT שלכם (בדרך כלל אותו מחשב, פורט 1883) כדי להפעיל אוטומציות, התראות והיסטוריה. אחרי השמירה ZigDash מתחבר דרך הברוקר.';
+
+  @override
   String get setupManualEntry => 'הזנת פרטים ידנית';
 
   @override

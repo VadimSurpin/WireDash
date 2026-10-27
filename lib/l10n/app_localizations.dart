@@ -2724,6 +2724,156 @@ abstract class AppLocalizations {
   /// **'Find my setup'**
   String get setupFindMySetup;
 
+  /// No description provided for @setupAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What runs your Zigbee?'**
+  String get setupAsk;
+
+  /// No description provided for @setupAskZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee2MQTT'**
+  String get setupAskZ2m;
+
+  /// No description provided for @setupAskZ2mSub.
+  ///
+  /// In en, this message translates to:
+  /// **'On a Raspberry Pi, a server or Docker'**
+  String get setupAskZ2mSub;
+
+  /// No description provided for @setupAskHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant'**
+  String get setupAskHa;
+
+  /// No description provided for @setupAskHaSub.
+  ///
+  /// In en, this message translates to:
+  /// **'With the Zigbee2MQTT add-on, or ZHA'**
+  String get setupAskHaSub;
+
+  /// No description provided for @setupAskSmlight.
+  ///
+  /// In en, this message translates to:
+  /// **'An SMLIGHT hub'**
+  String get setupAskSmlight;
+
+  /// No description provided for @setupAskSmlightSub.
+  ///
+  /// In en, this message translates to:
+  /// **'SLZB or SMHUB running Zigbee2MQTT'**
+  String get setupAskSmlightSub;
+
+  /// No description provided for @setupAskNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet?'**
+  String get setupAskNothing;
+
+  /// No description provided for @setupAskHaWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'How does your Home Assistant run Zigbee?'**
+  String get setupAskHaWhich;
+
+  /// No description provided for @setupAskHaZ2m.
+  ///
+  /// In en, this message translates to:
+  /// **'The Zigbee2MQTT add-on'**
+  String get setupAskHaZ2m;
+
+  /// No description provided for @setupAskHaZ2mSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Home Assistant'**
+  String get setupAskHaZ2mSub;
+
+  /// No description provided for @setupAskHaZha.
+  ///
+  /// In en, this message translates to:
+  /// **'ZHA, Home Assistant\'s own Zigbee'**
+  String get setupAskHaZha;
+
+  /// No description provided for @setupAskHaZhaSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Zigbee Home Automation, no Zigbee2MQTT'**
+  String get setupAskHaZhaSub;
+
+  /// No description provided for @setupZ2mPageEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to my Zigbee2MQTT page'**
+  String get setupZ2mPageEntry;
+
+  /// No description provided for @setupManualEntryAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter broker details (advanced)'**
+  String get setupManualEntryAdvanced;
+
+  /// No description provided for @z2mPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Zigbee2MQTT page'**
+  String get z2mPageTitle;
+
+  /// No description provided for @z2mPageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The address in your browser when the Zigbee2MQTT page is open, the one you pair devices on. No MQTT username or password needed.'**
+  String get z2mPageBody;
+
+  /// No description provided for @z2mPageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Page address'**
+  String get z2mPageLabel;
+
+  /// No description provided for @z2mPageConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get z2mPageConnect;
+
+  /// No description provided for @z2mPageFoundName.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {host} at {ip}'**
+  String z2mPageFoundName(String host, String ip);
+
+  /// No description provided for @z2mPageNoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered for {host} on this network'**
+  String z2mPageNoName(String host);
+
+  /// No description provided for @engineNeedsBrokerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automations need your MQTT broker'**
+  String get engineNeedsBrokerTitle;
+
+  /// No description provided for @engineNeedsBrokerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This home connects through the Zigbee2MQTT page, which is all your dashboards need. Automations, Alerts and history run in the ZigDash Engine on your hub, which talks through your MQTT broker. Add its details once, and ZigDash connects through the broker from then on.'**
+  String get engineNeedsBrokerBody;
+
+  /// No description provided for @engineNeedsBrokerButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add broker details'**
+  String get engineNeedsBrokerButton;
+
+  /// No description provided for @connFromPageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This home connects through the Zigbee2MQTT page. Enter your MQTT broker (usually the same machine, port 1883) to turn on Automations, Alerts and history. After saving, ZigDash connects through the broker.'**
+  String get connFromPageNote;
+
   /// No description provided for @setupManualEntry.
   ///
   /// In en, this message translates to:

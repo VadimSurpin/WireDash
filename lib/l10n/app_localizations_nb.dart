@@ -1469,6 +1469,88 @@ class AppLocalizationsNb extends AppLocalizations {
   String get setupFindMySetup => 'Finn oppsettet mitt';
 
   @override
+  String get setupAsk => 'Hva driver Zigbee-en din?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'På en Raspberry Pi, en server eller i Docker';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'Med Zigbee2MQTT-tillegget, eller ZHA';
+
+  @override
+  String get setupAskSmlight => 'En SMLIGHT-hub';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB eller SMHUB med Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Ingenting ennå?';
+
+  @override
+  String get setupAskHaWhich => 'Hvordan kjører Home Assistant-en din Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'Zigbee2MQTT-tillegget';
+
+  @override
+  String get setupAskHaZ2mSub => 'Logg inn med Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, Home Assistants egen Zigbee';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, uten Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Koble til Zigbee2MQTT-siden min';
+
+  @override
+  String get setupManualEntryAdvanced => 'Skriv inn megler-detaljer (avansert)';
+
+  @override
+  String get z2mPageTitle => 'Zigbee2MQTT-siden din';
+
+  @override
+  String get z2mPageBody =>
+      'Adressen i nettleseren når Zigbee2MQTT-siden er åpen, den du parer enheter på. Ingen MQTT-brukernavn eller passord trengs.';
+
+  @override
+  String get z2mPageLabel => 'Sidens adresse';
+
+  @override
+  String get z2mPageConnect => 'Koble til';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return 'Fant $host på $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Ingenting svarte for $host på dette nettverket';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle => 'Automasjoner trenger MQTT-megleren din';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Dette hjemmet kobler seg til via Zigbee2MQTT-siden, og det holder for dashbordene. Automasjoner, varsler og historikk kjører i ZigDash Engine på huben din, som snakker via MQTT-megleren. Skriv inn detaljene én gang, så kobler ZigDash seg til via megleren fra da av.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Skriv inn megler-detaljer';
+
+  @override
+  String get connFromPageNote =>
+      'Dette hjemmet kobler seg til via Zigbee2MQTT-siden. Skriv inn MQTT-megleren din (som regel samme maskin, port 1883) for å slå på automasjoner, varsler og historikk. Etter lagring kobler ZigDash seg til via megleren.';
+
+  @override
   String get setupManualEntry => 'Skriv inn detaljer manuelt';
 
   @override

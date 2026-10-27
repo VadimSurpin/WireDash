@@ -57,6 +57,7 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
       case HubEnginePhase.checking:
       case HubEnginePhase.running:
       case HubEnginePhase.unreachable:
+      case HubEnginePhase.needsBroker:
         break;
     }
   }
@@ -245,6 +246,22 @@ class _AutomationsScreenState extends ConsumerState<AutomationsScreen> {
             key: const Key('engine-away-unreachable'),
             title: l10n.engineAwayNoHubTitle,
             body: l10n.engineAwayNoHubBody,
+          ),
+        ];
+      case HubEnginePhase.needsBroker:
+        // 3.2: a Home set up through the Zigbee2MQTT page has no broker
+        // yet; the Engine's Automations, Alerts and history need one.
+        return [
+          _Message(
+            key: const Key('engine-needs-broker'),
+            title: l10n.engineNeedsBrokerTitle,
+            body: l10n.engineNeedsBrokerBody,
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: () => context.push('/connections/${widget.connectionId}/edit'),
+            icon: const Icon(Icons.settings_ethernet),
+            label: Text(l10n.engineNeedsBrokerButton),
           ),
         ];
       case HubEnginePhase.tooOld:

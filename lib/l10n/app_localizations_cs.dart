@@ -1474,6 +1474,88 @@ class AppLocalizationsCs extends AppLocalizations {
   String get setupFindMySetup => 'Najít moje zařízení';
 
   @override
+  String get setupAsk => 'Co pohání vaše Zigbee?';
+
+  @override
+  String get setupAskZ2m => 'Zigbee2MQTT';
+
+  @override
+  String get setupAskZ2mSub => 'Na Raspberry Pi, serveru nebo v Dockeru';
+
+  @override
+  String get setupAskHa => 'Home Assistant';
+
+  @override
+  String get setupAskHaSub => 'S doplňkem Zigbee2MQTT, nebo ZHA';
+
+  @override
+  String get setupAskSmlight => 'Hub SMLIGHT';
+
+  @override
+  String get setupAskSmlightSub => 'SLZB nebo SMHUB se Zigbee2MQTT';
+
+  @override
+  String get setupAskNothing => 'Zatím nic?';
+
+  @override
+  String get setupAskHaWhich => 'Jak váš Home Assistant provozuje Zigbee?';
+
+  @override
+  String get setupAskHaZ2m => 'Doplněk Zigbee2MQTT';
+
+  @override
+  String get setupAskHaZ2mSub => 'Přihlásit se přes Home Assistant';
+
+  @override
+  String get setupAskHaZha => 'ZHA, vlastní Zigbee Home Assistantu';
+
+  @override
+  String get setupAskHaZhaSub => 'Zigbee Home Automation, bez Zigbee2MQTT';
+
+  @override
+  String get setupZ2mPageEntry => 'Připojit se k mé stránce Zigbee2MQTT';
+
+  @override
+  String get setupManualEntryAdvanced => 'Zadat údaje brokeru (pokročilé)';
+
+  @override
+  String get z2mPageTitle => 'Vaše stránka Zigbee2MQTT';
+
+  @override
+  String get z2mPageBody =>
+      'Adresa v prohlížeči, když máte otevřenou stránku Zigbee2MQTT – tu, kde párujete zařízení. Není potřeba uživatelské jméno ani heslo MQTT.';
+
+  @override
+  String get z2mPageLabel => 'Adresa stránky';
+
+  @override
+  String get z2mPageConnect => 'Připojit';
+
+  @override
+  String z2mPageFoundName(String host, String ip) {
+    return '$host nalezen na $ip';
+  }
+
+  @override
+  String z2mPageNoName(String host) {
+    return 'Pro $host v této síti nic neodpovědělo';
+  }
+
+  @override
+  String get engineNeedsBrokerTitle => 'Automatizace potřebují váš MQTT broker';
+
+  @override
+  String get engineNeedsBrokerBody =>
+      'Tento domov se připojuje přes stránku Zigbee2MQTT, což dashboardům stačí. Automatizace, upozornění a historie běží v ZigDash Engine na vašem hubu, který komunikuje přes váš MQTT broker. Zadejte jeho údaje jednou a ZigDash se od té doby bude připojovat přes broker.';
+
+  @override
+  String get engineNeedsBrokerButton => 'Zadat údaje brokeru';
+
+  @override
+  String get connFromPageNote =>
+      'Tento domov se připojuje přes stránku Zigbee2MQTT. Zadejte svůj MQTT broker (obvykle stejný stroj, port 1883), abyste zapnuli automatizace, upozornění a historii. Po uložení se ZigDash připojuje přes broker.';
+
+  @override
   String get setupManualEntry => 'Zadat údaje ručně';
 
   @override
