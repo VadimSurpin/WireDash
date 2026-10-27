@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zigdash/core/analytics/analytics_events.dart' show SetupVia;
 import 'package:zigdash/data/database/tables/connections.dart';
 import 'package:zigdash/features/connections/diagnostics/connect_diagnostics.dart';
 import 'package:zigdash/features/connections/discovery/address_check.dart';
@@ -120,6 +121,7 @@ class _Harness {
     HubIdentifier? identifyHub,
     Z2mBrokerLookup? askZ2m,
     Z2mPageDevices? pageDevices,
+    Z2mPagePresent? pagePresent,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
     DeviceIpProvider? deviceIp,
@@ -150,6 +152,7 @@ class _Harness {
       identifyHub: identifyHub,
       askZ2m: askZ2m,
       pageDevices: pageDevices,
+      pagePresent: pagePresent,
       probeBroker: probeBroker,
       networkFacts: networkFacts,
     );
@@ -1207,4 +1210,53 @@ void main() {
       },
     );
   });
+
+  group('3.2: the Zigbee2MQTT page instead of a broker login', () {
+    const locked = SetupCandidate(
+      host: '192.168.1.10',
+      port: 1883,
+      protocol: MqttProtocol.tcp,
+      needsAuth: true,
+    );
+
+    test('a page on the same machine: no login, on to the review', () async {
+      final asked = <String>[];
+      final h = _Harness(
+        pagePresent: (host, port) async {
+          asked.add('$host:$port');
+          return true;
+        },
+      );
+      await h.coordinator.selectCandidate(locked);
+      expect(asked, ['192.168.1.10:8080']);
+      final review = h.coordinator.state as SetupReview;
+      expect(review.candidate.transport, ConnectionTransport.z2mPage);
+      expect(review.candidate.port, 8080);
+      expect(h.diagnostics.calls, isEmpty, reason: 'no broker ladder for the page');
+      await h.coordinator.createDashboard();
+      expect((h.coordinator.state as SetupComplete).via, SetupVia.z2mPage);
+    });
+
+    test('no page: the login prompt as before', () async {
+      final h = _Harness(pagePresent: (_, __) async => false);
+      await h.coordinator.selectCandidate(locked);
+      expect(h.coordinator.state, isA<SetupNeedsAuth>());
+    });
+
+    test('a login given and refused stays a refusal, the page is not tried again', () async {
+      var asked = 0;
+      final h = _Harness(
+        reports: [failAt(DiagnosticStep.auth, 'diagAuthRejected')],
+        pagePresent: (_, __) async {
+          asked++;
+          return false;
+        },
+      );
+      await h.coordinator.selectCandidate(locked);
+      await h.coordinator.submitCredentials('u', 'p');
+      expect(h.coordinator.state, isA<SetupNeedsAuth>());
+      expect(asked, 1);
+    });
+  });
 }
+

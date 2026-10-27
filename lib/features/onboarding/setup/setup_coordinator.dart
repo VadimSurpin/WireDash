@@ -72,6 +72,10 @@ Set<HubKind> hubsForPlatform(SetupPlatform? platform) => {
 typedef Z2mBrokerLookup =
     Future<Z2mBrokerSetting?> Function(String host, int port);
 
+/// Whether Zigbee2MQTT's web page answers at [host]:[port] without a token
+/// (3.2): then setup connects through it and never asks for a broker login.
+typedef Z2mPagePresent = Future<bool> Function(String host, int port);
+
 /// Reads Zigbee2MQTT's device list from its web page on [host] (3.1.13),
 /// which sends the list on connect even when the broker lost it. Null when
 /// the page doesn't answer, is locked, or sends no list.
@@ -326,6 +330,7 @@ class SetupCoordinator {
     HubIdentifier? identifyHub,
     Z2mBrokerLookup? askZ2m,
     Z2mPageDevices? pageDevices,
+    Z2mPagePresent? pagePresent,
     BrokerPortProbe? probeBroker,
     NetworkFactsProvider? networkFacts,
     NoNetworkProvider? noNetwork,
@@ -342,6 +347,7 @@ class SetupCoordinator {
        _identifyHub = identifyHub,
        _askZ2m = askZ2m,
        _pageDevices = pageDevices,
+       _pagePresent = pagePresent,
        _probeBroker = probeBroker,
        _networkFacts = networkFacts,
        _noNetwork = noNetwork;
@@ -366,6 +372,41 @@ class SetupCoordinator {
   /// platform cannot.
   final Z2mBrokerLookup? _askZ2m;
   final Z2mPageDevices? _pageDevices;
+  final Z2mPagePresent? _pagePresent;
+
+  /// 3.2: the first Zigbee2MQTT page in [pages] that answers; setup then
+  /// goes through it. False when none does (or the platform can't look),
+  /// and the broker path carries on as before.
+  Future<bool> _tryPages(List<(String, int)> pages) async {
+    final present = _pagePresent;
+    if (present == null) return false;
+    final op = _op;
+    for (final (host, port) in {...pages}) {
+      bool ok;
+      try {
+        ok = await present(host, port);
+      } catch (_) {
+        ok = false;
+      }
+      if (op != _op) return true; // cancelled or moved on: stop here
+      if (ok) {
+        await adoptZ2mPage(host: host, port: port);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Where Zigbee2MQTT's page may be for [candidate]: on the same machine,
+  /// and any page the scan saw.
+  List<(String, int)> _pagesFor(SetupCandidate candidate) => [
+    (candidate.host, hubPorts[HubKind.zigbee2mqtt]!),
+    for (final h in switch (_state) {
+      SetupScanning(:final hubs) || SetupScanEmpty(:final hubs) => hubs,
+      _ => const <HubFound>[],
+    })
+      if (h.kind == HubKind.zigbee2mqtt) (h.host, h.port),
+  ];
   final BrokerPortProbe? _probeBroker;
 
   /// The username Zigbee2MQTT logs in with, from its web page, for the login
@@ -578,8 +619,10 @@ class SetupCoordinator {
           (h.host, hubPorts[HubKind.zigbee2mqtt]!),
     ];
     if (pages.isEmpty) return;
-    final op = ++_op;
     _emit(s.copyWith(z2m: (status: Z2mAnswerStatus.asking, server: '')));
+    // 3.2: the page itself is the way in; its broker only when it is locked.
+    if (await _tryPages(pages)) return;
+    final op = ++_op;
     var locked = false;
     for (final (host, port) in pages) {
       Z2mBrokerSetting? setting;
@@ -861,9 +904,11 @@ class SetupCoordinator {
       _emit(
         SetupComplete(
           result,
-          via: candidate.transport == ConnectionTransport.homeAssistant
-              ? SetupVia.homeAssistant
-              : SetupVia.scan,
+          via: switch (candidate.transport) {
+            ConnectionTransport.homeAssistant => SetupVia.homeAssistant,
+            ConnectionTransport.z2mPage => SetupVia.z2mPage,
+            ConnectionTransport.mqtt => SetupVia.scan,
+          },
         ),
       );
     } catch (_) {
@@ -972,6 +1017,12 @@ class SetupCoordinator {
   };
 
   Future<void> _verify(SetupCandidate candidate, {int? lateHosts}) async {
+    // 3.2: a broker that wants a login, and Zigbee2MQTT's page next to it:
+    // the page needs none. 23 of 30 people at the login never tried one.
+    if (candidate.needsAuth && _username == null && !candidate.notBroker && _pagePresent != null) {
+      if (_state is! SetupVerifying) _emit(SetupVerifying(candidate, lateHosts: lateHosts));
+      if (await _tryPages(_pagesFor(candidate))) return;
+    }
     if (candidate.needsAuth && _username == null) {
       _emit(
         SetupNeedsAuth(candidate, platform: _platform, suggestedUser: _z2mUser),
@@ -1011,6 +1062,7 @@ class SetupCoordinator {
     if (report != null && !report.connected) {
       final kind = mapLadderFailure(report);
       if (kind == SetupErrorKind.authRejected) {
+        if (_username == null && await _tryPages(_pagesFor(candidate))) return;
         // No credentials yet → first-time prompt; tried already → rejected.
         _emit(
           SetupNeedsAuth(

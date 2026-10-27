@@ -63,6 +63,14 @@ final setupCoordinatorProvider = Provider.autoDispose<SetupCoordinator>((ref) {
       await fetchZ2mMqttConfig(host, port),
       frontendHost: host,
     ),
+    // 3.2: a page that answers (bridge/info) without a token.
+    pagePresent: (host, port) async {
+      try {
+        return await fetchZ2mMqttConfig(host, port) != null;
+      } on Z2mPageLocked {
+        return false;
+      }
+    },
     // The page's usual port; the Home Assistant add-on's sits behind
     // ingress, where only the Home Assistant route reaches it.
     pageDevices: (host) async {

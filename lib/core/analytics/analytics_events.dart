@@ -148,7 +148,8 @@ enum ScanEmptyChoice { noHub, homeAssistant, otherNetwork }
 /// How setup succeeded (3.1.3), on [SetupStepKind.complete]: the scan and
 /// its review, Home Assistant's sign-in (which also ends in the review), or
 /// the broker form, which until 3.1.3 sent no complete at all.
-enum SetupVia { scan, homeAssistant, brokerForm, shared }
+/// [z2mPage] (3.2): through Zigbee2MQTT's own web page, no broker.
+enum SetupVia { scan, homeAssistant, brokerForm, shared, z2mPage }
 
 /// Where setup opened the Home Assistant sign-in (3.1.3): while scanning,
 /// the card on an empty result, the note under "I use Home Assistant",
