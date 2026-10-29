@@ -10,7 +10,8 @@ select a dashboard once and operate its buttons directly in a scrolling grid.
 The car shows saved dashboards containing supported controls, in dashboard
 order. Supported panels are command buttons, switches, covers, and writable
 switches/buttons on whole-device Wiren Board or Zigbee2MQTT panels. Legacy
-radio/enum shutter tiles are included with their saved labels and payloads.
+radio/enum shutter tiles and position selectors (radio, combo, or multi-state)
+are included with their saved labels, option order, payloads, and state matches.
 Endpoint-specific Zigbee shutter state properties are retained. Complete WB
 curtain pairs are grouped into Open/Close controls. Other panel types remain on
 the phone. A separate dashboard named "Car" is a useful way to group gates,
@@ -24,6 +25,11 @@ on tap. Covers show their configured action buttons together, with the control
 name below each action so similarly named Open/Close buttons are distinguishable.
 
 Cover button visibility, titles and gate/roller icons follow the phone editor.
+Position-aware covers also show their saved percentage presets; a slider-only
+cover uses 0/25/50/75/100% buttons in Auto. Writable Zigbee cover position features
+use their exact endpoint property. MQTT feedback highlights the reported
+position and confirms a pending position only when its target is reported.
+WB relay pairs expose direction commands, without inventing a position estimate.
 Command-only covers send the saved command, spin for one second and return to
 their initial appearance without a state subscription. State-aware controls
 use current-session MQTT feedback; relay activity is not a gate-position
@@ -130,6 +136,13 @@ the old list/grid limits, check direct button commands and independent spinner
 timing, require scroll preservation, and verify that stale callbacks/spinners do
 not survive hiding and resuming the car screen. The older-host pagination
 fallback is also tested. CI runs these tests before uploading the APK.
+
+Returning from a dashboard keeps the chooser's last snapshot while it refreshes.
+This preserves its rows and template type, as required for
+[Android Auto Back navigation](https://developer.android.com/reference/androidx/car/app/Screen).
+Regression tests cover repeated returns with delayed and stale responses on
+both modern and legacy hosts, position-button routing and feedback, and paging
+through all presets on hosts with smaller grid limits.
 
 Official references: [IoT apps](https://developer.android.com/training/cars/apps/iot),
 [projected-app manifest](https://developer.android.com/training/cars/apps/auto),

@@ -73,7 +73,7 @@ internal class DashboardControlsCarScreen(
                         button(current, control, target, appearance, control.getString("name"), null))
                 } else for (action in actions) {
                     section.addItem(button(current, control, action, action, action.getString("title"),
-                        if (control.optString("kind") == "cover") control.getString("name") else null))
+                        if (control.optString("kind") in setOf("cover", "options")) control.getString("name") else null))
                 }
             }
             template.addSection(section.build())
@@ -104,7 +104,7 @@ internal class DashboardControlsCarScreen(
         // scroll to the top despite SCROLL_STATE_PRESERVE_INDEX.
         item.setImage(if (loading) sendingIcon(sending[controlId]?.frame ?: 0)
             else actionIcon(appearance, if (switch) control.optString("state") == "ON"
-            else control.optString("state") == appearance.optString("id")), GridItem.IMAGE_TYPE_ICON)
+            else selected(control, appearance)), GridItem.IMAGE_TYPE_ICON)
         when {
             !connected -> item.setText(word("reconnecting", R.string.car_reconnecting))
             control.optBoolean("failed") -> item.setText(word("unconfirmed", R.string.car_unconfirmed))

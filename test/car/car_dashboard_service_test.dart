@@ -202,6 +202,144 @@ void main() {
   });
 
   test(
+    'saved position option buttons keep labels, order, payloads and exact state matches',
+    () {
+      const config = OptionsConfig(
+        jsonPath: 'position_left',
+        options: [
+          SelectOption(
+            label: 'Closed',
+            match: '0',
+            payload: '{"position_left":0}',
+          ),
+          SelectOption(
+            label: 'Half open',
+            match: '50',
+            payload: '{"position_left":50}',
+          ),
+          SelectOption(
+            label: 'Fully open',
+            match: '100',
+            payload: '{"position_left":100}',
+          ),
+        ],
+      );
+      for (final type in [
+        PanelType.radio,
+        PanelType.combo,
+        PanelType.multiState,
+      ]) {
+        final c = carControls(_dashboard(), [
+          _panel(
+            config,
+            type: type,
+            prefix: 'zigbee2mqtt/blinds',
+            subscribeTopic: '',
+          ),
+        ], _l10n).single;
+        expect(c.kind, 'options');
+        expect(c.actions.map((a) => a.title), [
+          'Closed',
+          'Half open',
+          'Fully open',
+        ]);
+        expect(c.actions.map((a) => a.stateMatch), ['0', '50', '100']);
+        expect(c.actions[1].toJson()['stateMatch'], '50');
+        expect(c.actions[1].commands.single.payload, '{"position_left":50}');
+        expect(c.actions[1].commands.single.topic, 'zigbee2mqtt/blinds/set');
+        expect(c.actions[1].commands.single.retain, isTrue);
+        expect(c.topics, ['zigbee2mqtt/blinds']);
+      }
+    },
+  );
+
+  test(
+    'cover positions preserve presets, endpoint payload, topics and visibility',
+    () {
+      final c = carControls(_dashboard(), [
+        _panel(
+          const CoverConfig(
+            positionPath: 'position_left',
+            positionTemplate: '{"position_left":{value}}',
+            presets: [75, 25, 25, -1, 101],
+            showSlider: false,
+            openButton: CoverButtonConfig(visible: false),
+            closeButton: CoverButtonConfig(visible: false),
+            stopButton: CoverButtonConfig(visible: false),
+          ),
+          prefix: 'zigbee2mqtt/curtain',
+          subscribeTopic: '',
+          retain: false,
+        ),
+      ], _l10n).single;
+      expect(c.positionPath, 'position_left');
+      expect(c.actions.map((a) => a.title), ['75%', '25%']);
+      expect(c.actions.map((a) => a.position), [75, 25]);
+      expect(c.actions.first.toJson()['position'], 75);
+      expect(c.topics, ['zigbee2mqtt/curtain']);
+      final command = c.actions.first.commands.single;
+      expect(
+        (command.topic, command.payload, command.retain),
+        ('zigbee2mqtt/curtain/set', '{"position_left":75}', false),
+      );
+      for (final cfg in [
+        const CoverConfig(presets: [], showSlider: false),
+        const CoverConfig(waitForFeedback: false),
+        const CoverConfig(wirenBoard: _binding, waitForFeedback: true),
+      ]) {
+        final actions = carControls(_dashboard(), [
+          _panel(cfg),
+        ], _l10n).single.actions;
+        expect(actions.every((a) => a.position == null), isTrue);
+      }
+      final sliderOnly = carControls(_dashboard(), [
+        _panel(const CoverConfig(presets: [])),
+      ], _l10n).single;
+      expect(
+        sliderOnly.actions
+            .where((a) => a.position != null)
+            .map((a) => a.position),
+        [0, 25, 50, 75, 100],
+      );
+    },
+  );
+
+  test(
+    'position-only device covers use writable endpoint feature, not a fabricated state',
+    () {
+      for (final writable in [false, true]) {
+        final profile = DeviceProfile(
+          deviceClass: DeviceClass.cover,
+          features: [
+            DeviceFeature(
+              type: 'numeric',
+              name: 'position',
+              property: 'position_right',
+              parent: 'cover',
+              access: writable ? accessState | accessSet : accessState,
+            ),
+          ],
+        );
+        final controls = carControls(_dashboard(), [
+          _panel(DeviceTileConfig(profile: profile), type: PanelType.device),
+        ], _l10n);
+        expect(controls.length, writable ? 1 : 0);
+        if (writable) {
+          expect(controls.single.positionPath, 'position_right');
+          expect(
+            controls.single.actions.every((a) => a.position != null),
+            isTrue,
+          );
+          expect(
+            controls.single.actions[2].commands.single.payload,
+            '{"position_right":50}',
+          );
+        }
+      }
+    },
+  );
+
+  test(
     'WB cover keeps exact /on topics, raw repeated 1, custom titles/icons and hidden stop',
     () {
       final cfg = CoverConfig(
@@ -362,6 +500,90 @@ void main() {
         db.into(db.panels).insertOnConflictUpdate(panel.toCompanion(false));
     Map<String, Object?> first(Map<String, Object?> snapshot) =>
         (snapshot['controls'] as List).first as Map<String, Object?>;
+
+    test(
+      'position option buttons confirm numeric feedback and reject deleted choices',
+      () async {
+        const config = OptionsConfig(
+          jsonPath: 'position',
+          options: [
+            SelectOption(
+              label: 'Half open',
+              match: '50',
+              payload: '{"position":50}',
+            ),
+          ],
+        );
+        await save(_panel(config, type: PanelType.radio, retain: false));
+        await service.open('d');
+        expect(
+          (await service.command('d', 'gate', 'OPTION_0'))['outcome'],
+          'sent',
+        );
+        expect(mgr.sent.single.$2, '{"position":50}');
+        now = now.add(const Duration(seconds: 1));
+        mgr.feedback('ignored/state', '{"position":25}', now);
+        await Future<void>.delayed(Duration.zero);
+        expect(first(await service.open('d'))['pending'], 'OPTION_0');
+        mgr.feedback('ignored/state', '{"position":50}', now);
+        await Future<void>.delayed(Duration.zero);
+        final confirmed = first(await service.open('d'));
+        expect(confirmed['pending'], isNull);
+        expect(confirmed['state'], '50');
+        await save(
+          _panel(const OptionsConfig(options: []), type: PanelType.radio),
+        );
+        expect(
+          (await service.command('d', 'gate', 'OPTION_0'))['outcome'],
+          'removed',
+        );
+        expect(mgr.sent, hasLength(1));
+      },
+    );
+
+    test(
+      'position commands confirm only the target from fresh current-session feedback',
+      () async {
+        await save(
+          _panel(
+            const CoverConfig(
+              positionPath: 'position_left',
+              positionTemplate: '{"position_left":{value}}',
+            ),
+            retain: false,
+          ),
+        );
+        await service.open('d');
+        expect(first(await service.open('d'))['position'], isNull);
+        expect(
+          (await service.command('d', 'gate', 'POSITION_50'))['outcome'],
+          'sent',
+        );
+        expect(mgr.sent.single.$2, '{"position_left":50}');
+        now = now.add(const Duration(seconds: 1));
+        for (final sample in [
+          ('{"position_left":50}', mgr.generation - 1),
+          ('{"state":"OPEN","position_left":25}', mgr.generation),
+        ]) {
+          mgr.feedback('ignored/state', sample.$1, now, gen: sample.$2);
+          await Future<void>.delayed(Duration.zero);
+          expect(first(await service.open('d'))['pending'], 'POSITION_50');
+        }
+        mgr.feedback('ignored/state', '{"position_left":"50"}', now);
+        await Future<void>.delayed(Duration.zero);
+        final confirmed = first(await service.open('d'));
+        expect(confirmed['pending'], isNull);
+        expect(confirmed['position'], 50);
+        await save(_panel(const CoverConfig(presets: [25], showSlider: false)));
+        expect(
+          (await service.command('d', 'gate', 'POSITION_50'))['outcome'],
+          'removed',
+        );
+        expect(mgr.sent, hasLength(1));
+        mgr.generation++;
+        expect(first(await service.open('d'))['position'], isNull);
+      },
+    );
 
     test(
       'car groups match phone order, include orphans and preserve button appearance',

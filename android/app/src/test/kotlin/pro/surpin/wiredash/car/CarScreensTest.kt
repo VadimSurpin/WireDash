@@ -7,6 +7,7 @@ import androidx.car.app.Screen
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.GridItem
 import androidx.car.app.model.GridTemplate
+import androidx.car.app.model.CarColor
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Row
@@ -111,6 +112,120 @@ class CarScreensTest {
     private fun sending(item: GridItem): Boolean = item.image?.icon?.resId in setOf(
         R.drawable.car_sending_0, R.drawable.car_sending_1,
         R.drawable.car_sending_2, R.drawable.car_sending_3)
+
+    private fun checkSelectorBackNavigation(api: Int) {
+        context.updateHandshakeInfo(HandshakeInfo("com.google.android.projection.gearhead", api))
+        val catalog = JSONObject().put("dashboards", JSONArray().put(JSONObject()
+            .put("id", "d").put("name", "Driveway").put("home", "Home")))
+        bridge.response = catalog
+        val selector = DashboardCarScreen(context, bridge)
+        val lifecycle = start(selector)
+        val originalType = selector.onGetTemplate().javaClass
+        repeat(3) {
+            bridge.delayed = true
+            shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+            val oldPoll = bridge.callbacks.removeAt(0)
+            lifecycle.moveToState(Lifecycle.State.CREATED)
+            bridge.delayed = false
+            bridge.response = FakeBridge.snapshot()
+            val dashboard = if (api >= 8) DashboardControlsCarScreen(context, bridge, "d")
+                else ControlsCarScreen(context, bridge, "d")
+            val child = start(dashboard)
+            dashboard.onGetTemplate()
+            bridge.delayed = true
+            child.moveToState(Lifecycle.State.DESTROYED)
+            lifecycle.moveToState(Lifecycle.State.RESUMED)
+            oldPoll(JSONObject().put("outcome", "unreachable"))
+            val returned = selector.onGetTemplate()
+            assertEquals("Back must preserve the host's template type", originalType, returned.javaClass)
+            val rows = if (returned is SectionedItemTemplate) {
+                assertFalse(returned.isLoading)
+                returned.sections.flatMap { items(it) }
+            } else {
+                assertFalse((returned as ListTemplate).isLoading)
+                returned.singleList!!.items
+            }
+            assertEquals("Driveway", (rows.single() as Row).title.toString())
+            bridge.callbacks.removeAt(0)(JSONObject(catalog.toString()))
+            bridge.delayed = false
+            bridge.response = catalog
+        }
+        assertTrue(bridge.commands.isEmpty())
+    }
+
+    @Test fun modernBackToSelectorKeepsItsTemplateAndRowsDuringRefresh() = checkSelectorBackNavigation(8)
+    @Test fun legacyBackToSelectorKeepsItsRowsDuringRefresh() = checkSelectorBackNavigation(6)
+
+    @Test fun modernCatalogLoadingUsesTheSameTemplateAsItsContent() {
+        modernHost()
+        bridge.delayed = true
+        val screen = DashboardCarScreen(context, bridge)
+        start(screen)
+        assertTrue((screen.onGetTemplate() as SectionedItemTemplate).isLoading)
+    }
+
+    @Test fun modernCurtainPositionButtonsSendSavedActionsAndHighlightReportedPosition() {
+        modernHost()
+        bridge.response.put("controls", JSONArray().put(JSONObject()
+            .put("id", "curtain").put("name", "Curtains").put("kind", "options")
+            .put("waitForFeedback", true).put("state", "50")
+            .put("actions", JSONArray()
+                .put(JSONObject().put("id", "OPTION_0").put("title", "Half open").put("stateMatch", "50").put("icon", "rollerOpen"))
+                .put(JSONObject().put("id", "OPTION_1").put("title", "Fully open").put("stateMatch", "100").put("icon", "rollerOpen")))))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val buttons = dashboardItems(screen)
+        assertEquals(listOf("Half open", "Fully open"), buttons.map { it.title.toString() })
+        assertTrue(buttons.all { it.text.toString() == "Curtains" })
+        assertEquals(CarColor.GREEN, buttons[0].image!!.tint)
+        assertNotEquals(CarColor.GREEN, buttons[1].image!!.tint)
+        buttons[1].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OPTION_1", bridge.commands.single()["actionId"])
+        assertTrue(sending(dashboardItems(screen)[1]))
+    }
+
+    @Test fun legacyCurtainPresetsPageAtTheGridLimitWithoutLosingChoices() {
+        val limit = context.getCarService(ConstraintManager::class.java)
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_GRID)
+        val options = JSONArray()
+        repeat(limit + 5) { options.put(JSONObject().put("id", "OPTION_$it")
+            .put("title", "$it%").put("icon", "rollerOpen")) }
+        bridge.response.getJSONArray("controls").getJSONObject(0).put("actions", options)
+        val screen = ActionsCarScreen(context, bridge, "d", "gate")
+        start(screen)
+        val seen = mutableListOf<String>()
+        while (true) {
+            val buttons = actions(screen)
+            assertTrue(buttons.size <= limit)
+            seen.addAll(buttons.map { it.title.toString() }.filter { it.endsWith("%") })
+            val next = buttons.firstOrNull { it.title.toString() == "Next" } ?: break
+            next.onClickDelegate!!.sendClick(done)
+            shadowOf(Looper.getMainLooper()).idle()
+        }
+        assertEquals((0 until limit + 5).map { "$it%" }, seen)
+        actions(screen).first { it.title.toString().endsWith("%") }.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(1, bridge.commands.size)
+    }
+
+    @Test fun coverPercentageSelectionUsesReportedPositionRatherThanDirection() {
+        modernHost()
+        val cover = bridge.response.getJSONArray("controls").getJSONObject(0)
+            .put("position", 50).put("state", "OPEN")
+        cover.getJSONArray("actions")
+            .put(JSONObject().put("id", "POSITION_50").put("title", "50%")
+                .put("position", 50).put("icon", "rollerOpen"))
+            .put(JSONObject().put("id", "POSITION_75").put("title", "75%")
+                .put("position", 75).put("icon", "rollerOpen"))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        assertEquals(CarColor.GREEN, dashboardItems(screen)[2].image!!.tint)
+        assertNotEquals(CarColor.GREEN, dashboardItems(screen)[3].image!!.tint)
+        cover.put("position", JSONObject.NULL)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertNotEquals(CarColor.GREEN, dashboardItems(screen)[2].image!!.tint)
+    }
 
     @Test fun sendingKeepsGridStructureAndBlocksDoubleTaps() {
         modernHost()
