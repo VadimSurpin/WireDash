@@ -16,6 +16,7 @@ import androidx.car.app.model.Header
 import androidx.car.app.model.SectionedItemTemplate
 import androidx.car.app.model.Template
 import androidx.core.graphics.drawable.IconCompat
+import org.json.JSONArray
 import org.json.JSONObject
 import pro.surpin.wiredash.R
 
@@ -28,15 +29,39 @@ internal class DashboardControlsCarScreen(
     override val method = "carOpen"
     override val arguments get() = mapOf("dashboardId" to dashboardId)
 
-    private class Sending(val action: String, var awaitingSnapshot: Boolean = false, var frame: Int = 0)
+    private class Sending(val action: String, var awaitingSnapshot: Boolean = false)
+    private class CachedSection(val title: String?, val commands: List<String>,
+        val items: List<GridItem>, val section: GridSection)
     private val sending = mutableMapOf<String, Sending>()
+    private val sections = mutableMapOf<String, CachedSection>()
+    private var previousTemplate: SectionedItemTemplate? = null
+    private var presentedTemplate: Template? = null
+    private var renderScheduled = false
+    private val reconnectAction by lazy {
+        Action.Builder().setIcon(icon("refresh"))
+            .setOnClickListener { bridge.call("carReconnect") { refresh() } }.build()
+    }
     private val materialIcons = mutableMapOf<Int, Bitmap>()
     private val materialFont by lazy {
         try { Typeface.createFromAsset(carContext.assets, "flutter_assets/fonts/MaterialIcons-Regular.otf") }
         catch (_: Exception) { null }
     }
 
-    override fun onHidden() { sending.clear() }
+    override fun onHidden() {
+        sending.clear()
+        renderScheduled = false
+    }
+
+    override fun onSnapshotChanged() = render()
+
+    private fun render() {
+        if (renderScheduled || !visible) return
+        renderScheduled = true
+        handler.post {
+            renderScheduled = false
+            if (visible && buildTemplate() !== presentedTemplate) invalidate()
+        }
+    }
 
     override fun onData(): Boolean {
         val confirmed = sending.filterValues { it.awaitingSnapshot }.keys
@@ -44,12 +69,13 @@ internal class DashboardControlsCarScreen(
         return confirmed.isNotEmpty()
     }
 
-    override fun onGetTemplate(): Template {
+    override fun onGetTemplate(): Template = buildTemplate().also { presentedTemplate = it }
+
+    private fun buildTemplate(): Template {
         val current = data
         val header = Header.Builder().setTitle(current?.optString("name", "WireDash") ?: "WireDash")
             .setStartHeaderAction(Action.BACK)
-            .addEndHeaderAction(Action.Builder().setIcon(icon("refresh"))
-                .setOnClickListener { bridge.call("carReconnect") { refresh() } }.build()).build()
+            .addEndHeaderAction(reconnectAction).build()
         val template = SectionedItemTemplate.Builder().setHeader(header)
             .setScrollStatePersistenceStrategy(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX)
         if (current == null) return template.setLoading(true).build()
@@ -57,10 +83,11 @@ internal class DashboardControlsCarScreen(
         val controls = current.optJSONArray("controls")?.objects().orEmpty()
         if (controls.isEmpty()) return message(R.string.car_setup)
 
-        fun addGroup(title: String?, entries: List<JSONObject>) {
+        val activeSections = mutableSetOf<String>()
+        fun addGroup(id: String, title: String?, entries: List<JSONObject>) {
             if (entries.isEmpty()) return
-            val section = GridSection.Builder()
-            if (!title.isNullOrBlank()) section.setTitle(title)
+            activeSections.add(id)
+            val items = mutableListOf<GridItem>()
             for (control in entries) {
                 val actions = control.getJSONArray("actions").objects()
                 if (control.optString("kind") == "switch") {
@@ -69,22 +96,45 @@ internal class DashboardControlsCarScreen(
                     val on = control.optString("state") == "ON"
                     val appearance = actions.firstOrNull { it.optString("id") == if (on) "ON" else "OFF" }
                     val target = actions.firstOrNull { it.optString("id") == if (on) "OFF" else "ON" }
-                    if (appearance != null && target != null) section.addItem(
+                    if (appearance != null && target != null) items.add(
                         button(current, control, target, appearance, control.getString("name"), null))
                 } else for (action in actions) {
-                    section.addItem(button(current, control, action, action, action.getString("title"),
+                    items.add(button(current, control, action, action, action.getString("title"),
                         if (control.optString("kind") in setOf("cover", "options")) control.getString("name") else null))
                 }
             }
-            template.addSection(section.build())
+            // Compare rendered content rather than raw MQTT snapshots: a
+            // local spinner handed over to backend pending, or an intermediate
+            // position with no matching preset, must not replace a lazy list.
+            // Include action metadata because CarIcon doesn't compare bitmap
+            // pixels, and an identical-looking tile may have a new command ID.
+            val commands = entries.map { JSONArray().put(it.getString("id"))
+                .put(it.optString("kind")).put(it.getJSONArray("actions")).toString() }
+            val cached = sections[id]
+            if (cached != null && cached.title == title && cached.commands == commands && cached.items == items) {
+                template.addSection(cached.section)
+                return
+            }
+            val section = GridSection.Builder().setItems(items)
+            if (!title.isNullOrBlank()) section.setTitle(title)
+            val built = section.build()
+            sections[id] = CachedSection(title, commands, items, built)
+            template.addSection(built)
         }
 
-        val sections = current.optJSONArray("sections")?.objects().orEmpty()
-        val known = sections.map { it.getString("id") }.toSet()
-        addGroup(null, controls.filter { it.optString("sectionId") !in known })
-        for (section in sections) addGroup(section.getString("name"),
+        val groups = current.optJSONArray("sections")?.objects().orEmpty()
+        val known = groups.map { it.getString("id") }.toSet()
+        addGroup("unsectioned", null, controls.filter { it.optString("sectionId") !in known })
+        for (section in groups) addGroup("group/" + section.getString("id"), section.getString("name"),
             controls.filter { it.optString("sectionId") == section.getString("id") })
-        return template.build()
+        sections.keys.retainAll(activeSections)
+        val built = template.build()
+        val previous = previousTemplate
+        if (previous != null && previous.header == built.header &&
+            previous.sections.size == built.sections.size &&
+            previous.sections.indices.all { previous.sections[it] === built.sections[it] }) return previous
+        previousTemplate = built
+        return built
     }
 
     private fun button(snapshot: JSONObject, control: JSONObject, target: JSONObject,
@@ -99,37 +149,18 @@ internal class DashboardControlsCarScreen(
         val loading = pending != null && (switch || pending == actionId)
         val connected = snapshot.optBoolean("connected")
         val item = GridItem.Builder().setTitle(title)
-        // Keep the cell's image/click structure stable. GridItem.setLoading()
-        // removes both; some projection hosts treat that as a new grid and
-        // scroll to the top despite SCROLL_STATE_PRESERVE_INDEX.
-        item.setImage(if (loading) sendingIcon(sending[controlId]?.frame ?: 0)
-            else actionIcon(appearance, if (switch) control.optString("state") == "ON"
+        // Let the host animate its loading indicator. Replacing the icon for
+        // every animation frame replaces the lazy section's content repeatedly.
+        if (loading) item.setLoading(true)
+        else item.setImage(actionIcon(appearance, if (switch) control.optString("state") == "ON"
             else selected(control, appearance)), GridItem.IMAGE_TYPE_ICON)
         when {
             !connected -> item.setText(word("reconnecting", R.string.car_reconnecting))
             control.optBoolean("failed") -> item.setText(word("unconfirmed", R.string.car_unconfirmed))
             subtitle != null -> item.setText(subtitle)
         }
-        if (connected) item.setOnClickListener { send(controlId, actionId) }
+        if (connected && !loading) item.setOnClickListener { send(controlId, actionId) }
         return item.build()
-    }
-
-    private fun sendingIcon(frame: Int): CarIcon = CarIcon.Builder(IconCompat.createWithResource(
-        carContext, when (frame % 4) {
-            1 -> R.drawable.car_sending_1
-            2 -> R.drawable.car_sending_2
-            3 -> R.drawable.car_sending_3
-            else -> R.drawable.car_sending_0
-        })).build()
-
-    private fun animate(controlId: String, request: Sending) {
-        handler.postDelayed({
-            if (visible && sending[controlId] === request) {
-                request.frame++
-                invalidate()
-                animate(controlId, request)
-            }
-        }, 250)
     }
 
     private fun actionIcon(action: JSONObject, selected: Boolean): CarIcon {
@@ -158,7 +189,7 @@ internal class DashboardControlsCarScreen(
     }
 
     private fun send(controlId: String, actionId: String) {
-        // A stable click listener does not permit repeated commands while busy.
+        // Retained host click delegates must not repeat a busy command.
         val control = data?.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
         val pending = sending[controlId]?.action ?: if (control?.optBoolean("waitForFeedback") == true)
             control.optString("pending").takeUnless { control.isNull("pending") } else null
@@ -166,8 +197,7 @@ internal class DashboardControlsCarScreen(
             (control?.optString("kind") == "switch" && pending != null)) return
         val request = Sending(actionId)
         sending[controlId] = request
-        animate(controlId, request)
-        invalidate()
+        render()
         bridge.call("carCommand", mapOf("dashboardId" to dashboardId,
             "controlId" to controlId, "actionId" to actionId,
             "expiresAt" to (System.currentTimeMillis() + 5_000))) { result ->
@@ -176,7 +206,7 @@ internal class DashboardControlsCarScreen(
                 sending.remove(controlId)
                 CarToast.makeText(carContext, carContext.getString(R.string.car_unreachable), CarToast.LENGTH_LONG).show()
                 refresh()
-                invalidate()
+                render()
             } else if (result.optBoolean("waitForFeedback")) {
                 request.awaitingSnapshot = true
                 refresh()
@@ -184,7 +214,7 @@ internal class DashboardControlsCarScreen(
                 if (visible && sending[controlId] === request) {
                     sending.remove(controlId)
                     refresh()
-                    invalidate()
+                    render()
                 }
             }, 1_000)
         }

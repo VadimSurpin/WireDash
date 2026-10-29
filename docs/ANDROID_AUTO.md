@@ -35,9 +35,10 @@ their initial appearance without a state subscription. State-aware controls
 use current-session MQTT feedback; relay activity is not a gate-position
 estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
-`/on`, and are never retained. Sending feedback rotates a native icon while
-keeping each grid cell's image and click structure intact, to avoid hosts
-rebuilding the grid at the top. Duplicate taps on the busy action are ignored;
+`/on`, and are never retained. Sending uses Android Auto's native loading
+indicator; the host animates it without frame-by-frame dashboard submissions.
+Unchanged groups retain their lazy-list delegates, and command/MQTT updates
+in the same main-loop turn are coalesced. Duplicate taps on the busy action are ignored;
 the other cover directions (including Stop) remain usable.
 
 The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.

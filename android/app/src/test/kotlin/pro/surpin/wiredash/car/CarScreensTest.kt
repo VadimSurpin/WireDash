@@ -45,12 +45,18 @@ class CarScreensTest {
     private class FakeBridge : CarBridge {
         var response = snapshot()
         var delayed = false
+        var commandWaitForFeedback = false
+        var delayCommandReply = false
+        val commandReplies = mutableListOf<() -> Unit>()
         val callbacks = mutableListOf<(JSONObject) -> Unit>()
         val commands = mutableListOf<Map<String, Any>>()
         override fun call(method: String, args: Map<String, Any>, done: (JSONObject) -> Unit) {
             if (method == "carCommand") {
                 commands.add(args)
-                done(JSONObject().put("outcome", "sent").put("waitForFeedback", false))
+                if (commandWaitForFeedback) response.getJSONArray("controls").objects()
+                    .first { it.getString("id") == args["controlId"] }.put("pending", args["actionId"])
+                val reply = { done(JSONObject().put("outcome", "sent").put("waitForFeedback", commandWaitForFeedback)) }
+                if (delayCommandReply) commandReplies.add(reply) else reply()
             } else if (delayed) callbacks.add(done)
             else done(JSONObject(response.toString()))
         }
@@ -109,9 +115,7 @@ class CarScreensTest {
         .put("pending", JSONObject.NULL).put("failed", false)
         .put("actions", JSONArray().put(JSONObject().put("id", "PRESS").put("title", id).put("icon", "on")))
 
-    private fun sending(item: GridItem): Boolean = item.image?.icon?.resId in setOf(
-        R.drawable.car_sending_0, R.drawable.car_sending_1,
-        R.drawable.car_sending_2, R.drawable.car_sending_3)
+    private fun sending(item: GridItem): Boolean = item.isLoading
 
     private fun checkSelectorBackNavigation(api: Int) {
         context.updateHandshakeInfo(HandshakeInfo("com.google.android.projection.gearhead", api))
@@ -227,31 +231,136 @@ class CarScreensTest {
         assertNotEquals(CarColor.GREEN, dashboardItems(screen)[2].image!!.tint)
     }
 
-    @Test fun sendingKeepsGridStructureAndBlocksDoubleTaps() {
+    @Test fun nativeLoadingKeepsUnchangedSectionsAndDoesNotResubmitAnimationFrames() {
         modernHost()
         val controls = JSONArray()
-        repeat(40) { controls.put(commandButton("Button $it")) }
-        bridge.response.put("controls", controls)
+        repeat(40) { controls.put(commandButton("Button $it", if (it < 20) "first" else "second")) }
+        bridge.response.put("controls", controls).put("sections", JSONArray()
+            .put(JSONObject().put("id", "first").put("name", "First"))
+            .put(JSONObject().put("id", "second").put("name", "Second")))
         val screen = DashboardControlsCarScreen(context, bridge, "d")
-        start(screen)
+        val lifecycle = start(screen)
+        val template = screen.onGetTemplate() as SectionedItemTemplate
         val before = dashboardItems(screen)
         before.last().onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         val during = dashboardItems(screen)
         assertEquals(before.map { it.title.toString() }, during.map { it.title.toString() })
-        assertTrue(during.all { !it.isLoading && it.image != null && it.onClickDelegate != null })
+        assertTrue(during.dropLast(1).all { !it.isLoading && it.image != null && it.onClickDelegate != null })
         assertTrue(sending(during.last()))
-        during.last().onClickDelegate!!.sendClick(done)
+        assertNull(during.last().image)
+        assertNull(during.last().onClickDelegate)
+        val loadingTemplate = screen.onGetTemplate() as SectionedItemTemplate
+        assertSame(template.sections[0], loadingTemplate.sections[0])
+        assertSame(template.sections[0].itemsDelegate, loadingTemplate.sections[0].itemsDelegate)
+        assertNotSame(template.sections[1], loadingTemplate.sections[1])
+        // A late host click from the previous snapshot is still rejected.
+        before.last().onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(1, bridge.commands.size)
+        val submissions = lifecycle.templatesReturned.size
         shadowOf(Looper.getMainLooper()).idleFor(250, TimeUnit.MILLISECONDS)
-        assertNotEquals(during.last().image, dashboardItems(screen).last().image)
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertSame(loadingTemplate, screen.onGetTemplate())
         shadowOf(Looper.getMainLooper()).idleFor(750, TimeUnit.MILLISECONDS)
         val after = dashboardItems(screen)
         assertEquals(before.map { it.title.toString() }, after.map { it.title.toString() })
         assertFalse(sending(after.last()))
         assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX,
             (screen.onGetTemplate() as SectionedItemTemplate).scrollStatePersistenceStrategy)
+    }
+
+    @Test fun unchangedSnapshotsReuseTemplateAndLazySectionDelegates() {
+        modernHost()
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val original = screen.onGetTemplate() as SectionedItemTemplate
+        repeat(3) {
+            shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+            val next = screen.onGetTemplate() as SectionedItemTemplate
+            assertSame(original, next)
+            assertSame(original.sections.single().itemsDelegate, next.sections.single().itemsDelegate)
+        }
+        bridge.response.getJSONArray("controls").getJSONObject(0).put("name", "Renamed")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertNotSame(original, screen.onGetTemplate())
+        assertEquals("Renamed", dashboardItems(screen).first().text.toString())
+    }
+
+    @Test fun switchFeedbackAndSpinnerCompletionShareOneUpdateAndKeepOtherGroups() {
+        modernHost()
+        val control = commandButton("Light", "switches").put("kind", "switch").put("state", "ON")
+            .put("waitForFeedback", true).put("actions", JSONArray()
+                .put(JSONObject().put("id", "ON").put("title", "On").put("icon", "on"))
+                .put(JSONObject().put("id", "OFF").put("title", "Off").put("icon", "off")))
+        bridge.response.put("controls", JSONArray().put(commandButton("Other", "other")).put(control))
+            .put("sections", JSONArray()
+                .put(JSONObject().put("id", "other").put("name", "Other controls"))
+                .put(JSONObject().put("id", "switches").put("name", "Lights")))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate() as SectionedItemTemplate
+        dashboardItems(screen).last().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OFF", bridge.commands.single()["actionId"])
+        assertTrue(dashboardItems(screen).last().isLoading)
+        val submissions = lifecycle.templatesReturned.size
+        control.put("state", "OFF")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        val updated = screen.onGetTemplate() as SectionedItemTemplate
+        assertSame(original.sections.first(), updated.sections.first())
+        assertFalse(dashboardItems(screen).last().isLoading)
+        assertEquals(R.drawable.car_off, dashboardItems(screen).last().image!!.icon!!.resId)
+        dashboardItems(screen).last().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(listOf("OFF", "ON"), bridge.commands.map { it["actionId"] })
+    }
+
+    @Test fun localToBackendPendingDoesNotReplaceTheLoadingSection() {
+        modernHost()
+        bridge.commandWaitForFeedback = true
+        bridge.delayCommandReply = true
+        val control = bridge.response.getJSONArray("controls").getJSONObject(0)
+            .put("waitForFeedback", true)
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        dashboardItems(screen).first().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        val loading = screen.onGetTemplate() as SectionedItemTemplate
+        val submissions = lifecycle.templatesReturned.size
+        assertTrue(dashboardItems(screen).first().isLoading)
+        bridge.commandReplies.removeAt(0)()
+        shadowOf(Looper.getMainLooper()).idle()
+        assertSame(loading, screen.onGetTemplate())
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        shadowOf(Looper.getMainLooper()).idleFor(2, TimeUnit.SECONDS)
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertSame(loading, screen.onGetTemplate())
+        control.put("pending", JSONObject.NULL).put("state", "OPEN")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        assertFalse(dashboardItems(screen).first().isLoading)
+    }
+
+    @Test fun intermediatePositionUpdatesDoNotResubmitAnUnchangedGrid() {
+        modernHost()
+        val control = bridge.response.getJSONArray("controls").getJSONObject(0)
+            .put("position", 20)
+        control.getJSONArray("actions").put(JSONObject().put("id", "POSITION_50")
+            .put("title", "50%").put("position", 50).put("icon", "rollerOpen"))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate()
+        val submissions = lifecycle.templatesReturned.size
+        control.put("position", 21)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertSame(original, screen.onGetTemplate())
+        control.put("position", 50)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        assertEquals(CarColor.GREEN, dashboardItems(screen).last().image!!.tint)
     }
 
     @Test fun transientEngineFailureKeepsDashboardAndRecovers() {

@@ -97,12 +97,13 @@ internal abstract class PollingCarScreen(
             } else next
             val changed = data?.toString() != update.toString()
             data = update
-            if (onData() || changed) invalidate()
+            if (onData() || changed) onSnapshotChanged()
             handler.postDelayed(poll, 1_000)
         }
     }
 
     protected open fun onData(): Boolean = false
+    protected open fun onSnapshotChanged() { invalidate() }
     protected open fun onHidden() {}
     protected fun word(key: String, fallback: Int): String =
         data?.optJSONObject("strings")?.optString(key)?.takeIf { it.isNotEmpty() }
