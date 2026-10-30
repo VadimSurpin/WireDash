@@ -66,7 +66,9 @@ internal abstract class PollingCarScreen(
                 visible = true
                 generation++
                 fetching = false
-                data = null
+                // Back must return the same template type as before the push.
+                // Keep the last snapshot while refreshing, including its rows
+                // and scroll position, rather than flashing a loading template.
                 refresh()
             }
             override fun onStop(owner: LifecycleOwner) {
@@ -95,12 +97,13 @@ internal abstract class PollingCarScreen(
             } else next
             val changed = data?.toString() != update.toString()
             data = update
-            if (onData() || changed) invalidate()
+            if (onData() || changed) onSnapshotChanged()
             handler.postDelayed(poll, 1_000)
         }
     }
 
     protected open fun onData(): Boolean = false
+    protected open fun onSnapshotChanged() { invalidate() }
     protected open fun onHidden() {}
     protected fun word(key: String, fallback: Int): String =
         data?.optJSONObject("strings")?.optString(key)?.takeIf { it.isNotEmpty() }
@@ -135,12 +138,33 @@ internal abstract class PollingCarScreen(
         if (selected) builder.setTint(CarColor.createCustom(0xff398500.toInt(), 0xffa9e34b.toInt()))
         return builder.build()
     }
+
+    protected fun selected(control: JSONObject, action: JSONObject): Boolean =
+        if (action.has("position")) !control.isNull("position") &&
+            control.optDouble("position") == action.optDouble("position")
+        else control.optString("state") == action.optString("stateMatch", action.optString("id"))
 }
 
 /** Host limits are respected without silently losing dashboards or controls. */
 internal abstract class PagedCarScreen(context: CarContext, bridge: CarBridge) :
     PollingCarScreen(context, bridge) {
     private var offset = 0
+
+    protected fun grid(entries: List<JSONObject>, item: (JSONObject) -> GridItem): ItemList {
+        val limit = carContext.getCarService(ConstraintManager::class.java)
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_GRID).coerceAtLeast(3)
+        val count = if (entries.size > limit) limit - 2 else limit
+        if (offset >= entries.size) offset = 0
+        val items = ItemList.Builder()
+        if (offset > 0) items.addItem(GridItem.Builder()
+            .setTitle(carContext.getString(R.string.car_previous)).setImage(icon("left"))
+            .setOnClickListener { offset = (offset - count).coerceAtLeast(0); invalidate() }.build())
+        entries.drop(offset).take(count).forEach { items.addItem(item(it)) }
+        if (offset + count < entries.size) items.addItem(GridItem.Builder()
+            .setTitle(carContext.getString(R.string.car_next)).setImage(icon("right"))
+            .setOnClickListener { offset += count; invalidate() }.build())
+        return items.build()
+    }
     protected fun list(title: String, root: Boolean, entries: List<JSONObject>,
         row: (JSONObject) -> Row): Template {
         if (carContext.carAppApiLevel >= 8) {
@@ -173,8 +197,11 @@ internal abstract class PagedCarScreen(context: CarContext, bridge: CarBridge) :
 internal class DashboardCarScreen(context: CarContext, bridge: CarBridge) : PagedCarScreen(context, bridge) {
     override val method = "carCatalog"
     override fun onGetTemplate(): Template {
-        val current = data ?: return ListTemplate.Builder().setTitle("WireDash")
-            .setHeaderAction(Action.APP_ICON).setLoading(true).build()
+        val current = data ?: return if (carContext.carAppApiLevel >= 8)
+            SectionedItemTemplate.Builder().setHeader(Header.Builder().setTitle("WireDash")
+                .setStartHeaderAction(Action.APP_ICON).build()).setLoading(true).build()
+            else ListTemplate.Builder().setTitle("WireDash")
+                .setHeaderAction(Action.APP_ICON).setLoading(true).build()
         if (current.has("outcome")) return message(R.string.car_error, true)
         val entries = current.optJSONArray("dashboards")?.objects().orEmpty()
         if (entries.isEmpty()) return message(R.string.car_setup, true)
@@ -222,7 +249,7 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
 }
 
 internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,
-    private val dashboardId: String, private val controlId: String) : PollingCarScreen(context, bridge) {
+    private val dashboardId: String, private val controlId: String) : PagedCarScreen(context, bridge) {
     override val method = "carOpen"
     override val arguments get() = mapOf("dashboardId" to dashboardId)
     private var working: String? = null
@@ -248,23 +275,22 @@ internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
         val control = current.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
             ?: return message(R.string.car_removed)
-        val items = ItemList.Builder()
         val connected = current.optBoolean("connected")
-        for (action in control.getJSONArray("actions").objects()) {
+        val items = grid(control.getJSONArray("actions").objects()) { action ->
             val id = action.getString("id")
             val pending = working == id || (!control.isNull("pending") && control.optString("pending") == id)
             val item = GridItem.Builder().setTitle(action.getString("title"))
             if (pending) item.setLoading(true)
-            else item.setImage(icon(action.optString("icon"), control.optString("state") == id), GridItem.IMAGE_TYPE_ICON)
+            else item.setImage(icon(action.optString("icon"), selected(control, action)), GridItem.IMAGE_TYPE_ICON)
             if (!connected) item.setText(word("reconnecting", R.string.car_reconnecting))
             else if (control.optBoolean("failed")) item.setText(word("unconfirmed", R.string.car_unconfirmed))
             // The host forbids click listeners on loading GridItems. The
             // one-second command spinner then returns to a repeatable action.
             if (connected && !pending) item.setOnClickListener { send(id) }
-            items.addItem(item.build())
+            item.build()
         }
         return GridTemplate.Builder().setTitle(control.getString("name"))
-            .setHeaderAction(Action.BACK).setSingleList(items.build())
+            .setHeaderAction(Action.BACK).setSingleList(items)
             .setActionStrip(ActionStrip.Builder().addAction(Action.Builder()
                 .setIcon(CarIcon.Builder(IconCompat.createWithResource(carContext, R.drawable.car_refresh)).build())
                 .setOnClickListener { bridge.call("carReconnect") { refresh() } }.build()).build())

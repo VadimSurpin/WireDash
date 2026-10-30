@@ -31,16 +31,22 @@ class CarAction {
     this.commands, {
     this.iconCodepoint,
     this.colorArgb,
+    this.position,
+    this.stateMatch,
   });
   final String id, title, icon;
   final List<CarCommand> commands;
   final int? iconCodepoint, colorArgb;
+  final int? position;
+  final String? stateMatch;
   Map<String, Object?> toJson() => {
     'id': id,
     'title': title,
     'icon': icon,
     if (iconCodepoint != null) 'iconCodepoint': iconCodepoint,
     if (colorArgb != null) 'colorArgb': colorArgb,
+    if (position != null) 'position': position,
+    if (stateMatch != null) 'stateMatch': stateMatch,
   };
 }
 
@@ -53,6 +59,7 @@ class CarControl {
     this.sectionId,
     this.topics = const [],
     this.path,
+    this.positionPath,
     this.onMatch = 'ON',
     this.waitForFeedback = true,
     this.binding,
@@ -62,6 +69,7 @@ class CarControl {
   final List<CarAction> actions;
   final List<String> topics;
   final String? path;
+  final String? positionPath;
   final String onMatch;
   final bool waitForFeedback;
   final WirenBoardCoverBinding? binding;
@@ -71,12 +79,15 @@ class CarControl {
     'wait': waitForFeedback,
     'topics': topics,
     'path': path,
+    'positionPath': positionPath,
     'on': onMatch,
     'binding': binding?.toJson(),
     'actions': [
       for (final a in actions)
         {
           'id': a.id,
+          'position': a.position,
+          'stateMatch': a.stateMatch,
           'commands': [
             for (final c in a.commands) [c.topic, c.payload, c.retain, c.qos],
           ],
@@ -86,7 +97,8 @@ class CarControl {
 }
 
 /// The car exposes simple IoT actions. Editors, text input, schedules and
-/// sliders remain on the phone. Existing dashboard order and button choices
+/// continuous sliders remain on the phone; cover positions use preset buttons.
+/// Existing dashboard order and button choices
 /// are retained. A malformed panel cannot hide all the other controls.
 List<CarControl> carControls(
   Dashboard dashboard,
@@ -134,8 +146,23 @@ List<CarControl> carControls(
           ], iconCodepoint: offIcon),
         ],
       );
-      CarControl cover(String id, String name, CoverConfig cfg) {
+      CarControl cover(
+        String id,
+        String name,
+        CoverConfig cfg, {
+        bool positionSupported = true,
+      }) {
         final wb = cfg.wirenBoard;
+        final positions = wb == null && cfg.waitForFeedback && positionSupported
+            ? (cfg.presets.isNotEmpty
+                      ? cfg.presets
+                      : cfg.showSlider
+                      ? const [0, 25, 50, 75, 100]
+                      : const <int>[])
+                  .where((p) => p >= 0 && p <= 100)
+                  .toSet()
+                  .toList()
+            : const <int>[];
         List<CarCommand> commands(String action, String payload) => wb == null
             ? [command(payload)]
             : [
@@ -177,6 +204,7 @@ List<CarControl> carControls(
               ? [subscribe]
               : [wb.openTopic, wb.closeTopic],
           path: cfg.statePath,
+          positionPath: positions.isEmpty ? null : cfg.positionPath,
           actions: [
             if (cfg.openButton.visible)
               action(
@@ -201,6 +229,18 @@ List<CarControl> carControls(
                 l10n.panelCoverStop,
                 'stop',
                 cfg.stopPayload,
+              ),
+            for (final position in positions)
+              CarAction(
+                'POSITION_$position',
+                '$position%',
+                position == 0 ? 'rollerClosed' : 'rollerOpen',
+                [
+                  command(
+                    cfg.positionTemplate.replaceAll('{value}', '$position'),
+                  ),
+                ],
+                position: position,
               ),
           ],
         );
@@ -244,35 +284,35 @@ List<CarControl> carControls(
         case CoverConfig c:
           result.add(cover(panel.id, panel.name, c));
         case OptionsConfig c:
-          // Older built-in shutter tiles use the radio/enum presentation.
-          // Preserve their saved labels, state matches and payloads verbatim.
-          if (c.options.isNotEmpty &&
-              c.options.every(
-                (o) => const [
-                  'OPEN',
-                  'CLOSE',
-                  'STOP',
-                ].contains(o.match.toUpperCase()),
-              )) {
+          // Radio/combo/multi-state panels include curtain-position buttons.
+          // Match their saved values exactly; only legacy direction controls
+          // use the historical OPEN/CLOSE/STOP normalization.
+          final directions = c.options.every(
+            (o) =>
+                const ['OPEN', 'CLOSE', 'STOP'].contains(o.match.toUpperCase()),
+          );
+          if (c.options.isNotEmpty) {
             result.add(
               CarControl(
                 id: panel.id,
                 name: panel.name,
-                kind: 'cover',
+                kind: directions ? 'cover' : 'options',
                 sectionId: panel.sectionId,
                 topics: [subscribe],
                 path: c.jsonPath,
                 actions: [
-                  for (final option in c.options)
+                  for (final (index, option) in c.options.indexed)
                     CarAction(
-                      option.match.toUpperCase(),
+                      directions ? option.match.toUpperCase() : 'OPTION_$index',
                       option.label,
                       switch (option.match.toUpperCase()) {
                         'OPEN' => 'rollerOpen',
                         'CLOSE' => 'rollerClosed',
-                        _ => 'stop',
+                        'STOP' => 'stop',
+                        _ => 'rollerOpen',
                       },
                       [command(option.payload)],
+                      stateMatch: directions ? null : option.match,
                     ),
                 ],
               ),
@@ -343,17 +383,37 @@ List<CarControl> carControls(
                           f.settable,
                     )
                     .firstOrNull;
-            if (state?.settable == true) {
+            final position = c.profile.position;
+            bool shown(DeviceFeature? feature) =>
+                feature?.settable == true &&
+                (c.display.properties == null ||
+                    c.display.properties!.contains(feature!.property));
+            final hasState = shown(state);
+            final hasPosition = shown(position);
+            if (hasState || hasPosition) {
               result.add(
                 cover(
                   panel.id,
                   panel.name,
                   CoverConfig(
-                    statePath: state!.property,
-                    openPayload: jsonEncode({state.property: 'OPEN'}),
-                    closePayload: jsonEncode({state.property: 'CLOSE'}),
-                    stopPayload: jsonEncode({state.property: 'STOP'}),
+                    statePath: state?.property ?? 'state',
+                    openPayload: jsonEncode({
+                      state?.property ?? 'state': 'OPEN',
+                    }),
+                    closePayload: jsonEncode({
+                      state?.property ?? 'state': 'CLOSE',
+                    }),
+                    stopPayload: jsonEncode({
+                      state?.property ?? 'state': 'STOP',
+                    }),
+                    openButton: CoverButtonConfig(visible: hasState),
+                    closeButton: CoverButtonConfig(visible: hasState),
+                    stopButton: CoverButtonConfig(visible: hasState),
+                    positionPath: position?.property ?? 'position',
+                    positionTemplate:
+                        '{${jsonEncode(position?.property ?? 'position')}:{value}}',
                   ),
+                  positionSupported: hasPosition,
                 ),
               );
             }

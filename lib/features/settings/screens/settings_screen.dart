@@ -23,8 +23,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../../mqtt/mqtt_status.dart';
 import '../../../mqtt/providers/mqtt_manager_provider.dart';
 import '../providers/settings_controller.dart';
-import '../../pro/pro.dart';
-import '../../pro/pro_screen.dart';
 import 'language_screen.dart';
 
 /// App version + build number, e.g. "1.3.2 (10)".
@@ -161,19 +159,6 @@ class SettingsScreen extends ConsumerWidget {
                 subtitle: Text(l10n.settingsRateAppSubtitle),
                 onTap: () => openSupportLink(releasesUrl),
               ),
-              // ZigDash Pro (history-2.7.md): only where it can be bought.
-              if (proFlavor == 'play' &&
-                  ref.watch(proStatusProvider) != ProStatus.unavailable)
-                ListTile(
-                  leading: const Icon(Icons.workspace_premium_outlined),
-                  title: Text(l10n.proTitle),
-                  subtitle: Text(
-                    ref.watch(proStatusProvider) == ProStatus.unlocked
-                        ? l10n.proUnlocked
-                        : l10n.proAbout,
-                  ),
-                  onTap: () => openPro(context),
-                ),
               ListTile(
                 leading: const Icon(Icons.shield_outlined),
                 title: Text(l10n.settingsPrivacy),

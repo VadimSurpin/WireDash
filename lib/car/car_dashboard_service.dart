@@ -213,10 +213,25 @@ class CarDashboardService {
           : null,
       'waitForFeedback': c.waitForFeedback,
       'state': state,
+      'position': _position(c),
       'pending': _pending[c.id]?.action.id,
       'failed': c.waitForFeedback && _failed.contains(c.id),
       'actions': [for (final action in c.actions) action.toJson()],
     };
+  }
+
+  num? _position(CarControl c) {
+    if (!c.waitForFeedback || c.positionPath == null || c.topics.isEmpty) {
+      return null;
+    }
+    final message = _states[c.topics.first];
+    if (!_fresh(message)) return null;
+    final value = num.tryParse(
+      '${extractByPath(message!.payload, c.positionPath)}',
+    );
+    return value != null && value.isFinite && value >= 0 && value <= 100
+        ? value
+        : null;
   }
 
   bool _confirms(CarControl c, _Pending p) {
@@ -247,8 +262,10 @@ class CarDashboardService {
         !m.receivedAt.isAfter(p.sentAt)) {
       return false;
     }
+    if (p.action.position != null) return _position(c) == p.action.position;
     final value = _value(c);
     if (value == null) return false;
+    if (p.action.stateMatch != null) return value == p.action.stateMatch;
     if (c.kind == 'switch') {
       return (value == c.onMatch) == (p.action.id == 'ON');
     }
