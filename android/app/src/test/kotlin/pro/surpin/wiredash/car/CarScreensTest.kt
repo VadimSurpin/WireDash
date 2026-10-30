@@ -1,5 +1,7 @@
 package pro.surpin.wiredash.car
 
+import android.os.IBinder
+import android.os.IInterface
 import android.os.Looper
 import androidx.car.app.HandshakeInfo
 import androidx.car.app.OnDoneCallback
@@ -10,6 +12,7 @@ import androidx.car.app.model.GridTemplate
 import androidx.car.app.model.CarColor
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.MessageTemplate
+import androidx.car.app.model.OnClickDelegate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Item
 import androidx.car.app.model.Section
@@ -114,6 +117,15 @@ class CarScreensTest {
         .put("waitForFeedback", false).put("state", JSONObject.NULL)
         .put("pending", JSONObject.NULL).put("failed", false)
         .put("actions", JSONArray().put(JSONObject().put("id", "PRESS").put("title", id).put("icon", "on")))
+
+    // Lazy item requests serialize and deserialize GridItems, creating new
+    // model/delegate wrappers. Compare the actual IPC endpoint, not wrappers.
+    private fun clickBinder(delegate: OnClickDelegate?): IBinder {
+        val value = requireNotNull(delegate)
+        val listener = value.javaClass.getDeclaredField("mListener").apply { isAccessible = true }
+            .get(value) as IInterface
+        return listener.asBinder()
+    }
 
     private fun sending(item: GridItem): Boolean =
         item.image?.icon?.resId == R.drawable.car_sending_0
@@ -251,10 +263,10 @@ class CarScreensTest {
         assertTrue(sending(during.last()))
         assertFalse(during.last().isLoading)
         assertNotNull(during.last().image)
-        assertSame(before.last().onClickDelegate, during.last().onClickDelegate)
+        assertSame(clickBinder(before.last().onClickDelegate), clickBinder(during.last().onClickDelegate))
         before.dropLast(1).zip(during.dropLast(1)).forEach { (old, current) ->
-            assertSame(old, current)
-            assertSame(old.onClickDelegate, current.onClickDelegate)
+            assertEquals(old, current)
+            assertSame(clickBinder(old.onClickDelegate), clickBinder(current.onClickDelegate))
         }
         val loadingTemplate = screen.onGetTemplate() as SectionedItemTemplate
         assertSame(template.sections[0], loadingTemplate.sections[0])
@@ -272,7 +284,7 @@ class CarScreensTest {
         val after = dashboardItems(screen)
         assertEquals(before.map { it.title.toString() }, after.map { it.title.toString() })
         assertFalse(sending(after.last()))
-        assertSame(before.last().onClickDelegate, after.last().onClickDelegate)
+        assertSame(clickBinder(before.last().onClickDelegate), clickBinder(after.last().onClickDelegate))
         assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX,
             (screen.onGetTemplate() as SectionedItemTemplate).scrollStatePersistenceStrategy)
     }
@@ -313,7 +325,7 @@ class CarScreensTest {
         assertEquals("OFF", bridge.commands.single()["actionId"])
         assertTrue(sending(dashboardItems(screen).last()))
         assertFalse(dashboardItems(screen).last().isLoading)
-        assertSame(click, dashboardItems(screen).last().onClickDelegate)
+        assertSame(clickBinder(click), clickBinder(dashboardItems(screen).last().onClickDelegate))
         click.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(1, bridge.commands.size)
@@ -325,7 +337,7 @@ class CarScreensTest {
         assertSame(original.sections.first(), updated.sections.first())
         assertFalse(sending(dashboardItems(screen).last()))
         assertEquals(R.drawable.car_off, dashboardItems(screen).last().image!!.icon!!.resId)
-        assertSame(click, dashboardItems(screen).last().onClickDelegate)
+        assertSame(clickBinder(click), clickBinder(dashboardItems(screen).last().onClickDelegate))
         // The delegate from before OFF feedback must now send ON.
         click.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
@@ -406,7 +418,7 @@ class CarScreensTest {
         click.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals("ON", bridge.commands.single()["actionId"])
-        assertSame(click, dashboardItems(screen).single().onClickDelegate)
+        assertSame(clickBinder(click), clickBinder(dashboardItems(screen).single().onClickDelegate))
     }
 
     @Test fun retainedDelegatesRejectOfflineRemovedAndHiddenActions() {
@@ -449,7 +461,7 @@ class CarScreensTest {
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
         val recovered = dashboardItems(screen).single()
         assertEquals("", recovered.text.toString())
-        assertSame(original.onClickDelegate, recovered.onClickDelegate)
+        assertSame(clickBinder(original.onClickDelegate), clickBinder(recovered.onClickDelegate))
         recovered.onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals("PRESS", bridge.commands.single()["actionId"])
