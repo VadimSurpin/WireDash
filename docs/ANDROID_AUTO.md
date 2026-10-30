@@ -30,22 +30,27 @@ cover uses 0/25/50/75/100% buttons in Auto. Writable Zigbee cover position featu
 use their exact endpoint property. MQTT feedback highlights the reported
 position and confirms a pending position only when its target is reported.
 WB relay pairs expose direction commands, without inventing a position estimate.
-Command-only covers send the saved command, spin for one second and return to
-their initial appearance without a state subscription. State-aware controls
+Command-only covers send the saved command, show a busy indicator for one second,
+and return to their initial appearance without a state subscription. State-aware controls
 use current-session MQTT feedback; relay activity is not a gate-position
 estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
-`/on`, and are never retained. Sending uses Android Auto's native loading
-indicator; the host animates it without frame-by-frame dashboard submissions.
-Unchanged groups retain their lazy-list delegates, and command/MQTT updates
-in the same main-loop turn are coalesced. Duplicate taps on the busy action are ignored;
-the other cover directions (including Stop) remain usable.
+`/on`, and are never retained. On the grouped scrolling dashboard, sending
+shows a static busy-ring icon in the existing image tile.
+The tile retains the same click delegate while busy and across MQTT state changes,
+so it remains focusable; command guards reject repeated taps on a busy action.
+Switch delegates read the latest state on every tap, even if the host still has
+an older tile. Unchanged tiles and groups retain their objects and delegates,
+and command/MQTT updates in the same main-loop turn are coalesced. The other
+cover directions (including Stop) remain usable while one action is busy.
 
 The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.
 The host fetches more items while scrolling; WireDash does not insert Next or
-Previous items or truncate the grid at the older template's item limit. Scroll
-position is preserved across state/spinner updates. Spinners on different
-controls are independent. Android Auto still determines grid geometry, button
+Previous items or truncate the grid at the older template's item limit.
+WireDash requests scroll preservation across state/busy updates. Android Auto 17.9 was reported to reset
+to the top with the native loading tiles in build 87. Build 88 keeps the image,
+clickability and click delegate stable; scroll behavior still needs verification
+on that host. Pending indicators on different controls are independent. Android Auto still determines grid geometry, button
 sizes, and scrolling affordances; the phone's Flutter layout is not mirrored.
 
 API 6/7 hosts retain the previous list/detail screens and pagination to respect
@@ -133,9 +138,10 @@ section ordering, orphaned tiles, group renaming and configured button appearanc
 
 `cd android && ./gradlew :app:testFossDebugUnitTest` uses Robolectric and the
 Car App testing library to build real host templates, request all items beyond
-the old list/grid limits, check direct button commands and independent spinner
-timing, require scroll preservation, and verify that stale callbacks/spinners do
-not survive hiding and resuming the car screen. The older-host pagination
+the old list/grid limits, check direct button commands and independent busy
+timing, require the scroll preservation strategy and stable click delegates,
+and verify that stale callbacks/pending indicators do not survive hiding and
+resuming the car screen. The older-host pagination
 fallback is also tested. CI runs these tests before uploading the APK.
 
 Returning from a dashboard keeps the chooser's last snapshot while it refreshes.

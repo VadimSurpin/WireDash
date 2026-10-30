@@ -32,8 +32,18 @@ internal class DashboardControlsCarScreen(
     private class Sending(val action: String, var awaitingSnapshot: Boolean = false)
     private class CachedSection(val title: String?, val commands: List<String>,
         val items: List<GridItem>, val section: GridSection)
+    private data class TileKey(val controlId: String, val kind: String, val actionId: String?)
+    private class CachedTile(val online: GridItem.Builder) {
+        val offline = GridItem.Builder()
+        var item: GridItem? = null
+        var appearance: String? = null
+    }
     private val sending = mutableMapOf<String, Sending>()
     private val sections = mutableMapOf<String, CachedSection>()
+    private val tiles = mutableMapOf<TileKey, CachedTile>()
+    private val busyIcon by lazy {
+        CarIcon.Builder(IconCompat.createWithResource(carContext, R.drawable.car_sending_0)).build()
+    }
     private var previousTemplate: SectionedItemTemplate? = null
     private var presentedTemplate: Template? = null
     private var renderScheduled = false
@@ -84,6 +94,7 @@ internal class DashboardControlsCarScreen(
         if (controls.isEmpty()) return message(R.string.car_setup)
 
         val activeSections = mutableSetOf<String>()
+        val activeTiles = mutableSetOf<TileKey>()
         fun addGroup(id: String, title: String?, entries: List<JSONObject>) {
             if (entries.isEmpty()) return
             activeSections.add(id)
@@ -97,10 +108,10 @@ internal class DashboardControlsCarScreen(
                     val appearance = actions.firstOrNull { it.optString("id") == if (on) "ON" else "OFF" }
                     val target = actions.firstOrNull { it.optString("id") == if (on) "OFF" else "ON" }
                     if (appearance != null && target != null) items.add(
-                        button(current, control, target, appearance, control.getString("name"), null))
+                        button(current, control, target, appearance, control.getString("name"), null, activeTiles))
                 } else for (action in actions) {
                     items.add(button(current, control, action, action, action.getString("title"),
-                        if (control.optString("kind") in setOf("cover", "options")) control.getString("name") else null))
+                        if (control.optString("kind") in setOf("cover", "options")) control.getString("name") else null, activeTiles))
                 }
             }
             // Compare rendered content rather than raw MQTT snapshots: a
@@ -128,6 +139,7 @@ internal class DashboardControlsCarScreen(
         for (section in groups) addGroup("group/" + section.getString("id"), section.getString("name"),
             controls.filter { it.optString("sectionId") == section.getString("id") })
         sections.keys.retainAll(activeSections)
+        tiles.keys.retainAll(activeTiles)
         val built = template.build()
         val previous = previousTemplate
         if (previous != null && previous.header == built.header &&
@@ -138,7 +150,7 @@ internal class DashboardControlsCarScreen(
     }
 
     private fun button(snapshot: JSONObject, control: JSONObject, target: JSONObject,
-        appearance: JSONObject, title: String, subtitle: String?): GridItem {
+        appearance: JSONObject, title: String, subtitle: String?, activeTiles: MutableSet<TileKey>): GridItem {
         val controlId = control.getString("id")
         val actionId = target.getString("id")
         val switch = control.optString("kind") == "switch"
@@ -148,19 +160,33 @@ internal class DashboardControlsCarScreen(
             control.optString("pending").takeUnless { control.isNull("pending") } else null
         val loading = pending != null && (switch || pending == actionId)
         val connected = snapshot.optBoolean("connected")
-        val item = GridItem.Builder().setTitle(title)
-        // Let the host animate its loading indicator. Replacing the icon for
-        // every animation frame replaces the lazy section's content repeatedly.
-        if (loading) item.setLoading(true)
-        else item.setImage(actionIcon(appearance, if (switch) control.optString("state") == "ON"
-            else selected(control, appearance)), GridItem.IMAGE_TYPE_ICON)
-        when {
-            !connected -> item.setText(word("reconnecting", R.string.car_reconnecting))
-            control.optBoolean("failed") -> item.setText(word("unconfirmed", R.string.car_unconfirmed))
-            subtitle != null -> item.setText(subtitle)
+        // A switch keeps one identity across ON/OFF. Its listener reads the
+        // latest snapshot instead of retaining the target from an older tile.
+        val key = TileKey(controlId, control.getString("kind"), if (switch) null else actionId)
+        activeTiles.add(key)
+        val tile = tiles.getOrPut(key) {
+            CachedTile(GridItem.Builder().setOnClickListener { send(key) })
         }
-        if (connected && !loading) item.setOnClickListener { send(controlId, actionId) }
-        return item.build()
+        val item = (if (connected) tile.online else tile.offline).setTitle(title)
+        // Native loading tiles remove their image and click delegate. Keep a
+        // focusable image tile throughout the command, including the *same*
+        // Binder click delegate. A static busy icon needs no animation redraws.
+        item.setImage(if (loading) busyIcon else actionIcon(appearance,
+            if (switch) control.optString("state") == "ON" else selected(control, appearance)),
+            GridItem.IMAGE_TYPE_ICON)
+        // Builders are reused: explicitly clear old reconnect/error text.
+        item.setText(when {
+            !connected -> word("reconnecting", R.string.car_reconnecting)
+            control.optBoolean("failed") -> word("unconfirmed", R.string.car_unconfirmed)
+            else -> subtitle.orEmpty()
+        })
+        val built = item.build()
+        val metadata = appearance.toString()
+        val previous = tile.item
+        if (previous != null && previous == built && tile.appearance == metadata) return previous
+        tile.item = built
+        tile.appearance = metadata
+        return built
     }
 
     private fun actionIcon(action: JSONObject, selected: Boolean): CarIcon {
@@ -188,13 +214,19 @@ internal class DashboardControlsCarScreen(
         return icon.build()
     }
 
-    private fun send(controlId: String, actionId: String) {
-        // Retained host click delegates must not repeat a busy command.
+    private fun send(key: TileKey) {
+        // Stable host delegates use current state and cannot invoke a hidden,
+        // removed, repurposed, offline or busy control.
+        if (!visible || data?.optBoolean("connected") != true) return
+        val controlId = key.controlId
         val control = data?.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
-        val pending = sending[controlId]?.action ?: if (control?.optBoolean("waitForFeedback") == true)
+            ?: return
+        if (control.optString("kind") != key.kind) return
+        val actionId = key.actionId ?: if (control.optString("state") == "ON") "OFF" else "ON"
+        if (control.getJSONArray("actions").objects().none { it.optString("id") == actionId }) return
+        val pending = sending[controlId]?.action ?: if (control.optBoolean("waitForFeedback"))
             control.optString("pending").takeUnless { control.isNull("pending") } else null
-        if (data?.optBoolean("connected") != true || pending == actionId ||
-            (control?.optString("kind") == "switch" && pending != null)) return
+        if (pending == actionId || (key.kind == "switch" && pending != null)) return
         val request = Sending(actionId)
         sending[controlId] = request
         render()

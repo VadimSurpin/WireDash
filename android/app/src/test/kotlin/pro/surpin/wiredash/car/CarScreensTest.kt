@@ -115,7 +115,8 @@ class CarScreensTest {
         .put("pending", JSONObject.NULL).put("failed", false)
         .put("actions", JSONArray().put(JSONObject().put("id", "PRESS").put("title", id).put("icon", "on")))
 
-    private fun sending(item: GridItem): Boolean = item.isLoading
+    private fun sending(item: GridItem): Boolean =
+        item.image?.icon?.resId == R.drawable.car_sending_0
 
     private fun checkSelectorBackNavigation(api: Int) {
         context.updateHandshakeInfo(HandshakeInfo("com.google.android.projection.gearhead", api))
@@ -231,7 +232,7 @@ class CarScreensTest {
         assertNotEquals(CarColor.GREEN, dashboardItems(screen)[2].image!!.tint)
     }
 
-    @Test fun nativeLoadingKeepsUnchangedSectionsAndDoesNotResubmitAnimationFrames() {
+    @Test fun busyTileKeepsItsImageAndClickDelegateWithoutAnimationRedraws() {
         modernHost()
         val controls = JSONArray()
         repeat(40) { controls.put(commandButton("Button $it", if (it < 20) "first" else "second")) }
@@ -248,8 +249,13 @@ class CarScreensTest {
         assertEquals(before.map { it.title.toString() }, during.map { it.title.toString() })
         assertTrue(during.dropLast(1).all { !it.isLoading && it.image != null && it.onClickDelegate != null })
         assertTrue(sending(during.last()))
-        assertNull(during.last().image)
-        assertNull(during.last().onClickDelegate)
+        assertFalse(during.last().isLoading)
+        assertNotNull(during.last().image)
+        assertSame(before.last().onClickDelegate, during.last().onClickDelegate)
+        before.dropLast(1).zip(during.dropLast(1)).forEach { (old, current) ->
+            assertSame(old, current)
+            assertSame(old.onClickDelegate, current.onClickDelegate)
+        }
         val loadingTemplate = screen.onGetTemplate() as SectionedItemTemplate
         assertSame(template.sections[0], loadingTemplate.sections[0])
         assertSame(template.sections[0].itemsDelegate, loadingTemplate.sections[0].itemsDelegate)
@@ -266,6 +272,7 @@ class CarScreensTest {
         val after = dashboardItems(screen)
         assertEquals(before.map { it.title.toString() }, after.map { it.title.toString() })
         assertFalse(sending(after.last()))
+        assertSame(before.last().onClickDelegate, after.last().onClickDelegate)
         assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX,
             (screen.onGetTemplate() as SectionedItemTemplate).scrollStatePersistenceStrategy)
     }
@@ -300,19 +307,27 @@ class CarScreensTest {
         val screen = DashboardControlsCarScreen(context, bridge, "d")
         val lifecycle = start(screen)
         val original = screen.onGetTemplate() as SectionedItemTemplate
-        dashboardItems(screen).last().onClickDelegate!!.sendClick(done)
+        val click = dashboardItems(screen).last().onClickDelegate!!
+        click.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals("OFF", bridge.commands.single()["actionId"])
-        assertTrue(dashboardItems(screen).last().isLoading)
+        assertTrue(sending(dashboardItems(screen).last()))
+        assertFalse(dashboardItems(screen).last().isLoading)
+        assertSame(click, dashboardItems(screen).last().onClickDelegate)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(1, bridge.commands.size)
         val submissions = lifecycle.templatesReturned.size
         control.put("state", "OFF")
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
         assertEquals(submissions + 1, lifecycle.templatesReturned.size)
         val updated = screen.onGetTemplate() as SectionedItemTemplate
         assertSame(original.sections.first(), updated.sections.first())
-        assertFalse(dashboardItems(screen).last().isLoading)
+        assertFalse(sending(dashboardItems(screen).last()))
         assertEquals(R.drawable.car_off, dashboardItems(screen).last().image!!.icon!!.resId)
-        dashboardItems(screen).last().onClickDelegate!!.sendClick(done)
+        assertSame(click, dashboardItems(screen).last().onClickDelegate)
+        // The delegate from before OFF feedback must now send ON.
+        click.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(listOf("OFF", "ON"), bridge.commands.map { it["actionId"] })
     }
@@ -329,7 +344,7 @@ class CarScreensTest {
         shadowOf(Looper.getMainLooper()).idle()
         val loading = screen.onGetTemplate() as SectionedItemTemplate
         val submissions = lifecycle.templatesReturned.size
-        assertTrue(dashboardItems(screen).first().isLoading)
+        assertTrue(sending(dashboardItems(screen).first()))
         bridge.commandReplies.removeAt(0)()
         shadowOf(Looper.getMainLooper()).idle()
         assertSame(loading, screen.onGetTemplate())
@@ -340,7 +355,7 @@ class CarScreensTest {
         control.put("pending", JSONObject.NULL).put("state", "OPEN")
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
         assertEquals(submissions + 1, lifecycle.templatesReturned.size)
-        assertFalse(dashboardItems(screen).first().isLoading)
+        assertFalse(sending(dashboardItems(screen).first()))
     }
 
     @Test fun intermediatePositionUpdatesDoNotResubmitAnUnchangedGrid() {
@@ -374,6 +389,70 @@ class CarScreensTest {
         bridge.response = FakeBridge.snapshot()
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
         assertTrue(dashboardItems(screen).all { it.onClickDelegate != null })
+    }
+
+    @Test fun cachedSwitchDelegateUsesLatestMqttStateBeforeTheHostRequestsANewTemplate() {
+        modernHost()
+        val control = commandButton("Light").put("kind", "switch").put("state", "ON")
+            .put("actions", JSONArray()
+                .put(JSONObject().put("id", "ON").put("title", "On").put("icon", "on"))
+                .put(JSONObject().put("id", "OFF").put("title", "Off").put("icon", "off")))
+        bridge.response.put("controls", JSONArray().put(control))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val click = dashboardItems(screen).single().onClickDelegate!!
+        control.put("state", "OFF")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("ON", bridge.commands.single()["actionId"])
+        assertSame(click, dashboardItems(screen).single().onClickDelegate)
+    }
+
+    @Test fun retainedDelegatesRejectOfflineRemovedAndHiddenActions() {
+        modernHost()
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val click = dashboardItems(screen).first().onClickDelegate!!
+        bridge.response.put("connected", false)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        bridge.response.put("connected", true)
+        bridge.response.getJSONArray("controls").getJSONObject(0).getJSONArray("actions").remove(0)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        bridge.response = FakeBridge.snapshot()
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        lifecycle.moveToState(Lifecycle.State.CREATED)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+    }
+
+    @Test fun cachedTileClearsTransientTextAndRestoresItsOriginalClickDelegate() {
+        modernHost()
+        bridge.response.put("controls", JSONArray().put(commandButton("Light")))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val original = dashboardItems(screen).single()
+        bridge.response.put("connected", false)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertNull(dashboardItems(screen).single().onClickDelegate)
+        assertTrue(dashboardItems(screen).single().text.toString().contains("Reconnecting"))
+        bridge.response.put("connected", true)
+        val control = bridge.response.getJSONArray("controls").getJSONObject(0).put("failed", true)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertTrue(dashboardItems(screen).single().text.toString().contains("Not confirmed"))
+        control.put("failed", false)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val recovered = dashboardItems(screen).single()
+        assertEquals("", recovered.text.toString())
+        assertSame(original.onClickDelegate, recovered.onClickDelegate)
+        recovered.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("PRESS", bridge.commands.single()["actionId"])
     }
 
     @Test fun modernDashboardShowsSavedGroupsWithDirectGateButtons() {
