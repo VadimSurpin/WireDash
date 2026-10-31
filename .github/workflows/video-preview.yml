@@ -1,0 +1,81 @@
+name: video-preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['feat/video-widget-plugin']
+    paths:
+      - 'packages/wiredash_video/**'
+      - 'packages/wiredash_plugin_api/**'
+      - 'integration_test/video_stream_test.dart'
+      - 'tool/video_preview/**'
+      - '.github/workflows/video-preview.yml'
+      - 'pubspec.*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: video-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-rtsp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: native/wireguard/go.mod
+          cache-dependency-path: native/wireguard/go.sum
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - run: sdkmanager 'platforms;android-36' 'ndk;27.0.12077973'
+      - name: Read pinned Flutter version
+        id: flutter
+        run: echo "version=$(sed -n 's/.*"flutter"[^"]*"\([^"]*\)".*/\1/p' .fvmrc)" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.flutter.outputs.version }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Start a synthetic H.264 RTSP camera
+        run: |
+          if ! command -v ffmpeg; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          bash tool/video_preview/start_rtsp.sh
+      - name: Enable emulator acceleration
+        run: sudo chmod 666 /dev/kvm
+      - name: Decode and render RTSP on Android
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: flutter test integration_test/video_stream_test.dart --flavor foss -d emulator-5554 --dart-define=WIREDASH_TEST_RTSP=rtsp://viewer:viewer-test@10.0.2.2:8554/camera
+      - name: Preserve screenshot and runtime logs
+        if: always()
+        run: |
+          mkdir -p build/video-preview
+          adb logcat -d > build/video-preview/logcat.txt || true
+          adb shell run-as pro.surpin.wiredash cat files/rtsp-frame.png > build/video-preview/rtsp-frame.png || true
+          test -s build/video-preview/rtsp-frame.png || rm -f build/video-preview/rtsp-frame.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wiredash-video-native-preview
+          path: build/video-preview/
+          if-no-files-found: error

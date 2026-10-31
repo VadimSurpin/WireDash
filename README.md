@@ -216,4 +216,3 @@ The original project remains available here:
 
 [MIT](LICENSE). Original ZigDash code © 2026 Gilad Tamam.
 The original license and copyright notice are preserved in this fork.
-

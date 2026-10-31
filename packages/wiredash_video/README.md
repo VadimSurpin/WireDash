@@ -82,9 +82,10 @@ registered as an Android Auto control.
 
 Tests under `test/plugins` exercise protocol fixtures, actual local HTTP challenge
 exchanges, pagination, credentials, user/background lifecycle, MQTT-independent
-dashboard rendering, and authenticated WireGuard forwarding. These are automated
-fixture tests. A physical Hikvision DVR and native video decoding have not yet
-been verified with this feature.
+dashboard rendering, and authenticated WireGuard forwarding. These are automated fixture tests. The `video-preview` workflow also runs an
+Android emulator against an authenticated synthetic H.264 RTSP source and
+asserts a rendered 320×180 video frame; its runtime evidence is uploaded as an
+artifact. A physical Hikvision DVR has not yet been verified with this feature.
 
 For a device test, start with one H.264 substream on the LAN, repeat via the home
 WireGuard route, then search a known recording interval with All, People and
