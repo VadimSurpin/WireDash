@@ -226,6 +226,7 @@ void main() {
       // Device tiles read the whole state payload and send /set commands.
       PanelType.device: PanelReliabilityPolicy.deviceTile(),
       PanelType.reading: PanelReliabilityPolicy.readOnlySubscription(),
+      PanelType.plugin: PanelReliabilityPolicy.independent(),
     };
 
     expect(expected.keys, containsAll(PanelType.values));

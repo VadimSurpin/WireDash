@@ -1,0 +1,9 @@
+name: wiredash_plugin_api
+description: Host interfaces for locally bundled WireDash panel plugins.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: ^3.8.0
+dependencies:
+  flutter:
+    sdk: flutter

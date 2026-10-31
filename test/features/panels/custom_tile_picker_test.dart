@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wiredash/core/router/app_router.dart' show parsePanelTypeToken;
@@ -11,8 +12,9 @@ import 'package:wiredash/l10n/app_localizations.dart';
 /// Scenes tab ("Add to dashboard"); device and reading tiles have their own
 /// entries in Add tile.
 void main() {
-  testWidgets('every raw panel type is offered under Custom MQTT tile',
-      (tester) async {
+  testWidgets('every raw panel type is offered under Custom MQTT tile', (
+    tester,
+  ) async {
     final opened = <PanelType>{};
     final router = GoRouter(
       initialLocation: '/',
@@ -22,8 +24,11 @@ void main() {
           builder: (context, _) => Scaffold(
             body: Builder(
               builder: (context) => TextButton(
-                onPressed: () => openCustomTilePicker(context,
-                    connectionId: 'c1', dashboardId: 'd1'),
+                onPressed: () => openCustomTilePicker(
+                  context,
+                  connectionId: 'c1',
+                  dashboardId: 'd1',
+                ),
                 child: const Text('custom'),
               ),
             ),
@@ -39,18 +44,26 @@ void main() {
       ],
     );
     addTearDown(router.dispose);
-    await tester.pumpWidget(MaterialApp.router(
-      routerConfig: router,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp.router(
+          routerConfig: router,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('custom'));
     await tester.pumpAndSettle();
     final options = tester
-        .widgetList<ListTile>(find.descendant(
-            of: find.byType(BottomSheet), matching: find.byType(ListTile)))
+        .widgetList<ListTile>(
+          find.descendant(
+            of: find.byType(BottomSheet),
+            matching: find.byType(ListTile),
+          ),
+        )
         .length;
     expect(options, greaterThan(10));
     // Close the sheet before picking each option in turn.
@@ -66,7 +79,9 @@ void main() {
       await tester.pumpAndSettle();
       final tile = find
           .descendant(
-              of: find.byType(BottomSheet), matching: find.byType(ListTile))
+            of: find.byType(BottomSheet),
+            matching: find.byType(ListTile),
+          )
           .at(i);
       await tester.ensureVisible(tile);
       await tester.pumpAndSettle();

@@ -88,11 +88,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Share this home (3.1.7): another phone's QR code, opened by the camera app.
       GoRoute(
         path: Routes.joinHome,
-        builder: (_, state) => JoinHomeScreen(code: state.uri.queryParameters['c']),
+        builder: (_, state) =>
+            JoinHomeScreen(code: state.uri.queryParameters['c']),
       ),
       GoRoute(
         path: '/pair-phone',
-        builder: (_, state) => PairPhoneScreen(code: state.uri.queryParameters['c']),
+        builder: (_, state) =>
+            PairPhoneScreen(code: state.uri.queryParameters['c']),
       ),
       // First run and adding a home: outside the navigation shell.
       GoRoute(
@@ -194,6 +196,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     initialType: parsePanelTypeToken(
                       state.uri.queryParameters['type'],
                     ),
+                    initialPluginId: state.uri.queryParameters['plugin'],
                     initialSliderPreset: _parseSliderPreset(
                       state.uri.queryParameters['preset'],
                     ),

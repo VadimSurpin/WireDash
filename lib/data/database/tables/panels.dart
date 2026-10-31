@@ -26,6 +26,9 @@ enum PanelType {
 
   /// One numeric value with its unit (1.12). Config: ReadingConfig.
   reading,
+
+  /// A locally bundled extension; configuration carries its stable plugin ID.
+  plugin,
 }
 
 /// A tile's size on the dashboard grid: **Small** spans one column, **Wide**
@@ -37,10 +40,10 @@ extension PanelWidthLegacy on PanelWidth {
   /// Parses a stored width name, mapping the pre-1.12 names `half` and
   /// `third` to [PanelWidth.small]. Unknown names fall back to small.
   static PanelWidth parse(String? name) => switch (name) {
-        'full' => PanelWidth.full,
-        'wide' => PanelWidth.wide,
-        _ => PanelWidth.small,
-      };
+    'full' => PanelWidth.full,
+    'wide' => PanelWidth.wide,
+    _ => PanelWidth.small,
+  };
 }
 
 @TableIndex(name: 'panels_device_ieee', columns: {#deviceIeee})
@@ -63,9 +66,11 @@ class Panels extends Table {
   DateTimeColumn get updatedAt => dateTime()();
 
   /// The section this tile sits in; null renders it first, without a header.
-  TextColumn get sectionId => text()
-      .nullable()
-      .references(Sections, #id, onDelete: KeyAction.setNull)();
+  TextColumn get sectionId => text().nullable().references(
+    Sections,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
 
   /// IEEE address of the device this tile shows, if any. Decides whether a
   /// device is on a dashboard.

@@ -24,6 +24,7 @@ String panelWidgetLabel(PanelType type, AppLocalizations l10n) =>
       PanelType.autoClose => l10n.panelTypeAutoClose,
       PanelType.device => l10n.panelTypeDevice,
       PanelType.reading => l10n.panelTypeReading,
+      PanelType.plugin => 'Plugin',
     };
 
 class PropertyWidgetSelector extends StatelessWidget {

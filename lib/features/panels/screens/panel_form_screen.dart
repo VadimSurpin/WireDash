@@ -1,3 +1,5 @@
+import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
+import '../../../plugins/panel_plugins.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -94,6 +96,7 @@ class PanelFormScreen extends ConsumerStatefulWidget {
     required this.dashboardId,
     this.panelId,
     this.initialType,
+    this.initialPluginId,
     this.initialSliderPreset,
     this.suggestion,
   });
@@ -102,6 +105,7 @@ class PanelFormScreen extends ConsumerStatefulWidget {
   final String dashboardId;
   final String? panelId;
   final PanelType? initialType;
+  final String? initialPluginId;
   final SliderPreset? initialSliderPreset;
   final PanelSuggestion? suggestion;
 
@@ -204,6 +208,25 @@ class _State extends ConsumerState<PanelFormScreen> {
   final _autoCloseDelaySeconds = TextEditingController(text: '60');
   bool _autoCloseEnabled = true;
 
+  PluginEditorController? _pluginEditor;
+  String _pluginId = '';
+  Map<String, dynamic> _pluginSettings = {};
+  void _applyPlugin(PluginPanelConfig config) {
+    _pluginEditor?.dispose();
+    _pluginId = config.pluginId;
+    _pluginSettings = config.settings;
+    final plugin = ref.read(panelPluginsProvider)[_pluginId];
+    _pluginEditor = plugin?.createEditor(
+      config.settings,
+      ref.read(
+        pluginHostProvider((
+          connectionId: widget.connectionId,
+          pluginId: _pluginId,
+        )),
+      ),
+    );
+  }
+
   PanelType _type = PanelType.toggle;
   PanelWidth _width = PanelWidth.full;
   bool _retain = false;
@@ -284,6 +307,14 @@ class _State extends ConsumerState<PanelFormScreen> {
       _loadPanel();
     } else {
       _seedDefaultsForType();
+      if (_type == PanelType.plugin) {
+        _applyPlugin(
+          PluginPanelConfig(
+            pluginId: widget.initialPluginId ?? '',
+            settings: {},
+          ),
+        );
+      }
       if (_type == PanelType.slider &&
           widget.initialSliderPreset == SliderPreset.position) {
         _sliderMin.text = '0';
@@ -394,7 +425,9 @@ class _State extends ConsumerState<PanelFormScreen> {
 
   void _applyConfig(PanelConfig cfg) {
     _valueExpression = cfg.valueExpression ?? '';
-    if (cfg is ToggleConfig) {
+    if (cfg is PluginPanelConfig) {
+      _applyPlugin(cfg);
+    } else if (cfg is ToggleConfig) {
       _onIcon = cfg.onIconCodepoint;
       _offIcon = cfg.offIconCodepoint;
       _onPayload.text = cfg.onPayload;
@@ -554,6 +587,7 @@ class _State extends ConsumerState<PanelFormScreen> {
         _topic.text = 'set';
         _subscribeTopic.text = '';
         break;
+      case PanelType.plugin:
       case PanelType.reading:
         _topic.text = '';
         _subscribeTopic.text = '';
@@ -564,6 +598,10 @@ class _State extends ConsumerState<PanelFormScreen> {
   PanelConfig _buildConfig() {
     String? nullIfBlank(String s) => s.trim().isEmpty ? null : s.trim();
     return switch (_type) {
+      PanelType.plugin => PluginPanelConfig(
+        pluginId: _pluginId,
+        settings: _pluginEditor?.settings ?? _pluginSettings,
+      ),
       PanelType.button => ButtonConfig(
         payload: _buttonPayload.text,
         iconCodepoint: _buttonIcon,
@@ -733,6 +771,7 @@ class _State extends ConsumerState<PanelFormScreen> {
         ? null
         : _topicPrefixOverride.text.trim();
     try {
+      await _pluginEditor?.save();
       String panelId;
       if (_isEdit) {
         await repo.update(
@@ -814,6 +853,7 @@ class _State extends ConsumerState<PanelFormScreen> {
 
   @override
   void dispose() {
+    _pluginEditor?.dispose();
     for (final c in [
       _name,
       _topic,
@@ -903,6 +943,8 @@ class _State extends ConsumerState<PanelFormScreen> {
       PanelType.autoClose => l10n.panelTypeAutoClose,
       PanelType.device => l10n.panelTypeDevice,
       PanelType.reading => l10n.panelTypeReading,
+      PanelType.plugin =>
+        ref.watch(panelPluginsProvider)[_pluginId]?.title(context) ?? 'Plugin',
     };
 
     return Scaffold(
@@ -978,9 +1020,10 @@ class _State extends ConsumerState<PanelFormScreen> {
                   v == null || v.trim().isEmpty ? l10n.fieldRequired : null,
             ),
             const SizedBox(height: 12),
-            if (_type != PanelType.scene) ..._topicBlock(),
+            if (_type != PanelType.scene && _type != PanelType.plugin)
+              ..._topicBlock(),
             const SizedBox(height: 12),
-            if (_loaded) _buildLivePreview(),
+            if (_loaded && _type != PanelType.plugin) _buildLivePreview(),
             ..._typeSpecificFields(),
             if (_hasValueExpression)
               DisplayExpressionField(
@@ -1010,7 +1053,8 @@ class _State extends ConsumerState<PanelFormScreen> {
               ],
               onChanged: (v) => v == null ? null : setState(() => _width = v),
             ),
-            if (_type != PanelType.scene) _advanced(),
+            if (_type != PanelType.scene && _type != PanelType.plugin)
+              _advanced(),
           ],
         ),
       ),

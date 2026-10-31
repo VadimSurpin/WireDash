@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
+import '../../../plugins/panel_plugins.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +49,13 @@ class PanelReliabilityPolicy {
     required this.controlGate,
     required this.jsonPathSource,
   });
+
+  const PanelReliabilityPolicy.independent()
+    : this._(
+        subscriptionMode: PanelSubscriptionMode.none,
+        controlGate: PanelControlGate.always,
+        jsonPathSource: PanelJsonPathSource.none,
+      );
 
   const PanelReliabilityPolicy.publishOnly()
     : this._(
@@ -137,6 +146,7 @@ PanelReliabilityPolicy panelReliabilityPolicy(PanelType type) => switch (type) {
   PanelType.autoClose => const PanelReliabilityPolicy.autoClose(),
   PanelType.device => const PanelReliabilityPolicy.deviceTile(),
   PanelType.reading => const PanelReliabilityPolicy.readOnlySubscription(),
+  PanelType.plugin => const PanelReliabilityPolicy.independent(),
 };
 
 String? panelReliabilityValueLabel(PanelConfig config, Object? value) {
@@ -199,6 +209,28 @@ class PanelTile extends ConsumerWidget {
   void _openOptions(BuildContext context, WidgetRef ref) {
     ref.read(editModeProvider.notifier).enter(dashboardId);
     showTileActions(context, ref, connectionId: connectionId, panel: panel);
+  }
+
+  Widget _pluginTile(
+    BuildContext context,
+    WidgetRef ref,
+    PluginPanelConfig config,
+  ) {
+    final plugin = ref.watch(panelPluginsProvider)[config.pluginId];
+    if (plugin == null) return MissingPanelPlugin(title: panel.name);
+    return plugin.buildTile(
+      PluginTileContext(
+        id: panel.id,
+        title: panel.name,
+        settings: config.settings,
+        host: ref.watch(
+          pluginHostProvider((
+            connectionId: connectionId,
+            pluginId: config.pluginId,
+          )),
+        ),
+      ),
+    );
   }
 
   @override
@@ -335,20 +367,26 @@ class PanelTile extends ConsumerWidget {
             reliability.controlGate == PanelControlGate.autoClose &&
             connectionStatus == MqttStatus.connected,
       ),
-      PanelType.device => config is WirenBoardDeviceConfig
-          ? WirenBoardDevicePanel(
-              key: ValueKey(panel.id),
-              connectionId: connectionId,
-              panel: panel,
-              config: config,
-            )
-          : DeviceTilePanel(
-              connectionId: connectionId,
-              publishTopic: publishTopic,
-              subscribeTopic: subscribeTopic,
-              panel: panel,
-              config: config as DeviceTileConfig,
-            ),
+      PanelType.device =>
+        config is WirenBoardDeviceConfig
+            ? WirenBoardDevicePanel(
+                key: ValueKey(panel.id),
+                connectionId: connectionId,
+                panel: panel,
+                config: config,
+              )
+            : DeviceTilePanel(
+                connectionId: connectionId,
+                publishTopic: publishTopic,
+                subscribeTopic: subscribeTopic,
+                panel: panel,
+                config: config as DeviceTileConfig,
+              ),
+      PanelType.plugin => _pluginTile(
+        context,
+        ref,
+        config as PluginPanelConfig,
+      ),
       PanelType.reading => ReadingPanel(
         connectionId: connectionId,
         subscribeTopic: subscribeTopic,
@@ -369,8 +407,16 @@ class PanelTile extends ConsumerWidget {
         child: PanelReliabilityFrame(
           stale: stale,
           controlsEnabled: controlsEnabled,
-          valueLabel: panelReliabilityValueLabel(config, snapshot == null ? null
-              : displayValue(ref, config.valueExpression, snapshot.value).value),
+          valueLabel: panelReliabilityValueLabel(
+            config,
+            snapshot == null
+                ? null
+                : displayValue(
+                    ref,
+                    config.valueExpression,
+                    snapshot.value,
+                  ).value,
+          ),
           receivedAt: snapshot?.receivedAt,
           child: widget,
         ),

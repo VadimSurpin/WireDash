@@ -44,6 +44,7 @@ sealed class PanelConfig {
             ? WirenBoardDeviceConfig.fromJson(j)
             : DeviceTileConfig.fromJson(j),
       PanelType.reading => ReadingConfig.fromJson(j),
+      PanelType.plugin => PluginPanelConfig.fromJson(j),
     };
   }
 
@@ -67,6 +68,7 @@ sealed class PanelConfig {
       profile: DeviceProfile(deviceClass: DeviceClass.generic, features: []),
     ),
     PanelType.reading => const ReadingConfig(),
+    PanelType.plugin => const PluginPanelConfig(pluginId: '', settings: {}),
   };
 }
 
@@ -945,4 +947,18 @@ PanelConfig withDisplayExpression(
     fields['valueExpression'] = expression.trim();
   }
   return PanelConfig.decode(type, jsonEncode(fields));
+}
+
+/// Plugin-neutral envelope. Missing plugins can round-trip their settings.
+class PluginPanelConfig extends PanelConfig {
+  const PluginPanelConfig({required this.pluginId, required this.settings});
+  final String pluginId;
+  final Map<String, dynamic> settings;
+  @override
+  Map<String, dynamic> toJson() => {'pluginId': pluginId, 'settings': settings};
+  factory PluginPanelConfig.fromJson(Map<String, dynamic> j) =>
+      PluginPanelConfig(
+        pluginId: j['pluginId'] as String? ?? '',
+        settings: Map<String, dynamic>.from(j['settings'] as Map? ?? {}),
+      );
 }

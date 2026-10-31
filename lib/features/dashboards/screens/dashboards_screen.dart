@@ -1,3 +1,4 @@
+import '../../../plugins/panel_plugins.dart';
 import '../../support/help_context.dart';
 import 'package:flutter/material.dart';
 import '../../../mqtt/endpoint.dart';
@@ -631,6 +632,21 @@ Future<void> openCustomTilePicker(
               subtitle: Text(sheetCtx.l10n.panelPickerTextLogSubtitle),
               onTap: () => Navigator.pop(sheetCtx, 'textLog'),
             ),
+            const Divider(),
+            Consumer(
+              builder: (context, ref, _) => Column(
+                children: [
+                  for (final plugin in ref.watch(panelPluginsProvider).values)
+                    ListTile(
+                      leading: Icon(plugin.icon),
+                      title: Text(plugin.title(context)),
+                      subtitle: Text(plugin.description(context)),
+                      onTap: () =>
+                          Navigator.pop(sheetCtx, 'plugin:${plugin.id}'),
+                    ),
+                ],
+              ),
+            ),
             const SizedBox(height: 8),
           ],
         ),
@@ -641,7 +657,11 @@ Future<void> openCustomTilePicker(
     // Tokens like "slider:position" carry an additional preset hint; split here.
     final parts = type.split(':');
     final t = parts.first;
-    final preset = parts.length > 1 ? '&preset=${parts[1]}' : '';
+    final preset = parts.length > 1
+        ? (t == 'plugin'
+              ? '&plugin=${Uri.encodeQueryComponent(parts[1])}'
+              : '&preset=${parts[1]}')
+        : '';
     context.pushReplacement(
       '/connections/$connectionId/dashboards/$dashboardId/panels/new?type=$t$preset',
     );

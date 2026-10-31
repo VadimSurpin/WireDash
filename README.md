@@ -185,6 +185,17 @@ IDs, and dashboard backups do not include connection credentials.
 Home Assistant browser sign-in still uses the registered upstream OAuth return
 link. If Android asks which app should handle that link, select WireDash.
 
+## Video widget plugin (preview)
+
+The `feat/video-widget-plugin` branch adds a locally bundled Video
+panel: standard RTSP live video, Hikvision DVR/NVR recording playback, and
+human/vehicle recording filters when supported by the recorder. Add it from
+**Add tile → Custom MQTT tile → Video**. It uses secure credential storage and
+can follow the home's embedded WireGuard route. See the
+[video plugin guide](packages/wiredash_video/README.md) for configuration,
+compatibility and testing, and the [panel plugin API](packages/wiredash_plugin_api/README.md)
+for extension development.
+
 ## Help and upstream credits
 
 For issues specific to this fork, use the [WireDash issue tracker](https://github.com/VadimSurpin/WireDash/issues).
@@ -205,3 +216,4 @@ The original project remains available here:
 
 [MIT](LICENSE). Original ZigDash code © 2026 Gilad Tamam.
 The original license and copyright notice are preserved in this fork.
+

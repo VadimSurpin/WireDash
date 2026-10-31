@@ -399,11 +399,17 @@ extension _PanelFormFields on _State {
     PanelType.autoClose => Icons.timer_outlined,
     PanelType.device => Icons.devices_other,
     PanelType.reading => Icons.speed,
+    PanelType.plugin => Icons.extension,
   };
 
   List<Widget> _typeSpecificFields() {
     final l10n = context.l10n;
     switch (_type) {
+      case PanelType.plugin:
+        return [
+          _pluginEditor?.buildFields(context) ??
+              const Text('Plugin unavailable. Settings will be preserved.'),
+        ];
       case PanelType.toggle:
         return [
           PanelIconPicker(
@@ -625,7 +631,8 @@ extension _PanelFormFields on _State {
           const SizedBox(height: 12),
           if (_coverConfig.wirenBoard != null)
             Text(l10n.coverPairedDescription),
-          if (_coverConfig.wirenBoard == null && _coverConfig.waitForFeedback) ...[
+          if (_coverConfig.wirenBoard == null &&
+              _coverConfig.waitForFeedback) ...[
             Text(
               l10n.panelCoverDescription,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(

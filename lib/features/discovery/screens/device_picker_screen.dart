@@ -80,6 +80,7 @@ class _DevicePickerScreenState extends ConsumerState<DevicePickerScreen> {
     PanelType.autoClose => Icons.timer_outlined,
     PanelType.device => Icons.devices_other,
     PanelType.reading => Icons.speed,
+    PanelType.plugin => Icons.extension,
   };
 
   @override
