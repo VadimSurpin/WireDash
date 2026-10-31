@@ -10,3 +10,5 @@ export 'src/recording_previews.dart';
 export 'src/recording_cache.dart';
 export 'src/recording_picture.dart';
 export 'src/recording_photos.dart';
+export 'src/recording_search.dart';
+export 'src/recorder_clock.dart';

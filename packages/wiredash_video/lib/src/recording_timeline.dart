@@ -302,30 +302,31 @@ class _RecordingPreviewState extends State<RecordingPreview> {
                   errorBuilder: (_, _, _) =>
                       const Center(child: Icon(Icons.broken_image_outlined)),
                 ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: ColoredBox(
-                    color: Colors.black87,
-                    child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Text(
-                        preview!.eventPhoto
-                            ? '${preview!.events.contains(RecordingEvent.human)
-                                  ? 'Person capture'
-                                  : preview!.events.contains(RecordingEvent.vehicle)
-                                  ? 'Vehicle capture'
-                                  : 'Recorder event photo'} · ${_clock(preview!.time)}'
-                            : 'Video start · detection photo unavailable',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
+                if (preview!.eventPhoto)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: ColoredBox(
+                      color: Colors.black87,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                          preview!.eventPhoto
+                              ? '${preview!.events.contains(RecordingEvent.human)
+                                    ? 'Person capture'
+                                    : preview!.events.contains(RecordingEvent.vehicle)
+                                    ? 'Vehicle capture'
+                                    : 'Recorder event photo'} · ${_clock(preview!.time)}'
+                              : '',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             )
           : Center(

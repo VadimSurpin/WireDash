@@ -8,6 +8,7 @@ import 'digest_auth.dart';
 import 'video_config.dart';
 import 'recording_event.dart';
 import 'recording_picture.dart';
+import 'recorder_clock.dart';
 
 class RecorderException implements Exception {
   const RecorderException(this.message, {this.status, this.code});
@@ -26,8 +27,10 @@ class Recording {
     this.target = RecordingTarget.all,
     this.eventTypes = const [],
     this.selectedTime,
+    this.clock = const RecorderClock(),
   });
   final DateTime start, end;
+  final RecorderClock clock;
   final DateTime? selectedTime;
   DateTime get playbackTime => selectedTime ?? start;
   Recording at(DateTime time) => Recording(
@@ -37,6 +40,7 @@ class Recording {
     target: target,
     eventTypes: eventTypes,
     selectedTime: time,
+    clock: clock,
   );
   final Uri playback;
   final RecordingTarget target;
@@ -70,11 +74,13 @@ class HikvisionClient {
     required this.config,
     required VideoCredentials credentials,
     HttpClient? http,
+    this.clock = const RecorderClock(),
   }) : http = http ?? HttpClient(),
        auth = DigestAuth(credentials);
   final VideoConfig config;
   final HttpClient http;
   final DigestAuth auth;
+  RecorderClock clock;
   static const timeout = Duration(seconds: 20);
   bool _closed = false;
   String? _challenge;
@@ -214,6 +220,62 @@ class HikvisionClient {
     );
   }
 
+  Future<RecorderClock> discoverClock() async {
+    Future<String?> optional(String path) async {
+      try {
+        return await _request('GET', path, json: path.contains('format=json'));
+      } on RecorderException {
+        return null;
+      } on FormatException {
+        return null;
+      }
+    }
+
+    try {
+      final caps = await optional('/ISAPI/System/capabilities');
+      if (caps != null && _text(_xml(caps), 'isSupportTimeTypeSTD') == 'true') {
+        return clock = const RecorderClock(standard: true);
+      }
+      var local = false;
+      final type = await optional('/ISAPI/System/time/timeType?format=json');
+      try {
+        final data = type == null ? null : jsonDecode(type);
+        final details = data is Map ? data['TimeType'] : null;
+        final name = details is Map ? details['type'] : null;
+        if (name == 'UTC') return clock = const RecorderClock();
+        local = name == 'local';
+      } on FormatException {
+        /* Older devices do not expose timeType. */
+      }
+      if (!local) {
+        final info = await optional('/ISAPI/System/deviceInfo');
+        final kind = info == null
+            ? ''
+            : _text(_xml(info), 'deviceType')?.toUpperCase();
+        local = ['CVR', 'NVR', 'DVR', 'ITCCAM', 'HYBIRDNVR'].contains(kind);
+      }
+      if (local) {
+        final raw = await optional('/ISAPI/System/time');
+        if (raw != null) {
+          final document = _xml(raw), zone = _text(_xml(raw), 'timeZone') ?? '';
+          final offset = RecorderClock.explicitOffset(
+            _text(document, 'localTime') ?? '',
+          );
+          if (zone.isNotEmpty || offset != null) {
+            return clock = RecorderClock(
+              local: true,
+              zone: zone,
+              offsetMinutes: offset?.inMinutes ?? 0,
+            );
+          }
+        }
+      }
+    } on FormatException {
+      /* Optional discovery must not block video search. */
+    }
+    return clock;
+  }
+
   Future<RecorderCapabilities> capabilities() async {
     try {
       final body = await _request(
@@ -296,8 +358,8 @@ class HikvisionClient {
             nest: () => builder.element(
               'timeSpan',
               nest: () {
-                builder.element('startTime', nest: isoTime(start));
-                builder.element('endTime', nest: isoTime(end));
+                builder.element('startTime', nest: clock.format(start));
+                builder.element('endTime', nest: clock.format(end));
               },
             ),
           );
@@ -315,14 +377,14 @@ class HikvisionClient {
       );
       final raw = await _request(
         'POST',
-        '/ISAPI/ContentMgmt/search',
+        clock.path('/ISAPI/ContentMgmt/search'),
         body: builder.buildDocument().toXmlString(),
       );
-      return parseRecordings(raw, config, position);
+      return parseRecordings(raw, config, position, clock: clock);
     }
     final raw = await _request(
       'POST',
-      '/ISAPI/ContentMgmt/SearchByTargetType?format=json',
+      clock.path('/ISAPI/ContentMgmt/SearchByTargetType?format=json'),
       json: true,
       body: jsonEncode({
         'SearchDescription': {
@@ -336,8 +398,8 @@ class HikvisionClient {
               'searchTimeList': [
                 {
                   'searchTime': {
-                    'startTime': isoTime(start),
-                    'endTime': isoTime(end),
+                    'startTime': clock.format(start),
+                    'endTime': clock.format(end),
                   },
                 },
               ],
@@ -346,7 +408,7 @@ class HikvisionClient {
         },
       }),
     );
-    return parseTargetRecordings(raw, config, position, target);
+    return parseTargetRecordings(raw, config, position, target, clock: clock);
   }
 
   static String isoTime(DateTime time) =>
@@ -388,8 +450,8 @@ class HikvisionClient {
           nest: () => builder.element(
             'timeSpan',
             nest: () {
-              builder.element('startTime', nest: isoTime(start));
-              builder.element('endTime', nest: isoTime(end));
+              builder.element('startTime', nest: clock.format(start));
+              builder.element('endTime', nest: clock.format(end));
             },
           ),
         );
@@ -407,14 +469,19 @@ class HikvisionClient {
     return parsePictures(
       await _request(
         'POST',
-        '/ISAPI/ContentMgmt/search',
+        clock.path('/ISAPI/ContentMgmt/search'),
         body: builder.buildDocument().toXmlString(),
       ),
       config,
+      clock: clock,
     );
   }
 
-  static Uri pictureUri(VideoConfig config, String value) {
+  static Uri pictureUri(
+    VideoConfig config,
+    String value, {
+    RecorderClock clock = const RecorderClock(),
+  }) {
     final source = Uri.parse(value);
     final track = config.channel * 100 + 3;
     var path = source.path;
@@ -431,11 +498,21 @@ class HikvisionClient {
       host: base.host,
       port: base.hasPort ? base.port : null,
       path: path,
-      query: source.hasQuery ? source.query : null,
+      query: clock.standard
+          ? Uri(
+              queryParameters: {...source.queryParameters, 'timeType': 'STD'},
+            ).query
+          : source.hasQuery
+          ? source.query
+          : null,
     );
   }
 
-  static List<RecordingPicture> parsePictures(String raw, VideoConfig config) {
+  static List<RecordingPicture> parsePictures(
+    String raw,
+    VideoConfig config, {
+    RecorderClock clock = const RecorderClock(),
+  }) {
     final document = _xml(raw);
     final status = _text(document, 'responseStatusStrg')?.toUpperCase();
     if (status == 'NO MATCHES') return [];
@@ -453,14 +530,14 @@ class HikvisionClient {
           config.channel * 100 + 3) {
         continue;
       }
-      final time = DateTime.tryParse(_text(item, 'startTime') ?? '');
+      final time = clock.parse(_text(item, 'startTime') ?? '');
       final uri = _text(item, 'playbackURI');
       if (time == null || uri == null) continue;
       try {
         pictures.add(
           RecordingPicture(
             time,
-            pictureUri(config, uri),
+            pictureUri(config, uri, clock: clock),
             item.descendants
                 .whereType<XmlElement>()
                 .where((e) => e.name.local == 'metadataDescriptor')
@@ -513,8 +590,9 @@ class HikvisionClient {
   static RecordingPage parseRecordings(
     String raw,
     VideoConfig config,
-    int position,
-  ) {
+    int position, {
+    RecorderClock clock = const RecorderClock(),
+  }) {
     final document = _xml(raw);
     final status = _text(document, 'responseStatusStrg')?.toUpperCase();
     if (status == 'NO MATCHES') {
@@ -534,8 +612,8 @@ class HikvisionClient {
     for (final item in matches) {
       final track = int.tryParse(_text(item, 'trackID') ?? '');
       if (track != null && track != config.recordingTrack) continue;
-      final start = DateTime.tryParse(_text(item, 'startTime') ?? ''),
-          end = DateTime.tryParse(_text(item, 'endTime') ?? '');
+      final start = clock.parse(_text(item, 'startTime') ?? ''),
+          end = clock.parse(_text(item, 'endTime') ?? '');
       final uri = _text(item, 'playbackURI');
       if (start == null || end == null || !end.isAfter(start) || uri == null) {
         continue;
@@ -544,7 +622,8 @@ class HikvisionClient {
         Recording(
           start: start,
           end: end,
-          playback: config.playbackUri(uri),
+          clock: clock,
+          playback: _playbackUri(config, uri, clock),
           eventTypes: item.descendants
               .whereType<XmlElement>()
               .where((e) => e.name.local == 'metadataDescriptor')
@@ -566,8 +645,9 @@ class HikvisionClient {
     String raw,
     VideoConfig config,
     int position,
-    RecordingTarget target,
-  ) {
+    RecordingTarget target, {
+    RecorderClock clock = const RecorderClock(),
+  }) {
     final root = jsonDecode(raw) as Map<String, dynamic>;
     final result = root['SearchResult'] as Map<String, dynamic>?;
     if (result == null) {
@@ -591,8 +671,8 @@ class HikvisionClient {
       for (final record
           in (entry['RecordInfoList'] as List? ?? []).whereType<Map>()) {
         final span = record['RecordTime'] as Map?;
-        final start = DateTime.tryParse('${span?['startTime']}'),
-            end = DateTime.tryParse('${span?['endTime']}');
+        final start = clock.parse('${span?['startTime']}'),
+            end = clock.parse('${span?['endTime']}');
         if (start == null || end == null || !end.isAfter(start)) continue;
         final playback = record['playbackURI'] as String?;
         records.add(
@@ -600,9 +680,10 @@ class HikvisionClient {
             start: start,
             end: end,
             target: target,
+            clock: clock,
             playback: playback == null
-                ? boundedPlayback(config, start, end)
-                : config.playbackUri(playback),
+                ? boundedPlayback(config, start, end, clock: clock)
+                : _playbackUri(config, playback, clock),
           ),
         );
       }
@@ -619,23 +700,78 @@ class HikvisionClient {
     );
   }
 
-  static Uri boundedPlayback(VideoConfig config, DateTime start, DateTime end) {
-    String stamp(DateTime t) =>
-        isoTime(t).replaceAll('-', '').replaceAll(':', '');
+  static Uri _playbackUri(VideoConfig config, String raw, RecorderClock clock) {
+    final uri = config.playbackUri(raw);
+    return clock.standard
+        ? uri.replace(
+            queryParameters: {...uri.queryParameters, 'timeType': 'STD'},
+          )
+        : uri;
+  }
+
+  static Uri boundedPlayback(
+    VideoConfig config,
+    DateTime start,
+    DateTime end, {
+    RecorderClock clock = const RecorderClock(),
+  }) {
+    String stamp(DateTime t) => clock.rtsp(t);
     return config.liveUri.replace(
       path: '/Streaming/tracks/${config.recordingTrack}',
-      queryParameters: {'starttime': stamp(start), 'endtime': stamp(end)},
+      queryParameters: {
+        'starttime': stamp(start),
+        'endtime': stamp(end),
+        if (clock.standard) 'timeType': 'STD',
+      },
     );
   }
 
-  /// Ordinary recording playback, starting at the selected timestamp. Hikvision
-  /// documents endtime as optional; omit file name/size and event end limits so
-  /// playback can continue through subsequent footage on this track.
-  static Uri continuousPlayback(VideoConfig config, DateTime start) =>
-      config.liveUri.replace(
-        path: '/Streaming/tracks/${config.recordingTrack}',
+  /// Time-based playback with an explicit end for older DVR firmware. The
+  /// recording window extends beyond a short event match, up to one day.
+  static Uri continuousPlayback(
+    VideoConfig config,
+    DateTime start, {
+    Uri? source,
+    DateTime? until,
+    RecorderClock clock = const RecorderClock(),
+  }) {
+    final limit = start.add(const Duration(days: 1));
+    final now = until ?? DateTime.now().toUtc();
+    final end =
+        now.difference(start) >= const Duration(seconds: 1) &&
+            now.isBefore(limit)
+        ? now
+        : limit;
+    final query = <String, String>{...?source?.queryParameters}
+      ..removeWhere(
+        (key, _) => [
+          'name',
+          'size',
+          'starttime',
+          'endtime',
+        ].contains(key.toLowerCase()),
+      );
+    query['starttime'] = clock.rtsp(start, template: source);
+    query['endtime'] = clock.rtsp(end, template: source);
+    if (clock.standard) query['timeType'] = 'STD';
+    return config.liveUri.replace(
+      path: source?.path ?? '/Streaming/tracks/${config.recordingTrack}',
+      queryParameters: query,
+    );
+  }
+
+  static Uri filePlayback(
+    VideoConfig config,
+    Recording record,
+    DateTime time,
+  ) => config
+      .playbackUri(record.playback.toString())
+      .replace(
         queryParameters: {
-          'starttime': isoTime(start).replaceAll('-', '').replaceAll(':', ''),
+          ...record.playback.queryParameters,
+          'starttime': record.clock.rtsp(time, template: record.playback),
+          'endtime': record.clock.rtsp(record.end, template: record.playback),
+          if (record.clock.standard) 'timeType': 'STD',
         },
       );
 }

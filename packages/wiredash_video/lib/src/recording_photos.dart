@@ -5,6 +5,7 @@ import 'recording_cache.dart';
 import 'recording_event.dart';
 import 'recording_picture.dart';
 import 'video_config.dart';
+import 'recorder_clock.dart';
 
 /// Optional stored event captures. A video boundary is never a detection time.
 class RecordingPhotos {
@@ -13,11 +14,13 @@ class RecordingPhotos {
     required this.config,
     required this.cache,
     this.rangeStart,
+    this.clock,
     this.rangeEnd,
   });
   final PluginHost host;
   final VideoConfig config;
   final RecordingCache cache;
+  final RecorderClock Function()? clock;
   final DateTime Function()? rangeStart, rangeEnd;
   HikvisionClient? _client;
   Future<HikvisionClient>? _connecting;
@@ -42,6 +45,7 @@ class RecordingPhotos {
         config: config,
         credentials: credentials,
         http: network.createHttpClient(),
+        clock: clock?.call() ?? const RecorderClock(),
       );
     }();
   }
@@ -85,7 +89,7 @@ class RecordingPhotos {
         : record.end;
     if (!end.isAfter(start)) return null;
     final key =
-        'event-picture/${start.toUtc().toIso8601String()}/${end.toUtc().toIso8601String()}/${record.target.name}';
+        'event-picture-v2/${start.toUtc().toIso8601String()}/${end.toUtc().toIso8601String()}/${record.target.name}';
     final saved = await cache.readJson(key);
     if (!active()) return null;
     if (saved?['uri'] is String && saved?['time'] is String) {

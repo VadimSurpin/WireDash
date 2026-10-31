@@ -54,6 +54,8 @@ class FakeSession extends VideoSession {
   @override
   Duration position = Duration.zero;
   @override
+  bool completed = false;
+  @override
   Duration duration = Duration.zero;
   @override
   bool get buffering => false;

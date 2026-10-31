@@ -97,7 +97,7 @@ void main() {
       await tester.pump();
       expect(controller.value.getTranslation(), isNot(translation));
       expect(tester.getCenter(find.byTooltip('Saved recordings')), controls);
-      expect(find.byTooltip('Human and vehicle events'), findsOneWidget);
+      expect(find.byTooltip('Events'), findsOneWidget);
       await tester.tap(find.byTooltip('Reset zoom'));
       await tester.pump();
       expect(controller.value, Matrix4.identity());

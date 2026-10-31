@@ -4,6 +4,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wiredash_video/wiredash_video.dart';
+import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
+
+class _CameraHost implements PluginHost {
+  @override
+  final network = const DirectPluginNetwork();
+  @override
+  Future<String?> readSecret(String key) async =>
+      const VideoCredentials('viewer', 'viewer-test').encode();
+  @override
+  Future<void> writeSecret(String key, String value) async {}
+  @override
+  Future<void> deleteSecret(String key) async {}
+}
 
 /// Synthetic RTSP source, with a real Android decoder/texture. No MQTT account
 /// or physical camera is used. Run through the video-preview GitHub workflow.
@@ -126,6 +139,100 @@ void main() {
       } finally {
         await diagnostics.cancel();
         await session.close();
+      }
+    },
+  );
+
+  testWidgets(
+    'recording viewer recovers from a rejected RTSP range and can seek with a real Android player',
+    (tester) async {
+      final address = Uri.parse(source).replace(userInfo: '');
+      final config = VideoConfig(
+        streamUrl: address.toString(),
+        credentialId: 'fixture',
+        useHomeNetwork: false,
+      );
+      final time = DateTime.parse(
+        HikvisionClient.isoTime(
+          DateTime.now().toUtc().subtract(const Duration(hours: 1)),
+        ),
+      );
+      final record = Recording(
+        start: time,
+        end: time.add(const Duration(hours: 2)),
+        playback: address.replace(
+          queryParameters: {
+            'name': 'fixture-recording',
+            'size': '100',
+            'starttime': HikvisionClient.isoTime(
+              time,
+            ).replaceAll('-', '').replaceAll(':', ''),
+          },
+        ),
+      );
+      final sessions = <NativeVideoSession>[];
+      Future<void> ready(int count) async {
+        await tester.runAsync(() async {
+          for (var attempt = 0; attempt < 400; attempt++) {
+            if (sessions.length >= count &&
+                sessions.last.player.state.width == 320 &&
+                !sessions.last.buffering &&
+                sessions.last.error == null) {
+              return;
+            }
+            await Future<void>.delayed(const Duration(milliseconds: 100));
+          }
+          fail(
+            'Recording viewer did not recover from the rejected fixture path.',
+          );
+        });
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: VideoPane(
+                context: PluginTileContext(
+                  id: 'fixture',
+                  title: 'Recording',
+                  host: _CameraHost(),
+                  settings: config.toJson(),
+                ),
+                playback: HikvisionClient.continuousPlayback(
+                  config,
+                  time,
+                ).replace(path: '/missing-recording'),
+                recording: record,
+                autoStart: true,
+                showRecordings: false,
+                videoHeight: 200,
+                sessionFactory: () {
+                  final session = NativeVideoSession();
+                  sessions.add(session);
+                  return session;
+                },
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+        await ready(2);
+        expect(sessions, hasLength(2));
+        expect(find.byKey(const Key('video-viewport')), findsOneWidget);
+        expect(find.textContaining('could not start'), findsNothing);
+        await tester.tap(find.byTooltip('Rewind 10 seconds'));
+        await tester.pump();
+        await ready(3);
+        expect(find.textContaining('could not start'), findsNothing);
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.pumpWidget(const SizedBox.shrink());
+        for (final session in sessions) {
+          await session.close();
+        }
       }
     },
   );

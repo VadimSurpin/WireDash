@@ -26,7 +26,14 @@ void main() {
       expect(uri.host, 'recorder');
       expect(uri.port, 8554);
       expect(uri.path, '/Streaming/tracks/1701');
-      expect(uri.queryParameters, {'starttime': '20261031T104521Z'});
+      expect(uri.queryParameters['starttime'], '20261031T104521Z');
+      expect(uri.queryParameters.keys, ['starttime', 'endtime']);
+      expect(
+        DateTime.parse(
+          uri.queryParameters['endtime']!,
+        ).difference(DateTime.parse(uri.queryParameters['starttime']!)),
+        greaterThan(const Duration(seconds: 6)),
+      );
       expect(uri.userInfo, isEmpty);
     },
   );

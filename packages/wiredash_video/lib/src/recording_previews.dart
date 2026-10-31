@@ -94,7 +94,8 @@ class RecordingPreviews {
   int _bytes = 0;
 
   RecordingPreviewTicket request(Recording record) {
-    final key = record.identity;
+    final key =
+        '${record.identity}/${record.playbackTime.toUtc().microsecondsSinceEpoch}';
     final cached = _cache.remove(key);
     if (cached != null) {
       _cache[key] = cached;
@@ -177,7 +178,9 @@ class RecordingPreviews {
     if (task.cancelled) return null;
     final saved = await cache?.readImage(task.record);
     if (task.cancelled) return null;
-    if (saved != null) return RecordingPreviewData(saved, task.record.start);
+    if (saved != null) {
+      return RecordingPreviewData(saved, task.record.playbackTime);
+    }
     final credentials = await (_credentials ??= host
         .readSecret(config.credentialId)
         .then(VideoCredentials.decode));
@@ -186,7 +189,13 @@ class RecordingPreviews {
         ? host.network
         : const DirectPluginNetwork();
     final route = await network.openStream(
-      credentials.authenticate(task.record.playback),
+      credentials.authenticate(
+        HikvisionClient.filePlayback(
+          config,
+          task.record,
+          task.record.playbackTime,
+        ),
+      ),
     );
     if (task.cancelled) {
       await route.close();
@@ -205,7 +214,7 @@ class RecordingPreviews {
     }
     return image == null
         ? null
-        : RecordingPreviewData(image, task.record.start);
+        : RecordingPreviewData(image, task.record.playbackTime);
   }
 
   void refresh() {

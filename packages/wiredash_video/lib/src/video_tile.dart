@@ -6,6 +6,7 @@ import 'video_config.dart';
 import 'video_session.dart';
 import 'recording_browser.dart';
 import 'hikvision_client.dart';
+import 'recorder_clock.dart';
 
 class VideoTile extends StatelessWidget {
   const VideoTile({
@@ -30,6 +31,8 @@ class VideoPane extends StatefulWidget {
     required this.sessionFactory,
     this.playback,
     this.selectedEvent,
+    this.recording,
+    this.resolveRecording,
     this.autoStart = false,
     this.showRecordings = true,
     this.videoHeight,
@@ -38,6 +41,8 @@ class VideoPane extends StatefulWidget {
   final PluginTileContext context;
   final VideoSessionFactory sessionFactory;
   final Uri? playback;
+  final Recording? recording;
+  final Future<Recording?> Function(DateTime)? resolveRecording;
   final DateTime? selectedEvent;
   final double? videoHeight;
   final bool autoStart, showRecordings;
@@ -55,11 +60,15 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   late bool muted;
   Uri? playback;
   double? scrubbing;
+  Recording? file;
+  bool fileMode = false, advancing = false;
+  RecorderClock get clockBasis =>
+      file?.clock ?? widget.recording?.clock ?? const RecorderClock();
   DateTime? get playbackStart =>
-      DateTime.tryParse(playback?.queryParameters['starttime'] ?? '');
+      clockBasis.parse(playback?.queryParameters['starttime'] ?? '');
   DateTime? get selectedEvent =>
       widget.selectedEvent ??
-      DateTime.tryParse(widget.playback?.queryParameters['starttime'] ?? '');
+      clockBasis.parse(widget.playback?.queryParameters['starttime'] ?? '');
   DateTime? get playbackTime =>
       playbackStart?.add(session?.position ?? Duration.zero);
 
@@ -71,7 +80,12 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         : time.isBefore(earliest)
         ? earliest
         : time.toUtc();
-    playback = HikvisionClient.continuousPlayback(config, at);
+    playback = HikvisionClient.continuousPlayback(
+      config,
+      at,
+      source: file?.playback ?? widget.recording?.playback,
+      clock: clockBasis,
+    );
     scrubbing = null;
     await start();
   }
@@ -116,7 +130,19 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   }
 
   void updated() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    setState(() {});
+    final current = session;
+    if (fileMode &&
+        !opening &&
+        !advancing &&
+        current?.completed == true &&
+        file != null &&
+        widget.resolveRecording != null) {
+      advancing = true;
+      final next = file!.end;
+      unawaited(jumpTo(next).whenComplete(() => advancing = false));
+    }
   }
 
   Future<void> _release() async {
@@ -143,12 +169,11 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
 
   Future<void> start() async {
     final request = ++generation;
+    final requested = playbackStart;
     setState(() {
       opening = true;
       error = null;
     });
-    PluginStreamLease? opened;
-    VideoSession? created;
     try {
       await _release();
       if (!mounted || request != generation) return;
@@ -158,29 +183,83 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         await widget.context.host.readSecret(config.credentialId),
       );
       if (!mounted || request != generation) return;
-      final source = credentials.authenticate(playback ?? config.liveUri);
       final network = config.useHomeNetwork
           ? widget.context.host.network
           : const DirectPluginNetwork();
-      opened = await network.openStream(source);
-      if (!mounted || request != generation) {
-        await opened.close();
-        return;
+      Future<void> open(Uri source) async {
+        final opened = await network.openStream(
+          credentials.authenticate(source),
+        );
+        if (!mounted || request != generation) {
+          await opened.close();
+          return;
+        }
+        lease = opened;
+        final created = session = widget.sessionFactory();
+        created.addListener(updated);
+        setState(() {});
+        if (requested == null) {
+          await created.open(opened.uri, muted: muted);
+        } else {
+          // A rejected DESCRIBE must not leave the recording viewer waiting for
+          // a first frame that will never arrive before trying the file URI.
+          final failed = Completer<void>();
+          void failedToStart() {
+            if (created.error != null && !failed.isCompleted) {
+              failed.completeError(StateError('Recording stream rejected.'));
+            }
+          }
+
+          created.addListener(failedToStart);
+          try {
+            await Future.any([
+              created.open(opened.uri, muted: muted),
+              failed.future,
+            ]);
+          } finally {
+            created.removeListener(failedToStart);
+          }
+        }
       }
-      created = widget.sessionFactory();
-      session = created;
-      lease = opened;
-      created.addListener(updated);
-      setState(() {});
-      await created.open(opened.uri, muted: muted);
+
+      try {
+        fileMode = false;
+        await open(playback ?? config.liveUri);
+      } catch (_) {
+        if (!mounted || request != generation) return;
+        await _release();
+        if (requested == null) rethrow;
+        final known = file ?? widget.recording;
+        Recording? resolved;
+        if (known != null &&
+            known.playback.queryParameters.containsKey('name') &&
+            !known.start.isAfter(requested) &&
+            known.end.isAfter(requested)) {
+          resolved = known;
+        } else if (widget.resolveRecording != null) {
+          resolved = await widget.resolveRecording!(requested);
+        }
+        if (!mounted || request != generation) return;
+        resolved ??=
+            known != null &&
+                !known.start.isAfter(requested) &&
+                known.end.isAfter(requested)
+            ? known
+            : null;
+        if (resolved == null) rethrow;
+        playback = HikvisionClient.filePlayback(config, resolved, requested);
+        file = resolved;
+        fileMode = true;
+        await open(playback!);
+      }
     } catch (_) {
-      if (created == null) await opened?.close();
       if (mounted && request == generation) {
         await _release();
         if (mounted && request == generation) {
           setState(
-            () => error =
-                'Video could not start. Check the stream, login and network route.',
+            () => error = widget.playback == null
+                ? 'Video could not start. Check the stream, login and network route.'
+                : 'Recording could not start. Check playback permission or try another time.',
           );
         }
       }
@@ -221,7 +300,12 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
     final time = playbackTime;
     final source = time == null
         ? playback
-        : HikvisionClient.continuousPlayback(config, time);
+        : HikvisionClient.continuousPlayback(
+            config,
+            time,
+            source: file?.playback ?? widget.recording?.playback,
+            clock: clockBasis,
+          );
     await stop();
     if (!mounted) return;
     await Navigator.of(context).push(
@@ -236,6 +320,8 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
                   sessionFactory: widget.sessionFactory,
                   playback: source,
                   selectedEvent: selectedEvent,
+                  recording: file ?? widget.recording,
+                  resolveRecording: widget.resolveRecording,
                   showRecordings: widget.showRecordings,
                   autoStart: true,
                   fullscreen: true,
@@ -255,7 +341,8 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final current = session;
-    final message = error ?? current?.error;
+    final message =
+        error ?? (opening && widget.playback != null ? null : current?.error);
     final video = ColoredBox(
       color: Colors.black,
       child: Stack(
@@ -433,7 +520,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
               ),
             if (config.recordings && widget.showRecordings)
               IconButton(
-                tooltip: 'Human and vehicle events',
+                tooltip: 'Events',
                 onPressed: () => recordings(events: true),
                 icon: const Icon(Icons.manage_search),
               ),

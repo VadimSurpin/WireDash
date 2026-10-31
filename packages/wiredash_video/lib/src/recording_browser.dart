@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'hikvision_client.dart';
 import 'video_config.dart';
@@ -10,6 +9,8 @@ import 'recording_previews.dart';
 import 'recording_timeline.dart';
 import 'recording_cache.dart';
 import 'recording_photos.dart';
+import 'recording_search.dart';
+import 'recorder_clock.dart';
 
 class RecordingBrowser extends StatefulWidget {
   const RecordingBrowser({
@@ -33,20 +34,22 @@ class _RecordingBrowserState extends State<RecordingBrowser>
     with WidgetsBindingObserver {
   HikvisionClient? client;
   RecorderCapabilities? capabilities;
+  RecorderClock recorderClock = const RecorderClock();
+  bool clockLoaded = false, ready = false;
   late DateTime start, end;
-  RecordingTarget target = RecordingTarget.all;
+  final filters = <RecordingFilter>{};
+  RecordingSearch? query;
   final records = <Recording>[];
   late final RecordingPreviews previews;
   late final RecordingCache cache;
   bool rollingRange = true, cachedResults = false;
   DateTime? cachedAt;
-  String get viewKey => widget.events ? 'events-view' : 'recordings-view';
+  String get viewKey => widget.events ? 'events-view-v2' : 'recordings-view-v2';
   bool viewing = false, foreground = true;
   int previewEpoch = 0;
   String? error;
   bool loading = true, more = false;
-  int position = 0, generation = 0;
-  String searchId = const Uuid().v4();
+  int generation = 0;
   VideoConfig get config => VideoConfig.fromJson(widget.context.settings);
   @override
   void initState() {
@@ -62,6 +65,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         host: widget.context.host,
         config: config,
         cache: cache,
+        clock: () => recorderClock,
         rangeStart: () => start,
         rangeEnd: () => end,
       ),
@@ -71,51 +75,68 @@ class _RecordingBrowserState extends State<RecordingBrowser>
     unawaited(initialize());
   }
 
+  void defaultFilters() {
+    filters
+      ..clear()
+      ..addAll(
+        widget.events
+            ? RecordingFilter.values.where((f) => f.supported(capabilities))
+            : <RecordingFilter>[],
+      );
+  }
+
   Future<void> initialize({bool force = false}) async {
     try {
       var restored = false;
       if (!force) {
-        final view = await cache.readJson(viewKey);
+        final view =
+            await cache.readJson(viewKey) ??
+            await cache.readJson(
+              widget.events ? 'events-view' : 'recordings-view',
+            );
         if (!mounted) return;
         try {
           if (view != null) {
-            final from = DateTime.parse(view['start'] as String);
-            final to = DateTime.parse(view['end'] as String);
-            final filter = RecordingTarget.values.byName(
-              view['target'] as String,
-            );
-            final rolling = view['rolling'] as bool;
+            final from = DateTime.parse(view['start'] as String),
+                to = DateTime.parse(view['end'] as String);
             if (!to.isAfter(from) ||
                 to.difference(from) > const Duration(days: 7)) {
               throw const FormatException('Invalid cached range.');
             }
             start = from;
             end = to;
-            target = filter;
-            rollingRange = rolling;
-            restored = true;
+            rollingRange = view['rolling'] as bool;
+            if (view['filters'] is List) {
+              final saved = (view['filters'] as List)
+                  .map((name) => RecordingFilter.values.byName(name as String))
+                  .toSet();
+              filters
+                ..clear()
+                ..addAll(saved);
+              restored = true;
+            }
           }
         } catch (_) {
-          /* Ignore an obsolete cache entry. */
+          /* Ignore obsolete metadata. */
+        }
+        final savedClock = await cache.readJson('recorder-clock-v1');
+        if (!mounted) return;
+        if (savedClock != null) {
+          recorderClock = RecorderClock.fromJson(savedClock);
+          clockLoaded = true;
         }
         final caps = await cache.readJson('capabilities');
         if (!mounted) return;
-        if (caps != null && caps['targets'] is List) {
+        if (caps?['targets'] is List) {
           capabilities = RecorderCapabilities({
             RecordingTarget.all,
-            for (final value in caps['targets'] as List? ?? [])
-              ...RecordingTarget.values.where((t) => t.name == value),
+            for (final name in caps!['targets'] as List)
+              ...RecordingTarget.values.where((t) => t.name == name),
           });
         }
-        if (widget.events && !restored && capabilities != null) {
-          target =
-              capabilities!.targets
-                  .where((t) => t != RecordingTarget.all)
-                  .firstOrNull ??
-              RecordingTarget.all;
-        }
+        if (!restored) defaultFilters();
         final saved = await cache.readJson(
-          cache.timelineKey(start, end, target),
+          RecordingSearch(start, end, filters).key,
         );
         if (!mounted) return;
         if (_applyCached(saved)) setState(() => loading = false);
@@ -123,6 +144,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         previews.refresh();
         previewEpoch++;
         setState(() {
+          ready = false;
           loading = true;
           error = null;
         });
@@ -139,6 +161,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         config: config,
         credentials: credentials,
         http: network.createHttpClient(),
+        clock: recorderClock,
       );
       if (force || capabilities == null) {
         capabilities = await client!.capabilities();
@@ -148,21 +171,20 @@ class _RecordingBrowserState extends State<RecordingBrowser>
           }),
         );
       }
-      if (widget.events && !restored && !force) {
-        target =
-            capabilities!.targets
-                .where((t) => t != RecordingTarget.all)
-                .firstOrNull ??
-            RecordingTarget.all;
+      if (!mounted) return;
+      if (force || !clockLoaded) {
+        recorderClock = await client!.discoverClock();
+        clockLoaded = true;
+        unawaited(cache.writeJson('recorder-clock-v1', recorderClock.toJson()));
       }
       if (!mounted) return;
-      if (!capabilities!.targets.contains(target)) {
-        target = widget.events
-            ? capabilities!.targets
-                      .where((t) => t != RecordingTarget.all)
-                      .firstOrNull ??
-                  RecordingTarget.all
-            : RecordingTarget.all;
+      ready = true;
+      if (!restored && !force) defaultFilters();
+      final unsupported = filters
+          .where((f) => !f.supported(capabilities))
+          .toSet();
+      if (unsupported.isNotEmpty) {
+        filters.removeAll(unsupported);
         records.clear();
         cachedResults = false;
       }
@@ -200,15 +222,14 @@ class _RecordingBrowserState extends State<RecordingBrowser>
             ),
           )
           .toList();
-      final next = saved['position'] as int, id = saved['searchId'] as String;
-      final hasMore = saved['more'] as bool;
+      final restored = RecordingSearch(start, end, filters)
+        ..restore(Map<String, dynamic>.from(saved['paging'] as Map));
       final time = DateTime.parse(saved['savedAt'] as String);
       records
         ..clear()
         ..addAll(entries);
-      position = next;
-      searchId = id;
-      more = hasMore;
+      query = restored;
+      more = restored.hasMore;
       cachedAt = time;
       cachedResults = true;
       return true;
@@ -221,7 +242,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
     cache.writeJson(viewKey, {
       'start': start.toUtc().toIso8601String(),
       'end': end.toUtc().toIso8601String(),
-      'target': target.name,
+      'filters': filters.map((f) => f.name).toList(),
       'rolling': rollingRange,
     }),
   );
@@ -231,7 +252,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
     bool force = false,
     bool preserve = false,
   }) async {
-    if (client == null || (loading && !reset)) return;
+    if (client == null || !ready || (loading && !reset)) return;
     final request = ++generation;
     setState(() {
       loading = true;
@@ -241,13 +262,13 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         cachedResults = false;
       }
       if (reset) {
-        position = 0;
+        query = RecordingSearch(start, end, filters);
         more = false;
-        searchId = const Uuid().v4();
       }
     });
     _saveView();
-    final key = cache.timelineKey(start, end, target);
+    var current = query ?? RecordingSearch(start, end, filters);
+    final key = current.key;
     try {
       if (reset && !force) {
         final saved = await cache.readJson(key);
@@ -266,41 +287,30 @@ class _RecordingBrowserState extends State<RecordingBrowser>
             return;
           }
         }
-        position = 0;
-        more = false;
-        searchId = const Uuid().v4();
+        current = RecordingSearch(start, end, filters);
+        query = current;
       }
-      final page = await client!.search(
-        start: start,
-        end: end,
-        target: target,
-        position: position,
-        searchId: searchId,
+      final page = await current.next(
+        client!,
+        active: () => mounted && request == generation,
       );
       if (!mounted || request != generation) return;
-      final seen = records.map((r) => r.identity).toSet();
-      if (reset) seen.clear();
-      final additions = page.records
-          .where((r) => seen.add(r.identity))
-          .toList();
       setState(() {
-        if (reset) records.clear();
-        records.addAll(additions);
-        records.sort((a, b) => a.start.compareTo(b.start));
-        more =
-            page.hasMore &&
-            page.nextPosition > position &&
-            additions.isNotEmpty;
-        position = page.nextPosition;
-        cachedResults = false;
+        final previous = !reset || (preserve && page.error != null)
+            ? records.toList()
+            : <Recording>[];
+        records
+          ..clear()
+          ..addAll(RecordingSearch.merge([...previous, ...page.records]));
+        more = current.hasMore;
+        error = page.error;
+        cachedResults = preserve && page.error != null;
       });
-      if (records.length <= 2000) {
+      if (records.length <= 2000 && page.error == null) {
         unawaited(
           cache.writeJson(key, {
             'records': records.map(RecordingCache.encodeRecord).toList(),
-            'position': position,
-            'more': more,
-            'searchId': searchId,
+            'paging': current.save(),
             'savedAt': DateTime.now().toUtc().toIso8601String(),
           }),
         );
@@ -405,7 +415,22 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                     playback: HikvisionClient.continuousPlayback(
                       config,
                       record.playbackTime,
+                      source: record.playback,
+                      clock: record.clock,
                     ),
+                    recording: record,
+                    resolveRecording: (time) async {
+                      final page = await client!.search(
+                        start: time,
+                        end: time.add(const Duration(hours: 1)),
+                      );
+                      return page.records
+                          .where(
+                            (r) =>
+                                !r.start.isAfter(time) && r.end.isAfter(time),
+                          )
+                          .firstOrNull;
+                    },
                     autoStart: true,
                     showRecordings: false,
                     fullscreen: true,
@@ -460,21 +485,30 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                   child: Wrap(
                     spacing: 8,
                     children: [
-                      for (final kind in RecordingTarget.values)
-                        ChoiceChip(
-                          label: Text(switch (kind) {
-                            RecordingTarget.all => 'All recordings',
-                            RecordingTarget.human => 'People',
-                            RecordingTarget.vehicle => 'Vehicles',
-                          }),
-                          selected: target == kind,
-                          onSelected:
-                              client == null ||
-                                  !(capabilities?.targets.contains(kind) ??
-                                      kind == RecordingTarget.all)
+                      FilterChip(
+                        label: const Text('All recordings'),
+                        selected: filters.isEmpty,
+                        onSelected: !ready
+                            ? null
+                            : (_) {
+                                setState(() => filters.clear());
+                                unawaited(search(reset: true));
+                              },
+                      ),
+                      for (final kind in RecordingFilter.values)
+                        FilterChip(
+                          label: Text(kind.label),
+                          selected: filters.contains(kind),
+                          onSelected: !ready || !kind.supported(capabilities)
                               ? null
-                              : (_) {
-                                  setState(() => target = kind);
+                              : (selected) {
+                                  setState(() {
+                                    if (selected) {
+                                      filters.add(kind);
+                                    } else {
+                                      filters.remove(kind);
+                                    }
+                                  });
                                   unawaited(search(reset: true));
                                 },
                         ),
@@ -485,7 +519,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
-                      'This recorder does not expose human/vehicle recording search. All recordings remain available.',
+                      'This recorder does not expose human/vehicle recording search. Motion and other generic events remain available.',
                     ),
                   ),
                 TextButton.icon(
@@ -518,7 +552,9 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                   loading
                       ? 'Searching recordings…'
                       : error == null
-                      ? 'No recordings in this range.'
+                      ? (more
+                            ? 'No matches yet. Load more recordings to keep searching.'
+                            : 'No recordings in this range.')
                       : '',
                 ),
               ),

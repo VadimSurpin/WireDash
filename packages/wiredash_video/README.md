@@ -27,7 +27,7 @@ stay outside the transformed picture. This is digital zoom/pan, not camera PTZ.
 The same widget is used for live video, fullscreen and recording playback;
 recordings expose a seek slider when the recorder reports a duration. Recording
 playback always offers rewind/forward by 10 seconds and one minute, a recording
-clock, and Return to selected event. These controls reopen playback by UTC time,
+clock, and Return to selected event. These controls reopen playback using the recorder's negotiated time basis,
 so they work with unknown-duration RTSP and can reach footage before the selected
 event when it exists. They jump through footage; they do not claim reverse or
 accelerated decoding support from every recorder. Expanding fullscreen preserves
@@ -65,8 +65,10 @@ scroll position.
 An actual detection photo requires saved event-linked picture capture and a
 firmware-supported picture search endpoint. Human/vehicle video filtering alone
 does not guarantee that pictures were saved. If no compatible event photo is
-available, the fallback says **Video start · detection photo unavailable** and
-uses the first recorded video frame. It does not estimate detection time from a
+available, the preview uses recorded video at the result timestamp, without a
+repeated missing-photo label. When a returned file starts before the event, its
+preview request is rewritten to the event timestamp using the recorder's time
+basis. Old video-frame thumbnails are invalidated after this correction. It does not estimate detection time from a
 fixed delay or substitute the current live camera snapshot. Photo searches inspect
 up to 40 stored captures in the recording interval, preferring matching target
 classification; a capture outside those results needs a narrower time-range search
@@ -96,17 +98,37 @@ caches; cached recording URLs omit embedded login data.
 
 Searches are limited to seven days per request, default to the previous
 24 hours, and page through results with Load more. Displayed times use the phone's
-local timezone; requests use UTC. Selecting a result plays that recording over RTSP.
-The events button opens the same browser with the first advertised human/vehicle
-filter selected. People and Vehicles can be switched within the browser. If the
-recorder advertises neither, it explains the limitation and offers All recordings.
+local timezone; recorder requests follow its negotiated time format. Selecting a
+result plays that recording over RTSP.
+The Events button includes generic event types plus supported target searches.
+Motion detected, People, Vehicles, Alarm, Line crossing, Intrusion and Other events
+are additive filters: selected types are combined with OR semantics. All recordings
+clears the filters. People/vehicle sources are enabled only when advertised;
+generic events remain available through ordinary recording metadata. Motion is
+not inferred from continuous footage that has no event metadata. Each source
+keeps an independent paging cursor. Duplicate intervals merge event labels and
+keep the real file URI. Continuous-only pages are scanned for selected event
+types, with Load more retaining the raw cursor if further searching is needed.
 
 Ordinary recording search uses `POST /ISAPI/ContentMgmt/search`. Preview capture
 uses the returned `playbackURI`, rewriting its host/port to the configured RTSP
 endpoint so returned LAN addresses cannot escape the configured route. Viewer
-playback instead uses `/Streaming/tracks/{channel × 100 + 1}?starttime=...` in UTC,
-without `endtime`, file name or file size. Hikvision documents `endtime` as optional
-for playback by time (general ISAPI guide, §15.9.17).
+playback first uses a time range on the returned recording track, including an
+explicit `endtime` for firmware that requires one. The range extends beyond the
+short event match, up to the current time or one day from the selected point.
+If time-range playback is rejected, the viewer retains the DVR's real file name,
+size, path and time parameters. Target-only matches resolve the ordinary recording
+file at that timestamp. File playback advances into the next available file when
+it completes. Rewind/forward can resolve a different recording file as needed.
+Startup failures leave a retryable player instead of an indefinite spinner.
+
+The browser reads recorder time capabilities, preferring `timeType=STD` for UTC
+search/playback. Legacy DVR/NVR local-time mode uses the recorder's configured
+POSIX timezone, including supported DST rules, instead of the phone timezone.
+Some legacy devices append Z to local timestamps; these are interpreted according
+to their advertised time type. Cached records retain this time basis, and the
+returned playback URI's `timeType` is preserved. Capability discovery is read-only;
+the plugin does not change the recorder's clock, timezone or recording schedule.
 
 Search requests follow Hikvision's recorded-video example, with a fixed UTF-8
 `Content-Length` and the all-recording descriptor `//recordType.meta.std-cgi.com`.
@@ -185,6 +207,7 @@ background cleanup and an interval containing more than 40 results.
 Sources: [Hikvision live/recording integration guide](https://www.hikvisioneurope.com/eu/portal/portal/Technology%20Partner%20Program/03-How%20to/How%20to%20search%20and%20download%20the%20video%20file%20from%20NVR%20via%20ISAPI.pdf),
 [Hikvision general ISAPI guide, recorded-video request example in §15.2.40](https://raw.githubusercontent.com/loozhengyuan/hikvision-sdk/master/resources/isapi.pdf),
 [Hikvision ISAPI developer guides](https://tpp.hikvision.com/download/),
+[ISAPI recorder time-type negotiation and playback URI semantics, §§7.3 and 11.4.2.1](https://download.acti.com/?id=34491),
 [ISAPI target-search flow in ACTi's implementation guide](https://download.acti.com/?id=34491),
 [target-search request/response example](https://github.com/Laudrice/Intelligent_Video_Monitoring_System/blob/aa96af74fe2d0daabc268641b9cca0d76953328b/backend/server.js#L669),
 [media_kit](https://github.com/media-kit/media-kit), and

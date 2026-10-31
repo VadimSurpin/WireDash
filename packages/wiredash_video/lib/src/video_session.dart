@@ -37,6 +37,7 @@ class VideoPlaybackHealth {
 abstract class VideoSession extends ChangeNotifier {
   bool get buffering;
   bool get playing;
+  bool get completed => false;
   String? get error;
   Duration get position;
   Duration get duration;
@@ -103,6 +104,7 @@ class NativeVideoSession extends VideoSession {
       }),
     );
     subscriptions.add(player.stream.duration.listen((_) => _changed()));
+    subscriptions.add(player.stream.completed.listen((_) => _changed()));
   }
   late final Player player;
   late final VideoController controller;
@@ -112,11 +114,14 @@ class NativeVideoSession extends VideoSession {
   NativeVideoSession.preview() : this(preview: true);
   final health = VideoPlaybackHealth();
   final subscriptions = <StreamSubscription<dynamic>>[];
+  Future<void>? _closing;
   bool _buffering = true, _playing = false, _closed = false;
   @override
   bool get buffering => _buffering;
   @override
   bool get playing => _playing;
+  @override
+  bool get completed => player.state.completed;
   @override
   String? get error => health.error;
   @override
@@ -225,7 +230,9 @@ class NativeVideoSession extends VideoSession {
   }
 
   @override
-  Future<void> close() async {
+  Future<void> close() => _closing ??= _dispose();
+
+  Future<void> _dispose() async {
     if (_closed) return;
     _closed = true;
     for (final subscription in subscriptions) {

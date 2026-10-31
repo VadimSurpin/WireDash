@@ -258,9 +258,11 @@ void main() {
       await tester.pump();
       await tester.tap(find.byTooltip('Rewind 10 seconds'));
       await tester.pumpAndSettle();
-      expect(sessions.last.opened!.queryParameters, {
-        'starttime': '20261031T100349Z',
-      });
+      expect(
+        sessions.last.opened!.queryParameters['starttime'],
+        '20261031T100349Z',
+      );
+      expect(sessions.last.opened!.queryParameters, contains('endtime'));
       expect(sessions.first.closed, isTrue);
       expect(host.network.leases.first.closed, isTrue);
       sessions.last.position = const Duration(seconds: 2);

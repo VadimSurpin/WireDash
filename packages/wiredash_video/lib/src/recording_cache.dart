@@ -8,6 +8,7 @@ import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'hikvision_client.dart';
 import 'recording_event.dart';
 import 'recording_picture.dart';
+import 'recorder_clock.dart';
 import 'video_config.dart';
 
 class _CacheEntry {
@@ -222,11 +223,13 @@ class RecordingCache {
   Future<void> writeJson(String key, Map<String, dynamic> value) =>
       _write(key, utf8.encode(jsonEncode(value)));
   Future<Uint8List?> readImage(Recording record) => _read(
-    'preview/${record.start.toUtc().microsecondsSinceEpoch}',
+    'preview-v2/${record.playbackTime.toUtc().microsecondsSinceEpoch}',
     const Duration(days: 7),
   );
-  Future<void> writeImage(Recording record, Uint8List bytes) =>
-      _write('preview/${record.start.toUtc().microsecondsSinceEpoch}', bytes);
+  Future<void> writeImage(Recording record, Uint8List bytes) => _write(
+    'preview-v2/${record.playbackTime.toUtc().microsecondsSinceEpoch}',
+    bytes,
+  );
   Future<Uint8List?> readPicture(RecordingPicture picture) => _read(
     'picture/${picture.time.toUtc().microsecondsSinceEpoch}/${picture.uri}',
     const Duration(days: 7),
@@ -245,6 +248,7 @@ class RecordingCache {
     'playback': record.playback.replace(userInfo: '').toString(),
     'target': record.target.name,
     'events': record.eventTypes.map((e) => e.name).toList(),
+    'clock': record.clock.toJson(),
   };
   static Recording decodeRecord(
     Map<String, dynamic> value,
@@ -259,6 +263,11 @@ class RecordingCache {
       start: start,
       end: end,
       playback: config.playbackUri(value['playback'] as String),
+      clock: value['clock'] is Map
+          ? RecorderClock.fromJson(
+              Map<String, dynamic>.from(value['clock'] as Map),
+            )
+          : const RecorderClock(),
       target: RecordingTarget.values.firstWhere(
         (t) => t.name == value['target'],
         orElse: () => RecordingTarget.all,

@@ -205,6 +205,7 @@ void main() {
       expect(find.text('Motion'), findsOneWidget);
       expect(find.text('Person'), findsOneWidget);
       expect(find.byType(Image), findsNWidgets(2));
+      expect(find.textContaining('detection photo unavailable'), findsNothing);
       final first = tester.getCenter(
         find.byKey(ValueKey('timeline-dot/${records.first.identity}')),
       );
