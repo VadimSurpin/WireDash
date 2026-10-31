@@ -6,8 +6,12 @@ class RecorderClock {
     this.local = false,
     this.zone = '',
     this.offsetMinutes = 0,
+    this.playbackLocal,
+    this.forcePlaybackLocal,
   });
   final bool standard, local;
+  final bool? playbackLocal, forcePlaybackLocal;
+  bool get localPlayback => playbackLocal ?? local;
   final String zone;
   final int offsetMinutes;
   Map<String, dynamic> toJson() => {
@@ -15,12 +19,16 @@ class RecorderClock {
     'local': local,
     'zone': zone,
     'offsetMinutes': offsetMinutes,
+    'playbackLocal': playbackLocal,
+    'forcePlaybackLocal': forcePlaybackLocal,
   };
   factory RecorderClock.fromJson(Map<String, dynamic> value) => RecorderClock(
     standard: value['standard'] == true,
     local: value['local'] == true,
     zone: value['zone'] as String? ?? '',
     offsetMinutes: (value['offsetMinutes'] as num?)?.toInt() ?? 0,
+    playbackLocal: value['playbackLocal'] as bool?,
+    forcePlaybackLocal: value['forcePlaybackLocal'] as bool?,
   );
 
   static Duration? explicitOffset(String value) {
@@ -106,9 +114,41 @@ class RecorderClock {
     return local ? value : '${value}Z';
   }
 
+  /// HTTP's STD capability does not establish RTSP's default time type. Only
+  /// an explicit flag in the recorder-returned RTSP URI requests STD playback.
+  RecorderClock playbackClock(Uri? template) {
+    if (forcePlaybackLocal != null) {
+      return RecorderClock(
+        local: forcePlaybackLocal!,
+        zone: zone,
+        offsetMinutes: offsetMinutes,
+      );
+    }
+    return template?.queryParameters['timeType']?.toUpperCase() == 'STD'
+        ? const RecorderClock(standard: true)
+        : RecorderClock(
+            local: localPlayback,
+            zone: zone,
+            offsetMinutes: offsetMinutes,
+          );
+  }
+
+  Map<String, String> playbackQuery(Map<String, String> original) {
+    final query = Map<String, String>.from(original);
+    if (forcePlaybackLocal == true) {
+      query.removeWhere((key, _) => key.toLowerCase() == 'timetype');
+    }
+    if (forcePlaybackLocal == false && standard) query['timeType'] = 'STD';
+    return query;
+  }
+
+  DateTime? parsePlayback(String value, {Uri? template}) =>
+      playbackClock(template).parse(value);
+
   String rtsp(DateTime time, {Uri? template}) {
-    final value = format(time).replaceAll('-', '').replaceAll(':', '');
-    return local &&
+    final basis = playbackClock(template);
+    final value = basis.format(time).replaceAll('-', '').replaceAll(':', '');
+    return basis.local &&
             (template?.queryParameters['starttime']?.toUpperCase().endsWith(
                   'Z',
                 ) ??

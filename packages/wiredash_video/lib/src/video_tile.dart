@@ -64,11 +64,16 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   bool fileMode = false, advancing = false;
   RecorderClock get clockBasis =>
       file?.clock ?? widget.recording?.clock ?? const RecorderClock();
-  DateTime? get playbackStart =>
-      clockBasis.parse(playback?.queryParameters['starttime'] ?? '');
+  DateTime? get playbackStart => clockBasis.parsePlayback(
+    playback?.queryParameters['starttime'] ?? '',
+    template: playback,
+  );
   DateTime? get selectedEvent =>
       widget.selectedEvent ??
-      clockBasis.parse(widget.playback?.queryParameters['starttime'] ?? '');
+      clockBasis.parsePlayback(
+        widget.playback?.queryParameters['starttime'] ?? '',
+        template: widget.playback,
+      );
   DateTime? get playbackTime =>
       playbackStart?.add(session?.position ?? Duration.zero);
 

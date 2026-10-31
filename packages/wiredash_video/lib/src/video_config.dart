@@ -2,6 +2,8 @@ import 'dart:convert';
 
 enum RecordingTarget { all, human, vehicle }
 
+enum RecorderPlaybackTime { automatic, utc, local }
+
 class VideoCredentials {
   const VideoCredentials(this.username, this.password);
   final String username, password;
@@ -33,8 +35,12 @@ class VideoConfig {
     this.muted = true,
     this.credentialId = '',
     this.useHomeNetwork = true,
+    this.playbackTime = RecorderPlaybackTime.automatic,
+    this.playbackUtcOffset = '',
   });
   final String streamUrl, recorderUrl, credentialId;
+  final RecorderPlaybackTime playbackTime;
+  final String playbackUtcOffset;
   final int channel;
   final bool substream, recordings, muted, useHomeNetwork;
   int get liveTrack => channel * 100 + (substream ? 2 : 1);
@@ -66,6 +72,16 @@ class VideoConfig {
     }
     if (streamUrl.isEmpty && recorderUrl.isEmpty) {
       return 'Enter an RTSP URL or a Hikvision recorder address.';
+    }
+    if (recordings && playbackUtcOffset.isNotEmpty) {
+      final match = RegExp(
+        r'^([+-])(\d{2}):(\d{2})$',
+      ).firstMatch(playbackUtcOffset);
+      if (match == null ||
+          int.parse(match[3]!) >= 60 ||
+          int.parse(match[2]!) * 60 + int.parse(match[3]!) > 14 * 60) {
+        return 'Enter a UTC offset such as +03:00 (between -14:00 and +14:00).';
+      }
     }
     try {
       final uri = liveUri;
@@ -104,6 +120,8 @@ class VideoConfig {
     'muted': muted,
     'credentialId': credentialId,
     'useHomeNetwork': useHomeNetwork,
+    'playbackTime': playbackTime.name,
+    'playbackUtcOffset': playbackUtcOffset,
   };
   factory VideoConfig.fromJson(Map<String, dynamic> j) => VideoConfig(
     streamUrl: j['streamUrl'] as String? ?? '',
@@ -114,6 +132,12 @@ class VideoConfig {
     muted: j['muted'] as bool? ?? true,
     credentialId: j['credentialId'] as String? ?? '',
     useHomeNetwork: j['useHomeNetwork'] as bool? ?? true,
+    playbackTime:
+        RecorderPlaybackTime.values
+            .where((v) => v.name == j['playbackTime'])
+            .firstOrNull ??
+        RecorderPlaybackTime.automatic,
+    playbackUtcOffset: j['playbackUtcOffset'] as String? ?? '',
   );
 
   /// DVRs often return their LAN address. Keep the exact recording path/query

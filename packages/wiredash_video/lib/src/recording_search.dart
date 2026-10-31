@@ -68,7 +68,7 @@ class RecordingSearch {
   bool get hasMore => cursors.values.any((c) => c.more);
   String get key {
     final names = filters.map((f) => f.name).toList()..sort();
-    return 'filtered-timeline/v2/${start.toUtc().toIso8601String()}/${end.toUtc().toIso8601String()}/${names.join(',')}';
+    return 'filtered-timeline/v3/${start.toUtc().toIso8601String()}/${end.toUtc().toIso8601String()}/${names.join(',')}';
   }
 
   Map<String, dynamic> save() => {

@@ -103,7 +103,7 @@ void main() {
               request.response.write(
                 '<CMSearchResult><responseStatusStrg>OK</responseStatusStrg><matchList>'
                 '<searchMatchItem><trackID>101</trackID><timeSpan><startTime>2026-10-31T$hour:15:30Z</startTime><endTime>2026-10-31T$hour:16:30Z</endTime></timeSpan>'
-                '<playbackURI>rtsp://internal/Streaming/tracks/101?name=file&amp;size=100&amp;starttime=20261031T${hour}1530Z&amp;endtime=20261031T${hour}1630Z</playbackURI>'
+                '<playbackURI>rtsp://internal/Streaming/tracks/101?name=file&amp;size=100&amp;starttime=20261031T101530Z&amp;endtime=20261031T101630Z</playbackURI>'
                 '</searchMatchItem></matchList></CMSearchResult>',
               );
             }
@@ -139,13 +139,14 @@ void main() {
               source: record.playback,
               clock: record.clock,
             );
+            expect(playback.queryParameters['starttime'], '20261031T101530Z');
+            expect(playback.queryParameters['timeType'], isNull);
             expect(
-              playback.queryParameters['starttime'],
-              standard ? '20261031T071530Z' : '20261031T101530Z',
-            );
-            expect(
-              playback.queryParameters['timeType'],
-              standard ? 'STD' : null,
+              record.clock.parsePlayback(
+                playback.queryParameters['starttime']!,
+                template: playback,
+              ),
+              start,
             );
           } finally {
             client.close();
@@ -155,4 +156,116 @@ void main() {
       },
     );
   }
+
+  test(
+    'HTTP STD search and default local RTSP use separate clocks for a UTC+3 recorder',
+    () {
+      const clock = RecorderClock(
+        standard: true,
+        local: false,
+        playbackLocal: true,
+        zone: 'CST-3:00:00',
+      );
+      final event = clock.parse('2026-10-31T07:00:00Z')!;
+      expect(
+        event.add(const Duration(hours: 3)).hour,
+        10,
+      ); // Phone display UTC+3.
+      expect(clock.format(event), '2026-10-31T07:00:00Z'); // HTTP remains UTC.
+      final uri = HikvisionClient.continuousPlayback(
+        const VideoConfig(streamUrl: 'rtsp://recorder/live'),
+        event,
+        source: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?starttime=20261031T100000Z&name=file',
+        ),
+        clock: clock,
+      );
+      expect(
+        uri.queryParameters['starttime'],
+        '20261031T100000Z',
+      ); // DVR OSD 10:00, not 07:00.
+      expect(uri.queryParameters['timeType'], isNull);
+      expect(
+        clock.parsePlayback(uri.queryParameters['starttime']!, template: uri),
+        event,
+      );
+      final explicit = HikvisionClient.continuousPlayback(
+        const VideoConfig(streamUrl: 'rtsp://recorder/live'),
+        event,
+        source: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?starttime=20261031T070000Z&timeType=STD',
+        ),
+        clock: clock,
+      );
+      expect(explicit.queryParameters['starttime'], '20261031T070000Z');
+      expect(
+        explicit.queryParameters['timeType'],
+        'STD',
+      ); // Preserve an actual recorder flag.
+    },
+  );
+
+  test(
+    'manual local playback overrides misleading STD without changing HTTP search time',
+    () {
+      const clock = RecorderClock(
+        standard: true,
+        playbackLocal: false,
+        forcePlaybackLocal: true,
+        offsetMinutes: 180,
+      );
+      final event = DateTime.utc(2026, 10, 31, 7);
+      final uri = HikvisionClient.continuousPlayback(
+        const VideoConfig(streamUrl: 'rtsp://recorder/live'),
+        event,
+        source: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?timeType=STD&starttime=20261031T070000Z',
+        ),
+        clock: clock,
+      );
+      expect(clock.format(event), '2026-10-31T07:00:00Z');
+      expect(uri.queryParameters['starttime'], '20261031T100000Z');
+      expect(uri.queryParameters['timeType'], isNull);
+      final restored = RecorderClock.fromJson(clock.toJson());
+      expect(
+        restored.parsePlayback(
+          uri.queryParameters['starttime']!,
+          template: uri,
+        ),
+        event,
+      );
+    },
+  );
+
+  test(
+    'playback override settings round-trip and reject malformed offsets',
+    () {
+      const config = VideoConfig(
+        streamUrl: 'rtsp://recorder/live',
+        recorderUrl: 'http://recorder',
+        recordings: true,
+        playbackTime: RecorderPlaybackTime.local,
+        playbackUtcOffset: '+03:00',
+      );
+      final restored = VideoConfig.fromJson(config.toJson());
+      expect(restored.playbackTime, RecorderPlaybackTime.local);
+      expect(restored.playbackUtcOffset, '+03:00');
+      expect(restored.validate(), isNull);
+      for (final offset in [
+        '03:00',
+        '+03:99',
+        '+15:00',
+        '+14:01',
+        'nonsense',
+      ]) {
+        expect(
+          VideoConfig.fromJson({
+            ...config.toJson(),
+            'playbackUtcOffset': offset,
+          }).validate(),
+          isNotNull,
+        );
+      }
+    },
+  );
 }

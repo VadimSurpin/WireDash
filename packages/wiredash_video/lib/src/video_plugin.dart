@@ -45,17 +45,21 @@ class VideoEditorController extends PluginEditorController {
     recordings = config.recordings;
     muted = config.muted;
     useHomeNetwork = config.useHomeNetwork;
+    playbackTime = config.playbackTime;
+    playbackOffset.text = config.playbackUtcOffset;
     loadingCredentials = _loadCredentials();
   }
   final PluginHost host;
   final VideoConfig config;
   final stream = TextEditingController(),
       recorder = TextEditingController(),
-      channel = TextEditingController();
+      channel = TextEditingController(),
+      playbackOffset = TextEditingController();
   final username = TextEditingController(), password = TextEditingController();
   late String credentialId;
   late final Future<void> loadingCredentials;
   late bool substream, recordings, muted, useHomeNetwork;
+  late RecorderPlaybackTime playbackTime;
   bool credentialsEdited = false, disposed = false;
   String? credentialError;
   Future<void> _loadCredentials() async {
@@ -82,6 +86,8 @@ class VideoEditorController extends PluginEditorController {
     muted: muted,
     useHomeNetwork: useHomeNetwork,
     credentialId: credentialId,
+    playbackTime: playbackTime,
+    playbackUtcOffset: playbackOffset.text.trim(),
   );
   @override
   Map<String, dynamic> get settings => current.toJson();
@@ -206,6 +212,43 @@ class VideoEditorController extends PluginEditorController {
           value: recordings,
           onChanged: (v) => changed(() => recordings = v),
         ),
+        if (recordings) ...[
+          DropdownButtonFormField<RecorderPlaybackTime>(
+            initialValue: playbackTime,
+            decoration: const InputDecoration(
+              labelText: 'Recording playback time',
+            ),
+            items: const [
+              DropdownMenuItem(
+                value: RecorderPlaybackTime.automatic,
+                child: Text('Automatic'),
+              ),
+              DropdownMenuItem(
+                value: RecorderPlaybackTime.local,
+                child: Text('Recorder local time'),
+              ),
+              DropdownMenuItem(
+                value: RecorderPlaybackTime.utc,
+                child: Text('UTC'),
+              ),
+            ],
+            onChanged: (value) => changed(
+              () => playbackTime = value ?? RecorderPlaybackTime.automatic,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextFormField(
+            controller: playbackOffset,
+            textDirection: TextDirection.ltr,
+            decoration: const InputDecoration(
+              labelText: 'Recorder UTC offset (optional)',
+              hintText: '+03:00',
+              helperText:
+                  'Leave blank to read the recorder timezone. Use +03:00 for UTC+3.',
+            ),
+            validator: (_) => current.validate(),
+          ),
+        ],
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
           title: const Text('Mute initially'),
@@ -227,7 +270,14 @@ class VideoEditorController extends PluginEditorController {
   @override
   void dispose() {
     disposed = true;
-    for (final c in [stream, recorder, channel, username, password]) {
+    for (final c in [
+      stream,
+      recorder,
+      channel,
+      playbackOffset,
+      username,
+      password,
+    ]) {
       c.dispose();
     }
     super.dispose();

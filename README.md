@@ -29,6 +29,13 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 
 ## Changes in this fork
 
+- **[Video widgets](packages/wiredash_video/README.md)** — RTSP live video with
+  pinch zoom and pan, Hikvision recording/event timelines, cached previews, and
+  rewind/forward controls. Motion, people, vehicles and other event filters can
+  be combined. Recording search and RTSP playback honor their separate time
+  formats, with a per-camera playback-time override for older DVRs. Video remains
+  experimental in feature builds; the latest stable 3.2.0 release predates it.
+  Android Auto lists camera entries and directs playback to the parked phone.
 - **[Android Auto support](docs/ANDROID_AUTO.md)** — control switches, command
   buttons, gates and rollers from the car. Saved dashboard groups appear in a
   scrolling grid on supported hosts, with configured button titles and icons.

@@ -119,7 +119,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         } catch (_) {
           /* Ignore obsolete metadata. */
         }
-        final savedClock = await cache.readJson('recorder-clock-v1');
+        final savedClock = await cache.readJson('recorder-clock-v2');
         if (!mounted) return;
         if (savedClock != null) {
           recorderClock = RecorderClock.fromJson(savedClock);
@@ -175,7 +175,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
       if (force || !clockLoaded) {
         recorderClock = await client!.discoverClock();
         clockLoaded = true;
-        unawaited(cache.writeJson('recorder-clock-v1', recorderClock.toJson()));
+        unawaited(cache.writeJson('recorder-clock-v2', recorderClock.toJson()));
       }
       if (!mounted) return;
       ready = true;

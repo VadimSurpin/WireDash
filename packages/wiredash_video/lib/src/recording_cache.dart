@@ -223,11 +223,11 @@ class RecordingCache {
   Future<void> writeJson(String key, Map<String, dynamic> value) =>
       _write(key, utf8.encode(jsonEncode(value)));
   Future<Uint8List?> readImage(Recording record) => _read(
-    'preview-v2/${record.playbackTime.toUtc().microsecondsSinceEpoch}',
+    'preview-v3/${record.playbackTime.toUtc().microsecondsSinceEpoch}',
     const Duration(days: 7),
   );
   Future<void> writeImage(Recording record, Uint8List bytes) => _write(
-    'preview-v2/${record.playbackTime.toUtc().microsecondsSinceEpoch}',
+    'preview-v3/${record.playbackTime.toUtc().microsecondsSinceEpoch}',
     bytes,
   );
   Future<Uint8List?> readPicture(RecordingPicture picture) => _read(

@@ -231,49 +231,68 @@ class HikvisionClient {
       }
     }
 
+    var standard = false;
+    bool? legacyLocal;
+    var zone = '';
+    Duration? offset;
     try {
       final caps = await optional('/ISAPI/System/capabilities');
-      if (caps != null && _text(_xml(caps), 'isSupportTimeTypeSTD') == 'true') {
-        return clock = const RecorderClock(standard: true);
+      if (caps != null) {
+        standard = _text(_xml(caps), 'isSupportTimeTypeSTD') == 'true';
       }
-      var local = false;
       final type = await optional('/ISAPI/System/time/timeType?format=json');
       try {
         final data = type == null ? null : jsonDecode(type);
         final details = data is Map ? data['TimeType'] : null;
         final name = details is Map ? details['type'] : null;
-        if (name == 'UTC') return clock = const RecorderClock();
-        local = name == 'local';
+        if (name == 'UTC') legacyLocal = false;
+        if (name == 'local') legacyLocal = true;
       } on FormatException {
-        /* Older devices do not expose timeType. */
+        /* Older firmware uses device type defaults. */
       }
-      if (!local) {
+      if (legacyLocal == null) {
         final info = await optional('/ISAPI/System/deviceInfo');
         final kind = info == null
             ? ''
             : _text(_xml(info), 'deviceType')?.toUpperCase();
-        local = ['CVR', 'NVR', 'DVR', 'ITCCAM', 'HYBIRDNVR'].contains(kind);
+        if (['CVR', 'NVR', 'DVR', 'ITCCAM', 'HYBIRDNVR'].contains(kind)) {
+          legacyLocal = true;
+        }
       }
-      if (local) {
+      // A DVR can normalize HTTP searches to UTC but still require local RTSP
+      // start/end times. Read its timezone even when HTTP advertises STD.
+      if (legacyLocal == true ||
+          config.playbackTime == RecorderPlaybackTime.local ||
+          config.playbackUtcOffset.isNotEmpty) {
         final raw = await optional('/ISAPI/System/time');
         if (raw != null) {
-          final document = _xml(raw), zone = _text(_xml(raw), 'timeZone') ?? '';
-          final offset = RecorderClock.explicitOffset(
+          final document = _xml(raw);
+          zone = _text(document, 'timeZone') ?? '';
+          offset = RecorderClock.explicitOffset(
             _text(document, 'localTime') ?? '',
           );
-          if (zone.isNotEmpty || offset != null) {
-            return clock = RecorderClock(
-              local: true,
-              zone: zone,
-              offsetMinutes: offset?.inMinutes ?? 0,
-            );
-          }
         }
       }
     } on FormatException {
       /* Optional discovery must not block video search. */
     }
-    return clock;
+    final manualOffset = RecorderClock.explicitOffset(config.playbackUtcOffset);
+    final knownLocal =
+        legacyLocal == true &&
+        (zone.isNotEmpty || offset != null || manualOffset != null);
+    final forced = switch (config.playbackTime) {
+      RecorderPlaybackTime.automatic => null,
+      RecorderPlaybackTime.utc => false,
+      RecorderPlaybackTime.local => true,
+    };
+    return clock = RecorderClock(
+      forcePlaybackLocal: forced,
+      standard: standard,
+      local: !standard && knownLocal,
+      playbackLocal: knownLocal,
+      zone: manualOffset == null ? zone : '',
+      offsetMinutes: (manualOffset ?? offset)?.inMinutes ?? 0,
+    );
   }
 
   Future<RecorderCapabilities> capabilities() async {
@@ -623,7 +642,7 @@ class HikvisionClient {
           start: start,
           end: end,
           clock: clock,
-          playback: _playbackUri(config, uri, clock),
+          playback: config.playbackUri(uri),
           eventTypes: item.descendants
               .whereType<XmlElement>()
               .where((e) => e.name.local == 'metadataDescriptor')
@@ -683,7 +702,7 @@ class HikvisionClient {
             clock: clock,
             playback: playback == null
                 ? boundedPlayback(config, start, end, clock: clock)
-                : _playbackUri(config, playback, clock),
+                : config.playbackUri(playback),
           ),
         );
       }
@@ -700,15 +719,6 @@ class HikvisionClient {
     );
   }
 
-  static Uri _playbackUri(VideoConfig config, String raw, RecorderClock clock) {
-    final uri = config.playbackUri(raw);
-    return clock.standard
-        ? uri.replace(
-            queryParameters: {...uri.queryParameters, 'timeType': 'STD'},
-          )
-        : uri;
-  }
-
   static Uri boundedPlayback(
     VideoConfig config,
     DateTime start,
@@ -718,11 +728,7 @@ class HikvisionClient {
     String stamp(DateTime t) => clock.rtsp(t);
     return config.liveUri.replace(
       path: '/Streaming/tracks/${config.recordingTrack}',
-      queryParameters: {
-        'starttime': stamp(start),
-        'endtime': stamp(end),
-        if (clock.standard) 'timeType': 'STD',
-      },
+      queryParameters: {'starttime': stamp(start), 'endtime': stamp(end)},
     );
   }
 
@@ -753,10 +759,9 @@ class HikvisionClient {
       );
     query['starttime'] = clock.rtsp(start, template: source);
     query['endtime'] = clock.rtsp(end, template: source);
-    if (clock.standard) query['timeType'] = 'STD';
     return config.liveUri.replace(
       path: source?.path ?? '/Streaming/tracks/${config.recordingTrack}',
-      queryParameters: query,
+      queryParameters: clock.playbackQuery(query),
     );
   }
 
@@ -767,11 +772,10 @@ class HikvisionClient {
   ) => config
       .playbackUri(record.playback.toString())
       .replace(
-        queryParameters: {
+        queryParameters: record.clock.playbackQuery({
           ...record.playback.queryParameters,
           'starttime': record.clock.rtsp(time, template: record.playback),
           'endtime': record.clock.rtsp(record.end, template: record.playback),
-          if (record.clock.standard) 'timeType': 'STD',
-        },
+        }),
       );
 }

@@ -122,12 +122,20 @@ file at that timestamp. File playback advances into the next available file when
 it completes. Rewind/forward can resolve a different recording file as needed.
 Startup failures leave a retryable player instead of an indefinite spinner.
 
-The browser reads recorder time capabilities, preferring `timeType=STD` for UTC
-search/playback. Legacy DVR/NVR local-time mode uses the recorder's configured
+The browser reads recorder time capabilities, preferring `timeType=STD` for HTTP
+search. RTSP playback uses its own default time type; HTTP STD support does not
+imply that RTSP accepts UTC. The plugin preserves the recorder-returned RTSP
+`timeType` and does not invent a STD flag. A DVR can return UTC search timestamps
+while requiring local-time RTSP requests. Legacy DVR/NVR local-time mode uses the recorder's configured
 POSIX timezone, including supported DST rules, instead of the phone timezone.
 Some legacy devices append Z to local timestamps; these are interpreted according
 to their advertised time type. Cached records retain this time basis, and the
-returned playback URI's `timeType` is preserved. Capability discovery is read-only;
+returned playback URI's `timeType` is preserved in automatic mode. If a DVR
+misreports its playback mode, edit the video tile: set **Recording playback time**
+to **Recorder local time** and **Recorder UTC offset** to, for example, `+03:00` for
+UTC+3. This overrides playback only; HTTP search timestamps remain UTC when STD
+is supported. Leave the offset blank to use the recorder timezone and its DST
+rules. UTC playback can also be selected explicitly. Discovery is read-only;
 the plugin does not change the recorder's clock, timezone or recording schedule.
 
 Search requests follow Hikvision's recorded-video example, with a fixed UTF-8
