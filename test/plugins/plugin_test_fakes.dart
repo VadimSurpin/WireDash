@@ -46,10 +46,15 @@ class FakeLease implements PluginStreamLease {
 class FakeSession extends VideoSession {
   bool closed = false;
   Uri? opened;
+  bool paused = false;
+  @override
+  Duration position = Duration.zero;
+  @override
+  Duration duration = Duration.zero;
   @override
   bool get buffering => false;
   @override
-  bool get playing => opened != null && !closed;
+  bool get playing => opened != null && !closed && !paused;
   @override
   String? get error => null;
   @override
@@ -62,6 +67,18 @@ class FakeSession extends VideoSession {
 
   @override
   Future<void> setMuted(bool muted) async {}
+  @override
+  Future<void> playOrPause() async {
+    paused = !paused;
+    notifyListeners();
+  }
+
+  @override
+  Future<void> seek(Duration position) async {
+    this.position = position;
+    notifyListeners();
+  }
+
   @override
   Future<void> close() async {
     closed = true;

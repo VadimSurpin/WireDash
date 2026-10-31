@@ -10,9 +10,13 @@ abstract class VideoSession extends ChangeNotifier {
   bool get buffering;
   bool get playing;
   String? get error;
+  Duration get position;
+  Duration get duration;
   Widget buildView();
   Future<void> open(Uri uri, {required bool muted});
   Future<void> setMuted(bool muted);
+  Future<void> playOrPause();
+  Future<void> seek(Duration position);
   Future<void> close();
 }
 
@@ -60,6 +64,8 @@ class NativeVideoSession extends VideoSession {
         _changed();
       }),
     );
+    subscriptions.add(player.stream.position.listen((_) => _changed()));
+    subscriptions.add(player.stream.duration.listen((_) => _changed()));
   }
   late final Player player;
   late final VideoController controller;
@@ -72,6 +78,10 @@ class NativeVideoSession extends VideoSession {
   bool get playing => _playing;
   @override
   String? get error => _error;
+  @override
+  Duration get position => player.state.position;
+  @override
+  Duration get duration => player.state.duration;
   void _changed() {
     if (!_closed) notifyListeners();
   }
@@ -80,6 +90,7 @@ class NativeVideoSession extends VideoSession {
   Widget buildView() => Video(
     controller: controller,
     fit: BoxFit.contain,
+    controls: NoVideoControls,
     resumeUponEnteringForegroundMode: false,
   );
   @override
@@ -107,6 +118,10 @@ class NativeVideoSession extends VideoSession {
 
   @override
   Future<void> setMuted(bool muted) => player.setVolume(muted ? 0 : 100);
+  @override
+  Future<void> playOrPause() => player.playOrPause();
+  @override
+  Future<void> seek(Duration position) => player.seek(position);
   @override
   Future<void> close() async {
     if (_closed) return;

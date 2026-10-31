@@ -67,17 +67,21 @@ jobs:
           profile: pixel_2
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: flutter test integration_test/video_stream_test.dart --flavor foss -d emulator-5554 --dart-define=WIREDASH_TEST_RTSP=rtsp://viewer:viewer-test@10.0.2.2:8554/camera
+          script: |
+            flutter test integration_test/video_stream_test.dart --flavor foss -d emulator-5554 --dart-define=WIREDASH_TEST_RTSP=rtsp://viewer:viewer-test@10.0.2.2:8554/camera
+            timeout 15s adb shell run-as pro.surpin.wiredash cat files/rtsp-frame.png > build/video-preview/rtsp-frame.png
+            timeout 15s adb logcat -d > build/video-preview/logcat.txt || true
       - name: Preserve screenshot and runtime logs
         if: always()
         run: |
           mkdir -p build/video-preview
-          adb logcat -d > build/video-preview/logcat.txt || true
-          adb shell run-as pro.surpin.wiredash cat files/rtsp-frame.png > build/video-preview/rtsp-frame.png || true
           test -s build/video-preview/rtsp-frame.png || rm -f build/video-preview/rtsp-frame.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: wiredash-video-native-preview
-          path: build/video-preview/
+          path: |
+            build/video-preview/*.png
+            build/video-preview/*.log
+            build/video-preview/logcat.txt
           if-no-files-found: error

@@ -12,9 +12,11 @@ class RecordingBrowser extends StatefulWidget {
     super.key,
     required this.context,
     required this.sessionFactory,
+    this.events = false,
   });
   final PluginTileContext context;
   final VideoSessionFactory sessionFactory;
+  final bool events;
   @override
   State<RecordingBrowser> createState() => _RecordingBrowserState();
 }
@@ -54,6 +56,13 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
         http: network.createHttpClient(),
       );
       capabilities = await client!.capabilities();
+      if (widget.events) {
+        target =
+            capabilities!.targets
+                .where((t) => t != RecordingTarget.all)
+                .firstOrNull ??
+            RecordingTarget.all;
+      }
       if (mounted) await search(reset: true);
     } catch (e) {
       if (mounted) {
@@ -185,7 +194,9 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text('${widget.context.title} · Recordings'),
+      title: Text(
+        '${widget.context.title} · ${widget.events ? 'Events' : 'Recordings'}',
+      ),
       actions: [
         IconButton(
           tooltip: 'Refresh recordings',

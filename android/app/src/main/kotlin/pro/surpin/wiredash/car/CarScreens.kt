@@ -130,6 +130,7 @@ internal abstract class PollingCarScreen(
             "left" -> R.drawable.car_left
             "right" -> R.drawable.car_right
             "refresh" -> R.drawable.car_refresh
+            "video" -> R.drawable.car_video
             "off" -> R.drawable.car_off
             "on" -> R.drawable.car_on
             else -> R.drawable.ic_shortcut_tile
@@ -228,7 +229,8 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
         if (entries.isEmpty()) return message(R.string.car_setup)
         return list(current.optString("name", "WireDash"), false, entries) { entry ->
             val row = Row.Builder().setTitle(entry.getString("name")).setBrowsable(true)
-            if (!current.optBoolean("connected")) row.addText(word("reconnecting", R.string.car_reconnecting))
+            if (entry.optString("kind") == "video") row.addText(carContext.getString(R.string.car_video_phone))
+            else if (!current.optBoolean("connected")) row.addText(word("reconnecting", R.string.car_reconnecting))
             else if (entry.optBoolean("waitForFeedback")) {
                 val state = entry.optString("state").takeUnless { entry.isNull("state") }
                 row.addText(when (state) {
@@ -242,10 +244,20 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
                 })
             }
             row.setOnClickListener {
-                screenManager.push(ActionsCarScreen(carContext, bridge, dashboardId, entry.getString("id")))
+                screenManager.push(if (entry.optString("kind") == "video")
+                    VideoInfoCarScreen(carContext, entry.getString("name"))
+                    else ActionsCarScreen(carContext, bridge, dashboardId, entry.getString("id")))
             }.build()
         }
     }
+}
+
+/** IoT templates cannot render live video or forward pinch/drag gestures. */
+internal class VideoInfoCarScreen(context: CarContext, private val title: String) : Screen(context) {
+    override fun onGetTemplate(): Template = MessageTemplate.Builder(
+        carContext.getString(R.string.car_video_limit))
+        .setTitle(title).setHeaderAction(Action.BACK)
+        .build()
 }
 
 internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,

@@ -294,7 +294,9 @@ class CarDashboardService {
       final action = control?.actions
           .where((a) => a.id == actionId)
           .firstOrNull;
-      if (control == null || action == null) return {'outcome': 'removed'};
+      if (control == null || action == null || action.commands.isEmpty) {
+        return {'outcome': 'removed'};
+      }
       final mgr = _manager!;
       if (!mgr.isConnected ||
           mgr.status != MqttStatus.connected ||

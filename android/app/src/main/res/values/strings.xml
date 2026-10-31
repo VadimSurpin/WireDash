@@ -3,6 +3,8 @@
      shown inside widgets comes from the app's own translations
      (shortcut.strings in shared preferences). -->
 <resources>
+    <string name="car_video_phone">Video on phone</string>
+    <string name="car_video_limit">This Android Auto IoT interface cannot display video or accept pinch and drag gestures. Open this camera in WireDash on your phone while parked to view live video, recordings and events.</string>
     <string name="widget_device_label">WireDash device</string>
     <string name="widget_device_description">Switch a light or plug, or move a shutter, from your home screen</string>
     <string name="widget_scene_label">WireDash scene</string>

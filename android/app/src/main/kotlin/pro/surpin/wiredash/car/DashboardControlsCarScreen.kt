@@ -101,7 +101,10 @@ internal class DashboardControlsCarScreen(
             val items = mutableListOf<GridItem>()
             for (control in entries) {
                 val actions = control.getJSONArray("actions").objects()
-                if (control.optString("kind") == "switch") {
+                if (control.optString("kind") == "video") {
+                    items.add(button(current, control, actions.first(), actions.first(),
+                        control.getString("name"), carContext.getString(R.string.car_video_phone), activeTiles))
+                } else if (control.optString("kind") == "switch") {
                     // A switch is one tile, as on the phone. Its current icon
                     // reflects feedback; tapping sends the opposite value.
                     val on = control.optString("state") == "ON"
@@ -159,7 +162,7 @@ internal class DashboardControlsCarScreen(
         val pending = sending[controlId]?.action ?: if (control.optBoolean("waitForFeedback"))
             control.optString("pending").takeUnless { control.isNull("pending") } else null
         val loading = pending != null && (switch || pending == actionId)
-        val connected = snapshot.optBoolean("connected")
+        val connected = control.optString("kind") == "video" || snapshot.optBoolean("connected")
         // A switch keeps one identity across ON/OFF. Its listener reads the
         // latest snapshot instead of retaining the target from an older tile.
         val key = TileKey(controlId, control.getString("kind"), if (switch) null else actionId)
@@ -217,11 +220,16 @@ internal class DashboardControlsCarScreen(
     private fun send(key: TileKey) {
         // Stable host delegates use current state and cannot invoke a hidden,
         // removed, repurposed, offline or busy control.
-        if (!visible || data?.optBoolean("connected") != true) return
+        if (!visible) return
         val controlId = key.controlId
         val control = data?.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
             ?: return
         if (control.optString("kind") != key.kind) return
+        if (key.kind == "video") {
+            screenManager.push(VideoInfoCarScreen(carContext, control.getString("name")))
+            return
+        }
+        if (data?.optBoolean("connected") != true) return
         val actionId = key.actionId ?: if (control.optString("state") == "ON") "OFF" else "ON"
         if (control.getJSONArray("actions").objects().none { it.optString("id") == actionId }) return
         val pending = sending[controlId]?.action ?: if (control.optBoolean("waitForFeedback"))

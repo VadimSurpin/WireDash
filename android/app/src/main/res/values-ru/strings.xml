@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="car_video_phone">Видео на телефоне</string>
+    <string name="car_video_limit">Интерфейс IoT в Android Auto не поддерживает видео и жесты масштабирования. На стоянке откройте эту камеру в WireDash на телефоне для просмотра видео, записей и событий.</string>
     <string name="widget_device_label">Устройство WireDash</string>
     <string name="widget_device_description">Включайте свет или розетку и управляйте шторами прямо с главного экрана</string>
     <string name="widget_scene_label">Сцена WireDash</string>

@@ -31,12 +31,14 @@ class VideoPane extends StatefulWidget {
     this.autoStart = false,
     this.showRecordings = true,
     this.videoHeight,
+    this.fullscreen = false,
   });
   final PluginTileContext context;
   final VideoSessionFactory sessionFactory;
   final Uri? playback;
   final double? videoHeight;
   final bool autoStart, showRecordings;
+  final bool fullscreen;
   @override
   State<VideoPane> createState() => _VideoPaneState();
 }
@@ -48,6 +50,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   String? error;
   int generation = 0;
   late bool muted;
+  final transform = TransformationController();
   VideoConfig get config => VideoConfig.fromJson(widget.context.settings);
   @override
   void initState() {
@@ -92,6 +95,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   Future<void> stop() async {
     generation++;
     opening = false;
+    transform.value = Matrix4.identity();
     final releasing = _release();
     if (mounted) setState(() {});
     await releasing;
@@ -157,10 +161,11 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     generation++;
     unawaited(_release());
+    transform.dispose();
     super.dispose();
   }
 
-  Future<void> recordings() async {
+  Future<void> recordings({bool events = false}) async {
     await stop();
     if (!mounted) return;
     await Navigator.of(context).push(
@@ -168,6 +173,37 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         builder: (_) => RecordingBrowser(
           context: widget.context,
           sessionFactory: widget.sessionFactory,
+          events: events,
+        ),
+      ),
+    );
+  }
+
+  Future<void> expand() async {
+    await stop();
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: Text(widget.context.title)),
+          body: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, bounds) => SingleChildScrollView(
+                child: VideoPane(
+                  context: widget.context,
+                  sessionFactory: widget.sessionFactory,
+                  playback: widget.playback,
+                  showRecordings: widget.showRecordings,
+                  autoStart: true,
+                  fullscreen: true,
+                  videoHeight: (bounds.maxHeight - 160).clamp(
+                    bounds.maxHeight.clamp(0.0, 60.0),
+                    bounds.maxHeight,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -182,7 +218,16 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (current != null) current.buildView(),
+          if (current != null)
+            InteractiveViewer(
+              key: const Key('video-viewport'),
+              transformationController: transform,
+              minScale: 1,
+              maxScale: 8,
+              panEnabled: true,
+              scaleEnabled: true,
+              child: SizedBox.expand(child: current.buildView()),
+            ),
           if (current == null && !opening && message == null)
             Center(
               child: IconButton.filled(
@@ -225,9 +270,28 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
           AspectRatio(aspectRatio: 16 / 9, child: video)
         else
           SizedBox(height: widget.videoHeight, child: video),
+        if (widget.playback != null &&
+            current != null &&
+            current.duration > Duration.zero)
+          Slider(
+            label: 'Recording position',
+            value: current.position.inMilliseconds.toDouble().clamp(
+              0,
+              current.duration.inMilliseconds.toDouble(),
+            ),
+            max: current.duration.inMilliseconds.toDouble(),
+            onChanged: (value) =>
+                unawaited(current.seek(Duration(milliseconds: value.round()))),
+          ),
         Wrap(
           alignment: WrapAlignment.end,
           children: [
+            if (current != null)
+              IconButton(
+                tooltip: current.playing ? 'Pause video' : 'Resume video',
+                onPressed: () => unawaited(current.playOrPause()),
+                icon: Icon(current.playing ? Icons.pause : Icons.play_arrow),
+              ),
             IconButton(
               tooltip: current == null && !opening
                   ? 'Play video'
@@ -245,11 +309,32 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
               },
               icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
             ),
+            IconButton(
+              tooltip: 'Reset zoom',
+              onPressed: current == null
+                  ? null
+                  : () {
+                      transform.value = Matrix4.identity();
+                    },
+              icon: const Icon(Icons.center_focus_strong),
+            ),
+            if (!widget.fullscreen)
+              IconButton(
+                tooltip: 'Fullscreen video',
+                onPressed: expand,
+                icon: const Icon(Icons.fullscreen),
+              ),
             if (config.recordings && widget.showRecordings)
               IconButton(
                 tooltip: 'Saved recordings',
-                onPressed: recordings,
+                onPressed: () => recordings(),
                 icon: const Icon(Icons.history),
+              ),
+            if (config.recordings && widget.showRecordings)
+              IconButton(
+                tooltip: 'Human and vehicle events',
+                onPressed: () => recordings(events: true),
+                icon: const Icon(Icons.manage_search),
               ),
           ],
         ),

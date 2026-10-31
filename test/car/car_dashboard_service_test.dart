@@ -138,6 +138,31 @@ Panel _panel(
 
 void main() {
   test(
+    'video entries keep section identity without leaking endpoint or login to Auto',
+    () {
+      final c = carControls(_dashboard(), [
+        _panel(
+          const PluginPanelConfig(
+            pluginId: 'wiredash.video',
+            settings: {
+              'streamUrl': 'rtsp://private-camera/live',
+              'credentialId': 'secret-ref',
+            },
+          ),
+          type: PanelType.plugin,
+          sectionId: 'cameras',
+        ),
+      ], _l10n).single;
+      expect(c.kind, 'video');
+      expect(c.sectionId, 'cameras');
+      expect(c.topics, isEmpty);
+      expect(c.waitForFeedback, isFalse);
+      expect(c.actions.single.commands, isEmpty);
+      expect(c.commandSignature, isNot(contains('private-camera')));
+      expect(c.commandSignature, isNot(contains('secret-ref')));
+    },
+  );
+  test(
     'built-in radio shutters retain their labels, payloads and state topic',
     () {
       final controls = carControls(_dashboard(), [
@@ -500,6 +525,37 @@ void main() {
         db.into(db.panels).insertOnConflictUpdate(panel.toCompanion(false));
     Map<String, Object?> first(Map<String, Object?> snapshot) =>
         (snapshot['controls'] as List).first as Map<String, Object?>;
+
+    test(
+      'camera-only dashboard is catalogued offline and VIEW never publishes',
+      () async {
+        await save(
+          _panel(
+            const PluginPanelConfig(
+              pluginId: 'wiredash.video',
+              settings: {
+                'streamUrl': 'rtsp://camera/live',
+                'credentialId': 'private',
+              },
+            ),
+            type: PanelType.plugin,
+          ),
+        );
+        mgr.connected = false;
+        expect((await service.catalog())['dashboards'] as List, hasLength(1));
+        final snapshot = await service.open('d');
+        expect(first(snapshot)['kind'], 'video');
+        expect(jsonEncode(snapshot), isNot(contains('rtsp://')));
+        expect(jsonEncode(snapshot), isNot(contains('private')));
+        mgr.connected = true;
+        expect(
+          (await service.command('d', 'gate', 'VIEW'))['outcome'],
+          'removed',
+        );
+        expect(mgr.sent, isEmpty);
+        expect(mgr.subjects, isEmpty);
+      },
+    );
 
     test(
       'position option buttons confirm numeric feedback and reject deleted choices',

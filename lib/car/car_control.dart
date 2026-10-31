@@ -247,6 +247,19 @@ List<CarControl> carControls(
       }
 
       switch (config) {
+        case PluginPanelConfig c when c.pluginId == 'wiredash.video':
+          // Only expose identity/presentation to the car host. Camera URLs,
+          // recorder addresses and secure login references remain on the phone.
+          result.add(
+            CarControl(
+              id: panel.id,
+              name: panel.name,
+              kind: 'video',
+              sectionId: panel.sectionId,
+              waitForFeedback: false,
+              actions: const [CarAction('VIEW', 'Video', 'video', [])],
+            ),
+          );
         case ToggleConfig c:
           result.add(
             toggle(

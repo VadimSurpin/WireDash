@@ -6,6 +6,111 @@ import 'package:wiredash_video/wiredash_video.dart';
 import 'plugin_test_fakes.dart';
 
 void main() {
+  testWidgets(
+    'pinch zoom, dragging and reset affect video while controls stay fixed',
+    (tester) async {
+      final session = FakeSession();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VideoTile(
+              context: PluginTileContext(
+                id: 'camera',
+                title: 'Driveway',
+                host: MemoryHost(),
+                settings: const VideoConfig(
+                  streamUrl: 'rtsp://camera/live',
+                  recordings: true,
+                  recorderUrl: 'http://camera',
+                ).toJson(),
+              ),
+              sessionFactory: () => session,
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.byTooltip('Play live video'));
+      await tester.pumpAndSettle();
+      final viewport = find.byKey(const Key('video-viewport'));
+      final controller = tester
+          .widget<InteractiveViewer>(viewport)
+          .transformationController!;
+      final controls = tester.getCenter(find.byTooltip('Saved recordings'));
+      final center = tester.getCenter(viewport);
+      final first = await tester.startGesture(
+        center - const Offset(35, 0),
+        pointer: 1,
+      );
+      final second = await tester.startGesture(
+        center + const Offset(35, 0),
+        pointer: 2,
+      );
+      await tester.pump();
+      await first.moveTo(center - const Offset(90, 0));
+      await second.moveTo(center + const Offset(90, 0));
+      await tester.pump();
+      await first.up();
+      await second.up();
+      expect(controller.value.getMaxScaleOnAxis(), greaterThan(1));
+      final translation = controller.value.getTranslation().clone();
+      await tester.drag(viewport, const Offset(30, 20));
+      await tester.pump();
+      expect(controller.value.getTranslation(), isNot(translation));
+      expect(tester.getCenter(find.byTooltip('Saved recordings')), controls);
+      expect(find.byTooltip('Human and vehicle events'), findsOneWidget);
+      await tester.tap(find.byTooltip('Reset zoom'));
+      await tester.pump();
+      expect(controller.value, Matrix4.identity());
+      await tester.tap(find.byTooltip('Pause video'));
+      await tester.pump();
+      expect(session.paused, isTrue);
+      expect(find.byTooltip('Resume video'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets(
+    'fullscreen transfers playback and releases both routes when dismissed',
+    (tester) async {
+      final host = MemoryHost();
+      final sessions = <FakeSession>[];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VideoTile(
+              context: PluginTileContext(
+                id: 'c',
+                title: 'Camera',
+                host: host,
+                settings: const VideoConfig(
+                  streamUrl: 'rtsp://camera/live',
+                ).toJson(),
+              ),
+              sessionFactory: () {
+                final session = FakeSession();
+                sessions.add(session);
+                return session;
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.byTooltip('Play live video'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Fullscreen video'));
+      await tester.pumpAndSettle();
+      expect(sessions, hasLength(2));
+      expect(sessions.first.closed, isTrue);
+      expect(host.network.leases.first.closed, isTrue);
+      expect(find.byKey(const Key('video-viewport')), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(sessions.last.closed, isTrue);
+      expect(host.network.leases.every((l) => l.closed), isTrue);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
   test('video editor keeps URL logins only in secure storage', () async {
     final host = MemoryHost();
     final editor = VideoEditorController({}, host);

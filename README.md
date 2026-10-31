@@ -191,7 +191,11 @@ The `feat/video-widget-plugin` branch adds a locally bundled Video
 panel: standard RTSP live video, Hikvision DVR/NVR recording playback, and
 human/vehicle recording filters when supported by the recorder. Add it from
 **Add tile → Custom MQTT tile → Video**. It uses secure credential storage and
-can follow the home's embedded WireGuard route. See the
+can follow the home's embedded WireGuard route.
+The embedded player supports pinch zoom, dragging, reset and fullscreen, with
+separate recording and human/vehicle event controls. Android Auto lists camera
+entries but its IoT templates cannot play video or receive those gestures;
+playback currently uses the phone. See the
 [video plugin guide](packages/wiredash_video/README.md) for configuration,
 compatibility and testing, and the [panel plugin API](packages/wiredash_plugin_api/README.md)
 for extension development.

@@ -20,8 +20,13 @@ substream and channel 17 uses `/Streaming/Channels/1702`. Disable substream for
 main-stream live video. An explicit RTSP URL overrides this generated address,
 including its port and stream path.
 
-Tap Play to open the embedded video. Playback starts muted by default. The player
-provides fullscreen and playback controls; Stop releases the player and route.
+Tap Play to open the embedded video. Playback starts muted by default. Pinch the
+picture to zoom from 1× to 8× and drag to inspect the enlarged image. Reset zoom
+restores the original view. Playback, mute, fullscreen, history and event controls
+stay outside the transformed picture. This is digital zoom/pan, not camera PTZ.
+The same widget is used for live video, fullscreen and recording playback;
+recordings expose a seek slider when the recorder reports a duration.
+Stop releases the player and route.
 Going into the background stops playback and a returning user starts a fresh
 connection explicitly. Cameras do not open automatically just because a dashboard
 is loaded. Long-press and tile sizing use the existing dashboard controls.
@@ -33,6 +38,9 @@ with remote playback/search permission. The history button opens a time-range
 browser. Searches are limited to seven days per request, default to the previous
 24 hours, and page through results with Load more. Displayed times use the phone's
 local timezone; requests use UTC. Selecting a result plays that recording over RTSP.
+The events button opens the same browser with the first advertised human/vehicle
+filter selected. People and Vehicles can be switched within the browser. If the
+recorder advertises neither, it explains the limitation and offers All recordings.
 
 Ordinary recording search uses `POST /ISAPI/ContentMgmt/search` and the returned
 `playbackURI`. The main recording track is channel × 100 + 1. The exact file path
@@ -77,8 +85,23 @@ Register it in `lib/plugins/panel_plugins.dart`; the core stores a generic
 `PluginPanelConfig` envelope instead of camera-specific database fields. Removing
 an extension from the registry leaves a placeholder and preserves saved settings.
 The Android native video libraries are selected explicitly. Other platforms
-need their corresponding native backend before enabling playback. Video is not
-registered as an Android Auto control.
+need their corresponding native backend before enabling playback.
+
+## Android Auto
+
+Camera panels appear in their saved dashboard groups on both modern and legacy
+Auto hosts, including camera-only dashboards and when MQTT is offline. A camera
+entry opens an explanation directing the user to the phone while parked. It never
+sends an MQTT command or shares stream addresses/login references with the host.
+
+The Android Auto IoT template cannot embed the Flutter video widget, receive
+pinch/drag gestures, or display recording playback. This implementation therefore
+does **not** provide video on the car display. Android Auto developer mode and
+Unknown sources do not remove that host limitation. Google's current
+[parked-app guide](https://developer.android.com/training/cars/parked/auto) lists
+only games as supported on projected Auto; Android Automotive OS is a different
+platform. Future parked-video hosts need a separate adapter before the same
+zoomable widget can be offered there.
 
 Tests under `test/plugins` exercise protocol fixtures, actual local HTTP challenge
 exchanges, pagination, credentials, user/background lifecycle, MQTT-independent

@@ -181,6 +181,25 @@ class CarScreensTest {
         assertTrue((screen.onGetTemplate() as SectionedItemTemplate).isLoading)
     }
 
+    @Test fun modernVideoRemainsBrowsableOfflineAndNeverSendsMqttCommand() {
+        modernHost()
+        bridge.response = FakeBridge.snapshot(false).put("controls", JSONArray().put(JSONObject()
+            .put("id", "camera").put("name", "Driveway camera").put("kind", "video")
+            .put("waitForFeedback", false).put("actions", JSONArray().put(JSONObject()
+                .put("id", "VIEW").put("title", "Video").put("icon", "video")))))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        start(screen)
+        val tile = dashboardItems(screen).single()
+        assertEquals("Driveway camera", tile.title.toString())
+        assertEquals(context.getString(R.string.car_video_phone), tile.text.toString())
+        tile.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+        val info = context.getCarService(androidx.car.app.ScreenManager::class.java).top
+        val template = info.onGetTemplate() as MessageTemplate
+        assertEquals(context.getString(R.string.car_video_limit), template.message.toString())
+    }
+
     @Test fun modernCurtainPositionButtonsSendSavedActionsAndHighlightReportedPosition() {
         modernHost()
         bridge.response.put("controls", JSONArray().put(JSONObject()

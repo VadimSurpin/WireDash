@@ -60,6 +60,15 @@ Editing, credentials, text entry and connection setup are handled on the phone.
 
 ## Connections and lifecycle
 
+On the `feat/video-widget-plugin` branch, Video panels are also listed in their
+saved groups. Camera entries remain browsable when MQTT is offline and send no
+MQTT commands. They explain that video, zoom/pan and recording/event playback
+must currently be opened on the phone while parked: the IoT template cannot
+embed the player. Developer mode does not unlock a video surface. The
+[current parked-app guide](https://developer.android.com/training/cars/parked/auto)
+lists only games for projected Android Auto. See the
+[video plugin guide](../packages/wiredash_video/README.md#android-auto).
+
 The car uses the existing headless shortcut engine, the app's read-only
 database, secure credentials and configured MQTT transport, including embedded
 WireGuard. It does not require the phone dashboard to be open. Flutter's cold
