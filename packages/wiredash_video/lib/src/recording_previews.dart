@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:flutter/widgets.dart';
 import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'hikvision_client.dart';
 import 'video_config.dart';
@@ -149,9 +148,6 @@ class RecordingPreviews {
     }
     task.lease = route;
     final player = task.session = sessionFactory();
-    // VideoController initializes after a frame even when its texture is not
-    // attached to a visible Video widget.
-    WidgetsBinding.instance.scheduleFrame();
     await player.open(route.uri, muted: true);
     return task.cancelled ? null : player.captureFrame();
   }

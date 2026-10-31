@@ -45,6 +45,9 @@ abstract class VideoSession extends ChangeNotifier {
   Future<void> setMuted(bool muted);
   Future<void> playOrPause();
   Future<void> seek(Duration position);
+
+  /// Returns an encoded still for preview sessions; ordinary playback may
+  /// return null rather than interrupting its visible output.
   Future<Uint8List?> captureFrame();
   Future<void> close();
 }
@@ -73,12 +76,7 @@ class NativeVideoSession extends VideoSession {
         ],
       ),
     );
-    controller = VideoController(
-      player,
-      configuration: VideoControllerConfiguration(
-        enableHardwareAcceleration: !preview,
-      ),
-    );
+    if (!preview) controller = VideoController(player);
     subscriptions.add(
       player.stream.buffering.listen((value) {
         _buffering = value;
@@ -109,6 +107,8 @@ class NativeVideoSession extends VideoSession {
   late final Player player;
   late final VideoController controller;
   final bool preview;
+  Directory? _previewDirectory;
+  Uint8List? _previewFrame;
   NativeVideoSession.preview() : this(preview: true);
   final health = VideoPlaybackHealth();
   final subscriptions = <StreamSubscription<dynamic>>[];
@@ -128,19 +128,38 @@ class NativeVideoSession extends VideoSession {
   }
 
   @override
-  Widget buildView() => Video(
-    controller: controller,
-    fit: BoxFit.contain,
-    controls: NoVideoControls,
-    resumeUponEnteringForegroundMode: false,
-  );
+  Widget buildView() => preview
+      ? const SizedBox.shrink()
+      : Video(
+          controller: controller,
+          fit: BoxFit.contain,
+          controls: NoVideoControls,
+          resumeUponEnteringForegroundMode: false,
+        );
   @override
   Future<void> open(Uri uri, {required bool muted}) async {
     final platform = player.platform;
     if (platform is NativePlayer) {
       await platform.setProperty('rtsp-transport', 'tcp');
       await platform.setProperty('force-media-title', 'WireDash video');
-      if (preview) await platform.setProperty('vf', 'scale=320:-2');
+      if (preview) {
+        final cache = await getTemporaryDirectory();
+        final directory = await cache.createTemp('wiredash-preview-');
+        if (_closed) {
+          await directory.delete(recursive: true);
+          throw StateError('Preview closed.');
+        }
+        _previewDirectory = directory;
+        await platform.setProperty('vo-image-outdir', directory.path);
+        await platform.setProperty('vo-image-format', 'jpg');
+        await platform.setProperty('vo-image-jpeg-quality', '75');
+        await platform.setProperty('vo', 'image');
+        await platform.setProperty('vid', 'auto');
+        await platform.setProperty('aid', 'no');
+        await platform.setProperty('hwdec', 'no');
+        await platform.setProperty('frames', '1');
+        await platform.setProperty('vf', 'scale=320:-2');
+      }
     }
     await player.setVolume(muted ? 0 : 100);
     await player.open(
@@ -148,9 +167,20 @@ class NativeVideoSession extends VideoSession {
     );
     // Opening a demuxer alone does not prove that the stream can be decoded.
     // Bound the loading state and let the pane release a failed connection.
-    await controller.waitUntilFirstFrameRendered.timeout(
-      const Duration(seconds: 20),
-    );
+    if (preview) {
+      for (var attempt = 0; attempt < 200 && !_closed; attempt++) {
+        _previewFrame = await _readPreview();
+        if (_previewFrame != null) break;
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      }
+      if (_previewFrame == null) {
+        throw TimeoutException('Preview frame unavailable.');
+      }
+    } else {
+      await controller.waitUntilFirstFrameRendered.timeout(
+        const Duration(seconds: 20),
+      );
+    }
     if (!_closed) {
       health.recovered();
       _buffering = false;
@@ -165,35 +195,32 @@ class NativeVideoSession extends VideoSession {
   @override
   Future<void> seek(Duration position) => player.seek(position);
   @override
-  Future<Uint8List?> captureFrame() async {
-    final platform = player.platform;
-    if (_closed || platform is! NativePlayer) return null;
-    final cache = await getTemporaryDirectory();
-    final directory = await cache.createTemp('wiredash-preview-');
+  Future<Uint8List?> captureFrame() async => _closed ? null : _previewFrame;
+
+  Future<Uint8List?> _readPreview() async {
+    final directory = _previewDirectory;
+    if (directory == null || _closed) return null;
     try {
-      final file = File('${directory.path}/frame.jpg');
-      // The Android screenshot-raw wrapper can return no node data. Use mpv's
-      // asynchronous screenshot command and software color conversion instead.
-      await platform.setProperty('screenshot-sw', 'yes');
-      await platform.setProperty('screenshot-jpeg-quality', '75');
-      for (var attempt = 0; attempt < 20 && !_closed; attempt++) {
-        await platform.command(['screenshot-to-file', file.path, 'video']);
-        if (await file.exists()) {
-          final length = await file.length();
-          if (length > 0 && length <= 8 * 1024 * 1024) {
-            final bytes = await file.readAsBytes();
+      await for (final entry in directory.list(followLinks: false)) {
+        if (entry is File && entry.path.endsWith('.jpg')) {
+          final length = await entry.length();
+          if (length >= 4 && length <= 8 * 1024 * 1024) {
+            final bytes = await entry.readAsBytes();
+            // The output file can appear before its last packet is written.
+            if (bytes[0] != 0xff ||
+                bytes[1] != 0xd8 ||
+                bytes[bytes.length - 2] != 0xff ||
+                bytes.last != 0xd9) {
+              continue;
+            }
             return bytes;
           }
         }
-        await Future<void>.delayed(const Duration(milliseconds: 100));
       }
       return null;
-    } finally {
-      try {
-        await directory.delete(recursive: true);
-      } on FileSystemException {
-        /* Cache may already be gone. */
-      }
+    } on FileSystemException {
+      if (_closed) return null;
+      rethrow;
     }
   }
 
@@ -204,7 +231,20 @@ class NativeVideoSession extends VideoSession {
     for (final subscription in subscriptions) {
       await subscription.cancel();
     }
-    await player.dispose();
-    super.dispose();
+    try {
+      await player.dispose();
+    } finally {
+      final directory = _previewDirectory;
+      _previewDirectory = null;
+      _previewFrame = null;
+      if (directory != null) {
+        try {
+          await directory.delete(recursive: true);
+        } on FileSystemException {
+          /* Already removed. */
+        }
+      }
+      super.dispose();
+    }
   }
 }
