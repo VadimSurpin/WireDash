@@ -223,7 +223,8 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
       }
 
       try {
-        fileMode = false;
+        fileMode = playback?.queryParameters.containsKey('name') ?? false;
+        if (fileMode) file ??= widget.recording;
         await open(playback ?? config.liveUri);
       } catch (_) {
         if (!mounted || request != generation) return;

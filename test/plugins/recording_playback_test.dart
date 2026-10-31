@@ -184,6 +184,12 @@ void main() {
         sessions.last.opened!.queryParameters['endtime'],
         '20261031T080000Z',
       );
+      await tester.tap(find.byTooltip('Stop video'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Play video'));
+      await tester.pumpAndSettle();
+      expect(sessions.last.opened!.queryParameters['name'], 'full-file');
+
       sessions.last.position = const Duration(hours: 1);
       sessions.last.completed = true;
       sessions.last.notifyListeners();
