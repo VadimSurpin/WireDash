@@ -5,6 +5,7 @@ import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'video_config.dart';
 import 'video_session.dart';
 import 'recording_browser.dart';
+import 'hikvision_client.dart';
 
 class VideoTile extends StatelessWidget {
   const VideoTile({
@@ -28,6 +29,7 @@ class VideoPane extends StatefulWidget {
     required this.context,
     required this.sessionFactory,
     this.playback,
+    this.selectedEvent,
     this.autoStart = false,
     this.showRecordings = true,
     this.videoHeight,
@@ -36,6 +38,7 @@ class VideoPane extends StatefulWidget {
   final PluginTileContext context;
   final VideoSessionFactory sessionFactory;
   final Uri? playback;
+  final DateTime? selectedEvent;
   final double? videoHeight;
   final bool autoStart, showRecordings;
   final bool fullscreen;
@@ -50,12 +53,47 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   String? error;
   int generation = 0;
   late bool muted;
+  Uri? playback;
+  double? scrubbing;
+  DateTime? get playbackStart =>
+      DateTime.tryParse(playback?.queryParameters['starttime'] ?? '');
+  DateTime? get selectedEvent =>
+      widget.selectedEvent ??
+      DateTime.tryParse(widget.playback?.queryParameters['starttime'] ?? '');
+  DateTime? get playbackTime =>
+      playbackStart?.add(session?.position ?? Duration.zero);
+
+  Future<void> jumpTo(DateTime time) async {
+    final now = DateTime.now().toUtc();
+    final earliest = DateTime.utc(2000);
+    final at = time.isAfter(now)
+        ? now
+        : time.isBefore(earliest)
+        ? earliest
+        : time.toUtc();
+    playback = HikvisionClient.continuousPlayback(config, at);
+    scrubbing = null;
+    await start();
+  }
+
+  Future<void> skip(Duration delta) async {
+    final time = playbackTime;
+    if (time != null) await jumpTo(time.add(delta));
+  }
+
+  String clock(DateTime time) {
+    final local = time.toLocal();
+    String pad(int n) => n.toString().padLeft(2, '0');
+    return '${local.year}-${pad(local.month)}-${pad(local.day)} ${pad(local.hour)}:${pad(local.minute)}:${pad(local.second)}';
+  }
+
   final transform = TransformationController();
   VideoConfig get config => VideoConfig.fromJson(widget.context.settings);
   @override
   void initState() {
     super.initState();
     muted = config.muted;
+    playback = widget.playback;
     WidgetsBinding.instance.addObserver(this);
     if (widget.autoStart) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -71,6 +109,8 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         oldWidget.context.host != widget.context.host ||
         !mapEquals(oldWidget.context.settings, widget.context.settings) ||
         oldWidget.playback != widget.playback) {
+      playback = widget.playback;
+      scrubbing = null;
       unawaited(stop());
     }
   }
@@ -103,8 +143,6 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
 
   Future<void> start() async {
     final request = ++generation;
-    await _release();
-    if (!mounted || request != generation) return;
     setState(() {
       opening = true;
       error = null;
@@ -112,15 +150,15 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
     PluginStreamLease? opened;
     VideoSession? created;
     try {
+      await _release();
+      if (!mounted || request != generation) return;
       final validation = config.validate();
       if (validation != null) throw StateError(validation);
       final credentials = VideoCredentials.decode(
         await widget.context.host.readSecret(config.credentialId),
       );
       if (!mounted || request != generation) return;
-      final source = credentials.authenticate(
-        widget.playback ?? config.liveUri,
-      );
+      final source = credentials.authenticate(playback ?? config.liveUri);
       final network = config.useHomeNetwork
           ? widget.context.host.network
           : const DirectPluginNetwork();
@@ -180,6 +218,10 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   }
 
   Future<void> expand() async {
+    final time = playbackTime;
+    final source = time == null
+        ? playback
+        : HikvisionClient.continuousPlayback(config, time);
     await stop();
     if (!mounted) return;
     await Navigator.of(context).push(
@@ -192,7 +234,8 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
                 child: VideoPane(
                   context: widget.context,
                   sessionFactory: widget.sessionFactory,
-                  playback: widget.playback,
+                  playback: source,
+                  selectedEvent: selectedEvent,
                   showRecordings: widget.showRecordings,
                   autoStart: true,
                   fullscreen: true,
@@ -270,22 +313,80 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
           AspectRatio(aspectRatio: 16 / 9, child: video)
         else
           SizedBox(height: widget.videoHeight, child: video),
-        if (widget.playback != null &&
+        if (playbackTime != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(
+              clock(playbackTime!),
+              key: const Key('recording-clock'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        if (playback != null &&
             current != null &&
             current.duration > Duration.zero)
           Slider(
             label: 'Recording position',
-            value: current.position.inMilliseconds.toDouble().clamp(
-              0,
-              current.duration.inMilliseconds.toDouble(),
-            ),
+            value: (scrubbing ?? current.position.inMilliseconds.toDouble())
+                .clamp(0, current.duration.inMilliseconds.toDouble()),
             max: current.duration.inMilliseconds.toDouble(),
-            onChanged: (value) =>
-                unawaited(current.seek(Duration(milliseconds: value.round()))),
+            onChanged: opening
+                ? null
+                : (value) => setState(() => scrubbing = value),
+            onChangeEnd: (value) {
+              final from = playbackStart;
+              if (from != null) {
+                unawaited(
+                  jumpTo(from.add(Duration(milliseconds: value.round()))),
+                );
+              } else {
+                unawaited(current.seek(Duration(milliseconds: value.round())));
+              }
+            },
           ),
         Wrap(
           alignment: WrapAlignment.end,
           children: [
+            if (playbackStart != null) ...[
+              IconButton(
+                tooltip: 'Rewind 1 minute',
+                icon: const Icon(Icons.fast_rewind),
+                onPressed: current == null || opening
+                    ? null
+                    : () => unawaited(skip(const Duration(minutes: -1))),
+              ),
+              IconButton(
+                tooltip: 'Rewind 10 seconds',
+                icon: const Icon(Icons.replay_10),
+                onPressed: current == null || opening
+                    ? null
+                    : () => unawaited(skip(const Duration(seconds: -10))),
+              ),
+              IconButton(
+                tooltip: 'Forward 10 seconds',
+                icon: const Icon(Icons.forward_10),
+                onPressed: current == null || opening
+                    ? null
+                    : () => unawaited(skip(const Duration(seconds: 10))),
+              ),
+              IconButton(
+                tooltip: 'Forward 1 minute',
+                icon: const Icon(Icons.fast_forward),
+                onPressed: current == null || opening
+                    ? null
+                    : () => unawaited(skip(const Duration(minutes: 1))),
+              ),
+              IconButton(
+                tooltip: 'Return to selected event',
+                icon: const Icon(Icons.my_location),
+                onPressed: current == null || opening
+                    ? null
+                    : () {
+                        final time = selectedEvent;
+                        if (time != null) unawaited(jumpTo(time));
+                      },
+              ),
+            ],
             if (current != null)
               IconButton(
                 tooltip: current.playing ? 'Pause video' : 'Resume video',

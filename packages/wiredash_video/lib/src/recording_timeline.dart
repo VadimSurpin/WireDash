@@ -5,7 +5,7 @@ import 'recording_event.dart';
 import 'recording_previews.dart';
 
 /// Lazy timeline entries; only entries built by the viewport request previews.
-class RecordingTimeline extends StatelessWidget {
+class RecordingTimeline extends StatefulWidget {
   const RecordingTimeline({
     super.key,
     required this.records,
@@ -17,6 +17,23 @@ class RecordingTimeline extends StatelessWidget {
   final RecordingPreviews previews;
   final ValueChanged<Recording> onSelected;
   final int previewEpoch;
+
+  @override
+  State<RecordingTimeline> createState() => _RecordingTimelineState();
+}
+
+class _RecordingTimelineState extends State<RecordingTimeline> {
+  final times = <String, DateTime>{};
+  List<Recording> get records => widget.records;
+  RecordingPreviews get previews => widget.previews;
+  int get previewEpoch => widget.previewEpoch;
+  ValueChanged<Recording> get onSelected => widget.onSelected;
+  @override
+  void didUpdateWidget(RecordingTimeline oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final identities = records.map((r) => r.identity).toSet();
+    times.removeWhere((key, _) => !identities.contains(key));
+  }
 
   @override
   Widget build(BuildContext context) => SliverList.builder(
@@ -100,7 +117,14 @@ class RecordingTimeline extends StatelessWidget {
                       margin: EdgeInsets.zero,
                       clipBehavior: Clip.antiAlias,
                       child: InkWell(
-                        onTap: () => onSelected(record),
+                        onTap: () {
+                          final time = times[record.identity];
+                          onSelected(
+                            time == null || time == record.start
+                                ? record
+                                : record.at(time),
+                          );
+                        },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -112,6 +136,8 @@ class RecordingTimeline extends StatelessWidget {
                                 ),
                                 record: record,
                                 previews: previews,
+                                onReady: (preview) =>
+                                    times[record.identity] = preview.time,
                               ),
                             ),
                             Padding(
@@ -190,7 +216,9 @@ class RecordingPreview extends StatefulWidget {
     super.key,
     required this.record,
     required this.previews,
+    this.onReady,
   });
+  final ValueChanged<RecordingPreviewData>? onReady;
   final Recording record;
   final RecordingPreviews previews;
   @override
@@ -199,7 +227,8 @@ class RecordingPreview extends StatefulWidget {
 
 class _RecordingPreviewState extends State<RecordingPreview> {
   RecordingPreviewTicket? ticket;
-  Uint8List? image;
+  RecordingPreviewData? preview;
+  Uint8List? get image => preview?.bytes;
   bool loading = true;
   int generation = 0;
   @override
@@ -212,14 +241,15 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     final request = ++generation;
     ticket?.release();
     loading = true;
-    image = null;
+    preview = null;
     ticket = widget.previews.request(widget.record);
-    ticket!.image.then((bytes) {
+    ticket!.preview.then((value) {
       if (mounted && generation == request) {
         setState(() {
-          image = bytes;
+          preview = value;
           loading = false;
         });
+        if (value != null) widget.onReady?.call(value);
       }
     });
   }
@@ -239,9 +269,17 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     ticket?.release();
     final bytes = image;
     if (bytes != null) {
-      PaintingBinding.instance.imageCache.evict(MemoryImage(bytes));
+      PaintingBinding.instance.imageCache.evict(
+        ResizeImage.resizeIfNeeded(960, null, MemoryImage(bytes)),
+      );
     }
     super.dispose();
+  }
+
+  String _clock(DateTime time) {
+    final local = time.toLocal();
+    String pad(int n) => n.toString().padLeft(2, '0');
+    return '${pad(local.hour)}:${pad(local.minute)}:${pad(local.second)}';
   }
 
   @override
@@ -250,13 +288,45 @@ class _RecordingPreviewState extends State<RecordingPreview> {
     return ColoredBox(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: bytes != null
-          ? Image.memory(
-              bytes,
-              fit: BoxFit.cover,
-              gaplessPlayback: true,
-              semanticLabel: 'Recorded video preview',
-              errorBuilder: (_, _, _) =>
-                  const Center(child: Icon(Icons.broken_image_outlined)),
+          ? Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.memory(
+                  bytes,
+                  cacheWidth: 960,
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
+                  semanticLabel: preview!.eventPhoto
+                      ? 'Recorder event photo'
+                      : 'Recorded video preview',
+                  errorBuilder: (_, _, _) =>
+                      const Center(child: Icon(Icons.broken_image_outlined)),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: ColoredBox(
+                    color: Colors.black87,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Text(
+                        preview!.eventPhoto
+                            ? '${preview!.events.contains(RecordingEvent.human)
+                                  ? 'Person capture'
+                                  : preview!.events.contains(RecordingEvent.vehicle)
+                                  ? 'Vehicle capture'
+                                  : 'Recorder event photo'} · ${_clock(preview!.time)}'
+                            : 'Video start · detection photo unavailable',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             )
           : Center(
               child: loading

@@ -5,10 +5,26 @@ import 'hikvision_client.dart';
 import 'video_config.dart';
 import 'video_session.dart';
 import 'recording_cache.dart';
+import 'recording_photos.dart';
+import 'recording_event.dart';
+
+class RecordingPreviewData {
+  const RecordingPreviewData(
+    this.bytes,
+    this.time, {
+    this.eventPhoto = false,
+    this.events = const [],
+  });
+  final Uint8List bytes;
+  final DateTime time;
+  final bool eventPhoto;
+  final List<RecordingEvent> events;
+}
 
 class RecordingPreviewTicket {
-  RecordingPreviewTicket(this.image, this._release);
-  final Future<Uint8List?> image;
+  RecordingPreviewTicket(this.preview, this._release);
+  final Future<RecordingPreviewData?> preview;
+  Future<Uint8List?> get image => preview.then((value) => value?.bytes);
   final void Function() _release;
   bool _released = false;
   void release() {
@@ -21,10 +37,11 @@ class RecordingPreviewTicket {
 class _Capture {
   _Capture(this.record);
   final Recording record;
-  final result = Completer<Uint8List?>();
-  final cancellation = Completer<Uint8List?>();
+  final result = Completer<RecordingPreviewData?>();
+  final cancellation = Completer<RecordingPreviewData?>();
   int users = 1;
   bool cancelled = false;
+  void Function()? interrupt;
   VideoSession? session;
   PluginStreamLease? lease;
   Future<void>? _closing;
@@ -40,6 +57,7 @@ class _Capture {
   }();
   Future<void> cancel() async {
     cancelled = true;
+    interrupt?.call();
     if (!cancellation.isCompleted) cancellation.complete(null);
     if (!result.isCompleted) result.complete(null);
     try {
@@ -51,7 +69,7 @@ class _Capture {
 }
 
 /// Short, muted connections to saved clips, serialized to avoid exhausting DVR
-/// sessions. Photos live only in this browser's bounded memory cache.
+/// sessions. Stored event photos and fallback frames use a bounded private cache.
 class RecordingPreviews {
   RecordingPreviews({
     required this.host,
@@ -60,13 +78,15 @@ class RecordingPreviews {
     this.maxEntries = 48,
     this.maxBytes = 8 * 1024 * 1024,
     this.cache,
+    this.photos,
   });
   final PluginHost host;
   final VideoConfig config;
   final VideoSessionFactory sessionFactory;
   final int maxEntries, maxBytes;
   final RecordingCache? cache;
-  final _cache = <String, Uint8List>{};
+  final RecordingPhotos? photos;
+  final _cache = <String, RecordingPreviewData>{};
   final _jobs = <String, _Capture>{};
   Future<void> _tail = Future.value();
   Future<VideoCredentials>? _credentials;
@@ -102,21 +122,23 @@ class RecordingPreviews {
   }
 
   Future<void> _capture(String key, _Capture task) async {
-    Uint8List? image;
+    RecordingPreviewData? image;
     try {
       if (task.cancelled || _paused || _disposed) return;
+      task.interrupt = photos?.interrupt;
       image = await Future.any([_produce(task), task.cancellation.future]);
-      if (image != null && (image.isEmpty || image.length > maxBytes)) {
+      if (image != null &&
+          (image.bytes.isEmpty || image.bytes.length > maxBytes)) {
         image = null;
       }
       if (!task.cancelled &&
           image != null &&
-          image.isNotEmpty &&
-          image.length <= maxBytes) {
+          image.bytes.isNotEmpty &&
+          image.bytes.length <= maxBytes) {
         _cache[key] = image;
-        _bytes += image.length;
+        _bytes += image.bytes.length;
         while (_cache.length > maxEntries || _bytes > maxBytes) {
-          _bytes -= _cache.remove(_cache.keys.first)!.length;
+          _bytes -= _cache.remove(_cache.keys.first)!.bytes.length;
         }
       }
     } catch (_) {
@@ -134,10 +156,28 @@ class RecordingPreviews {
     }
   }
 
-  Future<Uint8List?> _produce(_Capture task) async {
+  Future<RecordingPreviewData?> _produce(_Capture task) async {
+    try {
+      final photo = await photos?.find(task.record);
+      if (task.cancelled) return null;
+      if (photo != null) {
+        final bytes = await photos!.bytes(photo);
+        if (task.cancelled) return null;
+        return RecordingPreviewData(
+          Uint8List.fromList(bytes),
+          photo.time,
+          eventPhoto: true,
+          events: photo.events,
+        );
+      }
+    } catch (_) {
+      // Stored captures are optional; never hide playable video on a recorder
+      // without captures or on firmware that rejects picture search.
+    }
+    if (task.cancelled) return null;
     final saved = await cache?.readImage(task.record);
     if (task.cancelled) return null;
-    if (saved != null) return saved;
+    if (saved != null) return RecordingPreviewData(saved, task.record.start);
     final credentials = await (_credentials ??= host
         .readSecret(config.credentialId)
         .then(VideoCredentials.decode));
@@ -163,12 +203,26 @@ class RecordingPreviews {
         image.length <= maxBytes) {
       unawaited(cache?.writeImage(task.record, image) ?? Future<void>.value());
     }
-    return image;
+    return image == null
+        ? null
+        : RecordingPreviewData(image, task.record.start);
+  }
+
+  void refresh() {
+    final pending = _jobs.values.toList();
+    _jobs.clear();
+    for (final job in pending) {
+      unawaited(job.cancel());
+    }
+    _cache.clear();
+    _bytes = 0;
+    photos?.refresh();
   }
 
   Future<void> setPaused(bool paused) async {
     _paused = paused;
     if (!paused) return;
+    photos?.interrupt();
     final jobs = _jobs.values.toList();
     _jobs.clear();
     await Future.wait(jobs.map((job) => job.cancel()));
@@ -176,6 +230,7 @@ class RecordingPreviews {
 
   void dispose() {
     _disposed = true;
+    photos?.dispose();
     unawaited(setPaused(true));
     _cache.clear();
     _bytes = 0;

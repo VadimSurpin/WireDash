@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
 import 'digest_auth.dart';
 import 'video_config.dart';
 import 'recording_event.dart';
+import 'recording_picture.dart';
 
 class RecorderException implements Exception {
   const RecorderException(this.message, {this.status, this.code});
@@ -23,8 +25,19 @@ class Recording {
     required this.playback,
     this.target = RecordingTarget.all,
     this.eventTypes = const [],
+    this.selectedTime,
   });
   final DateTime start, end;
+  final DateTime? selectedTime;
+  DateTime get playbackTime => selectedTime ?? start;
+  Recording at(DateTime time) => Recording(
+    start: start,
+    end: end,
+    playback: playback,
+    target: target,
+    eventTypes: eventTypes,
+    selectedTime: time,
+  );
   final Uri playback;
   final RecordingTarget target;
   final List<RecordingEvent> eventTypes;
@@ -75,6 +88,15 @@ class HikvisionClient {
     String path, {
     String body = '',
     bool json = false,
+  }) async =>
+      utf8.decode(await _requestBytes(method, path, body: body, json: json));
+
+  Future<Uint8List> _requestBytes(
+    String method,
+    String path, {
+    String body = '',
+    bool json = false,
+    bool picture = false,
   }) async {
     if (_closed) throw const RecorderException('Recording browser was closed.');
     final base = Uri.parse(config.recorderUrl);
@@ -84,6 +106,9 @@ class HikvisionClient {
       for (var attempt = 0; attempt < 3; attempt++) {
         final request = await http.openUrl(method, uri).timeout(timeout);
         request.followRedirects = false;
+        if (picture) {
+          request.headers.set(HttpHeaders.acceptHeader, 'image/jpeg');
+        }
         request.headers.contentType = json
             ? ContentType.json
             : ContentType('application', 'xml', charset: 'utf-8');
@@ -101,7 +126,7 @@ class HikvisionClient {
         final response = await request.close().timeout(timeout);
         final bytes = <int>[];
         await for (final chunk in response.timeout(timeout)) {
-          if (bytes.length + chunk.length > 2 * 1024 * 1024) {
+          if (bytes.length + chunk.length > (picture ? 4 : 2) * 1024 * 1024) {
             throw const RecorderException(
               'The recorder response is too large.',
             );
@@ -129,7 +154,7 @@ class HikvisionClient {
             path,
           );
         }
-        return utf8.decode(bytes);
+        return Uint8List.fromList(bytes);
       }
     } on RecorderException {
       rethrow;
@@ -326,6 +351,152 @@ class HikvisionClient {
 
   static String isoTime(DateTime time) =>
       '${time.toUtc().toIso8601String().split('.').first}Z';
+
+  Future<bool> supportsPictures() async {
+    try {
+      final document = _xml(
+        await _request('GET', '/ISAPI/ContentMgmt/capabilities'),
+      );
+      return document.descendants.whereType<XmlElement>().any(
+        (e) =>
+            e.name.local == 'pictureSearchType' &&
+            (e.innerText.trim().isNotEmpty ||
+                (e.getAttribute('opt')?.isNotEmpty ?? false)),
+      );
+    } on RecorderException catch (e) {
+      if ([400, 403, 404, 405, 501].contains(e.status)) return false;
+      rethrow;
+    } on FormatException {
+      return false;
+    }
+  }
+
+  /// Picture track xx3 returns capture times, rather than video file boundaries.
+  Future<List<RecordingPicture>> pictures(DateTime start, DateTime end) async {
+    final builder = XmlBuilder();
+    builder.element(
+      'CMSearchDescription',
+      nest: () {
+        builder.element('searchID', nest: const Uuid().v4());
+        builder.element(
+          'trackIDList',
+          nest: () =>
+              builder.element('trackID', nest: config.channel * 100 + 3),
+        );
+        builder.element(
+          'timeSpanList',
+          nest: () => builder.element(
+            'timeSpan',
+            nest: () {
+              builder.element('startTime', nest: isoTime(start));
+              builder.element('endTime', nest: isoTime(end));
+            },
+          ),
+        );
+        builder.element('maxResults', nest: 40);
+        builder.element('searchResultPostion', nest: 0);
+        builder.element(
+          'metadataList',
+          nest: () => builder.element(
+            'metadataDescriptor',
+            nest: '//recordType.meta.std-cgi.com',
+          ),
+        );
+      },
+    );
+    return parsePictures(
+      await _request(
+        'POST',
+        '/ISAPI/ContentMgmt/search',
+        body: builder.buildDocument().toXmlString(),
+      ),
+      config,
+    );
+  }
+
+  static Uri pictureUri(VideoConfig config, String value) {
+    final source = Uri.parse(value);
+    final track = config.channel * 100 + 3;
+    var path = source.path;
+    if (path.startsWith('/Streaming/')) path = '/ISAPI$path';
+    if (!RegExp('^/ISAPI/Streaming/tracks/$track/?\$').hasMatch(path) ||
+        (source.hasScheme &&
+            !['http', 'https', 'rtsp', 'rtsps'].contains(source.scheme))) {
+      throw const FormatException('Unsupported stored picture address.');
+    }
+    // Keep Digest authentication and private routing on the configured recorder.
+    final base = Uri.parse(config.recorderUrl);
+    return Uri(
+      scheme: base.scheme,
+      host: base.host,
+      port: base.hasPort ? base.port : null,
+      path: path,
+      query: source.hasQuery ? source.query : null,
+    );
+  }
+
+  static List<RecordingPicture> parsePictures(String raw, VideoConfig config) {
+    final document = _xml(raw);
+    final status = _text(document, 'responseStatusStrg')?.toUpperCase();
+    if (status == 'NO MATCHES') return [];
+    if (!['OK', 'MORE'].contains(status) ||
+        _text(document, 'responseStatus') == 'false') {
+      throw const RecorderException(
+        'The recorder could not search stored pictures.',
+      );
+    }
+    final pictures = <RecordingPicture>[];
+    for (final item in document.descendants.whereType<XmlElement>().where(
+      (e) => ['searchMatchItem', 'matchElement'].contains(e.name.local),
+    )) {
+      if (int.tryParse(_text(item, 'trackID') ?? '') !=
+          config.channel * 100 + 3) {
+        continue;
+      }
+      final time = DateTime.tryParse(_text(item, 'startTime') ?? '');
+      final uri = _text(item, 'playbackURI');
+      if (time == null || uri == null) continue;
+      try {
+        pictures.add(
+          RecordingPicture(
+            time,
+            pictureUri(config, uri),
+            item.descendants
+                .whereType<XmlElement>()
+                .where((e) => e.name.local == 'metadataDescriptor')
+                .map((e) => RecordingEvent.fromDescriptor(e.innerText))
+                .whereType<RecordingEvent>()
+                .toSet()
+                .toList(),
+          ),
+        );
+      } on FormatException {
+        // An unrecognized picture URL must never receive recorder credentials.
+      }
+    }
+    pictures.sort((a, b) => a.time.compareTo(b.time));
+    return pictures;
+  }
+
+  Future<Uint8List> picture(RecordingPicture picture) async {
+    final uri = pictureUri(config, picture.uri.toString());
+    final bytes = await _requestBytes(
+      'GET',
+      Uri(path: uri.path, query: uri.hasQuery ? uri.query : null).toString(),
+      picture: true,
+    );
+    if (bytes.length < 4 ||
+        bytes[0] != 0xff ||
+        bytes[1] != 0xd8 ||
+        bytes[bytes.length - 2] != 0xff ||
+        bytes.last != 0xd9) {
+      throw const RecorderException(
+        'The recorder did not return a JPEG event picture.',
+      );
+    }
+    return bytes;
+  }
+
   static XmlDocument _xml(String raw) {
     if (raw.toUpperCase().contains('<!DOCTYPE')) {
       throw const FormatException('Unsupported XML document.');

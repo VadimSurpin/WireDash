@@ -9,6 +9,7 @@ import 'video_tile.dart';
 import 'recording_previews.dart';
 import 'recording_timeline.dart';
 import 'recording_cache.dart';
+import 'recording_photos.dart';
 
 class RecordingBrowser extends StatefulWidget {
   const RecordingBrowser({
@@ -57,6 +58,13 @@ class _RecordingBrowserState extends State<RecordingBrowser>
       config: config,
       sessionFactory: widget.previewFactory,
       cache: cache,
+      photos: RecordingPhotos(
+        host: widget.context.host,
+        config: config,
+        cache: cache,
+        rangeStart: () => start,
+        rangeEnd: () => end,
+      ),
     );
     end = DateTime.now();
     start = end.subtract(const Duration(hours: 24));
@@ -112,6 +120,8 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         if (!mounted) return;
         if (_applyCached(saved)) setState(() => loading = false);
       } else {
+        previews.refresh();
+        previewEpoch++;
         setState(() {
           loading = true;
           error = null;
@@ -382,7 +392,9 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         builder: (_) => Dialog.fullscreen(
           child: Scaffold(
             appBar: AppBar(
-              title: Text('${widget.context.title} · ${stamp(record.start)}'),
+              title: Text(
+                '${widget.context.title} · ${stamp(record.playbackTime)}',
+              ),
             ),
             body: SafeArea(
               child: LayoutBuilder(
@@ -392,7 +404,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                     sessionFactory: widget.sessionFactory,
                     playback: HikvisionClient.continuousPlayback(
                       config,
-                      record.start,
+                      record.playbackTime,
                     ),
                     autoStart: true,
                     showRecordings: false,

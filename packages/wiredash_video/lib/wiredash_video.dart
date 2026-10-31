@@ -8,3 +8,5 @@ export 'src/recording_browser.dart';
 export 'src/recording_timeline.dart';
 export 'src/recording_previews.dart';
 export 'src/recording_cache.dart';
+export 'src/recording_picture.dart';
+export 'src/recording_photos.dart';

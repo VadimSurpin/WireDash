@@ -25,7 +25,13 @@ picture to zoom from 1× to 8× and drag to inspect the enlarged image. Reset zo
 restores the original view. Playback, mute, fullscreen, history and event controls
 stay outside the transformed picture. This is digital zoom/pan, not camera PTZ.
 The same widget is used for live video, fullscreen and recording playback;
-recordings expose a seek slider when the recorder reports a duration.
+recordings expose a seek slider when the recorder reports a duration. Recording
+playback always offers rewind/forward by 10 seconds and one minute, a recording
+clock, and Return to selected event. These controls reopen playback by UTC time,
+so they work with unknown-duration RTSP and can reach footage before the selected
+event when it exists. They jump through footage; they do not claim reverse or
+accelerated decoding support from every recorder. Expanding fullscreen preserves
+the current recording time.
 Stop releases the player and route.
 Transient decoder errors clear once unbuffered playback advances again, including
 when a reconnected stream restarts its playback clock.
@@ -38,14 +44,33 @@ is loaded. Long-press and tile sizing use the existing dashboard controls.
 Enable **Hikvision recordings**, supplying the recorder address and an account
 with remote playback/search permission. The history button opens a time-range
 browser with a vertical chronological timeline, grouped by local day. Each card
-shows its time, duration, recorder event labels and a photo extracted from that
-saved clip. Labels include continuous recording, motion, alarm, intrusion,
+shows its time, duration, recorder event labels and a preview. The plugin first
+checks for stored event-linked pictures on picture track channel × 100 + 3,
+using the configured recorder's authenticated HTTP(S) connection and home route.
+It prefers an explicitly classified person/vehicle capture when the recorder
+returns one. The image caption shows its actual capture time; tapping the card
+starts ordinary playback at that time, which can differ from the file start by
+seconds or minutes because of pre-recording. Generic motion photos are labelled
+Recorder event photo, not a verified person/vehicle crop. No target boxes or
+classifications are invented. The full photo fits inside the preview, with a
+bounded decode size for the timeline. Labels include continuous recording,
+motion, alarm, intrusion,
 line crossing, person and vehicle when reported by the recorder. Unknown types
 remain labelled Recording; motion is not presented as a person or vehicle.
-Tapping a preview opens the ordinary fullscreen viewer at the exact event start
-time and continues along the recording track. Playback is not limited to the
+Tapping a preview opens the ordinary fullscreen viewer at the stored capture time
+(or the recording start for a video-frame fallback) and continues along the track. Playback is not limited to the
 six-second event clip or its returned file URI. Returning preserves the timeline
 scroll position.
+
+An actual detection photo requires saved event-linked picture capture and a
+firmware-supported picture search endpoint. Human/vehicle video filtering alone
+does not guarantee that pictures were saved. If no compatible event photo is
+available, the fallback says **Video start · detection photo unavailable** and
+uses the first recorded video frame. It does not estimate detection time from a
+fixed delay or substitute the current live camera snapshot. Photo searches inspect
+up to 40 stored captures in the recording interval, preferring matching target
+classification; a capture outside those results needs a narrower time-range search
+or a firmware-specific adapter. Camera model/firmware determines available data.
 
 Preview frames are loaded lazily, one muted RTSP connection at a time, using the
 same credentials and home route as playback. They use a short software decode
@@ -54,12 +79,16 @@ captured through an app-private temporary JPEG that is removed after reading,
 then cached locally; scrolling away cancels unneeded work. Each browser keeps
 up to 48 frames / 8 MiB, with a shared 16 MiB memory cache and a private disk cache
 limited to 64 MiB / 512 files. Frames expire after seven days and survive closing
-the browser or restarting the app until Android clears its temporary storage. Preview connections close before clip playback and while the app
+the browser or restarting the app until Android clears its temporary storage.
+Preview connections close before clip playback and while the app
 is in the background. Failed captures show Load preview and never hide the clip.
 
 Search results, selected ranges and recorder capabilities are cached privately
 for up to one day. Reopening a recent timeline reuses its results and images
-without another recorder search or decoder connection. The rolling 24-hour range
+without another recorder search or decoder connection. Stored event-photo metadata
+and JPEGs are cached separately from video-start frames. Missing photos are cached
+briefly for recent recordings and up to one day for historical recordings; Refresh
+checks again after enabling picture capture on the recorder. The rolling 24-hour range
 refreshes after one minute; older results remain visible during updates or if a
 request fails. A custom historical range stays fresh for one day. Refresh bypasses
 the search/capability cache. Camera settings and credential references isolate
@@ -145,7 +174,8 @@ exchanges, pagination, credentials, user/background lifecycle, MQTT-independent
 dashboard rendering, and authenticated WireGuard forwarding. These are automated fixture tests. The `video-preview` workflow also runs an
 Android emulator against an authenticated synthetic H.264 RTSP source and
 asserts a rendered 320×180 video frame; its runtime evidence is uploaded as an
-artifact. A physical Hikvision DVR has not yet been verified with this feature.
+artifact. Stored detection-photo support and time navigation still need verification against
+the target physical Hikvision model and firmware.
 
 For a device test, start with one H.264 substream on the LAN, repeat via the home
 WireGuard route, then search a known recording interval with All, People and

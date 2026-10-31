@@ -29,10 +29,19 @@ enum RecordingEvent {
       'alarm' || 'alarmrecord' => alarm,
       'linedetection' || 'crossline' || 'linecrossing' => lineCrossing,
       'fielddetection' || 'intrusion' => intrusion,
-      'human' || 'humandetection' => human,
+      'human' ||
+      'humandetection' ||
+      'humanrecognition' ||
+      'humanbodydetection' ||
+      'facedetection' ||
+      'facecapture' => human,
       'vehicle' || 'vehicledetection' => vehicle,
       'manual' || 'manualrecord' => manual,
-      'edr' || 'event' => other,
+      'edr' ||
+      'event' ||
+      'mixedtargetdetection' ||
+      'alarmandmotion' ||
+      'alarmormotion' => other,
       _ => null,
     };
   }

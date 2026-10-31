@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'hikvision_client.dart';
 import 'recording_event.dart';
+import 'recording_picture.dart';
 import 'video_config.dart';
 
 class _CacheEntry {
@@ -226,6 +227,15 @@ class RecordingCache {
   );
   Future<void> writeImage(Recording record, Uint8List bytes) =>
       _write('preview/${record.start.toUtc().microsecondsSinceEpoch}', bytes);
+  Future<Uint8List?> readPicture(RecordingPicture picture) => _read(
+    'picture/${picture.time.toUtc().microsecondsSinceEpoch}/${picture.uri}',
+    const Duration(days: 7),
+  );
+  Future<void> writePicture(RecordingPicture picture, Uint8List bytes) =>
+      _write(
+        'picture/${picture.time.toUtc().microsecondsSinceEpoch}/${picture.uri}',
+        bytes,
+      );
   String timelineKey(DateTime start, DateTime end, RecordingTarget target) =>
       'timeline/${start.toUtc().toIso8601String()}/${end.toUtc().toIso8601String()}/${target.name}';
 
