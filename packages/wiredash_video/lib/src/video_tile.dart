@@ -352,6 +352,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
     final now = DateTime.now();
     final end = widget.archive?.end ?? (nextDay.isBefore(now) ? nextDay : now);
     return RecordingTimeRuler(
+      key: const ValueKey('playback-ruler'),
       start: start,
       end: end,
       position: position,

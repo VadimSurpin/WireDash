@@ -80,6 +80,7 @@ class RecordingPreviews {
     this.cache,
     this.photos,
     this.resolveRecording,
+    this.onDiagnostic,
   });
   final PluginHost host;
   final VideoConfig config;
@@ -87,6 +88,9 @@ class RecordingPreviews {
   final int maxEntries, maxBytes;
   final RecordingCache? cache;
   final RecordingPhotos? photos;
+
+  /// Optional development diagnostics contain only a phase and exception type.
+  final void Function(String)? onDiagnostic;
   final Future<Recording?> Function(Recording)? resolveRecording;
   final _cache = <String, RecordingPreviewData>{};
   final _jobs = <String, _Capture>{};
@@ -144,7 +148,8 @@ class RecordingPreviews {
           _bytes -= _cache.remove(_cache.keys.first)!.bytes.length;
         }
       }
-    } catch (_) {
+    } catch (error) {
+      onDiagnostic?.call('capture: ${error.runtimeType}');
       _credentials = null;
       // A failed historical frame remains a retryable placeholder. It must
       // never substitute a live snapshot or hide the recording itself.
@@ -230,7 +235,8 @@ class RecordingPreviews {
         } finally {
           player.removeListener(checkFailure);
         }
-      } catch (_) {
+      } catch (error) {
+        onDiagnostic?.call('playback: ${error.runtimeType}');
         rejectedPlayback = true;
         // Different firmware accepts different archive paths. Never replace a
         // historical image with a live camera snapshot.

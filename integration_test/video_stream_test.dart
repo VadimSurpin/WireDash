@@ -168,9 +168,11 @@ void main() {
       );
       final sessions = <NativeVideoSession>[];
       var resolved = 0;
+      final diagnostics = <String>[];
       final previews = RecordingPreviews(
         host: _CameraHost(),
         config: config,
+        onDiagnostic: diagnostics.add,
         resolveRecording: (_) async {
           resolved++;
           return file;
@@ -182,18 +184,21 @@ void main() {
         },
       );
       try {
-        await tester.runAsync(() async {
-          final image = await previews
-              .request(event)
-              .image
-              .timeout(const Duration(seconds: 45));
-          expect(image, isNotNull);
-          expect(image!.take(2), [0xff, 0xd8]);
-          expect(sessions, hasLength(2));
-          expect(resolved, 1);
-          expect(await previews.request(event).image, image);
-          expect(sessions, hasLength(2));
-        });
+        final image = await previews
+            .request(event)
+            .image
+            .timeout(const Duration(seconds: 45));
+        expect(
+          image,
+          isNotNull,
+          reason:
+              'Preview sessions=${sessions.length}, resolved=$resolved; $diagnostics',
+        );
+        expect(image!.take(2), [0xff, 0xd8]);
+        expect(sessions, hasLength(2));
+        expect(resolved, 1);
+        expect(await previews.request(event).image, image);
+        expect(sessions, hasLength(2));
       } finally {
         previews.dispose();
         for (final session in sessions) {
@@ -291,6 +296,8 @@ void main() {
         await tester.tapAt(tester.getCenter(ruler) + const Offset(30, 0));
         await tester.pump();
         await ready(4);
+        await binding.convertFlutterSurfaceToImage();
+        await tester.pump(const Duration(milliseconds: 300));
         final screenshot = await binding.takeScreenshot('recording-timeline');
         final directory = await getApplicationSupportDirectory();
         await File(
