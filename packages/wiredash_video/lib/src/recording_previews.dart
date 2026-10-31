@@ -4,6 +4,7 @@ import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'hikvision_client.dart';
 import 'video_config.dart';
 import 'video_session.dart';
+import 'recording_cache.dart';
 
 class RecordingPreviewTicket {
   RecordingPreviewTicket(this.image, this._release);
@@ -58,11 +59,13 @@ class RecordingPreviews {
     this.sessionFactory = NativeVideoSession.preview,
     this.maxEntries = 48,
     this.maxBytes = 8 * 1024 * 1024,
+    this.cache,
   });
   final PluginHost host;
   final VideoConfig config;
   final VideoSessionFactory sessionFactory;
   final int maxEntries, maxBytes;
+  final RecordingCache? cache;
   final _cache = <String, Uint8List>{};
   final _jobs = <String, _Capture>{};
   Future<void> _tail = Future.value();
@@ -132,6 +135,9 @@ class RecordingPreviews {
   }
 
   Future<Uint8List?> _produce(_Capture task) async {
+    final saved = await cache?.readImage(task.record);
+    if (task.cancelled) return null;
+    if (saved != null) return saved;
     final credentials = await (_credentials ??= host
         .readSecret(config.credentialId)
         .then(VideoCredentials.decode));
@@ -149,7 +155,15 @@ class RecordingPreviews {
     task.lease = route;
     final player = task.session = sessionFactory();
     await player.open(route.uri, muted: true);
-    return task.cancelled ? null : player.captureFrame();
+    if (task.cancelled) return null;
+    final image = await player.captureFrame();
+    if (!task.cancelled &&
+        image != null &&
+        image.isNotEmpty &&
+        image.length <= maxBytes) {
+      unawaited(cache?.writeImage(task.record, image) ?? Future<void>.value());
+    }
+    return image;
   }
 
   Future<void> setPaused(bool paused) async {

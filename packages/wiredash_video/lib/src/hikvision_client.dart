@@ -456,4 +456,15 @@ class HikvisionClient {
       queryParameters: {'starttime': stamp(start), 'endtime': stamp(end)},
     );
   }
+
+  /// Ordinary recording playback, starting at the selected timestamp. Hikvision
+  /// documents endtime as optional; omit file name/size and event end limits so
+  /// playback can continue through subsequent footage on this track.
+  static Uri continuousPlayback(VideoConfig config, DateTime start) =>
+      config.liveUri.replace(
+        path: '/Streaming/tracks/${config.recordingTrack}',
+        queryParameters: {
+          'starttime': isoTime(start).replaceAll('-', '').replaceAll(':', ''),
+        },
+      );
 }

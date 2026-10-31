@@ -7,3 +7,4 @@ export 'src/recording_event.dart';
 export 'src/recording_browser.dart';
 export 'src/recording_timeline.dart';
 export 'src/recording_previews.dart';
+export 'src/recording_cache.dart';

@@ -104,6 +104,25 @@ void main() {
         await File(
           '${directory.path}/recording-preview.jpg',
         ).writeAsBytes(image);
+        final cacheDirectory = Directory('${directory.path}/cache-test');
+        final record = Recording(
+          start: DateTime.utc(2026, 10, 31),
+          end: DateTime.utc(2026, 10, 31, 0, 0, 6),
+          playback: Uri.parse(source),
+        );
+        RecordingCache diskCache() => RecordingCache(
+          namespace: 'native-preview',
+          directory: cacheDirectory,
+          maxMemoryBytes: 0,
+        );
+        try {
+          await diskCache().writeImage(record, image);
+          expect(await diskCache().readImage(record), image);
+        } finally {
+          if (await cacheDirectory.exists()) {
+            await cacheDirectory.delete(recursive: true);
+          }
+        }
       } finally {
         await diagnostics.cancel();
         await session.close();

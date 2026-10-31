@@ -42,16 +42,28 @@ shows its time, duration, recorder event labels and a photo extracted from that
 saved clip. Labels include continuous recording, motion, alarm, intrusion,
 line crossing, person and vehicle when reported by the recorder. Unknown types
 remain labelled Recording; motion is not presented as a person or vehicle.
-Opening a clip uses a fullscreen player and preserves the timeline scroll
-position when returning.
+Tapping a preview opens the ordinary fullscreen viewer at the exact event start
+time and continues along the recording track. Playback is not limited to the
+six-second event clip or its returned file URI. Returning preserves the timeline
+scroll position.
 
 Preview frames are loaded lazily, one muted RTSP connection at a time, using the
 same credentials and home route as playback. They use a short software decode
 at 320-pixel output width, not the camera's current live picture. Frames are
 captured through an app-private temporary JPEG that is removed after reading,
-then cached in memory with limits of 48 entries and 8 MiB; scrolling away cancels
-unneeded work. Preview connections close before clip playback and while the app
+then cached locally; scrolling away cancels unneeded work. Each browser keeps
+up to 48 frames / 8 MiB, with a shared 16 MiB memory cache and a private disk cache
+limited to 64 MiB / 512 files. Frames expire after seven days and survive closing
+the browser or restarting the app until Android clears its temporary storage. Preview connections close before clip playback and while the app
 is in the background. Failed captures show Load preview and never hide the clip.
+
+Search results, selected ranges and recorder capabilities are cached privately
+for up to one day. Reopening a recent timeline reuses its results and images
+without another recorder search or decoder connection. The rolling 24-hour range
+refreshes after one minute; older results remain visible during updates or if a
+request fails. A custom historical range stays fresh for one day. Refresh bypasses
+the search/capability cache. Camera settings and credential references isolate
+caches; cached recording URLs omit embedded login data.
 
 Searches are limited to seven days per request, default to the previous
 24 hours, and page through results with Load more. Displayed times use the phone's
@@ -60,11 +72,12 @@ The events button opens the same browser with the first advertised human/vehicle
 filter selected. People and Vehicles can be switched within the browser. If the
 recorder advertises neither, it explains the limitation and offers All recordings.
 
-Ordinary recording search uses `POST /ISAPI/ContentMgmt/search` and the returned
-`playbackURI`. The main recording track is channel × 100 + 1. The exact file path
-and query are retained while the host/port are replaced with the configured RTSP
-endpoint, so LAN addresses returned by a remotely reached DVR do not escape the
-configured route.
+Ordinary recording search uses `POST /ISAPI/ContentMgmt/search`. Preview capture
+uses the returned `playbackURI`, rewriting its host/port to the configured RTSP
+endpoint so returned LAN addresses cannot escape the configured route. Viewer
+playback instead uses `/Streaming/tracks/{channel × 100 + 1}?starttime=...` in UTC,
+without `endtime`, file name or file size. Hikvision documents `endtime` as optional
+for playback by time (general ISAPI guide, §15.9.17).
 
 Search requests follow Hikvision's recorded-video example, with a fixed UTF-8
 `Content-Length` and the all-recording descriptor `//recordType.meta.std-cgi.com`.
