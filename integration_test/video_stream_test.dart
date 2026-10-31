@@ -19,6 +19,12 @@ void main() {
       reason: 'Set WIREDASH_TEST_RTSP to the fixture source.',
     );
     final session = NativeVideoSession();
+    final errors = <String>[];
+    final diagnostics = session.player.stream.error.listen(
+      (message) => errors.add(
+        message.replaceAll(RegExp(r'rtsps?://\S+'), '<fixture stream>'),
+      ),
+    );
     try {
       await tester.pumpWidget(
         MaterialApp(
@@ -42,8 +48,14 @@ void main() {
       expect(session.player.state.width, 320);
       expect(session.player.state.height, 180);
       expect(session.error, isNull);
-      final frame = await tester.runAsync(session.captureFrame);
-      expect(frame, isNotNull);
+      final frame = await session.captureFrame();
+      expect(
+        frame,
+        isNotNull,
+        reason:
+            'Platform ${session.player.platform.runtimeType}; '
+            'playing=${session.playing}, buffering=${session.buffering}, position=${session.position}; errors=$errors',
+      );
       expect(frame!.length, greaterThan(1000));
       await binding.convertFlutterSurfaceToImage();
       await tester.pump(const Duration(milliseconds: 300));
@@ -52,6 +64,7 @@ void main() {
       await File('${directory.path}/rtsp-frame.png').writeAsBytes(screenshot);
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
+      await diagnostics.cancel();
       await session.close();
     }
   });
@@ -61,13 +74,25 @@ void main() {
     (tester) async {
       await tester.pumpWidget(const MaterialApp(home: Scaffold()));
       final session = NativeVideoSession.preview();
+      final errors = <String>[];
+      final diagnostics = session.player.stream.error.listen(
+        (message) => errors.add(
+          message.replaceAll(RegExp(r'rtsps?://\S+'), '<fixture stream>'),
+        ),
+      );
       try {
         await tester.pump();
         await tester.runAsync(
           () => session.open(Uri.parse(source), muted: true),
         );
-        final image = await tester.runAsync(session.captureFrame);
-        expect(image, isNotNull);
+        final image = await session.captureFrame();
+        expect(
+          image,
+          isNotNull,
+          reason:
+              'Platform ${session.player.platform.runtimeType}; '
+              'playing=${session.playing}, buffering=${session.buffering}, position=${session.position}; errors=$errors',
+        );
         expect(image!.take(2), [0xff, 0xd8]);
         expect(session.player.state.width, 320);
         final directory = await getApplicationSupportDirectory();
@@ -75,6 +100,7 @@ void main() {
           '${directory.path}/recording-preview.jpg',
         ).writeAsBytes(image);
       } finally {
+        await diagnostics.cancel();
         await session.close();
       }
     },
