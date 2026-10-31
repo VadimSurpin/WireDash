@@ -48,6 +48,12 @@ and query are retained while the host/port are replaced with the configured RTSP
 endpoint, so LAN addresses returned by a remotely reached DVR do not escape the
 configured route.
 
+Search requests follow Hikvision's recorded-video example, with a fixed UTF-8
+`Content-Length` and the all-recording descriptor `//recordType.meta.std-cgi.com`.
+No `/All` suffix is used. HTTP failures include a short recorder `subStatusCode`
+when available (such as `badXmlContent` or `noPermission`); raw error bodies,
+stream addresses and logins are not displayed.
+
 Human and vehicle filters use the recorder's own stored classification, through
 `/ISAPI/ContentMgmt/SearchByTargetType?format=json`. The plugin checks its
 capabilities endpoint and enables only advertised target types. This needs a
@@ -116,6 +122,7 @@ Vehicles. Confirm channel numbering, event configuration, playback permissions,
 background cleanup and an interval containing more than 40 results.
 
 Sources: [Hikvision live/recording integration guide](https://www.hikvisioneurope.com/eu/portal/portal/Technology%20Partner%20Program/03-How%20to/How%20to%20search%20and%20download%20the%20video%20file%20from%20NVR%20via%20ISAPI.pdf),
+[Hikvision general ISAPI guide, recorded-video request example in §15.2.40](https://raw.githubusercontent.com/loozhengyuan/hikvision-sdk/master/resources/isapi.pdf),
 [Hikvision ISAPI developer guides](https://tpp.hikvision.com/download/),
 [ISAPI target-search flow in ACTi's implementation guide](https://download.acti.com/?id=34491),
 [target-search request/response example](https://github.com/Laudrice/Intelligent_Video_Monitoring_System/blob/aa96af74fe2d0daabc268641b9cca0d76953328b/backend/server.js#L669),

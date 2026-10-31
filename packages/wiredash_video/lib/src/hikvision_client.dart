@@ -7,9 +7,10 @@ import 'digest_auth.dart';
 import 'video_config.dart';
 
 class RecorderException implements Exception {
-  const RecorderException(this.message, {this.status});
+  const RecorderException(this.message, {this.status, this.code});
   final String message;
   final int? status;
+  final String? code;
   @override
   String toString() => message;
 }
@@ -70,6 +71,7 @@ class HikvisionClient {
     if (_closed) throw const RecorderException('Recording browser was closed.');
     final base = Uri.parse(config.recorderUrl);
     final uri = base.resolve(path);
+    final payload = utf8.encode(body);
     try {
       for (var attempt = 0; attempt < 3; attempt++) {
         final request = await http.openUrl(method, uri).timeout(timeout);
@@ -77,6 +79,9 @@ class HikvisionClient {
         request.headers.contentType = json
             ? ContentType.json
             : ContentType('application', 'xml', charset: 'utf-8');
+        // Embedded ISAPI servers may reject chunked XML/JSON uploads. Use the
+        // UTF-8 byte length on every attempt, including Digest retries.
+        request.contentLength = payload.length;
         final challenge = _challenge;
         if (challenge != null) {
           request.headers.set(
@@ -84,7 +89,7 @@ class HikvisionClient {
             auth.authorization(challenge, method, uri, body),
           );
         }
-        if (body.isNotEmpty) request.add(utf8.encode(body));
+        if (payload.isNotEmpty) request.add(payload);
         final response = await request.close().timeout(timeout);
         final bytes = <int>[];
         await for (final chunk in response.timeout(timeout)) {
@@ -110,11 +115,10 @@ class HikvisionClient {
           );
         }
         if (response.statusCode < 200 || response.statusCode >= 300) {
-          throw RecorderException(
-            response.statusCode == 403
-                ? 'Recorder access denied. Enable recording playback permission.'
-                : 'The recorder rejected this request (${response.statusCode}).',
-            status: response.statusCode,
+          throw _rejection(
+            response.statusCode,
+            utf8.decode(bytes, allowMalformed: true),
+            path,
           );
         }
         return utf8.decode(bytes);
@@ -139,6 +143,42 @@ class HikvisionClient {
       );
     }
     throw const RecorderException('Recorder login failed.');
+  }
+
+  static RecorderException _rejection(int status, String body, String path) {
+    String? code;
+    try {
+      Object? value;
+      if (body.trimLeft().startsWith('{')) {
+        final root = jsonDecode(body);
+        if (root is Map) {
+          final details = root['ResponseStatus'] is Map
+              ? root['ResponseStatus'] as Map
+              : root;
+          value = details['subStatusCode'];
+        }
+      } else {
+        value = _text(_xml(body), 'subStatusCode');
+      }
+      // Return only a short protocol code, never raw errorMsg/statusString
+      // fields, which some recorders fill with URLs or echoed request data.
+      if (value is String &&
+          RegExp(r'^[a-zA-Z][a-zA-Z0-9_]{0,63}$').hasMatch(value)) {
+        code = value;
+      }
+    } on FormatException {
+      // Proxies and older firmware can return HTML or an empty error body.
+    }
+    final operation = path.contains('SearchByTargetType')
+        ? 'Event search'
+        : 'Recording search';
+    return RecorderException(
+      status == 403
+          ? 'Recorder access denied. Enable recording playback permission${code == null ? '.' : ' ($code).'}'
+          : '$operation rejected by the recorder ($status${code == null ? '' : ', $code'}).',
+      status: status,
+      code: code,
+    );
   }
 
   Future<RecorderCapabilities> capabilities() async {
@@ -209,10 +249,9 @@ class HikvisionClient {
     final id = searchId ?? const Uuid().v4();
     if (target == RecordingTarget.all) {
       final builder = XmlBuilder();
+      builder.processing('xml', 'version="1.0" encoding="utf-8"');
       builder.element(
         'CMSearchDescription',
-        namespaces: {'http://www.hikvision.com/ver20/XMLSchema': ''},
-        attributes: {'version': '1.0'},
         nest: () {
           builder.element('searchID', nest: id);
           builder.element(
@@ -236,7 +275,7 @@ class HikvisionClient {
             'metadataList',
             nest: () => builder.element(
               'metadataDescriptor',
-              nest: 'recordType.meta.std-cgi.com/All',
+              nest: '//recordType.meta.std-cgi.com',
             ),
           );
         },
