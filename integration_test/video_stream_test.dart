@@ -46,9 +46,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       final screenshot = await binding.takeScreenshot('rtsp-frame');
       final directory = await getApplicationSupportDirectory();
-      await File(
-        '${directory.path}/rtsp-frame.png',
-      ).writeAsBytes((screenshot['bytes'] as List).cast<int>());
+      await File('${directory.path}/rtsp-frame.png').writeAsBytes(screenshot);
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
       await session.close();
