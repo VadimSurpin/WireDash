@@ -105,5 +105,7 @@
   "recordingRejected": "Rejestrator odrzucił wyszukiwanie nagrań ({details}).",
   "missingPlugin": "Ta wtyczka panelu jest niedostępna. Jej ustawienia zostały zachowane.",
   "carVideoPhone": "Wideo na telefonie",
-  "carVideoLimit": "Ten interfejs IoT Android Auto nie może wyświetlać wideo ani obsługiwać gestów powiększania i przeciągania. Po zaparkowaniu otwórz tę kamerę w WireDash na telefonie, aby oglądać wideo na żywo, nagrania i zdarzenia."
+  "carVideoLimit": "Ten interfejs IoT Android Auto nie może wyświetlać wideo ani obsługiwać gestów powiększania i przeciągania. Po zaparkowaniu otwórz tę kamerę w WireDash na telefonie, aby oglądać wideo na żywo, nagrania i zdarzenia.",
+  "timelineZoomIn": "Powiększ oś czasu",
+  "timelineZoomOut": "Pomniejsz oś czasu"
 }

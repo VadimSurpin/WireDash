@@ -105,5 +105,7 @@
   "recordingRejected": "Recording search rejected by the recorder ({details}).",
   "missingPlugin": "This panel plugin is unavailable. Its settings are preserved.",
   "carVideoPhone": "Video on phone",
-  "carVideoLimit": "This Android Auto IoT interface cannot display video or accept pinch and drag gestures. Open this camera in WireDash on your phone while parked to view live video, recordings and events."
+  "carVideoLimit": "This Android Auto IoT interface cannot display video or accept pinch and drag gestures. Open this camera in WireDash on your phone while parked to view live video, recordings and events.",
+  "timelineZoomIn": "Zoom in timeline",
+  "timelineZoomOut": "Zoom out timeline"
 }

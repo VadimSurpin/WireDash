@@ -109,6 +109,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Tento doplněk panelu není dostupný. Jeho nastavení jsou zachována.",
     "carVideoPhone": "Video v telefonu",
     "carVideoLimit": "Toto rozhraní IoT pro Android Auto nemůže zobrazovat video ani přijímat gesta přiblížení a posouvání. Po zaparkování otevřete tuto kameru ve WireDash v telefonu a sledujte živé video, záznamy a události.",
+    "timelineZoomIn": "Přiblížit časovou osu",
+    "timelineZoomOut": "Oddálit časovou osu",
   },
   "de": {
     "video": "Video",
@@ -217,6 +219,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Das Plugin dieser Kachel ist nicht verfügbar. Die Einstellungen bleiben erhalten.",
     "carVideoPhone": "Video auf dem Telefon",
     "carVideoLimit": "Diese IoT-Oberfläche von Android Auto kann keine Videos anzeigen und keine Zoom- oder Wischgesten verarbeiten. Im geparkten Fahrzeug die Kamera in WireDash auf dem Telefon öffnen, um Livevideo, Aufnahmen und Ereignisse anzusehen.",
+    "timelineZoomIn": "Zeitleiste vergrößern",
+    "timelineZoomOut": "Zeitleiste verkleinern",
   },
   "en": {
     "video": "Video",
@@ -325,6 +329,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "This panel plugin is unavailable. Its settings are preserved.",
     "carVideoPhone": "Video on phone",
     "carVideoLimit": "This Android Auto IoT interface cannot display video or accept pinch and drag gestures. Open this camera in WireDash on your phone while parked to view live video, recordings and events.",
+    "timelineZoomIn": "Zoom in timeline",
+    "timelineZoomOut": "Zoom out timeline",
   },
   "es": {
     "video": "Vídeo",
@@ -433,6 +439,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Este complemento de panel no está disponible. Se conserva su configuración.",
     "carVideoPhone": "Vídeo en el teléfono",
     "carVideoLimit": "Esta interfaz IoT de Android Auto no puede mostrar vídeo ni aceptar gestos de pellizcar y arrastrar. Abre esta cámara en WireDash en el teléfono mientras estás estacionado para ver vídeo en directo, grabaciones y eventos.",
+    "timelineZoomIn": "Ampliar cronología",
+    "timelineZoomOut": "Reducir cronología",
   },
   "fr": {
     "video": "Vidéo",
@@ -541,6 +549,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Le plugin de cette tuile est indisponible. Ses paramètres sont conservés.",
     "carVideoPhone": "Vidéo sur le téléphone",
     "carVideoLimit": "Cette interface IoT d’Android Auto ne peut pas afficher de vidéo ni gérer les gestes de zoom et de déplacement. À l’arrêt, ouvrez cette caméra dans WireDash sur votre téléphone pour voir le direct, les enregistrements et les événements.",
+    "timelineZoomIn": "Agrandir la chronologie",
+    "timelineZoomOut": "Réduire la chronologie",
   },
   "he": {
     "video": "וידאו",
@@ -649,6 +659,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "תוסף לוח זה אינו זמין. ההגדרות שלו נשמרו.",
     "carVideoPhone": "וידאו בטלפון",
     "carVideoLimit": "ממשק IoT זה של Android Auto אינו יכול להציג וידאו או לקבל מחוות צביטה וגרירה. יש לפתוח מצלמה זו ב-WireDash בטלפון בזמן חניה כדי לצפות בווידאו חי, בהקלטות ובאירועים.",
+    "timelineZoomIn": "הגדלת ציר הזמן",
+    "timelineZoomOut": "הקטנת ציר הזמן",
   },
   "it": {
     "video": "Video",
@@ -757,6 +769,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Questo plugin del pannello non è disponibile. Le impostazioni sono conservate.",
     "carVideoPhone": "Video sul telefono",
     "carVideoLimit": "Questa interfaccia IoT di Android Auto non può mostrare video o accettare gesti di zoom e trascinamento. Apri questa telecamera in WireDash sul telefono mentre sei parcheggiato per vedere video in diretta, registrazioni ed eventi.",
+    "timelineZoomIn": "Ingrandisci cronologia",
+    "timelineZoomOut": "Riduci cronologia",
   },
   "nb": {
     "video": "Video",
@@ -865,6 +879,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Dette paneltillegget er utilgjengelig. Innstillingene beholdes.",
     "carVideoPhone": "Video på telefon",
     "carVideoLimit": "Dette Android Auto IoT-grensesnittet kan ikke vise video eller håndtere klype- og dra-bevegelser. Åpne dette kameraet i WireDash på telefonen mens du står parkert for å se direktevideo, opptak og hendelser.",
+    "timelineZoomIn": "Zoom inn på tidslinjen",
+    "timelineZoomOut": "Zoom ut på tidslinjen",
   },
   "nl": {
     "video": "Video",
@@ -973,6 +989,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Deze paneelplugin is niet beschikbaar. De instellingen blijven bewaard.",
     "carVideoPhone": "Video op telefoon",
     "carVideoLimit": "Deze Android Auto IoT-interface kan geen video weergeven of knijp- en sleepgebaren verwerken. Open deze camera in WireDash op uw telefoon terwijl u geparkeerd staat om livevideo, opnamen en gebeurtenissen te bekijken.",
+    "timelineZoomIn": "Tijdlijn inzoomen",
+    "timelineZoomOut": "Tijdlijn uitzoomen",
   },
   "pl": {
     "video": "Wideo",
@@ -1081,6 +1099,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Ta wtyczka panelu jest niedostępna. Jej ustawienia zostały zachowane.",
     "carVideoPhone": "Wideo na telefonie",
     "carVideoLimit": "Ten interfejs IoT Android Auto nie może wyświetlać wideo ani obsługiwać gestów powiększania i przeciągania. Po zaparkowaniu otwórz tę kamerę w WireDash na telefonie, aby oglądać wideo na żywo, nagrania i zdarzenia.",
+    "timelineZoomIn": "Powiększ oś czasu",
+    "timelineZoomOut": "Pomniejsz oś czasu",
   },
   "pt": {
     "video": "Vídeo",
@@ -1189,6 +1209,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Este plugin do painel está indisponível. As definições foram preservadas.",
     "carVideoPhone": "Vídeo no telefone",
     "carVideoLimit": "Esta interface IoT do Android Auto não pode mostrar vídeo nem aceitar gestos de zoom e arrasto. Abra esta câmara no WireDash no telefone enquanto estiver estacionado para ver vídeo em direto, gravações e eventos.",
+    "timelineZoomIn": "Ampliar linha do tempo",
+    "timelineZoomOut": "Reduzir linha do tempo",
   },
   "ru": {
     "video": "Видео",
@@ -1297,6 +1319,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Плагин этой панели недоступен. Его настройки сохранены.",
     "carVideoPhone": "Видео на телефоне",
     "carVideoLimit": "Интерфейс IoT в Android Auto не поддерживает видео и жесты масштабирования и перемещения. На стоянке откройте эту камеру в WireDash на телефоне для просмотра прямого эфира, записей и событий.",
+    "timelineZoomIn": "Увеличить масштаб времени",
+    "timelineZoomOut": "Уменьшить масштаб времени",
   },
   "sv": {
     "video": "Video",
@@ -1405,6 +1429,8 @@ const videoMessages = <String, Map<String, String>>{
     "missingPlugin": "Detta paneltillägg är inte tillgängligt. Inställningarna bevaras.",
     "carVideoPhone": "Video på telefon",
     "carVideoLimit": "Detta Android Auto IoT-gränssnitt kan inte visa video eller hantera nyp- och draggester. Öppna kameran i WireDash på telefonen medan du står parkerad för att se direktvideo, inspelningar och händelser.",
+    "timelineZoomIn": "Zooma in tidslinjen",
+    "timelineZoomOut": "Zooma ut tidslinjen",
   },
 };
 
@@ -1508,4 +1534,6 @@ const videoMessageIds = <String, String>{
   "This panel plugin is unavailable. Its settings are preserved.": "missingPlugin",
   "Video on phone": "carVideoPhone",
   "This Android Auto IoT interface cannot display video or accept pinch and drag gestures. Open this camera in WireDash on your phone while parked to view live video, recordings and events.": "carVideoLimit",
+  "Zoom in timeline": "timelineZoomIn",
+  "Zoom out timeline": "timelineZoomOut",
 };

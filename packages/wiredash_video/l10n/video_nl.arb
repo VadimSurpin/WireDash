@@ -105,5 +105,7 @@
   "recordingRejected": "De recorder heeft het zoeken naar opnamen geweigerd ({details}).",
   "missingPlugin": "Deze paneelplugin is niet beschikbaar. De instellingen blijven bewaard.",
   "carVideoPhone": "Video op telefoon",
-  "carVideoLimit": "Deze Android Auto IoT-interface kan geen video weergeven of knijp- en sleepgebaren verwerken. Open deze camera in WireDash op uw telefoon terwijl u geparkeerd staat om livevideo, opnamen en gebeurtenissen te bekijken."
+  "carVideoLimit": "Deze Android Auto IoT-interface kan geen video weergeven of knijp- en sleepgebaren verwerken. Open deze camera in WireDash op uw telefoon terwijl u geparkeerd staat om livevideo, opnamen en gebeurtenissen te bekijken.",
+  "timelineZoomIn": "Tijdlijn inzoomen",
+  "timelineZoomOut": "Tijdlijn uitzoomen"
 }

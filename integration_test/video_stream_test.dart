@@ -144,6 +144,66 @@ void main() {
   );
 
   testWidgets(
+    'historical preview recovers through a real file and caches a decoded JPEG',
+    (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: Scaffold()));
+      final address = Uri.parse(source).replace(userInfo: '');
+      final time = DateTime.now().toUtc().subtract(const Duration(hours: 1));
+      final config = VideoConfig(
+        streamUrl: address.toString(),
+        credentialId: 'fixture',
+        useHomeNetwork: false,
+      );
+      final event = Recording(
+        start: time,
+        end: time.add(const Duration(seconds: 6)),
+        playback: address.replace(path: '/missing-recording'),
+      );
+      final file = Recording(
+        start: time,
+        end: time.add(const Duration(hours: 1)),
+        playback: address.replace(
+          queryParameters: {'name': 'fixture-recording'},
+        ),
+      );
+      final sessions = <NativeVideoSession>[];
+      var resolved = 0;
+      final previews = RecordingPreviews(
+        host: _CameraHost(),
+        config: config,
+        resolveRecording: (_) async {
+          resolved++;
+          return file;
+        },
+        sessionFactory: () {
+          final session = NativeVideoSession.preview();
+          sessions.add(session);
+          return session;
+        },
+      );
+      try {
+        await tester.runAsync(() async {
+          final image = await previews
+              .request(event)
+              .image
+              .timeout(const Duration(seconds: 45));
+          expect(image, isNotNull);
+          expect(image!.take(2), [0xff, 0xd8]);
+          expect(sessions, hasLength(2));
+          expect(resolved, 1);
+          expect(await previews.request(event).image, image);
+          expect(sessions, hasLength(2));
+        });
+      } finally {
+        previews.dispose();
+        for (final session in sessions) {
+          await session.close();
+        }
+      }
+    },
+  );
+
+  testWidgets(
     'recording viewer recovers from a rejected RTSP range and can seek with a real Android player',
     (tester) async {
       final address = Uri.parse(source).replace(userInfo: '');
@@ -226,6 +286,16 @@ void main() {
         await tester.tap(find.byTooltip('Rewind 10 seconds'));
         await tester.pump();
         await ready(3);
+        expect(find.byType(RecordingTimeRuler), findsOneWidget);
+        final ruler = find.byKey(const Key('recording-time-ruler'));
+        await tester.tapAt(tester.getCenter(ruler) + const Offset(30, 0));
+        await tester.pump();
+        await ready(4);
+        final screenshot = await binding.takeScreenshot('recording-timeline');
+        final directory = await getApplicationSupportDirectory();
+        await File(
+          '${directory.path}/recording-timeline.png',
+        ).writeAsBytes(screenshot);
         expect(find.textContaining('could not start'), findsNothing);
         expect(tester.takeException(), isNull);
       } finally {

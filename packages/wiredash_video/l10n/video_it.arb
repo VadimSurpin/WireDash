@@ -105,5 +105,7 @@
   "recordingRejected": "Ricerca registrazioni rifiutata dal registratore ({details}).",
   "missingPlugin": "Questo plugin del pannello non è disponibile. Le impostazioni sono conservate.",
   "carVideoPhone": "Video sul telefono",
-  "carVideoLimit": "Questa interfaccia IoT di Android Auto non può mostrare video o accettare gesti di zoom e trascinamento. Apri questa telecamera in WireDash sul telefono mentre sei parcheggiato per vedere video in diretta, registrazioni ed eventi."
+  "carVideoLimit": "Questa interfaccia IoT di Android Auto non può mostrare video o accettare gesti di zoom e trascinamento. Apri questa telecamera in WireDash sul telefono mentre sei parcheggiato per vedere video in diretta, registrazioni ed eventi.",
+  "timelineZoomIn": "Ingrandisci cronologia",
+  "timelineZoomOut": "Riduci cronologia"
 }

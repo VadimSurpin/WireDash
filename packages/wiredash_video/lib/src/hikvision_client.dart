@@ -765,6 +765,20 @@ class HikvisionClient {
     );
   }
 
+  /// Event metadata can cover only seconds while its returned file URL spans
+  /// several minutes. Preserve that real file boundary for decoding/continuation.
+  static DateTime fileEnd(Recording record) {
+    final end = record.clock.parsePlayback(
+      record.playback.queryParameters['endtime'] ?? '',
+      template: record.playback,
+    );
+    return end != null &&
+            end.isAfter(record.end) &&
+            end.difference(record.start) <= const Duration(days: 1)
+        ? end
+        : record.end;
+  }
+
   static Uri filePlayback(
     VideoConfig config,
     Recording record,
@@ -775,7 +789,10 @@ class HikvisionClient {
         queryParameters: record.clock.playbackQuery({
           ...record.playback.queryParameters,
           'starttime': record.clock.rtsp(time, template: record.playback),
-          'endtime': record.clock.rtsp(record.end, template: record.playback),
+          'endtime': record.clock.rtsp(
+            fileEnd(record),
+            template: record.playback,
+          ),
         }),
       );
 }

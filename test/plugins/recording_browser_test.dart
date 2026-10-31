@@ -86,6 +86,15 @@ void main() {
         final offset = scroll.offset;
         expect(offset, greaterThan(100));
         await tester.tap(find.text('Motion').hitTestable().first);
+        await tester.pump();
+        for (var attempt = 0; attempt < 100; attempt++) {
+          final viewer = tester.widget<VideoPane>(find.byType(VideoPane));
+          if (viewer.archive?.loading != true) break;
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 20)),
+          );
+          await tester.pump();
+        }
         await tester.pumpAndSettle();
         expect(find.byType(Dialog), findsOneWidget);
         expect(sessions.single.opened!.path, '/Streaming/tracks/101');

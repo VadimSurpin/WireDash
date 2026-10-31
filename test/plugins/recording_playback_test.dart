@@ -44,12 +44,160 @@ void main() {
       try {
         expect(await previews.request(record).image, [1, 2, 3]);
         expect(player.opened!.queryParameters['starttime'], '20261031T100342Z');
-        expect(player.opened!.queryParameters['endtime'], '20261031T100348Z');
-        expect(player.opened!.queryParameters['name'], 'file');
+        expect(
+          player.opened!.queryParameters['endtime'],
+          isNot('20261031T100348Z'),
+        );
+        expect(player.opened!.queryParameters.containsKey('name'), isFalse);
         expect(player.closed, isTrue);
       } finally {
         previews.dispose();
       }
+    },
+  );
+
+  test(
+    'preview promptly falls back from a rejected range to the real file',
+    () async {
+      final host = MemoryHost();
+      final sessions = <_FileOnlySession>[];
+      final record = Recording(
+        start: DateTime.utc(2026, 10, 31, 7),
+        end: DateTime.utc(2026, 10, 31, 7, 1),
+        clock: const RecorderClock(
+          standard: true,
+          local: false,
+          playbackLocal: true,
+          forcePlaybackLocal: true,
+          offsetMinutes: 180,
+        ),
+        playback: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?name=file&starttime=20261031T070000Z&timeType=STD',
+        ),
+      );
+      final previews = RecordingPreviews(
+        host: host,
+        config: const VideoConfig(streamUrl: 'rtsp://recorder/live'),
+        sessionFactory: () {
+          final session = _FileOnlySession()
+            ..frame = Uint8List.fromList([1, 2, 3]);
+          sessions.add(session);
+          return session;
+        },
+      );
+      try {
+        expect(
+          await previews
+              .request(record)
+              .image
+              .timeout(const Duration(seconds: 2)),
+          [1, 2, 3],
+        );
+        expect(sessions, hasLength(2));
+        expect(
+          sessions.first.opened!.queryParameters.containsKey('name'),
+          isFalse,
+        );
+        expect(sessions.last.opened!.queryParameters['name'], 'file');
+        expect(
+          sessions.every(
+            (s) => s.opened!.queryParameters['starttime'] == '20261031T100000Z',
+          ),
+          isTrue,
+        );
+        expect(
+          sessions.every(
+            (s) => !s.opened!.queryParameters.containsKey('timeType'),
+          ),
+          isTrue,
+        );
+        expect(sessions.every((s) => s.closed), isTrue);
+        expect(host.network.leases.every((l) => l.closed), isTrue);
+      } finally {
+        previews.dispose();
+      }
+    },
+  );
+
+  test(
+    'short target previews resolve the ordinary recording when range playback fails',
+    () async {
+      final event = Recording(
+        start: DateTime.utc(2026, 10, 31, 7),
+        end: DateTime.utc(2026, 10, 31, 7, 0, 6),
+        playback: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?starttime=event',
+        ),
+      );
+      final file = Recording(
+        start: event.start,
+        end: event.end.add(const Duration(minutes: 30)),
+        playback: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?name=long-file',
+        ),
+      );
+      final sessions = <_FileOnlySession>[];
+      var resolutions = 0;
+      final previews = RecordingPreviews(
+        host: MemoryHost(),
+        config: const VideoConfig(streamUrl: 'rtsp://recorder/live'),
+        resolveRecording: (record) async {
+          resolutions++;
+          return file;
+        },
+        sessionFactory: () {
+          final player = _FileOnlySession()
+            ..frame = Uint8List.fromList([4, 5, 6]);
+          sessions.add(player);
+          return player;
+        },
+      );
+      try {
+        expect(
+          await previews
+              .request(event)
+              .image
+              .timeout(const Duration(seconds: 2)),
+          [4, 5, 6],
+        );
+        expect(resolutions, 1);
+        expect(sessions.last.opened!.queryParameters['name'], 'long-file');
+        expect(sessions.every((s) => s.closed), isTrue);
+      } finally {
+        previews.dispose();
+      }
+    },
+  );
+
+  test(
+    'short event metadata retains the real file end in the recorder local clock',
+    () {
+      const config = VideoConfig(streamUrl: 'rtsp://recorder/live');
+      const clock = RecorderClock(local: true, offsetMinutes: 180);
+      final event = Recording(
+        start: DateTime.utc(2026, 10, 31, 7),
+        end: DateTime.utc(2026, 10, 31, 7, 0, 6),
+        clock: clock,
+        playback: Uri.parse(
+          'rtsp://recorder/Streaming/tracks/101?name=file&starttime=20261031T100000Z&endtime=20261031T101000Z',
+        ),
+      );
+      expect(HikvisionClient.fileEnd(event), DateTime.utc(2026, 10, 31, 7, 10));
+      expect(
+        HikvisionClient.filePlayback(
+          config,
+          event,
+          event.start,
+        ).queryParameters['endtime'],
+        '20261031T101000Z',
+      );
+      final invalid = Recording(
+        start: event.start,
+        end: event.end,
+        clock: clock,
+        playback: Uri.parse('rtsp://recorder/archive?endtime=20991031T101000Z'),
+      );
+      expect(HikvisionClient.fileEnd(invalid), event.end);
     },
   );
 

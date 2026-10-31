@@ -233,3 +233,23 @@ Translation sources are `l10n/video_<language>.arb`. After editing a catalog, ru
 `python3 tool/generate_video_l10n.py` from the repository root; CI checks catalog
 completeness, interpolation placeholders and the generated Dart file. The plugin
 reads the host's locale without depending on the WireDash application package.
+
+## Playback time ruler
+
+The recording viewer has a wall-clock timeline with exact local timestamps,
+a date and the visible time span. Drag the ruler to seek when you release it,
+tap a point to play that instant, or pinch/use the zoom buttons to change scale
+from one minute to the complete selected search range. Zooming does not restart
+playback. It works even when the recorder reports no stream duration.
+
+Events load progressively across every page of the selected range, independently
+of the browser's selected filters and the event used to open the player. Motion,
+people, vehicles and generic events have separate colored lanes and a legend.
+The player shows a loading indicator while the remaining events are fetched,
+caches complete results, and keeps video playback available if event search fails.
+Only event types exposed by the recorder can be shown.
+
+Historical thumbnails use the same continuous playback clock and extended range
+as the viewer. Rejected streams fall back to the returned file URI or an ordinary
+recording lookup; decoder rejection triggers fallback immediately. Captures remain
+serialized, cancellable and cached, and never use a live image in place of history.

@@ -105,5 +105,7 @@
   "recordingRejected": "Zařízení odmítlo vyhledávání záznamů ({details}).",
   "missingPlugin": "Tento doplněk panelu není dostupný. Jeho nastavení jsou zachována.",
   "carVideoPhone": "Video v telefonu",
-  "carVideoLimit": "Toto rozhraní IoT pro Android Auto nemůže zobrazovat video ani přijímat gesta přiblížení a posouvání. Po zaparkování otevřete tuto kameru ve WireDash v telefonu a sledujte živé video, záznamy a události."
+  "carVideoLimit": "Toto rozhraní IoT pro Android Auto nemůže zobrazovat video ani přijímat gesta přiblížení a posouvání. Po zaparkování otevřete tuto kameru ve WireDash v telefonu a sledujte živé video, záznamy a události.",
+  "timelineZoomIn": "Přiblížit časovou osu",
+  "timelineZoomOut": "Oddálit časovou osu"
 }

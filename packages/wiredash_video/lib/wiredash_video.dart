@@ -13,3 +13,5 @@ export 'src/recording_photos.dart';
 export 'src/recording_search.dart';
 export 'src/recorder_clock.dart';
 export 'src/video_strings.dart';
+export 'src/recording_time_ruler.dart';
+export 'src/playback_archive.dart';

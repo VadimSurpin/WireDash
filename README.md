@@ -31,7 +31,8 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
 
 - **[Video widgets](packages/wiredash_video/README.md)** — RTSP live video with
   pinch zoom and pan, Hikvision recording/event timelines, cached previews, and
-  rewind/forward controls. Motion, people, vehicles and other event filters can
+  rewind/forward controls and a zoomable timeline with exact timestamps and all
+  events in the selected range. Motion, people, vehicles and other event filters can
   be combined. Recording search and RTSP playback honor their separate time
   formats, with a per-camera playback-time override for older DVRs. Video remains
   experimental in feature builds; the latest stable 3.2.0 release predates it.

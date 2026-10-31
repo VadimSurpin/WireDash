@@ -12,6 +12,7 @@ import 'recording_photos.dart';
 import 'recording_search.dart';
 import 'recorder_clock.dart';
 import 'video_strings.dart';
+import 'playback_archive.dart';
 
 class RecordingBrowser extends StatefulWidget {
   const RecordingBrowser({
@@ -62,6 +63,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
       config: config,
       sessionFactory: widget.previewFactory,
       cache: cache,
+      resolveRecording: (record) => resolveRecording(record.playbackTime),
       photos: RecordingPhotos(
         host: widget.context.host,
         config: config,
@@ -392,11 +394,35 @@ class _RecordingBrowserState extends State<RecordingBrowser>
     if (foreground && mounted) setState(() => previewEpoch++);
   }
 
+  Future<Recording?> resolveRecording(DateTime time) async {
+    if (!mounted || !ready || client == null) return null;
+    final page = await client!.search(
+      start: time,
+      end: time.add(const Duration(hours: 1)),
+    );
+    return page.records
+        .where((r) => !r.start.isAfter(time) && r.end.isAfter(time))
+        .firstOrNull;
+  }
+
   Future<void> select(Recording record) async {
     if (viewing) return;
     viewing = true;
     await previews.setPaused(true);
     if (!mounted) return;
+    final archive = client == null
+        ? null
+        : PlaybackArchive(
+            start: start,
+            end: end,
+            client: client!,
+            cache: cache,
+            filters: RecordingFilter.values
+                .where((f) => f.supported(capabilities))
+                .toSet(),
+            seed: records,
+          );
+    unawaited(archive?.load());
     try {
       await showDialog<void>(
         context: context,
@@ -420,22 +446,12 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                       clock: record.clock,
                     ),
                     recording: record,
-                    resolveRecording: (time) async {
-                      final page = await client!.search(
-                        start: time,
-                        end: time.add(const Duration(hours: 1)),
-                      );
-                      return page.records
-                          .where(
-                            (r) =>
-                                !r.start.isAfter(time) && r.end.isAfter(time),
-                          )
-                          .firstOrNull;
-                    },
+                    archive: archive,
+                    resolveRecording: resolveRecording,
                     autoStart: true,
                     showRecordings: false,
                     fullscreen: true,
-                    videoHeight: (bounds.maxHeight - 160).clamp(
+                    videoHeight: (bounds.maxHeight - 320).clamp(
                       bounds.maxHeight.clamp(0.0, 60.0),
                       bounds.maxHeight,
                     ),
@@ -447,6 +463,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
         ),
       );
     } finally {
+      archive?.dispose();
       viewing = false;
       if (mounted) {
         await previews.setPaused(!foreground);

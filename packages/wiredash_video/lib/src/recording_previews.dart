@@ -79,6 +79,7 @@ class RecordingPreviews {
     this.maxBytes = 8 * 1024 * 1024,
     this.cache,
     this.photos,
+    this.resolveRecording,
   });
   final PluginHost host;
   final VideoConfig config;
@@ -86,6 +87,7 @@ class RecordingPreviews {
   final int maxEntries, maxBytes;
   final RecordingCache? cache;
   final RecordingPhotos? photos;
+  final Future<Recording?> Function(Recording)? resolveRecording;
   final _cache = <String, RecordingPreviewData>{};
   final _jobs = <String, _Capture>{};
   Future<void> _tail = Future.value();
@@ -188,33 +190,91 @@ class RecordingPreviews {
     final network = config.useHomeNetwork
         ? host.network
         : const DirectPluginNetwork();
-    final route = await network.openStream(
-      credentials.authenticate(
-        HikvisionClient.filePlayback(
-          config,
-          task.record,
-          task.record.playbackTime,
-        ),
-      ),
-    );
-    if (task.cancelled) {
-      await route.close();
+    final record = task.record;
+    final time = record.playbackTime;
+    final attempted = <Uri>{};
+    var rejectedPlayback = false;
+    Future<Uint8List?> attempt(Uri source) async {
+      if (task.cancelled || !attempted.add(source)) return null;
+      // A previous attempt is completely closed before allocating another
+      // native decoder or network lease. Cancellation remains idempotent.
+      task._closing = null;
+      try {
+        final route = await network.openStream(
+          credentials.authenticate(source),
+        );
+        if (task.cancelled) {
+          await route.close();
+          return null;
+        }
+        task.lease = route;
+        final player = task.session = sessionFactory();
+        final rejected = Completer<void>();
+        void checkFailure() {
+          if (player.error != null && !rejected.isCompleted) {
+            rejected.completeError(StateError('Recording preview rejected.'));
+          }
+        }
+
+        player.addListener(checkFailure);
+        try {
+          await Future.any([
+            Future<void>.sync(() => player.open(route.uri, muted: true)),
+            rejected.future,
+          ]).timeout(const Duration(seconds: 20));
+          if (task.cancelled) return null;
+          final image = await player.captureFrame();
+          if (image != null && image.isNotEmpty && image.length <= maxBytes) {
+            return image;
+          }
+        } finally {
+          player.removeListener(checkFailure);
+        }
+      } catch (_) {
+        rejectedPlayback = true;
+        // Different firmware accepts different archive paths. Never replace a
+        // historical image with a live camera snapshot.
+      } finally {
+        try {
+          await task.close();
+        } catch (_) {
+          // A closed socket must not prevent trying the next archive path.
+        }
+      }
       return null;
     }
-    task.lease = route;
-    final player = task.session = sessionFactory();
-    await player.open(route.uri, muted: true);
-    if (task.cancelled) return null;
-    final image = await player.captureFrame();
-    if (!task.cancelled &&
-        image != null &&
-        image.isNotEmpty &&
-        image.length <= maxBytes) {
-      unawaited(cache?.writeImage(task.record, image) ?? Future<void>.value());
+
+    // Match the ordinary viewer: a short event match may not contain a full
+    // keyframe, while the continuous time-based stream can decode that instant.
+    var image = await attempt(
+      HikvisionClient.continuousPlayback(
+        config,
+        time,
+        source: record.playback,
+        clock: record.clock,
+      ),
+    );
+    if (image == null &&
+        rejectedPlayback &&
+        !task.cancelled &&
+        record.playback.queryParameters.containsKey('name')) {
+      image = await attempt(HikvisionClient.filePlayback(config, record, time));
     }
-    return image == null
-        ? null
-        : RecordingPreviewData(image, task.record.playbackTime);
+    if (image == null &&
+        rejectedPlayback &&
+        !task.cancelled &&
+        resolveRecording != null) {
+      final resolved = await resolveRecording!(record);
+      if (!task.cancelled && resolved != null) {
+        image = await attempt(
+          HikvisionClient.filePlayback(config, resolved, time),
+        );
+      }
+    }
+    if (!task.cancelled && image != null) {
+      unawaited(cache?.writeImage(record, image) ?? Future<void>.value());
+    }
+    return image == null ? null : RecordingPreviewData(image, time);
   }
 
   void refresh() {

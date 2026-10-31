@@ -105,5 +105,7 @@
   "recordingRejected": "Die Aufnahmesuche wurde vom Recorder abgelehnt ({details}).",
   "missingPlugin": "Das Plugin dieser Kachel ist nicht verfügbar. Die Einstellungen bleiben erhalten.",
   "carVideoPhone": "Video auf dem Telefon",
-  "carVideoLimit": "Diese IoT-Oberfläche von Android Auto kann keine Videos anzeigen und keine Zoom- oder Wischgesten verarbeiten. Im geparkten Fahrzeug die Kamera in WireDash auf dem Telefon öffnen, um Livevideo, Aufnahmen und Ereignisse anzusehen."
+  "carVideoLimit": "Diese IoT-Oberfläche von Android Auto kann keine Videos anzeigen und keine Zoom- oder Wischgesten verarbeiten. Im geparkten Fahrzeug die Kamera in WireDash auf dem Telefon öffnen, um Livevideo, Aufnahmen und Ereignisse anzusehen.",
+  "timelineZoomIn": "Zeitleiste vergrößern",
+  "timelineZoomOut": "Zeitleiste verkleinern"
 }

@@ -105,5 +105,7 @@
   "recordingRejected": "Inspelaren avvisade inspelningssökningen ({details}).",
   "missingPlugin": "Detta paneltillägg är inte tillgängligt. Inställningarna bevaras.",
   "carVideoPhone": "Video på telefon",
-  "carVideoLimit": "Detta Android Auto IoT-gränssnitt kan inte visa video eller hantera nyp- och draggester. Öppna kameran i WireDash på telefonen medan du står parkerad för att se direktvideo, inspelningar och händelser."
+  "carVideoLimit": "Detta Android Auto IoT-gränssnitt kan inte visa video eller hantera nyp- och draggester. Öppna kameran i WireDash på telefonen medan du står parkerad för att se direktvideo, inspelningar och händelser.",
+  "timelineZoomIn": "Zooma in tidslinjen",
+  "timelineZoomOut": "Zooma ut tidslinjen"
 }

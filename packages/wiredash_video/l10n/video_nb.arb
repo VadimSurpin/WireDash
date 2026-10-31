@@ -105,5 +105,7 @@
   "recordingRejected": "Opptakeren avviste opptakssøket ({details}).",
   "missingPlugin": "Dette paneltillegget er utilgjengelig. Innstillingene beholdes.",
   "carVideoPhone": "Video på telefon",
-  "carVideoLimit": "Dette Android Auto IoT-grensesnittet kan ikke vise video eller håndtere klype- og dra-bevegelser. Åpne dette kameraet i WireDash på telefonen mens du står parkert for å se direktevideo, opptak og hendelser."
+  "carVideoLimit": "Dette Android Auto IoT-grensesnittet kan ikke vise video eller håndtere klype- og dra-bevegelser. Åpne dette kameraet i WireDash på telefonen mens du står parkert for å se direktevideo, opptak og hendelser.",
+  "timelineZoomIn": "Zoom inn på tidslinjen",
+  "timelineZoomOut": "Zoom ut på tidslinjen"
 }

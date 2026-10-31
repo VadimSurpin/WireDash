@@ -8,6 +8,8 @@ import 'video_strings.dart';
 import 'recording_browser.dart';
 import 'hikvision_client.dart';
 import 'recorder_clock.dart';
+import 'playback_archive.dart';
+import 'recording_time_ruler.dart';
 
 class VideoTile extends StatelessWidget {
   const VideoTile({
@@ -34,6 +36,7 @@ class VideoPane extends StatefulWidget {
     this.selectedEvent,
     this.recording,
     this.resolveRecording,
+    this.archive,
     this.autoStart = false,
     this.showRecordings = true,
     this.videoHeight,
@@ -43,6 +46,7 @@ class VideoPane extends StatefulWidget {
   final VideoSessionFactory sessionFactory;
   final Uri? playback;
   final Recording? recording;
+  final PlaybackArchive? archive;
   final Future<Recording?> Function(DateTime)? resolveRecording;
   final DateTime? selectedEvent;
   final double? videoHeight;
@@ -60,7 +64,6 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
   int generation = 0;
   late bool muted;
   Uri? playback;
-  double? scrubbing;
   Recording? file;
   bool fileMode = false, advancing = false;
   RecorderClock get clockBasis =>
@@ -92,19 +95,12 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
       source: file?.playback ?? widget.recording?.playback,
       clock: clockBasis,
     );
-    scrubbing = null;
     await start();
   }
 
   Future<void> skip(Duration delta) async {
     final time = playbackTime;
     if (time != null) await jumpTo(time.add(delta));
-  }
-
-  String clock(DateTime time) {
-    final local = time.toLocal();
-    String pad(int n) => n.toString().padLeft(2, '0');
-    return '${local.year}-${pad(local.month)}-${pad(local.day)} ${pad(local.hour)}:${pad(local.minute)}:${pad(local.second)}';
   }
 
   final transform = TransformationController();
@@ -130,7 +126,6 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         !mapEquals(oldWidget.context.settings, widget.context.settings) ||
         oldWidget.playback != widget.playback) {
       playback = widget.playback;
-      scrubbing = null;
       unawaited(stop());
     }
   }
@@ -146,7 +141,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         file != null &&
         widget.resolveRecording != null) {
       advancing = true;
-      final next = file!.end;
+      final next = HikvisionClient.fileEnd(file!);
       unawaited(jumpTo(next).whenComplete(() => advancing = false));
     }
   }
@@ -243,7 +238,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         if (known != null &&
             known.playback.queryParameters.containsKey('name') &&
             !known.start.isAfter(requested) &&
-            known.end.isAfter(requested)) {
+            HikvisionClient.fileEnd(known).isAfter(requested)) {
           resolved = known;
         } else if (widget.resolveRecording != null) {
           resolved = await widget.resolveRecording!(requested);
@@ -252,7 +247,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
         resolved ??=
             known != null &&
                 !known.start.isAfter(requested) &&
-                known.end.isAfter(requested)
+                HikvisionClient.fileEnd(known).isAfter(requested)
             ? known
             : null;
         if (resolved == null) rethrow;
@@ -331,10 +326,11 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
                   selectedEvent: selectedEvent,
                   recording: file ?? widget.recording,
                   resolveRecording: widget.resolveRecording,
+                  archive: widget.archive,
                   showRecordings: widget.showRecordings,
                   autoStart: true,
                   fullscreen: true,
-                  videoHeight: (bounds.maxHeight - 160).clamp(
+                  videoHeight: (bounds.maxHeight - 320).clamp(
                     bounds.maxHeight.clamp(0.0, 60.0),
                     bounds.maxHeight,
                   ),
@@ -344,6 +340,26 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
           ),
         ),
       ),
+    );
+  }
+
+  Widget timeRuler() {
+    final position = playbackTime!;
+    final local = position.toLocal();
+    final start =
+        widget.archive?.start ?? DateTime(local.year, local.month, local.day);
+    final nextDay = DateTime(local.year, local.month, local.day + 1);
+    final now = DateTime.now();
+    final end = widget.archive?.end ?? (nextDay.isBefore(now) ? nextDay : now);
+    return RecordingTimeRuler(
+      start: start,
+      end: end,
+      position: position,
+      records:
+          widget.archive?.records ??
+          [if (widget.recording != null) widget.recording!],
+      enabled: !opening,
+      onSeek: (time) => unawaited(jumpTo(time)),
     );
   }
 
@@ -411,34 +427,29 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
           SizedBox(height: widget.videoHeight, child: video),
         if (playbackTime != null)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            child: Text(
-              clock(playbackTime!),
-              key: const Key('recording-clock'),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        if (playback != null &&
-            current != null &&
-            current.duration > Duration.zero)
-          Slider(
-            label: context.videoStrings.message('recordingPosition'),
-            value: (scrubbing ?? current.position.inMilliseconds.toDouble())
-                .clamp(0, current.duration.inMilliseconds.toDouble()),
-            max: current.duration.inMilliseconds.toDouble(),
-            onChanged: opening
-                ? null
-                : (value) => setState(() => scrubbing = value),
-            onChangeEnd: (value) {
-              final from = playbackStart;
-              if (from != null) {
-                unawaited(
-                  jumpTo(from.add(Duration(milliseconds: value.round()))),
-                );
-              } else {
-                unawaited(current.seek(Duration(milliseconds: value.round())));
-              }
-            },
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: widget.archive == null
+                ? timeRuler()
+                : ListenableBuilder(
+                    listenable: widget.archive!,
+                    builder: (context, _) => Column(
+                      children: [
+                        if (widget.archive!.loading)
+                          const LinearProgressIndicator(),
+                        timeRuler(),
+                        if (widget.archive!.error != null)
+                          TextButton.icon(
+                            onPressed: widget.archive!.loading
+                                ? null
+                                : widget.archive!.load,
+                            icon: const Icon(Icons.refresh),
+                            label: Text(
+                              context.videoStrings.text(widget.archive!.error!),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
           ),
         Wrap(
           alignment: WrapAlignment.end,
