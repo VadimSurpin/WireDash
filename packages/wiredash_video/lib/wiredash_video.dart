@@ -3,3 +3,7 @@ export 'src/video_config.dart';
 export 'src/hikvision_client.dart';
 export 'src/video_session.dart';
 export 'src/video_tile.dart';
+export 'src/recording_event.dart';
+export 'src/recording_browser.dart';
+export 'src/recording_timeline.dart';
+export 'src/recording_previews.dart';

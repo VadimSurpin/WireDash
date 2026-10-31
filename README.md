@@ -193,7 +193,9 @@ human/vehicle recording filters when supported by the recorder. Add it from
 **Add tile → Custom MQTT tile → Video**. It uses secure credential storage and
 can follow the home's embedded WireGuard route.
 The embedded player supports pinch zoom, dragging, reset and fullscreen, with
-separate recording and human/vehicle event controls. Android Auto lists camera
+separate recording and human/vehicle event controls. Saved clips use a vertical
+timeline with recorder event labels and preview frames from the recordings.
+Opening a clip preserves the timeline scroll position. Android Auto lists camera
 entries but its IoT templates cannot play video or receive those gestures;
 playback currently uses the phone. See the
 [video plugin guide](packages/wiredash_video/README.md) for configuration,

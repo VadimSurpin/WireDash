@@ -27,6 +27,8 @@ stay outside the transformed picture. This is digital zoom/pan, not camera PTZ.
 The same widget is used for live video, fullscreen and recording playback;
 recordings expose a seek slider when the recorder reports a duration.
 Stop releases the player and route.
+Transient decoder errors clear once unbuffered playback advances again, including
+when a reconnected stream restarts its playback clock.
 Going into the background stops playback and a returning user starts a fresh
 connection explicitly. Cameras do not open automatically just because a dashboard
 is loaded. Long-press and tile sizing use the existing dashboard controls.
@@ -35,7 +37,22 @@ is loaded. Long-press and tile sizing use the existing dashboard controls.
 
 Enable **Hikvision recordings**, supplying the recorder address and an account
 with remote playback/search permission. The history button opens a time-range
-browser. Searches are limited to seven days per request, default to the previous
+browser with a vertical chronological timeline, grouped by local day. Each card
+shows its time, duration, recorder event labels and a photo extracted from that
+saved clip. Labels include continuous recording, motion, alarm, intrusion,
+line crossing, person and vehicle when reported by the recorder. Unknown types
+remain labelled Recording; motion is not presented as a person or vehicle.
+Opening a clip uses a fullscreen player and preserves the timeline scroll
+position when returning.
+
+Preview frames are loaded lazily, one muted RTSP connection at a time, using the
+same credentials and home route as playback. They use a short software decode
+at 320-pixel output width, not the camera's current live picture. Frames are
+cached in memory with limits of 48 entries and 8 MiB; scrolling away cancels
+unneeded work. Preview connections close before clip playback and while the app
+is in the background. Failed captures show Load preview and never hide the clip.
+
+Searches are limited to seven days per request, default to the previous
 24 hours, and page through results with Load more. Displayed times use the phone's
 local timezone; requests use UTC. Selecting a result plays that recording over RTSP.
 The events button opens the same browser with the first advertised human/vehicle

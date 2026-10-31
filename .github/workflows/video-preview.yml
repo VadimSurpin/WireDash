@@ -70,6 +70,7 @@ jobs:
           script: |
             flutter test integration_test/video_stream_test.dart --no-uninstall --flavor foss -d emulator-5554 --dart-define=WIREDASH_TEST_RTSP=rtsp://viewer:viewer-test@10.0.2.2:8554/camera
             timeout 15s adb shell run-as pro.surpin.wiredash cat files/rtsp-frame.png > build/video-preview/rtsp-frame.png
+            timeout 15s adb shell run-as pro.surpin.wiredash cat files/recording-preview.jpg > build/video-preview/recording-preview.jpg
             timeout 15s adb logcat -d > build/video-preview/logcat.txt || true
       - name: Preserve screenshot and runtime logs
         if: always()
@@ -82,6 +83,7 @@ jobs:
           name: wiredash-video-native-preview
           path: |
             build/video-preview/*.png
+            build/video-preview/*.jpg
             build/video-preview/*.log
             build/video-preview/logcat.txt
           if-no-files-found: error

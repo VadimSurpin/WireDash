@@ -173,7 +173,9 @@ class VideoEditorController extends PluginEditorController {
             'A smaller stream saves bandwidth. Saved recordings use the main stream.',
           ),
           value: substream,
-          onChanged: stream.text.trim().isEmpty ? (v) => changed(() => substream = v) : null,
+          onChanged: stream.text.trim().isEmpty
+              ? (v) => changed(() => substream = v)
+              : null,
         ),
         TextFormField(
           controller: username,

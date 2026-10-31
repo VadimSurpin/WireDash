@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'package:wiredash_video/wiredash_video.dart';
@@ -47,6 +48,9 @@ class FakeSession extends VideoSession {
   bool closed = false;
   Uri? opened;
   bool paused = false;
+  final health = VideoPlaybackHealth();
+  Uint8List? frame;
+  Completer<void>? opening;
   @override
   Duration position = Duration.zero;
   @override
@@ -56,13 +60,14 @@ class FakeSession extends VideoSession {
   @override
   bool get playing => opened != null && !closed && !paused;
   @override
-  String? get error => null;
+  String? get error => health.error;
   @override
   Widget buildView() =>
       const ColoredBox(key: Key('fake-video'), color: Colors.black);
   @override
   Future<void> open(Uri uri, {required bool muted}) async {
     opened = uri;
+    await opening?.future;
   }
 
   @override
@@ -83,4 +88,7 @@ class FakeSession extends VideoSession {
   Future<void> close() async {
     closed = true;
   }
+
+  @override
+  Future<Uint8List?> captureFrame() async => frame;
 }

@@ -6,6 +6,8 @@ import 'hikvision_client.dart';
 import 'video_config.dart';
 import 'video_session.dart';
 import 'video_tile.dart';
+import 'recording_previews.dart';
+import 'recording_timeline.dart';
 
 class RecordingBrowser extends StatefulWidget {
   const RecordingBrowser({
@@ -13,21 +15,26 @@ class RecordingBrowser extends StatefulWidget {
     required this.context,
     required this.sessionFactory,
     this.events = false,
+    this.previewFactory = NativeVideoSession.preview,
   });
   final PluginTileContext context;
   final VideoSessionFactory sessionFactory;
   final bool events;
+  final VideoSessionFactory previewFactory;
   @override
   State<RecordingBrowser> createState() => _RecordingBrowserState();
 }
 
-class _RecordingBrowserState extends State<RecordingBrowser> {
+class _RecordingBrowserState extends State<RecordingBrowser>
+    with WidgetsBindingObserver {
   HikvisionClient? client;
   RecorderCapabilities? capabilities;
   late DateTime start, end;
   RecordingTarget target = RecordingTarget.all;
   final records = <Recording>[];
-  Recording? selected;
+  late final RecordingPreviews previews;
+  bool viewing = false, foreground = true;
+  int previewEpoch = 0;
   String? error;
   bool loading = true, more = false;
   int position = 0, generation = 0;
@@ -36,6 +43,12 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    previews = RecordingPreviews(
+      host: widget.context.host,
+      config: config,
+      sessionFactory: widget.previewFactory,
+    );
     end = DateTime.now();
     start = end.subtract(const Duration(hours: 24));
     unawaited(initialize());
@@ -104,6 +117,7 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
           .toList();
       setState(() {
         records.addAll(additions);
+        records.sort((a, b) => a.start.compareTo(b.start));
         more =
             page.hasMore &&
             page.nextPosition > position &&
@@ -169,6 +183,8 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    previews.dispose();
     generation++;
     client?.close();
     scroll.dispose();
@@ -176,19 +192,54 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
   }
 
   final scroll = ScrollController();
-  void select(Recording record) {
-    setState(() => selected = record);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && scroll.hasClients) {
-        unawaited(
-          scroll.animateTo(
-            0,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    foreground = state == AppLifecycleState.resumed;
+    unawaited(previews.setPaused(!foreground || viewing));
+    if (foreground && mounted) setState(() => previewEpoch++);
+  }
+
+  Future<void> select(Recording record) async {
+    if (viewing) return;
+    viewing = true;
+    await previews.setPaused(true);
+    if (!mounted) return;
+    try {
+      await showDialog<void>(
+        context: context,
+        builder: (_) => Dialog.fullscreen(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('${widget.context.title} · ${stamp(record.start)}'),
+            ),
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, bounds) => SingleChildScrollView(
+                  child: VideoPane(
+                    context: widget.context,
+                    sessionFactory: widget.sessionFactory,
+                    playback: record.playback,
+                    autoStart: true,
+                    showRecordings: false,
+                    fullscreen: true,
+                    videoHeight: (bounds.maxHeight - 160).clamp(
+                      bounds.maxHeight.clamp(0.0, 60.0),
+                      bounds.maxHeight,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-        );
+        ),
+      );
+    } finally {
+      viewing = false;
+      if (mounted) {
+        await previews.setPaused(!foreground);
+        if (mounted) setState(() => previewEpoch++);
       }
-    });
+    }
   }
 
   @override
@@ -223,19 +274,6 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (selected case final record?)
-                  VideoPane(
-                    key: ValueKey(record.identity),
-                    context: widget.context,
-                    sessionFactory: widget.sessionFactory,
-                    playback: record.playback,
-                    autoStart: true,
-                    showRecordings: false,
-                    videoHeight: (constraints.maxHeight * 0.28).clamp(
-                      40.0,
-                      220.0,
-                    ),
-                  ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Wrap(
@@ -297,29 +335,18 @@ class _RecordingBrowserState extends State<RecordingBrowser> {
               ),
             )
           else
-            SliverList.builder(
-              itemCount: records.length + (more ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == records.length) {
-                  return TextButton(
-                    onPressed: loading ? null : () => search(reset: false),
-                    child: const Text('Load more recordings'),
-                  );
-                }
-                final record = records[index];
-                return ListTile(
-                  leading: Icon(switch (record.target) {
-                    RecordingTarget.all => Icons.videocam,
-                    RecordingTarget.human => Icons.person,
-                    RecordingTarget.vehicle => Icons.directions_car,
-                  }),
-                  title: Text(stamp(record.start)),
-                  subtitle: Text('Until ${stamp(record.end)}'),
-                  selected: selected?.identity == record.identity,
-                  trailing: const Icon(Icons.play_arrow),
-                  onTap: () => select(record),
-                );
-              },
+            RecordingTimeline(
+              records: records,
+              previews: previews,
+              previewEpoch: previewEpoch,
+              onSelected: select,
+            ),
+          if (more)
+            SliverToBoxAdapter(
+              child: TextButton(
+                onPressed: loading ? null : () => search(reset: false),
+                child: const Text('Load more recordings'),
+              ),
             ),
         ],
       ),

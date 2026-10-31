@@ -4,6 +4,39 @@ import 'package:wiredash_video/wiredash_video.dart';
 import 'package:wiredash_video/src/digest_auth.dart';
 
 void main() {
+  test(
+    'timeline labels use recorder metadata without inventing presence classifications',
+    () {
+      const raw =
+          '''<CMSearchResult><responseStatus>true</responseStatus><responseStatusStrg>OK</responseStatusStrg>
+      <matchList><searchMatchItem><trackID>101</trackID><timeSpan>
+      <startTime>2026-10-31T10:00:00Z</startTime><endTime>2026-10-31T10:01:00Z</endTime></timeSpan>
+      <playbackURI>rtsp://dvr/Streaming/tracks/101?name=clip</playbackURI>
+      <metadataMatches><metadataDescriptor>recordType.meta.isapi.com/timing</metadataDescriptor>
+      <metadataDescriptor>recordType.meta.isapi.com/motion</metadataDescriptor></metadataMatches>
+      </searchMatchItem></matchList></CMSearchResult>''';
+      final record = HikvisionClient.parseRecordings(
+        raw,
+        const VideoConfig(streamUrl: 'rtsp://dvr/live'),
+        0,
+      ).records.single;
+      expect(record.events, [RecordingEvent.scheduled, RecordingEvent.motion]);
+      expect(record.events, isNot(contains(RecordingEvent.human)));
+      expect(
+        RecordingEvent.fromDescriptor('recordType.meta.isapi.com/unknown'),
+        isNull,
+      );
+      expect(
+        Recording(
+          start: record.start,
+          end: record.end,
+          playback: record.playback,
+          target: RecordingTarget.vehicle,
+        ).events,
+        [RecordingEvent.vehicle],
+      );
+    },
+  );
   test('Digest matches the RFC 2617 MD5 auth example', () {
     final auth = DigestAuth(
       const VideoCredentials('Mufasa', 'Circle Of Life'),

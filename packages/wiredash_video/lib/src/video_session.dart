@@ -6,6 +6,32 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 typedef VideoSessionFactory = VideoSession Function();
 
+/// A transient decoder error is obsolete once playback advances again.
+class VideoPlaybackHealth {
+  String? error;
+  Duration _failedAt = Duration.zero;
+  void failed(Duration position) {
+    _failedAt = position;
+    error =
+        'Video unavailable. Check the stream address, login and camera codec.';
+  }
+
+  void progress(
+    Duration position, {
+    required bool playing,
+    required bool buffering,
+  }) {
+    if (playing &&
+        !buffering &&
+        position > Duration.zero &&
+        position != _failedAt) {
+      error = null;
+    }
+  }
+
+  void recovered() => error = null;
+}
+
 abstract class VideoSession extends ChangeNotifier {
   bool get buffering;
   bool get playing;
@@ -17,11 +43,12 @@ abstract class VideoSession extends ChangeNotifier {
   Future<void> setMuted(bool muted);
   Future<void> playOrPause();
   Future<void> seek(Duration position);
+  Future<Uint8List?> captureFrame();
   Future<void> close();
 }
 
 class NativeVideoSession extends VideoSession {
-  NativeVideoSession() {
+  NativeVideoSession({this.preview = false}) {
     if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
       throw UnsupportedError(
         'Native RTSP playback is currently bundled for Android.',
@@ -44,7 +71,12 @@ class NativeVideoSession extends VideoSession {
         ],
       ),
     );
-    controller = VideoController(player);
+    controller = VideoController(
+      player,
+      configuration: VideoControllerConfiguration(
+        enableHardwareAcceleration: !preview,
+      ),
+    );
     subscriptions.add(
       player.stream.buffering.listen((value) {
         _buffering = value;
@@ -58,26 +90,33 @@ class NativeVideoSession extends VideoSession {
       }),
     );
     subscriptions.add(
-      player.stream.error.listen((_) {
-        _error =
-            'Video unavailable. Check the stream address, login and camera codec.';
+      player.stream.error.listen((message) {
+        if (message.trim().isEmpty) return;
+        health.failed(player.state.position);
         _changed();
       }),
     );
-    subscriptions.add(player.stream.position.listen((_) => _changed()));
+    subscriptions.add(
+      player.stream.position.listen((position) {
+        health.progress(position, playing: _playing, buffering: _buffering);
+        _changed();
+      }),
+    );
     subscriptions.add(player.stream.duration.listen((_) => _changed()));
   }
   late final Player player;
   late final VideoController controller;
+  final bool preview;
+  NativeVideoSession.preview() : this(preview: true);
+  final health = VideoPlaybackHealth();
   final subscriptions = <StreamSubscription<dynamic>>[];
   bool _buffering = true, _playing = false, _closed = false;
-  String? _error;
   @override
   bool get buffering => _buffering;
   @override
   bool get playing => _playing;
   @override
-  String? get error => _error;
+  String? get error => health.error;
   @override
   Duration get position => player.state.position;
   @override
@@ -99,6 +138,7 @@ class NativeVideoSession extends VideoSession {
     if (platform is NativePlayer) {
       await platform.setProperty('rtsp-transport', 'tcp');
       await platform.setProperty('force-media-title', 'WireDash video');
+      if (preview) await platform.setProperty('vf', 'scale=320:-2');
     }
     await player.setVolume(muted ? 0 : 100);
     await player.open(
@@ -110,7 +150,7 @@ class NativeVideoSession extends VideoSession {
       const Duration(seconds: 20),
     );
     if (!_closed) {
-      _error = null;
+      health.recovered();
       _buffering = false;
       _changed();
     }
@@ -122,6 +162,22 @@ class NativeVideoSession extends VideoSession {
   Future<void> playOrPause() => player.playOrPause();
   @override
   Future<void> seek(Duration position) => player.seek(position);
+  @override
+  Future<Uint8List?> captureFrame() async {
+    // Android can report video parameters just before the first decoded
+    // picture is ready for screenshot-raw. Allow that short startup gap.
+    for (var attempt = 0; attempt < 20 && !_closed; attempt++) {
+      try {
+        final frame = await player.screenshot();
+        if (frame != null && frame.isNotEmpty) return frame;
+      } catch (_) {
+        if (_closed) return null;
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+    return null;
+  }
+
   @override
   Future<void> close() async {
     if (_closed) return;

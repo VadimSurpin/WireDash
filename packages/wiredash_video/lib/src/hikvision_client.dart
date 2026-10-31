@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:xml/xml.dart';
 import 'digest_auth.dart';
 import 'video_config.dart';
+import 'recording_event.dart';
 
 class RecorderException implements Exception {
   const RecorderException(this.message, {this.status, this.code});
@@ -21,10 +22,17 @@ class Recording {
     required this.end,
     required this.playback,
     this.target = RecordingTarget.all,
+    this.eventTypes = const [],
   });
   final DateTime start, end;
   final Uri playback;
   final RecordingTarget target;
+  final List<RecordingEvent> eventTypes;
+  List<RecordingEvent> get events => {
+    ...eventTypes,
+    if (target == RecordingTarget.human) RecordingEvent.human,
+    if (target == RecordingTarget.vehicle) RecordingEvent.vehicle,
+  }.toList();
   String get identity => '$start/$end/$playback';
 }
 
@@ -362,7 +370,18 @@ class HikvisionClient {
         continue;
       }
       records.add(
-        Recording(start: start, end: end, playback: config.playbackUri(uri)),
+        Recording(
+          start: start,
+          end: end,
+          playback: config.playbackUri(uri),
+          eventTypes: item.descendants
+              .whereType<XmlElement>()
+              .where((e) => e.name.local == 'metadataDescriptor')
+              .map((e) => RecordingEvent.fromDescriptor(e.innerText))
+              .whereType<RecordingEvent>()
+              .toSet()
+              .toList(),
+        ),
       );
     }
     return RecordingPage(

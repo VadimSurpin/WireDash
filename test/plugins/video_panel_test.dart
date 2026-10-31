@@ -7,6 +7,46 @@ import 'plugin_test_fakes.dart';
 
 void main() {
   testWidgets(
+    'unavailable overlay disappears when the existing stream recovers',
+    (tester) async {
+      final session = FakeSession();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VideoTile(
+              context: PluginTileContext(
+                id: 'c',
+                title: 'Camera',
+                host: MemoryHost(),
+                settings: const VideoConfig(
+                  streamUrl: 'rtsp://camera/live',
+                ).toJson(),
+              ),
+              sessionFactory: () => session,
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.byTooltip('Play live video'));
+      await tester.pumpAndSettle();
+      session.health.failed(const Duration(seconds: 20));
+      session.notifyListeners();
+      await tester.pump();
+      expect(find.textContaining('Video unavailable'), findsOneWidget);
+      session.health.progress(
+        const Duration(seconds: 1),
+        playing: true,
+        buffering: false,
+      );
+      session.notifyListeners();
+      await tester.pump();
+      expect(find.textContaining('Video unavailable'), findsNothing);
+      expect(find.byKey(const Key('fake-video')), findsOneWidget);
+      expect(session.closed, isFalse);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+  testWidgets(
     'pinch zoom, dragging and reset affect video while controls stay fixed',
     (tester) async {
       final session = FakeSession();
