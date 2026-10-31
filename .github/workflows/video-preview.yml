@@ -68,7 +68,7 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
-            flutter test integration_test/video_stream_test.dart --flavor foss -d emulator-5554 --dart-define=WIREDASH_TEST_RTSP=rtsp://viewer:viewer-test@10.0.2.2:8554/camera
+            flutter test integration_test/video_stream_test.dart --no-uninstall --flavor foss -d emulator-5554 --dart-define=WIREDASH_TEST_RTSP=rtsp://viewer:viewer-test@10.0.2.2:8554/camera
             timeout 15s adb shell run-as pro.surpin.wiredash cat files/rtsp-frame.png > build/video-preview/rtsp-frame.png
             timeout 15s adb logcat -d > build/video-preview/logcat.txt || true
       - name: Preserve screenshot and runtime logs
