@@ -251,5 +251,6 @@ Only event types exposed by the recorder can be shown.
 
 Historical thumbnails use the same continuous playback clock and extended range
 as the viewer. Rejected streams fall back to the returned file URI or an ordinary
-recording lookup; decoder rejection triggers fallback immediately. Captures remain
+recording lookup; confirmed playback failures trigger fallback without waiting for the full
+frame timeout. Captures remain
 serialized, cancellable and cached, and never use a live image in place of history.

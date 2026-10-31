@@ -176,6 +176,20 @@ class NativeVideoSession extends VideoSession {
       for (var attempt = 0; attempt < 200 && !_closed; attempt++) {
         _previewFrame = await _readPreview();
         if (_previewFrame != null) break;
+        // media_kit exposes some startup decoder messages as errors. They are
+        // not proof of a failed stream. An idle core with no frame after startup
+        // is terminal; a loaded/buffering file still gets time to decode.
+        if (attempt >= 10 &&
+            attempt % 5 == 0 &&
+            health.error != null &&
+            platform is NativePlayer) {
+          final idle = await platform.getProperty('idle-active');
+          if (idle == 'yes') {
+            throw StateError(
+              'Preview stream ended before a frame was decoded.',
+            );
+          }
+        }
         await Future<void>.delayed(const Duration(milliseconds: 100));
       }
       if (_previewFrame == null) {

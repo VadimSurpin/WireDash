@@ -214,26 +214,15 @@ class RecordingPreviews {
         }
         task.lease = route;
         final player = task.session = sessionFactory();
-        final rejected = Completer<void>();
-        void checkFailure() {
-          if (player.error != null && !rejected.isCompleted) {
-            rejected.completeError(StateError('Recording preview rejected.'));
-          }
-        }
-
-        player.addListener(checkFailure);
-        try {
-          await Future.any([
-            Future<void>.sync(() => player.open(route.uri, muted: true)),
-            rejected.future,
-          ]).timeout(const Duration(seconds: 20));
-          if (task.cancelled) return null;
-          final image = await player.captureFrame();
-          if (image != null && image.isNotEmpty && image.length <= maxBytes) {
-            return image;
-          }
-        } finally {
-          player.removeListener(checkFailure);
+        // Error notifications may be transient decoder startup messages. The
+        // session's open future confirms a frame or a terminal failure.
+        await player
+            .open(route.uri, muted: true)
+            .timeout(const Duration(seconds: 22));
+        if (task.cancelled) return null;
+        final image = await player.captureFrame();
+        if (image != null && image.isNotEmpty && image.length <= maxBytes) {
+          return image;
         }
       } catch (error) {
         onDiagnostic?.call('playback: ${error.runtimeType}');

@@ -21,6 +21,28 @@ class _FileOnlySession extends FakeSession {
   }
 }
 
+class _PreviewFileOnlySession extends _FileOnlySession {
+  @override
+  Future<void> open(Uri uri, {required bool muted}) async {
+    if (!uri.queryParameters.containsKey('name')) {
+      opened = uri;
+      throw StateError('Fixture recording rejected.');
+    }
+    await super.open(uri, muted: muted);
+  }
+}
+
+class _PreviewWarningSession extends FakeSession {
+  @override
+  Future<void> open(Uri uri, {required bool muted}) async {
+    opened = uri;
+    health.failed(Duration.zero);
+    notifyListeners();
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    health.recovered();
+  }
+}
+
 void main() {
   test(
     'video previews use the event timestamp instead of the older file URI start',
@@ -79,7 +101,7 @@ void main() {
         host: host,
         config: const VideoConfig(streamUrl: 'rtsp://recorder/live'),
         sessionFactory: () {
-          final session = _FileOnlySession()
+          final session = _PreviewFileOnlySession()
             ..frame = Uint8List.fromList([1, 2, 3]);
           sessions.add(session);
           return session;
@@ -146,7 +168,7 @@ void main() {
           return file;
         },
         sessionFactory: () {
-          final player = _FileOnlySession()
+          final player = _PreviewFileOnlySession()
             ..frame = Uint8List.fromList([4, 5, 6]);
           sessions.add(player);
           return player;
@@ -198,6 +220,29 @@ void main() {
         playback: Uri.parse('rtsp://recorder/archive?endtime=20991031T101000Z'),
       );
       expect(HikvisionClient.fileEnd(invalid), event.end);
+    },
+  );
+
+  test(
+    'a transient preview decoder warning cannot discard a successfully decoded frame',
+    () async {
+      final session = _PreviewWarningSession()
+        ..frame = Uint8List.fromList([7, 8, 9]);
+      final record = Recording(
+        start: DateTime.utc(2026, 10, 31, 7),
+        end: DateTime.utc(2026, 10, 31, 8),
+        playback: Uri.parse('rtsp://recorder/archive'),
+      );
+      final previews = RecordingPreviews(
+        host: MemoryHost(),
+        config: const VideoConfig(streamUrl: 'rtsp://recorder/live'),
+        sessionFactory: () => session,
+      );
+      try {
+        expect(await previews.request(record).image, [7, 8, 9]);
+      } finally {
+        previews.dispose();
+      }
     },
   );
 

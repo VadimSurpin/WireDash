@@ -180,6 +180,13 @@ void main() {
         sessionFactory: () {
           final session = NativeVideoSession.preview();
           sessions.add(session);
+          session.player.stream.log.listen((entry) {
+            if (entry.level == 'error' && diagnostics.length < 20) {
+              diagnostics.add(
+                '${entry.prefix}: ${entry.text.replaceAll(RegExp(r'rtsps?://\S+'), '<fixture stream>')}',
+              );
+            }
+          });
           return session;
         },
       );
