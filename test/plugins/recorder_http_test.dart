@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wiredash_video/wiredash_video.dart';
-import 'package:xml/xml.dart';
 
 class _RealNetwork extends HttpOverrides {}
 
@@ -33,12 +32,9 @@ void main() {
             bodies.add(body);
             // Emulate strict ISAPI firmware: chunked XML and an unknown
             // recording-type descriptor are rejected before searching.
-            final document = XmlDocument.parse(body);
-            final descriptor = document.descendants
-                .whereType<XmlElement>()
-                .where((e) => e.name.local == 'metadataDescriptor')
-                .single
-                .innerText;
+            final descriptor = RegExp(
+              r'<metadataDescriptor>([^<]*)</metadataDescriptor>',
+            ).firstMatch(body)?.group(1);
             if (request.headers.chunkedTransferEncoding ||
                 request.contentLength != utf8.encode(body).length ||
                 descriptor != '//recordType.meta.std-cgi.com') {
