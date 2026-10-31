@@ -87,13 +87,22 @@ class NativeVideoSession extends VideoSession {
     final platform = player.platform;
     if (platform is NativePlayer) {
       await platform.setProperty('rtsp-transport', 'tcp');
-      await platform.setProperty('msg-level', 'all=no');
       await platform.setProperty('force-media-title', 'WireDash video');
     }
     await player.setVolume(muted ? 0 : 100);
     await player.open(
       Media(uri.toString(), extras: const {'title': 'WireDash video'}),
     );
+    // Opening a demuxer alone does not prove that the stream can be decoded.
+    // Bound the loading state and let the pane release a failed connection.
+    await controller.waitUntilFirstFrameRendered.timeout(
+      const Duration(seconds: 20),
+    );
+    if (!_closed) {
+      _error = null;
+      _buffering = false;
+      _changed();
+    }
   }
 
   @override
