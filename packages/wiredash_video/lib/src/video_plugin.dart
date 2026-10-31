@@ -5,6 +5,7 @@ import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'video_config.dart';
 import 'video_session.dart';
 import 'video_tile.dart';
+import 'video_strings.dart';
 
 class VideoPanelPlugin implements WireDashPanelPlugin {
   const VideoPanelPlugin({this.sessionFactory = NativeVideoSession.new});
@@ -13,11 +14,10 @@ class VideoPanelPlugin implements WireDashPanelPlugin {
   @override
   String get id => pluginId;
   @override
-  String title(BuildContext context) => _ru(context) ? 'Видео' : 'Video';
+  String title(BuildContext context) => context.videoStrings.message('video');
   @override
-  String description(BuildContext context) => _ru(context)
-      ? 'RTSP и записи Hikvision с поиском людей и автомобилей'
-      : 'RTSP live video and Hikvision human/vehicle recordings';
+  String description(BuildContext context) =>
+      context.videoStrings.message('description');
   @override
   IconData get icon => Icons.videocam_outlined;
   @override
@@ -28,8 +28,6 @@ class VideoPanelPlugin implements WireDashPanelPlugin {
     Map<String, dynamic> settings,
     PluginHost host,
   ) => VideoEditorController(settings, host);
-  static bool _ru(BuildContext context) =>
-      Localizations.localeOf(context).languageCode == 'ru';
 }
 
 class VideoEditorController extends PluginEditorController {
@@ -137,13 +135,12 @@ class VideoEditorController extends PluginEditorController {
           key: const Key('video-stream-url'),
           controller: stream,
           textDirection: TextDirection.ltr,
-          decoration: const InputDecoration(
-            labelText: 'RTSP stream URL',
+          decoration: InputDecoration(
+            labelText: context.videoStrings.message('streamUrl'),
             hintText: 'rtsp://192.168.1.64:554/Streaming/Channels/102',
-            helperText:
-                'Leave blank to generate a Hikvision URL from the recorder and channel.',
+            helperText: context.videoStrings.message('streamHelp'),
           ),
-          validator: (_) => current.validate(),
+          validator: (_) => context.videoStrings.nullable(current.validate()),
           onChanged: (_) => notifyListeners(),
         ),
         const SizedBox(height: 12),
@@ -151,33 +148,30 @@ class VideoEditorController extends PluginEditorController {
           key: const Key('video-recorder-url'),
           controller: recorder,
           textDirection: TextDirection.ltr,
-          decoration: const InputDecoration(
-            labelText: 'Hikvision recorder address',
+          decoration: InputDecoration(
+            labelText: context.videoStrings.message('recorderAddress'),
             hintText: 'http://192.168.1.64',
           ),
-          validator: (_) => current.validate(),
+          validator: (_) => context.videoStrings.nullable(current.validate()),
         ),
         const SizedBox(height: 12),
         TextFormField(
           controller: channel,
           keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Camera channel',
-            helperText:
-                'Use the DVR channel number (analog and IP channels may differ).',
+          decoration: InputDecoration(
+            labelText: context.videoStrings.message('cameraChannel'),
+            helperText: context.videoStrings.message('channelHelp'),
           ),
           validator: (_) =>
               (int.tryParse(channel.text) ?? 0) < 1 ||
                   (int.tryParse(channel.text) ?? 0) > 1024
-              ? 'Enter a channel from 1 to 1024.'
+              ? context.videoStrings.message('enterChannel')
               : null,
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Use substream for live video'),
-          subtitle: const Text(
-            'A smaller stream saves bandwidth. Saved recordings use the main stream.',
-          ),
+          title: Text(context.videoStrings.message('substream')),
+          subtitle: Text(context.videoStrings.message('substreamHelp')),
           value: substream,
           onChanged: stream.text.trim().isEmpty
               ? (v) => changed(() => substream = v)
@@ -186,7 +180,9 @@ class VideoEditorController extends PluginEditorController {
         TextFormField(
           controller: username,
           autofillHints: const [AutofillHints.username],
-          decoration: const InputDecoration(labelText: 'Video username'),
+          decoration: InputDecoration(
+            labelText: context.videoStrings.message('username'),
+          ),
           onChanged: (_) => credentialsEdited = true,
         ),
         const SizedBox(height: 12),
@@ -195,41 +191,39 @@ class VideoEditorController extends PluginEditorController {
           obscureText: true,
           enableSuggestions: false,
           autocorrect: false,
-          decoration: const InputDecoration(
-            labelText: 'Video password',
-            helperText:
-                'Stored securely on this device; excluded from dashboard exports.',
+          decoration: InputDecoration(
+            labelText: context.videoStrings.message('password'),
+            helperText: context.videoStrings.message('passwordHelp'),
           ),
           onChanged: (_) => credentialsEdited = true,
         ),
-        if (credentialError != null) Text(credentialError!),
+        if (credentialError != null)
+          Text(context.videoStrings.text(credentialError!)),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Enable Hikvision recordings'),
-          subtitle: const Text(
-            'Browse saved video, with human/vehicle filters when supported by the recorder.',
-          ),
+          title: Text(context.videoStrings.message('enableRecordings')),
+          subtitle: Text(context.videoStrings.message('recordingsHelp')),
           value: recordings,
           onChanged: (v) => changed(() => recordings = v),
         ),
         if (recordings) ...[
           DropdownButtonFormField<RecorderPlaybackTime>(
             initialValue: playbackTime,
-            decoration: const InputDecoration(
-              labelText: 'Recording playback time',
+            decoration: InputDecoration(
+              labelText: context.videoStrings.message('playbackTime'),
             ),
-            items: const [
+            items: [
               DropdownMenuItem(
                 value: RecorderPlaybackTime.automatic,
-                child: Text('Automatic'),
+                child: Text(context.videoStrings.message('automatic')),
               ),
               DropdownMenuItem(
                 value: RecorderPlaybackTime.local,
-                child: Text('Recorder local time'),
+                child: Text(context.videoStrings.message('recorderLocal')),
               ),
               DropdownMenuItem(
                 value: RecorderPlaybackTime.utc,
-                child: Text('UTC'),
+                child: Text(context.videoStrings.message('utc')),
               ),
             ],
             onChanged: (value) => changed(
@@ -240,27 +234,24 @@ class VideoEditorController extends PluginEditorController {
           TextFormField(
             controller: playbackOffset,
             textDirection: TextDirection.ltr,
-            decoration: const InputDecoration(
-              labelText: 'Recorder UTC offset (optional)',
+            decoration: InputDecoration(
+              labelText: context.videoStrings.message('utcOffset'),
               hintText: '+03:00',
-              helperText:
-                  'Leave blank to read the recorder timezone. Use +03:00 for UTC+3.',
+              helperText: context.videoStrings.message('utcOffsetHelp'),
             ),
-            validator: (_) => current.validate(),
+            validator: (_) => context.videoStrings.nullable(current.validate()),
           ),
         ],
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Mute initially'),
+          title: Text(context.videoStrings.message('muteInitially')),
           value: muted,
           onChanged: (v) => changed(() => muted = v),
         ),
         SwitchListTile(
           contentPadding: EdgeInsets.zero,
-          title: const Text('Use this home’s network route'),
-          subtitle: const Text(
-            'Includes embedded WireGuard when configured for the home.',
-          ),
+          title: Text(context.videoStrings.message('homeRoute')),
+          subtitle: Text(context.videoStrings.message('homeRouteHelp')),
           value: useHomeNetwork,
           onChanged: (v) => changed(() => useHomeNetwork = v),
         ),

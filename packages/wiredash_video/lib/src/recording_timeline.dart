@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'hikvision_client.dart';
 import 'recording_event.dart';
 import 'recording_previews.dart';
+import 'video_strings.dart';
 
 /// Lazy timeline entries; only entries built by the viewport request previews.
 class RecordingTimeline extends StatefulWidget {
@@ -52,11 +53,7 @@ class _RecordingTimelineState extends State<RecordingTimeline> {
           ? colors.tertiary
           : colors.primary;
       final elapsed = record.end.difference(record.start);
-      final duration = elapsed.inHours > 0
-          ? '${elapsed.inHours}h ${elapsed.inMinutes % 60}m'
-          : elapsed.inMinutes > 0
-          ? '${elapsed.inMinutes}m ${elapsed.inSeconds % 60}s'
-          : '${elapsed.inSeconds}s';
+      final duration = context.videoStrings.duration(elapsed);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -112,7 +109,7 @@ class _RecordingTimelineState extends State<RecordingTimeline> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 12, 16),
+                    padding: const EdgeInsetsDirectional.fromSTEB(8, 0, 12, 16),
                     child: Card(
                       margin: EdgeInsets.zero,
                       clipBehavior: Clip.antiAlias,
@@ -151,7 +148,11 @@ class _RecordingTimelineState extends State<RecordingTimeline> {
                                     children: [
                                       for (final label
                                           in events.isEmpty
-                                              ? ['Recording']
+                                              ? [
+                                                  context.videoStrings.message(
+                                                    'recording',
+                                                  ),
+                                                ]
                                               : events.map((e) => e.label))
                                         Container(
                                           padding: const EdgeInsets.symmetric(
@@ -167,7 +168,7 @@ class _RecordingTimelineState extends State<RecordingTimeline> {
                                             ),
                                           ),
                                           child: Text(
-                                            label,
+                                            context.videoStrings.text(label),
                                             style: Theme.of(
                                               context,
                                             ).textTheme.labelMedium,
@@ -185,7 +186,15 @@ class _RecordingTimelineState extends State<RecordingTimeline> {
                                       const SizedBox(width: 6),
                                       Expanded(
                                         child: Text(
-                                          '$duration · Until ${m.formatTimeOfDay(TimeOfDay.fromDateTime(record.end.toLocal()))}',
+                                          context.videoStrings
+                                              .message('until', {
+                                                'duration': duration,
+                                                'time': m.formatTimeOfDay(
+                                                  TimeOfDay.fromDateTime(
+                                                    record.end.toLocal(),
+                                                  ),
+                                                ),
+                                              }),
                                           style: Theme.of(
                                             context,
                                           ).textTheme.bodySmall,
@@ -297,8 +306,8 @@ class _RecordingPreviewState extends State<RecordingPreview> {
                   fit: BoxFit.contain,
                   gaplessPlayback: true,
                   semanticLabel: preview!.eventPhoto
-                      ? 'Recorder event photo'
-                      : 'Recorded video preview',
+                      ? context.videoStrings.message('eventPhoto')
+                      : context.videoStrings.message('videoPreview'),
                   errorBuilder: (_, _, _) =>
                       const Center(child: Icon(Icons.broken_image_outlined)),
                 ),
@@ -314,10 +323,10 @@ class _RecordingPreviewState extends State<RecordingPreview> {
                         child: Text(
                           preview!.eventPhoto
                               ? '${preview!.events.contains(RecordingEvent.human)
-                                    ? 'Person capture'
+                                    ? context.videoStrings.message('personCapture')
                                     : preview!.events.contains(RecordingEvent.vehicle)
-                                    ? 'Vehicle capture'
-                                    : 'Recorder event photo'} · ${_clock(preview!.time)}'
+                                    ? context.videoStrings.message('vehicleCapture')
+                                    : context.videoStrings.message('eventPhoto')} · ${_clock(preview!.time)}'
                               : '',
                           style: const TextStyle(
                             color: Colors.white,
@@ -339,7 +348,7 @@ class _RecordingPreviewState extends State<RecordingPreview> {
                   : TextButton.icon(
                       onPressed: () => setState(load),
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Load preview'),
+                      label: Text(context.videoStrings.message('loadPreview')),
                     ),
             ),
     );

@@ -220,3 +220,16 @@ Sources: [Hikvision live/recording integration guide](https://www.hikvisioneurop
 [target-search request/response example](https://github.com/Laudrice/Intelligent_Video_Monitoring_System/blob/aa96af74fe2d0daabc268641b9cca0d76953328b/backend/server.js#L669),
 [media_kit](https://github.com/media-kit/media-kit), and
 [Android native library source/builds and notices](https://github.com/media-kit/libmpv-android-video-build).
+
+## Translations
+
+The video editor, player controls, recording/event filters, timeline labels,
+preview descriptions, cache status and recorder errors follow the selected app
+language. Native Android Auto camera explanations use Android's app locale. All
+13 WireDash languages are included, with right-to-left layout support for Hebrew.
+User camera names, URLs and recorder error codes are preserved.
+
+Translation sources are `l10n/video_<language>.arb`. After editing a catalog, run
+`python3 tool/generate_video_l10n.py` from the repository root; CI checks catalog
+completeness, interpolation placeholders and the generated Dart file. The plugin
+reads the host's locale without depending on the WireDash application package.

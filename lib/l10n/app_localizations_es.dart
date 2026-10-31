@@ -9,6 +9,13 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Complemento';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Este complemento de panel no está disponible. Se conserva su configuración.';
+
+  @override
   String get coverWaitForFeedback => 'Esperar respuesta MQTT';
 
   @override

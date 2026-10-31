@@ -9,6 +9,13 @@ class AppLocalizationsNb extends AppLocalizations {
   AppLocalizationsNb([String locale = 'nb']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Tillegg';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Dette paneltillegget er utilgjengelig. Innstillingene beholdes.';
+
+  @override
   String get coverWaitForFeedback => 'Vent på MQTT-tilbakemelding';
 
   @override

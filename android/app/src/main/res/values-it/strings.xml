@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="car_video_phone">Video sul telefono</string>
+    <string name="car_video_limit">Questa interfaccia IoT di Android Auto non può mostrare video o accettare gesti di zoom e trascinamento. Apri questa telecamera in WireDash sul telefono mentre sei parcheggiato per vedere video in diretta, registrazioni ed eventi.</string>
+</resources>

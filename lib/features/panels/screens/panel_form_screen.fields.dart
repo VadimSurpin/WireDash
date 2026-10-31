@@ -408,7 +408,7 @@ extension _PanelFormFields on _State {
       case PanelType.plugin:
         return [
           _pluginEditor?.buildFields(context) ??
-              const Text('Plugin unavailable. Settings will be preserved.'),
+              Text(l10n.panelPluginUnavailable),
         ];
       case PanelType.toggle:
         return [

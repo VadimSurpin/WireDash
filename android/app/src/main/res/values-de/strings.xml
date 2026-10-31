@@ -15,4 +15,6 @@
     <string name="widget_group_sample_off">Aus</string>
     <string name="widget_group_sample_3">Rollladen</string>
     <string name="widget_group_sample_scene">Nacht</string>
+    <string name="car_video_phone">Video auf dem Telefon</string>
+    <string name="car_video_limit">Diese IoT-Oberfläche von Android Auto kann keine Videos anzeigen und keine Zoom- oder Wischgesten verarbeiten. Im geparkten Fahrzeug die Kamera in WireDash auf dem Telefon öffnen, um Livevideo, Aufnahmen und Ereignisse anzusehen.</string>
 </resources>

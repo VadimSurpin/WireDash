@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:wiredash_plugin_api/wiredash_plugin_api.dart';
 import 'video_config.dart';
 import 'video_session.dart';
+import 'video_strings.dart';
 import 'recording_browser.dart';
 import 'hikvision_client.dart';
 import 'recorder_clock.dart';
@@ -370,7 +371,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
             Center(
               child: IconButton.filled(
                 iconSize: 42,
-                tooltip: 'Play live video',
+                tooltip: context.videoStrings.message('playLive'),
                 onPressed: start,
                 icon: const Icon(Icons.play_arrow),
               ),
@@ -382,7 +383,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  message,
+                  context.videoStrings.text(message),
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.white),
                 ),
@@ -421,7 +422,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
             current != null &&
             current.duration > Duration.zero)
           Slider(
-            label: 'Recording position',
+            label: context.videoStrings.message('recordingPosition'),
             value: (scrubbing ?? current.position.inMilliseconds.toDouble())
                 .clamp(0, current.duration.inMilliseconds.toDouble()),
             max: current.duration.inMilliseconds.toDouble(),
@@ -444,35 +445,35 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
           children: [
             if (playbackStart != null) ...[
               IconButton(
-                tooltip: 'Rewind 1 minute',
+                tooltip: context.videoStrings.message('rewindMinute'),
                 icon: const Icon(Icons.fast_rewind),
                 onPressed: current == null || opening
                     ? null
                     : () => unawaited(skip(const Duration(minutes: -1))),
               ),
               IconButton(
-                tooltip: 'Rewind 10 seconds',
+                tooltip: context.videoStrings.message('rewindSeconds'),
                 icon: const Icon(Icons.replay_10),
                 onPressed: current == null || opening
                     ? null
                     : () => unawaited(skip(const Duration(seconds: -10))),
               ),
               IconButton(
-                tooltip: 'Forward 10 seconds',
+                tooltip: context.videoStrings.message('forwardSeconds'),
                 icon: const Icon(Icons.forward_10),
                 onPressed: current == null || opening
                     ? null
                     : () => unawaited(skip(const Duration(seconds: 10))),
               ),
               IconButton(
-                tooltip: 'Forward 1 minute',
+                tooltip: context.videoStrings.message('forwardMinute'),
                 icon: const Icon(Icons.fast_forward),
                 onPressed: current == null || opening
                     ? null
                     : () => unawaited(skip(const Duration(minutes: 1))),
               ),
               IconButton(
-                tooltip: 'Return to selected event',
+                tooltip: context.videoStrings.message('returnEvent'),
                 icon: const Icon(Icons.my_location),
                 onPressed: current == null || opening
                     ? null
@@ -484,21 +485,25 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
             ],
             if (current != null)
               IconButton(
-                tooltip: current.playing ? 'Pause video' : 'Resume video',
+                tooltip: current.playing
+                    ? context.videoStrings.message('pause')
+                    : context.videoStrings.message('resume'),
                 onPressed: () => unawaited(current.playOrPause()),
                 icon: Icon(current.playing ? Icons.pause : Icons.play_arrow),
               ),
             IconButton(
               tooltip: current == null && !opening
-                  ? 'Play video'
-                  : 'Stop video',
+                  ? context.videoStrings.message('play')
+                  : context.videoStrings.message('stop'),
               onPressed: current == null && !opening ? start : stop,
               icon: Icon(
                 current == null && !opening ? Icons.play_arrow : Icons.stop,
               ),
             ),
             IconButton(
-              tooltip: muted ? 'Unmute' : 'Mute',
+              tooltip: muted
+                  ? context.videoStrings.message('unmute')
+                  : context.videoStrings.message('mute'),
               onPressed: () {
                 setState(() => muted = !muted);
                 unawaited(current?.setMuted(muted));
@@ -506,7 +511,7 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
               icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
             ),
             IconButton(
-              tooltip: 'Reset zoom',
+              tooltip: context.videoStrings.message('resetZoom'),
               onPressed: current == null
                   ? null
                   : () {
@@ -516,19 +521,19 @@ class _VideoPaneState extends State<VideoPane> with WidgetsBindingObserver {
             ),
             if (!widget.fullscreen)
               IconButton(
-                tooltip: 'Fullscreen video',
+                tooltip: context.videoStrings.message('fullscreen'),
                 onPressed: expand,
                 icon: const Icon(Icons.fullscreen),
               ),
             if (config.recordings && widget.showRecordings)
               IconButton(
-                tooltip: 'Saved recordings',
+                tooltip: context.videoStrings.message('savedRecordings'),
                 onPressed: () => recordings(),
                 icon: const Icon(Icons.history),
               ),
             if (config.recordings && widget.showRecordings)
               IconButton(
-                tooltip: 'Events',
+                tooltip: context.videoStrings.message('events'),
                 onPressed: () => recordings(events: true),
                 icon: const Icon(Icons.manage_search),
               ),

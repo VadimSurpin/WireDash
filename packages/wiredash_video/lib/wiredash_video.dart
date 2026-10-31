@@ -12,3 +12,4 @@ export 'src/recording_picture.dart';
 export 'src/recording_photos.dart';
 export 'src/recording_search.dart';
 export 'src/recorder_clock.dart';
+export 'src/video_strings.dart';

@@ -6,6 +6,7 @@ import '../core/storage/secure_storage.dart';
 import '../data/repositories/connection_repo.dart';
 import '../data/database/tables/connections.dart';
 import 'plugin_network.dart';
+import '../core/l10n/l10n_ext.dart';
 import 'plugin_secrets.dart';
 
 final panelPluginsProvider = Provider<Map<String, WireDashPanelPlugin>>(
@@ -66,9 +67,7 @@ class MissingPanelPlugin extends StatelessWidget {
         children: [
           const Icon(Icons.extension_off_outlined),
           Text(title),
-          const Text(
-            'This panel plugin is unavailable. Its settings are preserved.',
-          ),
+          Text(context.l10n.panelPluginUnavailable),
         ],
       ),
     ),

@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "Plugin",
+  "panelPluginUnavailable": "Deze paneelplugin is niet beschikbaar. De instellingen blijven bewaard.",
   "coverWaitForFeedback": "Wachten op MQTT-status",
   "coverWaitForFeedbackHelper": "Indien uitgeschakeld, toon 1 seconde een laadindicator zonder de apparaatstatus te tonen.",
   "coverButtonTitle": "Knoptekst",

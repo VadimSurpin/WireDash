@@ -9,6 +9,13 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Plugin';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Este plugin do painel está indisponível. As definições foram preservadas.';
+
+  @override
   String get coverWaitForFeedback => 'Aguardar resposta MQTT';
 
   @override

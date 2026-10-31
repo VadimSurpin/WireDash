@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "Extension",
+  "panelPluginUnavailable": "Le plugin de cette tuile est indisponible. Ses paramètres sont conservés.",
   "coverWaitForFeedback": "Attendre le retour MQTT",
   "coverWaitForFeedbackHelper": "Si désactivé, afficher un indicateur pendant 1 seconde sans afficher l’état de l’appareil.",
   "coverButtonTitle": "Libellé du bouton",

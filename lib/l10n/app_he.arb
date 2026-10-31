@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "תוסף",
+  "panelPluginUnavailable": "תוסף לוח זה אינו זמין. ההגדרות שלו נשמרו.",
   "coverWaitForFeedback": "המתנה לעדכון מצב מ־MQTT",
   "coverWaitForFeedbackHelper": "כשהאפשרות כבויה, יוצג מחוון למשך שנייה אחת ללא הצגת מצב המכשיר.",
   "coverButtonTitle": "כותרת הכפתור",

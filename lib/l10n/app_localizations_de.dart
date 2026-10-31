@@ -9,6 +9,13 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Plugin';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Das Plugin dieser Kachel ist nicht verfügbar. Die Einstellungen bleiben erhalten.';
+
+  @override
   String get coverWaitForFeedback => 'Auf MQTT-Rückmeldung warten';
 
   @override

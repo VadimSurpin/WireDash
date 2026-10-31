@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "Wtyczka",
+  "panelPluginUnavailable": "Ta wtyczka panelu jest niedostępna. Jej ustawienia zostały zachowane.",
   "coverWaitForFeedback": "Czekaj na stan MQTT",
   "coverWaitForFeedbackHelper": "Po wyłączeniu pokazuj wskaźnik przez 1 sekundę bez wyświetlania stanu urządzenia.",
   "coverButtonTitle": "Etykieta przycisku",

@@ -120,6 +120,18 @@ abstract class AppLocalizations {
     Locale('sv'),
   ];
 
+  /// No description provided for @panelTypePlugin.
+  ///
+  /// In en, this message translates to:
+  /// **'Plugin'**
+  String get panelTypePlugin;
+
+  /// No description provided for @panelPluginUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This panel plugin is unavailable. Its settings are preserved.'**
+  String get panelPluginUnavailable;
+
   /// No description provided for @coverWaitForFeedback.
   ///
   /// In en, this message translates to:

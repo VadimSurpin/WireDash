@@ -9,6 +9,13 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Плагин';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Плагин этой панели недоступен. Его настройки сохранены.';
+
+  @override
   String get coverWaitForFeedback => 'Ждать состояние из MQTT';
 
   @override

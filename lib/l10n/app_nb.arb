@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "Tillegg",
+  "panelPluginUnavailable": "Dette paneltillegget er utilgjengelig. Innstillingene beholdes.",
   "coverWaitForFeedback": "Vent på MQTT-tilbakemelding",
   "coverWaitForFeedbackHelper": "Når av, vis en lasteindikator i 1 sekund uten å vise enhetens tilstand.",
   "coverButtonTitle": "Knappetekst",

@@ -9,6 +9,13 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Plugin';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Deze paneelplugin is niet beschikbaar. De instellingen blijven bewaard.';
+
+  @override
   String get coverWaitForFeedback => 'Wachten op MQTT-status';
 
   @override

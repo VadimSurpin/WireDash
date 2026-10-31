@@ -15,4 +15,6 @@
     <string name="widget_group_sample_off">Desligado</string>
     <string name="widget_group_sample_3">Persianas</string>
     <string name="widget_group_sample_scene">Noite</string>
+    <string name="car_video_phone">Vídeo no telefone</string>
+    <string name="car_video_limit">Esta interface IoT do Android Auto não pode mostrar vídeo nem aceitar gestos de zoom e arrasto. Abra esta câmara no WireDash no telefone enquanto estiver estacionado para ver vídeo em direto, gravações e eventos.</string>
 </resources>

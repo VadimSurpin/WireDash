@@ -15,4 +15,6 @@
     <string name="widget_group_sample_off">Av</string>
     <string name="widget_group_sample_3">Rullgardiner</string>
     <string name="widget_group_sample_scene">Natt</string>
+    <string name="car_video_phone">Video på telefon</string>
+    <string name="car_video_limit">Detta Android Auto IoT-gränssnitt kan inte visa video eller hantera nyp- och draggester. Öppna kameran i WireDash på telefonen medan du står parkerad för att se direktvideo, inspelningar och händelser.</string>
 </resources>

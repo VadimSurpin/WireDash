@@ -11,6 +11,7 @@ import 'recording_cache.dart';
 import 'recording_photos.dart';
 import 'recording_search.dart';
 import 'recorder_clock.dart';
+import 'video_strings.dart';
 
 class RecordingBrowser extends StatefulWidget {
   const RecordingBrowser({
@@ -458,11 +459,11 @@ class _RecordingBrowserState extends State<RecordingBrowser>
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: Text(
-        '${widget.context.title} · ${widget.events ? 'Events' : 'Recordings'}',
+        '${widget.context.title} · ${widget.events ? context.videoStrings.message('events') : context.videoStrings.message('recordings')}',
       ),
       actions: [
         IconButton(
-          tooltip: 'Refresh recordings',
+          tooltip: context.videoStrings.message('refresh'),
           onPressed: loading
               ? null
               : () {
@@ -486,7 +487,9 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                     spacing: 8,
                     children: [
                       FilterChip(
-                        label: const Text('All recordings'),
+                        label: Text(
+                          context.videoStrings.message('allRecordings'),
+                        ),
                         selected: filters.isEmpty,
                         onSelected: !ready
                             ? null
@@ -497,7 +500,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                       ),
                       for (final kind in RecordingFilter.values)
                         FilterChip(
-                          label: Text(kind.label),
+                          label: Text(context.videoStrings.text(kind.label)),
                           selected: filters.contains(kind),
                           onSelected: !ready || !kind.supported(capabilities)
                               ? null
@@ -516,10 +519,10 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                   ),
                 ),
                 if (capabilities != null && capabilities!.targets.length == 1)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
-                      'This recorder does not expose human/vehicle recording search. Motion and other generic events remain available.',
+                      context.videoStrings.message('targetUnavailable'),
                     ),
                   ),
                 TextButton.icon(
@@ -532,14 +535,16 @@ class _RecordingBrowserState extends State<RecordingBrowser>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
-                      loading ? 'Cached results · updating…' : 'Cached results',
+                      loading
+                          ? context.videoStrings.message('cachedUpdating')
+                          : context.videoStrings.message('cached'),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 if (error != null)
                   Padding(
                     padding: const EdgeInsets.all(12),
-                    child: Text(error!),
+                    child: Text(context.videoStrings.text(error!)),
                   ),
               ],
             ),
@@ -550,11 +555,11 @@ class _RecordingBrowserState extends State<RecordingBrowser>
               child: Center(
                 child: Text(
                   loading
-                      ? 'Searching recordings…'
+                      ? context.videoStrings.message('searching')
                       : error == null
                       ? (more
-                            ? 'No matches yet. Load more recordings to keep searching.'
-                            : 'No recordings in this range.')
+                            ? context.videoStrings.message('noMatchesYet')
+                            : context.videoStrings.message('noRecordings'))
                       : '',
                 ),
               ),
@@ -570,7 +575,7 @@ class _RecordingBrowserState extends State<RecordingBrowser>
             SliverToBoxAdapter(
               child: TextButton(
                 onPressed: loading ? null : () => search(reset: false),
-                child: const Text('Load more recordings'),
+                child: Text(context.videoStrings.message('loadMore')),
               ),
             ),
         ],

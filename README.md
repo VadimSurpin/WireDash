@@ -79,7 +79,8 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
   No reports are submitted automatically.
 - **Localized UI** — 13 languages: English, Czech, Dutch, French, German, Hebrew,
   Italian, Norwegian Bokmål, Polish, Portuguese, Russian, Spanish and Swedish,
-  including RTL layouts.
+  including RTL layouts. The video editor, player, recording/event timelines and
+  Android Auto camera explanations use these translations too.
 
 <p align="center">
   <img src="docs/screenshots/wirenboard-panel.png" width="412" alt="Wiren Board whole-device panel with a labelled relay, temperature and humidity">

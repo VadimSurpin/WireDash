@@ -9,6 +9,13 @@ class AppLocalizationsCs extends AppLocalizations {
   AppLocalizationsCs([String locale = 'cs']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Doplněk';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Tento doplněk panelu není dostupný. Jeho nastavení jsou zachována.';
+
+  @override
   String get coverWaitForFeedback => 'Čekat na stav z MQTT';
 
   @override

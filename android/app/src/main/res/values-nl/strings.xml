@@ -15,4 +15,6 @@
     <string name="widget_group_sample_off">Uit</string>
     <string name="widget_group_sample_3">Rolluiken</string>
     <string name="widget_group_sample_scene">Nacht</string>
+    <string name="car_video_phone">Video op telefoon</string>
+    <string name="car_video_limit">Deze Android Auto IoT-interface kan geen video weergeven of knijp- en sleepgebaren verwerken. Open deze camera in WireDash op uw telefoon terwijl u geparkeerd staat om livevideo, opnamen en gebeurtenissen te bekijken.</string>
 </resources>

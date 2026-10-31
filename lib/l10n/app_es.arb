@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "Complemento",
+  "panelPluginUnavailable": "Este complemento de panel no está disponible. Se conserva su configuración.",
   "coverWaitForFeedback": "Esperar respuesta MQTT",
   "coverWaitForFeedbackHelper": "Si se desactiva, se muestra un indicador durante 1 segundo sin mostrar el estado del dispositivo.",
   "coverButtonTitle": "Título del botón",

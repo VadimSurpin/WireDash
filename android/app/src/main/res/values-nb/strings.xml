@@ -15,4 +15,6 @@
     <string name="widget_group_sample_off">Av</string>
     <string name="widget_group_sample_3">Persienner</string>
     <string name="widget_group_sample_scene">Natt</string>
+    <string name="car_video_phone">Video på telefon</string>
+    <string name="car_video_limit">Dette Android Auto IoT-grensesnittet kan ikke vise video eller håndtere klype- og dra-bevegelser. Åpne dette kameraet i WireDash på telefonen mens du står parkert for å se direktevideo, opptak og hendelser.</string>
 </resources>

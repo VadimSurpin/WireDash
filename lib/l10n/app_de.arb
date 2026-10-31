@@ -1,4 +1,6 @@
 {
+  "panelTypePlugin": "Plugin",
+  "panelPluginUnavailable": "Das Plugin dieser Kachel ist nicht verfügbar. Die Einstellungen bleiben erhalten.",
   "coverWaitForFeedback": "Auf MQTT-Rückmeldung warten",
   "coverWaitForFeedbackHelper": "Wenn deaktiviert, wird 1 Sekunde lang ein Ladesymbol ohne Gerätestatus angezeigt.",
   "coverButtonTitle": "Beschriftung",

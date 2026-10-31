@@ -15,4 +15,6 @@
     <string name="widget_group_sample_off">כבוי</string>
     <string name="widget_group_sample_3">תריסים</string>
     <string name="widget_group_sample_scene">לילה</string>
+    <string name="car_video_phone">וידאו בטלפון</string>
+    <string name="car_video_limit">ממשק IoT זה של Android Auto אינו יכול להציג וידאו או לקבל מחוות צביטה וגרירה. יש לפתוח מצלמה זו ב-WireDash בטלפון בזמן חניה כדי לצפות בווידאו חי, בהקלטות ובאירועים.</string>
 </resources>

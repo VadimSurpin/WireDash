@@ -9,6 +9,13 @@ class AppLocalizationsHe extends AppLocalizations {
   AppLocalizationsHe([String locale = 'he']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'תוסף';
+
+  @override
+  String get panelPluginUnavailable =>
+      'תוסף לוח זה אינו זמין. ההגדרות שלו נשמרו.';
+
+  @override
   String get coverWaitForFeedback => 'המתנה לעדכון מצב מ־MQTT';
 
   @override

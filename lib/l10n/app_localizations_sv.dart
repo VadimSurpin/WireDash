@@ -9,6 +9,13 @@ class AppLocalizationsSv extends AppLocalizations {
   AppLocalizationsSv([String locale = 'sv']) : super(locale);
 
   @override
+  String get panelTypePlugin => 'Tillägg';
+
+  @override
+  String get panelPluginUnavailable =>
+      'Detta paneltillägg är inte tillgängligt. Inställningarna bevaras.';
+
+  @override
   String get coverWaitForFeedback => 'Vänta på MQTT-status';
 
   @override

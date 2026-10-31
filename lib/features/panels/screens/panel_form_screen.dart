@@ -944,7 +944,8 @@ class _State extends ConsumerState<PanelFormScreen> {
       PanelType.device => l10n.panelTypeDevice,
       PanelType.reading => l10n.panelTypeReading,
       PanelType.plugin =>
-        ref.watch(panelPluginsProvider)[_pluginId]?.title(context) ?? 'Plugin',
+        ref.watch(panelPluginsProvider)[_pluginId]?.title(context) ??
+            l10n.panelTypePlugin,
     };
 
     return Scaffold(

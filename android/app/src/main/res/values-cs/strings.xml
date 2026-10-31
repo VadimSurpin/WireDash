@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="car_video_phone">Video v telefonu</string>
+    <string name="car_video_limit">Toto rozhraní IoT pro Android Auto nemůže zobrazovat video ani přijímat gesta přiblížení a posouvání. Po zaparkování otevřete tuto kameru ve WireDash v telefonu a sledujte živé video, záznamy a události.</string>
+</resources>
