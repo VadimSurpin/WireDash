@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:path_provider/path_provider.dart';
 
 typedef VideoSessionFactory = VideoSession Function();
 
@@ -164,18 +166,35 @@ class NativeVideoSession extends VideoSession {
   Future<void> seek(Duration position) => player.seek(position);
   @override
   Future<Uint8List?> captureFrame() async {
-    // Android can report video parameters just before the first decoded
-    // picture is ready for screenshot-raw. Allow that short startup gap.
-    for (var attempt = 0; attempt < 20 && !_closed; attempt++) {
-      try {
-        final frame = await player.screenshot();
-        if (frame != null && frame.isNotEmpty) return frame;
-      } catch (_) {
-        if (_closed) return null;
+    final platform = player.platform;
+    if (_closed || platform is! NativePlayer) return null;
+    final cache = await getTemporaryDirectory();
+    final directory = await cache.createTemp('wiredash-preview-');
+    try {
+      final file = File('${directory.path}/frame.jpg');
+      // The Android screenshot-raw wrapper can return no node data. Use mpv's
+      // asynchronous screenshot command and software color conversion instead.
+      await platform.setProperty('screenshot-sw', 'yes');
+      await platform.setProperty('screenshot-jpeg-quality', '75');
+      for (var attempt = 0; attempt < 20 && !_closed; attempt++) {
+        await platform.command(['screenshot-to-file', file.path, 'video']);
+        if (await file.exists()) {
+          final length = await file.length();
+          if (length > 0 && length <= 8 * 1024 * 1024) {
+            final bytes = await file.readAsBytes();
+            return bytes;
+          }
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 100));
       }
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+      return null;
+    } finally {
+      try {
+        await directory.delete(recursive: true);
+      } on FileSystemException {
+        /* Cache may already be gone. */
+      }
     }
-    return null;
   }
 
   @override

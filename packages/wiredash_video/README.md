@@ -48,7 +48,8 @@ position when returning.
 Preview frames are loaded lazily, one muted RTSP connection at a time, using the
 same credentials and home route as playback. They use a short software decode
 at 320-pixel output width, not the camera's current live picture. Frames are
-cached in memory with limits of 48 entries and 8 MiB; scrolling away cancels
+captured through an app-private temporary JPEG that is removed after reading,
+then cached in memory with limits of 48 entries and 8 MiB; scrolling away cancels
 unneeded work. Preview connections close before clip playback and while the app
 is in the background. Failed captures show Load preview and never hide the clip.
 

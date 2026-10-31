@@ -15,3 +15,4 @@ dependencies:
   crypto: ^3.0.7
   xml: ^6.6.1
   uuid: ^4.5.1
+  path_provider: ^2.1.4
