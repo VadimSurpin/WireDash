@@ -30,28 +30,34 @@ cover uses 0/25/50/75/100% buttons in Auto. Writable Zigbee cover position featu
 use their exact endpoint property. MQTT feedback highlights the reported
 position and confirms a pending position only when its target is reported.
 WB relay pairs expose direction commands, without inventing a position estimate.
-Command-only covers send the saved command, show a busy indicator for one second,
-and return to their initial appearance without a state subscription. State-aware controls
+Command-only covers send the saved command and retain their appearance without
+a state subscription. Their duplicate-command guard lasts one second. State-aware controls
 use current-session MQTT feedback; relay activity is not a gate-position
 estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
-`/on`, and are never retained. On the grouped scrolling dashboard, sending
-shows a static busy-ring icon in the existing image tile.
-The tile retains the same click delegate while busy and across MQTT state changes,
-so it remains focusable; command guards reject repeated taps on a busy action.
-Switch delegates read the latest state on every tap, even if the host still has
-an older tile. Unchanged tiles and groups retain their objects and delegates,
-and command/MQTT updates in the same main-loop turn are coalesced. The other
-cover directions (including Stop) remain usable while one action is busy.
+`/on`, and are never retained. On the grouped scrolling dashboard, a command
+shows a brief native message with the control name and localized sending text.
+Starting/finishing a command does not change the grid's icons, titles, click
+delegates, lazy item lists or sections, and does not invalidate the template.
+This avoids a refresh solely for progress feedback. Buttons continue to display
+actual device state; pending commands still reject duplicate taps internally.
+Command-only guards expire after one second independently for each control.
+Other cover directions (including Stop) remain available during a direction command.
+Switch delegates read the latest state even when the host still holds an older tile.
+Fresh MQTT state, configuration and connectivity changes still update the grid;
+updates in the same main-loop turn are coalesced.
 
 The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.
 The host fetches more items while scrolling; WireDash does not insert Next or
 Previous items or truncate the grid at the older template's item limit.
-WireDash requests scroll preservation across state/busy updates. Android Auto 17.9 was reported to reset
-to the top with the native loading tiles in build 87. Build 88 keeps the image,
-clickability and click delegate stable; scroll behavior still needs verification
-on that host. Pending indicators on different controls are independent. Android Auto still determines grid geometry, button
-sizes, and scrolling affordances; the phone's Flutter layout is not mirrored.
+WireDash requests scroll preservation across real state updates. Android Auto
+17.9 was reported to jump to the top both with native loading tiles and with a
+focusable static busy icon. Build 101 uses native sending messages instead of
+changing grid items for transient progress. Regression tests require **zero grid
+template submissions** from command start, pending-state handoff, and one-second
+command completion. The affected car host still needs a device check; Robolectric
+verifies the client/IPC behavior, not Android Auto's renderer. Android Auto controls
+grid geometry, button sizes and scrolling affordances.
 
 API 6/7 hosts retain the previous list/detail screens and pagination to respect
 their hard content limits. Update Android Auto for the grouped scrolling UI.
@@ -113,8 +119,9 @@ For development, use Google's [Desktop Head Unit (DHU)](https://developer.androi
 6. Check a scalar WB switch and a gate: command topics/payloads must match the
    phone, button titles/icons must match, and repeated gate taps must publish
    another `1`. Test a command-only cover without state messages.
-   Tap two different controls and verify each spinner clears independently
-   after one second, without jumping back to the top of the dashboard.
+   Tap two different controls and verify sending messages appear without a
+   grid redraw or jump to the top. Each control becomes repeatable after its
+   independent one-second command guard expires.
 7. Hide/return to the car app and disconnect/reconnect its network route.
    Reconnecting must appear, state must recover, and no command may be replayed.
 
@@ -147,8 +154,9 @@ section ordering, orphaned tiles, group renaming and configured button appearanc
 
 `cd android && ./gradlew :app:testFossDebugUnitTest` uses Robolectric and the
 Car App testing library to build real host templates, request all items beyond
-the old list/grid limits, check direct button commands and independent busy
-timing, require the scroll preservation strategy and stable click delegates,
+the old list/grid limits, check direct button commands, independent command guards and sending messages,
+require zero progress-only template submissions, the scroll preservation
+strategy and stable click delegates,
 and verify that stale callbacks/pending indicators do not survive hiding and
 resuming the car screen. The older-host pagination
 fallback is also tested. CI runs these tests before uploading the APK.

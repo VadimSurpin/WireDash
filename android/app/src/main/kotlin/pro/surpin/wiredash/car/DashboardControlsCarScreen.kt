@@ -41,9 +41,6 @@ internal class DashboardControlsCarScreen(
     private val sending = mutableMapOf<String, Sending>()
     private val sections = mutableMapOf<String, CachedSection>()
     private val tiles = mutableMapOf<TileKey, CachedTile>()
-    private val busyIcon by lazy {
-        CarIcon.Builder(IconCompat.createWithResource(carContext, R.drawable.car_sending_0)).build()
-    }
     private var previousTemplate: SectionedItemTemplate? = null
     private var presentedTemplate: Template? = null
     private var renderScheduled = false
@@ -117,9 +114,9 @@ internal class DashboardControlsCarScreen(
                         if (control.optString("kind") in setOf("cover", "options")) control.getString("name") else null, activeTiles))
                 }
             }
-            // Compare rendered content rather than raw MQTT snapshots: a
-            // local spinner handed over to backend pending, or an intermediate
-            // position with no matching preset, must not replace a lazy list.
+            // Compare rendered content rather than raw MQTT snapshots:
+            // pending bookkeeping and an intermediate position with no matching
+            // preset must not replace a lazy list.
             // Include action metadata because CarIcon doesn't compare bitmap
             // pixels, and an identical-looking tile may have a new command ID.
             val commands = entries.map { JSONArray().put(it.getString("id"))
@@ -157,11 +154,6 @@ internal class DashboardControlsCarScreen(
         val controlId = control.getString("id")
         val actionId = target.getString("id")
         val switch = control.optString("kind") == "switch"
-        // Ignore cached backend pending data for command-only tiles: their
-        // spinner lasts exactly one second, even if the next poll is late.
-        val pending = sending[controlId]?.action ?: if (control.optBoolean("waitForFeedback"))
-            control.optString("pending").takeUnless { control.isNull("pending") } else null
-        val loading = pending != null && (switch || pending == actionId)
         val connected = control.optString("kind") == "video" || snapshot.optBoolean("connected")
         // A switch keeps one identity across ON/OFF. Its listener reads the
         // latest snapshot instead of retaining the target from an older tile.
@@ -171,10 +163,11 @@ internal class DashboardControlsCarScreen(
             CachedTile(GridItem.Builder().setOnClickListener { send(key) })
         }
         val item = (if (connected) tile.online else tile.offline).setTitle(title)
-        // Native loading tiles remove their image and click delegate. Keep a
-        // focusable image tile throughout the command, including the *same*
-        // Binder click delegate. A static busy icon needs no animation redraws.
-        item.setImage(if (loading) busyIcon else actionIcon(appearance,
+        // Progress feedback uses CarToast, which does not submit a template.
+        // Replacing even a focusable tile's image replaces its lazy section and
+        // can make Android Auto 17.9 reset the scroll position. Only real device
+        // state, configuration and connectivity changes may alter these items.
+        item.setImage(actionIcon(appearance,
             if (switch) control.optString("state") == "ON" else selected(control, appearance)),
             GridItem.IMAGE_TYPE_ICON)
         // Builders are reused: explicitly clear old reconnect/error text.
@@ -237,7 +230,9 @@ internal class DashboardControlsCarScreen(
         if (pending == actionId || (key.kind == "switch" && pending != null)) return
         val request = Sending(actionId)
         sending[controlId] = request
-        render()
+        CarToast.makeText(carContext,
+            "${control.getString("name")} · ${word("working", R.string.car_working)}",
+            CarToast.LENGTH_SHORT).show()
         bridge.call("carCommand", mapOf("dashboardId" to dashboardId,
             "controlId" to controlId, "actionId" to actionId,
             "expiresAt" to (System.currentTimeMillis() + 5_000))) { result ->
