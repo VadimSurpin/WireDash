@@ -56,6 +56,7 @@ internal abstract class PollingCarScreen(
     protected var visible = false
     private var generation = 0
     private var fetching = false
+    private var reconnectNoticeShown = false
     private val poll = Runnable { refresh() }
     protected abstract val method: String
     protected open val arguments: Map<String, Any> = emptyMap()
@@ -69,6 +70,7 @@ internal abstract class PollingCarScreen(
                 // Back must return the same template type as before the push.
                 // Keep the last snapshot while refreshing, including its rows
                 // and scroll position, rather than flashing a loading template.
+                updateConnectionNotice()
                 refresh()
             }
             override fun onStop(owner: LifecycleOwner) {
@@ -77,6 +79,7 @@ internal abstract class PollingCarScreen(
                 fetching = false
                 handler.removeCallbacksAndMessages(null)
                 onHidden()
+                reconnectNoticeShown = false
             }
         })
     }
@@ -97,9 +100,30 @@ internal abstract class PollingCarScreen(
             } else next
             val changed = data?.toString() != update.toString()
             data = update
+            updateConnectionNotice()
             if (onData() || changed) onSnapshotChanged()
             handler.postDelayed(poll, 1_000)
         }
+    }
+
+    private fun updateConnectionNotice() {
+        val current = data ?: return
+        if (current.has("outcome") || !current.has("connected")) return
+        if (current.optBoolean("connected")) {
+            reconnectNoticeShown = false
+            return
+        }
+        // Camera-only dashboards remain useful without an MQTT session.
+        if (current.optJSONArray("controls")?.objects()?.any { it.optString("kind") != "video" } == true) {
+            showReconnecting()
+        }
+    }
+
+    protected fun showReconnecting(force: Boolean = false) {
+        if (!visible || (!force && reconnectNoticeShown)) return
+        reconnectNoticeShown = true
+        CarToast.makeText(carContext, word("reconnecting", R.string.car_reconnecting),
+            CarToast.LENGTH_SHORT).show()
     }
 
     protected open fun onData(): Boolean = false
@@ -230,7 +254,6 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
         return list(current.optString("name", "WireDash"), false, entries) { entry ->
             val row = Row.Builder().setTitle(entry.getString("name")).setBrowsable(true)
             if (entry.optString("kind") == "video") row.addText(carContext.getString(R.string.car_video_phone))
-            else if (!current.optBoolean("connected")) row.addText(word("reconnecting", R.string.car_reconnecting))
             else if (entry.optBoolean("waitForFeedback")) {
                 val state = entry.optString("state").takeUnless { entry.isNull("state") }
                 row.addText(when (state) {
@@ -294,8 +317,7 @@ internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,
             val item = GridItem.Builder().setTitle(action.getString("title"))
             if (pending) item.setLoading(true)
             else item.setImage(icon(action.optString("icon"), selected(control, action)), GridItem.IMAGE_TYPE_ICON)
-            if (!connected) item.setText(word("reconnecting", R.string.car_reconnecting))
-            else if (control.optBoolean("failed")) item.setText(word("unconfirmed", R.string.car_unconfirmed))
+            if (control.optBoolean("failed")) item.setText(word("unconfirmed", R.string.car_unconfirmed))
             // The host forbids click listeners on loading GridItems. The
             // one-second command spinner then returns to a repeatable action.
             if (connected && !pending) item.setOnClickListener { send(id) }
@@ -305,7 +327,7 @@ internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,
             .setHeaderAction(Action.BACK).setSingleList(items)
             .setActionStrip(ActionStrip.Builder().addAction(Action.Builder()
                 .setIcon(CarIcon.Builder(IconCompat.createWithResource(carContext, R.drawable.car_refresh)).build())
-                .setOnClickListener { bridge.call("carReconnect") { refresh() } }.build()).build())
+                .setOnClickListener { showReconnecting(force = true); bridge.call("carReconnect") { refresh() } }.build()).build())
             .build()
     }
 

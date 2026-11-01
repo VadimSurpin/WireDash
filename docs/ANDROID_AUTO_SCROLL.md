@@ -1,0 +1,64 @@
+# Android Auto state-refresh scrolling
+
+The affected host is Android Auto 17.9. The user confirmed that fresh state
+published from the phone resets the car dashboard to the top even without a car
+tap. Sending feedback via native popups is useful, but does not fix this separate
+state-refresh reset. No verified workaround for this host has been established.
+
+## Public API limits
+
+The dashboard already explicitly sets
+[`SCROLL_STATE_PRESERVE_INDEX`](https://developer.android.com/reference/androidx/car/app/model/SectionedItemTemplate.Builder#setScrollStatePersistenceStrategy(int)).
+That request applies when the host treats a template as a refresh. The API
+offers reset-to-top or preserve-index strategies, without a target scroll index
+or a `scrollToPosition()` command for this grid.
+
+API 8 sections provide an
+[item visibility callback](https://developer.android.com/reference/androidx/car/app/model/Section.BaseBuilder#setOnItemVisibilityChangedListener(androidx.car.app.model.ItemList.OnItemVisibilityChangedListener)).
+WireDash now remembers each reported range (start inclusive, end exclusive).
+This can show where a reset happened; it cannot force the host to scroll back.
+The underlying scrollable view belongs to Android Auto, outside WireDash's UI.
+`ItemList.setSelectedIndex()` configures selectable lists, not this grid's scroll
+position. Back-navigation template IDs are not a supported scroll override.
+
+## Research
+
+* Google's [issue 461256656](https://issuetracker.google.com/issues/461256656)
+  changed the default policy to preserve index. WireDash already sets that
+  policy explicitly, so the default change does not explain or solve this case.
+* AndroidX Media [issue 2192](https://github.com/androidx/media/issues/2192)
+  reports Android Auto content resetting on playback-state/progress updates,
+  reproduced in the DHU and cars. Maintainers identify the companion host as
+  responsible for that UI. Disabling periodic media-session position updates is
+  a reported workaround for those apps. WireDash uses IoT templates, not a media
+  session, so that switch does not apply here. This is related evidence, not
+  confirmation that the same defect causes WireDash's reset on 17.9.
+
+## Build 102 behavior and diagnostics
+
+Connection loss uses one localized native popup per outage rather than replacing
+every control caption. The grouped grid retains its last-known items while
+offline; existing click delegates check current connectivity and reject commands.
+Manual reconnect and offline taps show the reminder immediately. Actual MQTT
+state still changes state icons after reconnection; state feedback is not frozen
+to mask the scrolling issue.
+
+Debug APKs log only section ordinals, item indices, changed-section counts and
+connection/preservation flags under `WireDashAuto`. They do not log control names,
+MQTT topics/payloads, credentials or video URLs. Capture with:
+
+```sh
+adb logcat -s WireDashAuto:D '*:S'
+```
+
+Scroll down, change a control from the phone, and compare the last `viewport`
+range, the `refresh` entry and the next `viewport` range. Section indices are
+zero-based. A reset can be correlated with the submitted update; a visibility
+callback alone does not distinguish a user's own scroll from a host reset.
+
+Regression tests simulate phone-origin state changes and visibility callbacks,
+require one state refresh with preserve-index requested, and require no template
+submissions for reconnect-only or command-progress feedback. They cannot assert
+the real host's scroll position. Use the projected DHU or the affected car for
+that check: the available Automotive OS emulator does not render this template
+(see [verification](ANDROID_AUTO.md#verification)).

@@ -197,6 +197,7 @@ class CarScreensTest {
         val tile = dashboardItems(screen).single()
         assertEquals("Driveway camera", tile.title.toString())
         assertEquals(context.getString(R.string.car_video_phone), tile.text.toString())
+        assertTrue(toasts().isEmpty())
         tile.onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertTrue(bridge.commands.isEmpty())
@@ -458,14 +459,28 @@ class CarScreensTest {
     @Test fun transientEngineFailureKeepsDashboardAndRecovers() {
         modernHost()
         val screen = DashboardControlsCarScreen(context, bridge, "d")
-        start(screen)
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate()
+        val submissions = lifecycle.templatesReturned.size
+        val click = dashboardItems(screen).first().onClickDelegate!!
         bridge.response = JSONObject().put("outcome", "unreachable")
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertSame(original, screen.onGetTemplate())
         assertEquals(listOf("Enter", "Exit"), dashboardItems(screen).map { it.title.toString() })
-        assertTrue(dashboardItems(screen).all { it.onClickDelegate == null })
+        assertEquals(listOf(context.getString(R.string.car_reconnecting)), toasts())
+        shadowOf(Looper.getMainLooper()).idleFor(3, TimeUnit.SECONDS)
+        assertEquals(1, toasts().size)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+        assertEquals(2, toasts().size)
         bridge.response = FakeBridge.snapshot()
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
-        assertTrue(dashboardItems(screen).all { it.onClickDelegate != null })
+        assertSame(original, screen.onGetTemplate())
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        click.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OPEN", bridge.commands.single()["actionId"])
     }
 
     @Test fun cachedSwitchDelegateUsesLatestMqttStateBeforeTheHostRequestsANewTemplate() {
@@ -516,8 +531,9 @@ class CarScreensTest {
         val original = dashboardItems(screen).single()
         bridge.response.put("connected", false)
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
-        assertNull(dashboardItems(screen).single().onClickDelegate)
-        assertTrue(dashboardItems(screen).single().text.toString().contains("Reconnecting"))
+        assertSame(clickBinder(original.onClickDelegate), clickBinder(dashboardItems(screen).single().onClickDelegate))
+        assertEquals(original.text, dashboardItems(screen).single().text)
+        assertEquals(1, toasts().size)
         bridge.response.put("connected", true)
         val control = bridge.response.getJSONArray("controls").getJSONObject(0).put("failed", true)
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
@@ -649,13 +665,108 @@ class CarScreensTest {
         assertFalse(sending(dashboardItems(screen).first()))
     }
 
-    @Test fun modernDisconnectedDashboardHasNoClickableActions() {
+    @Test fun modernDisconnectedDashboardUsesPopupAndRejectsClickableActions() {
         modernHost()
         bridge.response = FakeBridge.snapshot(false)
         val screen = DashboardControlsCarScreen(context, bridge, "d")
         start(screen)
-        assertTrue(dashboardItems(screen).all { it.onClickDelegate == null && it.text.toString().contains("Reconnecting") })
+        val items = dashboardItems(screen)
+        assertTrue(items.all { it.onClickDelegate != null && it.text.toString() == "Gate" })
+        assertEquals(listOf(context.getString(R.string.car_reconnecting)), toasts())
+        items.first().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
         assertTrue(bridge.commands.isEmpty())
+        assertEquals(2, toasts().size)
+    }
+
+    @Test fun brokerAndNetworkOutagesAnnounceOncePerEpisodeWithoutReplacingControls() {
+        modernHost()
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate()
+        val captions = dashboardItems(screen).map { it.text.toString() }
+        val submissions = lifecycle.templatesReturned.size
+        bridge.response.put("connected", false).put("status", "error")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(1, toasts().size)
+        bridge.response.put("status", "reconnecting")
+        shadowOf(Looper.getMainLooper()).idleFor(3, TimeUnit.SECONDS)
+        assertEquals(1, toasts().size)
+        assertEquals(captions, dashboardItems(screen).map { it.text.toString() })
+        assertSame(original, screen.onGetTemplate())
+        bridge.response.put("connected", true).put("status", "connected")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        bridge.response.put("connected", false).put("status", "reconnecting")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(2, toasts().size)
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertSame(original, screen.onGetTemplate())
+    }
+
+    @Test fun reconnectPopupUsesTheSnapshotLocaleAndReturnsWhenScreenResumesOffline() {
+        modernHost()
+        bridge.response = FakeBridge.snapshot(false)
+            .put("strings", JSONObject().put("reconnecting", "Переподключение…"))
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        assertEquals(listOf("Переподключение…"), toasts())
+        shadowOf(Looper.getMainLooper()).idleFor(2, TimeUnit.SECONDS)
+        assertEquals(1, toasts().size)
+        lifecycle.moveToState(Lifecycle.State.CREATED)
+        lifecycle.moveToState(Lifecycle.State.RESUMED)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(listOf("Переподключение…", "Переподключение…"), toasts())
+        assertTrue(dashboardItems(screen).all { it.text.toString() == "Gate" })
+    }
+
+    @Test fun manualReconnectShowsProgressBeforeTheBridgeReplies() {
+        modernHost()
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate() as SectionedItemTemplate
+        val submissions = lifecycle.templatesReturned.size
+        bridge.delayed = true
+        original.header!!.endHeaderActions.single().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(listOf(context.getString(R.string.car_reconnecting)), toasts())
+        assertSame(original, screen.onGetTemplate())
+        bridge.callbacks.removeAt(0)(JSONObject())
+        bridge.callbacks.removeAt(0)(FakeBridge.snapshot(false))
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(1, toasts().size)
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertTrue(bridge.commands.isEmpty())
+    }
+
+    @Test fun phoneStateChangesRefreshOnceWithScrollPreservationAndViewportReporting() {
+        modernHost()
+        val controls = JSONArray()
+        repeat(40) { index -> controls.put(commandButton("Light $index").put("kind", "switch")
+            .put("waitForFeedback", true).put("state", "OFF").put("actions", JSONArray()
+                .put(JSONObject().put("id", "ON").put("title", "On").put("icon", "on"))
+                .put(JSONObject().put("id", "OFF").put("title", "Off").put("icon", "off")))) }
+        bridge.response.put("controls", controls)
+        val screen = DashboardControlsCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate() as SectionedItemTemplate
+        val submissions = lifecycle.templatesReturned.size
+        original.sections.single().onItemVisibilityChangedDelegate!!.sendItemVisibilityChanged(30, 38, done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        // Model the user's reproduction: the phone publishes state; Auto has
+        // received no tap and sends no command of its own.
+        controls.getJSONObject(32).put("state", "ON")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val updated = screen.onGetTemplate() as SectionedItemTemplate
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX, updated.scrollStatePersistenceStrategy)
+        assertEquals(CarColor.GREEN, dashboardItems(screen)[32].image!!.tint)
+        assertTrue(bridge.commands.isEmpty())
+        updated.sections.single().onItemVisibilityChangedDelegate!!.sendItemVisibilityChanged(0, 8, done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        // Client/IPC tests cannot assert where Android Auto's actual renderer
+        // scrolled. Visibility callbacks provide that evidence on the car.
     }
 
     @Test fun gateUsesConfiguredButtonsAndSpinnerThenAllowsAnotherPulse() {
@@ -677,12 +788,14 @@ class CarScreensTest {
         assertEquals(2, bridge.commands.size)
     }
 
-    @Test fun disconnectedActionsShowReconnectingAndCannotSend() {
+    @Test fun disconnectedActionsShowOneReconnectingPopupAndCannotSend() {
         bridge.response = FakeBridge.snapshot(false)
         val screen = ActionsCarScreen(context, bridge, "d", "gate")
         start(screen)
-        assertTrue(actions(screen).all { it.onClickDelegate == null })
-        assertTrue(actions(screen).all { it.text.toString().contains("Reconnecting") })
+        assertTrue(actions(screen).all { it.onClickDelegate == null && it.text == null })
+        assertEquals(listOf(context.getString(R.string.car_reconnecting)), toasts())
+        shadowOf(Looper.getMainLooper()).idleFor(3, TimeUnit.SECONDS)
+        assertEquals(1, toasts().size)
         assertTrue(bridge.commands.isEmpty())
     }
 

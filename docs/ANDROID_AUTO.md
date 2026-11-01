@@ -44,20 +44,26 @@ actual device state; pending commands still reject duplicate taps internally.
 Command-only guards expire after one second independently for each control.
 Other cover directions (including Stop) remain available during a direction command.
 Switch delegates read the latest state even when the host still holds an older tile.
-Fresh MQTT state, configuration and connectivity changes still update the grid;
+Fresh MQTT state and configuration changes still update the grid;
 updates in the same main-loop turn are coalesced.
 
 The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.
 The host fetches more items while scrolling; WireDash does not insert Next or
 Previous items or truncate the grid at the older template's item limit.
 WireDash requests scroll preservation across real state updates. Android Auto
-17.9 was reported to jump to the top both with native loading tiles and with a
-focusable static busy icon. Build 101 uses native sending messages instead of
-changing grid items for transient progress. Regression tests require **zero grid
+17.9 was reported to jump to the top with loading tiles, a static busy icon,
+and fresh state received from the phone without an Auto tap. Native sending
+messages avoid changing grid items for transient progress, but the user confirmed
+that real state updates still reset scrolling on the affected host.
+Regression tests require **zero grid
 template submissions** from command start, pending-state handoff, and one-second
-command completion. The affected car host still needs a device check; Robolectric
-verifies the client/IPC behavior, not Android Auto's renderer. Android Auto controls
-grid geometry, button sizes and scrolling affordances.
+command completion. Build 102 also keeps the last-known control appearance during
+reconnection and uses one localized reconnecting popup per outage. It records
+visible item ranges in local debug logs; the public template API has no direct
+scroll-to-index command to restore that range. This is not a verified fix for
+state-triggered scrolling. See the [scroll investigation](ANDROID_AUTO_SCROLL.md).
+Robolectric verifies client/IPC behavior, not Android Auto's renderer.
+Android Auto controls grid geometry, button sizes and scrolling affordances.
 
 API 6/7 hosts retain the previous list/detail screens and pagination to respect
 their hard content limits. Update Android Auto for the grouped scrolling UI.
@@ -85,8 +91,13 @@ Reconnecting feedback rather than replacing it with another template. The native
 WireGuard implementation shares its peer with phone widgets and the phone UI.
 
 Opening a dashboard after the car app was hidden rebuilds its MQTT connection
-and private route, restores active subscriptions and displays Reconnecting
-until connected. Old-session data cannot confirm a new command. Closing the
+and private route and restores active subscriptions. A brief localized
+Reconnecting popup announces each outage without replacing every control's
+caption or last-known icon. Resuming while still offline or tapping an offline
+control shows the reminder again; offline taps send no commands. The reconnect
+action shows its popup immediately, before the connection request finishes.
+Camera-only dashboards do not warn about an unused MQTT connection.
+Old-session data cannot confirm a new command. Closing the
 car UI releases its subscriptions; it does not destroy the engine used by
 widgets. Reconnecting and refreshing never replay commands. Offline or expired
 taps are rejected; changing/removing a panel also invalidates its old actions.
@@ -123,7 +134,12 @@ For development, use Google's [Desktop Head Unit (DHU)](https://developer.androi
    grid redraw or jump to the top. Each control becomes repeatable after its
    independent one-second command guard expires.
 7. Hide/return to the car app and disconnect/reconnect its network route.
-   Reconnecting must appear, state must recover, and no command may be replayed.
+   A Reconnecting popup must appear once per outage without changing control
+   captions. Offline taps must show a reminder without sending; state must
+   recover, and no command may be replayed.
+8. Scroll down and change a switch from the phone without tapping Auto. Check
+   whether the host preserves the position. Capture `WireDashAuto` logcat as
+   described in the [investigation](ANDROID_AUTO_SCROLL.md) if it resets.
 
 For distribution through Google Play, upload the signed APK through your Play
 Console internal test/internal app sharing and install it from that link. Google Play

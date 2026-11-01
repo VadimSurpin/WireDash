@@ -1,5 +1,7 @@
 package pro.surpin.wiredash.car
 
+import android.content.pm.ApplicationInfo
+import android.util.Log
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -34,19 +36,21 @@ internal class DashboardControlsCarScreen(
         val items: List<GridItem>, val section: GridSection)
     private data class TileKey(val controlId: String, val kind: String, val actionId: String?)
     private class CachedTile(val online: GridItem.Builder) {
-        val offline = GridItem.Builder()
         var item: GridItem? = null
         var appearance: String? = null
+        var configuration: String? = null
     }
     private val sending = mutableMapOf<String, Sending>()
     private val sections = mutableMapOf<String, CachedSection>()
     private val tiles = mutableMapOf<TileKey, CachedTile>()
+    private val sectionOrder = mutableMapOf<String, Int>()
+    private val visibleRanges = mutableMapOf<String, Pair<Int, Int>>()
     private var previousTemplate: SectionedItemTemplate? = null
     private var presentedTemplate: Template? = null
     private var renderScheduled = false
     private val reconnectAction by lazy {
         Action.Builder().setIcon(icon("refresh"))
-            .setOnClickListener { bridge.call("carReconnect") { refresh() } }.build()
+            .setOnClickListener { showReconnecting(force = true); bridge.call("carReconnect") { refresh() } }.build()
     }
     private val materialIcons = mutableMapOf<Int, Bitmap>()
     private val materialFont by lazy {
@@ -57,6 +61,15 @@ internal class DashboardControlsCarScreen(
     override fun onHidden() {
         sending.clear()
         renderScheduled = false
+        visibleRanges.clear()
+    }
+
+    private fun trace(message: String) {
+        if (carContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
+            // Local development logs contain indices/counts only, never control
+            // names, topics, credentials or MQTT payloads.
+            Log.d("WireDashAuto", message)
+        }
     }
 
     override fun onSnapshotChanged() = render()
@@ -66,7 +79,21 @@ internal class DashboardControlsCarScreen(
         renderScheduled = true
         handler.post {
             renderScheduled = false
-            if (visible && buildTemplate() !== presentedTemplate) invalidate()
+            if (visible) {
+                val next = buildTemplate()
+                if (next !== presentedTemplate) {
+                    val old = presentedTemplate as? SectionedItemTemplate
+                    val grid = next as? SectionedItemTemplate
+                    val changed = if (grid == null) emptyList() else grid.sections.indices.filter { index ->
+                        old == null || index >= old.sections.size || old.sections[index] !== grid.sections[index]
+                    }
+                    val viewport = visibleRanges.entries.map { (id, range) ->
+                        "${sectionOrder[id]}:${range.first}-${range.second}"
+                    }.joinToString(",")
+                    trace("refresh sections=$changed connected=${data?.optBoolean("connected")} preserve=${grid?.scrollStatePersistenceStrategy} viewport=[$viewport]")
+                    invalidate()
+                }
+            }
         }
     }
 
@@ -95,6 +122,7 @@ internal class DashboardControlsCarScreen(
         fun addGroup(id: String, title: String?, entries: List<JSONObject>) {
             if (entries.isEmpty()) return
             activeSections.add(id)
+            sectionOrder[id] = activeSections.size - 1
             val items = mutableListOf<GridItem>()
             for (control in entries) {
                 val actions = control.getJSONArray("actions").objects()
@@ -127,6 +155,14 @@ internal class DashboardControlsCarScreen(
                 return
             }
             val section = GridSection.Builder().setItems(items)
+                .setOnItemVisibilityChangedListener { first, endExclusive ->
+                    if (visible && sections.containsKey(id)) {
+                        val range = first to endExclusive
+                        if (visibleRanges.put(id, range) != range) {
+                            trace("viewport section=${sectionOrder[id]} first=$first endExclusive=$endExclusive")
+                        }
+                    }
+                }
             if (!title.isNullOrBlank()) section.setTitle(title)
             val built = section.build()
             sections[id] = CachedSection(title, commands, items, built)
@@ -139,6 +175,8 @@ internal class DashboardControlsCarScreen(
         for (section in groups) addGroup("group/" + section.getString("id"), section.getString("name"),
             controls.filter { it.optString("sectionId") == section.getString("id") })
         sections.keys.retainAll(activeSections)
+        sectionOrder.keys.retainAll(activeSections)
+        visibleRanges.keys.retainAll(activeSections)
         tiles.keys.retainAll(activeTiles)
         val built = template.build()
         val previous = previousTemplate
@@ -162,7 +200,13 @@ internal class DashboardControlsCarScreen(
         val tile = tiles.getOrPut(key) {
             CachedTile(GridItem.Builder().setOnClickListener { send(key) })
         }
-        val item = (if (connected) tile.online else tile.offline).setTitle(title)
+        val configuration = JSONArray().put(control.getJSONArray("actions"))
+            .put(control.optBoolean("waitForFeedback")).put(title).put(subtitle.orEmpty()).toString()
+        val previous = tile.item
+        // Preserve the last known appearance during reconnection. Retained
+        // delegates always check the latest connection state before sending.
+        if (!connected && previous != null && tile.configuration == configuration) return previous
+        val item = tile.online.setTitle(title)
         // Progress feedback uses CarToast, which does not submit a template.
         // Replacing even a focusable tile's image replaces its lazy section and
         // can make Android Auto 17.9 reset the scroll position. Only real device
@@ -170,15 +214,12 @@ internal class DashboardControlsCarScreen(
         item.setImage(actionIcon(appearance,
             if (switch) control.optString("state") == "ON" else selected(control, appearance)),
             GridItem.IMAGE_TYPE_ICON)
-        // Builders are reused: explicitly clear old reconnect/error text.
-        item.setText(when {
-            !connected -> word("reconnecting", R.string.car_reconnecting)
-            control.optBoolean("failed") -> word("unconfirmed", R.string.car_unconfirmed)
-            else -> subtitle.orEmpty()
-        })
+        // Connection feedback is global; keep each control's own caption.
+        item.setText(if (control.optBoolean("failed")) word("unconfirmed", R.string.car_unconfirmed)
+            else subtitle.orEmpty())
         val built = item.build()
         val metadata = appearance.toString()
-        val previous = tile.item
+        tile.configuration = configuration
         if (previous != null && previous == built && tile.appearance == metadata) return previous
         tile.item = built
         tile.appearance = metadata
@@ -222,7 +263,10 @@ internal class DashboardControlsCarScreen(
             screenManager.push(VideoInfoCarScreen(carContext, control.getString("name")))
             return
         }
-        if (data?.optBoolean("connected") != true) return
+        if (data?.optBoolean("connected") != true) {
+            showReconnecting(force = true)
+            return
+        }
         val actionId = key.actionId ?: if (control.optString("state") == "ON") "OFF" else "ON"
         if (control.getJSONArray("actions").objects().none { it.optString("id") == actionId }) return
         val pending = sending[controlId]?.action ?: if (control.optBoolean("waitForFeedback"))
