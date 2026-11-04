@@ -85,8 +85,9 @@ host's list limit rather than silently dropping controls.
 The list reuses unchanged rows, action delegates and item lists. Starting or
 finishing a command and losing/recovering connectivity submit no template when
 there is no actual appearance change. State changes still update the appropriate
-row; they are not hidden to mask scrolling. Local `list viewport` logs report
-visible ranges. There remains no public manual-scroll command for this template.
+row; they are not hidden to mask scrolling. Classic grouped lists reject item
+visibility callbacks, so their viewport cannot be logged through that API.
+There remains no public manual-scroll command for this template.
 
 Tests cover grouped order, paired actions, native toggles, phone-origin state,
 retained offline rows with guarded commands, complete pagination, saved presets,

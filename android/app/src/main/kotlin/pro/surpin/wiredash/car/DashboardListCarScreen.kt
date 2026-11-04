@@ -104,12 +104,12 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         if (navigation.isNotEmpty()) displayed.add(Group("navigation/$offset", carContext.getString(R.string.car_controls), navigation))
         val activeLists = displayed.map { it.id }.toSet()
         lists.keys.retainAll(activeLists)
-        for ((ordinal, group) in displayed.withIndex()) {
+        for (group in displayed) {
             val old = lists[group.id]
             val list = if (old != null && sameRows(old.rows, group.rows)) old.list else {
-                val builder = ItemList.Builder().setOnItemsVisibilityChangedListener { first, last ->
-                    if (visible) trace("list viewport section=$ordinal first=$first endExclusive=$last")
-                }
+                // Classic sectioned lists reject visibility listeners, even
+                // though ItemList supports one in other template contexts.
+                val builder = ItemList.Builder()
                 group.rows.forEach(builder::addItem)
                 builder.build().also { lists[group.id] = CachedList(group.rows, it) }
             }

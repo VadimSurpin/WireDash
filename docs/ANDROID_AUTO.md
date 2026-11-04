@@ -180,12 +180,13 @@ freshness, missing/removed controls, offline/expired-command handling, and saved
 section ordering, orphaned tiles, group renaming and configured button appearance.
 
 `cd android && ./gradlew :app:testFossDebugUnitTest` uses Robolectric and the
-Car App testing library to build real host templates, verify grouped list rows, native toggles, paired cover actions and every preset
+Car App testing library builds real host templates and verifies grouped rows,
+native toggles, paired cover actions and every preset
 beyond the host limit. They check direct commands, independent guards, sending
 messages, zero progress-only template submissions and stable delegates.
-The previous grid remains covered for comparison, including its scroll policy,
-and verify that stale callbacks/pending indicators do not survive hiding and
-resuming the car screen. The older-host pagination
+The previous grid remains covered for comparison, including its scroll policy.
+Tests also verify that stale callbacks/pending indicators do not survive hiding
+and resuming the car screen. The older-host pagination
 fallback is also tested. CI runs these tests before uploading the APK.
 
 Returning from a dashboard keeps the chooser's last snapshot while it refreshes.
