@@ -1,0 +1,67 @@
+name: auto-worker-preview
+on:
+  workflow_dispatch:
+  push:
+    branches: ['ci/auto-worker-107']
+    paths: ['.github/workflows/auto-worker-preview.yml']
+permissions:
+  contents: read
+concurrency:
+  group: auto-worker-preview-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  auto-emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: native/wireguard/go.mod
+          cache-dependency-path: native/wireguard/go.sum
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - run: sdkmanager 'platforms;android-36' 'ndk;27.0.12077973'
+      - name: Read pinned Flutter version
+        id: flutter
+        run: echo "version=$(sed -n 's/.*"flutter"[^"]*"\([^"]*\)".*/\1/p' .fvmrc)" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.flutter.outputs.version }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Generate isolated headless Auto fixture
+        run: flutter test tool/car_preview/create_fixture.dart
+      - name: Install loopback test broker
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq mosquitto mosquitto-clients
+      - name: Build the normal Android app for the emulator
+        run: flutter build apk --debug --flavor foss --split-per-abi --target-platform android-x64
+      - name: Enable emulator acceleration
+        run: sudo chmod 666 /dev/kvm
+      - name: Test real Auto service and MQTT with the phone closed
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r -t build/app/outputs/flutter-apk/app-x86_64-foss-debug.apk
+            python3 tool/car_preview/headless_smoke.py
+      - name: Preserve Auto runtime reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiredash-auto-native-preview
+          path: build/video-preview/
