@@ -39,7 +39,7 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
   Android Auto lists camera entries and directs playback to the parked phone.
 - **[Android Auto support](docs/ANDROID_AUTO.md)** — control switches, command
   buttons, gates and rollers from the car. Saved dashboard groups appear in a
-  scrolling grid on supported hosts, with configured button titles and icons.
+  grouped scrolling list in the current test build, with configured titles and icons.
   Uses the phone's MQTT/WireGuard connection and works while the phone
   dashboard is closed.
 - **[Embedded WireGuard](docs/EMBEDDED_WIREGUARD.md)** — import a peer configuration
@@ -116,16 +116,19 @@ Auto and select a dashboard. Switches, command buttons, covers, gates and roller
 use their saved labels, icons and action settings. Writable controls on
 whole-device Wiren Board and Zigbee2MQTT panels are also supported.
 
-On Car App API 8 hosts, dashboard sections and buttons appear together in a
-scrolling grid. Button feedback preserves the scroll position. Older API 6/7
-hosts use list/detail screens with paging. Layout and button sizes follow the
-car host's native templates.
+The current feature build tries a grouped `ListTemplate` on Car App API 8 hosts.
+Shutters and gates show Open/Close together in one row; Stop and additional
+presets use further rows. Switches use native toggles. Large dashboards page at
+the host's list limit. Sending/reconnecting feedback uses popups without
+refreshing rows. Whether this avoids Android Auto 17.9's state-refresh scroll
+reset still needs testing in the car. Older API 6/7 hosts retain list/detail
+screens. Layout and button sizes follow the car host's native templates.
 
 The car can connect through MQTT or embedded WireGuard without the phone
 dashboard running. It restores connections and state subscriptions when
 returning from the background and shows reconnecting feedback. Configure
-command-only gate/roller buttons to send a command, spin for one second and
-return to their initial appearance.
+command-only gate/roller buttons to send a command with a one-second duplicate
+guard. Auto shows a sending popup while the phone uses its configured spinner.
 
 See the [Android Auto guide](docs/ANDROID_AUTO.md) for supported controls,
 installation, host requirements and Desktop Head Unit testing.

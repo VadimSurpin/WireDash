@@ -1,4 +1,5 @@
 <resources>
+    <string name="car_controls">Элементы</string>
     <string name="car_loading">Загрузка…</string>
     <string name="car_setup">Откройте WireDash на телефоне и добавьте на панель переключатели, кнопки или шторы.</string>
     <string name="car_removed">Панель или элемент удалён. Обновите панели на телефоне.</string>

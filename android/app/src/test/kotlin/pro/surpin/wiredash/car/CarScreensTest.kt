@@ -114,6 +114,9 @@ class CarScreensTest {
     private fun dashboardItems(screen: DashboardControlsCarScreen): List<GridItem> =
         (screen.onGetTemplate() as SectionedItemTemplate).sections.flatMap { items(it) }.map { it as GridItem }
 
+    private fun listRows(screen: DashboardListCarScreen): List<Row> =
+        (screen.onGetTemplate() as ListTemplate).sectionedLists.flatMap { it.itemList.items }.map { it as Row }
+
     private fun commandButton(id: String, section: String? = null): JSONObject = JSONObject()
         .put("id", id).put("name", id).put("kind", "button").put("sectionId", section)
         .put("waitForFeedback", false).put("state", JSONObject.NULL)
@@ -150,7 +153,7 @@ class CarScreensTest {
             lifecycle.moveToState(Lifecycle.State.CREATED)
             bridge.delayed = false
             bridge.response = FakeBridge.snapshot()
-            val dashboard = if (api >= 8) DashboardControlsCarScreen(context, bridge, "d")
+            val dashboard = if (api >= 8) DashboardListCarScreen(context, bridge, "d")
                 else ControlsCarScreen(context, bridge, "d")
             val child = start(dashboard)
             dashboard.onGetTemplate()
@@ -184,6 +187,206 @@ class CarScreensTest {
         val screen = DashboardCarScreen(context, bridge)
         start(screen)
         assertTrue((screen.onGetTemplate() as SectionedItemTemplate).isLoading)
+    }
+
+    @Test fun groupedListIsSelectedByModernCatalogAndKeepsItsLoadingType() {
+        modernHost()
+        bridge.response = JSONObject().put("dashboards", JSONArray().put(JSONObject()
+            .put("id", "d").put("name", "Driveway").put("home", "Home")))
+        val selector = DashboardCarScreen(context, bridge)
+        start(selector)
+        val entry = items((selector.onGetTemplate() as SectionedItemTemplate).sections.single()).single() as Row
+        bridge.delayed = true
+        entry.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        val child = context.getCarService(androidx.car.app.ScreenManager::class.java).top
+        assertTrue(child is DashboardListCarScreen)
+        start(child)
+        assertTrue((child.onGetTemplate() as ListTemplate).isLoading)
+        bridge.callbacks.forEach { it(FakeBridge.snapshot()) }
+        shadowOf(Looper.getMainLooper()).idle()
+        assertFalse((child.onGetTemplate() as ListTemplate).isLoading)
+    }
+
+    @Test fun groupedListKeepsSavedGroupsAndPairsGateActionsInOneRow() {
+        modernHost()
+        bridge.response.getJSONArray("controls").getJSONObject(0).put("sectionId", "gates")
+        bridge.response.getJSONArray("controls").put(commandButton("Light", "lights"))
+            .put(commandButton("Orphan", "deleted"))
+        bridge.response.put("sections", JSONArray()
+            .put(JSONObject().put("id", "lights").put("name", "Lights"))
+            .put(JSONObject().put("id", "empty").put("name", "Empty"))
+            .put(JSONObject().put("id", "gates").put("name", "Gates")))
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        start(screen)
+        val groups = (screen.onGetTemplate() as ListTemplate).sectionedLists
+        assertEquals(listOf("Controls", "Lights", "Gates"), groups.map { it.header.toString() })
+        assertEquals(listOf("Orphan", "Light", "Gate"), listRows(screen).map { it.title.toString() })
+        val gate = listRows(screen).last()
+        assertEquals(listOf("Enter", "Exit"), gate.actions.map { it.title.toString() })
+        assertTrue(gate.actions.all { it.icon != null })
+        assertEquals("Enter · Exit", gate.texts.single().toString())
+    }
+
+    @Test fun groupedListProgressKeepsRowsDelegatesAndAllowsRepeatPulses() {
+        modernHost()
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate()
+        val gate = listRows(screen).single()
+        val submissions = lifecycle.templatesReturned.size
+        gate.actions[0].onClickDelegate!!.sendClick(done)
+        gate.actions[0].onClickDelegate!!.sendClick(done)
+        gate.actions[1].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(listOf("OPEN", "CLOSE"), bridge.commands.map { it["actionId"] })
+        assertEquals(2, toasts().size)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertSame(original, screen.onGetTemplate())
+        assertSame(gate, listRows(screen).single())
+        gate.actions[0].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(listOf("OPEN", "CLOSE", "OPEN"), bridge.commands.map { it["actionId"] })
+    }
+
+    @Test fun groupedListNativeToggleReflectsPhoneStateAndUsesLatestValue() {
+        modernHost()
+        val light = commandButton("Light").put("kind", "switch").put("waitForFeedback", true).put("state", "OFF")
+            .put("actions", JSONArray()
+                .put(JSONObject().put("id", "ON").put("title", "On").put("icon", "on"))
+                .put(JSONObject().put("id", "OFF").put("title", "Off").put("icon", "off")))
+        bridge.response.put("controls", JSONArray().put(light))
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val before = listRows(screen).single()
+        assertFalse(before.toggle!!.isChecked)
+        val submissions = lifecycle.templatesReturned.size
+        light.put("state", "ON") // Phone-origin feedback; no Auto tap.
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val after = listRows(screen).single()
+        assertTrue(after.toggle!!.isChecked)
+        assertEquals(before.title, after.title)
+        assertEquals(CarColor.GREEN, after.image!!.tint)
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        assertTrue(bridge.commands.isEmpty())
+        before.toggle!!.onCheckedChangeDelegate.sendCheckedChange(true, done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue("An old toggle cannot re-send the already reported state", bridge.commands.isEmpty())
+        after.toggle!!.onCheckedChangeDelegate.sendCheckedChange(false, done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OFF", bridge.commands.single()["actionId"])
+    }
+
+    @Test fun groupedListReconnectUsesPopupAndRetainedActionsRejectOfflineTaps() {
+        modernHost()
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate()
+        val retained = listRows(screen).single().actions.first()
+        val submissions = lifecycle.templatesReturned.size
+        bridge.response.put("connected", false)
+        shadowOf(Looper.getMainLooper()).idleFor(2, TimeUnit.SECONDS)
+        assertSame(original, screen.onGetTemplate())
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        assertEquals(listOf(context.getString(R.string.car_reconnecting)), toasts())
+        retained.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+        assertEquals(2, toasts().size)
+        bridge.response.put("connected", true)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        retained.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("OPEN", bridge.commands.single()["actionId"])
+    }
+
+    @Test fun groupedListKeepsStopAndEveryPresetWithAtMostTwoActionsPerRow() {
+        modernHost()
+        val gate = bridge.response.getJSONArray("controls").getJSONObject(0)
+        val actions = gate.getJSONArray("actions")
+        actions.put(JSONObject().put("id", "STOP").put("title", "Stop").put("icon", "stop"))
+        repeat(5) { actions.put(JSONObject().put("id", "POSITION_$it").put("title", "${it * 25}%")
+            .put("stateMatch", "${it * 25}").put("icon", "rollerOpen")) }
+        gate.put("state", "50")
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        start(screen)
+        val rows = listRows(screen)
+        assertTrue(rows.all { it.actions.size <= 2 && it.title.toString() == "Gate" })
+        assertEquals(listOf("Enter", "Exit"), rows.first().actions.map { it.title.toString() })
+        val buttons = rows.flatMap { it.actions }
+        assertEquals(listOf("Enter", "Exit", "Stop", "0%", "25%", "50%", "75%", "100%"), buttons.map { it.title.toString() })
+        assertEquals(CarColor.GREEN, buttons[5].icon!!.tint)
+        buttons[5].onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals("POSITION_2", bridge.commands.single()["actionId"])
+    }
+
+    @Test fun groupedListPagesAtHostLimitWithoutLosingGroupsOrResettingOnProgress() {
+        modernHost()
+        val limit = context.getCarService(ConstraintManager::class.java)
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST).coerceIn(3, 100)
+        val count = limit + 5
+        val controls = JSONArray()
+        repeat(count) { controls.put(commandButton("Button $it", if (it < count / 2) "a" else "b")) }
+        bridge.response.put("controls", controls).put("sections", JSONArray()
+            .put(JSONObject().put("id", "a").put("name", "First"))
+            .put(JSONObject().put("id", "b").put("name", "Second")))
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val seen = mutableListOf<String>()
+        while (true) {
+            val current = listRows(screen)
+            assertTrue(current.size <= limit)
+            seen.addAll(current.filter { it.title.toString().startsWith("Button ") }.map { it.title.toString() })
+            val next = current.firstOrNull { it.title.toString() == context.getString(R.string.car_next) } ?: break
+            next.onClickDelegate!!.sendClick(done)
+            shadowOf(Looper.getMainLooper()).idle()
+        }
+        assertEquals((0 until count).map { "Button $it" }, seen)
+        val lastPage = screen.onGetTemplate()
+        val submissions = lifecycle.templatesReturned.size
+        listRows(screen).first().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertSame(lastPage, screen.onGetTemplate())
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        listRows(screen).last().onClickDelegate!!.sendClick(done) // Previous.
+        shadowOf(Looper.getMainLooper()).idle()
+        assertNotSame(lastPage, screen.onGetTemplate())
+    }
+
+    @Test fun groupedListRetainedActionsRejectRemovedControlsAndHiddenScreens() {
+        modernHost()
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val retained = listRows(screen).single().actions.first()
+        bridge.response.put("controls", JSONArray().put(commandButton("Other")))
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        retained.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+        val button = listRows(screen).single()
+        lifecycle.moveToState(Lifecycle.State.CREATED)
+        button.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+    }
+
+    @Test fun groupedListVideoRemainsBrowsableWithoutBrokerOrCommands() {
+        modernHost()
+        bridge.response = FakeBridge.snapshot(false).put("controls", JSONArray().put(JSONObject()
+            .put("id", "camera").put("name", "Camera").put("kind", "video")
+            .put("waitForFeedback", false).put("actions", JSONArray().put(JSONObject()
+                .put("id", "VIEW").put("title", "Video").put("icon", "video")))))
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        start(screen)
+        val row = listRows(screen).single()
+        assertTrue(row.isBrowsable)
+        assertTrue(toasts().isEmpty())
+        row.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        assertTrue(bridge.commands.isEmpty())
+        assertTrue(context.getCarService(androidx.car.app.ScreenManager::class.java).top.onGetTemplate() is MessageTemplate)
     }
 
     @Test fun modernVideoRemainsBrowsableOfflineAndNeverSendsMqttCommand() {

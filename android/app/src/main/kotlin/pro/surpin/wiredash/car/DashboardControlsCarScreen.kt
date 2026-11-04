@@ -23,10 +23,10 @@ import org.json.JSONObject
 import pro.surpin.wiredash.R
 
 /** Saved dashboard groups, with immediately usable buttons in one scrolling screen. */
-internal class DashboardControlsCarScreen(
+internal open class DashboardControlsCarScreen(
     context: CarContext,
     bridge: CarBridge,
-    private val dashboardId: String,
+    protected val dashboardId: String,
 ) : PollingCarScreen(context, bridge) {
     override val method = "carOpen"
     override val arguments get() = mapOf("dashboardId" to dashboardId)
@@ -34,7 +34,7 @@ internal class DashboardControlsCarScreen(
     private class Sending(val action: String, var awaitingSnapshot: Boolean = false)
     private class CachedSection(val title: String?, val commands: List<String>,
         val items: List<GridItem>, val section: GridSection)
-    private data class TileKey(val controlId: String, val kind: String, val actionId: String?)
+    protected data class TileKey(val controlId: String, val kind: String, val actionId: String?)
     private class CachedTile(val online: GridItem.Builder) {
         var item: GridItem? = null
         var appearance: String? = null
@@ -48,7 +48,7 @@ internal class DashboardControlsCarScreen(
     private var previousTemplate: SectionedItemTemplate? = null
     private var presentedTemplate: Template? = null
     private var renderScheduled = false
-    private val reconnectAction by lazy {
+    protected val reconnectAction by lazy {
         Action.Builder().setIcon(icon("refresh"))
             .setOnClickListener { showReconnecting(force = true); bridge.call("carReconnect") { refresh() } }.build()
     }
@@ -64,7 +64,7 @@ internal class DashboardControlsCarScreen(
         visibleRanges.clear()
     }
 
-    private fun trace(message: String) {
+    protected fun trace(message: String) {
         if (carContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
             // Local development logs contain indices/counts only, never control
             // names, topics, credentials or MQTT payloads.
@@ -90,7 +90,7 @@ internal class DashboardControlsCarScreen(
                     val viewport = visibleRanges.entries.map { (id, range) ->
                         "${sectionOrder[id]}:${range.first}-${range.second}"
                     }.joinToString(",")
-                    trace("refresh sections=$changed connected=${data?.optBoolean("connected")} preserve=${grid?.scrollStatePersistenceStrategy} viewport=[$viewport]")
+                    trace("refresh template=${next.javaClass.simpleName} sections=$changed connected=${data?.optBoolean("connected")} preserve=${grid?.scrollStatePersistenceStrategy} viewport=[$viewport]")
                     invalidate()
                 }
             }
@@ -105,7 +105,7 @@ internal class DashboardControlsCarScreen(
 
     override fun onGetTemplate(): Template = buildTemplate().also { presentedTemplate = it }
 
-    private fun buildTemplate(): Template {
+    protected open fun buildTemplate(): Template {
         val current = data
         val header = Header.Builder().setTitle(current?.optString("name", "WireDash") ?: "WireDash")
             .setStartHeaderAction(Action.BACK)
@@ -226,7 +226,7 @@ internal class DashboardControlsCarScreen(
         return built
     }
 
-    private fun actionIcon(action: JSONObject, selected: Boolean): CarIcon {
+    protected fun actionIcon(action: JSONObject, selected: Boolean): CarIcon {
         val codepoint = action.optInt("iconCodepoint")
         val font = materialFont
         val icon = if (codepoint == 0 || font == null || !Character.isValidCodePoint(codepoint)) {
@@ -251,7 +251,7 @@ internal class DashboardControlsCarScreen(
         return icon.build()
     }
 
-    private fun send(key: TileKey) {
+    protected fun send(key: TileKey) {
         // Stable host delegates use current state and cannot invoke a hidden,
         // removed, repurposed, offline or busy control.
         if (!visible) return

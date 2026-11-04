@@ -3,7 +3,8 @@
 This branch adds a projected Android Auto **IoT** app using AndroidX Car App
 Library 1.8.0-rc01. Configure WireDash on the phone; the car presents native
 dashboard groups and large action buttons. On hosts supporting Car App API 8,
-select a dashboard once and operate its buttons directly in a scrolling grid.
+select a dashboard once and operate its controls directly in a grouped scrolling
+`ListTemplate` (build 104 experiment).
 
 ## Controls
 
@@ -19,10 +20,13 @@ garage doors and driveway lights.
 
 Saved section names and section order follow the phone dashboard. Unsectioned
 tiles appear first, followed by each group in order. Empty groups are omitted.
-Command buttons retain their names and configured Material icons/colors;
-switches use one tile with their saved state icons and send the opposite state
-on tap. Covers show their configured action buttons together, with the control
-name below each action so similarly named Open/Close buttons are distinguishable.
+Command buttons retain their names and configured Material icons/colors.
+Switches use native toggles with their saved state icons. A cover puts its
+configured Open and Close actions together beside its name in one list row.
+Android Auto allows at most two inline actions per row on API 8. A configured
+Stop button and additional position presets appear in further rows for the same
+control, in pairs, so every configured action remains accessible. Action labels
+also appear below the control name because hosts may render actions as icons.
 
 Cover button visibility, titles and gate/roller icons follow the phone editor.
 Position-aware covers also show their saved percentage presets; a slider-only
@@ -37,37 +41,36 @@ estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
 `/on`, and are never retained. On the grouped scrolling dashboard, a command
 shows a brief native message with the control name and localized sending text.
-Starting/finishing a command does not change the grid's icons, titles, click
-delegates, lazy item lists or sections, and does not invalidate the template.
-This avoids a refresh solely for progress feedback. Buttons continue to display
-actual device state; pending commands still reject duplicate taps internally.
-Command-only guards expire after one second independently for each control.
-Other cover directions (including Stop) remain available during a direction command.
-Switch delegates read the latest state even when the host still holds an older tile.
-Fresh MQTT state and configuration changes still update the grid;
-updates in the same main-loop turn are coalesced.
+Starting/finishing a command does not change rows, actions or their delegates,
+and does not invalidate the template. This avoids a refresh solely for progress
+feedback. Controls continue to display actual device state; pending commands
+still reject duplicate taps internally. Command-only guards expire after one
+second independently for each control. Other cover directions (including Stop)
+remain available during a direction command. Toggle delegates check the latest
+state even when the host still holds an older row. Fresh MQTT state and
+configuration changes still update the list; updates in the same main-loop turn
+are coalesced.
 
-The dashboard and dashboard chooser use `SectionedItemTemplate` on API 8 hosts.
-The host fetches more items while scrolling; WireDash does not insert Next or
-Previous items or truncate the grid at the older template's item limit.
-WireDash requests scroll preservation across real state updates. Android Auto
-17.9 was reported to jump to the top with loading tiles, a static busy icon,
-and fresh state received from the phone without an Auto tap. Native sending
-messages avoid changing grid items for transient progress, but the user confirmed
-that real state updates still reset scrolling on the affected host.
-Regression tests require **zero grid
-template submissions** from command start, pending-state handoff, and one-second
-command completion. Build 102 also keeps the last-known control appearance during
-reconnection and uses one localized reconnecting popup per outage. It records
-visible item ranges in local debug logs; the public template API has no direct
-scroll-to-index command to restore that range. This is not a verified fix for
-state-triggered scrolling. See the [scroll investigation](ANDROID_AUTO_SCROLL.md).
-Robolectric verifies client/IPC behavior, not Android Auto's renderer.
-Android Auto controls grid geometry, button sizes and scrolling affordances.
+Build 104 replaces the dashboard's API 8 `SectionedItemTemplate` grid with the
+classic `ListTemplate`, keeping saved section headings and order. The dashboard
+chooser still uses its existing template. Lists have a host-defined content
+limit: ordinary dashboards scroll on one screen, while larger dashboards add
+Previous/Next rows. Every saved control and action remains reachable; state
+updates preserve the current page. This differs from the previous lazy grid,
+which could fetch more items without paging.
+
+Android Auto 17.9 was reported to reset the grid's position for real state
+updates, including changes from the phone without an Auto tap. The list is an
+experiment with a different host renderer, **not a verified fix** for that host.
+It keeps row titles, row counts and group headings stable during state-only
+updates, in line with the classic list's refresh rules. Reconnection uses one
+localized popup per outage and retains the last-known control appearance.
+Robolectric verifies client/IPC behavior, not Android Auto's renderer. See the
+[scroll investigation](ANDROID_AUTO_SCROLL.md). Android Auto controls row geometry,
+button sizes and scrolling affordances.
 
 API 6/7 hosts retain the previous list/detail screens and pagination to respect
-their hard content limits. Update Android Auto for the grouped scrolling UI.
-The 1.8 release candidate is used for the API 8 template and scroll preservation.
+their hard content limits. API 8 is required for two inline actions per row.
 Editing, credentials, text entry and connection setup are handled on the phone.
 
 ## Connections and lifecycle
@@ -133,12 +136,13 @@ For development, use Google's [Desktop Head Unit (DHU)](https://developer.androi
    the SDK's `extras/google/auto/desktop-head-unit`.
 5. Open WireDash in the DHU launcher. Select a dashboard. On an API 8 host,
    check that the saved groups and buttons are shown directly; scroll through
-   a dashboard larger than one screen without Next/Previous controls.
+   the list and check that a shutter has Open/Close in one row. Larger dashboards
+   may have Previous/Next rows at the host content limit.
 6. Check a scalar WB switch and a gate: command topics/payloads must match the
    phone, button titles/icons must match, and repeated gate taps must publish
    another `1`. Test a command-only cover without state messages.
    Tap two different controls and verify sending messages appear without a
-   grid redraw or jump to the top. Each control becomes repeatable after its
+   list redraw or jump to the top. Each control becomes repeatable after its
    independent one-second command guard expires.
 7. Hide/return to the car app and disconnect/reconnect its network route.
    A Reconnecting popup must appear once per outage without changing control
@@ -160,11 +164,11 @@ isolated demo database and a loopback MQTT broker. It preserves screenshots,
 UI dumps, MQTT traffic and logcat even when the host fails. Its Automotive
 adapter is only a test overlay; the phone APK is unchanged.
 
-Runtime result on 2026-10-26: the latest available Google APIs image,
+Historical grid runtime result on 2026-10-26: the latest available Google APIs image,
 `android-35-ext15;android-automotive;x86_64` revision 4, opens the session but
 logs `No presenter available for template type: SectionedItemTemplate` and
-displays a blank surface. This workflow currently provides a diagnostic,
-not a successful preview of the new scrolling dashboard. Google introduced
+displays a blank surface. That run provides a diagnostic,
+not a successful preview of the new list experiment. Google introduced
 full support for this template on Android Auto first; see the
 [1.8 release notes](https://developer.android.com/jetpack/androidx/releases/car-app#1.8.0-alpha01).
 Use a phone connected to the DHU to verify the projected Android Auto layout.
@@ -176,10 +180,10 @@ freshness, missing/removed controls, offline/expired-command handling, and saved
 section ordering, orphaned tiles, group renaming and configured button appearance.
 
 `cd android && ./gradlew :app:testFossDebugUnitTest` uses Robolectric and the
-Car App testing library to build real host templates, request all items beyond
-the old list/grid limits, check direct button commands, independent command guards and sending messages,
-require zero progress-only template submissions, the scroll preservation
-strategy and stable click delegates,
+Car App testing library to build real host templates, verify grouped list rows, native toggles, paired cover actions and every preset
+beyond the host limit. They check direct commands, independent guards, sending
+messages, zero progress-only template submissions and stable delegates.
+The previous grid remains covered for comparison, including its scroll policy,
 and verify that stale callbacks/pending indicators do not survive hiding and
 resuming the car screen. The older-host pagination
 fallback is also tested. CI runs these tests before uploading the APK.

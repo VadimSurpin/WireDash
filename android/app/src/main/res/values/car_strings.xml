@@ -1,4 +1,5 @@
 <resources>
+    <string name="car_controls">Controls</string>
     <string name="car_loading">Loading…</string>
     <string name="car_setup">Open WireDash on your phone and add switches, buttons or covers to a dashboard.</string>
     <string name="car_removed">This dashboard or control was removed. Update your dashboards on the phone.</string>

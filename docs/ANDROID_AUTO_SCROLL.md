@@ -7,7 +7,7 @@ state-refresh reset. No verified workaround for this host has been established.
 
 ## Public API limits
 
-The dashboard already explicitly sets
+The previous grouped grid explicitly sets
 [`SCROLL_STATE_PRESERVE_INDEX`](https://developer.android.com/reference/androidx/car/app/model/SectionedItemTemplate.Builder#setScrollStatePersistenceStrategy(int)).
 That request applies when the host treats a template as a refresh. The API
 offers reset-to-top or preserve-index strategies, without a target scroll index
@@ -70,3 +70,26 @@ submissions for reconnect-only or command-progress feedback. They cannot assert
 the real host's scroll position. Use the projected DHU or the affected car for
 that check: the available Automotive OS emulator does not render this template
 (see [verification](ANDROID_AUTO.md#verification)).
+
+## Build 104 list experiment
+
+The API 8 dashboard now tries a classic grouped
+[`ListTemplate`](https://developer.android.com/reference/androidx/car/app/model/ListTemplate)
+instead of the lazy grid. Saved group headings, row counts and control titles
+remain stable during state updates; toggles and action icons reflect feedback.
+Each shutter/gate has Open and Close together, using the
+[two inline actions supported on API 8](https://developer.android.com/reference/androidx/car/app/model/Row.Builder#addAction(androidx.car.app.model.Action)).
+Stop and additional presets occupy more rows. Larger dashboards page at the
+host's list limit rather than silently dropping controls.
+
+The list reuses unchanged rows, action delegates and item lists. Starting or
+finishing a command and losing/recovering connectivity submit no template when
+there is no actual appearance change. State changes still update the appropriate
+row; they are not hidden to mask scrolling. Local `list viewport` logs report
+visible ranges. There remains no public manual-scroll command for this template.
+
+Tests cover grouped order, paired actions, native toggles, phone-origin state,
+retained offline rows with guarded commands, complete pagination, saved presets,
+removed/hidden actions and offline cameras. These are client-side checks. The
+list's real scroll position must still be tested on the affected Android Auto
+17.9 host before calling this a fix.
