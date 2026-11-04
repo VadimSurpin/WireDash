@@ -57,12 +57,20 @@ void shortcutEngine() async {
     PlatformDispatcher.instance.locale.languageCode,
   ), ignoreError: ignoreDroppedConnection);
   const channel = MethodChannel('zigdash/shortcuts');
-  channel.setMethodCallHandler(
-    (call) => worker.call(
-      call.method,
-      Map<String, Object?>.from(call.arguments as Map? ?? {}),
-    ),
-  );
+  channel.setMethodCallHandler((call) async {
+    try {
+      return await worker.call(
+        call.method,
+        Map<String, Object?>.from(call.arguments as Map? ?? {}),
+      );
+    } catch (_) {
+      if (!worker.isRunning) {
+        // A live root channel must not hide a dead worker from native recovery.
+        throw PlatformException(code: 'command_worker_unavailable');
+      }
+      rethrow;
+    }
+  });
   await channel.invokeMethod<void>('ready');
 }
 

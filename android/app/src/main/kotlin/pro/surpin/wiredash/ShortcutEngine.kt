@@ -27,10 +27,16 @@ object ShortcutEngine {
     private fun requests(app: Context): ShortcutRequests = requests ?: ShortcutRequests(main,
         { ready, failed -> start(app, ready, failed) },
         { method, args, done ->
-            channel!!.invokeMethod(method, args, object : MethodChannel.Result {
+            val connection = channel!!
+            connection.invokeMethod(method, args, object : MethodChannel.Result {
                 override fun success(result: Any?) = done(result as? String ?: "{}")
                 override fun error(code: String, msg: String?, details: Any?) {
                     Log.e(TAG, "$method failed: $code")
+                    if (code == "command_worker_unavailable") main.post {
+                        // Destroy outside the JNI response callback and ignore
+                        // an error belonging to an engine already replaced.
+                        if (channel === connection) requests?.backendFailed()
+                    }
                     done("{\"outcome\":\"error\"}")
                 }
                 override fun notImplemented() = done("{\"outcome\":\"error\"}")

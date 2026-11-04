@@ -21,6 +21,9 @@ internal class ShortcutRequests(
     private var generation = 0
     private var startupTimeout: Runnable? = null
 
+    /** A dead worker must invalidate the otherwise live root channel too. */
+    fun backendFailed() = reset("{\"outcome\":\"unreachable\"}")
+
     fun warm() {
         if (ready || starting) return
         starting = true

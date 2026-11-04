@@ -15,6 +15,28 @@ import java.util.concurrent.TimeUnit
 @Config(sdk = [34])
 @LooperMode(LooperMode.Mode.PAUSED)
 class ShortcutRequestsTest {
+    @Test fun deadBackgroundWorkerReplacesTheEngineWithoutReplayingCommands() {
+        var starts = 0
+        var stops = 0
+        val methods = mutableListOf<String>()
+        val callbacks = mutableListOf<(String) -> Unit>()
+        val results = mutableListOf<String>()
+        val requests = ShortcutRequests(Handler(Looper.getMainLooper()), { ready, _ -> starts++; ready() },
+            { method, _, done -> methods.add(method); callbacks.add(done) }, { stops++ })
+        requests.call("carCommand", emptyMap(), 12_000, results::add)
+        requests.call("carOpen", emptyMap(), 12_000, results::add)
+        requests.backendFailed()
+        assertEquals(1, stops)
+        assertEquals(listOf("{\"outcome\":\"unreachable\"}", "{\"outcome\":\"unreachable\"}"), results)
+        callbacks.forEach { it("late") }
+        assertEquals(2, results.size)
+        requests.call("carCatalog", emptyMap(), 12_000, results::add)
+        assertEquals(2, starts)
+        assertEquals(listOf("carCommand", "carOpen", "carCatalog"), methods)
+        callbacks.last()("ok")
+        assertEquals("ok", results.last())
+    }
+
     @Test fun nativeRuntimeStartupFailureReturnsAnErrorWithoutCrashingTheHost() {
         val results = mutableListOf<String>()
         val requests = ShortcutRequests(Handler(Looper.getMainLooper()),

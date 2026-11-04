@@ -20,6 +20,8 @@ class CommandWorker {
   Object? _failure;
   var _nextId = 0;
 
+  bool get isRunning => _failure == null;
+
   static Future<CommandWorker> start(
     CommandWorkerInitializer initialize,
     Object? configuration, {

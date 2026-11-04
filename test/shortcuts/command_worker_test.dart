@@ -87,6 +87,7 @@ void main() {
       final waiting = expectLater(delayed, throwsStateError);
       await expectLater(worker.call('exit', {}), throwsStateError);
       await waiting;
+      expect(worker.isRunning, isFalse);
       await expectLater(worker.call('next', {}), throwsStateError);
     },
   );
