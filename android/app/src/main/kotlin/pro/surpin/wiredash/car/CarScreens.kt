@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
+import androidx.car.app.WireDashUpdateScreen
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
@@ -50,7 +51,7 @@ internal fun JSONArray.objects(): List<JSONObject> =
 internal abstract class PollingCarScreen(
     context: CarContext,
     protected val bridge: CarBridge,
-) : Screen(context) {
+) : WireDashUpdateScreen(context) {
     protected val handler = Handler(Looper.getMainLooper())
     protected var data: JSONObject? = null
     protected var visible = false
@@ -221,15 +222,30 @@ internal abstract class PagedCarScreen(context: CarContext, bridge: CarBridge) :
 
 internal class DashboardCarScreen(context: CarContext, bridge: CarBridge) : PagedCarScreen(context, bridge) {
     override val method = "carCatalog"
+
+    override fun stateUpdateStructure(): String? = data?.let {
+        if (it.has("outcome")) "catalog/error" else "catalog/" + it.optJSONArray("dashboards").toString()
+    }
+
+    private fun placeholder(text: Int): Template {
+        val row = Row.Builder().setTitle(carContext.getString(text))
+            .addText(carContext.getString(R.string.car_retry)).setOnClickListener { refresh() }.build()
+        return if (carContext.carAppApiLevel >= 8) SectionedItemTemplate.Builder()
+            .setHeader(Header.Builder().setTitle("WireDash").setStartHeaderAction(Action.APP_ICON).build())
+            .addSection(RowSection.Builder().setItems(listOf(row)).build()).build()
+        else ListTemplate.Builder().setTitle("WireDash").setHeaderAction(Action.APP_ICON)
+            .setSingleList(ItemList.Builder().addItem(row).build()).build()
+    }
+
     override fun onGetTemplate(): Template {
         val current = data ?: return if (carContext.carAppApiLevel >= 8)
             SectionedItemTemplate.Builder().setHeader(Header.Builder().setTitle("WireDash")
                 .setStartHeaderAction(Action.APP_ICON).build()).setLoading(true).build()
             else ListTemplate.Builder().setTitle("WireDash")
                 .setHeaderAction(Action.APP_ICON).setLoading(true).build()
-        if (current.has("outcome")) return message(R.string.car_error, true)
+        if (current.has("outcome")) return placeholder(R.string.car_error)
         val entries = current.optJSONArray("dashboards")?.objects().orEmpty()
-        if (entries.isEmpty()) return message(R.string.car_setup, true)
+        if (entries.isEmpty()) return placeholder(R.string.car_setup)
         return list("WireDash", true, entries) { entry ->
             Row.Builder().setTitle(entry.getString("name")).addText(entry.getString("home"))
                 .setBrowsable(true).setOnClickListener {

@@ -48,6 +48,19 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
     private var previous: SectionedItemTemplate? = null
     private var previousGroups: List<Group> = emptyList()
 
+    override fun stateUpdateStructure(): String? {
+        val current = data ?: return null
+        if (current.has("outcome") || current.optJSONArray("controls")?.length() == 0) return null
+        val controls = current.optJSONArray("controls")?.objects() ?: return null
+        return JSONArray().put(current.optString("id")).put(current.optString("name"))
+            .put(current.optJSONArray("sections") ?: JSONArray())
+            .put(JSONArray(controls.map { control ->
+                JSONArray().put(control.optString("id")).put(control.optString("kind"))
+                    .put(control.optString("name")).put(control.optString("sectionId"))
+                    .put(control.optBoolean("waitForFeedback")).put(control.optJSONArray("actions"))
+            })).toString()
+    }
+
     override fun buildTemplate(): Template {
         val current = data
         val header = Header.Builder().setTitle(current?.optString("name", "WireDash") ?: "WireDash")

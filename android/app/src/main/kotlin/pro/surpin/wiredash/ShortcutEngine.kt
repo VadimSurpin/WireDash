@@ -94,6 +94,10 @@ object ShortcutEngine {
                 Log.e(TAG, "Headless engine startup failed", error)
                 failed()
             }
+            catch (error: LinkageError) {
+                Log.e(TAG, "Headless native runtime could not initialize", error)
+                failed()
+            }
         }
     }
 

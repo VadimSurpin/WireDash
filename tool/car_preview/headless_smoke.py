@@ -147,6 +147,8 @@ try:
     command("ON", "1")
     probe("carClose")
     assert probe("removePhoneTask")["removedTasks"] == 0
+    from host_smoke import run_host_smoke
+    run_host_smoke(shell, probe, traffic)
     log = shell("logcat", "-d")
     assert "FATAL EXCEPTION" not in log and "Unhandled Exception:" not in log
     assert "ANR in " + PACKAGE not in log

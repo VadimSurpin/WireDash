@@ -15,6 +15,16 @@ import java.util.concurrent.TimeUnit
 @Config(sdk = [34])
 @LooperMode(LooperMode.Mode.PAUSED)
 class ShortcutRequestsTest {
+    @Test fun nativeRuntimeStartupFailureReturnsAnErrorWithoutCrashingTheHost() {
+        val results = mutableListOf<String>()
+        val requests = ShortcutRequests(Handler(Looper.getMainLooper()),
+            { _, _ -> throw UnsatisfiedLinkError("test runtime unavailable") },
+            { _, _, _ -> fail("Unavailable runtime must never receive a command") })
+        requests.call("carCatalog", emptyMap(), 12_000, results::add)
+        assertEquals(listOf("{\"outcome\":\"error\"}"), results)
+        shadowOf(Looper.getMainLooper()).idleFor(30, TimeUnit.SECONDS)
+        assertEquals(1, results.size)
+    }
     @Test fun missingDartReadyTimesOutAndIgnoresTheAbandonedStartup() {
         val callbacks = mutableListOf<() -> Unit>()
         val results = mutableListOf<String>()

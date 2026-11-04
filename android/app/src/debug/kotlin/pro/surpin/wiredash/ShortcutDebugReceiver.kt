@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.app.ActivityManager
+import android.os.Build
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -18,6 +20,17 @@ class ShortcutDebugReceiver : BroadcastReceiver() {
         val tap = System.currentTimeMillis()
         val pending = goAsync()
         val cmd = intent.getStringExtra("cmd")
+        if (cmd == "carExitInfo") {
+            val exits = if (Build.VERSION.SDK_INT >= 30)
+                ctx.getSystemService(ActivityManager::class.java).getHistoricalProcessExitReasons(ctx.packageName, 0, 8)
+            else emptyList()
+            Log.i("WireDashAutoProbe", JSONObject().put("exits", JSONArray(exits.map {
+                JSONObject().put("process", it.processName).put("reason", it.reason)
+                    .put("status", it.status).put("importance", it.importance).put("timestamp", it.timestamp)
+            })).toString())
+            pending.finish()
+            return
+        }
         if (cmd == "removePhoneTask") {
             // Same OS task-removal operation as swiping Recents, debug only.
             val tasks = ctx.getSystemService(ActivityManager::class.java).appTasks

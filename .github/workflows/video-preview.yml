@@ -11,6 +11,7 @@ on:
       - 'packages/wiredash_plugin_api/**'
       - 'integration_test/video_stream_test.dart'
       - 'tool/video_preview/**'
+      - 'tool/car_preview/**'
       - '.github/workflows/video-preview.yml'
       - 'pubspec.*'
 

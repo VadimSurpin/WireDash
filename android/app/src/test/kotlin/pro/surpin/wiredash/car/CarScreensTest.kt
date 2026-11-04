@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.car.app.HandshakeInfo
 import androidx.car.app.OnDoneCallback
 import androidx.car.app.Screen
+import androidx.car.app.TemplateProtocol
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.GridItem
 import androidx.car.app.model.GridTemplate
@@ -406,6 +407,86 @@ class CarScreensTest {
         val configured = screen.onGetTemplate() as SectionedItemTemplate
         assertSame(renamed.sections[0], configured.sections[0])
         assertNotEquals(renamed.sections[1].itemsDelegate.hashCode(), configured.sections[1].itemsDelegate.hashCode())
+    }
+
+    @Test fun hostProtocolKeepsIdentityForStateUpdatesAndChangesItForConfiguration() {
+        modernHost()
+        val gate = bridge.response.getJSONArray("controls").getJSONObject(0)
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        start(screen)
+        val first = TemplateProtocol.getTemplate(context)
+        gate.put("state", "OPEN").put("waitForFeedback", false)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val state = TemplateProtocol.getTemplate(context)
+        assertEquals(first.id, state.id)
+        assertEquals(state.id, state.templateInfosForScreenStack.first().templateId)
+        assertEquals(CarColor.GREEN, listRows(screen).single().actions.first().icon!!.tint)
+        gate.put("state", "CLOSE").put("pending", "OPEN")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(first.id, TemplateProtocol.getTemplate(context).id)
+        gate.put("name", "New gate name")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val renamed = TemplateProtocol.getTemplate(context)
+        assertNotEquals(first.id, renamed.id)
+        gate.getJSONArray("actions").getJSONObject(0).put("icon", "rollerOpen")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertNotEquals(renamed.id, TemplateProtocol.getTemplate(context).id)
+        assertTrue(bridge.commands.isEmpty())
+    }
+
+    @Test fun hostProtocolDistinguishesNavigationAndRestoresTheActualBackIdentity() {
+        modernHost()
+        val catalog = JSONObject().put("dashboards", JSONArray().put(JSONObject()
+            .put("id", "d").put("name", "Driveway").put("home", "Home")))
+        bridge.response = catalog
+        val selector = DashboardCarScreen(context, bridge)
+        start(selector)
+        val root = TemplateProtocol.getTemplate(context)
+        bridge.response = FakeBridge.snapshot()
+        val child = DashboardListCarScreen(context, bridge, "d")
+        start(child)
+        val dashboard = TemplateProtocol.getTemplate(context)
+        assertNotEquals(root.id, dashboard.id)
+        assertEquals(2, dashboard.templateInfosForScreenStack.size)
+        val info = VideoInfoCarScreen(context, "Camera")
+        start(info)
+        val detail = TemplateProtocol.getTemplate(context)
+        assertNotEquals(dashboard.id, detail.id)
+        context.getCarService(androidx.car.app.ScreenManager::class.java).pop()
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(dashboard.id, TemplateProtocol.getTemplate(context).id)
+        bridge.response = catalog
+        context.getCarService(androidx.car.app.ScreenManager::class.java).pop()
+        shadowOf(Looper.getMainLooper()).idle()
+        val returned = TemplateProtocol.getTemplate(context)
+        assertEquals(root.id, returned.id)
+        assertEquals(1, returned.templateInfosForScreenStack.size)
+        assertEquals(root.id, returned.templateInfosForScreenStack.single().templateId)
+    }
+
+    @Test fun coldCatalogErrorsKeepTheLoadingTemplateTypeAndRecoverWithoutNavigation() {
+        for (api in listOf(6, 8)) {
+            context.updateHandshakeInfo(HandshakeInfo("com.google.android.projection.gearhead", api))
+            bridge.delayed = true
+            val selector = DashboardCarScreen(context, bridge)
+            val lifecycle = start(selector)
+            val loading = TemplateProtocol.getTemplate(context)
+            bridge.callbacks.removeAt(0)(JSONObject().put("outcome", "unreachable"))
+            shadowOf(Looper.getMainLooper()).idle()
+            val failed = TemplateProtocol.getTemplate(context)
+            assertEquals(loading.template.javaClass, failed.template.javaClass)
+            bridge.delayed = false
+            bridge.response = JSONObject().put("outcome", "error")
+            shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+            assertEquals(failed.id, TemplateProtocol.getTemplate(context).id)
+            bridge.response = JSONObject().put("dashboards", JSONArray().put(JSONObject()
+                .put("id", "d").put("name", "Recovered").put("home", "Home")))
+            shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+            val recovered = TemplateProtocol.getTemplate(context)
+            assertEquals(loading.template.javaClass, recovered.template.javaClass)
+            assertFalse(recovered.template is MessageTemplate)
+            lifecycle.moveToState(Lifecycle.State.DESTROYED)
+        }
     }
 
     @Test fun groupedListRetainedActionsRejectRemovedControlsAndHiddenScreens() {
@@ -1082,7 +1163,8 @@ class CarScreensTest {
         bridge.response = JSONObject().put("dashboards", JSONArray())
         val screen = DashboardCarScreen(context, bridge)
         start(screen)
-        assertTrue(screen.onGetTemplate() is MessageTemplate)
+        val template = screen.onGetTemplate() as ListTemplate
+        assertEquals(context.getString(R.string.car_setup), (template.singleList!!.items.single() as Row).title.toString())
         assertTrue(bridge.commands.isEmpty())
     }
 

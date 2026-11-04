@@ -3,7 +3,8 @@
 The affected host is Android Auto 17.9. The user confirmed that fresh state
 published from the phone resets the car dashboard to the top even without a car
 tap. Sending feedback via native popups is useful, but does not fix this separate
-state-refresh reset. No verified workaround for this host has been established.
+state-refresh reset. The user also confirmed the classic build 104 list reset. Build 106 tests a
+state-update identity workaround; its actual host scrolling still needs verification.
 
 ## Public API limits
 
@@ -114,3 +115,29 @@ A regression test requests the last row of a dashboard with at least 125 control
 checks that every title is present without navigation rows, sends its command,
 and requires zero progress-only template submissions. Tests also require stable
 unrelated sections while state feedback and group names change.
+
+## Build 106 state-update identity
+
+Both renderers have reset on the affected host. Car App Library 1.8.0-rc01's
+`Screen.getTemplateWrapper()` assigns a new UUID for each host request except
+Back. Model-only tests in previous builds did not exercise that wrapper/stack
+path. Build 106 keeps the existing screen ID for telemetry-only changes, using
+the library's same-ID mechanism through a small package adapter,
+`androidx.car.app.WireDashUpdateScreen`.
+
+This is an explicit compatibility dependency on the pinned library's
+package-private `setUseLastTemplateId` mechanism. It uses no reflection or Android
+hidden APIs. It does not mark host-owned `isRefresh` flags or alter task counters.
+The adapter opts in only when the ordered controls, their names/action settings,
+and the group structure match. Configuration changes use the normal ID path.
+New screen objects still receive fresh IDs; normal Back restores the prior ID.
+Changes to the Car App Library require the protocol tests to pass before adoption.
+
+Robolectric tests call the same SDK `ScreenManager.getTopTemplate()` path as its
+host Binder, checking ID/stack consistency, actual changed state, configuration
+changes and forward/Back navigation. A separate-process Android probe additionally
+binds the real car service and verifies IDs while actual MQTT feedback changes.
+Debug `WireDashAuto` protocol logs include the template UUID and whether it was
+reused, without names or broker data. These checks target the protocol, not the
+host's scroll implementation. The
+reported Android Auto 17.9 reset remains a physical-device verification item.

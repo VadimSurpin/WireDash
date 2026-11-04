@@ -1,4 +1,6 @@
 <resources>
+    <string name="car_connection_channel">Android Auto connection</string>
+    <string name="car_connection_active">Connected to Android Auto</string>
     <string name="car_controls">Controls</string>
     <string name="car_loading">Loading…</string>
     <string name="car_setup">Open WireDash on your phone and add switches, buttons or covers to a dashboard.</string>

@@ -4,7 +4,7 @@ This branch adds a projected Android Auto **IoT** app using AndroidX Car App
 Library 1.8.0-rc01. Configure WireDash on the phone; the car presents native
 dashboard groups and large action buttons. On hosts supporting Car App API 8,
 select a dashboard once and operate its controls directly in a grouped scrolling
-list with `RowSection` groups (build 105).
+list with `RowSection` groups (build 106).
 
 ## Controls
 
@@ -59,16 +59,22 @@ the classic host list limit and `ListTemplate`'s 100-row cap. The chooser keeps
 its existing scrolling row template. Simply removing pagination from the classic
 list would let the host truncate controls beyond its limit.
 
-Android Auto 17.9 was reported to reset the earlier grid's position for real
-state updates, including changes from the phone without an Auto tap. The row
-list uses the same parent template with a row renderer and explicitly requests
-preserve-index. **Its behavior on that host still needs testing.** Unchanged
-rows, action delegates and lazy sections are reused; command progress and
-connection-only changes do not submit templates. Reconnection uses one
+Android Auto 17.9 was reported to reset both the earlier grid and classic list
+for state updates. Build 106 retains the scrolling row layout and changes the
+update protocol: state-only snapshots reuse the current screen's template ID.
+Control IDs, order, names, group structure and action settings form a structural
+key; an edit changes that key and follows the normal ID path. Forward navigation
+and Back keep their normal screen identities. Preserve-index is still requested.
+The compatibility adapter is pinned to Car App Library 1.8.0-rc01; see the
+[scroll investigation](ANDROID_AUTO_SCROLL.md) before upgrading that dependency.
+
+Unchanged rows, action delegates and lazy sections are reused. Command progress
+and connection-only changes do not submit templates. Reconnection uses one
 localized popup per outage and retains the last-known control appearance.
-Robolectric verifies client/IPC behavior, not Android Auto's renderer. See the
-[scroll investigation](ANDROID_AUTO_SCROLL.md). Android Auto controls row geometry,
-button sizes and scrolling affordances.
+Protocol tests check IDs, fresh state and Back through the real SDK wrapper path;
+they do not establish the scroll position of Android Auto's actual renderer.
+The affected 17.9 host still needs a device test. Android Auto controls row
+geometry, button sizes and scrolling affordances.
 
 API 6/7 hosts retain the previous list/detail screens and pagination to respect
 their hard content limits. API 8 is required for two inline actions per row.
@@ -93,6 +99,14 @@ SQLite independently of the phone UI. Timed-out requests are removed from the
 startup queue. Transient engine errors retain the current dashboard with
 Reconnecting feedback rather than replacing it with another template. The native
 WireGuard implementation shares its peer with phone widgets and the phone UI.
+
+The visible car session now holds a `connectedDevice` foreground service with a
+quiet "Connected to Android Auto" notification. It is released when the session
+stops; the phone UI is not opened. This protects the process/network work while
+the phone app is closed. Foreground promotion rejection is logged and handled
+without crashing. The service does not warm Flutter during its initial bind:
+loading starts asynchronously when the first visible screen requests data.
+Cold-start errors keep the chooser's template type and provide an inline retry.
 
 The headless engine registers only paths, preferences, secure storage, SQLite and
 WireGuard plugins. It does not load the phone's video or activity plugins.
@@ -215,3 +229,19 @@ builds.
 Official references: [IoT apps](https://developer.android.com/training/cars/apps/iot),
 [projected-app manifest](https://developer.android.com/training/cars/apps/auto),
 [Car App Library releases](https://developer.android.com/jetpack/androidx/releases/car-app).
+
+Build 106 also runs a debug-only protocol host in a separate process. It binds
+the real `CarAppService`, performs the host handshake and lifecycle calls, reads
+actual template wrappers, changes broker state and taps a real row. It checks
+foreground lifetime, phone-task removal, stable state-update IDs, Back and a new
+forward screen. It never opens the phone before its cold chooser check. The
+probe is guarded by the system `DUMP` permission and excluded from release APKs.
+This is a Binder/service test, not a simulation of Google's renderer.
+
+Debug builds can report recent OS process-exit reasons without saved names,
+topics or credentials:
+
+```sh
+adb shell am broadcast -n pro.surpin.wiredash/.ShortcutDebugReceiver --es cmd carExitInfo
+adb logcat -d -s WireDashAutoProbe:I WireDashAuto:I ZigDashShortcuts:E '*:S'
+```

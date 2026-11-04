@@ -119,14 +119,15 @@ whole-device Wiren Board and Zigbee2MQTT panels are also supported.
 The current feature build shows a grouped scrolling list on Car App API 8 hosts.
 Shutters and gates show Open/Close together in one row; Stop and additional
 presets use further rows. Switches use native toggles. All rows are available by
-scrolling, without Next/Previous controls. Sending/reconnecting feedback uses popups without
-refreshing rows. Whether this avoids Android Auto 17.9's state-refresh scroll
-reset still needs testing in the car. Older API 6/7 hosts retain list/detail
-screens. Layout and button sizes follow the car host's native templates.
+scrolling, without Next/Previous controls. Sending/reconnecting feedback uses
+popups without refreshing rows. State-only updates retain their screen identity in build 106;
+Android Auto 17.9 scroll behavior still needs testing in the car. Older API 6/7
+hosts retain list/detail screens. Layout and button sizes follow the car host's native templates.
 
 The car can connect through MQTT or embedded WireGuard without the phone
-dashboard running. It restores connections and state subscriptions when
-returning from the background and shows reconnecting feedback. Configure
+dashboard running. An active car session holds a foreground connection service
+with a quiet Android Auto notification. It restores connections and subscriptions
+when returning from the background and shows reconnecting feedback. Configure
 command-only gate/roller buttons to send a command with a one-second duplicate
 guard. Auto shows a sending popup while the phone uses its configured spinner.
 

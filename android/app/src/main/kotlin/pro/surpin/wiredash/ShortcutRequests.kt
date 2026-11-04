@@ -42,6 +42,8 @@ internal class ShortcutRequests(
             })
         } catch (_: Exception) {
             if (generation == attempt) reset()
+        } catch (_: LinkageError) {
+            if (generation == attempt) reset()
         }
     }
 

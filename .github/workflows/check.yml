@@ -49,6 +49,11 @@ jobs:
       - run: flutter pub get
       - name: Build Android debug APK
         run: flutter build apk --debug --flavor foss --split-per-abi --target-platform android-arm64
+      - name: Cache Robolectric Android runtime
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/robolectric/android-all-instrumented
+          key: robolectric-4.16.1-android34-i7-${{ runner.os }}
       - name: Android Auto template and lifecycle tests
         run: ./gradlew :app:testFossDebugUnitTest
         working-directory: android
