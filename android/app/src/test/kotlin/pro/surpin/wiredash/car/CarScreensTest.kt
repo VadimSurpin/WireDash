@@ -115,7 +115,7 @@ class CarScreensTest {
         (screen.onGetTemplate() as SectionedItemTemplate).sections.flatMap { items(it) }.map { it as GridItem }
 
     private fun listRows(screen: DashboardListCarScreen): List<Row> =
-        (screen.onGetTemplate() as ListTemplate).sectionedLists.flatMap { it.itemList.items }.map { it as Row }
+        (screen.onGetTemplate() as SectionedItemTemplate).sections.flatMap { items(it) }.map { it as Row }
 
     private fun commandButton(id: String, section: String? = null): JSONObject = JSONObject()
         .put("id", id).put("name", id).put("kind", "button").put("sectionId", section)
@@ -202,10 +202,10 @@ class CarScreensTest {
         val child = context.getCarService(androidx.car.app.ScreenManager::class.java).top
         assertTrue(child is DashboardListCarScreen)
         start(child)
-        assertTrue((child.onGetTemplate() as ListTemplate).isLoading)
+        assertTrue((child.onGetTemplate() as SectionedItemTemplate).isLoading)
         bridge.callbacks.forEach { it(FakeBridge.snapshot()) }
         shadowOf(Looper.getMainLooper()).idle()
-        assertFalse((child.onGetTemplate() as ListTemplate).isLoading)
+        assertFalse((child.onGetTemplate() as SectionedItemTemplate).isLoading)
     }
 
     @Test fun groupedListKeepsSavedGroupsAndPairsGateActionsInOneRow() {
@@ -219,8 +219,8 @@ class CarScreensTest {
             .put(JSONObject().put("id", "gates").put("name", "Gates")))
         val screen = DashboardListCarScreen(context, bridge, "d")
         start(screen)
-        val groups = (screen.onGetTemplate() as ListTemplate).sectionedLists
-        assertEquals(listOf("Controls", "Lights", "Gates"), groups.map { it.header.toString() })
+        val groups = (screen.onGetTemplate() as SectionedItemTemplate).sections
+        assertEquals(listOf("Controls", "Lights", "Gates"), groups.map { it.title.toString() })
         assertEquals(listOf("Orphan", "Light", "Gate"), listRows(screen).map { it.title.toString() })
         val gate = listRows(screen).last()
         assertEquals(listOf("Enter", "Exit"), gate.actions.map { it.title.toString() })
@@ -244,7 +244,10 @@ class CarScreensTest {
         shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
         assertEquals(submissions, lifecycle.templatesReturned.size)
         assertSame(original, screen.onGetTemplate())
-        assertSame(gate, listRows(screen).single())
+        val retained = listRows(screen).single()
+        gate.actions.zip(retained.actions).forEach { (old, current) ->
+            assertSame(clickBinder(old.onClickDelegate), clickBinder(current.onClickDelegate))
+        }
         gate.actions[0].onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(listOf("OPEN", "CLOSE", "OPEN"), bridge.commands.map { it["actionId"] })
@@ -322,11 +325,11 @@ class CarScreensTest {
         assertEquals("POSITION_2", bridge.commands.single()["actionId"])
     }
 
-    @Test fun groupedListPagesAtHostLimitWithoutLosingGroupsOrResettingOnProgress() {
+    @Test fun groupedListScrollsPastClassicLimitsWithoutNavigationRowsOrProgressRefresh() {
         modernHost()
         val limit = context.getCarService(ConstraintManager::class.java)
-            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST).coerceIn(3, 100)
-        val count = limit + 5
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
+        val count = maxOf(125, limit + 5)
         val controls = JSONArray()
         repeat(count) { controls.put(commandButton("Button $it", if (it < count / 2) "a" else "b")) }
         bridge.response.put("controls", controls).put("sections", JSONArray()
@@ -334,25 +337,67 @@ class CarScreensTest {
             .put(JSONObject().put("id", "b").put("name", "Second")))
         val screen = DashboardListCarScreen(context, bridge, "d")
         val lifecycle = start(screen)
-        val seen = mutableListOf<String>()
-        while (true) {
-            val current = listRows(screen)
-            assertTrue(current.size <= limit)
-            seen.addAll(current.filter { it.title.toString().startsWith("Button ") }.map { it.title.toString() })
-            val next = current.firstOrNull { it.title.toString() == context.getString(R.string.car_next) } ?: break
-            next.onClickDelegate!!.sendClick(done)
-            shadowOf(Looper.getMainLooper()).idle()
-        }
-        assertEquals((0 until count).map { "Button $it" }, seen)
-        val lastPage = screen.onGetTemplate()
+        val original = screen.onGetTemplate() as SectionedItemTemplate
+        assertEquals(listOf("First", "Second"), original.sections.map { it.title.toString() })
+        assertTrue(original.sections.all { it is androidx.car.app.model.RowSection })
+        assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX, original.scrollStatePersistenceStrategy)
+        val all = listRows(screen)
+        assertEquals((0 until count).map { "Button $it" }, all.map { it.title.toString() })
+        assertFalse(all.any { it.title.toString() in listOf(context.getString(R.string.car_next), context.getString(R.string.car_previous)) })
         val submissions = lifecycle.templatesReturned.size
-        listRows(screen).first().onClickDelegate!!.sendClick(done)
-        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
-        assertSame(lastPage, screen.onGetTemplate())
-        assertEquals(submissions, lifecycle.templatesReturned.size)
-        listRows(screen).last().onClickDelegate!!.sendClick(done) // Previous.
+        // Ask for a later item range, as a real scrolling host does. The last
+        // row is beyond both the reported limit and classic 100-row cap.
+        val lastSection = original.sections.last()
+        var tail: List<Item>? = null
+        lastSection.itemsDelegate.requestItemRange(lastSection.itemsDelegate.size - 1,
+            lastSection.itemsDelegate.size - 1, object : OnDoneCallback {
+                @Suppress("UNCHECKED_CAST")
+                override fun onSuccess(response: Bundleable?) { tail = response!!.get() as List<Item> }
+                override fun onFailure(response: Bundleable) { fail("Tail request failed") }
+            })
         shadowOf(Looper.getMainLooper()).idle()
-        assertNotSame(lastPage, screen.onGetTemplate())
+        val last = requireNotNull(tail).single() as Row
+        assertEquals("Button ${count - 1}", last.title.toString())
+        last.onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals("Button ${count - 1}", bridge.commands.single()["controlId"])
+        assertSame(original, screen.onGetTemplate())
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+        original.sections.zip((screen.onGetTemplate() as SectionedItemTemplate).sections).forEach { (old, current) ->
+            assertSame(old, current)
+            assertSame(old.itemsDelegate, current.itemsDelegate)
+        }
+    }
+
+    @Test fun groupedListStateAndGroupRenameUpdateOnlyTheChangedSection() {
+        modernHost()
+        val gate = bridge.response.getJSONArray("controls").getJSONObject(0).put("sectionId", "gates").put("waitForFeedback", true)
+        bridge.response.getJSONArray("controls").put(commandButton("Light", "lights"))
+        val groups = JSONArray()
+            .put(JSONObject().put("id", "lights").put("name", "Lights"))
+            .put(JSONObject().put("id", "gates").put("name", "Gates"))
+        bridge.response.put("sections", groups)
+        val screen = DashboardListCarScreen(context, bridge, "d")
+        val lifecycle = start(screen)
+        val original = screen.onGetTemplate() as SectionedItemTemplate
+        val before = listRows(screen)
+        val submissions = lifecycle.templatesReturned.size
+        gate.put("state", "OPEN")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val state = screen.onGetTemplate() as SectionedItemTemplate
+        assertSame(original.sections[0], state.sections[0])
+        assertNotSame(original.sections[1], state.sections[1])
+        assertEquals(listOf("Light", "Gate"), listRows(screen).map { it.title.toString() })
+        assertEquals(CarColor.GREEN, listRows(screen).last().actions.first().icon!!.tint)
+        assertSame(clickBinder(before.last().actions.first().onClickDelegate), clickBinder(listRows(screen).last().actions.first().onClickDelegate))
+        assertEquals(submissions + 1, lifecycle.templatesReturned.size)
+        assertTrue(bridge.commands.isEmpty())
+        groups.getJSONObject(1).put("name", "Entrance")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val renamed = screen.onGetTemplate() as SectionedItemTemplate
+        assertSame(state.sections[0], renamed.sections[0])
+        assertEquals("Entrance", renamed.sections[1].title.toString())
+        assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX, renamed.scrollStatePersistenceStrategy)
     }
 
     @Test fun groupedListRetainedActionsRejectRemovedControlsAndHiddenScreens() {

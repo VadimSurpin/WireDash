@@ -1,21 +1,19 @@
 package pro.surpin.wiredash.car
 
 import androidx.car.app.CarContext
-import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.Header
-import androidx.car.app.model.ItemList
-import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.OnClickListener
 import androidx.car.app.model.Row
-import androidx.car.app.model.SectionedItemList
+import androidx.car.app.model.RowSection
+import androidx.car.app.model.SectionedItemTemplate
 import androidx.car.app.model.Template
 import androidx.car.app.model.Toggle
 import org.json.JSONArray
 import org.json.JSONObject
 import pro.surpin.wiredash.R
 
-/** Classic ListTemplate experiment: saved groups and two inline actions per row. */
+/** Saved groups in a scrolling list, with two inline actions per row and no page controls. */
 internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, dashboardId: String) :
     DashboardControlsCarScreen(context, bridge, dashboardId) {
     private data class RowKey(val control: String, val kind: String, val actions: List<String>)
@@ -28,21 +26,19 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         var action: Action? = null
     }
     private data class Group(val id: String, val title: String, val rows: List<Row>)
-    private data class CachedList(val rows: List<Row>, val list: ItemList)
+    private data class CachedRows(val group: Group, val section: RowSection)
     private val rows = mutableMapOf<RowKey, CachedRow>()
     private val actions = mutableMapOf<TileKey, CachedAction>()
-    private val lists = mutableMapOf<String, CachedList>()
-    private val navigationRows = mutableMapOf<String, Row>()
-    private var previous: ListTemplate? = null
+    private val rowSections = mutableMapOf<String, CachedRows>()
+    private var previous: SectionedItemTemplate? = null
     private var previousGroups: List<Group> = emptyList()
-    private var offset = 0
-    private var pageSize = 1
 
     override fun buildTemplate(): Template {
         val current = data
         val header = Header.Builder().setTitle(current?.optString("name", "WireDash") ?: "WireDash")
             .setStartHeaderAction(Action.BACK).addEndHeaderAction(reconnectAction).build()
-        val template = ListTemplate.Builder().setHeader(header)
+        val template = SectionedItemTemplate.Builder().setHeader(header)
+            .setScrollStatePersistenceStrategy(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX)
         if (current == null) return template.setLoading(true).build()
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
         val controls = current.optJSONArray("controls")?.objects().orEmpty()
@@ -78,50 +74,26 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         rows.keys.retainAll(activeRows)
         actions.keys.retainAll(activeActions)
 
-        // Classic lists have host limits; never silently truncate saved actions.
-        val limit = carContext.getCarService(ConstraintManager::class.java)
-            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST).coerceIn(3, 100)
-        val total = groups.sumOf { it.rows.size }
-        val count = if (total > limit) limit - 2 else limit
-        pageSize = count
-        if (offset >= total) offset = 0
-        var cursor = 0
-        val displayed = groups.mapNotNull { group ->
-            val start = (offset - cursor).coerceAtLeast(0)
-            val end = (offset + count - cursor).coerceIn(0, group.rows.size)
-            cursor += group.rows.size
-            if (start >= end) null else group.copy(rows = group.rows.subList(start, end))
-        }.toMutableList()
-        val navigation = mutableListOf<Row>()
-        if (offset > 0) navigation.add(navigationRows.getOrPut("previous") {
-            Row.Builder().setTitle(carContext.getString(R.string.car_previous)).setImage(icon("left"))
-                .setOnClickListener { if (visible) { offset = (offset - pageSize).coerceAtLeast(0); invalidate() } }.build()
-        })
-        if (offset + count < total) navigation.add(navigationRows.getOrPut("next") {
-            Row.Builder().setTitle(carContext.getString(R.string.car_next)).setImage(icon("right"))
-                .setOnClickListener { if (visible) { offset += pageSize; invalidate() } }.build()
-        })
-        if (navigation.isNotEmpty()) displayed.add(Group("navigation/$offset", carContext.getString(R.string.car_controls), navigation))
-        val activeLists = displayed.map { it.id }.toSet()
-        lists.keys.retainAll(activeLists)
-        for (group in displayed) {
-            val old = lists[group.id]
-            val list = if (old != null && sameRows(old.rows, group.rows)) old.list else {
-                // Classic sectioned lists reject visibility listeners, even
-                // though ItemList supports one in other template contexts.
-                val builder = ItemList.Builder()
-                group.rows.forEach(builder::addItem)
-                builder.build().also { lists[group.id] = CachedList(group.rows, it) }
+        // RowSection serves item ranges as the host scrolls. Unlike a classic
+        // ListTemplate, it does not truncate a dashboard at the host list limit
+        // or at the classic template's 100-row serialization limit.
+        rowSections.keys.retainAll(groups.map { it.id }.toSet())
+        for (group in groups) {
+            val old = rowSections[group.id]
+            val section = if (old != null && old.group.title == group.title &&
+                sameRows(old.group.rows, group.rows)) old.section else {
+                RowSection.Builder().setTitle(group.title).setItems(group.rows).build()
+                    .also { rowSections[group.id] = CachedRows(group, it) }
             }
-            template.addSectionedList(SectionedItemList.create(list, group.title))
+            template.addSection(section)
         }
         val built = template.build()
         val old = previous
-        if (old != null && old.header == built.header && previousGroups.size == displayed.size &&
-            displayed.indices.all { i -> previousGroups[i].id == displayed[i].id &&
-                previousGroups[i].title == displayed[i].title && sameRows(previousGroups[i].rows, displayed[i].rows) }) return old
+        if (old != null && old.header == built.header && previousGroups.size == groups.size &&
+            groups.indices.all { i -> previousGroups[i].id == groups[i].id &&
+                previousGroups[i].title == groups[i].title && sameRows(previousGroups[i].rows, groups[i].rows) }) return old
         previous = built
-        previousGroups = displayed
+        previousGroups = groups
         return built
     }
 

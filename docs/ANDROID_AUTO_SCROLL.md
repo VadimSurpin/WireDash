@@ -73,7 +73,7 @@ that check: the available Automotive OS emulator does not render this template
 
 ## Build 104 list experiment
 
-The API 8 dashboard now tries a classic grouped
+Build 104 tried a classic grouped
 [`ListTemplate`](https://developer.android.com/reference/androidx/car/app/model/ListTemplate)
 instead of the lazy grid. Saved group headings, row counts and control titles
 remain stable during state updates; toggles and action icons reflect feedback.
@@ -94,3 +94,23 @@ retained offline rows with guarded commands, complete pagination, saved presets,
 removed/hidden actions and offline cameras. These are client-side checks. The
 list's real scroll position must still be tested on the affected Android Auto
 17.9 host before calling this a fix.
+
+## Build 105 list without paging
+
+The grouped list now uses
+[`RowSection`](https://developer.android.com/reference/androidx/car/app/model/RowSection)
+inside `SectionedItemTemplate`. All rows are fetched as the host scrolls, with
+no Next/Previous controls and no classic-list truncation. Open/Close still share
+a row; Stop and additional presets retain their own rows. API 6/7 screens keep
+their previous paging fallback.
+
+This returns to the same parent template used by the earlier grid, with a row
+renderer rather than a grid renderer. Preserve-index is explicitly requested;
+unchanged rows, action delegates and lazy sections are reused. State feedback
+still changes the appropriate row. The Android Auto 17.9 scroll behavior remains
+unverified until tested in the affected car.
+
+A regression test requests the last row of a dashboard with at least 125 controls,
+checks that every title is present without navigation rows, sends its command,
+and requires zero progress-only template submissions. Tests also require stable
+unrelated sections while state feedback and group names change.

@@ -4,7 +4,7 @@ This branch adds a projected Android Auto **IoT** app using AndroidX Car App
 Library 1.8.0-rc01. Configure WireDash on the phone; the car presents native
 dashboard groups and large action buttons. On hosts supporting Car App API 8,
 select a dashboard once and operate its controls directly in a grouped scrolling
-`ListTemplate` (build 104 experiment).
+list with `RowSection` groups (build 105).
 
 ## Controls
 
@@ -51,19 +51,20 @@ state even when the host still holds an older row. Fresh MQTT state and
 configuration changes still update the list; updates in the same main-loop turn
 are coalesced.
 
-Build 104 replaces the dashboard's API 8 `SectionedItemTemplate` grid with the
-classic `ListTemplate`, keeping saved section headings and order. The dashboard
-chooser still uses its existing template. Lists have a host-defined content
-limit: ordinary dashboards scroll on one screen, while larger dashboards add
-Previous/Next rows. Every saved control and action remains reachable; state
-updates preserve the current page. This differs from the previous lazy grid,
-which could fetch more items without paging.
+Build 105 removes the dashboard's Next/Previous rows. It keeps the build 104
+list layout and pairs of actions, using lazy `RowSection` groups inside
+`SectionedItemTemplate` so the host requests more rows as the user scrolls.
+Every saved control and action is available in the same list, including beyond
+the classic host list limit and `ListTemplate`'s 100-row cap. The chooser keeps
+its existing scrolling row template. Simply removing pagination from the classic
+list would let the host truncate controls beyond its limit.
 
-Android Auto 17.9 was reported to reset the grid's position for real state
-updates, including changes from the phone without an Auto tap. The list is an
-experiment with a different host renderer, **not a verified fix** for that host.
-It keeps row titles, row counts and group headings stable during state-only
-updates, in line with the classic list's refresh rules. Reconnection uses one
+Android Auto 17.9 was reported to reset the earlier grid's position for real
+state updates, including changes from the phone without an Auto tap. The row
+list uses the same parent template with a row renderer and explicitly requests
+preserve-index. **Its behavior on that host still needs testing.** Unchanged
+rows, action delegates and lazy sections are reused; command progress and
+connection-only changes do not submit templates. Reconnection uses one
 localized popup per outage and retains the last-known control appearance.
 Robolectric verifies client/IPC behavior, not Android Auto's renderer. See the
 [scroll investigation](ANDROID_AUTO_SCROLL.md). Android Auto controls row geometry,
@@ -136,8 +137,9 @@ For development, use Google's [Desktop Head Unit (DHU)](https://developer.androi
    the SDK's `extras/google/auto/desktop-head-unit`.
 5. Open WireDash in the DHU launcher. Select a dashboard. On an API 8 host,
    check that the saved groups and buttons are shown directly; scroll through
-   the list and check that a shutter has Open/Close in one row. Larger dashboards
-   may have Previous/Next rows at the host content limit.
+   the list and check that a shutter has Open/Close in one row. Scroll past the
+   old host list limit and confirm all saved controls remain reachable without
+   Previous/Next rows.
 6. Check a scalar WB switch and a gate: command topics/payloads must match the
    phone, button titles/icons must match, and repeated gate taps must publish
    another `1`. Test a command-only cover without state messages.
@@ -181,8 +183,10 @@ section ordering, orphaned tiles, group renaming and configured button appearanc
 
 `cd android && ./gradlew :app:testFossDebugUnitTest` uses Robolectric and the
 Car App testing library builds real host templates and verifies grouped rows,
-native toggles, paired cover actions and every preset
-beyond the host limit. They check direct commands, independent guards, sending
+native toggles, paired cover actions and every preset. A dashboard with at least
+125 rows verifies lazy requests beyond the host and classic 100-row limits, with
+no page controls. Another test checks state feedback and group renaming without
+replacing unrelated sections. They check direct commands, independent guards, sending
 messages, zero progress-only template submissions and stable delegates.
 The previous grid remains covered for comparison, including its scroll policy.
 Tests also verify that stale callbacks/pending indicators do not survive hiding

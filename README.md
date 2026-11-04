@@ -116,10 +116,10 @@ Auto and select a dashboard. Switches, command buttons, covers, gates and roller
 use their saved labels, icons and action settings. Writable controls on
 whole-device Wiren Board and Zigbee2MQTT panels are also supported.
 
-The current feature build tries a grouped `ListTemplate` on Car App API 8 hosts.
+The current feature build shows a grouped scrolling list on Car App API 8 hosts.
 Shutters and gates show Open/Close together in one row; Stop and additional
-presets use further rows. Switches use native toggles. Large dashboards page at
-the host's list limit. Sending/reconnecting feedback uses popups without
+presets use further rows. Switches use native toggles. All rows are available by
+scrolling, without Next/Previous controls. Sending/reconnecting feedback uses popups without
 refreshing rows. Whether this avoids Android Auto 17.9's state-refresh scroll
 reset still needs testing in the car. Older API 6/7 hosts retain list/detail
 screens. Layout and button sizes follow the car host's native templates.
