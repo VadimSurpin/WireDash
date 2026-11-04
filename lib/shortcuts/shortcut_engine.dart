@@ -187,7 +187,7 @@ class ShortcutEngine {
                 Directory(p.join(documents.parent.path, 'shared_prefs')),
           ));
       if (directory == null) return null;
-      return settingsFileVersion(File(p.join(directory.path, '$name.xml')));
+      return await settingsFileVersion(File(p.join(directory.path, '$name.xml')));
     } catch (_) {
       _preferencesDirectory = null;
       return null; // Fall back to the plugin rather than trusting stale settings.
