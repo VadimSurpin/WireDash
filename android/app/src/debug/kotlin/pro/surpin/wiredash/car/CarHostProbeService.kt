@@ -53,8 +53,11 @@ class CarHostProbeService : Service() {
     private val appHost = object : IAppHost.Stub() {
         override fun invalidate() { main.post { requestTemplate() } }
         override fun showToast(text: CharSequence, duration: Int) {
+            // Sending uses the snapshot's chosen language, which can differ
+            // from Android resources. Identify the action-message format and
+            // log only its presence, never the control name or message text.
             main.post { emit(JSONObject().put("phase", "toast")
-                .put("working", text.toString().endsWith(getString(R.string.car_working)))) }
+                .put("working", text.contains(" · "))) }
         }
         override fun setSurfaceCallback(callback: ISurfaceCallback?) {}
         override fun sendLocation(location: Location) {}
