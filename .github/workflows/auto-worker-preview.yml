@@ -45,6 +45,11 @@ jobs:
           sudo apt-get install -y -qq mosquitto mosquitto-clients
       - name: Build the normal Android app for the emulator
         run: flutter build apk --debug --flavor foss --split-per-abi --target-platform android-x64
+      - name: Retain emulator APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiredash-auto-debug-x64
+          path: build/app/outputs/flutter-apk/app-x86_64-foss-debug.apk
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm
       - name: Test real Auto service and MQTT with the phone closed
