@@ -25,8 +25,19 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         var metadata: String? = null
         var action: Action? = null
     }
-    private data class Group(val id: String, val title: String, val rows: List<Row>)
+    private data class Group(val id: String, val title: String, val rows: List<Row>, val configuration: String)
     private data class CachedRows(val group: Group, val section: RowSection)
+    // The car library fingerprints this local list through hashCode(), but
+    // Row.hashCode()/equals() omit inline actions and CarIcon omits bitmap
+    // pixels. Include actions and their saved icon metadata in that fingerprint.
+    // Only requested Row models cross IPC, never this list implementation.
+    private class RowItems(private val rows: List<Row>, private val configuration: String) : List<Row> by rows {
+        override fun hashCode() = rows.fold(configuration.hashCode()) { hash, row ->
+            31 * hash + 31 * row.hashCode() + row.actions.hashCode()
+        }
+        override fun equals(other: Any?) = other is RowItems && configuration == other.configuration &&
+            rows == other.rows && rows.indices.all { rows[it].actions == other.rows[it].actions }
+    }
     private val rows = mutableMapOf<RowKey, CachedRow>()
     private val actions = mutableMapOf<TileKey, CachedAction>()
     private val rowSections = mutableMapOf<String, CachedRows>()
@@ -63,7 +74,10 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
                     chunks.map { chunk -> row(current, control, chunk, activeRows, activeActions) }
                 }
             }
-            if (content.isNotEmpty()) groups.add(Group(id, title, content))
+            if (content.isNotEmpty()) groups.add(Group(id, title, content, entries.map {
+                JSONArray().put(it.getString("id")).put(it.getString("kind"))
+                    .put(it.optBoolean("waitForFeedback")).put(it.getJSONArray("actions")).toString()
+            }.toString()))
         }
         val sections = current.optJSONArray("sections")?.objects().orEmpty()
         val known = sections.map { it.getString("id") }.toSet()
@@ -82,7 +96,7 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
             val old = rowSections[group.id]
             val section = if (old != null && old.group.title == group.title &&
                 sameRows(old.group.rows, group.rows)) old.section else {
-                RowSection.Builder().setTitle(group.title).setItems(group.rows).build()
+                RowSection.Builder().setTitle(group.title).setItems(RowItems(group.rows, group.configuration)).build()
                     .also { rowSections[group.id] = CachedRows(group, it) }
             }
             template.addSection(section)
@@ -156,7 +170,7 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         }
         val built = content.build()
         cached.configuration = configuration
-        if (old != null && old == built && configuration == previousConfiguration) return old
+        if (old != null && old == built && old.actions == built.actions && configuration == previousConfiguration) return old
         cached.row = built
         return built
     }

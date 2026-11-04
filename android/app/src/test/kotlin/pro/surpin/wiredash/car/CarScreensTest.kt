@@ -387,6 +387,7 @@ class CarScreensTest {
         val state = screen.onGetTemplate() as SectionedItemTemplate
         assertSame(original.sections[0], state.sections[0])
         assertNotSame(original.sections[1], state.sections[1])
+        assertNotEquals(original.sections[1].itemsDelegate.hashCode(), state.sections[1].itemsDelegate.hashCode())
         assertEquals(listOf("Light", "Gate"), listRows(screen).map { it.title.toString() })
         assertEquals(CarColor.GREEN, listRows(screen).last().actions.first().icon!!.tint)
         assertSame(clickBinder(before.last().actions.first().onClickDelegate), clickBinder(listRows(screen).last().actions.first().onClickDelegate))
@@ -398,6 +399,13 @@ class CarScreensTest {
         assertSame(state.sections[0], renamed.sections[0])
         assertEquals("Entrance", renamed.sections[1].title.toString())
         assertEquals(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX, renamed.scrollStatePersistenceStrategy)
+        // Bitmap icon metadata must invalidate the lazy list even when the
+        // library's CarIcon comparison cannot inspect its rendered pixels.
+        gate.getJSONArray("actions").getJSONObject(1).put("iconCodepoint", 0xf607)
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        val configured = screen.onGetTemplate() as SectionedItemTemplate
+        assertSame(renamed.sections[0], configured.sections[0])
+        assertNotEquals(renamed.sections[1].itemsDelegate.hashCode(), configured.sections[1].itemsDelegate.hashCode())
     }
 
     @Test fun groupedListRetainedActionsRejectRemovedControlsAndHiddenScreens() {
