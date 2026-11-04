@@ -120,8 +120,11 @@ The current feature build shows a grouped scrolling list on Car App API 8 hosts.
 Shutters and gates show Open/Close together in one row; Stop and additional
 presets use further rows. Switches use native toggles. All rows are available by
 scrolling, without Next/Previous controls. Sending/reconnecting feedback uses
-popups without refreshing rows. State-only updates retain their screen identity in build 106;
-Android Auto 17.9 scroll behavior still needs testing in the car. Older API 6/7
+popups without changing icons or captions. Build 107 keeps configured icons static
+and runs dashboard/database/MQTT work in a background isolate. Switches update
+from actual MQTT feedback and restore their confirmed value after failures.
+State-only updates retain their screen identity; Android Auto 17.9 scroll behavior
+still needs testing in the car. Older API 6/7
 hosts retain list/detail screens. Layout and button sizes follow the car host's native templates.
 
 The car can connect through MQTT or embedded WireGuard without the phone

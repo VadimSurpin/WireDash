@@ -20,6 +20,8 @@ PACKAGE = "pro.surpin.wiredash"
 processes = []
 traffic = []
 results = []
+feedback_allowed = threading.Event()
+feedback_allowed.set()
 
 
 def run(*args, **kwargs):
@@ -85,6 +87,7 @@ def mirror(stream):
             log.flush()
             topic, _, payload = message.partition("|")
             if topic.endswith("/on"):
+                assert feedback_allowed.wait(10), "Delayed test feedback was never released"
                 run("mosquitto_pub", "-p", "18884", "-t", topic[:-3], "-m", payload, "-r")
 
 
@@ -148,8 +151,9 @@ try:
     probe("carClose")
     assert probe("removePhoneTask")["removedTasks"] == 0
     from host_smoke import run_host_smoke
-    run_host_smoke(shell, probe, traffic)
+    run_host_smoke(shell, probe, traffic, feedback_allowed)
     log = shell("logcat", "-d")
+    assert "WireDash command worker ready off platform isolate" in log
     assert "FATAL EXCEPTION" not in log and "Unhandled Exception:" not in log
     assert "ANR in " + PACKAGE not in log
     (OUT / "headless-summary.log").write_text(json.dumps(results, indent=2) + "\n")

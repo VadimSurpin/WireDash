@@ -52,7 +52,10 @@ class CarHostProbeService : Service() {
     private val done = object : OnDoneCallback {}
     private val appHost = object : IAppHost.Stub() {
         override fun invalidate() { main.post { requestTemplate() } }
-        override fun showToast(text: CharSequence, duration: Int) {}
+        override fun showToast(text: CharSequence, duration: Int) {
+            main.post { emit(JSONObject().put("phase", "toast")
+                .put("working", text.toString().endsWith(getString(R.string.car_working)))) }
+        }
         override fun setSurfaceCallback(callback: ISurfaceCallback?) {}
         override fun sendLocation(location: Location) {}
         override fun showAlert(alert: Bundleable) {}
@@ -177,6 +180,11 @@ class CarHostProbeService : Service() {
                     .put("toggles", rows.count { it.toggle != null })
                     .put("browsable", rows.count { it.isBrowsable })
                     .put("actions", rows.sumOf { it.actions.size }).put("worstMs", worstMs)
+                    .put("iconFingerprint", rows.fold(1) { hash, row ->
+                        row.actions.fold(31 * hash + (row.image?.hashCode() ?: 0)) { value, action ->
+                            31 * value + (action.icon?.hashCode() ?: 0)
+                        }
+                    })
                     .put("known", rows.firstOrNull { it.toggle != null }?.texts?.none {
                         it.toString() == getString(R.string.car_unknown)
                     } ?: false)

@@ -4,7 +4,7 @@ This branch adds a projected Android Auto **IoT** app using AndroidX Car App
 Library 1.8.0-rc01. Configure WireDash on the phone; the car presents native
 dashboard groups and large action buttons. On hosts supporting Car App API 8,
 select a dashboard once and operate its controls directly in a grouped scrolling
-list with `RowSection` groups (build 106).
+list with `RowSection` groups (build 107).
 
 ## Controls
 
@@ -21,7 +21,9 @@ garage doors and driveway lights.
 Saved section names and section order follow the phone dashboard. Unsectioned
 tiles appear first, followed by each group in order. Empty groups are omitted.
 Command buttons retain their names and configured Material icons/colors.
-Switches use native toggles with their saved state icons. A cover puts its
+Switches use native toggles with a fixed configured OFF icon and tint.
+Their checked value follows MQTT feedback; icon shapes and colors stay static
+for every control in the grouped list. A cover puts its
 configured Open and Close actions together beside its name in one list row.
 Android Auto allows at most two inline actions per row on API 8. A configured
 Stop button and additional position presets appear in further rows for the same
@@ -31,8 +33,8 @@ also appear below the control name because hosts may render actions as icons.
 Cover button visibility, titles and gate/roller icons follow the phone editor.
 Position-aware covers also show their saved percentage presets; a slider-only
 cover uses 0/25/50/75/100% buttons in Auto. Writable Zigbee cover position features
-use their exact endpoint property. MQTT feedback highlights the reported
-position and confirms a pending position only when its target is reported.
+use their exact endpoint property. MQTT feedback confirms a pending position only when its target is reported;
+position button icons remain static.
 WB relay pairs expose direction commands, without inventing a position estimate.
 Command-only covers send the saved command and retain their appearance without
 a state subscription. Their duplicate-command guard lasts one second. State-aware controls
@@ -41,9 +43,11 @@ estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
 `/on`, and are never retained. On the grouped scrolling dashboard, a command
 shows a brief native message with the control name and localized sending text.
-Starting/finishing a command does not change rows, actions or their delegates,
-and does not invalidate the template. This avoids a refresh solely for progress
-feedback. Controls continue to display actual device state; pending commands
+Starting a command does not change rows, actions or their delegates and does
+not invalidate the template. Command-only cover buttons also remain unchanged
+on completion. A switch is resubmitted with its actual MQTT value when the
+operation finishes, including rejection or timeout, so the host cannot leave an
+optimistic switch value on screen. Pending commands
 still reject duplicate taps internally. Command-only guards expire after one
 second independently for each control. Other cover directions (including Stop)
 remain available during a direction command. Toggle delegates check the latest
@@ -95,7 +99,12 @@ The car uses the existing headless shortcut engine, the app's read-only
 database, secure credentials and configured MQTT transport, including embedded
 WireGuard. It does not require the phone dashboard to be open. Flutter's cold
 initialization waits in the background, and the headless engine initializes
-SQLite independently of the phone UI. Timed-out requests are removed from the
+SQLite independently of the phone UI. In build 107 the root isolate only bridges
+native channel calls. A persistent background isolate owns SQLite reads,
+dashboard decoding, MQTT sessions and response encoding, keeping synchronous
+work off Android's UI/platform thread. Plugin requests use Flutter's background
+isolate messenger; the existing private WireGuard peer is still shared within
+the process. Timed-out requests are removed from the
 startup queue. Transient engine errors retain the current dashboard with
 Reconnecting feedback rather than replacing it with another template. The native
 WireGuard implementation shares its peer with phone widgets and the phone UI.

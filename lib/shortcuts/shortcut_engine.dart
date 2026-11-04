@@ -15,7 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/foundation.dart' show PlatformDispatcher;
+import 'package:flutter/foundation.dart' show PlatformDispatcher, debugPrint;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
@@ -38,6 +38,7 @@ import '../features/panels/widgets/device_tile_panel.dart'
 import 'shortcut_commander.dart';
 import '../mqtt/dropped_connection.dart';
 import 'shortcut_store.dart';
+import 'command_worker.dart';
 
 /// The headless command engine for shortcuts (docs/design/roadmap-post-2.0.md,
 /// 2.1 §1): a cached FlutterEngine runs this entrypoint, and the native
@@ -45,18 +46,40 @@ import 'shortcut_store.dart';
 /// channel. It reads the app's databases but never writes them; the state a
 /// shortcut shows lives in shared preferences, which the native side reads.
 @pragma('vm:entry-point')
-void shortcutEngine() {
+void shortcutEngine() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // When Android freezes the idle app, the broker connection's socket dies
-  // and mqtt_client reports it as an uncaught error; the next tap reconnects
-  // (ensureConnected). Other errors still surface.
   PlatformDispatcher.instance.onError = ignoreDroppedConnection;
-  DartPluginRegistrant.ensureInitialized();
-  final engine = ShortcutEngine();
+  // Android's platform and Dart UI threads are merged. Keep the root isolate
+  // only as a channel bridge; even synchronous SQLite and JSON work belongs in
+  // the worker, which owns one persistent MQTT session for all native clients.
+  final worker = await CommandWorker.start(_initializeCommandWorker, (
+    RootIsolateToken.instance!,
+    PlatformDispatcher.instance.locale.languageCode,
+  ), ignoreError: ignoreDroppedConnection);
   const channel = MethodChannel('zigdash/shortcuts');
-  channel.setMethodCallHandler((call) async {
-    final args = Map<String, Object?>.from(call.arguments as Map? ?? {});
-    switch (call.method) {
+  channel.setMethodCallHandler(
+    (call) => worker.call(
+      call.method,
+      Map<String, Object?>.from(call.arguments as Map? ?? {}),
+    ),
+  );
+  await channel.invokeMethod<void>('ready');
+}
+
+Future<CommandHandler> _initializeCommandWorker(Object? configuration) async {
+  if (RootIsolateToken.instance != null) {
+    throw StateError('Command backend must run in a background isolate');
+  }
+  final (token, language) = configuration as (RootIsolateToken, String);
+  BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+  DartPluginRegistrant.ensureInitialized();
+  assert(() {
+    debugPrint('WireDash command worker ready off platform isolate');
+    return true;
+  }());
+  final engine = ShortcutEngine(systemLocale: Locale(language));
+  return (method, args) async {
+    switch (method) {
       case 'carCatalog':
         return jsonEncode(await engine.car.catalog());
       case 'carOpen':
@@ -133,12 +156,14 @@ void shortcutEngine() {
           ),
         );
     }
-    throw MissingPluginException(call.method);
-  });
-  channel.invokeMethod('ready');
+    throw MissingPluginException(method);
+  };
 }
 
 class ShortcutEngine {
+  ShortcutEngine({Locale? systemLocale}) : _systemLocale = systemLocale;
+
+  final Locale? _systemLocale;
   Future<AppDatabase>? _db;
 
   late final car = CarDashboardService(
@@ -274,7 +299,9 @@ class ShortcutEngine {
   Future<ShortcutCommander> _commander() async {
     final code = (await _prefs).getString('locale');
     return ShortcutCommander(
-      l10n: appL10n(code == null || code.isEmpty ? null : Locale(code)),
+      l10n: appL10n(
+        code == null || code.isEmpty ? _systemLocale : Locale(code),
+      ),
     );
   }
 

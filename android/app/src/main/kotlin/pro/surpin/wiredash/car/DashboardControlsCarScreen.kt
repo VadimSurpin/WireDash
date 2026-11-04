@@ -98,10 +98,18 @@ internal open class DashboardControlsCarScreen(
     }
 
     override fun onData(): Boolean {
-        val confirmed = sending.filterValues { it.awaitingSnapshot }.keys
-        confirmed.forEach { sending.remove(it) }
-        return confirmed.isNotEmpty()
+        val controls = data?.optJSONArray("controls")?.objects().orEmpty().associateBy { it.optString("id") }
+        val finished = sending.filter { (id, request) ->
+            request.awaitingSnapshot && controls[id]?.isNull("pending") != false
+        }.keys.toList()
+        finished.forEach {
+            sending.remove(it)
+            onCommandFinished(it)
+        }
+        return finished.isNotEmpty()
     }
+
+    protected open fun onCommandFinished(controlId: String) {}
 
     override fun onGetTemplate(): Template = buildTemplate().also { presentedTemplate = it }
 
@@ -283,6 +291,7 @@ internal open class DashboardControlsCarScreen(
             if (!visible || sending[controlId] !== request) return@call
             if (result.optString("outcome") != "sent") {
                 sending.remove(controlId)
+                onCommandFinished(controlId)
                 CarToast.makeText(carContext, carContext.getString(R.string.car_unreachable), CarToast.LENGTH_LONG).show()
                 refresh()
                 render()
@@ -292,6 +301,7 @@ internal open class DashboardControlsCarScreen(
             } else handler.postDelayed({
                 if (visible && sending[controlId] === request) {
                     sending.remove(controlId)
+                    onCommandFinished(controlId)
                     refresh()
                     render()
                 }

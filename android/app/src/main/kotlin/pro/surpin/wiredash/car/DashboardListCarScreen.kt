@@ -47,6 +47,18 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
     private val rowSections = mutableMapOf<String, CachedRows>()
     private var previous: SectionedItemTemplate? = null
     private var previousGroups: List<Group> = emptyList()
+    private val switchCompletions = mutableMapOf<String, Int>()
+
+    override fun onCommandFinished(controlId: String) {
+        if (data?.optJSONArray("controls")?.objects()?.any {
+                it.optString("id") == controlId && it.optString("kind") == "switch"
+            } == true) {
+            // Hosts may optimistically move their switch on tap. Submit its
+            // actual MQTT value once the operation ends, even on rejection or
+            // timeout where that value has not changed. Never refresh on start.
+            switchCompletions[controlId] = (switchCompletions[controlId] ?: 0) + 1
+        }
+    }
 
     override fun stateUpdateStructure(): String? {
         val current = data ?: return null
@@ -93,7 +105,8 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
             }
             if (content.isNotEmpty()) groups.add(Group(id, title, content, entries.map {
                 JSONArray().put(it.getString("id")).put(it.getString("kind"))
-                    .put(it.optBoolean("waitForFeedback")).put(it.getJSONArray("actions")).toString()
+                    .put(it.optBoolean("waitForFeedback")).put(it.getJSONArray("actions"))
+                    .put(switchCompletions[it.getString("id")] ?: 0).toString()
             }.toString()))
         }
         val sections = current.optJSONArray("sections")?.objects().orEmpty()
@@ -150,7 +163,8 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
             CachedRow(click, toggle)
         }
         val configuration = JSONArray().put(control.getString("name"))
-            .put(control.getJSONArray("actions")).put(control.optBoolean("waitForFeedback")).toString()
+            .put(control.getJSONArray("actions")).put(control.optBoolean("waitForFeedback"))
+            .put(switchCompletions[id] ?: 0).toString()
         val old = cached.row
         val previousConfiguration = cached.configuration
         if (!snapshot.optBoolean("connected") && kind != "video" && old != null && cached.configuration == configuration) return old
@@ -161,19 +175,21 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         if (kind == "video") content.setBrowsable(true)
         if (kind == "switch") {
             val on = control.optString("state") == "ON"
-            val appearance = control.getJSONArray("actions").objects().first { it.getString("id") == if (on) "ON" else "OFF" }
-            content.setImage(actionIcon(appearance, on)).setToggle(cached.toggle!!.setChecked(on).build())
+            // Keep one configured icon and tint across telemetry changes. Only the
+            // native switch represents the MQTT state.
+            val appearance = control.getJSONArray("actions").objects().first { it.getString("id") == "OFF" }
+            content.setImage(actionIcon(appearance, false)).setToggle(cached.toggle!!.setChecked(on).build())
             if (control.isNull("state")) content.addText(carContext.getString(R.string.car_unknown))
         } else if (kind == "video") {
             content.setImage(actionIcon(entries.first(), false)).addText(carContext.getString(R.string.car_video_phone))
         } else if (kind == "button") {
-            content.setImage(actionIcon(entries.first(), selected(control, entries.first())))
+            content.setImage(actionIcon(entries.first(), false))
         } else {
             for (entry in entries) {
                 val actionKey = TileKey(id, kind, entry.getString("id"))
                 val action = actions.getOrPut(actionKey) { CachedAction(Action.Builder().setOnClickListener { send(actionKey) }) }
                 val rendered = action.builder.setTitle(entry.getString("title"))
-                    .setIcon(actionIcon(entry, selected(control, entry))).build()
+                    .setIcon(actionIcon(entry, false)).build()
                 val metadata = entry.toString()
                 val retained = if (action.action == rendered && action.metadata == metadata) action.action!! else rendered
                 action.action = retained

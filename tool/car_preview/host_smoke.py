@@ -14,7 +14,7 @@ PACKAGE = "pro.surpin.wiredash"
 OUT = Path(__file__).resolve().parents[2] / "build/video-preview"
 
 
-def run_host_smoke(shell, probe, traffic):
+def run_host_smoke(shell, probe, traffic, feedback_allowed):
     def events():
         log = shell("logcat", "-d", "-s", "WireDashAutoHostProbe:I", "*:S")
         return [json.loads(m.group(1)) for line in log.splitlines()
@@ -82,8 +82,30 @@ def run_host_smoke(shell, probe, traffic):
     state("1")
     changed = dashboard(True, mark)
     assert changed["templateId"] == opened["templateId"]
-    tapped = tap("0")
+    assert changed["iconFingerprint"] == opened["iconFingerprint"]
+
+    print("Car-service check: delayed MQTT feedback keeps UI responsive and actual switch state", flush=True)
+    mark = since()
+    before = len(traffic)
+    feedback_allowed.clear()
+    try:
+        host("tap")
+        deadline = time.monotonic() + 10
+        while "/devices/preview/controls/K1/on|0" not in traffic[before:]:
+            assert time.monotonic() < deadline, "Command did not reach broker"
+            time.sleep(0.1)
+        time.sleep(2)
+        waiting = [v for v in events() if v.get("at", 0) > mark]
+        templates = [v for v in waiting if v.get("phase") == "template" and v.get("known")]
+        assert len(templates) >= 3, "Host stopped responding while awaiting MQTT feedback"
+        assert all(v.get("on") is True for v in templates), "Switch claimed the unconfirmed target"
+        assert all(v.get("iconFingerprint") == opened["iconFingerprint"] for v in templates)
+        assert any(v.get("phase") == "toast" and v.get("working") for v in waiting), "No action progress popup"
+    finally:
+        feedback_allowed.set()
+    tapped = dashboard(False, since())
     assert tapped["templateId"] == opened["templateId"]
+    assert tapped["iconFingerprint"] == opened["iconFingerprint"]
 
     print("Car-service check: removing phone task leaves bound foreground Auto session alive", flush=True)
     shell("am", "start", "-W", "-n", PACKAGE + "/.MainActivity")
@@ -117,6 +139,9 @@ def run_host_smoke(shell, probe, traffic):
     (OUT / "car-host-summary.log").write_text(json.dumps({
         "coldChooserWithoutPhone": True, "foregroundService": True,
         "phoneStateStableTemplateId": True, "realRowCommands": 2,
+        "backgroundCommandWorker": True, "staticIcons": True,
+        "responsiveWhileAwaitingFeedback": True, "actionProgressPopup": True,
+        "switchUsesActualStateAfterFeedback": True,
         "phoneTaskRemovedWithSessionAlive": True, "backRestoresChooserId": True,
         "forwardCreatesNewScreenId": True, "foregroundReleasedOnStop": True,
         "worstCallbackMs": worst, "events": history,
