@@ -28,12 +28,16 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
     private data class Group(val id: String, val title: String, val rows: List<Row>, val configuration: String)
     private data class CachedRows(val group: Group, val section: RowSection)
     // The car library fingerprints this local list through hashCode(), but
-    // Row.hashCode()/equals() omit inline actions and CarIcon omits bitmap
-    // pixels. Include actions and their saved icon metadata in that fingerprint.
+    // Row.hashCode()/equals() omit inline actions, Action.hashCode() only checks
+    // icon presence, and CarIcon omits bitmap pixels. Include actual icon hashes
+    // and their saved metadata in that fingerprint.
     // Only requested Row models cross IPC, never this list implementation.
     private class RowItems(private val rows: List<Row>, private val configuration: String) : List<Row> by rows {
         override fun hashCode() = rows.fold(configuration.hashCode()) { hash, row ->
-            31 * hash + 31 * row.hashCode() + row.actions.hashCode()
+            val actions = row.actions.fold(1) { value, action ->
+                31 * value + 31 * action.hashCode() + (action.icon?.hashCode() ?: 0)
+            }
+            31 * hash + 31 * row.hashCode() + actions
         }
         override fun equals(other: Any?) = other is RowItems && configuration == other.configuration &&
             rows == other.rows && rows.indices.all { rows[it].actions == other.rows[it].actions }
