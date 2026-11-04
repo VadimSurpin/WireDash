@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.car.app.HandshakeInfo
 import androidx.car.app.model.SectionedItemTemplate
 import androidx.car.app.testing.SessionController
+import androidx.car.app.testing.ScreenController
 import androidx.car.app.testing.TestCarContext
 import androidx.lifecycle.Lifecycle
 import org.json.JSONObject
@@ -37,19 +38,25 @@ class WireDashCarServiceTest {
         }
         val session = service.newSession { bridge }
         val lifecycle = SessionController(session, context, Intent()).moveToState(Lifecycle.State.RESUMED)
-        shadowOf(Looper.getMainLooper()).idle()
         val screen = context.getCarService(androidx.car.app.ScreenManager::class.java).top
+        // SessionController controls the Session; its TestScreenManager does
+        // not dispatch a screen's lifecycle like the production manager does.
+        val screenLifecycle = ScreenController(screen).moveToState(Lifecycle.State.RESUMED)
+        shadowOf(Looper.getMainLooper()).idle()
         assertTrue((screen.onGetTemplate() as SectionedItemTemplate).isLoading)
         assertEquals(listOf("carCatalog"), methods)
         assertNotNull(shadowOf(service).lastForegroundNotification)
         assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE, service.foregroundServiceType)
         assertNull(shadowOf(RuntimeEnvironment.getApplication()).nextStartedActivity)
+        screenLifecycle.moveToState(Lifecycle.State.CREATED)
         lifecycle.moveToState(Lifecycle.State.CREATED)
         assertTrue(shadowOf(service).isForegroundStopped)
         assertNull(shadowOf(service).lastForegroundNotification)
         assertEquals(listOf("carCatalog", "carClose"), methods)
         lifecycle.moveToState(Lifecycle.State.RESUMED)
+        screenLifecycle.moveToState(Lifecycle.State.RESUMED)
         assertNotNull(shadowOf(service).lastForegroundNotification)
+        screenLifecycle.moveToState(Lifecycle.State.DESTROYED)
         lifecycle.moveToState(Lifecycle.State.DESTROYED)
         controller.destroy()
     }
