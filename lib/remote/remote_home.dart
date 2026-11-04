@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../core/storage/secure_storage.dart' show secureStoragePreferencesName;
 
 
 /// What one phone needs to reach a Home through the ZigDash relay: the
@@ -79,7 +80,8 @@ class RemoteHomeStore {
 }
 
 RemoteHomeStore createRemoteHomeStore() => RemoteHomeStore(
-      const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
+      const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true,
+        sharedPreferencesName: secureStoragePreferencesName)),
     );
 
 final remoteHomeStoreProvider = Provider<RemoteHomeStore>((ref) => createRemoteHomeStore());

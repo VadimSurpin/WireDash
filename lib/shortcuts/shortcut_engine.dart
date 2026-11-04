@@ -39,6 +39,7 @@ import 'shortcut_commander.dart';
 import '../mqtt/dropped_connection.dart';
 import 'shortcut_store.dart';
 import 'command_worker.dart';
+import 'settings_read_cache.dart';
 
 /// The headless command engine for shortcuts (docs/design/roadmap-post-2.0.md,
 /// 2.1 §1): a cached FlutterEngine runs this entrypoint, and the native
@@ -173,6 +174,25 @@ class ShortcutEngine {
 
   final Locale? _systemLocale;
   Future<AppDatabase>? _db;
+  Future<Directory?>? _preferencesDirectory;
+  final _resolvedManagers = SettingsReadCache<MqttManager>();
+  final _commanders = SettingsReadCache<ShortcutCommander>();
+
+  Future<Object?> _settingsVersion(String name) async {
+    if (!Platform.isAndroid) return null;
+    try {
+      final directory = await (_preferencesDirectory ??=
+          getApplicationDocumentsDirectory().then(
+            (documents) =>
+                Directory(p.join(documents.parent.path, 'shared_prefs')),
+          ));
+      if (directory == null) return null;
+      return settingsFileVersion(File(p.join(directory.path, '$name.xml')));
+    } catch (_) {
+      _preferencesDirectory = null;
+      return null; // Fall back to the plugin rather than trusting stale settings.
+    }
+  }
 
   late final car = CarDashboardService(
     database: () => _database,
@@ -239,6 +259,7 @@ class ShortcutEngine {
     final Future<MqttManager?> next = previous
         .catchError((Object _) => null)
         .then((_) async {
+          _resolvedManagers.forget(connectionId);
           await _managers.remove(connectionId)?.mgr.dispose();
           return null;
         });
@@ -259,6 +280,32 @@ class ShortcutEngine {
     final db = await _database;
     final conn = await ConnectionDao(db).getById(connectionId);
     if (conn == null) return null;
+    final storageVersion = await _settingsVersion(secureStoragePreferencesName);
+    final version = storageVersion == null
+        ? null
+        : (
+            conn.host,
+            conn.port,
+            conn.protocol,
+            conn.username,
+            conn.keepAliveSeconds,
+            conn.remoteHost,
+            transportOf(conn.transport),
+            storageVersion,
+          );
+    // Crypto results are posted through Android's main thread by the storage
+    // plugin. A live connection must not wait on repeated decryptions while the
+    // phone Flutter engine starts/stops. Edits invalidate by row/file version;
+    // forgetHome also invalidates immediately before async disk writes finish.
+    return _resolvedManagers.read(
+      connectionId,
+      version,
+      () => _resolveManager(conn),
+    );
+  }
+
+  Future<MqttManager> _resolveManager(Connection conn) async {
+    final connectionId = conn.id;
     final password = await createSecureStore().readPassword(connectionId) ?? '';
     final wireGuardConfig = await createSecureStore().readWireGuard(
       connectionId,
@@ -305,12 +352,15 @@ class ShortcutEngine {
       resolveShortcutDevice(await _database, connectionId, ieee);
 
   Future<ShortcutCommander> _commander() async {
-    final code = (await _prefs).getString('locale');
-    return ShortcutCommander(
-      l10n: appL10n(
-        code == null || code.isEmpty ? _systemLocale : Locale(code),
-      ),
-    );
+    final version = await _settingsVersion('FlutterSharedPreferences');
+    return _commanders.read('locale', version, () async {
+      final code = (await _prefs).getString('locale');
+      return ShortcutCommander(
+        l10n: appL10n(
+          code == null || code.isEmpty ? _systemLocale : Locale(code),
+        ),
+      );
+    });
   }
 
   Future<Map<String, Object?>> toggle(

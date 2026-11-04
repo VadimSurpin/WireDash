@@ -4,6 +4,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 const _passwordPrefix = 'mqtt_pw::';
 const _wireGuardPrefix = 'wireguard::';
 
+// Keep the existing Android store name explicit. The headless backend watches
+// this file's metadata to avoid decrypting unchanged settings on every tap.
+const secureStoragePreferencesName = 'FlutterSecureStorage';
+
 class SecureStore {
   SecureStore(this._storage);
   final FlutterSecureStorage _storage;
@@ -31,7 +35,10 @@ class SecureStore {
 /// shortcut engine, which has no Riverpod container.
 SecureStore createSecureStore() => SecureStore(
   const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+      sharedPreferencesName: secureStoragePreferencesName,
+    ),
   ),
 );
 

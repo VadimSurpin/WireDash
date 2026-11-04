@@ -104,7 +104,11 @@ native channel calls. A persistent background isolate owns SQLite reads,
 dashboard decoding, MQTT sessions and response encoding, keeping synchronous
 work off Android's UI/platform thread. Plugin requests use Flutter's background
 isolate messenger; the existing private WireGuard peer is still shared within
-the process. Timed-out requests are removed from the
+the process. Unchanged connection and language settings are cached using their
+configuration and preference-file metadata, so active commands do not repeatedly
+wait for Android's encrypted-storage callbacks. Settings edits invalidate the
+cache; missing/unreadable versions force a fresh read, with a periodic refresh
+as a fallback. Timed-out requests are removed from the
 startup queue. Transient engine errors retain the current dashboard with
 Reconnecting feedback rather than replacing it with another template. The native
 WireGuard implementation shares its peer with phone widgets and the phone UI.
