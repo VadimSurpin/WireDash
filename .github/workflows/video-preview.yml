@@ -49,10 +49,13 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - name: Generate isolated headless Auto fixture
+        run: flutter test tool/car_preview/create_fixture.dart
       - name: Start a synthetic H.264 RTSP camera
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq mosquitto mosquitto-clients
           if ! command -v ffmpeg; then
-            sudo apt-get update -qq
             sudo apt-get install -y -qq ffmpeg
           fi
           bash tool/video_preview/start_rtsp.sh
@@ -73,6 +76,11 @@ jobs:
             timeout 15s adb shell run-as pro.surpin.wiredash cat files/recording-preview.jpg > build/video-preview/recording-preview.jpg
             timeout 15s adb shell run-as pro.surpin.wiredash cat files/recording-timeline.png > build/video-preview/recording-timeline.png
             timeout 15s adb logcat -d > build/video-preview/logcat.txt || true
+            # Use the normal application entrypoint for the lifecycle check,
+            # not the integration-test APK's main() entrypoint.
+            flutter build apk --debug --flavor foss --split-per-abi --target-platform android-x64
+            adb install -r -t build/app/outputs/flutter-apk/app-x86_64-foss-debug.apk
+            python3 tool/car_preview/headless_smoke.py
       - name: Preserve screenshot and runtime logs
         if: always()
         run: |

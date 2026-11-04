@@ -21,6 +21,14 @@ The underlying scrollable view belongs to Android Auto, outside WireDash's UI.
 `ItemList.setSelectedIndex()` configures selectable lists, not this grid's scroll
 position. Back-navigation template IDs are not a supported scroll override.
 
+Android `GridView.getFirstVisiblePosition()`, `setSelection(index)` and
+`smoothScrollToPosition(index)` work on an app-owned
+[`android.widget.GridView`](https://developer.android.com/reference/android/widget/GridView).
+WireDash has no such view in its projected car UI: `SectionedItemTemplate` is a
+data model rendered inside the separate Android Auto host. These methods cannot
+be called on the template or its `GridSection`, and creating an unused local
+`GridView` would not move the car's grid.
+
 ## Research
 
 * Google's [issue 461256656](https://issuetracker.google.com/issues/461256656)

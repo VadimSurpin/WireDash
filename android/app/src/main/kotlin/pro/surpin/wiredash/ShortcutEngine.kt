@@ -22,6 +22,7 @@ object ShortcutEngine {
     private var channel: MethodChannel? = null
     private val main = Handler(Looper.getMainLooper())
     private var requests: ShortcutRequests? = null
+    private var startupGeneration = 0
 
     private fun requests(app: Context): ShortcutRequests = requests ?: ShortcutRequests(main,
         { ready, failed -> start(app, ready, failed) },
@@ -34,7 +35,7 @@ object ShortcutEngine {
                 }
                 override fun notImplemented() = done("{\"outcome\":\"error\"}")
             })
-        }).also { requests = it }
+        }, { stopDart() }).also { requests = it }
 
     /** Starts the engine early (a tile does this when the panel opens). */
     fun warm(ctx: Context) = onMain { requests(ctx.applicationContext).warm() }
@@ -81,26 +82,32 @@ object ShortcutEngine {
     }
 
     private fun start(app: Context, ready: () -> Unit, failed: () -> Unit) {
+        val attempt = ++startupGeneration
         val loader = FlutterInjector.instance().flutterLoader()
         loader.startInitialization(app)
         // Loading the VM/unpacking assets can take seconds on a cold phone.
         // Waiting synchronously here blocks CarAppService's main/Binder thread.
         loader.ensureInitializationCompleteAsync(app, null, main) {
+            if (startupGeneration != attempt) return@ensureInitializationCompleteAsync
             try { startDart(app, loader.findAppBundlePath(), ready) }
             catch (error: Exception) {
                 Log.e(TAG, "Headless engine startup failed", error)
-                FlutterEngineCache.getInstance().get(ID)?.destroy()
-                FlutterEngineCache.getInstance().remove(ID)
-                channel = null
                 failed()
             }
         }
     }
 
     private fun startDart(app: Context, bundle: String, ready: () -> Unit) {
-        val engine = FlutterEngine(app)
+        // Auto/shortcuts have no Activity or video surface. Loading every phone
+        // plugin here also loads the video native library on the service's main
+        // thread and couples this engine to unrelated phone plugin lifecycles.
+        val engine = FlutterEngine(app, null, false)
         FlutterEngineCache.getInstance().put(ID, engine)
-        if (!engine.plugins.has(WireGuardPlugin::class.java)) engine.plugins.add(WireGuardPlugin())
+        engine.plugins.add(io.flutter.plugins.pathprovider.PathProviderPlugin())
+        engine.plugins.add(io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin())
+        engine.plugins.add(com.it_nomads.fluttersecurestorage.FlutterSecureStoragePlugin())
+        engine.plugins.add(eu.simonbinder.sqlite3_flutter_libs.Sqlite3FlutterLibsPlugin())
+        engine.plugins.add(WireGuardPlugin())
         val ch = MethodChannel(engine.dartExecutor.binaryMessenger, "zigdash/shortcuts")
         ch.setMethodCallHandler { call, result ->
             result.success(null)
@@ -112,6 +119,18 @@ object ShortcutEngine {
         engine.dartExecutor.executeDartEntrypoint(DartExecutor.DartEntrypoint(
             bundle,
             "package:wiredash/shortcuts/shortcut_engine.dart", "shortcutEngine"))
+    }
+
+    private fun stopDart() {
+        Log.w(TAG, "Replacing an unresponsive headless engine; commands will not be replayed")
+        startupGeneration++
+        channel?.setMethodCallHandler(null)
+        channel = null
+        val cache = FlutterEngineCache.getInstance()
+        val engine = cache.get(ID)
+        cache.remove(ID)
+        try { engine?.destroy() }
+        catch (error: Exception) { Log.e(TAG, "Headless engine cleanup failed", error) }
     }
 
     fun onMain(block: () -> Unit) = Handler(Looper.getMainLooper()).post(block)

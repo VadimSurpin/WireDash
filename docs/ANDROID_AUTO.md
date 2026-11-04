@@ -90,6 +90,13 @@ startup queue. Transient engine errors retain the current dashboard with
 Reconnecting feedback rather than replacing it with another template. The native
 WireGuard implementation shares its peer with phone widgets and the phone UI.
 
+The headless engine registers only paths, preferences, secure storage, SQLite and
+WireGuard plugins. It does not load the phone's video or activity plugins.
+Startup has a 20-second watchdog; a startup that never signals ready can be
+discarded and retried. A timed-out catalog/dashboard read also invalidates a
+stalled engine, so later polls can recover. Outstanding requests fail once and
+commands are never replayed. Late startup callbacks cannot revive an old engine.
+
 Opening a dashboard after the car app was hidden rebuilds its MQTT connection
 and private route and restores active subscriptions. A brief localized
 Reconnecting popup announces each outage without replacing every control's
@@ -183,6 +190,18 @@ This preserves its rows and template type, as required for
 Regression tests cover repeated returns with delayed and stale responses on
 both modern and legacy hosts, position-button routing and feedback, and paging
 through all presets on hosts with smaller grid limits.
+
+The `video-preview` workflow additionally runs
+`tool/car_preview/headless_smoke.py` on its isolated Android emulator. This
+clears only that emulator's test data, installs the demo database and drives the
+real native/Dart Auto bridge with a loopback MQTT broker. It checks first-engine
+startup without opening the phone, removes the phone task through the same OS
+operation as Recents, and checks restart after force-stopping the whole process.
+Each phase verifies actual commands and MQTT state feedback. This checks the
+headless lifecycle, not Android Auto's template renderer or a particular phone's
+battery-management behavior. Logs and a summary are saved with the runtime
+artifacts. The debug-only receiver used by this harness is absent from release
+builds.
 
 Official references: [IoT apps](https://developer.android.com/training/cars/apps/iot),
 [projected-app manifest](https://developer.android.com/training/cars/apps/auto),
