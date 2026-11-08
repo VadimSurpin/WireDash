@@ -38,8 +38,8 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
   experimental in feature builds; the latest stable 3.2.0 release predates it.
   Android Auto lists camera entries and directs playback to the parked phone.
 - **[Android Auto support](docs/ANDROID_AUTO.md)** — control switches, command
-  buttons, gates and rollers from the car. Saved dashboard groups appear in a
-  grouped scrolling list in the current test build, with configured titles and icons.
+  buttons, gates and rollers from the car. Select a saved dashboard group to
+  open its control grid, with configured titles and live state icons.
   Uses the phone's MQTT/WireGuard connection and works while the phone
   dashboard is closed.
 - **[Embedded WireGuard](docs/EMBEDDED_WIREGUARD.md)** — import a peer configuration
@@ -116,15 +116,12 @@ Auto and select a dashboard. Switches, command buttons, covers, gates and roller
 use their saved labels, icons and action settings. Writable controls on
 whole-device Wiren Board and Zigbee2MQTT panels are also supported.
 
-The current feature build shows a grouped scrolling list on Car App API 8 hosts.
-Shutters and gates show Open/Close together in one row; Stop and additional
-presets use further rows. Switches use native toggles. All rows are available by
-scrolling, without Next/Previous controls. Sending/reconnecting feedback uses
-popups without changing icons or captions. Build 107 keeps configured icons static
-and runs dashboard/database/MQTT work in a background isolate. Switches update
-from actual MQTT feedback and restore their confirmed value after failures.
-State-only updates retain their screen identity; Android Auto 17.9 scroll behavior
-still needs testing in the car. Older API 6/7
+On Car App API 8 hosts, select a dashboard, then a saved group to open its
+control grid. The group list stays fixed when MQTT state changes. Grid buttons
+use configured icons and show current MQTT state; switches send the opposite
+command when tapped. Sending and reconnecting use popups. Dashboard/database/MQTT
+work runs in a background isolate. Whether a long group grid retains its scroll
+position on Android Auto 17.9 still needs testing in the car. Older API 6/7
 hosts retain list/detail screens. Layout and button sizes follow the car host's native templates.
 
 The car can connect through MQTT or embedded WireGuard without the phone

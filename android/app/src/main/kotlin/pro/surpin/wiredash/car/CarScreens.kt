@@ -250,7 +250,7 @@ internal class DashboardCarScreen(context: CarContext, bridge: CarBridge) : Page
             Row.Builder().setTitle(entry.getString("name")).addText(entry.getString("home"))
                 .setBrowsable(true).setOnClickListener {
                     screenManager.push(if (carContext.carAppApiLevel >= 8)
-                        DashboardListCarScreen(carContext, bridge, entry.getString("id"))
+                        DashboardGroupsCarScreen(carContext, bridge, entry.getString("id"))
                     else ControlsCarScreen(carContext, bridge, entry.getString("id")))
                 }.build()
         }

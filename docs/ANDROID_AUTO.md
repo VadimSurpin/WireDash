@@ -3,8 +3,9 @@
 This branch adds a projected Android Auto **IoT** app using AndroidX Car App
 Library 1.8.0-rc01. Configure WireDash on the phone; the car presents native
 dashboard groups and large action buttons. On hosts supporting Car App API 8,
-select a dashboard once and operate its controls directly in a grouped scrolling
-list with `RowSection` groups (build 107).
+select a dashboard and a saved group, then operate its controls in that group's
+grid. The group list is a stable `RowSection`; MQTT changes update only the open
+grid, not the group list.
 
 ## Controls
 
@@ -20,42 +21,35 @@ garage doors and driveway lights.
 
 Saved section names and section order follow the phone dashboard. Unsectioned
 tiles appear first, followed by each group in order. Empty groups are omitted.
+Selecting a group opens a grid containing only its controls. Switches display
+their current MQTT icon and send the opposite command when tapped; covers and
+position presets retain their configured buttons. Returning to the group list
+keeps its existing template and position. Long grids still depend on the car
+host's scroll behavior when live state changes.
 Command buttons retain their names and configured Material icons/colors.
-Switches use native toggles with a fixed configured OFF icon and tint.
-Their checked value follows MQTT feedback; icon shapes and colors stay static
-for every control in the grouped list. A cover puts its
-configured Open and Close actions together beside its name in one list row.
-Android Auto allows at most two inline actions per row on API 8. A configured
-Stop button and additional position presets appear in further rows for the same
-control, in pairs, so every configured action remains accessible. Action labels
-also appear below the control name because hosts may render actions as icons.
+Each configured cover action occupies a grid button. Switches use one button
+whose icon and tint reflect the current MQTT state.
 
 Cover button visibility, titles and gate/roller icons follow the phone editor.
 Position-aware covers also show their saved percentage presets; a slider-only
 cover uses 0/25/50/75/100% buttons in Auto. Writable Zigbee cover position features
 use their exact endpoint property. MQTT feedback confirms a pending position only when its target is reported;
-position button icons remain static.
+position button icons update when the reported position matches a preset.
 WB relay pairs expose direction commands, without inventing a position estimate.
 Command-only covers send the saved command and retain their appearance without
 a state subscription. Their duplicate-command guard lasts one second. State-aware controls
 use current-session MQTT feedback; relay activity is not a gate-position
 estimate. Every new direction tap sends a command again, including another `1`
 for a WB pulse input. WB command topics retain their leading slash, append
-`/on`, and are never retained. On the grouped scrolling dashboard, a command
+`/on`, and are never retained. In the group grid, a command
 shows a brief native message with the control name and localized sending text.
-Starting a command does not change rows, actions or their delegates and does
-not invalidate the template. Command-only cover buttons also remain unchanged
-on completion. A switch is resubmitted with its actual MQTT value when the
-operation finishes, including rejection or timeout, so the host cannot leave an
-optimistic switch value on screen. Pending commands
-still reject duplicate taps internally. Command-only guards expire after one
-second independently for each control. Other cover directions (including Stop)
-remain available during a direction command. Toggle delegates check the latest
-state even when the host still holds an older row. Fresh MQTT state and
-configuration changes still update the list; updates in the same main-loop turn
-are coalesced.
+Starting a command does not change the grid; MQTT feedback updates its icons.
+The group list does not refresh for state, position, pending or failure changes.
+Pending commands still reject duplicate taps internally. Command-only guards
+expire after one second independently for each control. Other cover directions
+(including Stop) remain available during a direction command.
 
-Build 105 removes the dashboard's Next/Previous rows. It keeps the build 104
+Earlier build 105 removed the dashboard's Next/Previous rows. It kept the build 104
 list layout and pairs of actions, using lazy `RowSection` groups inside
 `SectionedItemTemplate` so the host requests more rows as the user scrolls.
 Every saved control and action is available in the same list, including beyond

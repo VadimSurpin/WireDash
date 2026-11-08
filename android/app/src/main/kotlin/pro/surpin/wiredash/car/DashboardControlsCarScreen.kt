@@ -27,6 +27,7 @@ internal open class DashboardControlsCarScreen(
     context: CarContext,
     bridge: CarBridge,
     protected val dashboardId: String,
+    private val groupId: String? = null,
 ) : PollingCarScreen(context, bridge) {
     override val method = "carOpen"
     override val arguments get() = mapOf("dashboardId" to dashboardId)
@@ -115,15 +116,31 @@ internal open class DashboardControlsCarScreen(
 
     protected open fun buildTemplate(): Template {
         val current = data
-        val header = Header.Builder().setTitle(current?.optString("name", "WireDash") ?: "WireDash")
+        val sectionName = current?.optJSONArray("sections")?.objects()?.firstOrNull {
+            groupId == "group/" + it.optString("id")
+        }?.optString("name")
+        val header = Header.Builder().setTitle(sectionName ?: current?.optString("name", "WireDash") ?: "WireDash")
             .setStartHeaderAction(Action.BACK)
             .addEndHeaderAction(reconnectAction).build()
         val template = SectionedItemTemplate.Builder().setHeader(header)
             .setScrollStatePersistenceStrategy(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX)
         if (current == null) return template.setLoading(true).build()
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
-        val controls = current.optJSONArray("controls")?.objects().orEmpty()
-        if (controls.isEmpty()) return message(R.string.car_setup)
+        val allControls = current.optJSONArray("controls")?.objects().orEmpty()
+        if (allControls.isEmpty()) return message(R.string.car_setup)
+        val groups = current.optJSONArray("sections")?.objects().orEmpty()
+        val known = groups.map { it.getString("id") }.toSet()
+        val controls = when {
+            groupId == null -> allControls
+            groupId == "unsectioned" -> allControls.filter { it.optString("sectionId") !in known }
+            groupId.startsWith("group/") -> {
+                val sectionId = groupId.removePrefix("group/")
+                if (sectionId !in known) return message(R.string.car_removed)
+                allControls.filter { it.optString("sectionId") == sectionId }
+            }
+            else -> return message(R.string.car_removed)
+        }
+        if (controls.isEmpty()) return message(R.string.car_removed)
 
         val activeSections = mutableSetOf<String>()
         val activeTiles = mutableSetOf<TileKey>()
@@ -177,11 +194,14 @@ internal open class DashboardControlsCarScreen(
             template.addSection(built)
         }
 
-        val groups = current.optJSONArray("sections")?.objects().orEmpty()
-        val known = groups.map { it.getString("id") }.toSet()
-        addGroup("unsectioned", null, controls.filter { it.optString("sectionId") !in known })
-        for (section in groups) addGroup("group/" + section.getString("id"), section.getString("name"),
-            controls.filter { it.optString("sectionId") == section.getString("id") })
+        if (groupId == null || groupId == "unsectioned")
+            addGroup("unsectioned", null, controls.filter { it.optString("sectionId") !in known })
+        for (section in groups) {
+            val id = section.getString("id")
+            if (groupId == null || groupId == "group/$id")
+                addGroup("group/$id", if (groupId == null) section.getString("name") else null,
+                    controls.filter { it.optString("sectionId") == id })
+        }
         sections.keys.retainAll(activeSections)
         sectionOrder.keys.retainAll(activeSections)
         visibleRanges.keys.retainAll(activeSections)

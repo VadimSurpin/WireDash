@@ -154,7 +154,7 @@ class CarScreensTest {
             lifecycle.moveToState(Lifecycle.State.CREATED)
             bridge.delayed = false
             bridge.response = FakeBridge.snapshot()
-            val dashboard = if (api >= 8) DashboardListCarScreen(context, bridge, "d")
+            val dashboard = if (api >= 8) DashboardGroupsCarScreen(context, bridge, "d")
                 else ControlsCarScreen(context, bridge, "d")
             val child = start(dashboard)
             dashboard.onGetTemplate()
@@ -190,7 +190,7 @@ class CarScreensTest {
         assertTrue((screen.onGetTemplate() as SectionedItemTemplate).isLoading)
     }
 
-    @Test fun groupedListIsSelectedByModernCatalogAndKeepsItsLoadingType() {
+    @Test fun groupNavigationIsSelectedByModernCatalogAndKeepsItsLoadingType() {
         modernHost()
         bridge.response = JSONObject().put("dashboards", JSONArray().put(JSONObject()
             .put("id", "d").put("name", "Driveway").put("home", "Home")))
@@ -201,12 +201,45 @@ class CarScreensTest {
         entry.onClickDelegate!!.sendClick(done)
         shadowOf(Looper.getMainLooper()).idle()
         val child = context.getCarService(androidx.car.app.ScreenManager::class.java).top
-        assertTrue(child is DashboardListCarScreen)
+        assertTrue(child is DashboardGroupsCarScreen)
         start(child)
         assertTrue((child.onGetTemplate() as SectionedItemTemplate).isLoading)
         bridge.callbacks.forEach { it(FakeBridge.snapshot()) }
         shadowOf(Looper.getMainLooper()).idle()
         assertFalse((child.onGetTemplate() as SectionedItemTemplate).isLoading)
+    }
+
+    @Test fun groupListStaysFixedWhilePhoneChangesControlAndGroupGridShowsLiveState() {
+        modernHost()
+        val gate = bridge.response.getJSONArray("controls").getJSONObject(0).put("sectionId", "gates")
+        bridge.response.getJSONArray("controls").put(commandButton("Light", "lights"))
+        bridge.response.put("sections", JSONArray()
+            .put(JSONObject().put("id", "gates").put("name", "Gates"))
+            .put(JSONObject().put("id", "lights").put("name", "Lights")))
+        val groupScreen = DashboardGroupsCarScreen(context, bridge, "d")
+        val lifecycle = start(groupScreen)
+        val before = groupScreen.onGetTemplate() as SectionedItemTemplate
+        val rows = items(before.sections.single()).map { it as Row }
+        assertEquals(listOf("Gates", "Lights"), rows.map { it.title.toString() })
+        val submissions = lifecycle.templatesReturned.size
+        gate.put("state", "OPEN")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertSame(before, groupScreen.onGetTemplate())
+        assertEquals(submissions, lifecycle.templatesReturned.size)
+
+        rows.first().onClickDelegate!!.sendClick(done)
+        shadowOf(Looper.getMainLooper()).idle()
+        val child = context.getCarService(androidx.car.app.ScreenManager::class.java).top
+        assertTrue(child is DashboardControlsCarScreen)
+        start(child)
+        val grid = child as DashboardControlsCarScreen
+        val first = dashboardItems(grid)
+        assertEquals(listOf("Enter", "Exit"), first.map { it.title.toString() })
+        assertEquals(CarColor.GREEN, first.first().image!!.tint)
+        gate.put("state", "CLOSE")
+        shadowOf(Looper.getMainLooper()).idleFor(1, TimeUnit.SECONDS)
+        assertEquals(CarColor.GREEN, dashboardItems(grid).last().image!!.tint)
+        assertSame(before, groupScreen.onGetTemplate())
     }
 
     @Test fun groupedListKeepsSavedGroupsAndPairsGateActionsInOneRow() {
