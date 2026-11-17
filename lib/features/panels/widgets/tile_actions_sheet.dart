@@ -34,7 +34,7 @@ Future<void> showTileActions(
   // runs. Everything used after the sheet closes outlives the tile.
   final container = ProviderScope.containerOf(context, listen: false);
   final host = Navigator.of(context, rootNavigator: true).context;
-  final router = GoRouter.of(context);
+  final router = GoRouter.maybeOf(context);
   final repo = container.read(panelRepoProvider);
   final messenger = ScaffoldMessenger.of(context);
   final destination = await showModalBottomSheet<String>(
@@ -146,7 +146,7 @@ Future<void> showTileActions(
       )),
     ),
   );
-  if (destination != null) router.push(destination);
+  if (destination != null) router?.push(destination);
 }
 
 /// The scene a scene tile runs, or null.
