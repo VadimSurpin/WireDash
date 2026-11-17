@@ -253,7 +253,14 @@ class _DashboardsTabbed extends ConsumerWidget {
                                   tooltip: l10n.dashEditDashboard,
                                   onPressed: () {
                                     final d = current();
-                                    if (!d.locked) edit.enter(d.id);
+                                    if (d.locked) {
+                                      tabCtx.push(
+                                        '/connections/$connectionId/dashboards/'
+                                        '${d.id}/edit',
+                                      );
+                                    } else {
+                                      edit.enter(d.id);
+                                    }
                                   },
                                 ),
                                 const SettingsAction(),
