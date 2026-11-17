@@ -108,7 +108,7 @@ all app features without Play billing.
 
 ## Android Auto
 
-**For the current test APK, enable Android Auto developer mode and turn on
+**Enable Android Auto developer mode and turn on
 Unknown sources in its developer settings.**
 
 Set up connections and dashboards on the phone, then open WireDash in Android
@@ -198,9 +198,9 @@ IDs, and dashboard backups do not include connection credentials.
 Home Assistant browser sign-in still uses the registered upstream OAuth return
 link. If Android asks which app should handle that link, select WireDash.
 
-## Video widget plugin (preview)
+## Video widget plugin
 
-The `feat/video-widget-plugin` branch adds a locally bundled Video
+WireDash includes a locally bundled Video
 panel: standard RTSP live video, Hikvision DVR/NVR recording playback, and
 human/vehicle recording filters when supported by the recorder. Add it from
 **Add tile → Custom MQTT tile → Video**. It uses secure credential storage and
