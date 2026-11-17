@@ -27,22 +27,22 @@ Future<void> showTileActions(
   WidgetRef ref, {
   required String connectionId,
   required Panel panel,
-}) {
+}) async {
   final l10n = context.l10n;
   // A long-press outside Edit mode enters it, which replaces the tile that
   // opened this sheet: its ref and context are gone by the time an action
   // runs. Everything used after the sheet closes outlives the tile.
   final container = ProviderScope.containerOf(context, listen: false);
   final host = Navigator.of(context, rootNavigator: true).context;
-  final router = GoRouter.maybeOf(context);
+  final router = GoRouter.of(context);
   final repo = container.read(panelRepoProvider);
   final messenger = ScaffoldMessenger.of(context);
-  return showModalBottomSheet<void>(
+  final destination = await showModalBottomSheet<String>(
     context: context,
     showDragHandle: true,
     isScrollControlled: true,
     builder: (sheetCtx) => SafeArea(
-      child: Column(
+      child: SingleChildScrollView(child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -82,8 +82,7 @@ Future<void> showTileActions(
             leading: const Icon(Icons.edit_outlined),
             title: Text(l10n.editEditTile),
             onTap: () {
-              Navigator.pop(sheetCtx);
-              router?.push('/connections/$connectionId/dashboards/'
+              Navigator.pop(sheetCtx, '/connections/$connectionId/dashboards/'
                   '${panel.dashboardId}/panels/${panel.id}/edit');
             },
           ),
@@ -100,8 +99,7 @@ Future<void> showTileActions(
               leading: const Icon(Icons.info_outline),
               title: Text(l10n.deviceDetails),
               onTap: () {
-                Navigator.pop(sheetCtx);
-                router?.push(
+                Navigator.pop(sheetCtx,
                     Routes.homeDevice(connectionId, panel.deviceIeee!));
               },
             ),
@@ -145,9 +143,10 @@ Future<void> showTileActions(
             },
           ),
         ],
-      ),
+      )),
     ),
   );
+  if (destination != null) router.push(destination);
 }
 
 /// The scene a scene tile runs, or null.
