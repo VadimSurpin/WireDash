@@ -137,31 +137,22 @@ Panel _panel(
 );
 
 void main() {
-  test(
-    'video entries keep section identity without leaking endpoint or login to Auto',
-    () {
-      final c = carControls(_dashboard(), [
-        _panel(
-          const PluginPanelConfig(
-            pluginId: 'wiredash.video',
-            settings: {
-              'streamUrl': 'rtsp://private-camera/live',
-              'credentialId': 'secret-ref',
-            },
-          ),
-          type: PanelType.plugin,
-          sectionId: 'cameras',
+  test('video panels are omitted from Android Auto controls', () {
+    final controls = carControls(_dashboard(), [
+      _panel(
+        const PluginPanelConfig(
+          pluginId: 'wiredash.video',
+          settings: {
+            'streamUrl': 'rtsp://private-camera/live',
+            'credentialId': 'secret-ref',
+          },
         ),
-      ], _l10n).single;
-      expect(c.kind, 'video');
-      expect(c.sectionId, 'cameras');
-      expect(c.topics, isEmpty);
-      expect(c.waitForFeedback, isFalse);
-      expect(c.actions.single.commands, isEmpty);
-      expect(c.commandSignature, isNot(contains('private-camera')));
-      expect(c.commandSignature, isNot(contains('secret-ref')));
-    },
-  );
+        type: PanelType.plugin,
+        sectionId: 'cameras',
+      ),
+    ], _l10n);
+    expect(controls, isEmpty);
+  });
   test(
     'built-in radio shutters retain their labels, payloads and state topic',
     () {
@@ -527,7 +518,7 @@ void main() {
         (snapshot['controls'] as List).first as Map<String, Object?>;
 
     test(
-      'camera-only dashboard is catalogued offline and VIEW never publishes',
+      'camera-only dashboard is absent from Auto and never publishes',
       () async {
         await save(
           _panel(
@@ -542,9 +533,10 @@ void main() {
           ),
         );
         mgr.connected = false;
-        expect((await service.catalog())['dashboards'] as List, hasLength(1));
+        expect((await service.catalog())['dashboards'], isEmpty);
         final snapshot = await service.open('d');
-        expect(first(snapshot)['kind'], 'video');
+        expect(snapshot['controls'], isEmpty);
+        expect(snapshot['sections'], isEmpty);
         expect(jsonEncode(snapshot), isNot(contains('rtsp://')));
         expect(jsonEncode(snapshot), isNot(contains('private')));
         mgr.connected = true;
@@ -708,6 +700,14 @@ void main() {
         await db.customStatement('PRAGMA foreign_keys = ON');
         await save(
           _panel(cfg, id: 'loose', type: PanelType.button, sortOrder: 4),
+        );
+        await save(
+          _panel(
+            const PluginPanelConfig(pluginId: 'wiredash.video', settings: {}),
+            id: 'camera',
+            type: PanelType.plugin,
+            sectionId: 'empty',
+          ),
         );
         final data = await service.open('d');
         expect(data['sections'], [

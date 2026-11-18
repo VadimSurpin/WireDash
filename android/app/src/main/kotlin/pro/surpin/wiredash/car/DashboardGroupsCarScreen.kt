@@ -25,7 +25,7 @@ internal class DashboardGroupsCarScreen(
     private var displayedTemplate: Template? = null
 
     private fun groups(snapshot: JSONObject): List<Group> {
-        val controls = snapshot.optJSONArray("controls")?.objects().orEmpty()
+        val controls = snapshot.visibleCarControls()
         val sections = snapshot.optJSONArray("sections")?.objects().orEmpty()
         val known = sections.map { it.optString("id") }.toSet()
         val result = mutableListOf<Group>()

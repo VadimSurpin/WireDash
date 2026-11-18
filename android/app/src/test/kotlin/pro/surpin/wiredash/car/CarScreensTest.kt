@@ -586,41 +586,52 @@ class CarScreensTest {
         assertTrue(bridge.commands.isEmpty())
     }
 
-    @Test fun groupedListVideoRemainsBrowsableWithoutBrokerOrCommands() {
+    @Test fun cameraOnlyDashboardHasNoAutoControlsOrGroups() {
         modernHost()
         bridge.response = FakeBridge.snapshot(false).put("controls", JSONArray().put(JSONObject()
             .put("id", "camera").put("name", "Camera").put("kind", "video")
             .put("waitForFeedback", false).put("actions", JSONArray().put(JSONObject()
                 .put("id", "VIEW").put("title", "Video").put("icon", "video")))))
-        val screen = DashboardListCarScreen(context, bridge, "d")
-        start(screen)
-        val row = listRows(screen).single()
-        assertTrue(row.isBrowsable)
-        assertTrue(toasts().isEmpty())
-        row.onClickDelegate!!.sendClick(done)
-        shadowOf(Looper.getMainLooper()).idle()
+        val groups = DashboardGroupsCarScreen(context, bridge, "d")
+        start(groups)
+        assertTrue(groups.onGetTemplate() is MessageTemplate)
+        val grid = DashboardControlsCarScreen(context, bridge, "d")
+        start(grid)
+        assertTrue(grid.onGetTemplate() is MessageTemplate)
+        val list = DashboardListCarScreen(context, bridge, "d")
+        start(list)
+        assertTrue(list.onGetTemplate() is MessageTemplate)
+        val legacy = ControlsCarScreen(context, bridge, "d")
+        start(legacy)
+        assertTrue(legacy.onGetTemplate() is MessageTemplate)
         assertTrue(bridge.commands.isEmpty())
-        assertTrue(context.getCarService(androidx.car.app.ScreenManager::class.java).top.onGetTemplate() is MessageTemplate)
     }
 
-    @Test fun modernVideoRemainsBrowsableOfflineAndNeverSendsMqttCommand() {
+    @Test fun cameraOnlyGroupIsOmittedBesideWorkingControls() {
         modernHost()
-        bridge.response = FakeBridge.snapshot(false).put("controls", JSONArray().put(JSONObject()
+        val camera = JSONObject()
             .put("id", "camera").put("name", "Driveway camera").put("kind", "video")
+            .put("sectionId", "elements")
             .put("waitForFeedback", false).put("actions", JSONArray().put(JSONObject()
-                .put("id", "VIEW").put("title", "Video").put("icon", "video")))))
-        val screen = DashboardControlsCarScreen(context, bridge, "d")
-        start(screen)
-        val tile = dashboardItems(screen).single()
-        assertEquals("Driveway camera", tile.title.toString())
-        assertEquals(context.getString(R.string.car_video_phone), tile.text.toString())
-        assertTrue(toasts().isEmpty())
-        tile.onClickDelegate!!.sendClick(done)
-        shadowOf(Looper.getMainLooper()).idle()
+                .put("id", "VIEW").put("title", "Video").put("icon", "video")))
+        bridge.response.put("controls", JSONArray().put(commandButton("Light", "lights")).put(camera))
+            .put("sections", JSONArray()
+                .put(JSONObject().put("id", "elements").put("name", "Elements"))
+                .put(JSONObject().put("id", "lights").put("name", "Lights")))
+        val groups = DashboardGroupsCarScreen(context, bridge, "d")
+        start(groups)
+        val groupRows = items((groups.onGetTemplate() as SectionedItemTemplate).sections.single())
+            .map { it as Row }
+        assertEquals(listOf("Lights"), groupRows.map { it.title.toString() })
+        val grid = DashboardControlsCarScreen(context, bridge, "d")
+        start(grid)
+        assertEquals(listOf("Light"), dashboardItems(grid).map { it.title.toString() })
+        val list = DashboardListCarScreen(context, bridge, "d")
+        start(list)
+        assertEquals(listOf("Lights"), (list.onGetTemplate() as SectionedItemTemplate)
+            .sections.map { it.title.toString() })
+        assertEquals(listOf("Light"), listRows(list).map { it.title.toString() })
         assertTrue(bridge.commands.isEmpty())
-        val info = context.getCarService(androidx.car.app.ScreenManager::class.java).top
-        val template = info.onGetTemplate() as MessageTemplate
-        assertEquals(context.getString(R.string.car_video_limit), template.message.toString())
     }
 
     @Test fun modernCurtainPositionButtonsSendSavedActionsAndHighlightReportedPosition() {

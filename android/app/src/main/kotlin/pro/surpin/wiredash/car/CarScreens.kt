@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.car.app.CarContext
-import androidx.car.app.Screen
 import androidx.car.app.WireDashUpdateScreen
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
@@ -46,6 +45,10 @@ internal class EngineCarBridge(private val context: Context) : CarBridge {
 
 internal fun JSONArray.objects(): List<JSONObject> =
     (0 until length()).mapNotNull { optJSONObject(it) }
+
+/** Camera playback has no Android Auto IoT surface; omit it from every host layout. */
+internal fun JSONObject.visibleCarControls(): List<JSONObject> =
+    optJSONArray("controls")?.objects().orEmpty().filter { it.optString("kind") != "video" }
 
 /** Poll cached MQTT state only while visible; no poll ever sends a command. */
 internal abstract class PollingCarScreen(
@@ -114,8 +117,7 @@ internal abstract class PollingCarScreen(
             reconnectNoticeShown = false
             return
         }
-        // Camera-only dashboards remain useful without an MQTT session.
-        if (current.optJSONArray("controls")?.objects()?.any { it.optString("kind") != "video" } == true) {
+        if (current.visibleCarControls().isNotEmpty()) {
             showReconnecting()
         }
     }
@@ -265,12 +267,11 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
         val current = data ?: return ListTemplate.Builder().setTitle("WireDash")
             .setHeaderAction(Action.BACK).setLoading(true).build()
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
-        val entries = current.optJSONArray("controls")?.objects().orEmpty()
+        val entries = current.visibleCarControls()
         if (entries.isEmpty()) return message(R.string.car_setup)
         return list(current.optString("name", "WireDash"), false, entries) { entry ->
             val row = Row.Builder().setTitle(entry.getString("name")).setBrowsable(true)
-            if (entry.optString("kind") == "video") row.addText(carContext.getString(R.string.car_video_phone))
-            else if (entry.optBoolean("waitForFeedback")) {
+            if (entry.optBoolean("waitForFeedback")) {
                 val state = entry.optString("state").takeUnless { entry.isNull("state") }
                 row.addText(when (state) {
                     "ON" -> current.optJSONObject("strings")?.optString("on") ?: "On"
@@ -283,20 +284,10 @@ internal class ControlsCarScreen(context: CarContext, bridge: CarBridge, private
                 })
             }
             row.setOnClickListener {
-                screenManager.push(if (entry.optString("kind") == "video")
-                    VideoInfoCarScreen(carContext, entry.getString("name"))
-                    else ActionsCarScreen(carContext, bridge, dashboardId, entry.getString("id")))
+                screenManager.push(ActionsCarScreen(carContext, bridge, dashboardId, entry.getString("id")))
             }.build()
         }
     }
-}
-
-/** IoT templates cannot render live video or forward pinch/drag gestures. */
-internal class VideoInfoCarScreen(context: CarContext, private val title: String) : Screen(context) {
-    override fun onGetTemplate(): Template = MessageTemplate.Builder(
-        carContext.getString(R.string.car_video_limit))
-        .setTitle(title).setHeaderAction(Action.BACK)
-        .build()
 }
 
 internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,
@@ -324,7 +315,7 @@ internal class ActionsCarScreen(context: CarContext, bridge: CarBridge,
         val current = data ?: return GridTemplate.Builder().setTitle("WireDash")
             .setHeaderAction(Action.BACK).setLoading(true).build()
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
-        val control = current.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
+        val control = current.visibleCarControls().firstOrNull { it.optString("id") == controlId }
             ?: return message(R.string.car_removed)
         val connected = current.optBoolean("connected")
         val items = grid(control.getJSONArray("actions").objects()) { action ->

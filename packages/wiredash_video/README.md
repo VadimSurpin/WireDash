@@ -185,14 +185,11 @@ need their corresponding native backend before enabling playback.
 
 ## Android Auto
 
-Camera panels appear in their saved dashboard groups on both modern and legacy
-Auto hosts, including camera-only dashboards and when MQTT is offline. A camera
-entry opens an explanation directing the user to the phone while parked. It never
-sends an MQTT command or shares stream addresses/login references with the host.
+Android Auto omits Video panels, groups that contain only Video panels, and
+camera-only dashboards. Camera streams and login references stay on the phone.
 
 The Android Auto IoT template cannot embed the Flutter video widget, receive
-pinch/drag gestures, or display recording playback. This implementation therefore
-does **not** provide video on the car display. Android Auto developer mode and
+pinch/drag gestures, or display recording playback. Android Auto developer mode and
 Unknown sources do not remove that host limitation. Google's current
 [parked-app guide](https://developer.android.com/training/cars/parked/auto) lists
 only games as supported on projected Auto; Android Automotive OS is a different

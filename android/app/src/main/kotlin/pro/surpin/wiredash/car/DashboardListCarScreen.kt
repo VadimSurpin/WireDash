@@ -50,7 +50,7 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
     private val switchCompletions = mutableMapOf<String, Int>()
 
     override fun onCommandFinished(controlId: String) {
-        if (data?.optJSONArray("controls")?.objects()?.any {
+        if (data?.visibleCarControls()?.any {
                 it.optString("id") == controlId && it.optString("kind") == "switch"
             } == true) {
             // Hosts may optimistically move their switch on tap. Submit its
@@ -62,8 +62,9 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
 
     override fun stateUpdateStructure(): String? {
         val current = data ?: return null
-        if (current.has("outcome") || current.optJSONArray("controls")?.length() == 0) return null
-        val controls = current.optJSONArray("controls")?.objects() ?: return null
+        if (current.has("outcome")) return null
+        val controls = current.visibleCarControls()
+        if (controls.isEmpty()) return null
         return JSONArray().put(current.optString("id")).put(current.optString("name"))
             .put(current.optJSONArray("sections") ?: JSONArray())
             .put(JSONArray(controls.map { control ->
@@ -81,7 +82,7 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
             .setScrollStatePersistenceStrategy(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX)
         if (current == null) return template.setLoading(true).build()
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
-        val controls = current.optJSONArray("controls")?.objects().orEmpty()
+        val controls = current.visibleCarControls()
         if (controls.isEmpty()) return message(R.string.car_setup)
         val activeRows = mutableSetOf<RowKey>()
         val activeActions = mutableSetOf<TileKey>()
@@ -92,7 +93,7 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
                 if (all.isEmpty()) emptyList() else {
                     val kind = control.getString("kind")
                     val chunks = when (kind) {
-                        "switch", "button", "video" -> listOf(all)
+                        "switch", "button" -> listOf(all)
                         "cover" -> {
                             val directions = all.filter { it.getString("id") in setOf("OPEN", "CLOSE") }
                             if (directions.size == 2) listOf(directions) + all.filter { it !in directions }.chunked(2)
@@ -149,16 +150,16 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
         val kind = control.getString("kind")
         val key = RowKey(id, kind, if (kind == "switch") emptyList() else entries.map { it.getString("id") })
         activeRows.add(key)
-        if (kind !in setOf("switch", "button", "video")) entries.forEach {
+        if (kind !in setOf("switch", "button")) entries.forEach {
             activeActions.add(TileKey(id, kind, it.getString("id")))
         }
         val cached = rows.getOrPut(key) {
             val toggle = if (kind == "switch") Toggle.Builder { checked ->
                 val target = if (checked) "ON" else "OFF"
-                val latest = data?.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == id }
+                val latest = data?.visibleCarControls()?.firstOrNull { it.optString("id") == id }
                 if (latest?.optString("state") != target) send(TileKey(id, kind, target))
             } else null
-            val click = if (kind == "video" || kind == "button" || (kind != "switch" && entries.size == 1))
+            val click = if (kind == "button" || (kind != "switch" && entries.size == 1))
                 OnClickListener { send(TileKey(id, kind, entries.first().getString("id"))) } else null
             CachedRow(click, toggle)
         }
@@ -167,12 +168,11 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
             .put(switchCompletions[id] ?: 0).toString()
         val old = cached.row
         val previousConfiguration = cached.configuration
-        if (!snapshot.optBoolean("connected") && kind != "video" && old != null && cached.configuration == configuration) return old
+        if (!snapshot.optBoolean("connected") && old != null && cached.configuration == configuration) return old
         // Rebuild content without accumulating old text/actions. Equal rows
         // retain their previous model and host delegate after comparison below.
         val content = Row.Builder().setTitle(control.getString("name"))
         cached.click?.let { content.setOnClickListener(it) }
-        if (kind == "video") content.setBrowsable(true)
         if (kind == "switch") {
             val on = control.optString("state") == "ON"
             // Keep one configured icon and tint across telemetry changes. Only the
@@ -180,8 +180,6 @@ internal class DashboardListCarScreen(context: CarContext, bridge: CarBridge, da
             val appearance = control.getJSONArray("actions").objects().first { it.getString("id") == "OFF" }
             content.setImage(actionIcon(appearance, false)).setToggle(cached.toggle!!.setChecked(on).build())
             if (control.isNull("state")) content.addText(carContext.getString(R.string.car_unknown))
-        } else if (kind == "video") {
-            content.setImage(actionIcon(entries.first(), false)).addText(carContext.getString(R.string.car_video_phone))
         } else if (kind == "button") {
             content.setImage(actionIcon(entries.first(), false))
         } else {

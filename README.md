@@ -35,8 +35,7 @@ See [screenshot sources and regeneration](docs/screenshots/README.md).
   events in the selected range. Motion, people, vehicles and other event filters can
   be combined. Recording search and RTSP playback honor their separate time
   formats, with a per-camera playback-time override for older DVRs. Video remains
-  experimental in feature builds; the latest stable 3.2.0 release predates it.
-  Android Auto lists camera entries and directs playback to the parked phone.
+  experimental. Video panels are available on the phone; Android Auto omits them.
 - **[Android Auto support](docs/ANDROID_AUTO.md)** — control switches, command
   buttons, gates and rollers from the car. Select a saved dashboard group to
   open its control grid, with configured titles and live state icons.
@@ -208,9 +207,9 @@ can follow the home's embedded WireGuard route.
 The embedded player supports pinch zoom, dragging, reset and fullscreen, with
 separate recording and human/vehicle event controls. Saved clips use a vertical
 timeline with recorder event labels and preview frames from the recordings.
-Opening a clip preserves the timeline scroll position. Android Auto lists camera
-entries but its IoT templates cannot play video or receive those gestures;
-playback currently uses the phone. See the
+Opening a clip preserves the timeline scroll position. Android Auto omits video
+panels and groups that contain only video because its IoT templates cannot play
+video or receive those gestures. Playback uses the phone. See the
 [video plugin guide](packages/wiredash_video/README.md) for configuration,
 compatibility and testing, and the [panel plugin API](packages/wiredash_plugin_api/README.md)
 for extension development.

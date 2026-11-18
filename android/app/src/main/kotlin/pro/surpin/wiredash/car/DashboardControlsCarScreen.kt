@@ -99,7 +99,7 @@ internal open class DashboardControlsCarScreen(
     }
 
     override fun onData(): Boolean {
-        val controls = data?.optJSONArray("controls")?.objects().orEmpty().associateBy { it.optString("id") }
+        val controls = data?.visibleCarControls().orEmpty().associateBy { it.optString("id") }
         val finished = sending.filter { (id, request) ->
             request.awaitingSnapshot && controls[id]?.isNull("pending") != false
         }.keys.toList()
@@ -126,7 +126,7 @@ internal open class DashboardControlsCarScreen(
             .setScrollStatePersistenceStrategy(SectionedItemTemplate.SCROLL_STATE_PRESERVE_INDEX)
         if (current == null) return template.setLoading(true).build()
         if (current.has("outcome")) return message(if (current.optString("outcome") == "removed") R.string.car_removed else R.string.car_error)
-        val allControls = current.optJSONArray("controls")?.objects().orEmpty()
+        val allControls = current.visibleCarControls()
         if (allControls.isEmpty()) return message(R.string.car_setup)
         val groups = current.optJSONArray("sections")?.objects().orEmpty()
         val known = groups.map { it.getString("id") }.toSet()
@@ -151,10 +151,7 @@ internal open class DashboardControlsCarScreen(
             val items = mutableListOf<GridItem>()
             for (control in entries) {
                 val actions = control.getJSONArray("actions").objects()
-                if (control.optString("kind") == "video") {
-                    items.add(button(current, control, actions.first(), actions.first(),
-                        control.getString("name"), carContext.getString(R.string.car_video_phone), activeTiles))
-                } else if (control.optString("kind") == "switch") {
+                if (control.optString("kind") == "switch") {
                     // A switch is one tile, as on the phone. Its current icon
                     // reflects feedback; tapping sends the opposite value.
                     val on = control.optString("state") == "ON"
@@ -220,7 +217,7 @@ internal open class DashboardControlsCarScreen(
         val controlId = control.getString("id")
         val actionId = target.getString("id")
         val switch = control.optString("kind") == "switch"
-        val connected = control.optString("kind") == "video" || snapshot.optBoolean("connected")
+        val connected = snapshot.optBoolean("connected")
         // A switch keeps one identity across ON/OFF. Its listener reads the
         // latest snapshot instead of retaining the target from an older tile.
         val key = TileKey(controlId, control.getString("kind"), if (switch) null else actionId)
@@ -284,13 +281,9 @@ internal open class DashboardControlsCarScreen(
         // removed, repurposed, offline or busy control.
         if (!visible) return
         val controlId = key.controlId
-        val control = data?.optJSONArray("controls")?.objects()?.firstOrNull { it.optString("id") == controlId }
+        val control = data?.visibleCarControls()?.firstOrNull { it.optString("id") == controlId }
             ?: return
         if (control.optString("kind") != key.kind) return
-        if (key.kind == "video") {
-            screenManager.push(VideoInfoCarScreen(carContext, control.getString("name")))
-            return
-        }
         if (data?.optBoolean("connected") != true) {
             showReconnecting(force = true)
             return
